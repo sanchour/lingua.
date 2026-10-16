@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { BookDetailsPage, CodexPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusFeedPage, SonusPage, SonusPlayerPage, StarterPage, StudyPage, ThesaurusPage, VisioPage } from './pages';
+import { BookDetailsPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusFeedPage, SonusPage, SonusPlayerPage, StarterPage, StudyPage, ThesaurusPage, VisioPage } from './pages';
 import { Root } from './Root';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -16,6 +16,7 @@ export const router = createBrowserRouter(
         { path: 'codex/read/:textId', element: <ReaderPage /> },
         { path: 'codex/new', element: <NewTextPage /> },
         { path: 'codex/book/:textId', element: <BookDetailsPage /> },
+        { path: 'codex/diarium/:entryId', element: <JournalEntryPage /> },
         { path: 'thesaurus', element: <ThesaurusPage /> },
         { path: 'thesaurus/deck/:deckId', element: <DeckPage /> },
         { path: 'thesaurus/ready/:key', element: <StarterPage /> },

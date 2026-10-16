@@ -22,7 +22,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      // 'prompt' so an update never reloads the page mid-review or mid-audio.
+      // 'prompt': app/UpdatePrompt.tsx applies new versions itself at a calm moment (never mid-lesson or mid-audio).
       registerType: 'prompt',
       injectRegister: false,
       pwaAssets: {

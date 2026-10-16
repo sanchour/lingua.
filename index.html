@@ -19,6 +19,9 @@
           (pref === 'system' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
         var theme = dark ? 'nocturne' : 'paper';
         document.documentElement.setAttribute('data-theme', theme);
+        // The Home Screen icon follows the phone's appearance when Lingua is added (iOS reads it then).
+        var systemDark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+        document.write('<link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon' + (systemDark ? '-dark' : '') + '-180x180.png">');
         // iOS reads the status-bar style once at launch, so it is written while the head is parsed.
         document.write(
           '<meta name="theme-color" content="' + (dark ? '#1F1C1A' : '#FAF6F0') + '">' +

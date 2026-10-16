@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
+import { useDockBottom } from '@/app/dock';
 import { motion } from 'motion/react';
 import { ArrowRight, Check, Layers } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -8,10 +9,7 @@ import { getLanguage } from '@/core/lang/languages';
 import { FREQUENCY_MILESTONES, frequencyBand, getTheme, JOURNEY_STAGES } from '@/core/lang/starter';
 import { addStarterDeck, starterItems, starterName, useStarterDecks, starterKey } from '@/data/starter';
 import type { StarterItem, StarterSpec } from '@/data/starter';
-import { useLayout } from '@/design/hooks/useLayout';
 import { Button, Switch } from '@/design/primitives';
-import { MINI_PLAYER_SPACE } from '@/features/sonus/MiniPlayer';
-import { usePlayer } from '@/services/audio/engine';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { toast } from '@/state/ui';
@@ -57,10 +55,8 @@ function Booklet({ spec }: { spec: StarterSpec }) {
   const [skipKnown, setSkipKnown] = useState(true);
   const [shown, setShown] = useState(PAGE);
   const [busy, setBusy] = useState(false);
-  const { layout } = useLayout();
-  const playing = usePlayer((st) => st.media !== null);
   // The bar floats above the tab bar (and the mini player) on phones.
-  const barBottom = layout === 'wide' ? (playing ? 96 : 24) : `calc(max(10px, env(safe-area-inset-bottom) - 10px) + ${84 + (playing ? MINI_PLAYER_SPACE : 0)}px)`;
+  const barBottom = useDockBottom();
 
   useEffect(() => {
     let alive = true;

@@ -207,7 +207,7 @@ export interface TranslationCacheRow {
 export interface LlmCacheRow {
   /** hash(kind + model + prompt) */
   id: string;
-  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine';
+  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine' | 'journalCheck' | 'journalPrompt';
   model: string;
   response: unknown;
   createdAt: number;
@@ -418,6 +418,129 @@ export interface ActivitySession {
   correct?: number;
 }
 
+// ── Diarium ─────────────────────────────────────────────────────────────────
+
+export type CorrectionCategory =
+  | 'grammar'
+  | 'spelling'
+  | 'word choice'
+  | 'word order'
+  | 'agreement'
+  | 'tense/aspect'
+  | 'case'
+  | 'punctuation'
+  | 'style';
+
+export interface JournalCorrection {
+  original: string;
+  suggestion: string;
+  category: CorrectionCategory;
+  explanation: string;
+  severity: 'minor' | 'major';
+}
+
+/** The AI's reading of an entry (services/llm/journal.ts). */
+export interface JournalReview {
+  /** The text it reviewed (an entry may have changed since). */
+  text: string;
+  corrected: string;
+  natural: string;
+  corrections: JournalCorrection[];
+  scores: { grammar: number; vocabulary: number; coherence: number; overall: number };
+  cefr: string;
+  strengths: string[];
+  tip: string;
+  model: string;
+  reviewedAt: number;
+}
+
+export interface JournalEntry extends Synced {
+  id: string;
+  lang: Lang;
+  /** The day it belongs to (YYYY-MM-DD), local time. */
+  date: string;
+  title?: string;
+  prompt?: string;
+  /** The prompt in English. */
+  promptEn?: string;
+  text: string;
+  words: number;
+  /** Earlier checked texts, newest last. */
+  versions?: Array<{ text: string; at: number }>;
+  review?: JournalReview;
+}
+
+// ── Tabula & Iter ───────────────────────────────────────────────────────────
+
+export type CefrLevel = 'A0' | 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+export type CapabilityStatus = 'native' | 'natural' | 'background' | 'learning' | 'not-started';
+
+/** One row of the polyglot table, for any language (also ones Lingua doesn't teach). */
+export interface Capability extends Synced {
+  /** A Lingua language code, or `x-<slug>` for other languages. */
+  id: string;
+  name: string;
+  level: CefrLevel;
+  status: CapabilityStatus;
+  methods: string[];
+  /** YYYY-MM-DD */
+  started?: string;
+  skills?: Partial<Record<'reading' | 'listening' | 'speaking' | 'writing', CefrLevel>>;
+  /** Hours done outside Lingua before it was used (added to logged hours). */
+  extraHours?: number;
+  certificates?: Array<{ name: string; level?: string; date?: string }>;
+  notes?: string;
+  order: number;
+}
+
+export type JourneyKind =
+  | 'started'
+  | 'words'
+  | 'book'
+  | 'hours'
+  | 'streak'
+  | 'journal'
+  | 'grade'
+  | 'level'
+  | 'deck'
+  | 'manual';
+
+/** A moment on the journey: automatic milestones and the learner's own entries. */
+export interface JourneyEvent extends Synced {
+  /** Automatic milestones have deterministic ids (`${lang}:words:1000`) so they're recorded once. */
+  id: string;
+  lang: Lang;
+  kind: JourneyKind;
+  at: number;
+  title: string;
+  detail?: string;
+  /** Manual entries: class, tutoring, exam, trip, conversation, note. */
+  category?: string;
+  photoBlobId?: string;
+  value?: number;
+}
+
+/** Study done outside Lingua, so hours reflect everything. */
+export interface StudyLog extends Synced {
+  id: string;
+  lang: Lang;
+  at: number;
+  minutes: number;
+  activity: 'class' | 'tutor' | 'app' | 'conversation' | 'podcast' | 'reading' | 'other';
+  note?: string;
+}
+
+export interface Goal extends Synced {
+  id: string;
+  lang: Lang;
+  kind: 'level' | 'hours-week' | 'words-week' | 'books-year';
+  /** Target level for 'level', otherwise a number. */
+  target: CefrLevel | number;
+  /** YYYY-MM-DD, for level goals. */
+  by?: string;
+  year?: number;
+}
+
 export interface DailyStat {
   /** `${lang}:${YYYY-MM-DD}` */
   id: string;
@@ -427,6 +550,9 @@ export interface DailyStat {
   wordsRead: number;
   listenMs: number;
   watchMs: number;
+  /** Diarium (added later, so older rows may lack them). */
+  writeMs?: number;
+  wordsWritten?: number;
   reviews: number;
   againCount: number;
   newCards: number;

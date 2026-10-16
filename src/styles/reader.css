@@ -260,3 +260,21 @@
     background-color: var(--accent-soft);
   }
 }
+
+/* Diarium corrections: what goes struck through in terracotta, what comes in sage. */
+.diff-change del {
+  color: var(--accent-text);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in oklab, var(--accent) 70%, transparent);
+  text-decoration-thickness: 1.5px;
+}
+.diff-change ins {
+  color: var(--sage-text);
+  text-decoration: none;
+  background: var(--sage-soft);
+  border-radius: 4px;
+  padding-inline: 0.12em;
+}
+.diff-change del + ins {
+  margin-left: 0.2em;
+}

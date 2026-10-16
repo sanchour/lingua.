@@ -12,6 +12,7 @@ import { LogoMark } from '../Wordmark';
 
 const BACK_TO: Record<string, string> = {
   'sonus/podcast': '/sonus?tab=podcasts',
+  'codex/diarium': '/codex?tab=diarium',
   'thesaurus/ready': '/thesaurus?tab=discover',
 };
 

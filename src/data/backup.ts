@@ -43,6 +43,11 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   dictParadigms: { policy: 'skip', key: '' },
   starterLists: { policy: 'skip', key: 'lang' },
   feeds: { policy: 'lww', key: 'id' },
+  journalEntries: { policy: 'lww', key: 'id' },
+  capabilities: { policy: 'lww', key: 'id' },
+  journeyEvents: { policy: 'lww', key: 'id' },
+  studyLogs: { policy: 'lww', key: 'id' },
+  goals: { policy: 'lww', key: 'id' },
 };
 
 const BACKED_UP = (Object.keys(BACKUP_POLICIES) as TableName[]).filter((t) => BACKUP_POLICIES[t].policy !== 'skip');
