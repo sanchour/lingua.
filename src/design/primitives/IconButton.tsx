@@ -21,7 +21,7 @@ const ICONS = { sm: 16, md: 19, lg: 20 } as const;
 const VARIANTS = {
   ghost: 'text-ink-soft hover:text-ink hover:bg-surface',
   soft: 'bg-surface text-ink hover:bg-sunken',
-  solid: 'bg-ink text-bg hover:bg-ink/90',
+  solid: 'bg-inverse text-on-inverse hover:bg-inverse/90',
 } as const;
 
 export function IconButton({

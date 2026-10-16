@@ -62,6 +62,46 @@ async function lingva(host: string, lang: string, text: string): Promise<string 
   return data.translation?.trim() || null;
 }
 
+/** How long the first provider has before the next one is asked as well (a hedged request). */
+const HEDGE_MS = 900;
+
+/**
+ * Asks the providers in order, but never waits on a slow one: if an answer hasn't come within
+ * HEDGE_MS (or a provider fails), the next starts too, and the first useful answer wins.
+ */
+export function firstAnswer(asks: Array<() => Promise<string | null>>): Promise<string | null> {
+  return new Promise((resolve) => {
+    let next = 0;
+    let pending = 0;
+    let done = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const finish = (value: string | null) => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      resolve(value);
+    };
+    const start = () => {
+      clearTimeout(timer);
+      if (done || next >= asks.length) {
+        if (!pending) finish(null);
+        return;
+      }
+      const ask = asks[next++];
+      pending++;
+      timer = setTimeout(start, HEDGE_MS);
+      ask()
+        .catch(() => null) // offline or provider down
+        .then((value) => {
+          pending--;
+          if (value) finish(value);
+          else start();
+        });
+    };
+    start();
+  });
+}
+
 /** Online fallback for a word the dictionary lacks; cached forever. `null` when nothing is found. */
 export function fetchOnlineGloss(lang: string, norm: string, surface: string): Promise<string | null> {
   if (lang === GLOSS_LANG) return Promise.resolve(null);
@@ -71,16 +111,10 @@ export function fetchOnlineGloss(lang: string, norm: string, surface: string): P
 
   const job = (async () => {
     const { translation } = await getSettings();
-    let result: string | null = null;
-    for (const provider of translation.chain) {
-      try {
-        if (provider === 'mymemory') result = await myMemory(lang, surface);
-        if (provider === 'lingva') result = await lingva(translation.lingvaHost, lang, surface);
-      } catch {
-        result = null; // offline or provider down: try the next one
-      }
-      if (result) break;
-    }
+    const asks = translation.chain.flatMap((provider) =>
+      provider === 'mymemory' ? [() => myMemory(lang, surface)] : provider === 'lingva' ? [() => lingva(translation.lingvaHost, lang, surface)] : [],
+    );
+    const result = await firstAnswer(asks);
     if (result) await db.translationCache.put({ id: key, text: norm, result, provider: 'online', createdAt: Date.now() });
     return result;
   })().finally(() => inflight.delete(key));

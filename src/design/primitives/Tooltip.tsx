@@ -77,7 +77,7 @@ export function Tooltip({ label, shortcut, placement = 'top', disabled = false, 
               style={floatingStyles}
               id={id}
               role="tooltip"
-              className="pointer-events-none z-[90] flex items-center gap-2 rounded-lg bg-ink px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap text-bg shadow-elev-2"
+              className="pointer-events-none z-[90] flex items-center gap-2 rounded-lg bg-inverse px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap text-on-inverse shadow-elev-2"
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.08 } }}

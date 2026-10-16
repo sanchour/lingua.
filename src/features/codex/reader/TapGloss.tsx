@@ -58,7 +58,7 @@ export function TapGloss({ el, engine, onClose, onOpen }: TapGlossProps) {
       ref={ref}
       role="dialog"
       aria-label={`Translation of ${el.textContent}`}
-      className="no-callout fixed top-0 left-0 z-[70] w-max max-w-[min(320px,calc(100vw-20px))] rounded-2xl border border-line bg-raised p-2 shadow-elev-3"
+      className="no-callout fixed top-0 left-0 z-[70] w-max max-w-[min(320px,calc(100vw-20px))] rounded-2xl bg-inverse p-2 text-on-inverse shadow-elev-3"
       style={{ x: pos?.x ?? -9999, y: pos?.y ?? -9999 }}
       initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: pos ? 1 : 0, scale: 1 }}
@@ -67,11 +67,11 @@ export function TapGloss({ el, engine, onClose, onOpen }: TapGlossProps) {
     >
       <button type="button" onClick={() => onOpen(el)} className="flex w-full items-center gap-2 rounded-xl px-2.5 pt-1.5 pb-2 text-left">
         <span className="min-w-0 flex-1">
-          <span className={cx('block text-[16px] leading-snug font-semibold', gloss === null && 'animate-pulse text-ink-faint')}>
+          <span className={cx('block text-[16px] leading-snug font-semibold', gloss === null && 'animate-pulse opacity-60')}>
             {gloss === null ? 'Translating…' : gloss || 'No translation found'}
           </span>
         </span>
-        <ChevronRight size={18} className="shrink-0 text-ink-faint" aria-label="More" />
+        <ChevronRight size={18} className="shrink-0 opacity-55" aria-label="More" />
       </button>
       <div className="flex gap-1.5">
         <Pill active={state === 1} onClick={() => choose(1)}>
@@ -85,7 +85,7 @@ export function TapGloss({ el, engine, onClose, onOpen }: TapGlossProps) {
             type="button"
             aria-label="Reset to unseen"
             onClick={() => choose(0)}
-            className="grid size-10 shrink-0 place-items-center rounded-xl bg-sunken text-ink-soft active:scale-95"
+            className="grid size-10 shrink-0 place-items-center rounded-xl bg-on-inverse/10 text-on-inverse/75 active:scale-95"
           >
             <RotateCcw size={16} aria-hidden />
           </button>
@@ -104,7 +104,7 @@ function Pill({ active, onClick, children, tone = 'sage' }: { active: boolean; o
       aria-pressed={active}
       className={cx(
         'h-10 flex-1 rounded-xl px-4 text-[14px] font-bold transition-[transform,background-color,color] duration-150 active:scale-95',
-        active ? (tone === 'accent' ? 'bg-accent-fill text-on-accent' : 'bg-sage-text text-bg') : 'bg-sunken text-ink',
+        active ? (tone === 'accent' ? 'bg-accent-fill text-on-accent' : 'bg-sage-text text-bg') : 'bg-on-inverse/10 text-on-inverse',
       )}
     >
       {children}

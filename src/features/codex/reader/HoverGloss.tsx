@@ -12,6 +12,8 @@ interface HoverGlossProps {
 
 /** How long the pointer may sit between words (spaces, line gaps) before the tooltip goes. */
 const GRACE_MS = 120;
+/** A word missing from the offline dictionary is looked up online once the mouse rests this long. */
+const FETCH_DELAY_MS = 70;
 
 /**
  * Desktop hover translation. One always-mounted element, positioned with a transform and filled
@@ -78,7 +80,7 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
           label.textContent = found?.text ?? 'No translation found';
           tip.dataset.pending = '0';
           place(el);
-        }, 140);
+        }, FETCH_DELAY_MS);
       }
     };
 

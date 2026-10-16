@@ -131,3 +131,30 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Escape in a popover is "handled"** (preventDefault) so page shortcuts never act on the same key.
 - **Hover translation (reader) is pointer-driven** and the tooltip never catches the mouse; word
   details open with right-click or D (clicking the tooltip would block the words under it).
+
+## Polish before Phase 4 — 2026-10-16
+
+- **No pure white or black chrome.** New `--inverse` / `--on-inverse` tokens: espresso with cream
+  text on Paper, old-paper cream with espresso text on Nocturne. Used by primary buttons, toasts,
+  tooltips and the reader's translation (hover tooltip and tap bubble). Nocturne ink leans cream.
+- **Show answer** is a soft accent tint (terracotta by day, amber by night), not a solid slab.
+- **Reading papers:** seven day papers (Cream, Ivory, Parchment, Sepia, Sage, Blush, Stone) and seven
+  night papers (Charcoal, Espresso, Sepia night, Ink, Forest, Plum, Midnight), chosen separately.
+  The colours live once in `design/papers.ts`; a generated stylesheet keys them to `data-theme`, so
+  the paper flips with the theme inside the same view transition. The status bar follows the paper.
+- **Online lookups are hedged:** the next provider starts if one hasn't answered in 0.9 s; first
+  useful answer wins (tested). Hover waits 70 ms before going online. Measured: a dictionary hover
+  updates the tooltip in ≈0.5 ms (max 2 ms); online fallbacks answered in 0.4–0.9 s, then cached.
+- **Codex library:** shelves grouped as Reading · Up next · Wishlist (Goodreads, no EPUB yet) ·
+  Finished, with a filter, search (`/`), sort (recent, added, title, author, progress, easiest
+  first) and a covers/list switch. Sort and view are device-only.
+- **Language switcher** in the sidebar chip (and the phone top bar): every studied language, a
+  cross-fade of the whole app (View Transition) that waits until the new language has rendered;
+  pages that belong to one language (a book, a deck) return to their section first.
+- **Motion preference** (Ordo › Preferences): System follows the device; Reduced makes CSS
+  transitions instant and springs skip movement (MotionConfig "always"); Full adds liquid page
+  enters, animated reordering of shelves, smooth in-page scrolling and a longer theme cross-fade.
+  Browsers already animate at the screen's refresh rate (120 Hz where available). Device-only.
+- **Thesaurus overview:** a Today panel (progress ring for the day, review/new split, week ahead),
+  then two tabs: My decks (search, sort by most to do · recently studied · name · size, applied at
+  every folder level) and Discover (ready-made decks). Search also finds ready-made themes.

@@ -5,6 +5,7 @@ import { READER_FONTS, readerFontStack } from '@/design/fonts';
 import { Segmented, Slider } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { useDraft } from '@/features/ordo/useDraft';
+import { PaperPicker } from './PaperPicker';
 
 interface TypographyPanelProps {
   reader: Settings['reader'];
@@ -85,6 +86,11 @@ export function TypographyPanel({ reader, theme, lang }: TypographyPanelProps) {
             { value: 'nocturne', label: '', icon: Moon, ariaLabel: 'Nocturne' },
           ]}
         />
+      </div>
+
+      <div>
+        <p className="mb-2 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase">{theme === 'paper' ? 'Day paper' : 'Night paper'}</p>
+        <PaperPicker reader={reader} theme={theme} />
       </div>
 
       <Segmented

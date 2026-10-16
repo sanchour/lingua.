@@ -5,6 +5,7 @@ import { useUI } from '@/state/ui';
 const GENERAL: Array<[string[], string]> = [
   [['['], 'Collapse or expand the sidebar'],
   [['?'], 'Show keyboard shortcuts'],
+  [['/'], 'Search books or decks'],
   [['Esc'], 'Close a drawer or dialog'],
 ];
 

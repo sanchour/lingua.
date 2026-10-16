@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ChevronRight, Ellipsis, Folder as FolderIcon, FolderInput, FolderPlus, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { DeckCounts } from '@/data/decks';
 import { deleteDeck, deleteFolder, updateDeck, updateFolder } from '@/data/decks';
+import type { DeckSort } from '@/data/settings';
 import type { Deck, Folder } from '@/data/types';
 import { MenuItem, Popover } from '@/design/primitives';
 import { spring } from '@/design/motion';
@@ -23,19 +24,43 @@ interface TreeProps {
   folders: Folder[];
   counts: Map<string, DeckCounts> | undefined;
   actions: TreeActions;
+  order: Order;
+}
+
+/** How decks and folders are ordered at every level of the tree. */
+interface Order {
+  decks: (a: Deck, b: Deck) => number;
+  folders: (a: Folder, b: Folder) => number;
 }
 
 const sum = (list: Array<DeckCounts | undefined>) =>
   list.reduce<DeckCounts>((a, c) => (c ? { total: a.total + c.total, new: a.new + c.new, learning: a.learning + c.learning, due: a.due + c.due } : a), { total: 0, new: 0, learning: 0, due: 0 });
 
-/** Folders (collapsible, nested) and decks, the way the learner arranged them. */
-export function DeckTree({ decks, folders, counts, actions }: TreeProps) {
-  const roots = folders.filter((f) => !f.parentId || !folders.some((p) => p.id === f.parentId));
-  const loose = decks.filter((d) => !d.folderId || !folders.some((f) => f.id === d.folderId));
+const work = (c: DeckCounts | undefined) => (c ? c.due + c.learning + c.new : 0);
+
+/** Builds the ordering for a sort choice; folders follow the decks inside them. */
+export function deckOrder(sort: DeckSort, decks: Deck[], folders: Folder[], counts: Map<string, DeckCounts> | undefined, lastStudied: Map<string, number> | undefined): Order {
+  const collator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true });
+  const byName = (a: { name: string }, b: { name: string }) => collator.compare(a.name, b.name);
+  const metric = (d: Deck): number =>
+    sort === 'due' ? work(counts?.get(d.id)) : sort === 'size' ? (counts?.get(d.id)?.total ?? 0) : sort === 'recent' ? (lastStudied?.get(d.id) ?? 0) : 0;
+  const inside = (f: Folder): Deck[] => [...decks.filter((d) => d.folderId === f.id), ...folders.filter((c) => c.parentId === f.id).flatMap(inside)];
+  const folderMetric = (f: Folder): number => {
+    const values = inside(f).map(metric);
+    return sort === 'recent' ? Math.max(0, ...values) : values.reduce((a, b) => a + b, 0);
+  };
+  if (sort === 'name') return { decks: byName, folders: byName };
+  return { decks: (a, b) => metric(b) - metric(a) || byName(a, b), folders: (a, b) => folderMetric(b) - folderMetric(a) || byName(a, b) };
+}
+
+/** Folders (collapsible, nested) and decks, in the chosen order. */
+export function DeckTree({ decks, folders, counts, actions, order }: TreeProps) {
+  const roots = folders.filter((f) => !f.parentId || !folders.some((p) => p.id === f.parentId)).sort(order.folders);
+  const loose = decks.filter((d) => !d.folderId || !folders.some((f) => f.id === d.folderId)).sort(order.decks);
   return (
     <div className="divide-y divide-line/60 rounded-3xl border border-line/70 bg-surface p-1.5">
       {roots.map((f) => (
-        <FolderGroup key={f.id} folder={f} depth={0} {...{ decks, folders, counts, actions }} />
+        <FolderGroup key={f.id} folder={f} depth={0} {...{ decks, folders, counts, actions, order }} />
       ))}
       {loose.map((d) => (
         <DeckRow key={d.id} deck={d} counts={counts?.get(d.id)} depth={0} folders={folders} actions={actions} />
@@ -44,10 +69,10 @@ export function DeckTree({ decks, folders, counts, actions }: TreeProps) {
   );
 }
 
-function FolderGroup({ folder, depth, decks, folders, counts, actions }: TreeProps & { folder: Folder; depth: number }) {
+function FolderGroup({ folder, depth, decks, folders, counts, actions, order }: TreeProps & { folder: Folder; depth: number }) {
   const [open, setOpen] = useState(true);
-  const children = folders.filter((f) => f.parentId === folder.id);
-  const own = decks.filter((d) => d.folderId === folder.id);
+  const children = folders.filter((f) => f.parentId === folder.id).sort(order.folders);
+  const own = decks.filter((d) => d.folderId === folder.id).sort(order.decks);
   const descendants = (f: Folder): Deck[] => [...decks.filter((d) => d.folderId === f.id), ...folders.filter((c) => c.parentId === f.id).flatMap(descendants)];
   const total = sum(descendants(folder).map((d) => counts?.get(d.id)));
   const empty = !children.length && !own.length;
@@ -120,7 +145,7 @@ function FolderGroup({ folder, depth, decks, folders, counts, actions }: TreePro
         {open && !empty && (
           <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, transition: { duration: 0.1 } }} transition={spring.snappy}>
             {children.map((f) => (
-              <FolderGroup key={f.id} folder={f} depth={depth + 1} {...{ decks, folders, counts, actions }} />
+              <FolderGroup key={f.id} folder={f} depth={depth + 1} {...{ decks, folders, counts, actions, order }} />
             ))}
             {own.map((d) => (
               <DeckRow key={d.id} deck={d} counts={counts?.get(d.id)} depth={depth + 1} folders={folders} actions={actions} />
@@ -132,14 +157,37 @@ function FolderGroup({ folder, depth, decks, folders, counts, actions }: TreePro
   );
 }
 
-function DeckRow({ deck, counts, depth, folders, actions }: { deck: Deck; counts?: DeckCounts; depth: number; folders: Folder[]; actions: TreeActions }) {
+/** Search results: matching decks in a flat list, each with the folder it lives in. */
+export function DeckResults({ decks, folders, counts, actions }: Omit<TreeProps, 'order'>) {
+  const pathOf = (d: Deck) => {
+    const names: string[] = [];
+    let f = folders.find((x) => x.id === d.folderId);
+    while (f) {
+      names.unshift(f.name);
+      const parent = f.parentId;
+      f = parent ? folders.find((x) => x.id === parent) : undefined;
+    }
+    return names.join(' / ');
+  };
+  return (
+    <div className="divide-y divide-line/60 rounded-3xl border border-line/70 bg-surface p-1.5">
+      {decks.map((d) => (
+        <DeckRow key={d.id} deck={d} counts={counts?.get(d.id)} depth={0} folders={folders} actions={actions} path={pathOf(d)} />
+      ))}
+    </div>
+  );
+}
+
+function DeckRow({ deck, counts, depth, folders, actions, path }: { deck: Deck; counts?: DeckCounts; depth: number; folders: Folder[]; actions: TreeActions; path?: string }) {
   return (
     <div className="group flex items-center gap-1 rounded-2xl pr-1.5 transition-colors hover:bg-raised/60" style={{ paddingLeft: depth * 20 + (depth ? 26 : 0) }}>
       <Link to={`/thesaurus/deck/${deck.id}`} className="no-callout flex min-w-0 flex-1 items-center gap-3 rounded-2xl px-2.5 py-2.5">
         <DeckGlyph deck={deck} />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-[15px] font-semibold">{deck.name}</span>
-          <span className="block text-[12.5px] text-ink-faint">{counts ? `${counts.total.toLocaleString()} ${counts.total === 1 ? 'card' : 'cards'}` : ' '}</span>
+          <span className="block truncate text-[12.5px] text-ink-faint">
+            {path && <>{path} · </>}
+            {counts ? `${counts.total.toLocaleString()} ${counts.total === 1 ? 'card' : 'cards'}` :' '}</span>
         </span>
         {counts && <Counts counts={counts} />}
       </Link>

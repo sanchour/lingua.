@@ -6,11 +6,19 @@ import type { SettingRow } from './types';
 export const READER_FONT_IDS = ['literata', 'lora', 'newsreader', 'merriweather', 'atkinson'] as const;
 export type ReaderFontId = (typeof READER_FONT_IDS)[number];
 export type ThemePref = 'paper' | 'nocturne' | 'system';
+export const PAPER_LIGHT_IDS = ['cream', 'ivory', 'parchment', 'sepia', 'sage', 'blush', 'stone'] as const;
+export type PaperLightId = (typeof PAPER_LIGHT_IDS)[number];
+export const PAPER_DARK_IDS = ['charcoal', 'espresso', 'dusk', 'ink', 'forest', 'plum', 'midnight'] as const;
+export type PaperDarkId = (typeof PAPER_DARK_IDS)[number];
 export type Theme = 'paper' | 'nocturne';
 export const CARD_STYLE_IDS = ['plain', 'index', 'bookplate', 'linen'] as const;
 export type CardStyleId = (typeof CARD_STYLE_IDS)[number];
 export const CARD_TINT_IDS = ['paper', 'cream', 'sage', 'rose', 'sky', 'lavender', 'butter'] as const;
 export type CardTintId = (typeof CARD_TINT_IDS)[number];
+export type LibrarySort = 'recent' | 'added' | 'title' | 'author' | 'progress' | 'known';
+export type DeckSort = 'due' | 'name' | 'recent' | 'size';
+/** System follows the device; Reduced keeps movement minimal; Full adds richer, longer motion. */
+export type MotionPref = 'system' | 'reduced' | 'full';
 
 export interface Settings {
   theme: ThemePref;
@@ -23,6 +31,9 @@ export interface Settings {
     justify: boolean;
     highlightUnseen: boolean;
     autoKnownOnPageTurn: boolean;
+    /** Page colour while reading, for Paper and for Nocturne. */
+    paperLight: PaperLightId;
+    paperDark: PaperDarkId;
   };
   /** How flashcards look (Thesaurus). */
   cards: { font: ReaderFontId; style: CardStyleId; tint: CardTintId; size: 'sm' | 'md' | 'lg' };
@@ -41,7 +52,14 @@ export interface Settings {
   /** Device-only: spoken words use this device's voices (Web Speech), chosen per language. */
   speech: { rate: number; voices: Record<string, string> };
   /** Device-only. */
-  ui: { sidebarCollapsed: boolean; perfHud: boolean };
+  ui: {
+    motion: MotionPref;
+    sidebarCollapsed: boolean;
+    perfHud: boolean;
+    librarySort: LibrarySort;
+    libraryView: 'grid' | 'list';
+    deckSort: DeckSort;
+  };
   /** Device-only. */
   meta: { deviceId: string; onboardedAt: number | null; lastBackupAt: number | null };
 }
@@ -59,6 +77,8 @@ export const DEFAULT_SETTINGS: Settings = {
     justify: false,
     highlightUnseen: true,
     autoKnownOnPageTurn: false,
+    paperLight: 'cream',
+    paperDark: 'charcoal',
   },
   cards: { font: 'literata', style: 'plain', tint: 'paper', size: 'md' },
   study: { newPerDay: 15, maxReviews: 200, desiredRetention: 0.9, ludusAffectsSchedule: true, autoPromoteMature: true },
@@ -67,7 +87,7 @@ export const DEFAULT_SETTINGS: Settings = {
   apiKeys: { groq: '', gemini: '' },
   audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 1, repeatGapMs: 1200 },
   speech: { rate: 0.95, voices: {} },
-  ui: { sidebarCollapsed: false, perfHud: false },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due' },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null },
 };
 

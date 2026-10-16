@@ -170,3 +170,31 @@ export async function dueSummary(lang: string, now = Date.now(), database: Lingu
 export function useDueSummary(lang: string): DueSummary | undefined {
   return useLiveQuery(() => dueSummary(lang), [lang]);
 }
+
+export interface StudyOutlook {
+  /** Reviews falling due on each of the next seven days (index 0 = tomorrow). */
+  forecast: number[];
+  /** When each deck was last studied (decks never studied are missing). */
+  lastStudied: Map<string, number>;
+}
+
+/** The week ahead across these decks, and when each was last opened for study. Index ranges only. */
+export function useStudyOutlook(decks: Deck[] | undefined): StudyOutlook | undefined {
+  const key = decks?.map((d) => d.id).join(',') ?? '';
+  return useLiveQuery(async () => {
+    if (!decks) return undefined;
+    const end = dayEnd(Date.now());
+    const forecast = Array.from({ length: 7 }, () => 0);
+    const lastStudied = new Map<string, number>();
+    await Promise.all(
+      decks.map(async (d) => {
+        const upcoming = await db.cards.where('[deckId+due]').between([d.id, end], [d.id, end + 7 * DAY]).toArray();
+        for (const c of upcoming) if (!c.suspended && c.state !== 0) forecast[Math.min(6, Math.floor((c.due - end) / DAY))]++;
+        const last = await db.reviewLogs.where('[deckId+reviewedAt]').between([d.id, Dexie.minKey], [d.id, Dexie.maxKey]).last();
+        if (last) lastStudied.set(d.id, last.reviewedAt);
+      }),
+    );
+    return { forecast, lastStudied };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+}

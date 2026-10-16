@@ -57,7 +57,7 @@ export function Segmented<T extends string>({ value, onChange, options, label, b
             onClick={() => onChange(o.value)}
             onKeyDown={(e) => onKeyDown(e, i)}
             className={cx(
-              'relative h-9 flex-1 rounded-xl px-3.5 text-sm font-semibold transition-colors duration-150 pointer-coarse:h-10',
+              'relative h-9 flex-1 rounded-xl px-3.5 text-sm font-semibold whitespace-nowrap transition-colors duration-150 pointer-coarse:h-10',
               active ? 'text-ink' : 'text-ink-soft hover:text-ink',
             )}
           >

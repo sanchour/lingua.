@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useMemo } from 'react';
 import { MotionConfig } from 'motion/react';
 import { AppContext } from '@/app/context';
 import { useThemeController } from '@/app/theme';
@@ -22,6 +22,12 @@ export function Root() {
   const settings = useSettings();
   const language = useActiveLanguage();
   useThemeController(settings?.theme);
+
+  // Motion preference: mirrored on <html data-motion> for CSS and imperative animations.
+  const motionPref = settings?.ui.motion ?? 'system';
+  useLayoutEffect(() => {
+    document.documentElement.dataset.motion = motionPref;
+  }, [motionPref]);
 
   useEffect(() => {
     void ensureDeviceMeta();
@@ -65,7 +71,7 @@ export function Root() {
   if (!settings || language === undefined) return null;
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion={motionPref === 'reduced' ? 'always' : motionPref === 'full' ? 'never' : 'user'}>
       {context && onboarded ? (
         <AppContext.Provider value={context}>
           <AppShell />

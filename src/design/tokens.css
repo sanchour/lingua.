@@ -11,7 +11,7 @@
 
   --bg: #faf6f0; /* Warm Cream */
   --surface: #efe7d9; /* Soft Parchment, a shade deeper for contrast */
-  --raised: #fffdf8;
+  --raised: #fffbf4;
   --sunken: #e8dfcf;
 
   --ink: #262220; /* Deep Espresso */
@@ -29,7 +29,11 @@
   --accent-text: #a5533b;
   --accent-fill: #a5533b;
   --accent-soft: rgb(200 109 81 / 0.13);
-  --on-accent: #ffffff;
+  --on-accent: #fffaf2;
+
+  /* Inverse chrome (tooltips, toasts, primary buttons): a warm espresso with cream text, never black. */
+  --inverse: #3b302a;
+  --on-inverse: #f8efe0;
 
   --learning-bg: rgb(200 109 81 / 0.14);
   --learning-line: #c86d51;
@@ -50,8 +54,8 @@
   --raised: #35302c;
   --sunken: #191715;
 
-  --ink: #e8e1d3; /* Soft Ivory */
-  --ink-soft: #b9b0a2;
+  --ink: #ebe0cc; /* Soft Ivory, leaning to cream */
+  --ink-soft: #bdb19f;
   --ink-faint: #918779;
 
   --line: #3b3532;
@@ -66,6 +70,10 @@
   --accent-fill: #d49b54;
   --accent-soft: rgb(212 155 84 / 0.16);
   --on-accent: #1f1c1a;
+
+  /* Inverse chrome: old-paper cream with espresso text, so nothing glows pure white at night. */
+  --inverse: #e8d8bb;
+  --on-inverse: #2b231e;
 
   --learning-bg: rgb(212 155 84 / 0.17);
   --learning-line: #d49b54;

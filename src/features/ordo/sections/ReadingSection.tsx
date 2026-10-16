@@ -1,10 +1,15 @@
 import { BookOpenText, Check } from 'lucide-react';
 import type { CSSProperties } from 'react';
+import { useApp } from '@/app/context';
+import { resolveTheme } from '@/app/theme';
 import { getLanguage, LANGUAGES } from '@/core/lang/languages';
 import type { Script } from '@/core/lang/languages';
 import { patchSetting } from '@/data/settings';
 import type { Settings } from '@/data/settings';
 import { fallbackFamily, getReaderFont, READER_FONTS, readerFontStack } from '@/design/fonts';
+import { useMediaQuery } from '@/design/hooks/useMediaQuery';
+import { darkPaper, lightPaper, paperStyle } from '@/design/papers';
+import { PaperPicker } from '@/features/codex/reader/PaperPicker';
 import { Badge, Segmented, Slider, ToggleRow } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { SettingsSection } from '../SettingsSection';
@@ -19,13 +24,16 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
   const font = getReaderFont(reader.font);
   const target = getLanguage(lang) ?? LANGUAGES[0];
   const fallback = fallbackFamily(font, target.script);
+  const systemDark = useMediaQuery('(prefers-color-scheme: dark)');
+  const theme = resolveTheme(useApp().settings.theme, systemDark);
+  const paper = theme === 'paper' ? lightPaper(reader.paperLight) : darkPaper(reader.paperDark);
 
   return (
     <SettingsSection id="reading" icon={BookOpenText} title="Reading" description="How text looks in Codex. The preview uses your current language.">
       <div
         lang={target.code}
-        className="rounded-2xl border border-line bg-bg px-5 py-4"
-        style={{ fontFamily: readerFontStack(font), fontSize: size, lineHeight } as CSSProperties}
+        className="rounded-2xl border border-line bg-bg px-5 py-4 text-ink transition-colors duration-200"
+        style={{ ...paperStyle(paper), fontFamily: readerFontStack(font), fontSize: size, lineHeight } as CSSProperties}
       >
         {target.sample}
       </div>
@@ -75,7 +83,18 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
         <Slider label="Line spacing" value={lineHeight} min={1.3} max={2.1} step={0.05} onChange={setLineHeight} format={(v) => v.toFixed(2)} />
       </div>
 
-      <div className="mt-3">
+      <div className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+        <div>
+          <p className="mb-2 text-[15px] font-semibold">Day paper</p>
+          <PaperPicker reader={reader} theme="paper" labelled />
+        </div>
+        <div>
+          <p className="mb-2 text-[15px] font-semibold">Night paper</p>
+          <PaperPicker reader={reader} theme="nocturne" labelled />
+        </div>
+      </div>
+
+      <div className="mt-5">
         <p className="mb-2 text-[15px] font-semibold">Page style</p>
         <Segmented
           label="Page style"

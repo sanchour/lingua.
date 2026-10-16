@@ -16,7 +16,7 @@ export interface ButtonProps extends ComponentPropsWithRef<'button'> {
 }
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-ink text-bg shadow-elev-1 hover:bg-ink/90',
+  primary: 'bg-inverse text-on-inverse shadow-elev-1 hover:bg-inverse/90',
   secondary: 'bg-raised text-ink border border-line hover:border-line-strong hover:bg-surface',
   ghost: 'text-ink-soft hover:text-ink hover:bg-surface',
   accent: 'bg-accent-fill text-on-accent shadow-elev-1 hover:brightness-105',

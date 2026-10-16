@@ -120,8 +120,9 @@
   max-width: 300px;
   padding: 0.45rem 0.75rem;
   border-radius: 10px;
-  background: var(--ink);
-  color: var(--bg);
+  /* Cream-dark on Paper, cream-white on Nocturne. */
+  background: var(--inverse);
+  color: var(--on-inverse);
   font-size: 14px;
   font-weight: 600;
   line-height: 1.3;

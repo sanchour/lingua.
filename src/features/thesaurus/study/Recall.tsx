@@ -199,9 +199,9 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive }: Re
             <button
               type="button"
               onClick={flip}
-              className="no-callout flex h-[76px] w-full items-center justify-center gap-2 rounded-2xl bg-ink text-[16px] font-semibold text-bg shadow-elev-1 transition-transform active:scale-[0.98]"
+              className="no-callout flex h-[76px] w-full items-center justify-center gap-2 rounded-2xl border border-accent/25 bg-accent-soft text-[16px] font-semibold text-accent-text transition-[transform,background-color] duration-150 hover:bg-accent/20 active:scale-[0.98]"
             >
-              Show answer {pointer === 'fine' && <Kbd tone="inverse">Space</Kbd>}
+              Show answer {pointer === 'fine' && <Kbd tone="accent">Space</Kbd>}
             </button>
           )}
         </div>

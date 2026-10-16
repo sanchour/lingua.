@@ -16,7 +16,7 @@ import { StorageSection } from './sections/StorageSection';
 import { StudySection } from './sections/StudySection';
 
 const NAV = [
-  ['appearance', 'Appearance'],
+  ['appearance', 'Preferences'],
   ['reading', 'Reading'],
   ['study', 'Study'],
   ['cards', 'Flashcards'],
@@ -65,7 +65,7 @@ export default function OrdoPage() {
           </nav>
         )}
         <div className="flex min-w-0 flex-col gap-5">
-          <AppearanceSection theme={settings.theme} />
+          <AppearanceSection theme={settings.theme} motion={settings.ui.motion} />
           <ReadingSection reader={settings.reader} lang={language.id} />
           <StudySection study={settings.study} speech={settings.speech} lang={language.id} />
           <CardsSection look={settings.cards} lang={language.id} />

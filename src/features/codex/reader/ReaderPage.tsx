@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { ChevronLeft, ChevronRight, PartyPopper } from 'lucide-react';
 import { useApp } from '@/app/context';
-import { resolveTheme } from '@/app/theme';
+import { resolveTheme, syncThemeColor } from '@/app/theme';
 import { db } from '@/data/db';
 import { markOpened, refreshTextStats, saveProgress, updateText, useText } from '@/data/library';
 import type { WordState } from '@/data/types';
@@ -14,6 +14,7 @@ import { useLayout } from '@/design/hooks/useLayout';
 import { useMediaQuery } from '@/design/hooks/useMediaQuery';
 import { Button, buttonClasses } from '@/design/primitives';
 import { spring } from '@/design/motion';
+import { installPaperStyles } from '@/design/papers';
 import { cx } from '@/lib/cx';
 import { ChapterBody } from './ChapterBody';
 import { ContentsDrawer } from './ContentsDrawer';
@@ -43,6 +44,20 @@ export default function ReaderPage() {
   const reader = settings.reader;
   const paged = reader.mode === 'paged';
   const lang = text?.lang ?? 'en';
+
+  // Reading papers: the chosen page colours apply while a book is open (see design/papers.ts).
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    installPaperStyles();
+    root.dataset.paperLight = reader.paperLight;
+    root.dataset.paperDark = reader.paperDark;
+    syncThemeColor();
+    return () => {
+      delete root.dataset.paperLight;
+      delete root.dataset.paperDark;
+      syncThemeColor();
+    };
+  }, [reader.paperLight, reader.paperDark]);
 
   // ── Position ────────────────────────────────────────────────────────────
   const [chapterIndex, setChapterIndex] = useState<number | null>(null);

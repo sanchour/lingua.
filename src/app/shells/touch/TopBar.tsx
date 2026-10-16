@@ -7,6 +7,7 @@ import { IconButton } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { useUI } from '@/state/ui';
+import { LanguageChip } from '../LanguageChip';
 import { LogoMark } from '../Wordmark';
 
 export function TopBar() {
@@ -41,9 +42,12 @@ export function TopBar() {
         {parent ? (
           <IconButton icon={ChevronLeft} label="Back" showTooltip={false} onClick={() => navigate(parent)} />
         ) : (
-          <span className="px-2">
-            <LogoMark size={26} />
-          </span>
+          <>
+            <span className="px-2">
+              <LogoMark size={26} />
+            </span>
+            <LanguageChip compact placement="bottom-start" />
+          </>
         )}
 
         <motion.div

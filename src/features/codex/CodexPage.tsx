@@ -1,33 +1,85 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { motion } from 'motion/react';
-import { ArrowRight, BookOpenText, Sparkles } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { ArrowRight, BookOpenText, LayoutGrid, List, Search, SearchX, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
+import { useFullMotion } from '@/app/motion';
 import { PageHeader } from '@/app/PageHeader';
 import { SAMPLES } from '@/core/lang/samples';
 import { refreshTextStats, useAllProgress, useLibrary } from '@/data/library';
+import { patchSetting } from '@/data/settings';
+import type { LibrarySort } from '@/data/settings';
 import type { ReadingProgress, Text } from '@/data/types';
-import { Button, buttonClasses, Card, Segmented } from '@/design/primitives';
-import { spring } from '@/design/motion';
+import { useHotkeys } from '@/design/hooks/useHotkeys';
+import { useLayout } from '@/design/hooks/useLayout';
+import { Button, buttonClasses, Card, IconButton, SearchInput, searchKey, Segmented, SortMenu } from '@/design/primitives';
+import { fade, spring } from '@/design/motion';
 import { attachEpub } from '@/services/import/importers';
 import { pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
-import { BookCard } from './library/BookCard';
+import { BookCard, BookRow } from './library/BookCard';
 import { BookCover } from './library/BookCover';
 import { ImportMenu } from './library/ImportMenu';
 import { useImporter } from './library/useImporter';
 
-type Shelf = 'all' | 'reading' | 'to-read' | 'read';
-const shelfOf = (t: Text): Exclude<Shelf, 'all'> => (t.finishedAt ? 'read' : (t.shelf ?? 'reading'));
+type Group = 'reading' | 'next' | 'finished' | 'wishlist';
+type Filter = 'all' | Group;
+
+const GROUPS: Array<{ id: Group; title: string; hint?: string }> = [
+  { id: 'reading', title: 'Reading' },
+  { id: 'next', title: 'Up next' },
+  { id: 'wishlist', title: 'Wishlist', hint: 'From Goodreads. Add the EPUB to start reading.' },
+  { id: 'finished', title: 'Finished' },
+];
+
+const SORTS: Array<{ value: LibrarySort; label: string }> = [
+  { value: 'recent', label: 'Recently read' },
+  { value: 'added', label: 'Recently added' },
+  { value: 'title', label: 'Title' },
+  { value: 'author', label: 'Author' },
+  { value: 'progress', label: 'Progress' },
+  { value: 'known', label: 'Easiest first' },
+];
+
+function groupOf(t: Text, progress: Map<string, ReadingProgress> | undefined): Group {
+  if (t.finishedAt || (t.kind === 'shelfItem' && t.shelf === 'read')) return 'finished';
+  if (t.kind === 'shelfItem') return 'wishlist';
+  return (progress?.get(t.id)?.percent ?? 0) > 0 ? 'reading' : 'next';
+}
+
+function sorter(sort: LibrarySort, progress: Map<string, ReadingProgress> | undefined, lang: string): (a: Text, b: Text) => number {
+  const collator = new Intl.Collator(lang, { sensitivity: 'base', numeric: true });
+  switch (sort) {
+    case 'added':
+      return (a, b) => b.createdAt - a.createdAt;
+    case 'title':
+      return (a, b) => collator.compare(a.title, b.title);
+    case 'author':
+      return (a, b) => collator.compare(a.author ?? '￿', b.author ?? '￿') || collator.compare(a.title, b.title);
+    case 'progress':
+      return (a, b) => (progress?.get(b.id)?.percent ?? 0) - (progress?.get(a.id)?.percent ?? 0);
+    case 'known':
+      return (a, b) => (b.stats?.knownShare ?? -1) - (a.stats?.knownShare ?? -1);
+    default:
+      return (a, b) => (b.lastOpenedAt ?? b.createdAt) - (a.lastOpenedAt ?? a.createdAt);
+  }
+}
 
 export default function CodexPage() {
-  const { language } = useApp();
+  const { language, settings } = useApp();
   const lang = language.id;
   const texts = useLibrary(lang);
   const progress = useAllProgress();
   const { busy, run } = useImporter(lang);
   const navigate = useNavigate();
-  const [shelf, setShelf] = useState<Shelf>('all');
+  const { pointer } = useLayout();
+  const [filter, setFilter] = useState<Filter>('all');
+  const [searching, setSearching] = useState(false);
+  const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
+  const { librarySort: sort, libraryView: view } = settings.ui;
+
+  useHotkeys({ '/': () => (searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && Boolean(texts?.length));
 
   // Comprehension drifts as words become known; refresh quietly, one book at a time.
   useEffect(() => {
@@ -50,8 +102,28 @@ export default function CodexPage() {
     () => texts?.find((t) => t.kind !== 'shelfItem' && !t.finishedAt && progress?.has(t.id)),
     [texts, progress],
   );
-  const shelvesInUse = useMemo(() => new Set(texts?.map(shelfOf)), [texts]);
-  const visible = (texts ?? []).filter((t) => shelf === 'all' || shelfOf(t) === shelf);
+
+  const grouped = useMemo(() => {
+    const out = new Map<Group, Text[]>(GROUPS.map((g) => [g.id, []]));
+    const q = searchKey(query.trim());
+    const compare = sorter(sort, progress, lang);
+    for (const t of texts ?? []) {
+      if (q && !searchKey(`${t.title} ${t.author ?? ''}`).includes(q)) continue;
+      out.get(groupOf(t, progress))!.push(t);
+    }
+    for (const list of out.values()) list.sort(compare);
+    return out;
+  }, [texts, progress, query, sort, lang]);
+
+  // Filter chips only for shelves that have books (ignoring the search, so they don't jump).
+  const inUse = useMemo(() => new Set((texts ?? []).map((t) => groupOf(t, progress))), [texts, progress]);
+  useEffect(() => {
+    if (filter !== 'all' && !inUse.has(filter)) setFilter('all');
+  }, [filter, inUse]);
+
+  const sections = GROUPS.filter((g) => (filter === 'all' || filter === g.id) && grouped.get(g.id)!.length > 0);
+  const showHeadings = filter === 'all' && inUse.size > 1;
+  const matches = sections.reduce((n, g) => n + grouped.get(g.id)!.length, 0);
 
   const attach = async (item: Text) => {
     const file = await pickFile('.epub,application/epub+zip');
@@ -64,43 +136,117 @@ export default function CodexPage() {
     }
   };
 
+  const closeSearch = () => {
+    setQuery('');
+    setSearching(false);
+  };
+
   return (
     <>
       <PageHeader title="Codex" actions={<ImportMenu lang={lang} busy={busy !== null} onImport={(kind) => void run(kind)} />} />
 
       {texts && texts.length === 0 && <EmptyLibrary lang={lang} busy={busy === 'sample'} onSample={() => void run('sample')} />}
 
-      {current && progress && <ContinueCard text={current} progress={progress.get(current.id)!} />}
+      {current && progress && !query && <ContinueCard text={current} progress={progress.get(current.id)!} />}
 
       {texts && texts.length > 0 && (
         <>
-          {shelvesInUse.size > 1 && (
-            <div className="mt-8 mb-5">
-              <Segmented<Shelf>
-                label="Shelf"
-                value={shelf}
-                onChange={setShelf}
+          <div className="mt-8 mb-6 flex h-11 items-center gap-2">
+            <div className="relative h-full min-w-0 flex-1">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {searching ? (
+                  <motion.div key="search" className="absolute inset-0" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={fade}>
+                    <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search titles and authors" onClose={closeSearch} autoFocus />
+                  </motion.div>
+                ) : (
+                  <motion.div key="filter" className="absolute inset-0 overflow-x-auto [scrollbar-width:none]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
+                    {inUse.size > 1 ? (
+                      <Segmented<Filter>
+                        label="Shelf"
+                        value={filter}
+                        onChange={setFilter}
+                        options={[{ value: 'all', label: 'All' }, ...GROUPS.filter((g) => inUse.has(g.id)).map((g) => ({ value: g.id, label: g.title }))]}
+                      />
+                    ) : (
+                      <p className="flex h-full items-center font-serif text-xl font-semibold">
+                        Your shelf <span className="ml-2 font-sans text-sm font-bold text-ink-faint tabular-nums">{texts.length}</span>
+                      </p>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            {!searching && <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />}
+            <SortMenu value={sort} options={SORTS} onChange={(librarySort) => void patchSetting('ui', { librarySort })}>
+              <Segmented<'grid' | 'list'>
+                label="Show as"
+                block
+                value={view}
+                onChange={(libraryView) => void patchSetting('ui', { libraryView })}
                 options={[
-                  { value: 'all', label: 'All' },
-                  ...(shelvesInUse.has('reading') ? [{ value: 'reading' as const, label: 'Reading' }] : []),
-                  ...(shelvesInUse.has('to-read') ? [{ value: 'to-read' as const, label: 'To read' }] : []),
-                  ...(shelvesInUse.has('read') ? [{ value: 'read' as const, label: 'Finished' }] : []),
+                  { value: 'grid', label: 'Covers', icon: LayoutGrid },
+                  { value: 'list', label: 'List', icon: List },
                 ]}
               />
-            </div>
+            </SortMenu>
+          </div>
+
+          {query && (
+            <p className="-mt-3 mb-5 text-[13px] font-semibold text-ink-faint" aria-live="polite">
+              {matches === 0 ? '' : `${matches} ${matches === 1 ? 'book' : 'books'}`}
+            </p>
           )}
-          <div className={shelvesInUse.size > 1 ? '' : 'mt-8'}>
-            <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
-              {visible.map((t, i) => (
-                <motion.div key={t.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: Math.min(i, 10) * 0.03 }}>
-                  <BookCard text={t} progress={progress?.get(t.id)} onAttach={(item) => void attach(item)} />
-                </motion.div>
+
+          {matches === 0 && query ? (
+            <div className="flex flex-col items-center py-14 text-center text-ink-soft">
+              <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
+              <p className="font-semibold text-ink">Nothing on your shelves matches “{query.trim()}”</p>
+              <p className="mt-1 text-sm">Try part of the title or the author’s surname.</p>
+            </div>
+          ) : (
+            <div className="space-y-10">
+              {sections.map((g) => (
+                <section key={g.id} aria-label={g.title}>
+                  {showHeadings && (
+                    <header className="mb-4 flex items-baseline gap-2.5 border-b border-line pb-2">
+                      <h2 className="font-serif text-xl font-semibold">{g.title}</h2>
+                      <span className="text-sm font-bold text-ink-faint tabular-nums">{grouped.get(g.id)!.length}</span>
+                      {g.hint && <span className="ml-auto hidden text-[12.5px] text-ink-faint sm:block">{g.hint}</span>}
+                    </header>
+                  )}
+                  <Shelf texts={grouped.get(g.id)!} progress={progress} view={view} onAttach={(t) => void attach(t)} />
+                </section>
               ))}
             </div>
-          </div>
+          )}
         </>
       )}
     </>
+  );
+}
+
+function Shelf({ texts, progress, view, onAttach }: { texts: Text[]; progress?: Map<string, ReadingProgress>; view: 'grid' | 'list'; onAttach: (t: Text) => void }) {
+  // Full motion: books glide to their new places when the sort or filter changes.
+  const layout = useFullMotion() ? 'position' : undefined;
+  if (view === 'list') {
+    return (
+      <div className="-mx-2 flex flex-col">
+        {texts.map((t, i) => (
+          <motion.div key={t.id} layout={layout} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: Math.min(i, 10) * 0.02, layout: spring.fluid }}>
+            <BookRow text={t} progress={progress?.get(t.id)} onAttach={onAttach} />
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
+      {texts.map((t, i) => (
+        <motion.div key={t.id} layout={layout} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: Math.min(i, 10) * 0.03, layout: spring.fluid }}>
+          <BookCard text={t} progress={progress?.get(t.id)} onAttach={onAttach} />
+        </motion.div>
+      ))}
+    </div>
   );
 }
 
