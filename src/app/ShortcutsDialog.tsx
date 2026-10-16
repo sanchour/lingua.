@@ -11,7 +11,7 @@ const GENERAL: Array<[string[], string]> = [
 
 export const READER_SHORTCUTS: Array<[string[], string]> = [
   [['←', '→'], 'Previous / next page'],
-  [['Click'], 'Cycle a word: known → learning → unseen'],
+  [['Click'], 'A word: learning; click again: known'],
   [['K'], 'Mark the hovered word known'],
   [['L'], 'Mark the hovered word learning'],
   [['X'], 'Reset the hovered word to unseen'],
@@ -28,6 +28,14 @@ export const STUDY_SHORTCUTS: Array<[string[], string]> = [
   [['Enter'], 'Ludus: check, then continue'],
 ];
 
+export const LISTENING_SHORTCUTS: Array<[string[], string]> = [
+  [['Space'], 'Play or pause'],
+  [['←', '→'], 'Skip back / forward'],
+  [['↑', '↓'], 'Previous / next sentence'],
+  [['R'], 'Repeat each sentence on or off'],
+  [['Click'], 'A word: learning, again: known · its time: jump there'],
+];
+
 /** Every desktop shortcut, grouped. Shown in Ordo and in the `?` dialog. */
 export function ShortcutList() {
   return (
@@ -35,6 +43,7 @@ export function ShortcutList() {
       <Group title="Navigate" rows={[...SECTIONS.map((s, i): [string[], string] => [['Alt', String(i + 1)], s.name]), ...GENERAL]} />
       <Group title="Reading" rows={READER_SHORTCUTS} />
       <Group title="Studying" rows={STUDY_SHORTCUTS} />
+      <Group title="Listening" rows={LISTENING_SHORTCUTS} />
     </div>
   );
 }

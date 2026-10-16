@@ -3,7 +3,7 @@ import { db } from './db';
 import type { LinguaDB } from './db';
 import type { SettingRow } from './types';
 
-export const READER_FONT_IDS = ['literata', 'lora', 'newsreader', 'merriweather', 'atkinson'] as const;
+export const READER_FONT_IDS = ['literata', 'lora', 'newsreader', 'merriweather', 'atkinson', 'comfortaa'] as const;
 export type ReaderFontId = (typeof READER_FONT_IDS)[number];
 export type ThemePref = 'paper' | 'nocturne' | 'system';
 export const PAPER_LIGHT_IDS = ['cream', 'ivory', 'parchment', 'sepia', 'sage', 'blush', 'stone'] as const;
@@ -17,6 +17,7 @@ export const CARD_TINT_IDS = ['paper', 'cream', 'sage', 'rose', 'sky', 'lavender
 export type CardTintId = (typeof CARD_TINT_IDS)[number];
 export type LibrarySort = 'recent' | 'added' | 'title' | 'author' | 'progress' | 'known';
 export type DeckSort = 'due' | 'name' | 'recent' | 'size';
+export type MediaSort = 'recent' | 'added' | 'title' | 'longest' | 'shortest';
 /** System follows the device; Reduced keeps movement minimal; Full adds richer, longer motion. */
 export type MotionPref = 'system' | 'reduced' | 'full';
 
@@ -48,7 +49,17 @@ export interface Settings {
   llm: { provider: 'groq' | 'gemini'; model: string };
   /** Device-only: never leaves this device unless explicitly included in a backup. */
   apiKeys: { groq: string; gemini: string };
-  audio: { rate: number; skipBackSec: number; skipFwdSec: number; sentenceRepeat: number; repeatGapMs: number };
+  audio: {
+    rate: number;
+    skipBackSec: number;
+    skipFwdSec: number;
+    sentenceRepeat: number;
+    repeatGapMs: number;
+    /** Groq Whisper model for transcripts. */
+    whisperModel: 'whisper-large-v3-turbo' | 'whisper-large-v3';
+    /** Optional relay for podcast hosts that don't let apps download; `{url}` is replaced. */
+    downloadProxy: string;
+  };
   /** Device-only: spoken words use this device's voices (Web Speech), chosen per language. */
   speech: { rate: number; voices: Record<string, string> };
   /** Device-only. */
@@ -59,6 +70,7 @@ export interface Settings {
     librarySort: LibrarySort;
     libraryView: 'grid' | 'list';
     deckSort: DeckSort;
+    mediaSort: MediaSort;
   };
   /** Device-only. */
   meta: { deviceId: string; onboardedAt: number | null; lastBackupAt: number | null };
@@ -85,9 +97,9 @@ export const DEFAULT_SETTINGS: Settings = {
   translation: { chain: ['local', 'mymemory', 'lingva'], lingvaHost: 'https://lingva.ml' },
   llm: { provider: 'groq', model: 'llama-3.3-70b-versatile' },
   apiKeys: { groq: '', gemini: '' },
-  audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 1, repeatGapMs: 1200 },
+  audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 2, repeatGapMs: 1200, whisperModel: 'whisper-large-v3-turbo', downloadProxy: '' },
   speech: { rate: 0.95, voices: {} },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due' },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent' },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null },
 };
 

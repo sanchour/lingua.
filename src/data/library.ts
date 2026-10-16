@@ -18,6 +18,8 @@ export interface NewText {
   source: Text['source'];
   chapters: ChapterDraft[];
   cover?: { blob: Blob; mime: string };
+  /** A designed cover when there is no picture. */
+  coverDesign?: Text['cover'];
   images?: Array<{ id: string; blob: Blob; mime: string }>;
   shelf?: Text['shelf'];
 }
@@ -79,6 +81,7 @@ export async function addText(input: NewText, database: LinguaDB = db): Promise<
     title: input.title.trim() || 'Untitled',
     author: input.author?.trim() || undefined,
     coverBlobId,
+    cover: input.coverDesign,
     shelf: input.shelf ?? 'reading',
     chapterCount: chapters.length,
     wordCount: chapters.reduce((sum, c) => sum + c.wordCount, 0),
@@ -175,8 +178,28 @@ export async function markOpened(textId: string, database: LinguaDB = db): Promi
   await database.texts.update(textId, { lastOpenedAt: Date.now(), updatedAt: Date.now(), shelf: 'reading' });
 }
 
-export async function updateText(textId: string, patch: Partial<Pick<Text, 'title' | 'author' | 'shelf' | 'finishedAt'>>, database: LinguaDB = db): Promise<void> {
+export async function updateText(textId: string, patch: Partial<Pick<Text, 'title' | 'author' | 'shelf' | 'finishedAt' | 'cover'>>, database: LinguaDB = db): Promise<void> {
   await database.texts.update(textId, { ...patch, updatedAt: Date.now() });
+}
+
+/** Gives a text a picture of its own as cover (replacing any earlier one). */
+export async function setCoverImage(textId: string, image: Blob, database: LinguaDB = db): Promise<void> {
+  await database.transaction('rw', database.texts, database.blobs, async () => {
+    const text = await database.texts.get(textId);
+    if (text?.coverBlobId) await database.blobs.delete(text.coverBlobId);
+    const id = crypto.randomUUID();
+    await database.blobs.add({ id, kind: 'cover', mime: image.type || 'image/jpeg', size: image.size, blob: image, createdAt: Date.now() });
+    await database.texts.update(textId, { coverBlobId: id, updatedAt: Date.now() });
+  });
+}
+
+/** Back to a designed cover. */
+export async function removeCoverImage(textId: string, database: LinguaDB = db): Promise<void> {
+  await database.transaction('rw', database.texts, database.blobs, async () => {
+    const text = await database.texts.get(textId);
+    if (text?.coverBlobId) await database.blobs.delete(text.coverBlobId);
+    await database.texts.update(textId, { coverBlobId: undefined, updatedAt: Date.now() });
+  });
 }
 
 /** Removes a text: the row is kept as a tombstone (so backups merge correctly); its content is deleted. */

@@ -44,3 +44,22 @@ export function pickFile(accept: string): Promise<File | null> {
     input.click();
   });
 }
+
+/** Opens the file picker for several files. Resolves an empty list when the user cancels. */
+export function pickFiles(accept: string): Promise<File[]> {
+  return new Promise((resolve) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = accept;
+    input.multiple = true;
+    input.style.display = 'none';
+    const done = (files: File[]) => {
+      input.remove();
+      resolve(files);
+    };
+    input.addEventListener('change', () => done([...(input.files ?? [])]), { once: true });
+    input.addEventListener('cancel', () => done([]), { once: true });
+    document.body.append(input);
+    input.click();
+  });
+}

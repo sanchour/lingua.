@@ -14,7 +14,9 @@ import { useLayout } from '@/design/hooks/useLayout';
 import { Button, Kbd } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
-import { BuildExercise, buildIsRight, ChoiceExercise, ClozeExercise, MatchExercise, TypeExercise, useSpeak } from './exercises';
+import { recognitionSupported } from '@/services/speech/recognition';
+import { ARTICLE_SETS, articleFor } from '../common/words';
+import { ArticleExercise, BuildExercise, buildIsRight, ChoiceExercise, ClozeExercise, MatchExercise, SpeakExercise, TypeExercise, useSpeak } from './exercises';
 import type { Phase } from './exercises';
 import { StudyBar } from './StudyBar';
 import type { SummaryStats } from './Summary';
@@ -39,6 +41,17 @@ const PRAISE = ['Lovely', 'Exactly', 'Well done', 'Nicely done', 'Perfect', 'Spo
 
 const ids = (ex: Exercise) => (ex.kind === 'match' ? ex.items.map((i) => i.id) : [ex.item.id]);
 
+/** "der Hund", but "l’ami" (an elided article takes no space). */
+const withArticle = (article: string, term: string) => (article.endsWith('’') ? article + term : `${article} ${term}`);
+
+const isBuild = (ex: Exercise): ex is Extract<Exercise, { kind: 'build' | 'listen-build' | 'translate' }> => ex.kind === 'build' || ex.kind === 'listen-build' || ex.kind === 'translate';
+
+/** Recognisers often add the article or other words: the last words are compared too. */
+function saidIt(heard: string[], term: string, lang: string): boolean {
+  const n = term.trim().split(/\s+/).length;
+  return heard.some((h) => [h, h.trim().split(/\s+/).slice(-n).join(' ')].some((said) => checkAnswer(said, term, lang).verdict !== 'wrong'));
+}
+
 function solution(ex: Exercise): string {
   switch (ex.kind) {
     case 'choose-meaning':
@@ -47,8 +60,13 @@ function solution(ex: Exercise): string {
     case 'cloze':
       return ex.options[ex.answer];
     case 'build':
+    case 'listen-build':
+    case 'translate':
       return ex.answer.join(' ');
+    case 'article':
+      return withArticle(ex.options[ex.answer], ex.item.term);
     case 'type':
+    case 'speak':
       return ex.item.term;
     default:
       return '';
@@ -72,7 +90,15 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
   const say = useSpeak(lang);
   const look = useSettings()?.cards ?? DEFAULT_SETTINGS.cards;
   const random = useMemo(() => seededRandom(Date.now() % 2 ** 31), []);
-  const plan = useMemo(() => planLesson(entries.map((e) => e.item), pool, { random, canListen }), [entries, pool, random, canListen]);
+  const plan = useMemo(
+    () =>
+      planLesson(
+        entries.map((e) => e.item),
+        pool,
+        { random, canListen, canSpeak: recognitionSupported(), articleOf: (i) => articleFor(lang, i.gender, i.term, i.pos), articles: ARTICLE_SETS[lang] ?? [] },
+      ),
+    [entries, pool, random, canListen, lang],
+  );
   const tracks = useRef<Map<string, Track> | null>(null);
   if (!tracks.current) {
     const map = new Map<string, Track>(entries.map((e) => [e.item.id, { entry: e, pending: 0, mistakes: 0, failed: false, ms: 0, mode: 'mcq' as ReviewMode }]));
@@ -86,6 +112,7 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
   const [choice, setChoice] = useState<number | null>(null);
   const [typed, setTyped] = useState('');
   const [tiles, setTiles] = useState<number[]>([]);
+  const [heard, setHeard] = useState<string[]>([]);
   const [close, setClose] = useState<AnswerCheck | null>(null);
   const [praise, setPraise] = useState(PRAISE[0]);
   const stats = useRef({ first: 0, firstRight: 0, ms: 0 });
@@ -130,16 +157,20 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
     }
   };
 
-  const ready = ex && (ex.kind === 'type' ? typed.trim().length > 0 : ex.kind === 'build' ? tiles.length > 0 : ex.kind === 'match' ? false : choice !== null);
+  const ready =
+    ex &&
+    (ex.kind === 'type' ? typed.trim().length > 0 : isBuild(ex) ? tiles.length > 0 : ex.kind === 'speak' ? heard.length > 0 : ex.kind === 'match' ? false : choice !== null);
 
-  const check = () => {
-    if (!ex || phase !== 'answer' || !ready) return;
+  const check = (said = heard) => {
+    if (!ex || phase !== 'answer') return;
+    if (!ready && !(ex.kind === 'speak' && said.length)) return;
     let right = false;
     let near: AnswerCheck | null = null;
     if (ex.kind === 'type') {
       near = checkAnswer(typed, ex.item.term, lang);
       right = near.verdict !== 'wrong';
-    } else if (ex.kind === 'build') right = buildIsRight(ex, tiles, lang);
+    } else if (isBuild(ex)) right = buildIsRight(ex, tiles, lang);
+    else if (ex.kind === 'speak') right = saidIt(said, ex.item.term, lang);
     else if (ex.kind !== 'match') right = choice === ex.answer;
     setClose(near?.verdict === 'close' ? near : null);
     setPraise(PRAISE[Math.floor(random() * PRAISE.length)]);
@@ -153,6 +184,7 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
     setChoice(null);
     setTyped('');
     setTiles([]);
+    setHeard([]);
     setClose(null);
     setPhase('answer');
     startedAt.current = performance.now();
@@ -170,6 +202,18 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
     setPraise(clean ? PRAISE[Math.floor(random() * PRAISE.length)] : 'All matched');
     setPhase('right');
     record(ex, true, slips);
+  };
+
+  /** A recognised word that matches is checked at once; a mishearing can simply be tried again. */
+  const onHeard = (alternatives: string[]) => {
+    setHeard(alternatives);
+    if (ex?.kind === 'speak' && saidIt(alternatives, ex.item.term, lang)) check(alternatives);
+  };
+
+  /** "Can’t speak now": this and the lesson's other speaking exercises become typing ones. */
+  const skipSpeaking = () => {
+    setHeard([]);
+    setQueue((q) => q.map((e): Exercise => (e.kind === 'speak' ? { key: `${e.key}t`, kind: 'type', item: e.item } : e)));
   };
 
   const choices = ex && 'options' in ex ? ex.options.length : 0;
@@ -203,7 +247,9 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
               </p>
               {(ex.kind === 'choose-meaning' || ex.kind === 'choose-term' || ex.kind === 'listen') && <ChoiceExercise ex={ex} lang={lang} value={choice} onChange={setChoice} phase={phase} />}
               {ex.kind === 'cloze' && <ClozeExercise ex={ex} lang={lang} value={choice} onChange={setChoice} phase={phase} />}
-              {ex.kind === 'build' && <BuildExercise ex={ex} lang={lang} value={tiles} onChange={setTiles} phase={phase} />}
+              {isBuild(ex) && <BuildExercise ex={ex} lang={lang} value={tiles} onChange={setTiles} phase={phase} />}
+              {ex.kind === 'article' && <ArticleExercise ex={ex} lang={lang} value={choice} onChange={setChoice} phase={phase} />}
+              {ex.kind === 'speak' && <SpeakExercise ex={ex} lang={lang} heard={heard} onHeard={onHeard} phase={phase} onSkip={skipSpeaking} />}
               {ex.kind === 'type' && <TypeExercise ex={ex} lang={lang} value={typed} onChange={setTyped} phase={phase} onSubmit={() => (phase === 'answer' ? check() : next())} />}
               {ex.kind === 'match' && <MatchExercise ex={ex} lang={lang} onDone={onMatched} random={random} />}
             </motion.section>
@@ -243,7 +289,7 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
             {phase === 'wrong' && ex && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>
                 <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase">Correct answer</p>
-                <p lang={ex.kind === 'choose-meaning' || ex.kind === 'listen' ? undefined : lang} className="font-serif text-xl font-semibold">
+                <p lang={ex.kind === 'choose-meaning' || ex.kind === 'listen' || ex.kind === 'translate' ? undefined : lang} className="font-serif text-xl font-semibold">
                   {solution(ex)}
                 </p>
                 {item && <p className="truncate text-sm text-ink-soft">{item.term} — {item.meaning}</p>}
@@ -252,14 +298,14 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
           </div>
           <div className="flex items-center gap-2">
             {phase !== 'answer' && item && canListen && (
-              <button type="button" aria-label="Listen" onClick={() => void say(ex.kind === 'build' ? item.example?.text ?? item.term : item.term)} className="grid size-12 place-items-center rounded-2xl text-ink-soft hover:bg-surface">
+              <button type="button" aria-label="Listen" onClick={() => void say(isBuild(ex) ? (item.example?.text ?? item.term) : item.term)} className="grid size-12 place-items-center rounded-2xl text-ink-soft hover:bg-surface">
                 <Volume2 size={20} aria-hidden />
               </button>
             )}
             {ex?.kind === 'match' && phase === 'answer' ? (
               <p className="text-sm text-ink-soft">Tap a word, then its meaning</p>
             ) : (
-              <Button size="lg" className="min-w-40 flex-1 sm:flex-none" variant={phase === 'answer' ? 'primary' : 'accent'} disabled={phase === 'answer' && !ready} onClick={phase === 'answer' ? check : next}>
+              <Button size="lg" className="min-w-40 flex-1 sm:flex-none" variant={phase === 'answer' ? 'primary' : 'accent'} disabled={phase === 'answer' && !ready} onClick={() => (phase === 'answer' ? check() : next())}>
                 {phase === 'answer' ? 'Check' : 'Continue'}
                 {pointer === 'fine' && <Kbd tone="inverse">Enter</Kbd>}
               </Button>

@@ -1,7 +1,7 @@
 import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { Link } from 'react-router';
-import { BookCheck, BookOpen, Ellipsis, Paperclip, Star, Trash2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
+import { BookCheck, BookOpen, Ellipsis, Palette, Paperclip, Star, Trash2 } from 'lucide-react';
 import { deleteText, updateText } from '@/data/library';
 import type { ReadingProgress, Text } from '@/data/types';
 import { Button, Dialog, MenuItem, Popover } from '@/design/primitives';
@@ -56,6 +56,7 @@ function BookLink({ text, onAttach, className, children }: Pick<BookProps, 'text
 
 function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
   const [confirm, setConfirm] = useState(false);
+  const navigate = useNavigate();
   const shelfOnly = text.kind === 'shelfItem';
   return (
     <>
@@ -92,6 +93,16 @@ function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
                 onClick={() => {
                   close();
                   void updateText(text.id, text.finishedAt ? { finishedAt: undefined, shelf: 'reading' } : { finishedAt: Date.now(), shelf: 'read' });
+                }}
+              />
+            )}
+            {!shelfOnly && (
+              <MenuItem
+                icon={Palette}
+                label="Cover & details"
+                onClick={() => {
+                  close();
+                  navigate(`/codex/book/${text.id}`);
                 }}
               />
             )}

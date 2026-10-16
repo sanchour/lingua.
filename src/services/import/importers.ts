@@ -6,10 +6,25 @@ import { addShelfItems, addText, deleteText } from '@/data/library';
 import type { Text } from '@/data/types';
 import { parseEpub } from './epub';
 
-export async function importPasted(lang: string, title: string, body: string): Promise<string> {
+export interface PasteExtras {
+  author?: string;
+  coverDesign?: Text['cover'];
+  coverImage?: Blob;
+}
+
+export async function importPasted(lang: string, title: string, body: string, extras: PasteExtras = {}): Promise<string> {
   const chapters = textToChapters(body, title);
   if (!chapters.length) throw new Error('There is no text to import.');
-  return addText({ lang, title: title || chapters[0].blocks.find((b) => b.t !== 'img')?.text.slice(0, 60) || 'Untitled', kind: 'article', source: 'paste', chapters });
+  return addText({
+    lang,
+    title: title || chapters[0].blocks.find((b) => b.t !== 'img')?.text.slice(0, 60) || 'Untitled',
+    author: extras.author,
+    kind: chapters.length > 1 ? 'book' : 'article',
+    source: 'paste',
+    chapters,
+    coverDesign: extras.coverDesign,
+    cover: extras.coverImage ? { blob: extras.coverImage, mime: extras.coverImage.type || 'image/jpeg' } : undefined,
+  });
 }
 
 export async function importTxtFile(lang: string, file: File): Promise<string> {

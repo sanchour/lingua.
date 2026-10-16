@@ -1,6 +1,6 @@
 import type { Script } from '@/core/lang/languages';
 
-export type ReaderFontId = 'literata' | 'lora' | 'newsreader' | 'merriweather' | 'atkinson';
+export type ReaderFontId = 'literata' | 'lora' | 'newsreader' | 'merriweather' | 'atkinson' | 'comfortaa';
 
 export interface ReaderFont {
   id: ReaderFontId;
@@ -18,6 +18,7 @@ export const READER_FONTS: ReaderFont[] = [
   { id: 'newsreader', label: 'Newsreader', family: "'Newsreader Variable'", kind: 'serif', scripts: ['Latn'], blurb: 'Elegant and editorial' },
   { id: 'merriweather', label: 'Merriweather', family: "'Merriweather Variable'", kind: 'serif', scripts: ['Latn', 'Cyrl'], blurb: 'Sturdy and very clear' },
   { id: 'atkinson', label: 'Atkinson Hyperlegible', family: "'Atkinson Hyperlegible'", kind: 'sans', scripts: ['Latn'], blurb: 'Maximum letter distinction' },
+  { id: 'comfortaa', label: 'Comfortaa', family: "'Comfortaa Variable'", kind: 'sans', scripts: ['Latn', 'Cyrl', 'Grek'], blurb: 'Round, soft and friendly' },
 ];
 
 const SERIF_FALLBACK = "'Noto Serif Variable', Georgia, serif";

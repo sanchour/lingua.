@@ -28,7 +28,11 @@ const CACHE_SIZE = 4;
 
 async function build(text: Text, index: number): Promise<ChapterModel | null> {
   const chapter = await getChapter(text.id, index);
-  if (!chapter) return null;
+  return chapter ? modelFromChapter(text, chapter) : null;
+}
+
+/** Tokens, word states and glosses for a chapter (also used for Sonus transcripts, held in memory). */
+export async function modelFromChapter(text: Pick<Text, 'lang'>, chapter: Chapter): Promise<ChapterModel> {
   const unique = new Set<string>();
   const blocks: BlockModel[] = chapter.blocks.map((block) => {
     if (block.t === 'img') return { block, tokens: null };

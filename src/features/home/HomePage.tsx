@@ -1,10 +1,12 @@
 import { Link } from 'react-router';
 import { motion } from 'motion/react';
-import { ArrowRight, BookMarked, BookOpen, Flame, Gamepad2, Layers, Sprout, Target } from 'lucide-react';
+import { ArrowRight, BookMarked, BookOpen, Flame, Gamepad2, Headphones, Layers, Sprout, Target } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
+import { formatDuration } from '@/core/audio/cues';
 import { getLanguage } from '@/core/lang/languages';
 import { useAllProgress, useLibrary } from '@/data/library';
+import { useMediaList, usePlaybackMap } from '@/data/media';
 import { useStreak, useToday } from '@/data/stats';
 import { useDueSummary } from '@/data/study';
 import { useVocabularyCounts } from '@/data/words';
@@ -12,6 +14,7 @@ import { buttonClasses, Card, CardTitle } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { BookCover } from '@/features/codex/library/BookCover';
+import { Artwork } from '@/features/sonus/library/Artwork';
 import { GoalRing } from './GoalRing';
 
 function greeting(hour: number): string {
@@ -137,8 +140,36 @@ function VocabularyCard({ lang }: { lang: string }) {
 function ContinueCard({ lang }: { lang: string }) {
   const texts = useLibrary(lang);
   const progress = useAllProgress();
+  const media = useMediaList(lang);
+  const playback = usePlaybackMap();
   const current = texts?.find((t) => t.kind !== 'shelfItem' && !t.finishedAt && t.lastOpenedAt);
   const pct = current && progress?.get(current.id) ? Math.round(progress.get(current.id)!.percent * 100) : 0;
+  // Whatever you touched last: a book, or an episode you were listening to.
+  const episode = media?.find((m) => m.kind !== 'spotify' && m.lastPlayedAt && !playback?.get(m.id)?.completed);
+  if (episode && (!current || (episode.lastPlayedAt ?? 0) > (current.lastOpenedAt ?? 0))) {
+    const position = playback?.get(episode.id)?.positionMs ?? 0;
+    return (
+      <Card>
+        <CardTitle icon={Headphones}>Continue listening</CardTitle>
+        <div className="flex items-center gap-4">
+          <Link to={`/sonus/play/${episode.id}`} className="w-14 shrink-0" aria-label={`Open ${episode.title}`}>
+            <Artwork title={episode.title} coverBlobId={episode.coverBlobId} coverUrl={episode.coverUrl} className="w-full" />
+          </Link>
+          <div className="min-w-0 flex-1">
+            <p lang={episode.lang} className="truncate font-serif text-lg font-semibold">
+              {episode.title}
+            </p>
+            <p className="truncate text-sm text-ink-soft">
+              {[episode.collection ?? episode.artist, episode.durationMs && position > 0 && `${formatDuration(episode.durationMs - position)} left`].filter(Boolean).join(' · ')}
+            </p>
+          </div>
+          <Link to={`/sonus/play/${episode.id}`} className={buttonClasses('secondary', 'md')}>
+            Listen <ArrowRight size={16} aria-hidden />
+          </Link>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card>

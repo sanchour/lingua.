@@ -1,8 +1,12 @@
 import type { ReactNode } from 'react';
+import { MINI_PLAYER_SPACE } from '@/features/sonus/MiniPlayer';
+import { usePlayer } from '@/services/audio/engine';
 import { TabBar } from './TabBar';
 import { TopBar } from './TopBar';
 
 export function TouchShell({ children }: { children: ReactNode }) {
+  // Room for the mini player above the tab bar while something is loaded.
+  const playing = usePlayer((s) => s.media !== null);
   return (
     <div className="min-h-dvh">
       <TopBar />
@@ -11,7 +15,7 @@ export function TouchShell({ children }: { children: ReactNode }) {
         style={{
           paddingLeft: 'max(16px, env(safe-area-inset-left))',
           paddingRight: 'max(16px, env(safe-area-inset-right))',
-          paddingBottom: 'calc(env(safe-area-inset-bottom) + 112px)',
+          paddingBottom: `calc(env(safe-area-inset-bottom) + ${112 + (playing ? MINI_PLAYER_SPACE : 0)}px)`,
         }}
       >
         {children}

@@ -48,6 +48,8 @@ export interface Text extends Synced {
   title: string;
   author?: string;
   coverBlobId?: string;
+  /** A designed cover (cloth colour and ornament) for texts without a picture of their own. */
+  cover?: CoverDesign;
   mediaId?: string;
   shelf?: 'to-read' | 'reading' | 'read';
   goodreads?: { bookId?: string; isbn13?: string; rating?: number; dateRead?: string; shelves?: string[] };
@@ -57,6 +59,14 @@ export interface Text extends Synced {
   finishedAt?: number;
   /** Comprehension, recomputed as words become known. */
   stats?: TextStats;
+}
+
+export type CoverOrnament = 'rule' | 'stars' | 'sprig' | 'moon' | 'frame';
+
+export interface CoverDesign {
+  /** Cloth colour id (features/codex/library/covers.ts). */
+  cloth: string;
+  ornament: CoverOrnament;
 }
 
 export interface TextStats {
@@ -153,6 +163,14 @@ export interface DictExample {
   pack: string;
   lemma: string;
   ex: Array<[sentence: string, translation: string, start: number, end: number]>;
+}
+
+/** A lemma's inflection table from the language pack: rows of [form as written, tags]. */
+export interface DictParadigm {
+  pack: string;
+  lemma: string;
+  pos: string;
+  forms: Array<[form: string, tags: string]>;
 }
 
 /** The ready-made deck lists of an installed language pack (core/lang/starter.ts). */
@@ -276,7 +294,7 @@ export interface Card extends Synced {
   suspended: Bit;
 }
 
-export type ReviewMode = 'classic' | 'mcq' | 'match' | 'cloze' | 'build' | 'type' | 'listen';
+export type ReviewMode = 'classic' | 'mcq' | 'match' | 'cloze' | 'build' | 'type' | 'listen' | 'speak';
 
 /** Append-only; unioned on merge. */
 export interface ReviewLog {
@@ -313,6 +331,40 @@ export interface Media extends Synced {
   spotify?: { uri: string; type: 'episode' | 'show' | 'playlist' | 'track'; embedUrl: string };
   textId?: string;
   lastPlayedAt?: number;
+  /** Podcast episodes: the feed, the episode's id in it, and where the audio streams from. */
+  feedId?: string;
+  guid?: string;
+  remoteUrl?: string;
+  /** Artwork on the web (podcasts, Spotify); `coverBlobId` is used for artwork stored offline. */
+  coverUrl?: string;
+  publishedAt?: number;
+  description?: string;
+}
+
+/** A podcast subscription. Episodes stay in the feed row until one is played or downloaded. */
+export interface Feed extends Synced {
+  id: string;
+  lang: Lang;
+  url: string;
+  title: string;
+  author?: string;
+  description?: string;
+  imageUrl?: string;
+  link?: string;
+  episodes: FeedEpisode[];
+  lastFetchedAt: number;
+}
+
+export interface FeedEpisode {
+  guid: string;
+  title: string;
+  url: string;
+  mime?: string;
+  sizeBytes?: number;
+  publishedAt?: number;
+  durationMs?: number;
+  description?: string;
+  imageUrl?: string;
 }
 
 export interface Cue {
@@ -327,7 +379,8 @@ export interface Transcript extends Synced {
   mediaId: string;
   lang: Lang;
   role: 'target' | 'native';
-  source: 'srt' | 'vtt' | 'whisper-groq' | 'whisper-local' | 'machine';
+  /** `text`: a plain transcript without timings, spread over the audio by length (approximate). */
+  source: 'srt' | 'vtt' | 'text' | 'whisper-groq' | 'whisper-local' | 'machine';
   offsetMs: number;
   cues: Cue[];
 }

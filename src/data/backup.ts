@@ -40,7 +40,9 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   textVocab: { policy: 'skip', key: 'textId' },
   // Language-pack data; reinstalled with the pack.
   dictExamples: { policy: 'skip', key: '' },
+  dictParadigms: { policy: 'skip', key: '' },
   starterLists: { policy: 'skip', key: 'lang' },
+  feeds: { policy: 'lww', key: 'id' },
 };
 
 const BACKED_UP = (Object.keys(BACKUP_POLICIES) as TableName[]).filter((t) => BACKUP_POLICIES[t].policy !== 'skip');

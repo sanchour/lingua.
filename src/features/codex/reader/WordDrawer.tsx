@@ -13,6 +13,8 @@ import { spring } from '@/design/motion';
 import { explainWord } from '@/services/llm/explain';
 import type { WordExplanation } from '@/services/llm/explain';
 import { LlmError } from '@/services/llm/client';
+import { AddToDeck } from './AddToDeck';
+import { WordForms } from './WordForms';
 
 export interface DrawerWord {
   norm: string;
@@ -96,7 +98,22 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
       />
 
       <section>
-        <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</h3>
+        <div className="mb-2 flex items-center gap-2">
+          <h3 className="flex-1 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</h3>
+          <AddToDeck
+            lang={lang}
+            note={{
+              term: main?.head ?? main?.lemma ?? context.surface ?? norm,
+              meaning: gloss.trim() || main?.senses[0]?.glosses[0] || '',
+              lemma: main?.lemma,
+              pos: main?.senses[0]?.pos,
+              gender: main?.gender,
+              ipa: main?.ipa,
+              source: 'codex',
+              context: context.sentence ? { sentence: context.sentence, textId: context.textId, chapterIndex: context.chapterIndex, blockIndex: context.blockIndex } : undefined,
+            }}
+          />
+        </div>
         <input
           value={gloss}
           onChange={(e) => setGloss(e.target.value)}
@@ -109,16 +126,6 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
         {dict?.form?.d && <p className="mt-2 text-[13px] text-ink-soft">{dict.form.d}</p>}
       </section>
 
-      {context.sentence && (
-        <section>
-          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">In context</h3>
-          <p lang={lang} className="rounded-2xl bg-surface px-4 py-3 font-serif text-[16px] leading-relaxed">
-            <Highlighted sentence={context.sentence} word={context.surface ?? norm} />
-          </p>
-        </section>
-      )}
-
-      <Explain lang={lang} word={context.surface ?? norm} sentence={context.sentence ?? context.surface ?? norm} />
 
       {dict && dict.entries.length > 0 && (
         <section>
@@ -157,6 +164,19 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
           <p className="mt-3 text-[11.5px] text-ink-faint">Wiktionary via kaikki.org · CC BY-SA</p>
         </section>
       )}
+
+      {main && <WordForms lang={lang} lemma={main.lemma} seen={norm} />}
+
+      {context.sentence && (
+        <section>
+          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">In context</h3>
+          <p lang={lang} className="rounded-2xl bg-surface px-4 py-3 font-serif text-[16px] leading-relaxed">
+            <Highlighted sentence={context.sentence} word={context.surface ?? norm} />
+          </p>
+        </section>
+      )}
+
+      <Explain lang={lang} word={context.surface ?? norm} sentence={context.sentence ?? context.surface ?? norm} />
     </div>
   );
 }

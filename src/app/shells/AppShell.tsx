@@ -5,6 +5,7 @@ import { useApp } from '@/app/context';
 import { useFullMotion } from '@/app/motion';
 import { SECTIONS } from '@/app/sections';
 import { ShortcutsDialog } from '@/app/ShortcutsDialog';
+import { MiniPlayer } from '@/features/sonus/MiniPlayer';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { pageEnter, pageEnterFull } from '@/design/motion';
@@ -12,15 +13,18 @@ import { useUI } from '@/state/ui';
 import { DesktopShell } from './desktop/DesktopShell';
 import { TouchShell } from './touch/TouchShell';
 
-/** Routes that take the whole screen (no sidebar, no tab bar). */
-const isImmersive = (pathname: string) => pathname.startsWith('/codex/read/') || pathname.startsWith('/thesaurus/study/');
+/** Routes that take the whole screen (no sidebar, no tab bar). On phones the Sonus player does too. */
+const isImmersive = (pathname: string, wide: boolean) =>
+  pathname.startsWith('/codex/read/') || pathname.startsWith('/thesaurus/study/') || pathname === '/sonus/commute' || (!wide && pathname.startsWith('/sonus/play/'));
 
 export function AppShell() {
   const { layout } = useLayout();
   const { pathname, hash } = useLocation();
   const navigate = useNavigate();
   const setShortcutsOpen = useUI((s) => s.setShortcutsOpen);
-  const immersive = isImmersive(pathname);
+  const immersive = isImmersive(pathname, layout === 'wide');
+  // The mini player shows everywhere except where the full player is on screen.
+  const showMini = !immersive && !pathname.startsWith('/sonus/play/');
   const { language } = useApp();
   const fullMotion = useFullMotion();
 
@@ -60,6 +64,7 @@ export function AppShell() {
   return (
     <>
       {layout === 'wide' ? <DesktopShell>{content}</DesktopShell> : <TouchShell>{content}</TouchShell>}
+      {showMini && <MiniPlayer />}
       <ShortcutsDialog />
     </>
   );

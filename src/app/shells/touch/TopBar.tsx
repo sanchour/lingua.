@@ -10,6 +10,11 @@ import { useUI } from '@/state/ui';
 import { LanguageChip } from '../LanguageChip';
 import { LogoMark } from '../Wordmark';
 
+const BACK_TO: Record<string, string> = {
+  'sonus/podcast': '/sonus?tab=podcasts',
+  'thesaurus/ready': '/thesaurus?tab=discover',
+};
+
 export function TopBar() {
   const title = useUI((s) => s.pageTitle);
   const titleHidden = useUI((s) => s.pageTitleHidden);
@@ -27,7 +32,8 @@ export function TopBar() {
   }, [setTopBarHeight]);
 
   const segments = pathname.split('/').filter(Boolean);
-  const parent = segments.length > 1 ? `/${segments.slice(0, -1).join('/')}` : null;
+  // Sub-pages go back to their section (e.g. /codex/book/:id → /codex), or to the tab they came from.
+  const parent = segments.length > 1 ? (BACK_TO[`${segments[0]}/${segments[1]}`] ?? `/${segments[0]}`) : null;
 
   return (
     <header ref={ref} className="no-callout sticky top-0 z-30 pt-safe">

@@ -78,6 +78,7 @@ export async function removePack(lang: string): Promise<void> {
   await db.dictEntries.where('[pack+lemma]').between([id, Dexie.minKey], [id, Dexie.maxKey]).delete();
   await db.frequency.where('[lang+rank]').between([lang, Dexie.minKey], [lang, Dexie.maxKey]).delete();
   await db.dictExamples.where('[pack+lemma]').between([id, Dexie.minKey], [id, Dexie.maxKey]).delete();
+  await db.dictParadigms.where('[pack+lemma]').between([id, Dexie.minKey], [id, Dexie.maxKey]).delete();
   await db.starterLists.delete(lang);
   await db.dictPacks.delete(id);
 }

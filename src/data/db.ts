@@ -11,6 +11,8 @@ import type {
   DictExample,
   DictForm,
   DictPack,
+  DictParadigm,
+  Feed,
   Folder,
   FrequencyRow,
   LanguageProfile,
@@ -67,7 +69,18 @@ export const SCHEMA_V3 = {
   starterLists: 'lang',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3 };
+/** Version 4 (Phase 4): podcast feeds, and media findable by feed. */
+export const SCHEMA_V4 = {
+  feeds: 'id, lang, updatedAt',
+  media: 'id, lang, kind, collection, feedId, lastPlayedAt, updatedAt',
+} as const;
+
+/** Version 5: inflection tables (conjugations, declensions) from the language packs. */
+export const SCHEMA_V5 = {
+  dictParadigms: '[pack+lemma]',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -98,6 +111,8 @@ export type LinguaDB = Dexie & {
   textVocab: EntityTable<TextVocab, 'textId'>;
   dictExamples: Table<DictExample, [string, string]>;
   starterLists: EntityTable<StarterList, 'lang'>;
+  feeds: EntityTable<Feed, 'id'>;
+  dictParadigms: Table<DictParadigm, [string, string]>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -105,6 +120,8 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(1).stores(SCHEMA_V1);
   db.version(2).stores(SCHEMA_V2);
   db.version(3).stores(SCHEMA_V3);
+  db.version(4).stores(SCHEMA_V4);
+  db.version(5).stores(SCHEMA_V5);
   return db;
 }
 

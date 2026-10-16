@@ -9,12 +9,13 @@
 // - entries (headword, IPA, gender, senses) for every lemma referenced
 // - since v2: lemmas ranked by frequency (Top-N decks), short usage examples with their translation,
 //   and the themed starter lists made by themes.ts (run that first)
+// - since v6: inflection tables (conjugations, declensions) for the most frequent lemmas
 import { createReadStream, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createGunzip, gzipSync } from 'node:zlib';
 import { foldKey, normalizeWord } from '../../src/core/text/normalize.ts';
 import { PACK_FORMAT, PACK_VERSION, packFileName } from '../../src/core/packs/format.ts';
-import type { PackExample, PackFile, PackForm, PackLemma, PackSense, PackThemeItem } from '../../src/core/packs/format.ts';
+import type { PackExample, PackFile, PackForm, PackLemma, PackParadigm, PackSense, PackThemeItem } from '../../src/core/packs/format.ts';
 import { CACHE_DIR, frequencyFile, kaikkiFile, PACK_SOURCES, PACKS_DIR } from './sources.ts';
 import type { PackSource } from './sources.ts';
 
@@ -49,8 +50,62 @@ interface KaikkiEntry {
   sounds?: { ipa?: string }[];
 }
 
+/** Paradigms (inflection tables) are kept for this many of the most frequent lemmas. */
+const PARADIGM_KEEP = 6000;
+const PARADIGM_POS = new Set(['verb', 'noun', 'adj', 'pron', 'det']);
+const MAX_PARADIGM_FORMS = 72;
+/** Grammatical tags that place a form in a table; everything else is left out of its label. */
+const PARADIGM_TAGS = new Set([
+  'first-person', 'second-person', 'third-person', 'singular', 'plural', 'dual', 'masculine', 'feminine', 'neuter',
+  'nominative', 'genitive', 'dative', 'accusative', 'instrumental', 'prepositional', 'locative', 'vocative', 'ablative',
+  'partitive', 'essive', 'translative', 'inessive', 'elative', 'illative', 'adessive', 'allative', 'superessive',
+  'sublative', 'delative', 'terminative', 'causal-final', 'comitative', 'definite', 'indefinite',
+  'present', 'past', 'future', 'imperfect', 'preterite', 'perfect', 'pluperfect', 'historic', 'conditional',
+  'subjunctive', 'imperative', 'indicative', 'infinitive', 'participle', 'gerund', 'supine', 'adverbial', 'passive',
+  'perfective', 'imperfective', 'dependent', 'comparative', 'superlative', 'short-form',
+]);
+/** Forms left out of tables: unreliable, rare, regional or descriptive rows ("avoir + past participle"). */
+const PARADIGM_SKIP = new Set([
+  'error-unrecognized-form', 'rare', 'archaic', 'dated', 'obsolete', 'dialectal', 'nonstandard', 'colloquial', 'poetic',
+  'multiword-construction', 'vos-form', 'imperfect-se', 'negative', 'second-person-semantically', 'alternative',
+  'misspelling', 'possessive', 'animate', 'inanimate', 'romanization', 'table-tags', 'inflection-template', 'class',
+  'canonical', 'diminutive', 'augmentative', 'abbreviation', 'noun-from-verb', 'causative', 'auxiliary',
+]);
+
+/** An entry's inflection table as [form as written, tags] rows, one per tag set. */
+function paradigmOf(entry: KaikkiEntry): Array<[string, string]> {
+  if (!PARADIGM_POS.has(entry.pos)) return [];
+  const rows = new Map<string, string>();
+  for (const f of entry.forms ?? []) {
+    if (!f.form || !f.tags?.length || f.tags.some((t) => PARADIGM_SKIP.has(t))) continue;
+    const form = f.form.replace(/\([^)]*\)|\[[^\]]*\]|[*^]/g, '').replace(/\s+/g, ' ').trim();
+    // Real forms only: up to three words (бу́ду чита́ть, θα γράψω), no notes, placeholders or IPA (paʁl).
+    if (!hasLetter.test(form) || form.length > 32 || form.split(' ').length > 3 || /[+:;]|[ɐ-ʯˈˌː]/.test(form)) continue;
+    const tags = f.tags.filter((t) => PARADIGM_TAGS.has(t)).sort();
+    // Aspect partners (прочита́ть for чита́ть) are other verbs, not forms of this one.
+    if (!tags.length || tags.every((t) => t === 'perfective' || t === 'imperfective')) continue;
+    const key = tags.join(' ');
+    const existing = rows.get(key);
+    if (!existing) rows.set(key, form);
+    else if (existing !== form && !existing.includes(' / ') && !existing.split(' / ').includes(form)) rows.set(key, `${existing} / ${form}`);
+    if (rows.size >= MAX_PARADIGM_FORMS) break;
+  }
+  // Nouns often list only their plural (casa → case); the headword is the singular.
+  if (entry.pos === 'noun' && [...rows.keys()].some((k) => k === 'plural') && ![...rows.keys()].some((k) => k.includes('singular'))) {
+    const head = entry.forms?.find((f) => f.tags?.includes('canonical'))?.form ?? entry.word;
+    rows.set('singular', head.replace(/\([^)]*\)|[*^]/g, '').trim());
+  }
+  // Summary rows repeat a fuller one ("до́ма [genitive]" beside "до́ма [genitive singular]"): drop them.
+  const sets = [...rows].map(([key, form]) => ({ key, form, tags: new Set(key.split(' ')) }));
+  const kept = sets.filter((a) => !sets.some((b) => b !== a && b.form === a.form && b.tags.size > a.tags.size && [...a.tags].every((t) => b.tags.has(t))));
+  return kept.map(({ key, form }) => [form, key]);
+}
+
 interface LexicalData {
   head: string;
+  /** Inflection table of the entry that speaks for the word, and its part of speech. */
+  paradigm: Array<[string, string]>;
+  paradigmPos: string;
   ipa: string;
   gender: string;
   senses: PackSense[];
@@ -183,8 +238,11 @@ function lexicalOf(entry: KaikkiEntry, lang: string, key: string, senses: Kaikki
   // A headword must spell the same word (stress marks and German capitals are fine; "CE" for ce,
   // "¿no" for no or Italian dictionary accents like "èssere" are not).
   const sameWord = display !== key && normalizeWord(display, lang) === key;
+  const paradigm = paradigmOf(entry);
   return {
     head: sameWord ? display : '',
+    paradigm,
+    paradigmPos: paradigm.length ? entry.pos : '',
     ipa: entry.sounds?.find((s) => s.ipa)?.ipa ?? '',
     gender: entry.pos === 'noun' ? gender : '',
     senses: [[entry.pos, cleanGlosses(senses.flatMap((s) => s.glosses ?? []), entry.pos).slice(0, MAX_GLOSSES)]],
@@ -247,6 +305,10 @@ function mergeLexical(into: LexicalData, add: LexicalData): void {
   // A headword comes from the entry that speaks for the word ("sein", not "Sein").
   into.head = first.head || (second.priority === first.priority ? second.head : '');
   for (const f of add.tableForms) into.tableForms.add(f);
+  // The table follows the main sense: the entry that speaks for the word, else whichever has one.
+  const table = first.paradigm.length >= 2 ? first : second.paradigm.length >= 2 ? second : first;
+  into.paradigm = table.paradigm;
+  into.paradigmPos = table.paradigmPos;
   into.examples = [...first.examples, ...second.examples].slice(0, 4);
   into.priority = first.priority;
 }
@@ -399,6 +461,21 @@ async function build(source: PackSource): Promise<void> {
     .slice(0, LEMMA_FREQ_KEEP)
     .map(([i]) => i);
 
+  // Inflection tables for the most frequent lemmas. Tag sets repeat across words, so each is stored once.
+  const tagSets: string[] = [];
+  const tagIndex = new Map<string, number>();
+  const paradigms: PackParadigm[] = [];
+  for (const i of lemmaFreq.slice(0, PARADIGM_KEEP)) {
+    const own = lexical.get(lemmas[i][0]);
+    if (!own || own.paradigm.length < 2) continue;
+    const rows = own.paradigm.map(([form, key]): [string, number] => {
+      let t = tagIndex.get(key);
+      if (t === undefined) tagIndex.set(key, (t = tagSets.push(key) - 1));
+      return [form, t];
+    });
+    paradigms.push([i, own.paradigmPos, rows]);
+  }
+
   // Examples for those lemmas, each with the span of the lemma's form for cloze exercises.
   const examples: PackExample[] = [];
   lemmaFreq.forEach((i, rank) => {
@@ -461,6 +538,8 @@ async function build(source: PackSource): Promise<void> {
     lemmaFreq,
     examples,
     themes,
+    paradigms,
+    tagSets,
   };
 
   mkdirSync(PACKS_DIR, { recursive: true });
@@ -472,6 +551,7 @@ async function build(source: PackSource): Promise<void> {
     `✓ ${lang}: ${lemmas.length.toLocaleString()} lemmas, ${forms.size.toLocaleString()} forms, ` +
       `${(gz.length / 1e6).toFixed(1)} MB · glossed: top 1k ${covered(1000).toFixed(1)}%, top 10k ${covered(10_000).toFixed(1)}% · ` +
       `${lemmaFreq.length.toLocaleString()} ranked lemmas, ${examples.length.toLocaleString()} examples, ` +
+      `${paradigms.length.toLocaleString()} tables (${tagSets.length} tag sets), ` +
       `${Object.values(themes ?? {}).reduce((n, list) => n + list.length, 0)} themed words · ` +
       `${((Date.now() - started) / 1000).toFixed(0)} s` +
       (malformed ? ` · ${malformed} malformed lines skipped` : ''),

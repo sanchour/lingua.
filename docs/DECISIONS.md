@@ -158,3 +158,59 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Thesaurus overview:** a Today panel (progress ring for the day, review/new split, week ahead),
   then two tabs: My decks (search, sort by most to do · recently studied · name · size, applied at
   every folder level) and Discover (ready-made decks). Search also finds ready-made themes.
+
+## Phase 4 build (Sonus) — 2026-10-16
+
+- **Word clicks are learning-first:** one click marks Learning, a second Known, a third resets.
+- **One audio engine for the whole app** (`services/audio/engine.ts`): a single `<audio>` element
+  outside React, so playback survives page changes and the lock screen. Coarse state in a small
+  store; the playhead goes to subscribers every frame while visible and on `timeupdate` while hidden.
+  Positions save every 5 s and on pause; listening time is recorded in chunks (statistics, goal, streak).
+- **iOS playback rule:** every play button calls `unlockAudio()` before any await (a moment of silence
+  played inside the tap), so later programmatic play is allowed.
+- **Sentence repeats** loop a sentence back at its end, with the chosen pause while the screen is on;
+  with the screen locked they jump back without pausing, so the system can't suspend the app.
+- **Lock screen:** Media Session metadata with artwork; previous/next track = previous/next sentence
+  when there is a transcript, otherwise skip back/forward.
+- **Podcasts:** search uses Apple's public directory (no key); feeds are RSS, parsed in the browser.
+  Episodes stay inside the feed row and become library items only when played or saved. Most feeds
+  and many hosts allow apps to read and download them; where a host blocks downloads (no CORS), the
+  episode streams, the message offers to open the file, and a saved file can be attached to the
+  episode. An optional relay address (Ordo › Listening) covers such hosts.
+- **Transcripts:** SRT/VTT (including karaoke word timestamps), plain text (spread over the audio by
+  length, marked approximate), or Whisper on Groq with word timings and the learner's key in the
+  header only. Downloaded files over 24 MB are split at MP3 frame boundaries and stitched by
+  duration; streamed episodes are fetched by Groq itself from their address. One cue per sentence.
+- **Karaoke view** reuses the reader's word engine, hover tooltip, tap bubble and word drawer, so a
+  transcript is read exactly like a book. Time-driven highlighting writes to the DOM directly.
+  "Open in Codex" turns a transcript into a text only when asked (shelves stay uncluttered).
+- **Commute mode** shows the spoken sentence large with big controls and an optional screen wake lock.
+- **Spotify** plays in Spotify's embed (DRM: no download, transcription or lock-screen control by
+  Lingua). Its iFrame API reports the position, so a transcript file still follows along.
+- **Thesaurus tabs:** the tab you pick always wins; with no decks, My decks shows the ways to start,
+  and the Today panel appears once there are decks.
+- **Deferred:** Whisper running locally on WebGPU (large download, needs testing on the devices).
+
+## 2026-10-16 — Codex, Thesaurus and Ludus refinements
+
+- **Word clicks land every time:** a click within 10 px of where it started counts, a click in the
+  gap between words picks the nearest word, words get a little vertical padding, and each change
+  flashes a soft ring (sage for Known, terracotta for Learning).
+- **Word forms (packs v6):** each pack carries inflection tables for its 6,000 most common lemmas,
+  from Wiktionary via kaikki.org. Rows with pronunciations, clitic forms and summary duplicates are
+  dropped. `core/lang/paradigm.ts` lays out conjugations by person (I / you / he·she / we …), cases
+  by number and the rest as "All forms". These tables are stored in `dictParadigms` (Dexie v5).
+- **Word drawer order:** Meaning (with a small "+ Deck"), Dictionary, Forms, In context, Explain.
+- **Adding to the library is a page** (`/codex/new`): write or paste, import a file, or Goodreads.
+  A designed cover (14 cloths × 5 ornaments) or your own picture can be chosen there and later
+  on the book's details page (`/codex/book/:id`, "Cover & details" in the book's menu).
+- **Ready-made decks open full screen** (`/thesaurus/ready/:key`) as a booklet. The frequency decks
+  show as a vocabulary journey: a winding trail with named stops and a "You are here" flag.
+- **More Ludus exercises:** tap what you hear (sentence tiles), translate the sentence (English
+  tiles), which article (de, es, pt, it, fr, el, sv), and say it out loud (the browser's speech
+  recognition). "Can’t speak now" turns the lesson's speaking exercises into typing. Sentences in
+  fill-the-gap and translate exercises have the reader's instant translations.
+- **End of a session:** the next step ("Another lesson") on top, "Done" quietly below, always stacked.
+- **Phones:** sub-pages rely on the top bar's back button, which now goes to the section, so
+  pages show no second back link.
+- **Grammar:** planned as its own section for Lingua 2.0, in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md).

@@ -10,6 +10,7 @@ import { BackupSection } from './sections/BackupSection';
 import { CardsSection } from './sections/CardsSection';
 import { KeyboardSection } from './sections/KeyboardSection';
 import { LanguageSection } from './sections/LanguageSection';
+import { ListeningSection } from './sections/ListeningSection';
 import { PerformanceSection } from './sections/PerformanceSection';
 import { ReadingSection } from './sections/ReadingSection';
 import { StorageSection } from './sections/StorageSection';
@@ -20,6 +21,7 @@ const NAV = [
   ['reading', 'Reading'],
   ['study', 'Study'],
   ['cards', 'Flashcards'],
+  ['listening', 'Listening'],
   ['language', 'Languages'],
   ['ai', 'AI & translation'],
   ['storage', 'Storage'],
@@ -69,6 +71,7 @@ export default function OrdoPage() {
           <ReadingSection reader={settings.reader} lang={language.id} />
           <StudySection study={settings.study} speech={settings.speech} lang={language.id} />
           <CardsSection look={settings.cards} lang={language.id} />
+          <ListeningSection audio={settings.audio} />
           <LanguageSection active={language} />
           <AiSection llm={settings.llm} apiKeys={settings.apiKeys} translation={settings.translation} />
           <StorageSection />

@@ -48,3 +48,14 @@ export function splitAt(text: string, span?: [number, number]): [string, string,
   if (s < 0 || e > text.length || s >= e) return null;
   return [text.slice(0, s), text.slice(s, e), text.slice(e)];
 }
+
+/** The articles to choose from in "Which article?" (Ludus), per language. */
+export const ARTICLE_SETS: Record<string, string[]> = {
+  de: ['der', 'die', 'das'],
+  es: ['el', 'la'],
+  pt: ['o', 'a'],
+  it: ['il', 'lo', 'la', 'l’'],
+  fr: ['le', 'la', 'l’'],
+  el: ['ο', 'η', 'το'],
+  sv: ['en', 'ett'],
+};

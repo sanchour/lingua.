@@ -7,3 +7,6 @@ coverage
 Thumbs.db
 # raw language-data downloads used by scripts/ (Phase 2)
 scripts/.cache
+
+# Local Claude Code settings
+.claude/settings.local.json

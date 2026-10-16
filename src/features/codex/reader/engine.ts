@@ -6,8 +6,12 @@ import { fetchOnlineGloss } from '@/services/translate/gloss';
 import type { GlossInfo } from '@/services/translate/gloss';
 import type { ChapterModel } from './model';
 
-/** Click order on desktop: Unseen → Known → Learning → Unseen. */
-export const nextState = (s: WordState): WordState => (s === 0 ? 1 : s === 1 ? 2 : 0);
+/**
+ * A click always means "I'm learning this", and clicking a Learning word means "now I know it":
+ * one click Learning, two clicks Known, from Unseen and from Known alike. Resetting to Unseen is
+ * X, or the reset button in the word's details.
+ */
+export const nextState = (s: WordState): WordState => (s === 2 ? 1 : 2);
 
 /**
  * Imperative word engine for one rendered chapter. State changes repaint the affected spans
@@ -82,8 +86,21 @@ export class WordEngine {
     for (const el of this.index.get(norm) ?? []) el.dataset.s = String(state);
   }
 
+  /** A short glow on the word you changed, so every click visibly lands (CSS: .w[data-flash]). */
+  private flash(el: HTMLElement | undefined, state: WordState): void {
+    if (!el) return;
+    el.dataset.flash = state === 1 ? 'known' : state === 2 ? 'learning' : 'reset';
+    // Restart the animation even when the same word is clicked again quickly.
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+    window.clearTimeout(Number(el.dataset.flashTimer));
+    el.dataset.flashTimer = String(window.setTimeout(() => delete el.dataset.flash, 700));
+  }
+
   set(norm: string, state: WordState, el?: HTMLElement): void {
     const previous = this.state(norm);
+    this.flash(el, state);
     if (previous === state) return;
     this.paint(norm, state);
     if (state) this.model.states.set(norm, state);

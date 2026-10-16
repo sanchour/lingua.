@@ -37,15 +37,16 @@ export function Summary({ title, stats, onAgain, againLabel, onDone }: { title: 
           </div>
         ))}
       </dl>
-      <div className="mt-8 flex w-full flex-col gap-2 sm:flex-row-reverse">
-        <Button size="lg" block onClick={onDone}>
-          Done
-        </Button>
+      {/* Always stacked: the next step first, a quiet way out beneath it. */}
+      <div className="mt-8 flex w-full flex-col gap-2">
         {onAgain && (
-          <Button size="lg" variant="secondary" block onClick={onAgain}>
+          <Button size="lg" block onClick={onAgain}>
             {againLabel ?? 'Another round'}
           </Button>
         )}
+        <Button size="lg" variant={onAgain ? 'ghost' : 'primary'} block onClick={onDone}>
+          Done
+        </Button>
       </div>
     </motion.div>
   );

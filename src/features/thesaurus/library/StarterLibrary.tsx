@@ -4,11 +4,10 @@ import { FREQUENCY_MILESTONES, STARTER_THEMES } from '@/core/lang/starter';
 import { starterKey, useFrequencyProgress, useStarterDecks, useStarterList } from '@/data/starter';
 import type { StarterSpec } from '@/data/starter';
 import { Button, Card } from '@/design/primitives';
-import { cx } from '@/lib/cx';
 import { installPack, usePackJobs } from '@/services/packs/packs';
 import { THEME_ICONS } from '../common/DeckIcon';
+import { VocabularyJourney } from './VocabularyJourney';
 
-const short = (n: number) => (n >= 1000 ? `${n / 1000}k` : String(n));
 
 /** The ready-made library: a path of frequency milestones and a shelf of themed sets. */
 export function StarterLibrary({ lang, onOpen }: { lang: string; onOpen: (spec: StarterSpec) => void }) {
@@ -37,32 +36,16 @@ export function StarterLibrary({ lang, onOpen }: { lang: string; onOpen: (spec: 
   const milestones = FREQUENCY_MILESTONES.filter((_, i) => i === 0 || FREQUENCY_MILESTONES[i - 1] < list.lemmaFreq.length);
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="mb-1 text-[13px] font-bold tracking-wide text-ink-soft uppercase">Most common words</h3>
-        <p className="mb-4 text-sm text-ink-soft">Each step adds the next band, so you never see a word twice. The ring shows how many you already know.</p>
-        <div className="-mx-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:px-0">
-          <ol className="relative flex min-w-max gap-2 sm:min-w-0 sm:justify-between">
-            <span className="absolute top-8 right-8 left-8 h-px bg-line-strong" aria-hidden />
-            {milestones.map((m) => {
-              const deck = added?.get(starterKey({ kind: 'frequency', milestone: m }));
-              const known = progress?.get(m) ?? 0;
-              return (
-                <li key={m} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => onOpen({ kind: 'frequency', milestone: m })}
-                    className="no-callout group flex w-[76px] flex-col items-center gap-2 rounded-2xl pb-1 text-center transition-transform duration-150 active:scale-95"
-                    aria-label={`Top ${m.toLocaleString('en')}: ${Math.round(known * 100)}% known${deck ? ', added' : ''}`}
-                  >
-                    <Medallion label={short(m)} value={known} added={Boolean(deck)} />
-                    <span className="text-[12px] leading-tight font-semibold text-ink-soft group-hover:text-ink">Top {m.toLocaleString('en')}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      </div>
+      <section>
+        <h3 className="mb-1 font-serif text-[22px] font-semibold">Your vocabulary journey</h3>
+        <VocabularyJourney
+          milestones={milestones}
+          progress={progress}
+          added={(m) => Boolean(added?.get(starterKey({ kind: 'frequency', milestone: m })))}
+          onOpen={(m) => onOpen({ kind: 'frequency', milestone: m })}
+        />
+        <p className="mt-1 text-[12.5px] text-ink-faint">Each stop adds the next band of words, so you never see a word twice.</p>
+      </section>
 
       <div>
         <h3 className="mb-3 text-[13px] font-bold tracking-wide text-ink-soft uppercase">Themes</h3>
@@ -98,27 +81,5 @@ export function StarterLibrary({ lang, onOpen }: { lang: string; onOpen: (spec: 
         </div>
       </div>
     </div>
-  );
-}
-
-/** A milestone: a soft ring that fills as the band's words become known. */
-function Medallion({ label, value, added }: { label: string; value: number; added: boolean }) {
-  const r = 27;
-  const c = 2 * Math.PI * r;
-  return (
-    <span className={cx('relative grid size-16 place-items-center rounded-full bg-raised shadow-elev-1 transition-transform duration-200 group-hover:-translate-y-0.5', added && 'ring-2 ring-sage/60')}>
-      <svg viewBox="0 0 64 64" className="absolute inset-0 -rotate-90" aria-hidden>
-        <circle cx="32" cy="32" r={r} fill="none" stroke="var(--line)" strokeWidth="4" />
-        {value > 0 && (
-          <circle cx="32" cy="32" r={r} fill="none" stroke="var(--sage)" strokeWidth="4" strokeLinecap="round" strokeDasharray={`${c * Math.min(1, value)} ${c}`} />
-        )}
-      </svg>
-      <span className="font-serif text-[17px] font-semibold tabular-nums">{label}</span>
-      {added && (
-        <span className="absolute -right-0.5 -bottom-0.5 grid size-5 place-items-center rounded-full bg-sage text-bg">
-          <Check size={12} strokeWidth={3} aria-hidden />
-        </span>
-      )}
-    </span>
   );
 }

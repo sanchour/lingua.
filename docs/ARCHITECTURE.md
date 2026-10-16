@@ -74,9 +74,9 @@ New tables are added with a new Dexie version (non-destructive; existing data is
 |------|--------|-------|
 | Profile | `languages` (one row per studied language), `settings` (key → value) | v1 |
 | Codex | `texts`, `chapters`, `readingProgress`, `textVocab` | v1 / v2 |
-| Word engine | `words`, `frequency`, `dictForms`, `dictEntries`, `dictPacks`, `translationCache`, `llmCache` | v1 |
+| Word engine | `words`, `frequency`, `dictForms`, `dictEntries`, `dictPacks`, `translationCache`, `llmCache` · `dictParadigms` (inflection tables per lemma) | v1 / v5 |
 | Thesaurus | `folders`, `decks`, `notes`, `cards`, `reviewLogs` | v1 |
-| Sonus / Visio | `media`, `transcripts`, `playbackProgress`, `blobs` | v1 |
+| Sonus / Visio | `media`, `transcripts`, `playbackProgress`, `blobs` · `feeds` (podcast subscriptions; episodes stay in the feed row) | v1 / v4 |
 | Activity | `sessions`, `dailyStats` | v1 |
 | Language packs (Phase 3) | `dictExamples` (usage examples per lemma), `starterLists` (frequency-ranked lemmas, themed lists) | v3 |
 | Diarium (Phase 5) | `journalEntries` | planned |
@@ -91,7 +91,7 @@ dashboards arrive in Phase 6 they already have months of history.
 
 ### Behaviour rules
 
-- **Word cycle** (desktop click / touch pill): `0 Unseen → 1 Known → 2 Learning → 0`.
+- **Word cycle** (desktop click): `0 Unseen → 2 Learning → 1 Known → 0` (one click learning, two known).
   Becoming Learning creates a note + card in the language's "Mined" deck with the sentence as context.
   Reset deletes a never-reviewed card, otherwise suspends it. A card maturing (interval ≥ 21 days)
   auto-promotes its word to Known (toggle). Words are tracked per surface form; Ratio also groups lemmas.
@@ -179,12 +179,19 @@ lingua/
    match pairs, cloze, word-bank sentences, typing, listening via device voices), CSV + `.apkg` import,
    starter library (frequency bands + 14 themed categories) for all ten languages, Home review queue,
    review statistics recording.
-4. **Sonus** — AudioEngine + MediaSession, audio files + podcast RSS feeds (offline), transcripts
-   (srt/vtt, Groq Whisper, local WebGPU), karaoke view, Open in Codex, commute mode, Spotify links
-   and embeds, listening statistics.
+4. **Sonus** ✅ — one audio engine outside React (lock screen via Media Session, sentence repeats,
+   resume), audio files with ID3 tags, podcasts (Apple directory search, RSS, streaming, offline
+   downloads), transcripts (SRT/VTT/plain text, Whisper on Groq with word timings, long MP3s split at
+   frame boundaries), karaoke view with Codex word lookups, Open in Codex, commute mode, mini player,
+   Spotify links and embeds (transcripts follow via the iFrame API), listening statistics. Local
+   (WebGPU) Whisper is left for later.
 5. **Visio + Diarium** — dual-subtitle player and mining; the writing journal with LLM correction,
    inline diff, grading and error tracking (see `FEATURES.md`).
 6. **Ratio + Tabula + Iter + polish** — statistics dashboards across all activities and languages,
    the polyglot capabilities table, the language-learning journey (timeline, milestones, goals,
    yearly reading challenge, manual study log), Goodreads CSV export, then the performance /
    accessibility / iOS QA pass.
+
+**Lingua 2.0** (after the six phases): ten more languages, learning through music, Grammatica (the
+grammar section, planned in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md)), foreign radio, recommendations
+and streaming-service integration in Visio.

@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import type { WordEngine } from './engine';
+import { wordAt as findWord } from './hit';
+
+const STATE_LABEL = ['', 'Known', 'Learning'] as const;
 
 interface HoverGlossProps {
   rootRef: RefObject<HTMLElement | null>;
@@ -27,6 +30,7 @@ const FETCH_DELAY_MS = 70;
 export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
   const tipRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
+  const stateRef = useRef<HTMLSpanElement>(null);
   const engineRef = useRef(engine);
   const syncRef = useRef<() => void>(() => {});
 
@@ -39,7 +43,8 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
   useEffect(() => {
     const tip = tipRef.current;
     const label = textRef.current;
-    if (!tip || !label) return;
+    const badge = stateRef.current;
+    if (!tip || !label || !badge) return;
     // The text element is replaced on every chapter change, so it is looked up on each use.
     const inText = (el: HTMLElement | null | undefined): HTMLElement | null => (el && rootRef.current?.contains(el) ? el : null);
     let current: HTMLElement | null = null;
@@ -69,6 +74,10 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
       const norm = el.dataset.n!;
       const gloss = engine.gloss(norm);
       label.textContent = gloss?.text ?? '…';
+      // The word's state, so a click visibly lands: nothing for Unseen, Learning or Known.
+      const state = engine.state(norm);
+      badge.textContent = STATE_LABEL[state];
+      badge.dataset.s = String(state);
       tip.dataset.pending = gloss ? '0' : '1';
       place(el);
       tip.dataset.visible = '1';
@@ -98,7 +107,7 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
 
     const wordAt = (): HTMLElement | null => {
       if (x < 0) return null;
-      return inText(document.elementFromPoint(x, y)?.closest<HTMLElement>('.w'));
+      return inText(findWord(document.elementFromPoint(x, y), x, y, rootRef.current));
     };
 
     /** Shows whatever word is under the mouse right now, or hides. */
@@ -117,7 +126,7 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
       }
       x = e.clientX;
       y = e.clientY;
-      const word = inText((e.target as Element | null)?.closest?.<HTMLElement>('.w'));
+      const word = inText(findWord(e.target, x, y, rootRef.current));
       if (word) {
         cancelHide();
         if (word !== current) show(word);
@@ -160,6 +169,7 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
   return createPortal(
     <div ref={tipRef} className="reader-tip" role="tooltip" data-visible="0">
       <span ref={textRef} className="reader-tip-text" />
+      <span ref={stateRef} className="reader-tip-state" />
     </div>,
     document.body,
   );

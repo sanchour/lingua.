@@ -162,6 +162,32 @@ describe('ludus', () => {
     expect(sentenceTiles('¿Dónde está, Ana?')).toEqual(['Dónde', 'está', 'Ana']);
   });
 
+  it('adds translations, listening sentences, articles and speaking when they can be made', () => {
+    const kinds = new Set<string>();
+    const gendered = { ...items[0], gender: 'm' };
+    for (let seed = 1; seed < 120; seed++) {
+      const [ex] = planLesson([gendered], items, {
+        random: seededRandom(seed),
+        canListen: true,
+        match: false,
+        canSpeak: true,
+        articleOf: (i) => (i.gender === 'm' ? 'el' : null),
+        articles: ['el', 'la'],
+      });
+      kinds.add(ex.kind);
+      if (ex.kind === 'translate') {
+        expect(ex.answer).toEqual(['The', 'dog', 'sleeps', 'at', 'home']);
+        expect(ex.tiles.length).toBeGreaterThan(ex.answer.length);
+      }
+      if (ex.kind === 'listen-build') expect(ex.answer.join(' ')).toBe('El perro duerme en casa');
+      if (ex.kind === 'article') expect(ex.options[ex.answer]).toBe('el');
+    }
+    for (const k of ['translate', 'listen-build', 'article', 'speak']) expect(kinds).toContain(k);
+    // Without a microphone or an article, those never appear.
+    const plain = planLesson(items, items, { random: seededRandom(5), canListen: false });
+    expect(plain.some((e) => e.kind === 'speak' || e.kind === 'article')).toBe(false);
+  });
+
   it('retries keep the right answer and grades follow mistakes', () => {
     const plan = planLesson([items[1]], items, { random: seededRandom(3), canListen: false, match: false });
     const first = plan[0];

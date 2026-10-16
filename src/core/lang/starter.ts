@@ -12,6 +12,18 @@ export function frequencyBand(milestone: number): [from: number, to: number] {
   return [i > 0 ? FREQUENCY_MILESTONES[i - 1] + 1 : 1, milestone];
 }
 
+/** Each stop on the vocabulary journey, and what reaching it lets you do. */
+export const JOURNEY_STAGES: Record<number, { name: string; lets: string }> = {
+  100: { name: 'First words', lets: 'greet, ask and answer the simplest things' },
+  200: { name: 'Finding your feet', lets: 'follow slow, simple sentences' },
+  250: { name: 'Everyday basics', lets: 'get by in shops, cafés and trains' },
+  500: { name: 'Small talk', lets: 'chat about yourself and your day' },
+  1000: { name: 'Daily life', lets: 'understand most everyday conversation' },
+  2000: { name: 'Real conversations', lets: 'follow series, podcasts and easy books' },
+  5000: { name: 'Reading freely', lets: 'read novels and the news with few gaps' },
+  10_000: { name: 'Fluent reader', lets: 'read almost anything with ease' },
+};
+
 export interface StarterTheme {
   id: string;
   name: string;

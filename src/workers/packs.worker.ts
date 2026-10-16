@@ -4,7 +4,7 @@ import Dexie from 'dexie';
 import { PACK_FORMAT, packId } from '@/core/packs/format';
 import type { PackFile } from '@/core/packs/format';
 import { createDb } from '@/data/db';
-import type { DictEntry, DictExample, DictForm, FrequencyRow } from '@/data/types';
+import type { DictEntry, DictExample, DictForm, DictParadigm, FrequencyRow } from '@/data/types';
 
 export type PackWorkerRequest = { lang: string; url: string };
 export type PackWorkerMessage =
@@ -75,6 +75,8 @@ async function install({ lang, url }: PackWorkerRequest): Promise<void> {
     row.ex.push([sentence, translation, start, end]);
   }
   const examples = [...byLemma.values()];
+  const tagSets = pack.tagSets ?? [];
+  const paradigms: DictParadigm[] = (pack.paradigms ?? []).map(([i, pos, rows]) => ({ pack: id, lemma: pack.lemmas[i][0], pos, forms: rows.map(([form, t]) => [form, tagSets[t] ?? '']) }));
   const formByKey = new Map(forms.map((f) => [f.form, f]));
   const frequency: FrequencyRow[] = pack.freq.map((norm, i) => {
     const f = formByKey.get(norm);
@@ -88,8 +90,9 @@ async function install({ lang, url }: PackWorkerRequest): Promise<void> {
   await db.dictEntries.where('[pack+lemma]').between([id, Dexie.minKey], [id, Dexie.maxKey]).delete();
   await db.frequency.where('[lang+rank]').between([lang, Dexie.minKey], [lang, Dexie.maxKey]).delete();
   await db.dictExamples.where('[pack+lemma]').between([id, Dexie.minKey], [id, Dexie.maxKey]).delete();
+  await db.dictParadigms.where('[pack+lemma]').between([id, Dexie.minKey], [id, Dexie.maxKey]).delete();
 
-  const total = entries.length + forms.length + frequency.length + examples.length;
+  const total = entries.length + forms.length + frequency.length + examples.length + paradigms.length;
   let stored = 0;
   const store = async <T>(table: { bulkPut: (rows: T[]) => Promise<unknown> }, rows: T[]) => {
     for (let i = 0; i < rows.length; i += CHUNK) {
@@ -102,6 +105,7 @@ async function install({ lang, url }: PackWorkerRequest): Promise<void> {
   await store(db.dictForms, forms);
   await store(db.frequency, frequency);
   await store(db.dictExamples, examples);
+  await store(db.dictParadigms, paradigms);
   await db.starterLists.put({
     lang,
     version: pack.version,

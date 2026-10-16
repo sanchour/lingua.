@@ -57,7 +57,9 @@
 
 /* Word states. Only colour/decoration change, so a state flip is a single cheap repaint. */
 .reader-flow .w {
-  border-radius: 3px;
+  /* Inline padding doesn't move the text but widens the click area into the line spacing. */
+  padding-block: 0.12em;
+  border-radius: 4px;
   cursor: pointer;
   text-decoration-thickness: 1.5px;
   text-underline-offset: 0.2em;
@@ -147,5 +149,114 @@
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
+  }
+}
+
+/* Sonus karaoke: one paragraph per spoken sentence. The current one is lit, and its words brighten
+   as they are spoken. Only colours change, so following the audio is a cheap repaint. */
+.reader-flow.karaoke [data-b] {
+  position: relative;
+  margin: 0 -0.55em 0.3em;
+  padding: 0.28em 0.55em;
+  border-radius: 14px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    color 220ms ease,
+    background-color 220ms ease;
+}
+
+.reader-flow.karaoke [data-b].is-current {
+  color: var(--ink);
+  background-color: color-mix(in oklab, var(--accent-soft) 75%, transparent);
+}
+
+.reader-flow.karaoke [data-b].is-current .w:not([data-k]) {
+  color: var(--ink-soft);
+}
+
+.reader-flow.karaoke [data-b].is-current .w[data-k] {
+  color: var(--ink);
+}
+
+.reader-flow.karaoke.is-still [data-b] {
+  color: var(--ink);
+  cursor: auto;
+}
+
+/* Wide screens: each sentence's start time in the margin (click it to jump there). */
+.reader-flow.karaoke.has-gutter [data-b]::before {
+  content: attr(data-time);
+  position: absolute;
+  top: 0.62em;
+  right: calc(100% + 0.4rem);
+  font: 600 11px/1 var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.reader-flow.karaoke.has-gutter [data-b]:hover::before,
+.reader-flow.karaoke.has-gutter [data-b].is-current::before {
+  opacity: 1;
+}
+
+/* A short glow when a word's state changes, so every click visibly lands. */
+.reader-flow .w[data-flash] {
+  animation: 650ms cubic-bezier(0.2, 0, 0, 1) lingua-word-flash;
+}
+.reader-flow .w[data-flash='learning'] {
+  --flash: var(--learning-line);
+}
+.reader-flow .w[data-flash='known'] {
+  --flash: var(--sage);
+}
+.reader-flow .w[data-flash='reset'] {
+  --flash: var(--ink-faint);
+}
+@keyframes lingua-word-flash {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--flash) 55%, transparent);
+  }
+  35% {
+    box-shadow: 0 0 0 5px color-mix(in oklab, var(--flash) 30%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+}
+
+/* The hovered word's state, beside its translation. */
+.reader-tip-state:empty {
+  display: none;
+}
+.reader-tip-state {
+  flex-shrink: 0;
+  margin-left: 0.15rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: color-mix(in oklab, var(--on-inverse) 14%, transparent);
+}
+.reader-tip-state[data-s='2'] {
+  background: color-mix(in oklab, var(--learning-line) 55%, transparent);
+}
+.reader-tip-state[data-s='1'] {
+  background: color-mix(in oklab, var(--sage) 55%, transparent);
+}
+
+/* Sentences with instant translations outside the reader (Ludus). */
+.gloss-text .w {
+  border-radius: 4px;
+  padding-block: 0.06em;
+  cursor: help;
+  transition: background-color 120ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .gloss-text .w:hover {
+    background-color: var(--accent-soft);
   }
 }

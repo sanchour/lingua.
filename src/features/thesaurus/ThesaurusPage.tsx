@@ -2,20 +2,20 @@ import { useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { Search, SearchX } from 'lucide-react';
+import { Layers, Plus, Search, SearchX, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { STARTER_THEMES } from '@/core/lang/starter';
 import { createDeck, createFolder, useDeckCounts, useDecks, useFolders } from '@/data/decks';
 import { patchSetting } from '@/data/settings';
 import type { DeckSort } from '@/data/settings';
-import { useStarterList } from '@/data/starter';
+import { starterKey, useStarterList } from '@/data/starter';
 import type { StarterSpec } from '@/data/starter';
 import { useStudyOutlook } from '@/data/study';
 import type { Deck, Folder } from '@/data/types';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
-import { IconButton, SearchInput, searchKey, Segmented, SortMenu } from '@/design/primitives';
+import { Button, Card, IconButton, SearchInput, searchKey, Segmented, SortMenu } from '@/design/primitives';
 import { fade, spring } from '@/design/motion';
 import { THEME_ICONS } from './common/DeckIcon';
 import { CsvImportDrawer } from './library/CsvImportDrawer';
@@ -25,7 +25,6 @@ import { ConfirmDialog, MoveDialog, NameDialog } from './library/dialogs';
 import type { ConfirmRequest, MoveRequest, NameRequest } from './library/dialogs';
 import { NewMenu } from './library/NewMenu';
 import type { NewAction } from './library/NewMenu';
-import { StarterDrawer } from './library/StarterDrawer';
 import { StarterLibrary } from './library/StarterLibrary';
 import { TodayCard } from './library/TodayCard';
 import { useDeckImport } from './library/useDeckImport';
@@ -55,15 +54,24 @@ export default function ThesaurusPage() {
 
   const [params, setParams] = useSearchParams();
   const hasDecks = Boolean(decks?.length);
-  const tab: Tab = params.get('tab') === 'discover' || (decks && !hasDecks) ? 'discover' : 'decks';
-  const setTab = (next: Tab) => setParams(next === 'decks' ? {} : { tab: next }, { replace: true });
+  // The tab you pick wins; with nothing chosen, an empty treasury opens on Discover.
+  const picked = params.get('tab');
+  const tab: Tab = picked === 'decks' || picked === 'discover' ? picked : decks && !hasDecks ? 'discover' : 'decks';
+  const setTab = (next: Tab) => setParams({ tab: next }, { replace: true });
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const browse = () => {
+    setSearching(false);
+    setQuery('');
+    setTab('discover');
+    requestAnimationFrame(() => tabsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  };
 
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
   useHotkeys({ '/': () => (searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine');
 
-  const [starter, setStarter] = useState<StarterSpec | null>(null);
+  const openStarter = (spec: StarterSpec) => navigate('/thesaurus/ready/' + starterKey(spec));
   const [naming, setNaming] = useState<NameRequest | null>(null);
   const [confirming, setConfirming] = useState<ConfirmRequest | null>(null);
   const [moving, setMoving] = useState<MoveRequest | null>(null);
@@ -108,9 +116,13 @@ export default function ThesaurusPage() {
         </div>
       )}
 
-      <motion.div {...enter(0)}>{decks && <TodayCard lang={lang} hasDecks={hasDecks} forecast={outlook?.forecast} onDiscover={() => setTab('discover')} />}</motion.div>
+      {hasDecks && (
+        <motion.div {...enter(0)} className="mb-9">
+          <TodayCard lang={lang} hasDecks forecast={outlook?.forecast} onDiscover={browse} />
+        </motion.div>
+      )}
 
-      <motion.div {...enter(1)} className="mt-9 mb-5 flex h-11 items-center gap-2">
+      <motion.div ref={tabsRef} {...enter(1)} className="mb-5 flex h-11 scroll-mt-24 items-center gap-2">
         <div className="relative h-full min-w-0 flex-1">
           <AnimatePresence mode="popLayout" initial={false}>
             {searching ? (
@@ -139,27 +151,61 @@ export default function ThesaurusPage() {
       <AnimatePresence mode="wait" initial={false}>
         {query.trim() ? (
           <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
-            <SearchResults lang={lang} query={query} decks={decks ?? []} folders={folders ?? []} order={order.decks} onOpenStarter={setStarter}>
+            <SearchResults lang={lang} query={query} decks={decks ?? []} folders={folders ?? []} order={order.decks} onOpenStarter={openStarter}>
               {(found) => <DeckResults decks={found} folders={folders ?? []} counts={counts} actions={actions} />}
             </SearchResults>
           </motion.div>
         ) : tab === 'decks' ? (
           <motion.section key="decks" aria-label="My decks" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={spring.snappy}>
             {hasDecks && folders && <DeckTree decks={decks!} folders={folders} counts={counts} actions={actions} order={order} />}
+            {decks && !hasDecks && <NoDecks onBrowse={browse} onNew={() => newDeck(null)} onImport={(kind) => choose(kind)} />}
           </motion.section>
         ) : (
           <motion.section key="discover" aria-label="Ready-made decks" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>
-            <StarterLibrary lang={lang} onOpen={setStarter} />
+            <StarterLibrary lang={lang} onOpen={openStarter} />
           </motion.section>
         )}
       </AnimatePresence>
 
-      <StarterDrawer lang={lang} spec={starter} onClose={() => setStarter(null)} />
       <CsvImportDrawer lang={lang} source={imports.csv} folders={folders ?? []} onClose={imports.closeCsv} />
       <NameDialog request={naming} onClose={() => setNaming(null)} />
       <ConfirmDialog request={confirming} onClose={() => setConfirming(null)} />
       <MoveDialog request={moving} onClose={() => setMoving(null)} />
     </>
+  );
+}
+
+/** My decks, before there are any: the three ways to start. */
+function NoDecks({ onBrowse, onNew, onImport }: { onBrowse: () => void; onNew: () => void; onImport: (kind: 'apkg' | 'csv') => void }) {
+  return (
+    <Card className="flex flex-col items-center px-6 py-10 text-center">
+      <span className="mb-4 grid size-14 place-items-center rounded-2xl bg-sage-soft text-sage-text">
+        <Layers size={24} aria-hidden />
+      </span>
+      <p className="font-serif text-xl font-semibold">No decks yet</p>
+      <p className="mt-1.5 max-w-sm text-[14.5px] leading-relaxed text-ink-soft">
+        Start with ready-made words, make a deck of your own, or bring one from Anki. Words you mark as Learning while reading arrive on their own.
+      </p>
+      <div className="mt-6 flex flex-wrap justify-center gap-2">
+        <Button icon={Sparkles} onClick={onBrowse}>
+          Browse ready-made decks
+        </Button>
+        <Button variant="secondary" icon={Plus} onClick={onNew}>
+          New deck
+        </Button>
+      </div>
+      <p className="mt-4 text-[13px] text-ink-soft">
+        Or import{' '}
+        <button type="button" onClick={() => onImport('apkg')} className="font-semibold text-accent-text underline-offset-2 hover:underline">
+          an Anki deck
+        </button>{' '}
+        or{' '}
+        <button type="button" onClick={() => onImport('csv')} className="font-semibold text-accent-text underline-offset-2 hover:underline">
+          a spreadsheet (CSV)
+        </button>
+        .
+      </p>
+    </Card>
   );
 }
 

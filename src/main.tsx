@@ -10,6 +10,7 @@ import '@fontsource-variable/lora';
 import '@fontsource-variable/newsreader';
 import '@fontsource-variable/merriweather';
 import '@fontsource-variable/noto-serif';
+import '@fontsource-variable/comfortaa';
 import '@fontsource/atkinson-hyperlegible/400.css';
 import '@fontsource/atkinson-hyperlegible/700.css';
 import './styles/index.css';

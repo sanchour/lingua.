@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { CodexPage, DeckPage, LabPage, OrdoPage, RatioPage, ReaderPage, SonusPage, StudyPage, ThesaurusPage, VisioPage } from './pages';
+import { BookDetailsPage, CodexPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusFeedPage, SonusPage, SonusPlayerPage, StarterPage, StudyPage, ThesaurusPage, VisioPage } from './pages';
 import { Root } from './Root';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -14,10 +14,16 @@ export const router = createBrowserRouter(
         { index: true, element: <HomePage /> },
         { path: 'codex', element: <CodexPage /> },
         { path: 'codex/read/:textId', element: <ReaderPage /> },
+        { path: 'codex/new', element: <NewTextPage /> },
+        { path: 'codex/book/:textId', element: <BookDetailsPage /> },
         { path: 'thesaurus', element: <ThesaurusPage /> },
         { path: 'thesaurus/deck/:deckId', element: <DeckPage /> },
+        { path: 'thesaurus/ready/:key', element: <StarterPage /> },
         { path: 'thesaurus/study/:deckId', element: <StudyPage /> },
         { path: 'sonus', element: <SonusPage /> },
+        { path: 'sonus/play/:mediaId', element: <SonusPlayerPage /> },
+        { path: 'sonus/podcast/:feedId', element: <SonusFeedPage /> },
+        { path: 'sonus/commute', element: <CommutePage /> },
         { path: 'visio', element: <VisioPage /> },
         { path: 'ratio', element: <RatioPage /> },
         { path: 'ordo', element: <OrdoPage /> },

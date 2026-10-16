@@ -55,5 +55,7 @@ export async function recordSession(session: Omit<ActivitySession, 'id'>, databa
   if (session.activeMs < 5_000) return; // ignore accidental opens
   await database.sessions.add({ ...session, id: crypto.randomUUID() });
   if (session.type === 'read') await bumpDaily(session.lang, { readMs: session.activeMs, wordsRead: session.wordsRead ?? 0 }, database);
+  else if (session.type === 'listen') await bumpDaily(session.lang, { listenMs: session.activeMs }, database);
+  else if (session.type === 'watch') await bumpDaily(session.lang, { watchMs: session.activeMs }, database);
   await snapshotVocabulary(session.lang, database);
 }

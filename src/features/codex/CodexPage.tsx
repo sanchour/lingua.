@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, BookOpenText, LayoutGrid, List, Search, SearchX, Sparkles } from 'lucide-react';
+import { ArrowRight, BookOpenText, LayoutGrid, List, Plus, Search, SearchX, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { useFullMotion } from '@/app/motion';
 import { PageHeader } from '@/app/PageHeader';
@@ -19,7 +19,6 @@ import { pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
 import { BookCard, BookRow } from './library/BookCard';
 import { BookCover } from './library/BookCover';
-import { ImportMenu } from './library/ImportMenu';
 import { useImporter } from './library/useImporter';
 
 type Group = 'reading' | 'next' | 'finished' | 'wishlist';
@@ -143,7 +142,14 @@ export default function CodexPage() {
 
   return (
     <>
-      <PageHeader title="Codex" actions={<ImportMenu lang={lang} busy={busy !== null} onImport={(kind) => void run(kind)} />} />
+      <PageHeader
+        title="Codex"
+        actions={
+          <Link to="/codex/new" className={buttonClasses('primary', 'md')}>
+            <Plus size={17} aria-hidden /> Add
+          </Link>
+        }
+      />
 
       {texts && texts.length === 0 && <EmptyLibrary lang={lang} busy={busy === 'sample'} onSample={() => void run('sample')} />}
 
@@ -289,9 +295,14 @@ function EmptyLibrary({ lang, busy, onSample }: { lang: string; busy: boolean; o
       <p className="mt-2 max-w-sm text-[15px] leading-relaxed text-ink-soft">
         Add a book, a text file or something you pasted. Or start with a short page, written for you.
       </p>
-      <Button className="mt-6" icon={Sparkles} onClick={onSample} loading={busy}>
-        Read “{SAMPLES[lang]?.title ?? SAMPLES.en.title}”
-      </Button>
+      <div className="mt-6 flex flex-wrap justify-center gap-2">
+        <Link to="/codex/new" className={buttonClasses('primary', 'md')}>
+          <Plus size={17} aria-hidden /> Add a book or text
+        </Link>
+        <Button variant="secondary" icon={Sparkles} onClick={onSample} loading={busy}>
+          Read “{SAMPLES[lang]?.title ?? SAMPLES.en.title}”
+        </Button>
+      </div>
     </Card>
   );
 }

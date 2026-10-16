@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
-import { ChevronLeft, Ellipsis, FolderInput, Gamepad2, Layers, Pencil, Plus, Search, Settings2, Trash2 } from 'lucide-react';
+import { BackLink } from '@/app/BackLink';
+import { Ellipsis, FolderInput, Gamepad2, Layers, Pencil, Plus, Search, Settings2, Trash2 } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatInterval, maturityOf } from '@/core/srs/scheduler';
@@ -61,9 +62,7 @@ export default function DeckPage() {
 
   return (
     <>
-      <Link to="/thesaurus" className="-mt-2 mb-3 inline-flex items-center gap-1 rounded-lg py-1 pr-2 text-sm font-semibold text-ink-soft transition-colors hover:text-ink">
-        <ChevronLeft size={17} aria-hidden /> Thesaurus
-      </Link>
+      <BackLink to="/thesaurus">Thesaurus</BackLink>
       <PageHeader
         title={deck.name}
         actions={

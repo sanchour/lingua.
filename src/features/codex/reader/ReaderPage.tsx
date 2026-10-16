@@ -19,6 +19,7 @@ import { cx } from '@/lib/cx';
 import { ChapterBody } from './ChapterBody';
 import { ContentsDrawer } from './ContentsDrawer';
 import { WordEngine } from './engine';
+import { CLICK_SLOP_PX, wordAt } from './hit';
 import { HoverGloss } from './HoverGloss';
 import { updateCachedState, useChapterModel } from './model';
 import { ReaderChrome } from './ReaderChrome';
@@ -212,7 +213,7 @@ export default function ReaderPage() {
 
   const onPointerDown = (e: ReactPointerEvent) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    const word = (e.target as Element).closest<HTMLElement>('.w');
+    const word = wordAt(e.target, e.clientX, e.clientY, flowRef.current);
     const g = { x: e.clientX, y: e.clientY, t: performance.now(), word, swiping: false, longPressed: false, timer: 0, type: e.pointerType };
     if (e.pointerType !== 'mouse' && word) {
       g.timer = window.setTimeout(() => {
@@ -243,7 +244,7 @@ export default function ReaderPage() {
     window.clearTimeout(g.timer);
     session.touch();
     if (g.type === 'mouse') {
-      if (g.word && Math.hypot(e.clientX - g.x, e.clientY - g.y) < 5 && engine) {
+      if (g.word && Math.hypot(e.clientX - g.x, e.clientY - g.y) < CLICK_SLOP_PX && engine) {
         engine.cycle(g.word);
       }
       return;
@@ -265,7 +266,7 @@ export default function ReaderPage() {
 
   // Right-click a word for its details (a left click cycles its state). On touch, long-press does this.
   const onContextMenu = (e: ReactMouseEvent) => {
-    const word = (e.target as Element).closest<HTMLElement>('.w');
+    const word = wordAt(e.target, e.clientX, e.clientY, flowRef.current);
     if (!word) return;
     e.preventDefault();
     if (pointer === 'fine') openDrawer(word);
