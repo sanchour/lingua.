@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import { MotionConfig } from 'motion/react';
 import { AppContext } from '@/app/context';
 import { useThemeController } from '@/app/theme';
@@ -10,6 +11,7 @@ import { Toaster } from '@/design/primitives';
 import { getLanguage } from '@/core/lang/languages';
 import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
+import { checkAllMilestones, onMilestone } from '@/data/journey';
 import { installPack, packMissing } from '@/services/packs/packs';
 import { toast } from '@/state/ui';
 import { PackProgress } from './PackProgress';
@@ -64,6 +66,17 @@ export function Root() {
         );
     });
   }, [activeLang]);
+
+  // Milestones reached just now get a small celebration; old ones are found quietly for Iter.
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!onboarded) return;
+    const off = onMilestone((events) => {
+      for (const e of events.slice(0, 2)) toast(`Milestone: ${e.title}`, { tone: 'success', action: { label: 'Journey', onClick: () => navigate('/ratio?tab=iter') } });
+    });
+    void checkAllMilestones().catch(() => {});
+    return off;
+  }, [onboarded, navigate]);
 
   const context = useMemo(() => (settings && language ? { settings, language } : null), [settings, language]);
 

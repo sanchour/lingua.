@@ -38,3 +38,30 @@ export function parseGoodreadsCsv(text: string): GoodreadsBook[] {
       };
     });
 }
+
+export interface FinishedBook {
+  title: string;
+  author?: string;
+  isbn13?: string;
+  bookId?: string;
+  rating?: number;
+  finishedAt: number;
+  addedAt: number;
+  lang: string;
+}
+
+const csvCell = (value: string) => (/[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value);
+const slashDate = (ms: number) => {
+  const d = new Date(ms);
+  return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+};
+
+/**
+ * Books finished in Lingua as a CSV that Goodreads' importer accepts (My Books → Import and export).
+ * Each book is shelved as read, with its date, and tagged with the language it was read in.
+ */
+export function toGoodreadsCsv(books: FinishedBook[]): string {
+  const header = ['Book Id', 'Title', 'Author', 'ISBN13', 'My Rating', 'Date Read', 'Date Added', 'Bookshelves', 'Exclusive Shelf'];
+  const rows = books.map((b) => [b.bookId ?? '', b.title, b.author ?? '', b.isbn13 ? `="${b.isbn13}"` : '', b.rating ? String(b.rating) : '0', slashDate(b.finishedAt), slashDate(b.addedAt), `read-in-${b.lang}`, 'read']);
+  return [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\n');
+}

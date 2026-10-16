@@ -1,8 +1,10 @@
 import { useLiveQuery } from 'dexie-react-hooks';
+import { toGoodreadsCsv } from '@/core/parsers/goodreads';
 import type { GoodreadsBook } from '@/core/parsers/goodreads';
 import { splitIntoParts } from '@/core/parsers/text';
 import type { ChapterDraft } from '@/core/parsers/text';
 import { countWords, tokenize } from '@/core/text/tokenizer';
+import { localDateKey } from '@/lib/format';
 import { db } from './db';
 import type { LinguaDB } from './db';
 import type { BlobRow, Chapter, ReadingProgress, Text, TextStats, TextVocab } from './types';
@@ -220,4 +222,13 @@ export async function deleteText(textId: string, database: LinguaDB = db): Promi
 export async function blobUrl(blobId: string, database: LinguaDB = db): Promise<string | null> {
   const row = await database.blobs.get(blobId);
   return row ? URL.createObjectURL(row.blob) : null;
+}
+
+/** Books finished in Lingua, as a CSV for Goodreads' importer. */
+export async function finishedBooksCsv(database: LinguaDB = db): Promise<{ file: File; count: number }> {
+  const texts = (await database.texts.toArray()).filter((t) => !t.deletedAt && t.finishedAt && t.kind !== 'shelfItem');
+  const csv = toGoodreadsCsv(
+    texts.map((t) => ({ title: t.title, author: t.author, isbn13: t.goodreads?.isbn13, bookId: t.goodreads?.bookId, rating: t.goodreads?.rating, finishedAt: t.finishedAt!, addedAt: t.createdAt, lang: t.lang })),
+  );
+  return { file: new File([csv], `lingua-finished-books-${localDateKey()}.csv`, { type: 'text/csv' }), count: texts.length };
 }

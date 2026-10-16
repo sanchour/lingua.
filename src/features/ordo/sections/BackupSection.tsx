@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import type { DragEvent } from 'react';
-import { Archive, ArchiveRestore, Download, Share } from 'lucide-react';
+import { Archive, ArchiveRestore, BookCheck, Download, Share } from 'lucide-react';
 import { BackupError, exportBackup, readBackup, restoreBackup } from '@/data/backup';
+import { finishedBooksCsv } from '@/data/library';
 import type { ParsedBackup } from '@/data/backup';
 import type { Settings } from '@/data/settings';
 import { useLayout } from '@/design/hooks/useLayout';
@@ -141,6 +142,25 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
       <div className="mt-2 divide-y divide-line">
         <ToggleRow title="Include audio, video and images" description="Bigger file; turn off to move only words and progress." checked={includeMedia} onChange={setIncludeMedia} />
         <ToggleRow title="Include API keys" description="Off by default so keys never leave this device by accident." checked={includeKeys} onChange={setIncludeKeys} />
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl bg-sunken/50 p-4">
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold">Books for Goodreads</p>
+          <p className="text-[13px] text-ink-soft">The books you finished in Lingua as a CSV. On Goodreads: My Books → Import and export.</p>
+        </div>
+        <Button
+          variant="secondary"
+          icon={BookCheck}
+          onClick={async () => {
+            const { file, count } = await finishedBooksCsv();
+            if (!count) return toast('No finished books yet. Mark a book as finished in Codex first.');
+            downloadFile(file);
+            toast(`Saved ${count} ${count === 1 ? 'book' : 'books'} for Goodreads.`, { tone: 'success' });
+          }}
+        >
+          Export finished books
+        </Button>
       </div>
 
       <Dialog

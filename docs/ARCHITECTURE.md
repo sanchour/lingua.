@@ -13,7 +13,7 @@ Every phase starts by reading this file, `FEATURES.md`, `DECISIONS.md` and `PERF
 | # | Section | Contains | Desktop | iPhone |
 |---|---------|----------|---------|--------|
 | 1 | **Home** | Streak, continue reading/listening, daily review queue, language overview strip | sidebar | tab bar |
-| 2 | **Codex** | *Library* (reader + word engine) · *Diarium* (writing journal, Phase 5) | sidebar | tab bar |
+| 2 | **Codex** | *Library* (reader + word engine) · *Diarium* (writing journal with AI corrections) | sidebar | tab bar |
 | 3 | **Thesaurus** | Folders, decks, Classic Recall (FSRS) + Ludus exercises | sidebar | tab bar |
 | 4 | **Sonus** | Audio player, karaoke transcripts, commute mode, Spotify links | sidebar | tab bar |
 | 5 | **Visio** | Dual-subtitle video player, dialogue mining | sidebar | tab bar |
@@ -79,8 +79,8 @@ New tables are added with a new Dexie version (non-destructive; existing data is
 | Sonus / Visio | `media`, `transcripts`, `playbackProgress`, `blobs` · `feeds` (podcast subscriptions; episodes stay in the feed row) | v1 / v4 |
 | Activity | `sessions`, `dailyStats` | v1 |
 | Language packs (Phase 3) | `dictExamples` (usage examples per lemma), `starterLists` (frequency-ranked lemmas, themed lists) | v3 |
-| Diarium (Phase 5) | `journalEntries` | planned |
-| Tabula / Iter (Phase 6) | `capabilities`, `journeyEvents`, `studyLogs`, `goals` | planned |
+| Diarium | `journalEntries` (text, prompt, versions, AI review) | v6 |
+| Tabula / Iter | `capabilities`, `journeyEvents` (milestones + moments), `studyLogs`, `goals` | v6 |
 
 Conventions: ids are `crypto.randomUUID()` (except deterministic ids like `words.id = "ru:слово"`);
 times are epoch ms; indexed booleans are `0 | 1`; user-owned rows carry `createdAt`, `updatedAt`,
@@ -185,12 +185,18 @@ lingua/
    frame boundaries), karaoke view with Codex word lookups, Open in Codex, commute mode, mini player,
    Spotify links and embeds (transcripts follow via the iFrame API), listening statistics. Local
    (WebGPU) Whisper is left for later.
-5. **Visio + Diarium** — dual-subtitle player and mining; the writing journal with LLM correction,
-   inline diff, grading and error tracking (see `FEATURES.md`).
-6. **Ratio + Tabula + Iter + polish** — statistics dashboards across all activities and languages,
-   the polyglot capabilities table, the language-learning journey (timeline, milestones, goals,
-   yearly reading challenge, manual study log), Goodreads CSV export, then the performance /
-   accessibility / iOS QA pass.
+5. **Diarium** ✅ (Visio moved to the next step) — the writing journal: daily prompts (AI or
+   curated, ten languages), autosaving editor, AI check with corrections, scores and a CEFR
+   estimate, word diff with explanations, corrected and native-like versions, corrections to a
+   Journal deck, writing time and words in the statistics.
+6. **Ratio + Tabula + Iter + polish** ✅ — statistics dashboards across all activities and
+   languages (hand-drawn SVG charts), the polyglot capabilities table (Notion CSV import, drag to
+   reorder, image export), the journey (milestones found in history, moments with photos, goals
+   with honest projections, yearly reading challenge, study log, level history), Goodreads CSV
+   export, reset of one language or of everything, an adaptive icon, self-updating installs and
+   an accessibility/overflow pass.
+7. **Visio + Whisper + Home** — the dual-subtitle player and mining, local Whisper, and an
+   at-a-glance Home (see `ROADMAP.md`).
 
 **Lingua 2.0** (after the six phases): ten more languages, learning through music, Grammatica (the
 grammar section, planned in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md)), foreign radio, recommendations

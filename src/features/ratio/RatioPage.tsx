@@ -1,22 +1,42 @@
-import { CalendarDays, Gauge, Sprout, Target } from 'lucide-react';
-import { ComingSoon } from '@/app/ComingSoon';
+import { useSearchParams } from 'react-router';
+import { AnimatePresence, motion } from 'motion/react';
+import { ChartNoAxesColumn, Route, Table2 } from 'lucide-react';
 import { PageHeader } from '@/app/PageHeader';
+import { Segmented } from '@/design/primitives';
+import { fade } from '@/design/motion';
+import { Iter } from './iter/Iter';
+import { Overview } from './Overview';
+import { Tabula } from './tabula/Tabula';
 
+type Tab = 'overview' | 'tabula' | 'iter';
+
+/** Ratio: honest numbers (Overview), every language you speak (Tabula), and the road so far (Iter). */
 export default function RatioPage() {
+  const [params, setParams] = useSearchParams();
+  const picked = params.get('tab');
+  const tab: Tab = picked === 'tabula' || picked === 'iter' ? picked : 'overview';
   return (
     <>
       <PageHeader title="Ratio" />
-      <ComingSoon
-        phase={5}
-        title="Your ledger"
-        body="Quiet, honest numbers about your progress. Lingua starts recording activity in Phase 2, so the charts will have history by the time they arrive."
-        features={[
-          { icon: Sprout, text: 'Known words over time, by word form and word family' },
-          { icon: Target, text: 'Coverage: how much of the top 2,000 words you know' },
-          { icon: Gauge, text: 'Reading speed and listening time' },
-          { icon: CalendarDays, text: 'Retention heatmap and upcoming reviews' },
-        ]}
-      />
+      <div className="-mt-2 mb-7">
+        <Segmented<Tab>
+          label="Ratio"
+          value={tab}
+          onChange={(next) => setParams(next === 'overview' ? {} : { tab: next }, { replace: true })}
+          options={[
+            { value: 'overview', label: 'Overview', icon: ChartNoAxesColumn },
+            { value: 'tabula', label: 'Tabula', icon: Table2 },
+            { value: 'iter', label: 'Iter', icon: Route },
+          ]}
+        />
+      </div>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div key={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={fade}>
+          {tab === 'overview' && <Overview />}
+          {tab === 'tabula' && <Tabula />}
+          {tab === 'iter' && <Iter />}
+        </motion.div>
+      </AnimatePresence>
     </>
   );
 }

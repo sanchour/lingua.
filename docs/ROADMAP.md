@@ -4,7 +4,7 @@ A working plan for the next prompts. Each prompt is planned here first, then bui
 stopping, then committed and pushed. A push redeploys GitHub Pages, and installed apps update
 themselves. Ticks show what is done.
 
-## Prompt 1: iPhone icon · Diarium (Phase 5) · Phase 6 · reset
+## Prompt 1: iPhone icon · Diarium (Phase 5) · Phase 6 · reset ✅
 
 Visio and Whisper are skipped here and come in prompt 2.
 
@@ -57,9 +57,9 @@ Visio and Whisper are skipped here and come in prompt 2.
 - [x] A privacy note next to Check.
 
 ### 4. Phase 6: Ratio, Tabula and Iter
-- [ ] Ratio tabs: **Overview · Tabula · Iter**, with a language filter (this language, or all).
-- [ ] SVG charts in `design/charts`: line, bars, calendar heatmap, ring and step chart, each with a hover or tap popover.
-- [ ] Overview:
+- [x] Ratio tabs: **Overview · Tabula · Iter**, with a language filter (this language, or all).
+- [x] SVG charts in `design/charts`: line, bars, calendar heatmap, ring and step chart, each with a hover or tap popover.
+- [x] Overview:
   - **Vocabulary:** words over time; new words per week; coverage of the top 1k, 2k, 5k and 10k; an estimate of passive vocabulary.
   - **Reading:** words, time, words per minute with its trend, books finished, comprehension per book.
   - **Listening:** hours, episodes finished, words mined.
@@ -67,7 +67,7 @@ Visio and Whisper are skipped here and come in prompt 2.
   - **Writing:** entries, words, grade trend, top error categories.
   - **Time and habit:** hours per activity, a calendar heatmap, current and longest streak, time of day, the week's goal.
   - **Polyglot:** all languages side by side, with momentum.
-- [ ] Tabula:
+- [x] Tabula:
   - the `capabilities` table: language, CEFR, status, methods, start date, live data;
   - a drawer per language with skills, hours, certificates and notes;
   - Notion CSV import (Dutch or English headers);
@@ -75,23 +75,23 @@ Visio and Whisper are skipped here and come in prompt 2.
   - a summary line at the top;
   - a level change records an Iter event;
   - export as an image card.
-- [ ] Iter:
+- [x] Iter:
   - a timeline of `journeyEvents`, filled automatically from history, with manual entries and an optional photo;
   - goals with a ring and an honest projection (`goals`);
   - a study log, "Log time" (`studyLogs`), whose hours count everywhere;
   - level history as a step chart;
   - a yearly reading challenge.
-- [ ] Goodreads CSV export of the books you've finished (Codex menu and Ordo › Backup).
-- [ ] Polish pass: accessibility (focus, labels, reduced motion, contrast), performance, and an iOS check.
+- [x] Goodreads CSV export of the books you've finished (Codex menu and Ordo › Backup).
+- [x] Polish pass: accessibility (focus, labels, reduced motion, contrast), performance, and an iOS check.
 
 ### 5. Reset
-- [ ] Ordo › Storage › **Reset**, with two choices:
+- [x] Ordo › Storage › **Reset**, with two choices:
   - reset this language's progress (words, cards, reviews and statistics);
   - erase everything (database, caches, settings), back to onboarding.
   - A "Back up first" button, and a typed confirmation.
 
 ### 6. Check everything
-- [ ] Walk every section on desktop and phone sizes, then fix what's glitchy or slow.
+- [x] Walk every section on desktop and phone sizes, then fix what's glitchy or slow.
 
 ## Prompt 2: Visio · Whisper · Home
 - [ ] Visio: a dual-subtitle video player (files and links), mining dialogue into decks, transcripts.

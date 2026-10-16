@@ -13,6 +13,7 @@ import { LanguageSection } from './sections/LanguageSection';
 import { ListeningSection } from './sections/ListeningSection';
 import { PerformanceSection } from './sections/PerformanceSection';
 import { ReadingSection } from './sections/ReadingSection';
+import { ResetSection } from './sections/ResetSection';
 import { StorageSection } from './sections/StorageSection';
 import { StudySection } from './sections/StudySection';
 
@@ -26,6 +27,7 @@ const NAV = [
   ['ai', 'AI & translation'],
   ['storage', 'Storage'],
   ['backup', 'Backup'],
+  ['reset', 'Reset'],
   ['keyboard', 'Keyboard'],
   ['performance', 'Performance'],
   ['about', 'About'],
@@ -76,6 +78,7 @@ export default function OrdoPage() {
           <AiSection llm={settings.llm} apiKeys={settings.apiKeys} translation={settings.translation} />
           <StorageSection />
           <BackupSection meta={settings.meta} />
+          <ResetSection language={language} />
           {pointer === 'fine' && <KeyboardSection />}
           <PerformanceSection perfHud={settings.ui.perfHud} />
           <AboutSection />

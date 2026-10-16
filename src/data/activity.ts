@@ -1,5 +1,6 @@
 import { localDateKey } from '@/lib/format';
 import { db } from './db';
+import { checkMilestones } from './journey';
 import type { LinguaDB } from './db';
 import type { ActivitySession, DailyStat } from './types';
 
@@ -59,4 +60,5 @@ export async function recordSession(session: Omit<ActivitySession, 'id'>, databa
   else if (session.type === 'watch') await bumpDaily(session.lang, { watchMs: session.activeMs }, database);
   else if (session.type === 'write') await bumpDaily(session.lang, { writeMs: session.activeMs }, database);
   await snapshotVocabulary(session.lang, database);
+  void checkMilestones(session.lang, database).catch(() => {});
 }

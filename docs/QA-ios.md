@@ -74,3 +74,15 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Ludus: say it out loud asks for the microphone once and accepts the word; "Can’t speak now"
       switches to typing; translate and tap-what-you-hear tiles fit the screen.
 - [ ] The end of a lesson: "Another lesson" on top, "Done" below.
+
+## Diarium, Ratio and the new icon
+
+- [ ] Add to Home Screen with the phone in dark mode: the icon is the dark version; in light mode, the light one.
+- [ ] After a new version is published, closing and reopening Lingua shows "Lingua was updated".
+- [ ] Codex → Diarium: today's prompt shows; Write about this opens the editor; text survives leaving and coming back.
+- [ ] Check my writing (with a key): changes are struck through and added in colour; tapping one explains it; + adds it to Journal.
+- [ ] The floating bar sits above the tab bar and the keyboard doesn't hide the text.
+- [ ] Ratio → Overview: the calendar and charts fit the width; tapping a bar or a day shows its numbers.
+- [ ] Ratio → Tabula: Notion CSV import from Files works; dragging the handle reorders; a row opens its drawer.
+- [ ] Ratio → Iter: Log time, Add a moment (with a photo) and a reading challenge appear on the page.
+- [ ] Ordo → Reset: the confirm button stays disabled until the word is typed.

@@ -214,3 +214,32 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Phones:** sub-pages rely on the top bar's back button, which now goes to the section, so
   pages show no second back link.
 - **Grammar:** planned as its own section for Lingua 2.0, in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md).
+
+## 2026-10-17 — Diarium, Ratio, Tabula, Iter
+
+- **Order changed on request:** Phase 5 is Diarium only; Visio and local Whisper move to the next
+  step, together with a clearer Home.
+- **Icon:** a single open-book line glyph with a terracotta ribbon on a flat ground, in a light and
+  a dark version. iOS takes the Home Screen icon when Lingua is added, so index.html offers the one
+  matching the phone's appearance at that moment; iOS 18+ can also restyle icons itself (Dark,
+  Tinted, Clear), and a flat glyph renders cleanly there. The browser-tab icon follows the theme live.
+- **Updates install themselves:** new versions are looked for at launch, on returning to the app and
+  every 30 minutes, and applied at launch or while the app is in the background, never during a
+  lesson or while audio plays. A toast says when it happened.
+- **Diarium:** prompts come from the AI when a key is set (cached per day) and from curated prompts
+  in all ten languages otherwise. The check returns JSON (corrected text, a native-like version,
+  corrections with category, explanation and severity, scores, CEFR estimate, two strengths, one
+  tip); the review keeps the text it read, so later edits show as "Check again". The word diff
+  (core/diff, tested) groups replacements so each change can be tapped for its explanation.
+- **Ratio** reads everything from what is already recorded (sessions, daily statistics, review logs,
+  words, the journal, the study log); nothing is precomputed. Charts are small hand-drawn SVGs with
+  a hover/tap readout. Retention counts review-state cards only (FSRS-style true retention).
+- **Milestones are found, not logged:** `checkMilestones` scans the history after each session and
+  at start, dates each milestone to when it actually happened, and records it once (deterministic
+  ids). Only ones reached in the last minutes get a toast.
+- **Tabula** keeps any language, including ones Lingua doesn't teach (`x-<name>` ids). Notion's CSV
+  export imports with Dutch or English headers and statuses; a changed level is written to Iter.
+- **Goals are honest:** level projections use rough study-hour estimates per CEFR level (slower for
+  Russian, Greek, Hungarian and German) and the recent pace; they say when the pace isn't enough.
+- **Reset:** one language's progress (books, audio and the journal stay), or everything; both need a
+  typed word. Erasing keeps the installed app shell, so Lingua still opens offline.
