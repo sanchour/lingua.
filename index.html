@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" data-theme="paper">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="A calm, local-first studio for reading, vocabulary, listening and watching in a new language." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Lingua" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>Lingua</title>
+    <script>
+      // Resolve the theme before first paint (no flash). The saved choice lives in IndexedDB;
+      // this localStorage copy is only a startup hint and may be missing.
+      (function () {
+        var pref = 'paper';
+        try { pref = localStorage.getItem('lingua.theme') || 'paper'; } catch (e) {}
+        var dark = pref === 'nocturne' ||
+          (pref === 'system' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+        var theme = dark ? 'nocturne' : 'paper';
+        document.documentElement.setAttribute('data-theme', theme);
+        // iOS reads the status-bar style once at launch, so it is written while the head is parsed.
+        document.write(
+          '<meta name="theme-color" content="' + (dark ? '#1F1C1A' : '#FAF6F0') + '">' +
+          '<meta name="apple-mobile-web-app-status-bar-style" content="' + (dark ? 'black-translucent' : 'default') + '">'
+        );
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

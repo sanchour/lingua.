@@ -1,0 +1,88 @@
+import { lazy, Suspense, useEffect, useMemo } from 'react';
+import { MotionConfig } from 'motion/react';
+import { AppContext } from '@/app/context';
+import { useThemeController } from '@/app/theme';
+import { UpdatePrompt } from '@/app/UpdatePrompt';
+import { preloadSections } from '@/app/pages';
+import { useActiveLanguage } from '@/data/languages';
+import { ensureDeviceMeta, useSettings } from '@/data/settings';
+import { Toaster } from '@/design/primitives';
+import { getLanguage } from '@/core/lang/languages';
+import { packId } from '@/core/packs/format';
+import { db } from '@/data/db';
+import { installPack, packMissing } from '@/services/packs/packs';
+import { toast } from '@/state/ui';
+import { PackProgress } from './PackProgress';
+import { AppShell } from './shells/AppShell';
+
+const Onboarding = lazy(() => import('@/app/onboarding/Onboarding'));
+const PerfHud = lazy(() => import('@/features/lab/PerfHud'));
+
+export function Root() {
+  const settings = useSettings();
+  const language = useActiveLanguage();
+  useThemeController(settings?.theme);
+
+  useEffect(() => {
+    void ensureDeviceMeta();
+  }, []);
+
+  const onboarded = Boolean(settings?.meta.onboardedAt && language);
+
+  useEffect(() => {
+    if (onboarded) return preloadSections();
+  }, [onboarded]);
+
+  // The studied language's dictionary installs quietly in the background the first time.
+  const activeLang = onboarded ? language?.id : undefined;
+  useEffect(() => {
+    if (!activeLang) return;
+    void Promise.all([packMissing(activeLang), db.dictPacks.get(packId(activeLang))]).then(([missing, installed]) => {
+      if (!missing) return;
+      const name = getLanguage(activeLang)?.name ?? activeLang;
+      // An update (better data, ready-made decks) happens quietly: the old dictionary keeps working
+      // until the new one is stored, and a failed update simply tries again next time.
+      if (installed) {
+        installPack(activeLang)
+          .then(() => toast(`The ${name} dictionary was updated.`, { tone: 'success' }))
+          .catch(() => undefined);
+        return;
+      }
+      installPack(activeLang)
+        .then(() => toast(`${name} dictionary ready. Translations now work offline.`, { tone: 'success' }))
+        .catch(() =>
+          toast(`The ${name} dictionary couldn’t be installed.`, {
+            tone: 'error',
+            action: { label: 'Retry', onClick: () => void installPack(activeLang) },
+          }),
+        );
+    });
+  }, [activeLang]);
+
+  const context = useMemo(() => (settings && language ? { settings, language } : null), [settings, language]);
+
+  // First IndexedDB read takes a few ms; the themed background is already painted by index.html.
+  if (!settings || language === undefined) return null;
+
+  return (
+    <MotionConfig reducedMotion="user">
+      {context && onboarded ? (
+        <AppContext.Provider value={context}>
+          <AppShell />
+        </AppContext.Provider>
+      ) : (
+        <Suspense fallback={null}>
+          <Onboarding canCancel={language !== null} />
+        </Suspense>
+      )}
+      <Toaster />
+      <PackProgress />
+      <UpdatePrompt />
+      {settings.ui.perfHud && (
+        <Suspense fallback={null}>
+          <PerfHud />
+        </Suspense>
+      )}
+    </MotionConfig>
+  );
+}

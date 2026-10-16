@@ -1,0 +1,78 @@
+/*
+ * Cozy Scriptorium design tokens.
+ * Spec colours are kept for the page and accents; surfaces sit a touch further from the page
+ * so cards read clearly. Derived tokens are tuned for WCAG AA (see docs/DECISIONS.md).
+ * In Paper mode, --accent and --sage are decorative; text uses --accent-text / --sage-text.
+ */
+
+:root,
+[data-theme='paper'] {
+  color-scheme: light;
+
+  --bg: #faf6f0; /* Warm Cream */
+  --surface: #efe7d9; /* Soft Parchment, a shade deeper for contrast */
+  --raised: #fffdf8;
+  --sunken: #e8dfcf;
+
+  --ink: #262220; /* Deep Espresso */
+  --ink-soft: #5e554e;
+  --ink-faint: #776c63;
+
+  --line: #e1d6c4;
+  --line-strong: #cec0a9;
+
+  --sage: #6b8e78; /* Muted Sage */
+  --sage-text: #4f6f5b;
+  --sage-soft: rgb(107 142 120 / 0.15);
+
+  --accent: #c86d51; /* Warm Terracotta */
+  --accent-text: #a5533b;
+  --accent-fill: #a5533b;
+  --accent-soft: rgb(200 109 81 / 0.13);
+  --on-accent: #ffffff;
+
+  --learning-bg: rgb(200 109 81 / 0.14);
+  --learning-line: #c86d51;
+  --unseen-line: rgb(107 142 120 / 0.55);
+
+  --scrim: rgb(38 34 32 / 0.28);
+  --elev-1: 0 1px 2px rgb(38 34 32 / 0.06), 0 2px 8px rgb(38 34 32 / 0.05);
+  --elev-2: 0 2px 6px rgb(38 34 32 / 0.07), 0 12px 32px rgb(38 34 32 / 0.1);
+  --elev-3: 0 8px 24px rgb(38 34 32 / 0.11), 0 28px 72px rgb(38 34 32 / 0.17);
+}
+
+/* Nocturne: a soft, warm charcoal rather than near-black, with gently dimmed ivory text. */
+[data-theme='nocturne'] {
+  color-scheme: dark;
+
+  --bg: #1f1c1a; /* Warm Charcoal, softened */
+  --surface: #2b2724; /* Elevated Mocha */
+  --raised: #35302c;
+  --sunken: #191715;
+
+  --ink: #e8e1d3; /* Soft Ivory */
+  --ink-soft: #b9b0a2;
+  --ink-faint: #918779;
+
+  --line: #3b3532;
+  --line-strong: #514944;
+
+  --sage: #93b39e;
+  --sage-text: #93b39e;
+  --sage-soft: rgb(147 179 158 / 0.15);
+
+  --accent: #d49b54; /* Amber Gold */
+  --accent-text: #dba765;
+  --accent-fill: #d49b54;
+  --accent-soft: rgb(212 155 84 / 0.16);
+  --on-accent: #1f1c1a;
+
+  --learning-bg: rgb(212 155 84 / 0.17);
+  --learning-line: #d49b54;
+  --unseen-line: rgb(147 179 158 / 0.5);
+
+  --scrim: rgb(10 8 7 / 0.45);
+  --elev-1: 0 1px 2px rgb(0 0 0 / 0.25);
+  --elev-2: 0 2px 8px rgb(0 0 0 / 0.22), 0 12px 32px rgb(0 0 0 / 0.26);
+  --elev-3: 0 8px 24px rgb(0 0 0 / 0.3), 0 28px 72px rgb(0 0 0 / 0.38);
+}

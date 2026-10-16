@@ -1,0 +1,9 @@
+node_modules
+dist
+dev-dist
+coverage
+*.local
+.DS_Store
+Thumbs.db
+# raw language-data downloads used by scripts/ (Phase 2)
+scripts/.cache

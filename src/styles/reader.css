@@ -1,0 +1,150 @@
+/* Codex reader. Variables are set on .reader-flow from the reading settings. */
+
+.reader-flow {
+  font-family: var(--reader-font);
+  font-size: var(--reader-size);
+  line-height: var(--reader-lh);
+  color: var(--ink);
+  font-feature-settings: 'kern', 'liga', 'onum';
+  font-variant-numeric: oldstyle-nums;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+}
+
+.reader-flow.is-justified {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+.reader-flow p {
+  margin: 0 0 0.8em;
+  orphans: 2;
+  widows: 2;
+}
+
+.reader-flow h2 {
+  margin: 0.4em 0 1.1em;
+  font-size: 1.32em;
+  font-weight: 600;
+  line-height: 1.22;
+  text-align: start;
+  letter-spacing: -0.01em;
+  break-after: avoid;
+}
+
+.reader-flow blockquote {
+  margin: 0 0 0.9em;
+  padding-left: 0.9em;
+  border-left: 2px solid var(--line-strong);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.reader-figure {
+  margin: 0.4em 0 1em;
+  break-inside: avoid;
+}
+
+.reader-figure img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(var(--page-h, 80vh) * 0.82);
+  margin: 0 auto;
+  border-radius: 6px;
+}
+
+/* Word states. Only colour/decoration change, so a state flip is a single cheap repaint. */
+.reader-flow .w {
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition:
+    background-color 160ms ease,
+    text-decoration-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.reader-flow.hl-unseen .w[data-s='0'] {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--unseen-line);
+}
+
+.reader-flow .w[data-s='2'] {
+  background-color: var(--learning-bg);
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-color: var(--learning-line);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .reader-flow .w:hover {
+    box-shadow: 0 0 0 2px var(--accent-soft);
+    background-color: var(--accent-soft);
+  }
+}
+
+.reader-flow .w.is-active {
+  box-shadow: 0 0 0 2px var(--accent-soft);
+  background-color: var(--accent-soft);
+}
+
+/* Paged mode: CSS columns, moved with a transform. */
+.reader-flow.is-paged {
+  column-fill: auto;
+  height: 100%;
+  will-change: transform;
+}
+
+.reader-flow.is-paged .w,
+.reader-flow.is-paged {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* The single hover tooltip (desktop). Always mounted; moved and shown without React. */
+.reader-tip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 300px;
+  padding: 0.45rem 0.75rem;
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  box-shadow: var(--elev-2);
+  opacity: 0;
+  /* Never catches the mouse: the words underneath stay hoverable. */
+  pointer-events: none;
+  transition: opacity 90ms ease;
+}
+
+.reader-tip[data-visible='1'] {
+  opacity: 1;
+}
+
+.reader-tip[data-pending='1'] .reader-tip-text {
+  opacity: 0.55;
+}
+
+/* Touch screens: a long-press on a word opens its details, never the iOS copy menu. */
+@media (pointer: coarse) {
+  .reader-flow .w {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}

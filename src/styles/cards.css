@@ -1,0 +1,53 @@
+/* Flashcard looks (Thesaurus). A card is a .flashcard face with data-look and a --card-tint colour.
+   Tints are mixed into the raised surface, more gently in Nocturne so cards never glare. */
+
+:root {
+  --card-tint-mix: 24%;
+  --card-rule: color-mix(in oklab, #5f88b3 24%, transparent);
+  --card-margin: color-mix(in oklab, var(--accent) 50%, transparent);
+  --card-frame: color-mix(in oklab, var(--ink) 20%, transparent);
+  --card-weave: color-mix(in oklab, var(--ink) 4%, transparent);
+}
+
+:root[data-theme='nocturne'] {
+  --card-tint-mix: 13%;
+  --card-rule: color-mix(in oklab, #8fb2d6 16%, transparent);
+  --card-weave: color-mix(in oklab, var(--ink) 4.5%, transparent);
+}
+
+.flashcard {
+  position: relative;
+  background-color: color-mix(in oklab, var(--card-tint, var(--raised)) var(--card-tint-mix), var(--raised));
+  font-family: var(--card-font, var(--font-serif));
+}
+
+.flashcard[data-tint='paper'] {
+  background-color: var(--raised);
+}
+
+/* Index card: a terracotta margin line under the heading and faint blue rules. */
+.flashcard[data-look='index'] {
+  background-image:
+    linear-gradient(to bottom, transparent 66px, var(--card-margin) 66px, var(--card-margin) 68px, transparent 68px),
+    repeating-linear-gradient(to bottom, transparent 0 33px, var(--card-rule) 33px 34px);
+  background-position: 0 0, 0 68px;
+  background-repeat: no-repeat, repeat;
+}
+
+/* Bookplate: a double frame inset from the edge, like an ex-libris label. */
+.flashcard[data-look='bookplate']::before {
+  content: '';
+  position: absolute;
+  inset: 11px;
+  border: 1px solid var(--card-frame);
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 4px transparent, inset 0 0 0 5px color-mix(in oklab, var(--card-frame) 55%, transparent);
+  pointer-events: none;
+}
+
+/* Linen: a fine woven texture. */
+.flashcard[data-look='linen'] {
+  background-image:
+    repeating-linear-gradient(0deg, var(--card-weave) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, var(--card-weave) 0 1px, transparent 1px 3px);
+}

@@ -1,0 +1,213 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { Pencil, Type, Undo2 } from 'lucide-react';
+import { countQueue, requeue } from '@/core/srs/queue';
+import { formatInterval, GRADE_NAMES, GRADES, previewIntervals } from '@/core/srs/scheduler';
+import type { Grade4 } from '@/core/srs/scheduler';
+import { db } from '@/data/db';
+import { answerCard, undoAnswer } from '@/data/study';
+import type { AnswerUndo, StudySession } from '@/data/study';
+import { useSettings } from '@/data/settings';
+import type { Card, Note } from '@/data/types';
+import { useHotkeys } from '@/design/hooks/useHotkeys';
+import { useLayout } from '@/design/hooks/useLayout';
+import { IconButton, Kbd, Popover } from '@/design/primitives';
+import { spring } from '@/design/motion';
+import { cx } from '@/lib/cx';
+import { speak } from '@/services/speech/tts';
+import { DEFAULT_SETTINGS } from '@/data/settings';
+import { CardLookPanel } from '../common/CardLookPanel';
+import { NoteEditor } from '../deck/NoteEditor';
+import type { EditorTarget } from '../deck/NoteEditor';
+import { FlipCard } from './FlipCard';
+import { StudyBar } from './StudyBar';
+import type { SummaryStats } from './Summary';
+
+const TONES: Record<Grade4, string> = {
+  1: 'text-accent-text hover:bg-accent-soft',
+  2: 'text-ink hover:bg-sunken',
+  3: 'text-sage-text hover:bg-sage-soft',
+  4: 'text-ink hover:bg-sunken',
+};
+
+interface RecallProps {
+  lang: string;
+  title: string;
+  session: StudySession;
+  onFinish: (stats: SummaryStats) => void;
+  onClose: () => void;
+  onActive: (ms: number) => void;
+}
+
+/** Classic Recall: turn the card, grade yourself (Again · Hard · Good · Easy), FSRS does the rest. */
+export function Recall({ lang, title, session, onFinish, onClose, onActive }: RecallProps) {
+  const { pointer } = useLayout();
+  const settings = useSettings();
+  const [queue, setQueue] = useState<Card[]>(session.queue);
+  const [notes, setNotes] = useState<Map<string, Note>>(session.notes);
+  const [flipped, setFlipped] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [editor, setEditor] = useState<EditorTarget | null>(null);
+  const [styling, setStyling] = useState(false);
+  const look = settings?.cards ?? DEFAULT_SETTINGS.cards;
+  const history = useRef<Array<{ undo: AnswerUndo; queue: Card[] }>>([]);
+  const stats = useRef({ answered: 0, misses: 0, cards: new Set<string>(), ms: 0 });
+  const shownAt = useRef(performance.now());
+  const [done, setDone] = useState(0);
+
+  const card = queue[0];
+  const note = card ? notes.get(card.noteId) : undefined;
+  const deck = card ? session.decks.get(card.deckId) : undefined;
+  const counts = countQueue(queue);
+  const progress = done / Math.max(1, done + queue.length);
+
+  useEffect(() => {
+    shownAt.current = performance.now();
+  }, [card?.id, card?.reps]);
+
+  const intervals = useMemo(
+    () => (card && flipped ? previewIntervals(card, Date.now(), deck?.config.desiredRetention ?? 0.9) : null),
+    [card, flipped, deck],
+  );
+
+  const flip = useCallback(() => setFlipped(true), []);
+
+  const rate = async (grade: Grade4) => {
+    if (!card || !flipped || busy) return;
+    setBusy(true);
+    const ms = Math.min(60_000, performance.now() - shownAt.current);
+    const { card: next, undo } = await answerCard(card, grade, { lang, mode: 'classic', durationMs: ms });
+    history.current.push({ undo, queue });
+    const s = stats.current;
+    s.answered++;
+    if (grade === 1) s.misses++;
+    s.cards.add(card.id);
+    s.ms += ms;
+    onActive(ms);
+    const rest = requeue(queue, next, Date.now());
+    setQueue(rest);
+    setDone((d) => d + 1);
+    setFlipped(false);
+    setBusy(false);
+    if (!rest.length) onFinish({ cards: s.cards.size, accuracy: s.answered ? 1 - s.misses / s.answered : 1, ms: s.ms });
+  };
+
+  const undo = async () => {
+    const last = history.current.pop();
+    if (!last || busy) return;
+    setBusy(true);
+    await undoAnswer(last.undo);
+    const s = stats.current;
+    s.answered = Math.max(0, s.answered - 1);
+    if (last.undo.counted.againCount) s.misses = Math.max(0, s.misses - 1);
+    setQueue(last.queue);
+    setDone((d) => Math.max(0, d - 1));
+    setFlipped(false);
+    setBusy(false);
+  };
+
+  const editing = Boolean(editor) || styling;
+  useHotkeys(
+    {
+      ' ': () => (flipped ? void rate(3) : flip()),
+      enter: () => (flipped ? void rate(3) : flip()),
+      '1': () => void rate(1),
+      '2': () => void rate(2),
+      '3': () => void rate(3),
+      '4': () => void rate(4),
+      z: () => void undo(),
+      'mod+z': () => void undo(),
+      e: () => card && note && setEditor({ mode: 'edit', note, cards: [card] }),
+      s: () => note && void speak(note.term, lang, { rate: settings?.speech.rate, voiceUri: settings?.speech.voices[lang] }),
+      escape: onClose,
+    },
+    !editing,
+  );
+
+  // After editing, show the card's new text.
+  const closeEditor = async () => {
+    setEditor(null);
+    if (!note) return;
+    const fresh = await db.notes.get(note.id);
+    if (fresh) setNotes((m) => new Map(m).set(fresh.id, fresh));
+  };
+
+  return (
+    <>
+      <StudyBar title={title} progress={progress} onClose={onClose}>
+        <IconButton icon={Undo2} label="Undo" shortcut="Z" size="sm" disabled={!history.current.length || busy} onClick={() => void undo()} />
+        <Popover
+          label="Card style"
+          placement="bottom-end"
+          onOpenChange={setStyling}
+          trigger={(props) => (
+            <button {...props} type="button" aria-label="Card style" className="grid size-8 place-items-center rounded-lg text-ink-soft transition-colors hover:bg-surface hover:text-ink pointer-coarse:size-10">
+              <Type size={16} aria-hidden />
+            </button>
+          )}
+        >
+          <CardLookPanel look={look} compact />
+        </Popover>
+        <IconButton icon={Pencil} label="Edit card" shortcut="E" size="sm" disabled={!note} onClick={() => card && note && setEditor({ mode: 'edit', note, cards: [card] })} />
+      </StudyBar>
+
+      <main className="mx-auto flex min-h-dvh max-w-3xl flex-col px-4 sm:px-6" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 76px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)' }}>
+        <p className="mb-4 flex justify-center gap-3 text-[13px] font-bold tabular-nums" aria-label={`${counts.new} new, ${counts.learning} learning, ${counts.review} to review`}>
+          <span className="text-sage-text">{counts.new}</span>
+          <span className="text-accent-text">{counts.learning}</span>
+          <span className="text-ink-soft">{counts.review}</span>
+        </p>
+
+        <div className="flex flex-1 items-start justify-center">
+          <AnimatePresence mode="popLayout" initial={false}>
+            {card && note && (
+              <motion.div
+                key={`${card.id}:${card.reps}:${done}`}
+                className="w-full"
+                initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -36, scale: 0.98, transition: { duration: 0.16 } }}
+                transition={spring.soft}
+              >
+                <FlipCard look={look} card={card} note={note} lang={lang} flipped={flipped} onFlip={flip} deckName={session.decks.size > 1 ? deck?.name : undefined} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="mx-auto mt-6 w-full max-w-xl">
+          {flipped && intervals ? (
+            <motion.div className="grid grid-cols-4 gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>
+              {GRADES.map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  disabled={busy}
+                  onClick={() => void rate(g)}
+                  className={cx(
+                    'no-callout flex flex-col items-center gap-0.5 rounded-2xl border border-line bg-raised py-3 font-semibold transition-[transform,background-color] duration-150 active:scale-95',
+                    TONES[g],
+                  )}
+                >
+                  <span className="text-[15px]">{GRADE_NAMES[g]}</span>
+                  <span className="text-[12px] font-semibold text-ink-faint tabular-nums">{formatInterval(intervals[g])}</span>
+                  {pointer === 'fine' && <Kbd>{g}</Kbd>}
+                </button>
+              ))}
+            </motion.div>
+          ) : (
+            <button
+              type="button"
+              onClick={flip}
+              className="no-callout flex h-[76px] w-full items-center justify-center gap-2 rounded-2xl bg-ink text-[16px] font-semibold text-bg shadow-elev-1 transition-transform active:scale-[0.98]"
+            >
+              Show answer {pointer === 'fine' && <Kbd tone="inverse">Space</Kbd>}
+            </button>
+          )}
+        </div>
+      </main>
+
+      <NoteEditor lang={lang} target={editor} onClose={() => void closeEditor()} />
+    </>
+  );
+}

@@ -1,0 +1,386 @@
+// Row types for every IndexedDB table. This file is the schema of record (docs/ARCHITECTURE.md → Data).
+// Conventions: ids are crypto.randomUUID() unless noted · times are epoch ms · indexed booleans are 0 | 1.
+
+import type { Level } from '@/core/lang/levels';
+
+export type Lang = string;
+/** 0 Unseen · 1 Known · 2 Learning */
+export type WordState = 0 | 1 | 2;
+export type Bit = 0 | 1;
+
+/** User-owned rows carry merge metadata for backup/restore (and possible future sync). */
+export interface Synced {
+  createdAt: number;
+  updatedAt: number;
+  deletedAt?: number;
+}
+
+// ── Profile & settings ──────────────────────────────────────────────────────
+
+export interface LanguageProfile extends Synced {
+  /** Target language code, e.g. 'ru'. */
+  id: Lang;
+  native: Lang;
+  level: Level;
+  isActive: Bit;
+  /** e.g. 'ru-en@1' once a dictionary pack is installed. */
+  dictPackId?: string;
+  dailyGoal: { reviews: number; readMinutes: number; listenMinutes: number };
+  /** Proficiency seeding: pre-mark the top-N frequency forms as Known (0 = off). */
+  seededKnownTopN: number;
+  /** Set once the seeding has been applied (it needs the language pack). */
+  seedAppliedAt?: number;
+}
+
+export interface SettingRow {
+  key: string;
+  value: unknown;
+  updatedAt: number;
+}
+
+// ── Codex ───────────────────────────────────────────────────────────────────
+
+export interface Text extends Synced {
+  id: string;
+  lang: Lang;
+  kind: 'book' | 'article' | 'transcript' | 'shelfItem';
+  source: 'epub' | 'txt' | 'paste' | 'goodreads' | 'sonus' | 'visio';
+  title: string;
+  author?: string;
+  coverBlobId?: string;
+  mediaId?: string;
+  shelf?: 'to-read' | 'reading' | 'read';
+  goodreads?: { bookId?: string; isbn13?: string; rating?: number; dateRead?: string; shelves?: string[] };
+  chapterCount: number;
+  wordCount: number;
+  lastOpenedAt?: number;
+  finishedAt?: number;
+  /** Comprehension, recomputed as words become known. */
+  stats?: TextStats;
+}
+
+export interface TextStats {
+  uniqueWords: number;
+  /** Share of running words (tokens) that are Known or Learning, 0–1. */
+  knownShare: number;
+  /** Distinct forms still Unseen. */
+  newWords: number;
+  computedAt: number;
+}
+
+/** Distinct word forms of a text with their counts (derived from chapters; rebuilt when missing). */
+export interface TextVocab {
+  textId: string;
+  lang: Lang;
+  norms: string[];
+  counts: number[];
+  tokens: number;
+}
+
+export type Block =
+  | { t: 'p' | 'h' | 'quote'; text: string; cue?: number }
+  | { t: 'img'; blobId: string; alt?: string };
+
+/** Immutable after import (insert-only on merge). */
+export interface Chapter {
+  id: string;
+  textId: string;
+  index: number;
+  title?: string;
+  /** Long chapters are stored in parts: [part, of]. */
+  part?: [number, number];
+  wordCount: number;
+  blocks: Block[];
+}
+
+export interface ReadingProgress {
+  textId: string;
+  chapterIndex: number;
+  blockIndex: number;
+  percent: number;
+  updatedAt: number;
+}
+
+// ── Word engine & dictionary ────────────────────────────────────────────────
+
+export interface Word extends Synced {
+  /** `${lang}:${norm}` — deterministic so both devices produce the same id. */
+  id: string;
+  lang: Lang;
+  norm: string;
+  lemma?: string;
+  state: WordState;
+  stateChangedAt: number;
+  gloss?: string;
+  note?: string;
+  noteId?: string;
+}
+
+export interface FrequencyRow {
+  /** `${lang}:${norm}` */
+  id: string;
+  lang: Lang;
+  norm: string;
+  rank: number;
+  lemma?: string;
+  gloss?: string;
+  pos?: string;
+}
+
+export interface DictForm {
+  pack: string;
+  form: string;
+  lemmas: string[];
+  /** Short gloss (≤ 60 chars) for the instant tooltip. */
+  g: string;
+  /** Grammatical description, e.g. "plural past of чита́ть". */
+  d?: string;
+}
+
+export interface DictEntry {
+  pack: string;
+  lemma: string;
+  /** Headword as written in dictionaries (stress marks, German capitals), when it differs. */
+  head?: string;
+  ipa?: string;
+  gender?: string;
+  senses: { pos: string; glosses: string[]; tags?: string[] }[];
+  forms?: { form: string; tags: string[] }[];
+}
+
+/** Usage examples for a lemma (from Wiktionary), with the span of the word for cloze exercises. */
+export interface DictExample {
+  pack: string;
+  lemma: string;
+  ex: Array<[sentence: string, translation: string, start: number, end: number]>;
+}
+
+/** The ready-made deck lists of an installed language pack (core/lang/starter.ts). */
+export interface StarterList {
+  lang: Lang;
+  version: number;
+  /** Lemma keys by frequency, for the Top-N decks. */
+  lemmaFreq: string[];
+  /** Theme id → [term, meaning, part of speech, gender]. */
+  themes: Record<string, Array<[string, string, string, string]>>;
+}
+
+export interface DictPack {
+  id: string;
+  lang: Lang;
+  native: Lang;
+  version: number;
+  source: 'kaikki' | 'freedict';
+  forms: number;
+  entries: number;
+  sizeBytes: number;
+  installedAt: number;
+}
+
+export interface TranslationCacheRow {
+  /** `${provider}:${src}>${dst}:${hash}` */
+  id: string;
+  text: string;
+  result: string;
+  provider: string;
+  createdAt: number;
+}
+
+export interface LlmCacheRow {
+  /** hash(kind + model + prompt) */
+  id: string;
+  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine';
+  model: string;
+  response: unknown;
+  createdAt: number;
+}
+
+// ── Thesaurus ───────────────────────────────────────────────────────────────
+
+export interface Folder extends Synced {
+  id: string;
+  lang: Lang;
+  parentId: string | null;
+  name: string;
+  order: number;
+  icon?: string;
+}
+
+export interface DeckConfig {
+  newPerDay: number;
+  maxReviews: number;
+  desiredRetention: number;
+  directions: Array<'recognition' | 'production'>;
+  defaultMode: 'classic' | 'ludus';
+}
+
+export interface Deck extends Synced {
+  id: string;
+  lang: Lang;
+  folderId: string | null;
+  name: string;
+  description?: string;
+  order: number;
+  kind: 'custom' | 'mined' | 'starterFrequency' | 'starterTheme' | 'apkg' | 'csv' | 'visio';
+  starter?: { packId: string; rankFrom?: number; rankTo?: number; theme?: string; materialized: Bit };
+  config: DeckConfig;
+}
+
+export interface Note extends Synced {
+  id: string;
+  deckId: string;
+  lang: Lang;
+  term: string;
+  meaning: string;
+  lemma?: string;
+  pos?: string;
+  ipa?: string;
+  gender?: string;
+  freqRank?: number;
+  example?: { text: string; translation?: string; cloze?: [start: number, end: number] };
+  context?: {
+    sentence: string;
+    textId?: string;
+    chapterIndex?: number;
+    blockIndex?: number;
+    mediaId?: string;
+    startMs?: number;
+    endMs?: number;
+  };
+  imageBlobId?: string;
+  audioBlobId?: string;
+  tags: string[];
+  source: 'manual' | 'codex' | 'sonus' | 'visio' | 'starter' | 'apkg' | 'csv';
+  wordId?: string;
+  /** Unmapped Anki / CSV fields, preserved verbatim. */
+  extra?: Record<string, string>;
+}
+
+/** FSRS fields mirror ts-fsrs `Card` (camelCased); see core/srs/scheduler.ts. */
+export interface Card extends Synced {
+  id: string;
+  noteId: string;
+  deckId: string;
+  direction: 'recognition' | 'production';
+  due: number;
+  stability: number;
+  difficulty: number;
+  elapsedDays: number;
+  scheduledDays: number;
+  learningSteps: number;
+  reps: number;
+  lapses: number;
+  /** 0 New · 1 Learning · 2 Review · 3 Relearning */
+  state: 0 | 1 | 2 | 3;
+  lastReview?: number;
+  suspended: Bit;
+}
+
+export type ReviewMode = 'classic' | 'mcq' | 'match' | 'cloze' | 'build' | 'type' | 'listen';
+
+/** Append-only; unioned on merge. */
+export interface ReviewLog {
+  id: string;
+  cardId: string;
+  deckId: string;
+  reviewedAt: number;
+  durationMs: number;
+  rating: 1 | 2 | 3 | 4;
+  mode: ReviewMode;
+  affectedSchedule: Bit;
+  stateBefore: 0 | 1 | 2 | 3;
+  stabilityAfter: number;
+  difficultyAfter: number;
+  elapsedDays: number;
+  scheduledDays: number;
+}
+
+// ── Sonus & Visio ───────────────────────────────────────────────────────────
+
+export interface Media extends Synced {
+  id: string;
+  lang: Lang;
+  kind: 'audio' | 'video' | 'spotify';
+  title: string;
+  collection?: string;
+  episode?: number;
+  artist?: string;
+  blobId?: string;
+  mime?: string;
+  sizeBytes?: number;
+  durationMs?: number;
+  coverBlobId?: string;
+  spotify?: { uri: string; type: 'episode' | 'show' | 'playlist' | 'track'; embedUrl: string };
+  textId?: string;
+  lastPlayedAt?: number;
+}
+
+export interface Cue {
+  startMs: number;
+  endMs: number;
+  text: string;
+  words?: { w: string; startMs: number; endMs: number }[];
+}
+
+export interface Transcript extends Synced {
+  id: string;
+  mediaId: string;
+  lang: Lang;
+  role: 'target' | 'native';
+  source: 'srt' | 'vtt' | 'whisper-groq' | 'whisper-local' | 'machine';
+  offsetMs: number;
+  cues: Cue[];
+}
+
+export interface PlaybackProgress {
+  mediaId: string;
+  positionMs: number;
+  rate: number;
+  completed: Bit;
+  updatedAt: number;
+}
+
+/** Large binaries live apart so list queries never load them. */
+export interface BlobRow {
+  id: string;
+  kind: 'audio' | 'video' | 'image' | 'cover';
+  mime: string;
+  size: number;
+  blob: Blob;
+  createdAt: number;
+}
+
+// ── Ratio ───────────────────────────────────────────────────────────────────
+
+export interface ActivitySession {
+  id: string;
+  lang: Lang;
+  type: 'read' | 'listen' | 'watch' | 'review' | 'ludus' | 'write';
+  refId?: string;
+  startedAt: number;
+  endedAt: number;
+  activeMs: number;
+  wordsRead?: number;
+  cards?: number;
+  correct?: number;
+}
+
+export interface DailyStat {
+  /** `${lang}:${YYYY-MM-DD}` */
+  id: string;
+  lang: Lang;
+  date: string;
+  readMs: number;
+  wordsRead: number;
+  listenMs: number;
+  watchMs: number;
+  reviews: number;
+  againCount: number;
+  newCards: number;
+  knownTotal: number;
+  learningTotal: number;
+  newKnown: number;
+  newLearning: number;
+  goalMet: Bit;
+  updatedAt: number;
+}
