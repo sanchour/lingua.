@@ -70,3 +70,24 @@ Status (2026-10-17): Lingua 2.0 is done up to and including music in Sonus with 
 Everything still open above (the ten new languages and flags, the grammar section with alphabet
 lessons, radio, the recommendations page, the streaming services in Visio, and the full check) is
 Lingua 3.0, planned in docs/ROADMAP.md under "Lingua 3.0", with a handover for the new session.
+
+---
+Lingua 3.0 (added by the user on 2026-10-17; planned in docs/ROADMAP.md as 3.0-2, 3.0-3 and 3.0-4)
+
+* Good quality text to voice for each language, natural voice, not American, cheap automated voice
+* Apple IOS 26 liquad glass slider effect on tabbar of sections, only on phone
+* Sync between my desktop app and Iphone
+* Reorganize layout of home for desktop and iphone so evertyhing, all elements have proper size
+* In look and feel, for both paper and nocturne mode, you can choose themes, so different types of cream/paper white modus, both backgroud and main element color, and theme/styles for nocturne. some more slightly pink white with fitting element color etc. Atleast 6 themes for both light and dark mode.
+* On phone, especially in discover pages, many elements and widgets still do not respect phone use, strictly make it work, also the bar of Library, Discover podcasts, is like scrollable on phone. Phone needs to feel like a proper phone app, important.
+* Light/dark mode button on commute mode doesnt work
+* Make when you have podcasts open, fit on one scrollless page on desktop
+* Make it on cantus, that playing songs work and are in sync with the lyrics, find a way this works without errors or anything.
+* On most songs, lyrics dont want to load in, if you direct towards genius okay, but make the lyrics pop up easy, make it work, pick, find songs, lyrics there, syncing with songs, functional.
+* Put styles to explore top on cantus page. And add more styles for each language.
+* Holding on phone and desktop to translate multiple words or sentences doesnt work on music, songs, fix that, also for podcasts or on videos.
+* Make the song games also actually let you learn the language, not just the song. Make the games base on learning you the language and as a bonus learning you the song lyrics, both, that is the target and that should be clear.
+* Overhaul the Music function, cantus to be fully functional.
+* On Sonus, the first tab/page is Library and create an aesthetic, smartly layed out library with both podcasts and music, then create two tabs of podcasts and music separetely where it shows only music or podcasts and you can discover there too.
+* When opening a song, its awkard on both phone and desktop with weird double scrolling, make it fixed, smooth and better
+* Remove what do you enjoy most from onboarding process
