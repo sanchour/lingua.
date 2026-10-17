@@ -141,9 +141,10 @@ Notes: Home's numbers are known words, learning, hours this week and hours in al
 
 ## Lingua 2.0
 
-Built as seven prompts, in this order. Each is checked, committed and pushed on its own, so the
+Built as nine prompts, in this order. Each is checked, committed and pushed on its own, so the
 live app gets better step by step. Fixes to what already exists come first, because they make
-every later feature feel better.
+every later feature feel better. Reordered on 2026-10-17 after new asks: the settings first,
+music raised to a room of its own, every language checked, and a full check at the end.
 
 ### 2.0-1 · Reading, words and cards feel right ✅
 - [x] **No more voiceover:** the device voice is removed from Codex and Thesaurus (buttons, drawer,
@@ -176,7 +177,7 @@ every later feature feel better.
       goal), and what you enjoy most (reading, listening, watching, writing, cards), which orders
       Home's next steps (also in Ordo › Languages).
 
-### 2.0-2 · Codex: adding and editing, articles, PDFs, better dictionaries
+### 2.0-2 · Codex: adding and editing, articles, PDFs, better dictionaries ✅
 - [x] Reading level (A1–C2) can be chosen when adding a text and edited later; "Lingua's guess" is
       worked out from how many of the text's words are among the 5,000 most common.
 - [x] **Edit** in a book's ⋯ menu: title, author, cover, level, the text itself (chapters: edit,
@@ -200,27 +201,19 @@ every later feature feel better.
   - [x] Glosses checked by a test of everyday words in each of the four languages
         (`src/core/packs/glosses.test.ts`), and the top 200 of each reviewed by hand.
 
-### 2.0-3 · Twenty languages with their flags
-- [ ] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and
-      Indonesian (Bahasa).
-  - Packs from Wiktionary (kaikki) and frequency lists (FrequencyWords; Latin from a corpus list).
-  - Word splitting with `Intl.Segmenter` for Mandarin and Japanese, plus readings (pinyin, kana).
-  - Right-to-left reading for Arabic, everywhere text is shown.
-  - Fonts loaded only for the scripts in use (Arabic, CJK, Hangul).
-  - Starter decks, Diarium prompts and level hours for each.
-- [ ] **Flags as icons** for all twenty, drawn in the app's soft style (rounded, slightly muted).
-      Each language has a default flag and can switch to another, such as English UK/US,
-      Portuguese PT/BR, Spanish ES/MX, Arabic by country, Mandarin CN/TW, Swahili TZ/KE. Latin gets
-      a laurel emblem.
+### 2.0-3 · Ordo: settings that are easy to find your way in
+- [ ] **One overview, then one section at a time:** Ordo opens on a short list of groups (Look and
+      feel, Reading, Study, Listening and watching, Languages, AI and keys, Backup and reset,
+      About), each with a one-line summary of what is set. Choosing one opens just that section.
+  - Phone: a grouped list like the iPhone's Settings; a section opens as its own page with a back
+    button. No more one long page.
+  - Desktop: the groups stay in a side column, the chosen section beside them.
+- [ ] **Search** over every setting by name and words ("font", "key", "backup"), jumping to it.
+- [ ] Each setting says in one line what it does; links from elsewhere (for example "Open
+      settings" from a missing AI key) land on the right section.
+- [ ] Checked on a phone and on desktop, light and dark.
 
-### 2.0-4 · Grammatica
-Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
-- [ ] Grammar files, the topic browser, explanations and tables.
-- [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
-- [ ] Topic maps for every language (Spanish and German first).
-- [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
-
-### 2.0-5 · Cantus: learning through music (in Sonus)
+### 2.0-4 · Cantus: learning through music, a room of its own
 - [ ] **Search** any song in the language (Apple's free search: artwork and a preview). Lyrics come
       from LRCLIB (free, open, often synced to the music).
 - [ ] **The song page:**
@@ -233,9 +226,40 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
       app, explained step by step), your Spotify liked songs in that language.
 - [ ] **Discover:** artists, albums and styles per language, picked by hand, with charts where
       available.
-- [ ] Placed as a *Music* tab in Sonus. Lyrics can be opened in Codex as a text.
+- [ ] Lyrics can be opened in Codex as a text.
+- [ ] **A room of its own, not a tab:** Cantus sits beside Codex, Sonus and Visio in the sidebar
+      and the tab bar, with its own icon and colour, and is part of the whole app:
+  - Home suggests a song for today; "music" is one of the things you can enjoy in onboarding.
+  - Words and lines saved from songs are cards that replay their bit of the song.
+  - Ludus gets song exercises: fill in the lyric, put the lines in order.
+  - Ratio and Iter count songs and minutes; Mundus links to artists.
+- [ ] **Aesthetic:** the album art sets the page's colours; the lyric sheet scrolls with the song,
+      the current line large and clear; calm, simple controls that work one-handed on a phone.
 
-### 2.0-6 · Radio (in Sonus)
+### 2.0-5 · Twenty languages with their flags, every one well supported
+- [ ] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and
+      Indonesian (Bahasa).
+  - Packs from Wiktionary (kaikki) and frequency lists (FrequencyWords; Latin from a corpus list).
+  - Word splitting with `Intl.Segmenter` for Mandarin and Japanese, plus readings (pinyin, kana).
+  - Right-to-left reading for Arabic, everywhere text is shown.
+  - Fonts loaded only for the scripts in use (Arabic, CJK, Hangul).
+  - Starter decks, Diarium prompts and level hours for each.
+- [ ] **Flags as icons** for all twenty, drawn in the app's soft style (rounded, slightly muted).
+      Each language has a default flag and can switch to another, such as English UK/US,
+      Portuguese PT/BR, Spanish ES/MX, Arabic by country, Mandarin CN/TW, Swahili TZ/KE. Latin gets
+      a laurel emblem.
+- [ ] **Every language checked, the ten existing ones too:** a test list of everyday words per
+      language like 2.0-2's (`glosses.test.ts`), the 200 commonest words reviewed, the lemma
+      fallback rules, news sources, starter decks and Diarium prompts.
+
+### 2.0-6 · Grammatica
+Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
+- [ ] Grammar files, the topic browser, explanations and tables.
+- [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
+- [ ] Topic maps for every language (Spanish and German first).
+- [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
+
+### 2.0-7 · Radio (in Sonus)
 - [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
       search, favourites; only secure (https) streams.
 - [ ] A minimal "night sky" map: every station a dot at its place, so the dots draw the world;
@@ -243,7 +267,7 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] Plays in Sonus's player and mini player, with now playing when the station shares it.
       Listening time counts.
 
-### 2.0-7 · Mundus: recommendations, and streaming services in Visio
+### 2.0-8 · Mundus: recommendations, and streaming services in Visio
 - [ ] **Mundus**, a deep-dive page per language: video games, series, films, books, podcasts,
       music, YouTube channels and dictionaries. Picked by hand for all twenty languages, with level
       hints and why each is good for learners.
@@ -256,3 +280,13 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
   - With a free TMDB key, live lists of series and films originally in the language, on your
     services in your country, with posters.
   - Each opens in its app. "Add its subtitles" uses the Subtitles-only flow.
+- [ ] Every language's picks checked: links open, the services match the country, level hints
+      make sense.
+
+### 2.0-9 · Lingua 2.0 complete: the full check
+- [ ] Every point of "Lingua updates.txt" checked against the app, one by one.
+- [ ] Every room on a phone and on desktop, light and dark: layout, taps, scrolling, the
+      keyboard, offline.
+- [ ] All twenty languages end to end: dictionary and taps, news, music, radio, recommendations,
+      grammar.
+- [ ] Docs, then commit, push and the live site checked.
