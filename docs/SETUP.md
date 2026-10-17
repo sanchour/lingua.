@@ -4,6 +4,33 @@ Everything Lingua needs lives in the GitHub repository `sanchour/lingua.`: the c
 the plan, the language packs and the rules for Claude ([CLAUDE.md](../CLAUDE.md)). A new laptop
 (Windows or Mac) needs a few installs, then picks up where the last one stopped.
 
+## Quick start: one prompt
+
+Install the Claude desktop app, open its Code tab in a folder such as Documents, and paste:
+
+```text
+Set up Lingua on this laptop and continue the roadmap.
+
+1. Check that Node 24 or newer and Git are installed. If one is missing, ask me before
+   installing it (winget on Windows, Homebrew on a Mac), or tell me what to download.
+2. Clone https://github.com/sanchour/lingua..git into a folder called "lingua" here. From then
+   on, work only inside that folder, and never touch anything to do with my internship.
+3. Read lingua/CLAUDE.md first and follow it for everything: my way of working, the rules and
+   where the work stands. Then read docs/SETUP.md, the "Lingua 3.0" part of docs/ROADMAP.md
+   with its handover, and "Lingua updates.txt".
+4. Run npm ci, npm run typecheck, npm test and npm run build to check this laptop works.
+5. Continue Lingua 3.0 from 3.0-1: switch to the branch lingua-3.0/languages-wip, merge main
+   into it, and start the word-data download in the background (docs/SETUP.md, section 5,
+   about 2 GB). Then carry on through 3.0-2 to 3.0-5.
+
+Work on your own: plan each step in the roadmap, build it without asking me, and commit and
+push after each finished step so the site updates. The first push needs my GitHub sign-in:
+tell me when. If a usage limit stops you, set up a check-in that continues automatically once
+it refreshes. Give me end notes when you finish.
+```
+
+The sections below are the same steps by hand.
+
 ## 1. Install
 
 - **Node 24** (or newer) from https://nodejs.org. Check with `node -v`.
