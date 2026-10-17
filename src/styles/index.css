@@ -63,6 +63,23 @@
   user-select: none;
 }
 
+/* A setting found with Ordo's search glows for a moment once its page opens. */
+.settings-flash {
+  border-radius: 14px;
+  animation: settings-flash 1.9s cubic-bezier(0.2, 0, 0, 1);
+}
+@keyframes settings-flash {
+  0%,
+  35% {
+    background-color: var(--accent-soft);
+    box-shadow: 0 0 0 8px var(--accent-soft);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;

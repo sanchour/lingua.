@@ -30,6 +30,7 @@ export const router = createBrowserRouter(
         { path: 'ratio', element: <RatioPage /> },
         { path: 'ordo', element: <OrdoPage /> },
         { path: 'ordo/lab', element: <LabPage /> },
+        { path: 'ordo/:group', element: <OrdoPage /> },
         { path: '*', element: <Navigate to="/" replace /> },
       ],
     },

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ClipboardCopy } from 'lucide-react';
+import { BackLink } from '@/app/BackLink';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { Button } from '@/design/primitives';
@@ -26,6 +27,7 @@ export default function LabPage() {
 
   return (
     <>
+      <BackLink to="/ordo/about">About and more</BackLink>
       <PageHeader
         title="Device lab"
         eyebrow="Ordo"

@@ -20,6 +20,9 @@ const isImmersive = (pathname: string, wide: boolean) =>
   pathname === '/sonus/commute' ||
   (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/visio/watch/')));
 
+/** On wide screens Ordo's groups open beside their list, so moving between them isn't a new page. */
+const pageKey = (pathname: string, wide: boolean) => (wide && /^\/ordo(?:\/(?!lab)[\w-]+)?\/?$/.test(pathname) ? '/ordo' : pathname);
+
 export function AppShell() {
   const { layout } = useLayout();
   const { pathname, hash } = useLocation();
@@ -58,7 +61,7 @@ export function AppShell() {
 
   const content = (
     <Suspense fallback={<div className="min-h-[60dvh]" />}>
-      <motion.div key={pathname} {...(fullMotion ? pageEnterFull : pageEnter)}>
+      <motion.div key={pageKey(pathname, layout === 'wide')} {...(fullMotion ? pageEnterFull : pageEnter)}>
         <Outlet />
       </motion.div>
     </Suspense>

@@ -14,6 +14,7 @@ const BACK_TO: Record<string, string> = {
   'sonus/podcast': '/sonus?tab=podcasts',
   'codex/diarium': '/codex?tab=diarium',
   'thesaurus/ready': '/thesaurus?tab=discover',
+  'ordo/lab': '/ordo/about',
 };
 
 export function TopBar() {

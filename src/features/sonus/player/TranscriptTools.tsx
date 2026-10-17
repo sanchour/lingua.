@@ -70,7 +70,7 @@ export function NoTranscript({ media }: { media: Media }) {
                   Make a transcript
                 </Button>
               ) : (
-                <Button icon={KeyRound} onClick={() => navigate('/ordo#ai')}>
+                <Button icon={KeyRound} onClick={() => navigate('/ordo/ai')}>
                   Add a free Groq key
                 </Button>
               ))}

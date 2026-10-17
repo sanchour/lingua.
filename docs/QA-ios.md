@@ -120,3 +120,12 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Sonus → Discover: podcast rows fit the width. Ratio → All your languages: one line per
       language. Visio: the video's position bar is easy to drag with a finger.
 - [ ] Ordo → About says Lingua 2.0.
+
+## Lingua 2.0-3: Ordo
+
+- [ ] Ordo opens on two short lists (Your learning, Lingua) with a line under each group; tapping
+      one opens it as its own page, and Back returns to the list.
+- [ ] Search "dark", "backup" or "key": tapping a result opens the right page and the setting
+      glows briefly.
+- [ ] A missing AI key's "Open Ordo" button lands on AI and translation.
+- [ ] Everything fits the width in Paper and Nocturne; nothing scrolls sideways.

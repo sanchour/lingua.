@@ -202,16 +202,16 @@ music raised to a room of its own, every language checked, and a full check at t
         (`src/core/packs/glosses.test.ts`), and the top 200 of each reviewed by hand.
 
 ### 2.0-3 · Ordo: settings that are easy to find your way in
-- [ ] **One overview, then one section at a time:** Ordo opens on a short list of groups (Look and
+- [x] **One overview, then one section at a time:** Ordo opens on a short list of groups (Look and
       feel, Reading, Study, Listening and watching, Languages, AI and keys, Backup and reset,
       About), each with a one-line summary of what is set. Choosing one opens just that section.
   - Phone: a grouped list like the iPhone's Settings; a section opens as its own page with a back
     button. No more one long page.
   - Desktop: the groups stay in a side column, the chosen section beside them.
-- [ ] **Search** over every setting by name and words ("font", "key", "backup"), jumping to it.
-- [ ] Each setting says in one line what it does; links from elsewhere (for example "Open
+- [x] **Search** over every setting by name and words ("font", "key", "backup"), jumping to it.
+- [x] Each setting says in one line what it does; links from elsewhere (for example "Open
       settings" from a missing AI key) land on the right section.
-- [ ] Checked on a phone and on desktop, light and dark.
+- [x] Checked on a phone and on desktop, light and dark.
 
 ### 2.0-4 · Cantus: learning through music, a room of its own
 - [ ] **Search** any song in the language (Apple's free search: artwork and a preview). Lyrics come

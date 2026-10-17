@@ -148,3 +148,13 @@ Practise writing in the target language; get corrected, explained and graded.
 - **Dictionaries:** the short meaning a tap shows is the everyday one (from translation tables),
   forms show what they mean themselves ("ellos" they, "estoy" am), and words the dictionary lacks
   are read through a likely base form before going online. The word's sheet says when it did that.
+
+## Ordo in Lingua 2.0 — settings by group, with search (2.0-3)
+
+- **Eight groups**, learning first (Reading, Study and cards, Listening, Languages), then the app
+  (Look and feel, AI and translation, Your data, About and more), each with a line saying what is
+  set now; the ones that need something (no AI key, no backup yet) say so.
+- **Phone:** a grouped list like the iPhone's Settings; each group is its own page with Back.
+  **Desktop:** the groups in a column, the open one beside it.
+- **Search settings** by name or everyday words ("dark", "font size", "key", "backup"); a result
+  opens its page and the setting glows for a moment. On desktop, / focuses the search.

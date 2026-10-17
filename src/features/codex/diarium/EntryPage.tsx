@@ -125,7 +125,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       if (error instanceof LlmError && error.kind === 'no-key') {
-        toast(error.message, { tone: 'error', action: { label: 'Open Ordo', onClick: () => navigate('/ordo#ai') } });
+        toast(error.message, { tone: 'error', action: { label: 'Open Ordo', onClick: () => navigate('/ordo/ai') } });
       } else toast(error instanceof Error ? error.message : 'The check didn’t work. Try again.', { tone: 'error' });
     } finally {
       setChecking(false);
@@ -267,7 +267,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
                 {review && stale ? 'Check again' : 'Check my writing'}
               </Button>
             ) : (
-              <Link to="/ordo#ai" className={buttonClasses('secondary', 'md')}>
+              <Link to="/ordo/ai" className={buttonClasses('secondary', 'md')}>
                 Set up AI
               </Link>
             )}

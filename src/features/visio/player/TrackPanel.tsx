@@ -72,12 +72,12 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
           ) : (
             <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
               {role === 'target' && hasSound && (
-                <Button size="sm" variant="secondary" icon={canTranscribe ? Sparkles : KeyRound} onClick={() => (canTranscribe ? void startTranscription(media) : navigate('/ordo#listening'))}>
+                <Button size="sm" variant="secondary" icon={canTranscribe ? Sparkles : KeyRound} onClick={() => (canTranscribe ? void startTranscription(media) : navigate('/ordo/listening'))}>
                   {canTranscribe ? 'Make' : 'Set up Whisper'}
                 </Button>
               )}
               {role === 'native' && tracks.target && (
-                <Button size="sm" variant="secondary" icon={hasAi ? Languages : KeyRound} onClick={() => (hasAi ? void startTranslation(media, tracks.target!.cues) : navigate('/ordo#ai'))}>
+                <Button size="sm" variant="secondary" icon={hasAi ? Languages : KeyRound} onClick={() => (hasAi ? void startTranslation(media, tracks.target!.cues) : navigate('/ordo/ai'))}>
                   {hasAi ? 'Translate' : 'Add AI key'}
                 </Button>
               )}

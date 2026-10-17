@@ -107,7 +107,7 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
               label="Language settings"
               onClick={() => {
                 close();
-                navigate('/ordo#language');
+                navigate('/ordo/languages');
               }}
             />
           </div>

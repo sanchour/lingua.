@@ -336,3 +336,21 @@ Short records of choices that are not obvious from the code. Newest last.
   compound, which says it is only the end. The dictionary decides which guess is a word.
 - **A test of everyday words per language** guards the builder's choices, so a later tweak that
   makes "la" read "it" or "megy" read "to go with" fails the build's tests instead of shipping.
+
+## 2026-10-17 — Lingua 2.0-3: Ordo, easy to find your way in
+
+- **Eight groups instead of one long page.** Reading, Study and cards, Listening and Languages
+  ("your learning") come first; Look and feel, AI and translation, Your data and About and more
+  follow. Each has a one-line summary of what is set now (the reading font and size, new cards a
+  day, whether an AI key is connected, the last backup), and the ones that need you (no key, no
+  backup yet) say so in the accent colour.
+- **Phones open a group as its own page** (`/ordo/<group>`), like the iPhone's Settings; the top
+  bar's Back returns to the list. A group with a single section drops that section's repeated
+  title. Wide screens keep the groups in a column with the open one beside it, and switching
+  groups doesn't replay the page's entrance, only a short fade of the right side.
+- **Search knows every setting** by its label and by the words people use ("dark" finds Theme,
+  "retention" finds Remember). Choosing a result opens its group, scrolls to the setting and
+  lights its row up for a moment. The index is checked by a test against the labels really on the
+  pages, so a renamed setting can't silently drop out of search.
+- **Old links still land.** `/ordo#ai`, `/ordo#reset` and the like redirect to the group that
+  holds that section and scroll to it; links inside the app now point at the groups directly.

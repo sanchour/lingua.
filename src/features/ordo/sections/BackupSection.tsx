@@ -145,7 +145,7 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl bg-sunken/50 p-4">
-        <div className="min-w-0 flex-1">
+        <div className="min-w-[14rem] flex-1">
           <p className="font-semibold">Books for Goodreads</p>
           <p className="text-[13px] text-ink-soft">The books you finished in Lingua as a CSV. On Goodreads: My Books → Import and export.</p>
         </div>

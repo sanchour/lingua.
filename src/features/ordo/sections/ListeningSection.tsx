@@ -83,21 +83,23 @@ export function ListeningSection({ audio }: { audio: Settings['audio'] }) {
       )}
 
       <h3 className="mt-6 mb-1 text-[13px] font-bold tracking-wide text-ink-soft uppercase">Downloads</h3>
-      <p className="mb-2 text-[13px] leading-relaxed text-ink-soft">
-        Most podcast hosts let Lingua save episodes offline. A few don’t allow apps to download; those still stream. If you run your own relay (for example a small Cloudflare Worker), put its address here, with{' '}
-        <code className="rounded bg-sunken px-1">{'{url}'}</code> where the episode address goes.
-      </p>
-      <input
-        value={proxy}
-        onChange={(e) => setProxy(e.target.value)}
-        placeholder="https://my-relay.example.workers.dev/?url={url}"
-        inputMode="url"
-        autoCapitalize="off"
-        autoCorrect="off"
-        spellCheck={false}
-        className="h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[14px]"
-        aria-label="Download relay address"
-      />
+      <div>
+        <p className="mb-2 text-[13px] leading-relaxed text-ink-soft">
+          Most podcast hosts let Lingua save episodes offline. A few don’t allow apps to download; those still stream. If you run your own relay (for example a small Cloudflare Worker), put its address here, with{' '}
+          <code className="rounded bg-sunken px-1">{'{url}'}</code> where the episode address goes.
+        </p>
+        <input
+          value={proxy}
+          onChange={(e) => setProxy(e.target.value)}
+          placeholder="https://my-relay.example.workers.dev/?url={url}"
+          inputMode="url"
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellCheck={false}
+          className="h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[14px]"
+          aria-label="Download relay address"
+        />
+      </div>
     </SettingsSection>
   );
 }
