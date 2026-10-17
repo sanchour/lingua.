@@ -74,6 +74,34 @@ All exercises are pure generators in `core/grammar/drills.ts` (deterministic for
 | Article / gender | which article? (already in Ludus) | packs |
 | Spot the mistake | one wrong ending in a sentence; tap it | generated |
 | Free sentence | write a sentence using the topic; AI checks it (optional, with a key) | Diarium's corrector |
+| Translate in | an English sentence → the language, tiles first, then typed | examples |
+
+### How a lesson progresses (Lingua 3.0, at the user's request)
+
+Each topic climbs the same five steps, so a learner meets a form before they must produce it:
+
+1. **Recognise:** which of these is the preterite? (tap one of four)
+2. **Pick:** the gap in a real sentence, four forms of the same word.
+3. **Build:** type the form (conjugate, decline), with the table one tap away.
+4. **Use:** transform a sentence, put tiles in order, spot the mistake.
+5. **Say it yourself:** translate into the language, or (with an AI key) a free sentence.
+
+- A lesson is about 12 items: new items of the current step mixed with due ones from earlier
+  steps and topics, ending with a two-minute review of what went wrong.
+- Every mistake gets a one-line explanation of the rule it broke, drawn from the topic's
+  explanation ("-ar verbs: nosotros → -amos"), and the item comes back in the same lesson.
+- A topic's next step unlocks at 80 % right; the next topic when the topic is mastered (or by the
+  placement check). Items stay FSRS cards, so mastered topics return for review.
+
+### Writing letters and characters (alphabets)
+
+- Trace, then write from memory, on a canvas with pointer events (finger, pen or mouse).
+- Stroke data: KanjiVG (CC BY-SA) for kana and kanji, Make Me a Hanzi (LGPL / Arphic) for hanzi,
+  hand-drawn stroke paths for Cyrillic, Greek, Hangul jamo and Arabic letters (each joined form).
+- A stroke is checked by resampling it and comparing with the expected stroke: order, direction,
+  start point and shape (a small Fréchet-style distance). Hints: the next stroke's start glows
+  after a miss; three misses show it animated.
+- Letters are FSRS items (`mode: 'writing'`), with their own mastery ring beside reading.
 
 ## Progress and tracking
 
@@ -93,7 +121,8 @@ All exercises are pure generators in `core/grammar/drills.ts` (deterministic for
 2. Drill generators and the drill screen (conjugate, decline, pick the form, word order). Then FSRS grammar items and mastery rings.
 3. Topic maps and explanations for the other eight languages, then for the Lingua 2.0 languages.
 4. Library examples, links from the word drawer, Home and Ludus, the placement check, and Ratio and Tabula.
-5. Transform, spot-the-mistake and AI free-sentence drills.
+5. Transform, spot-the-mistake and AI free-sentence drills; the five-step lesson progression above.
+6. Alphabets with sound, then writing practice (tracing and from memory), as in the section above.
 
 ## Open questions
 

@@ -289,8 +289,10 @@ stopping, then commit, push and check the live site. Version 3.0 in the app when
 
 The user added the next three steps on 2026-10-17 (their list is under "Lingua 3.0" in
 "Lingua updates.txt"). They come straight after 3.0-1, before the new rooms, because they fix
-and polish what people use every day; Grammatica, Radio, Mundus and the full check follow as
-3.0-5 … 3.0-8.
+and polish what people use every day; Grammatica, Radio, Mundus, then comics, audiobooks and AI
+conversation, and the full check follow as 3.0-5 … 3.0-9. A second list the user added the same
+evening (better grammar exercises, writing practice for alphabets, a tips section, comics,
+audiobooks and audio courses, AI conversation) is planned into 3.0-5, 3.0-7 and 3.0-8.
 
 ### 3.0-2 · A real phone app, and a look of your own
 - [ ] **Phone first, strictly:** every room at 375 px wide works like a native app: nothing wider
@@ -358,11 +360,22 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
 - [ ] Topic maps for every language (Spanish and German first).
 - [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
+- [ ] **Progressive, high-quality exercises:** each topic's drills climb in steps (recognise the
+      form, pick it, build it, use it in a sentence, translate into the language), in real
+      sentences from the language's examples, with a short explanation of every mistake. A lesson
+      mixes new items with due ones, ends with a short review, and unlocks the next topic only
+      when it is mastered. Transform, spot-the-mistake and, with an AI key, free sentences that are
+      corrected and explained.
 - [ ] **Alphabets** for the languages with a script of their own (Russian, Greek, Arabic, Japanese
       kana, Korean Hangul; Mandarin: pinyin and tones, then the first characters): the full
       alphabet as a chart with sound, and short lessons in the spirit of Duolingo. See the letters,
       hear them, match sound to letter, read real words, then write them. Letters are FSRS cards
       with mastery rings, like grammar topics. Offered first to beginners in these languages.
+- [ ] **Writing practice for letters and characters:** trace each letter, kana, Hangul block or
+      character with a finger or the mouse, guided by its strokes in order and direction
+      (stroke data from KanjiVG for Japanese, Make Me a Hanzi for Mandarin, drawn by hand for the
+      alphabets), then write it from memory. Strokes are checked for order, direction and shape,
+      with a gentle hint on a miss. Arabic letters in their joined forms (start, middle, end).
 
 ### 3.0-6 · Radio (in Sonus)
 - [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
@@ -389,13 +402,41 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
   - Each opens in its app. "Add its subtitles" uses the Subtitles-only flow.
 - [ ] Every language's picks checked: links open, the services match the country, level hints
       make sense.
+- [ ] **Beyond the app: tips that make learning fun,** a short section in Mundus (also offered on
+      Home now and then): small, playful challenges with a tap to mark them done, such as
+      switching your phone or a game to the language (with how to do it on iPhone, Windows and in
+      popular apps), labelling things at home, cooking a recipe in it, thinking aloud on a walk,
+      a song on repeat for a week, changing your Spotify region of discovery, writing your
+      shopping list in it. Per language where it matters (a local radio app, a café phrase to try).
+      Interactive cards that flip, with a streak of challenges done.
 
-### 3.0-8 · Lingua 3.0 complete: the full check
+### 3.0-8 · Comics, audiobooks and courses, and talking with AI
+- [ ] **Comics, fully supported in Codex:** open CBZ/CBR-style archives (zip), image folders and
+      PDFs page by page, with a reader made for panels: fit to width or page, swipe on a phone,
+      two pages on desktop, zoom into a panel. Speech bubbles become text by on-device OCR
+      (Tesseract, loaded only for comics, per script), so every word works as in Codex: tap,
+      select to translate, save to cards. Reading time and pages count in Ratio.
+- [ ] **Audiobooks and audio courses in Sonus:** add audio files (MP3, M4A/M4B with chapters) or
+      folders, or open free audiobooks from LibriVox in the language. Chapters, resume where you
+      left off, speed, sleep timer, the mini player. A text alongside when there is one (the
+      ebook in Codex, matched by Whisper's timings, so the sentence being read lights up). Audio
+      courses (lesson by lesson, with their own order and "lesson done"), and links to good free
+      courses per language.
+- [ ] **Talk or text with an AI:** a "Conversation" corner with ready links and prompts to start a
+      voice chat or a text chat in ChatGPT, Claude, Gemini or Copilot (each opens the app or site;
+      nothing is sent from Lingua). Prompts per level and theme: a café role-play, a job interview,
+      a debate, "correct my mistakes after each answer", "speak slowly and simply". The prompt is
+      written in the language, with the learner's level, words due for review and current
+      grammar topic woven in, and a copy button. With an AI key, a text chat inside Lingua too,
+      corrections shown inline and new words saved as cards.
+- [ ] Checked on a phone and on desktop, light and dark; docs.
+
+### 3.0-9 · Lingua 3.0 complete: the full check
 - [ ] Every point of "Lingua updates.txt" checked against the app, one by one.
 - [ ] Every room on a phone and on desktop, light and dark: layout, taps, scrolling, the
       keyboard, offline.
 - [ ] All twenty languages end to end: dictionary and taps, news, music, radio, recommendations,
-      grammar, alphabets.
+      grammar, alphabets and writing, comics, audiobooks, AI conversation prompts, voices.
 - [ ] The app's version says 3.0. Docs, then commit, push and the live site checked.
 
 ### Handover for the Lingua 3.0 session

@@ -91,3 +91,18 @@ Lingua 3.0 (added by the user on 2026-10-17; planned in docs/ROADMAP.md as 3.0-2
 * On Sonus, the first tab/page is Library and create an aesthetic, smartly layed out library with both podcasts and music, then create two tabs of podcasts and music separetely where it shows only music or podcasts and you can discover there too.
 * When opening a song, its awkard on both phone and desktop with weird double scrolling, make it fixed, smooth and better
 * Remove what do you enjoy most from onboarding process
+
+---
+Lingua 3.0, second list (added by the user on 2026-10-17; planned in docs/ROADMAP.md: grammar and
+writing in 3.0-5, tips in 3.0-7, comics, audiobooks, courses and AI conversation in 3.0-8)
+
+in roadmap: add full support for comics
+support for audio courses and audiobooks
+links and prompts to set up voice chat sessions with various ai's or texting
+
+progressive and high quality grammar exercises
+practicing writing letters, characters in alphabet section
+
+a short section full of fun, engaging and interactive tips to make language learning even more fun outside of the app! stuff like changing the language of your phone
+
+implement these fully, and well, complete to a high standard

@@ -427,3 +427,23 @@ Short records of choices that are not obvious from the code. Newest last.
   `docs/SETUP.md` covers a new laptop: installs, clone, checks, moving learning data with a
   backup, and rebuilding the 2 GB word data (the subtitle corpora, once fetched by hand, are in
   `fetch.ts` now). `.claude/launch.json` runs `node` from the PATH instead of a Windows path.
+
+## 2026-10-17 — Lingua 3.0 re-planned with the user's additions
+
+- **Fixes and polish before new rooms.** The user added a list (phone feel, Liquid Glass tab bar,
+  themes, Home layout, a working music room, natural voices, device sync). As with Lingua 2.0,
+  what people use every day comes first: it is 3.0-2 … 3.0-4, straight after the languages
+  (3.0-1, already under way on its branch). Grammatica, Radio and Mundus follow.
+- **A second list the same evening** went where it belongs instead of into one more step:
+  progressive grammar exercises and letter-writing practice into Grammatica (3.0-5, see
+  GRAMMAR-PLAN.md), the "beyond the app" tips into Mundus (3.0-7), and comics, audiobooks,
+  audio courses and AI conversation into a new 3.0-8. The full check is 3.0-9.
+- **Voices come back, differently.** 2.0-1 removed the device voice because it was robotic and
+  often American. 3.0-4 uses Gemini's text-to-speech with the learner's own key (in a header),
+  in the accent of the chosen flag, generated once and kept; without a key only the device's
+  high-quality regional voices, else no voice button.
+- **Sync without accounts.** The rules forbid creating accounts, and the app is local-first, so
+  3.0-4 pairs devices with a QR code and syncs them directly (WebRTC) using the backup's merge.
+- **AI conversation stays outside by default.** Voice chats happen in the AI apps the learner
+  already has; Lingua prepares the prompt (level, due words, current grammar) and opens the app,
+  sending nothing itself. A text chat inside Lingua only with the learner's own key.

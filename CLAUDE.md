@@ -9,7 +9,7 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
 - The user's brief is [Lingua updates.txt](Lingua%20updates.txt). The plan, with what is done ticked,
   is [docs/ROADMAP.md](docs/ROADMAP.md).
 - Lingua 2.0 is closed (last step 2.0-4b). Everything still open is **Lingua 3.0**, in order
-  3.0-1 … 3.0-8 under "## Lingua 3.0" in the roadmap. Read its "Handover for the Lingua 3.0
+  3.0-1 … 3.0-9 under "## Lingua 3.0" in the roadmap. Read its "Handover for the Lingua 3.0
   session" before starting.
 - 3.0-1 has started work on the branch `lingua-3.0/languages-wip` (pushed). Don't merge it into
   `main` as it is: merge `main` into it, finish 3.0-1 there, then bring it to `main`.
