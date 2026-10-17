@@ -1,0 +1,72 @@
+
+
+This is how this session is gonna go, after hitting limits, you will pick this up and go further, if you finish a session, you give the end notes, and continue. Meaning, you will proceed autonomously and without needing confirmations from me.
+
+after every finished prompt, push and commit to GitHub and make sure the site is updated and the update also automatically updates the phone or desktop apps.
+
+have a plan first before doing any prompt, and then after creating the plan, you can start doing it without confirmation from me, that is completely fine.
+
+First prompt:
+
+as a pwa app on iPhone, the icon needs to be more minimal and clean, it should also, in terms of background and style reflect the dark/light mode of the phone
+
+In this session you will do phase 5 and 6 together. important: skip whisper and visio for now. they will be done later. this means from phase 5, do diarium and in the same session do phase 6 completely. here already, make the app fully functional and ready, check if everything works, if there are any improvements or glitches to be done. when satisfied push.
+
+also edit an option to reset the app/data
+
+so phase 5, only diarium and phase 6
+
+Second prompt: which you will do inmediately after the first one if limits allow
+
+here you do visio and whisper
+
+this is where the app becomes complete.
+
+on phone, the layout is still often glitchy, not working. make it properly work on phone, fixed screens, no weird scrolling all over the place, no zooming in, all elements properly fitting on the screen etc.
+
+and make sure the home page is easy to use, understand and overview, both on desktop and phone.
+
+now the app is completely build!
+
+
+
+then when done with that, go to:
+
+Lingua 2.0
+make an implemantation plan first, auto confirm and go
+New Languages
+Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili, Bahasa
+
+for each language, all 20, add fitting style for each languages flag. so each language has as its icon, the flag
+
+New Features
+Learning through music. Allowing you to easily find your songs or search and find new songs in the language your learning. Maybe via genius or whatever you can find the transcript and read that and translate that while listening to the song. Make it easy and clean to use! Meaning easy to control that. Maybe do it so you can easily overview your songs in that language that you have already favourited or saved in your Spotify or Apple Music, or a discovery tab with great music, albums, styles etc. of music in your language of learning. And a search just like in spotify of finding a song you know and enjoying it while reading and learning! Integrate this new feature intellintly somehwere. bc its a mix between sonus and codex.
+fully fledged grammar section with lessons etc. tabels, tracking, progress
+In Sonus add support for foregin radio stations like radio garden. think of plan first
+Add somewhere a section with video game, shows, movies, books, podcasts, music, youtube channels, dictionary reccomendations based on the language they are learning, and add buttons that inmeditaly bring them to the internet, spotify, youtube, goodreads, amazon, netflix, hbo max, disney etc. A reccomendatino deep dive page
+In visio: give people the choice to choose which supscription services they have and to like that see which shows and stuff in their language etc. well integrated
+Improvements
+Section:	Improvements:
+Codex	When adding something in Codex, give option to add reading level.
+Codex	At adding, allow adding pdfs, and make them work within the app
+Codex	When clicking the triple dots “more”. add edit, where you can edit the book/text. things like cover, title text, add file etc. This is show you can edit the books/texts on your shelf
+Codex	Word hover translations should also work in the context of the sentences. Examples: In Spanish I was reading “cada tarde”, it said on hover over tarde: late. Eventough the answer is obviously evening. Make the translations help to understand the words based on the text and sentences, have smart, functional translations that are sharp and helpful. Smarter translations basically
+Codex	Add that when click-holding your mouse or touch on phone and swiping over a sentence you can select multiple words or even the whole sentence and tranlsate the sentence. This gives you more understand over context already. So click-holding makes you select how much words you want, even paragraphs. make a limit somewhere tho. Make it functional on phone with touch aswell.
+Codex	add easy support for news articles
+Codex	Layout of the sidebar when you right click a word: obviously when a word is learning, it auto-saves it to a deck. Adding it to a deck just adds it in another as well. I like the layout but put grammar/forms in a seperate slider/tab. Intelligently and minimalistically put that like that in the sidebar.
+Codex	On hover translate on that it doesnt have to say learning or known, a reader already can tell by looking at the word in the text.
+Add on the richt click sidebar next to number most common, which level it belongs to: A1 or B2 etc.	
+Codex	Some languages are not supported at all. Portuguese translation of words is horrible, same goes for some in Spanish, probably even worse in Swedish or Hungarian. This must all be fixed and all languages deserve efficient, fully functional support and translation.
+Thesaurus	Make the discover page, especially the pre-made decks more fun designed, more engaging and aesthetic widgets
+Thesaurus	When doing Flashcards, when you have chosen hard, good etc. and go to the next one, it has a small glitchy screen when it picks up the next flashcard. Fix that
+Thesaurus	Right-clicking a flashcard opens the same sidebar menu as in Codex.
+Thesaurus	On both Ludus and review. Place practice again or practice with Ludus above Done on same lines, not next to each other
+Thesaurus	Improve ludus icon and make it more fitting, not a gaming controller
+Thesaurus & Codex	Remove the voiceover of words. its bad and it doesnt work
+Onboarding	Expand onboarding with just 2 more steps
+
+---
+Status (2026-10-17): Lingua 2.0 is done up to and including music in Sonus with Apple Music (2.0-4b).
+Everything still open above (the ten new languages and flags, the grammar section with alphabet
+lessons, radio, the recommendations page, the streaming services in Visio, and the full check) is
+Lingua 3.0, planned in docs/ROADMAP.md under "Lingua 3.0", with a handover for the new session.

@@ -146,3 +146,17 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Ordo › Music: the Spotify steps; with your own Client ID, Connect returns to Cantus with your
       liked songs in the language.
 - [ ] Home shows a song for today once a song is saved.
+
+## Lingua 2.0-4b: music in Sonus, Apple Music
+
+- [ ] The tab bar has five tabs again; Sonus opens on Music, with Library and Podcasts beside it.
+- [ ] An old Cantus link (or a bookmark) opens the song in Sonus.
+- [ ] A song from the charts: the dock shows "Play in Apple Music"; it opens the Music app on the
+      song. Play it there, come back: "Tap the line you're hearing" waits; tap the line being
+      sung and the lyrics run on from there.
+- [ ] The target button turns line tapping on and off; − and + still nudge.
+- [ ] A song LRCLIB lacks: the lyrics come from lyrics.ovh (credit under them), or "On Genius"
+      opens Genius's search; copy the words, ⋯ › Find other lyrics › Paste them yourself.
+- [ ] Podcasts: followed podcasts, then Find podcasts below; ＋ Add › Find a podcast lands there.
+- [ ] On an iPad or Mac: Apple Music's player in the song page; pressing its Play starts the
+      lyrics, pressing again pauses them; its artwork opens the song in Apple Music without pausing.

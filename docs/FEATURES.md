@@ -159,16 +159,25 @@ Practise writing in the target language; get corrected, explained and graded.
 - **Search settings** by name or everyday words ("dark", "font size", "key", "backup"); a result
   opens its page and the setting glows for a moment. On desktop, / focuses the search.
 
-## Cantus — learning through music (2.0-4)
+## Music in Sonus — learning through music (2.0-4, in Sonus since 2.0-4b)
+
+Sonus is "listen and sing": **Music** first, then Library and Podcasts (where podcast discovery
+now lives). The music room still goes by Cantus inside (its deck is "From Cantus").
+
 
 - **Find any song** in the language you're learning (Apple's catalogue; tap the artwork for a
   30-second preview), or start from Discover: this week's most played songs sung in the language,
   artists picked for learners (clear, medium or fast), and styles.
-- **The song page:** the lyrics (from LRCLIB) follow the music from YouTube (paste the song's link),
-  Spotify, or music playing anywhere (start the timer with the song). The current line is large
+- **The song page:** the lyrics follow the music from **Apple Music** (its player on the page:
+  pressing it starts and pauses the lyrics; on a phone, "Play in Apple Music" opens the Music app,
+  then you tap the line you're hearing), YouTube (paste the song's link), Spotify, or music
+  playing anywhere (start the timer, or tap the line you're hearing). The current line is large
   and in the song's colour, its words lighting up as they're sung; the English sits under each
   line, shown, blurred or hidden. Every word works as in Codex. Tap a line's English or the space
   around it to play from it, save it as a card, or copy it. The album art colours the page.
+- **Lyrics** come from LRCLIB (often timed to the music), then lyrics.ovh; for a song neither
+  has, "On Genius" opens Genius's search to copy the words, and "Paste them yourself" takes them.
+  Under the lyrics: where they came from.
 - **Your songs:** save with the heart. Recently opened songs sit below; with your own Spotify app
   (Ordo › Music explains it), your liked songs sung in the language too.
 - **Song games:** fill in the lyric, and put a verse's lines back in order. They count as Ludus.

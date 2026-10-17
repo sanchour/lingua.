@@ -14,7 +14,7 @@ export default function SpotifyCallback() {
     started.current = true;
     finishSpotifySignIn(location.search)
       .then((to) => {
-        toast('Spotify is connected. Your liked songs are in Cantus.', { tone: 'success' });
+        toast('Spotify is connected. Your liked songs are in Sonus › Music.', { tone: 'success' });
         navigate(to, { replace: true });
       })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : 'Spotify couldn’t connect.'));

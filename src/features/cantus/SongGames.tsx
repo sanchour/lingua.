@@ -24,7 +24,7 @@ export default function SongGames() {
   if (song === null) {
     return (
       <p className="py-20 text-center text-ink-soft">
-        This song isn’t in Cantus any more. <Link to="/cantus" className="font-semibold text-accent-text">Back to Cantus</Link>
+        This song isn’t in your music any more. <Link to="/sonus" className="font-semibold text-accent-text">Back to Music</Link>
       </p>
     );
   }
@@ -56,7 +56,7 @@ function Games({ song }: { song: Song }) {
 
   return (
     <div className="song-page relative mx-auto max-w-2xl" style={tint}>
-      <BackLink to={`/cantus/song/${encodeURIComponent(song.id)}`}>{song.title}</BackLink>
+      <BackLink to={`/sonus/song/${encodeURIComponent(song.id)}`}>{song.title}</BackLink>
       <div className="mb-6 flex items-center gap-3">
         <SongArt url={song.artworkUrl} title={song.title} className="song-art w-14" rounded="rounded-xl" size={200} />
         <div className="min-w-0 flex-1">
@@ -76,7 +76,7 @@ function Games({ song }: { song: Song }) {
             <Button variant="secondary" icon={RotateCcw} onClick={again}>
               Play again
             </Button>
-            <Link to={`/cantus/song/${encodeURIComponent(song.id)}`} className="inline-flex h-11 items-center rounded-2xl bg-inverse px-5 font-semibold text-on-inverse">
+            <Link to={`/sonus/song/${encodeURIComponent(song.id)}`} className="inline-flex h-11 items-center rounded-2xl bg-inverse px-5 font-semibold text-on-inverse">
               Back to the song
             </Link>
           </div>

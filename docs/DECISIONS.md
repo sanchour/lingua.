@@ -398,3 +398,32 @@ Short records of choices that are not obvious from the code. Newest last.
   its own language shows no chart row.
 - **Discover** has artists picked by hand per language, each with why they're good to learn with
   and how clear they are to follow, and styles to explore.
+
+## 2026-10-17 — Lingua 2.0-4b: music moves into Sonus; Apple Music; Lingua 3.0
+
+- **Music inside Sonus, first.** Six tabs on a phone were too many, and music is listening: Sonus
+  became "listen and sing" with Music · Library · Podcasts. The room keeps its rose headings and
+  its Latin name inside (Cantus, the "From Cantus" deck). Podcast discovery moved into Podcasts.
+  Old `/cantus` links redirect; `/cantus/spotify` stays, because learners typed it into their
+  own Spotify apps.
+- **Apple Music without a developer token.** MusicKit needs Apple's paid developer key, and the
+  embed player posts no messages. But pressing a cross-origin frame moves focus into it, which
+  the page sees as `blur` with the frame as the active element: that press starts or pauses
+  the lyrics' timer, and focus goes back to the page so the next press is seen too. Artwork and
+  title are covered by a link of our own, so opening the song in Apple Music doesn't toggle the
+  lyrics. Previews start part way into the song, hence "Tap the line you're hearing".
+- **Phones open the Music app.** The embed is too tall for the docked player, and signing in to
+  Apple inside a home-screen app is awkward. "Play in Apple Music" opens the song in the Music app
+  and turns on line tapping for when you come back.
+- **No Genius lookups.** Genius's API needs a key; sending it in a header triggers a browser
+  preflight that Genius's firewall answers with 403, and keys in addresses are against this app's
+  rule. Its song embed is readable from a browser, but finding the song id needs the API. So:
+  LRCLIB, then lyrics.ovh, then a link to Genius's search and pasting.
+- **Lingua 3.0.** At the user's request, 2.0 ends with this prompt; the rest of the brief (twenty
+  languages, Grammatica with alphabets, Radio, Mundus and services, the full check) is Lingua 3.0,
+  built in a new session from ROADMAP.md's handover.
+- **Any computer can carry on.** The user's way of working and rules were only in Claude's memory
+  on the first PC; they are now in `CLAUDE.md`, which every Claude session in this folder reads.
+  `docs/SETUP.md` covers a new laptop: installs, clone, checks, moving learning data with a
+  backup, and rebuilding the 2 GB word data (the subtitle corpora, once fetched by hand, are in
+  `fetch.ts` now). `.claude/launch.json` runs `node` from the PATH instead of a Windows path.

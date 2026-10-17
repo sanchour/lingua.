@@ -141,10 +141,10 @@ Notes: Home's numbers are known words, learning, hours this week and hours in al
 
 ## Lingua 2.0
 
-Built as nine prompts, in this order. Each is checked, committed and pushed on its own, so the
-live app gets better step by step. Fixes to what already exists come first, because they make
-every later feature feel better. Reordered on 2026-10-17 after new asks: the settings first,
-music raised to a room of its own, every language checked, and a full check at the end.
+Built as prompts, each checked, committed and pushed on its own, so the live app got better step
+by step. Fixes to what already existed came first, because they make every later feature feel
+better. On 2026-10-17 Lingua 2.0 was closed after 2.0-4b: everything still open moved to
+**Lingua 3.0** (below), to be built in a new session.
 
 ### 2.0-1 · Reading, words and cards feel right ✅
 - [x] **No more voiceover:** the device voice is removed from Codex and Thesaurus (buttons, drawer,
@@ -201,7 +201,7 @@ music raised to a room of its own, every language checked, and a full check at t
   - [x] Glosses checked by a test of everyday words in each of the four languages
         (`src/core/packs/glosses.test.ts`), and the top 200 of each reviewed by hand.
 
-### 2.0-3 · Ordo: settings that are easy to find your way in
+### 2.0-3 · Ordo: settings that are easy to find your way in ✅
 - [x] **One overview, then one section at a time:** Ordo opens on a short list of groups (Look and
       feel, Reading, Study, Listening and watching, Languages, AI and keys, Backup and reset,
       About), each with a one-line summary of what is set. Choosing one opens just that section.
@@ -213,7 +213,7 @@ music raised to a room of its own, every language checked, and a full check at t
       settings" from a missing AI key) land on the right section.
 - [x] Checked on a phone and on desktop, light and dark.
 
-### 2.0-4 · Cantus: learning through music, a room of its own
+### 2.0-4 · Cantus: learning through music, a room of its own ✅
 - [x] **Search** any song in the language (Apple's free search: artwork and a preview). Lyrics come
       from LRCLIB (free, open, often synced to the music).
 - [x] **The song page:**
@@ -236,11 +236,45 @@ music raised to a room of its own, every language checked, and a full check at t
 - [x] **Aesthetic:** the album art sets the page's colours; the lyric sheet scrolls with the song,
       the current line large and clear; calm, simple controls that work one-handed on a phone.
 
-### 2.0-5 · Twenty languages with their flags, every one well supported
+### 2.0-4b · Music moves into Sonus; Apple Music; lyrics from more places ✅
+- [x] **Music lives in Sonus:** Sonus is "listen and sing", with three tabs: **Music** (first),
+      Library and Podcasts (podcast discovery now sits inside Podcasts). The Cantus tab is gone, so
+      the iPhone tab bar has five tabs again. Songs open at `/sonus/song/…`; old `/cantus` links
+      still open them, and the Spotify return address `/cantus/spotify` stays as it is, since
+      learners entered it in their own Spotify app. The Music room is one page: your songs, recently
+      opened, this week's charts, your Spotify likes, then artists and styles. Its headings keep
+      the rose colour.
+- [x] **Apple Music:** a song from Apple's catalogue plays in Apple Music's own player on the song
+      page (signed in to Apple Music in it: the whole song; otherwise a preview). The player tells
+      the page nothing, but pressing it moves focus into it, so a press starts or pauses the
+      lyrics. Its artwork and title open the song in Apple Music without counting as a press. On a
+      phone, "Play in Apple Music" opens the Music app; back in Lingua, "Tap the line you're
+      hearing" waits, and the lyrics run on from that line.
+- [x] **Find the place by tapping:** for Apple Music and music playing anywhere, the target button
+      turns on "Tap the line you're hearing": the next tap on a line starts the lyrics there.
+- [x] **Lyrics from more places:** LRCLIB first (often timed), then lyrics.ovh (free, no key, plain
+      text). Genius can't be asked from a browser without breaking a rule: its API needs a key, the
+      only header way is refused by Genius's firewall (the browser's preflight gets a 403), and a key
+      in the address is not allowed here. So the song page has "On Genius" (its search) and "Paste
+      them yourself"; "Find other lyrics" also has lyrics.ovh. Under the lyrics: where they came
+      from, and whether they're timed.
+
+Lingua 2.0 ends here.
+
+## Lingua 3.0
+
+Everything still open from "Lingua updates.txt", as its own version, built in a new session (see
+the handover at the end). Same way of working: plan each prompt here first, build without
+stopping, then commit, push and check the live site. Version 3.0 in the app when it's done.
+
+### 3.0-1 · Twenty languages with their flags, every one well supported
 - [ ] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and
       Indonesian (Bahasa).
-  - Packs from Wiktionary (kaikki) and frequency lists (FrequencyWords; Latin from a corpus list).
-  - Word splitting with `Intl.Segmenter` for Mandarin and Japanese, plus readings (pinyin, kana).
+  - Packs from Wiktionary (kaikki) and frequency lists (FrequencyWords; Latin and Swahili from
+    Leipzig corpus lists; Japanese and Mandarin counted from OpenSubtitles text split the way the
+    reader splits it).
+  - Word splitting: `Intl.Segmenter` for Mandarin; for Japanese a dictionary splitter of its own
+    (the browser splits 食べました into 食|べ|ま|した). Readings: pinyin and kana over the words.
   - Right-to-left reading for Arabic, everywhere text is shown.
   - Fonts loaded only for the scripts in use (Arabic, CJK, Hangul).
   - Starter decks, Diarium prompts and level hours for each.
@@ -251,30 +285,37 @@ music raised to a room of its own, every language checked, and a full check at t
 - [ ] **Every language checked, the ten existing ones too:** a test list of everyday words per
       language like 2.0-2's (`glosses.test.ts`), the 200 commonest words reviewed, the lemma
       fallback rules, news sources, starter decks and Diarium prompts.
+- [ ] Music for the new languages: Apple stores, artists to learn with, styles and charts.
 
-### 2.0-6 · Grammatica
+### 3.0-2 · Grammatica and alphabets
 Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] Grammar files, the topic browser, explanations and tables.
 - [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
 - [ ] Topic maps for every language (Spanish and German first).
 - [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
+- [ ] **Alphabets** for the languages with a script of their own (Russian, Greek, Arabic, Japanese
+      kana, Korean Hangul; Mandarin: pinyin and tones, then the first characters): the full
+      alphabet as a chart with sound, and short lessons in the spirit of Duolingo. See the letters,
+      hear them, match sound to letter, read real words, then write them. Letters are FSRS cards
+      with mastery rings, like grammar topics. Offered first to beginners in these languages.
 
-### 2.0-7 · Radio (in Sonus)
+### 3.0-3 · Radio (in Sonus)
 - [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
       search, favourites; only secure (https) streams.
 - [ ] A minimal "night sky" map: every station a dot at its place, so the dots draw the world;
       tap one to tune in, like Radio Garden.
 - [ ] Plays in Sonus's player and mini player, with now playing when the station shares it.
-      Listening time counts.
+      Listening time counts. A fourth tab in Sonus (Music · Radio · Library · Podcasts), or
+      inside Library: decide when planning.
 
-### 2.0-8 · Mundus: recommendations, and streaming services in Visio
+### 3.0-4 · Mundus: recommendations, and streaming services in Visio
 - [ ] **Mundus**, a deep-dive page per language: video games, series, films, books, podcasts,
       music, YouTube channels and dictionaries. Picked by hand for all twenty languages, with level
       hints and why each is good for learners.
   - Buttons open them on the web, Spotify, YouTube, Goodreads, Amazon, Netflix, Max, Disney+ and others.
   - "Add to Codex/Sonus/Visio" where it fits.
   - Reached from Home and the sidebar.
-  - Its music links to the artists in Cantus (opening their songs there).
+  - Its music links to the artists in Sonus › Music (opening their songs there).
 - [ ] **Visio › Services:** choose the services you have (Netflix, Max, Disney+, Prime Video,
       Apple TV+, SkyShowtime, Viaplay, and free public ones such as RTVE Play, ARD, arte, NRK).
   - The picks show which of your services carry them.
@@ -284,10 +325,60 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] Every language's picks checked: links open, the services match the country, level hints
       make sense.
 
-### 2.0-9 · Lingua 2.0 complete: the full check
+### 3.0-5 · Lingua 3.0 complete: the full check
 - [ ] Every point of "Lingua updates.txt" checked against the app, one by one.
 - [ ] Every room on a phone and on desktop, light and dark: layout, taps, scrolling, the
       keyboard, offline.
 - [ ] All twenty languages end to end: dictionary and taps, news, music, radio, recommendations,
-      grammar.
-- [ ] Docs, then commit, push and the live site checked.
+      grammar, alphabets.
+- [ ] The app's version says 3.0. Docs, then commit, push and the live site checked.
+
+### Handover for the Lingua 3.0 session
+
+**Started work, on a branch of its own:** `lingua-3.0/languages-wip` (pushed, not merged; based
+on the commit before 2.0-4b, so expect small conflicts in `src/app/shells/AppShell.tsx`,
+`src/data/settings.ts` and `src/features/cantus/player/LyricSheet.tsx` when merging main into it).
+It holds 3.0-1's first pieces, not yet wired up end to end:
+- `src/core/lang/languages.ts`: the twenty languages (scripts, endonyms, samples, `rtl`, flag lists).
+- `src/core/lang/japanese.ts` (+ tests, passing): conjugation back to the dictionary form,
+  the frequency-weighted splitter (今日 は, not 今日は; 食べました whole), and furigana alignment.
+  `src/core/text/tokenizer.ts` re-splits runs of Japanese with it once `src/services/packs/lexicon.ts`
+  has read the pack's words into memory.
+- `normalize.ts`: Arabic vowel marks and Latin macrons dropped for word identity; Arabic alef
+  folding. `answer.ts`: no "typo" tolerance for Mandarin and Japanese, Arabic article.
+- Readings: `PackForm` gets a fifth field (pinyin or kana), the worker stores it as `DictForm.r`,
+  `lookupGlosses` returns it, and Mandarin words missing from the pack are composed from
+  listed words. The reader doesn't draw readings yet (plan: a pseudo-element over each word, so
+  word text stays clean; setting `reader.readings`: new words / all / off).
+- `src/design/fonts.ts`: Noto Serif JP, SC, KR and Noto Naskh Arabic (installed packages), loaded
+  per script on demand, ordered by the language on screen.
+- `scripts/lang-data`: sources and downloads for all twenty (with retries; Leipzig lists unpacked
+  with relative paths, since GNU tar reads "C:" as a host).
+
+**The raw data, in `scripts/.cache` (git-ignored, about 2 GB):** every kaikki dictionary and
+frequency list for the twenty languages, `en-translations.json` with evidence for all nineteen
+targets, and the OpenSubtitles corpora `opus-ja.txt.gz` and `opus-zh_cn.txt.gz`. The first PC
+has it; any other computer rebuilds it on the branch with `fetch.ts`, then `translations.ts`
+(see [SETUP.md](SETUP.md) §5; the corpora are part of `fetch.ts` since 1a04524). `themes.json`
+still has only the first ten languages: `themes.ts` must map Wiktionary's codes (`cmn` for
+Mandarin, `no` and `nb` for Norwegian) and run again.
+
+**What the data showed:**
+- Mandarin: kaikki keys words by Traditional characters; Simplified spellings are soft-redirects.
+  Key the pack by Simplified (the frequency list is Simplified) and keep Traditional as forms.
+  Single characters carry their meanings under the part of speech "character", which the builder
+  skips today. Pinyin is in `sounds` as `zh_pron` tagged Mandarin + Pinyin.
+- Japanese: entries have ruby readings, full conjugation tables (kanji and kana forms), and kana
+  spellings as soft-redirects. FrequencyWords' Japanese list is split into morphemes (い, て, た):
+  count words again from `opus-ja` with the splitter instead.
+- Mandarin frequency: count from `opus-zh_cn` with `Intl.Segmenter`, so ranks match the reader.
+- Korean lists whole words with their particles (학교에서): the lemma fallback needs particle and
+  ending rules; Turkish, Indonesian and Swahili need suffix or prefix rules too. Linking frequent
+  forms through those rules at build time (not only when reading) lifts coverage a lot.
+- Arabic and Latin forms carry vowel marks; Swahili verbs are listed as "penda" with "-penda" as
+  their headword.
+
+**Music, for later:** Apple Music's embed sends no messages, hence the press detection. Genius
+is out for the reason under 2.0-4b; lyrics.ovh and LRCLIB both allow browsers. Kaspersky on the
+first PC rewrote Chrome's traffic: a CORS failure seen only in the test Chrome may be the antivirus,
+so check in the app's built-in browser.

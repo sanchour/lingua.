@@ -26,7 +26,7 @@ export function SongClip({ note }: { note: Note }) {
     <div className="mx-auto mt-4 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
       <div className="flex items-center gap-3 rounded-2xl bg-sunken/60 p-2.5 text-left">
         <SongArt url={song.artworkUrl} title={song.title} className="w-11" rounded="rounded-lg" size={100} />
-        <Link to={`/cantus/song/${encodeURIComponent(song.id)}`} className="min-w-0 flex-1">
+        <Link to={`/sonus/song/${encodeURIComponent(song.id)}`} className="min-w-0 flex-1">
           <span className="block truncate text-[14px] font-semibold">{song.title}</span>
           <span className="block truncate text-[12.5px] text-ink-soft">{song.artist}</span>
         </Link>

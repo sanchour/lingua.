@@ -81,3 +81,14 @@ export async function matchSong(lang: string, title: string, artist: string): Pr
   const a = clean(artist);
   return hits.find((h) => clean(h.title) === t && (clean(h.artist).includes(a) || a.includes(clean(h.artist)))) ?? hits.find((h) => clean(h.title) === t) ?? null;
 }
+
+/** The Apple store a song's link points into (its country), else the language's own. */
+export function appleStoreOf(song: { appleUrl?: string; lang: string }): string {
+  return /music\.apple\.com\/([a-z]{2})\//.exec(song.appleUrl ?? '')?.[1] ?? STORE[song.lang] ?? 'us';
+}
+
+/** The song in Apple Music: on a phone, this opens the Music app. */
+export const appleSongUrl = (song: { appleUrl?: string; lang: string; itunesId?: number }) => (song.itunesId ? `https://music.apple.com/${appleStoreOf(song)}/song/${song.itunesId}` : song.appleUrl);
+
+/** Apple Music's player for one song, to put on a page. */
+export const appleEmbedUrl = (song: { appleUrl?: string; lang: string; itunesId?: number }) => `https://embed.music.apple.com/${appleStoreOf(song)}/song/${song.itunesId}`;
