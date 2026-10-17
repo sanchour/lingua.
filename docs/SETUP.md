@@ -21,7 +21,7 @@ Set up Lingua on this laptop and continue the roadmap.
 4. Run npm ci, npm run typecheck, npm test and npm run build to check this laptop works.
 5. Continue Lingua 3.0 from 3.0-1: switch to the branch lingua-3.0/languages-wip, merge main
    into it, and start the word-data download in the background (docs/SETUP.md, section 5,
-   about 2 GB). Then carry on through 3.0-2 to 3.0-5.
+   about 2 GB). Then carry on through 3.0-2 to 3.0-8.
 
 Work on your own: plan each step in the roadmap, build it without asking me, and commit and
 push after each finished step so the site updates. The first push needs my GitHub sign-in:

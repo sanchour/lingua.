@@ -287,7 +287,72 @@ stopping, then commit, push and check the live site. Version 3.0 in the app when
       fallback rules, news sources, starter decks and Diarium prompts.
 - [ ] Music for the new languages: Apple stores, artists to learn with, styles and charts.
 
-### 3.0-2 · Grammatica and alphabets
+The user added the next three steps on 2026-10-17 (their list is under "Lingua 3.0" in
+"Lingua updates.txt"). They come straight after 3.0-1, before the new rooms, because they fix
+and polish what people use every day; Grammatica, Radio, Mundus and the full check follow as
+3.0-5 … 3.0-8.
+
+### 3.0-2 · A real phone app, and a look of your own
+- [ ] **Phone first, strictly:** every room at 375 px wide works like a native app: nothing wider
+      than the screen, no sideways page scroll, no zoom, tap targets of at least 44 px, sheets
+      and lists that scroll on their own while the page stays fixed. The Discover pages (Codex,
+      Thesaurus, Sonus, Visio) and their widgets first.
+  - The sub-tab bars (Library · Discover · Podcasts and the like) fit the width as a segmented
+    control instead of scrolling sideways.
+- [ ] **Liquid Glass tab bar (phone only):** the iPhone tab bar as iOS 26 draws it: a floating
+      glass capsule (blur, saturation, a bright rim and soft refraction), with a glass "lens"
+      that slides between tabs with a spring and stretches as it moves, following the finger
+      when dragged. Sub-tab segmented controls get the same sliding lens. Desktop stays as it is.
+      Respects reduced motion and reduced transparency.
+- [ ] **Home, reorganised** for desktop and phone so every element has its proper size: a clear
+      grid on desktop (main column with today's plan, a side column with progress), one tidy
+      column on the phone; no cramped or oversized cards.
+- [ ] **Themes:** under Look and feel, at least six themes for Paper (light) and six for Nocturne
+      (dark), each a background and element colours that belong together: cream and paper
+      whites, a slightly pink white with a rose accent, sage, sand, and more; for Nocturne ink,
+      plum, forest, slate and others. Shown as small swatches; the room colours stay readable on
+      every theme (contrast checked).
+- [ ] **Commute mode:** its light/dark button works.
+- [ ] **Onboarding:** the "What do you enjoy most" step goes (Home's order keeps a sensible
+      default; Ordo › Languages keeps the choice for those who want it).
+
+### 3.0-3 · Sonus and music, fully working
+- [ ] **Sonus opens on Library:** one well-laid-out library of your music and podcasts (now
+      playing and recent first, then saved songs, followed podcasts and new episodes), then a
+      **Music** tab and a **Podcasts** tab that show only that kind, each with its own discovery.
+      Radio (3.0-6) slots in as a fourth tab or inside Library; decide there.
+- [ ] **Song page without double scrolling:** a fixed page (art, title and controls fixed, only
+      the lyric sheet scrolls), smooth on phone and desktop.
+- [ ] **Playback in sync with the lyrics, without errors:** one player engine per source (preview,
+      Spotify, Apple Music) with a single clock; the preview always plays; timed lyrics follow
+      the music exactly; untimed lyrics get a gentle estimated scroll and "tap the line you hear".
+      Errors are caught and explained, never a dead page.
+- [ ] **Lyrics that load:** search more widely (LRCLIB by exact track and by search with title and
+      artist cleaned up, featuring and remaster tags removed; lyrics.ovh; Genius as a link), let
+      you pick between results, and pop them up easily, with "paste them yourself" as the last
+      step. Measured on a list of songs per language.
+- [ ] **An open podcast fits one screen on desktop:** player, transport and transcript laid out
+      so the page itself never scrolls (only the transcript does).
+- [ ] **Styles at the top** of the Music tab, and more styles for each language.
+- [ ] **Hold to translate** several words or a sentence works on song lyrics, podcast
+      transcripts and Visio subtitles, with mouse and touch, as in Codex.
+- [ ] **Song games teach the language first and the song as a bonus**, and say so: words from the
+      song in the learner's level as cards, fill in the word with its meaning, grammar spotted in
+      the line, translate the line, then put the lines in order.
+
+### 3.0-4 · Natural voices, and sync between your devices
+- [ ] **A natural voice for every language**, cheap and automatic, in the regional accent of the
+      chosen flag (Castilian or Mexican Spanish, European or Brazilian Portuguese, never an
+      American voice for a non-English language): Gemini's text-to-speech with the learner's own
+      Gemini key (in a header), each word or sentence generated once and kept on the device. With
+      no key, only the device's own high-quality voices for that region, else no voice button.
+      Every language listened to; the plan names the fallback where Gemini has no voice.
+- [ ] **Sync between the desktop app and the iPhone**, without accounts: pair the two once with a
+      QR code; whenever both are open they sync directly, device to device (WebRTC; a public
+      broker only introduces them, the data never sits on a server), using the backup's merge.
+      "Sync now" in Ordo, with the last sync time. API keys only if chosen.
+
+### 3.0-5 · Grammatica and alphabets
 Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] Grammar files, the topic browser, explanations and tables.
 - [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
@@ -299,16 +364,16 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
       hear them, match sound to letter, read real words, then write them. Letters are FSRS cards
       with mastery rings, like grammar topics. Offered first to beginners in these languages.
 
-### 3.0-3 · Radio (in Sonus)
+### 3.0-6 · Radio (in Sonus)
 - [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
       search, favourites; only secure (https) streams.
 - [ ] A minimal "night sky" map: every station a dot at its place, so the dots draw the world;
       tap one to tune in, like Radio Garden.
 - [ ] Plays in Sonus's player and mini player, with now playing when the station shares it.
-      Listening time counts. A fourth tab in Sonus (Music · Radio · Library · Podcasts), or
+      Listening time counts. A fourth tab in Sonus (Library · Music · Podcasts · Radio), or
       inside Library: decide when planning.
 
-### 3.0-4 · Mundus: recommendations, and streaming services in Visio
+### 3.0-7 · Mundus: recommendations, and streaming services in Visio
 - [ ] **Mundus**, a deep-dive page per language: video games, series, films, books, podcasts,
       music, YouTube channels and dictionaries. Picked by hand for all twenty languages, with level
       hints and why each is good for learners.
@@ -325,7 +390,7 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] Every language's picks checked: links open, the services match the country, level hints
       make sense.
 
-### 3.0-5 · Lingua 3.0 complete: the full check
+### 3.0-8 · Lingua 3.0 complete: the full check
 - [ ] Every point of "Lingua updates.txt" checked against the app, one by one.
 - [ ] Every room on a phone and on desktop, light and dark: layout, taps, scrolling, the
       keyboard, offline.
