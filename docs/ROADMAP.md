@@ -355,11 +355,13 @@ It holds 3.0-1's first pieces, not yet wired up end to end:
 - `scripts/lang-data`: sources and downloads for all twenty (with retries; Leipzig lists unpacked
   with relative paths, since GNU tar reads "C:" as a host).
 
-**On this computer, in `scripts/.cache` (git-ignored):** every kaikki dictionary and frequency list
-for the twenty languages, `en-translations.json` with evidence for all nineteen targets, and the
-OpenSubtitles corpora `opus-ja.txt.gz` and `opus-zh_cn.txt.gz`. `themes.json` still has only
-the first ten languages: `themes.ts` must map Wiktionary's codes (`cmn` for Mandarin, `no` and
-`nb` for Norwegian) and run again.
+**The raw data, in `scripts/.cache` (git-ignored, about 2 GB):** every kaikki dictionary and
+frequency list for the twenty languages, `en-translations.json` with evidence for all nineteen
+targets, and the OpenSubtitles corpora `opus-ja.txt.gz` and `opus-zh_cn.txt.gz`. The first PC
+has it; any other computer rebuilds it on the branch with `fetch.ts`, then `translations.ts`
+(see [SETUP.md](SETUP.md) §5; the corpora are part of `fetch.ts` since 1a04524). `themes.json`
+still has only the first ten languages: `themes.ts` must map Wiktionary's codes (`cmn` for
+Mandarin, `no` and `nb` for Norwegian) and run again.
 
 **What the data showed:**
 - Mandarin: kaikki keys words by Traditional characters; Simplified spellings are soft-redirects.
@@ -377,6 +379,6 @@ the first ten languages: `themes.ts` must map Wiktionary's codes (`cmn` for Mand
   their headword.
 
 **Music, for later:** Apple Music's embed sends no messages, hence the press detection. Genius
-is out for the reason under 2.0-4b; lyrics.ovh and LRCLIB both allow browsers. Kaspersky on this
-PC rewrites Chrome's traffic: a CORS failure seen only in the test Chrome may be the antivirus,
+is out for the reason under 2.0-4b; lyrics.ovh and LRCLIB both allow browsers. Kaspersky on the
+first PC rewrote Chrome's traffic: a CORS failure seen only in the test Chrome may be the antivirus,
 so check in the app's built-in browser.

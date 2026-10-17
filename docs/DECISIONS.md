@@ -422,3 +422,8 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Lingua 3.0.** At the user's request, 2.0 ends with this prompt; the rest of the brief (twenty
   languages, Grammatica with alphabets, Radio, Mundus and services, the full check) is Lingua 3.0,
   built in a new session from ROADMAP.md's handover.
+- **Any computer can carry on.** The user's way of working and rules were only in Claude's memory
+  on the first PC; they are now in `CLAUDE.md`, which every Claude session in this folder reads.
+  `docs/SETUP.md` covers a new laptop: installs, clone, checks, moving learning data with a
+  backup, and rebuilding the 2 GB word data (the subtitle corpora, once fetched by hand, are in
+  `fetch.ts` now). `.claude/launch.json` runs `node` from the PATH instead of a Windows path.

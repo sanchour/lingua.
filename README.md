@@ -12,6 +12,8 @@ npm test
 npm run build
 ```
 
+- Working on it from another computer (and with Claude): [docs/SETUP.md](docs/SETUP.md), [CLAUDE.md](CLAUDE.md)
+- The plan, now Lingua 3.0: [docs/ROADMAP.md](docs/ROADMAP.md)
 - Architecture, data schema and phase plan: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - 60 fps budget and rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md)
 - Decisions: [docs/DECISIONS.md](docs/DECISIONS.md)
