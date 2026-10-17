@@ -1,6 +1,6 @@
 # Feature specifications
 
-Specs for features added after Phase 1 (Statistics, Tabula, Iter and Diarium are built; see ARCHITECTURE.md › Phases). Each lists where it lives, what it records, and the phase
+Specs for features added after Phase 1 (Statistics, Tabula, Iter and Diarium are built, and Visio is described in ARCHITECTURE.md › Phases, step 7). Each lists where it lives, what it records, and the phase
 that builds it. Visual language for all of them: minimal, bookish, calm; details tucked into
 popovers and drawers; every motion a transform/opacity spring (see `PERFORMANCE.md`).
 

@@ -31,6 +31,11 @@ export interface WordContext {
   textId?: string;
   chapterIndex?: number;
   blockIndex?: number;
+  /** Found while listening or watching: the item and the line's clip. */
+  mediaId?: string;
+  startMs?: number;
+  endMs?: number;
+  source?: Note['source'];
 }
 
 /** The language's "From my reading" deck, created on first use. */
@@ -89,9 +94,9 @@ export async function setWordState(lang: string, norm: string, state: WordState,
           term: ctx.surface?.toLocaleLowerCase(lang) ?? norm,
           meaning: existing?.gloss ?? ctx.gloss ?? '',
           lemma: ctx.lemma,
-          context: ctx.sentence ? { sentence: ctx.sentence, textId: ctx.textId, chapterIndex: ctx.chapterIndex, blockIndex: ctx.blockIndex } : undefined,
+          context: ctx.sentence ? { sentence: ctx.sentence, textId: ctx.textId, chapterIndex: ctx.chapterIndex, blockIndex: ctx.blockIndex, mediaId: ctx.mediaId, startMs: ctx.startMs, endMs: ctx.endMs } : undefined,
           tags: [],
-          source: 'codex',
+          source: ctx.source ?? 'codex',
           wordId: id,
           createdAt: now,
           updatedAt: now,

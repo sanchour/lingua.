@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { fade, spring } from '@/design/motion';
 import { trapTab, useOverlay } from './overlay';
+import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 
 export interface DialogProps {
   open: boolean;
@@ -15,7 +16,8 @@ export interface DialogProps {
 
 /** Centered modal for short decisions (confirmations, choices). */
 export function Dialog(props: DialogProps) {
-  return createPortal(<AnimatePresence>{props.open && <DialogPanel {...props} />}</AnimatePresence>, document.body);
+  const portalRoot = usePortalRoot();
+  return createPortal(<AnimatePresence>{props.open && <DialogPanel {...props} />}</AnimatePresence>, portalRoot);
 }
 
 function DialogPanel({ onClose, title, children, actions }: DialogProps) {

@@ -184,7 +184,7 @@ lingua/
    downloads), transcripts (SRT/VTT/plain text, Whisper on Groq with word timings, long MP3s split at
    frame boundaries), karaoke view with Codex word lookups, Open in Codex, commute mode, mini player,
    Spotify links and embeds (transcripts follow via the iFrame API), listening statistics. Local
-   (WebGPU) Whisper is left for later.
+   Whisper came with step 7.
 5. **Diarium** ✅ (Visio moved to the next step) — the writing journal: daily prompts (AI or
    curated, ten languages), autosaving editor, AI check with corrections, scores and a CEFR
    estimate, word diff with explanations, corrected and native-like versions, corrections to a
@@ -195,8 +195,15 @@ lingua/
    with honest projections, yearly reading challenge, study log, level history), Goodreads CSV
    export, reset of one language or of everything, an adaptive icon, self-updating installs and
    an accessibility/overflow pass.
-7. **Visio + Whisper + Home** — the dual-subtitle player and mining, local Whisper, and an
-   at-a-glance Home (see `ROADMAP.md`).
+7. **Visio + Whisper + Home** ✅ — the screening room: videos from files or links (poster frames,
+   subtitles paired by file name, "subtitles only" to free space), two subtitle tracks from SRT/VTT,
+   Whisper or an AI translation, a player whose subtitles work like Codex text (hover, tap, mark,
+   drawer), auto-pause, line stepping and repeats, speed, sync, full screen (with `<track>`s for the
+   iPhone's own player), the transcript beside it, "Save line" cards that replay their clip, and
+   watching time. Whisper on this device (transformers.js in a worker: WebGPU or WebAssembly,
+   tiny/base/small, cached after the first download) beside Whisper on Groq, which now also takes
+   videos and any format as 16 kHz WAV parts. Home at a glance: today's goal and next steps, the
+   week, honest numbers, the latest milestone and a first-steps list.
 
 **Lingua 2.0** (after the six phases): ten more languages, learning through music, Grammatica (the
 grammar section, planned in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md)), foreign radio, recommendations

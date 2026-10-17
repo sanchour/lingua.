@@ -6,6 +6,7 @@ import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react
 import type { Placement } from '@floating-ui/react-dom';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
+import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 
 export interface PopoverTriggerProps {
   ref: Ref<HTMLButtonElement>;
@@ -26,6 +27,7 @@ interface PopoverProps {
 
 /** Small anchored panel for tucked-away controls (metadata, quick settings). */
 export function Popover({ trigger, children, placement = 'bottom-start', className, label, onOpenChange }: PopoverProps) {
+  const portalRoot = usePortalRoot();
   const [open, setOpen] = useState(false);
   const onOpenChangeRef = useRef(onOpenChange);
   useEffect(() => {
@@ -98,7 +100,7 @@ export function Popover({ trigger, children, placement = 'bottom-start', classNa
             </motion.div>
           )}
         </AnimatePresence>,
-        document.body,
+        portalRoot,
       )}
     </>
   );

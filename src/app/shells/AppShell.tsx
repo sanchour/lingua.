@@ -13,9 +13,12 @@ import { useUI } from '@/state/ui';
 import { DesktopShell } from './desktop/DesktopShell';
 import { TouchShell } from './touch/TouchShell';
 
-/** Routes that take the whole screen (no sidebar, no tab bar). On phones the Sonus player does too. */
+/** Routes that take the whole screen (no sidebar, no tab bar). On phones the Sonus and Visio players do too. */
 const isImmersive = (pathname: string, wide: boolean) =>
-  pathname.startsWith('/codex/read/') || pathname.startsWith('/thesaurus/study/') || pathname === '/sonus/commute' || (!wide && pathname.startsWith('/sonus/play/'));
+  pathname.startsWith('/codex/read/') ||
+  pathname.startsWith('/thesaurus/study/') ||
+  pathname === '/sonus/commute' ||
+  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/visio/watch/')));
 
 export function AppShell() {
   const { layout } = useLayout();
@@ -24,7 +27,7 @@ export function AppShell() {
   const setShortcutsOpen = useUI((s) => s.setShortcutsOpen);
   const immersive = isImmersive(pathname, layout === 'wide');
   // The mini player shows everywhere except where the full player is on screen.
-  const showMini = !immersive && !pathname.startsWith('/sonus/play/');
+  const showMini = !immersive && !pathname.startsWith('/sonus/play/') && !pathname.startsWith('/visio/watch/');
   const { language } = useApp();
   const fullMotion = useFullMotion();
 

@@ -16,7 +16,11 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(version),
   },
   resolve: {
-    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // Whisper's engine without its 27 MB WebAssembly built in: transformers.js fetches and caches it on first use.
+      'onnxruntime-web/webgpu': fileURLToPath(new URL('./node_modules/onnxruntime-web/dist/ort.webgpu.min.mjs', import.meta.url)),
+    },
   },
   plugins: [
     react(),
@@ -53,7 +57,8 @@ export default defineConfig({
           '**/inter-{cyrillic,greek}-wght-normal-*.woff2',
           '**/literata-{latin,latin-ext,cyrillic,greek}-wght-normal-*.woff2',
         ],
-        globIgnores: ['**/apple-splash-*'],
+        // Whisper on this device is optional and large: it is cached when first used.
+        globIgnores: ['**/apple-splash-*', '**/whisper.worker-*.js'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -64,10 +69,10 @@ export default defineConfig({
             options: { cacheName: 'lingua-fonts', expiration: { maxEntries: 120 } },
           },
           {
-            // The SQLite engine for Anki imports (685 kB) is only fetched when first needed.
-            urlPattern: ({ url }) => url.pathname.endsWith('.wasm'),
+            // The SQLite engine for Anki imports (685 kB) and the Whisper worker are only fetched when first needed.
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && (url.pathname.endsWith('.wasm') || url.pathname.includes('/whisper.worker-')),
             handler: 'CacheFirst',
-            options: { cacheName: 'lingua-wasm', expiration: { maxEntries: 4 } },
+            options: { cacheName: 'lingua-wasm', expiration: { maxEntries: 6 } },
           },
         ],
       },
@@ -76,6 +81,8 @@ export default defineConfig({
   build: {
     target: 'es2022',
   },
+  // Module workers: Whisper's engine loads its WebAssembly with dynamic imports.
+  worker: { format: 'es' },
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts'],

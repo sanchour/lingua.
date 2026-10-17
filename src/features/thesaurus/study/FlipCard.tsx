@@ -8,6 +8,7 @@ import { db } from '@/data/db';
 import { cx } from '@/lib/cx';
 import { cardLookProps } from '../common/cardLook';
 import type { CardLook } from '../common/cardLook';
+import { ClipPlayer, useClip } from '../common/Clip';
 import { SpeakButton } from '../common/SpeakButton';
 import { articleFor, genderName, posName, splitAt } from '../common/words';
 
@@ -56,8 +57,16 @@ function AudioButton({ blobId }: { blobId: string }) {
 
 function Term({ note, lang, size }: { note: Note; lang: string; size: 'lg' | 'md' }) {
   const article = articleFor(lang, note.gender, note.term, note.pos);
+  // Whole lines and sentences read better a size down.
+  const long = note.term.length > 32;
   return (
-    <p lang={lang} className={cx('leading-tight font-semibold break-words', size === 'lg' ? 'text-[calc(clamp(2.25rem,7vw,3.5rem)*var(--card-scale,1))]' : 'text-[calc(1.5rem*var(--card-scale,1))]')}>
+    <p
+      lang={lang}
+      className={cx(
+        'leading-tight font-semibold break-words',
+        size === 'lg' ? (long ? 'text-[calc(clamp(1.5rem,4.5vw,2.1rem)*var(--card-scale,1))] leading-snug' : 'text-[calc(clamp(2.25rem,7vw,3.5rem)*var(--card-scale,1))]') : 'text-[calc(1.5rem*var(--card-scale,1))]',
+      )}
+    >
       {article && <span className="font-normal text-ink-faint">{article} </span>}
       {note.term}
     </p>
@@ -66,7 +75,7 @@ function Term({ note, lang, size }: { note: Note; lang: string; size: 'lg' | 'md
 
 function Sentence({ note, lang }: { note: Note; lang: string }) {
   const ex = note.example;
-  const sentence = ex?.text ?? note.context?.sentence;
+  const sentence = ex?.text ?? (note.context?.sentence !== note.term ? note.context?.sentence : undefined);
   const span = useMemo(() => {
     if (ex?.cloze) return ex.cloze;
     if (!sentence) return undefined;
@@ -91,7 +100,7 @@ function Sentence({ note, lang }: { note: Note; lang: string }) {
       {ex?.translation && <p className="mt-1 text-[14px] text-ink-soft italic">{ex.translation}</p>}
       {!ex && note.context && (
         <p className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-ink-faint">
-          <BookOpen size={13} aria-hidden /> From your reading
+          <BookOpen size={13} aria-hidden /> {note.source === 'visio' ? 'Heard in Visio' : note.source === 'sonus' ? 'Heard in Sonus' : 'From your reading'}
         </p>
       )}
     </div>
@@ -111,6 +120,8 @@ interface FlipCardProps {
 /** A tactile flashcard: question in front, answer on the back, turned with a spring. */
 export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName }: FlipCardProps) {
   const production = card.direction === 'production';
+  const clip = useClip(note);
+  const line = note.tags.includes('line');
   const details = [posName(note.pos), note.pos === 'noun' && lang === 'ru' ? genderName(note.gender) : undefined].filter(Boolean).join(' · ');
 
   const corner = (
@@ -118,7 +129,8 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName }: 
       <span className="truncate text-[12px] font-bold tracking-wide text-ink-faint uppercase">{deckName}</span>
       <span className="flex shrink-0 items-center">
         {note.audioBlobId && <AudioButton blobId={note.audioBlobId} />}
-        {(!production || flipped) && <SpeakButton text={note.term} lang={lang} label={`Listen to ${note.term}`} />}
+        {clip?.kind === 'audio' && (!production || flipped) && <ClipPlayer clip={clip} />}
+        {!clip && !line && (!production || flipped) && <SpeakButton text={note.term} lang={lang} label={`Listen to ${note.term}`} />}
       </span>
     </div>
   );
@@ -156,7 +168,14 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName }: 
             ) : (
               <>
                 <Term note={note} lang={lang} size="md" />
-                <p className="mt-4 text-[calc(clamp(1.5rem,4.5vw,2.1rem)*var(--card-scale,1))] leading-snug font-semibold text-accent-text">{note.meaning || '—'}</p>
+                <p
+                  className={cx(
+                    'mt-4 leading-snug font-semibold text-accent-text',
+                    (note.meaning ?? '').length > 40 ? 'text-[calc(clamp(1.15rem,3.2vw,1.45rem)*var(--card-scale,1))]' : 'text-[calc(clamp(1.5rem,4.5vw,2.1rem)*var(--card-scale,1))]',
+                  )}
+                >
+                  {note.meaning || '—'}
+                </p>
               </>
             )}
             {(note.ipa || details) && (
@@ -165,6 +184,11 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName }: 
               </p>
             )}
             <Sentence note={note} lang={lang} />
+            {clip?.kind === 'video' && (
+              <div className={cx('mx-auto w-full', line ? 'mt-5 max-w-sm' : 'mt-3 max-w-xs')}>
+                <ClipPlayer clip={clip} large={line} />
+              </div>
+            )}
           </div>
         </Face>
       </motion.div>

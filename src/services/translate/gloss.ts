@@ -102,6 +102,28 @@ export function firstAnswer(asks: Array<() => Promise<string | null>>): Promise<
   });
 }
 
+/** A whole line or sentence through the same online chain (subtitle lines); cached forever. */
+export function translateLine(lang: string, text: string): Promise<string | null> {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (lang === GLOSS_LANG || !clean) return Promise.resolve(null);
+  const key = `line:${lang}>${GLOSS_LANG}:${clean}`;
+  const existing = inflight.get(key);
+  if (existing) return existing;
+  const job = (async () => {
+    const cached = await db.translationCache.get(key);
+    if (cached?.result) return cached.result;
+    const { translation } = await getSettings();
+    const asks = translation.chain.flatMap((provider) =>
+      provider === 'mymemory' ? [() => myMemory(lang, clean)] : provider === 'lingva' ? [() => lingva(translation.lingvaHost, lang, clean)] : [],
+    );
+    const result = await firstAnswer(asks);
+    if (result) await db.translationCache.put({ id: key, text: clean, result, provider: 'online', createdAt: Date.now() });
+    return result;
+  })().finally(() => inflight.delete(key));
+  inflight.set(key, job);
+  return job;
+}
+
 /** Online fallback for a word the dictionary lacks; cached forever. `null` when nothing is found. */
 export function fetchOnlineGloss(lang: string, norm: string, surface: string): Promise<string | null> {
   if (lang === GLOSS_LANG) return Promise.resolve(null);

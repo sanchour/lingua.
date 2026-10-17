@@ -13,7 +13,7 @@ import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { onTime, play, seek, usePlayer } from '@/services/audio/engine';
 import { ChapterBody } from '@/features/codex/reader/ChapterBody';
-import { WordEngine } from '@/features/codex/reader/engine';
+import type { WordEngine } from '@/features/codex/reader/engine';
 import { CLICK_SLOP_PX, wordAt } from '@/features/codex/reader/hit';
 import { HoverGloss } from '@/features/codex/reader/HoverGloss';
 import { modelFromChapter, updateCachedState } from '@/features/codex/reader/model';
@@ -21,6 +21,7 @@ import type { ChapterModel } from '@/features/codex/reader/model';
 import { TapGloss } from '@/features/codex/reader/TapGloss';
 import { WordDrawer } from '@/features/codex/reader/WordDrawer';
 import type { DrawerWord } from '@/features/codex/reader/WordDrawer';
+import { ClipEngine } from './ClipEngine';
 
 const LONG_PRESS_MS = 430;
 /** After the learner scrolls, the transcript stops following the audio for this long. */
@@ -48,6 +49,10 @@ interface KaraokeProps {
   /** Follow the playhead (false for a transcript of an item that isn't playing here). */
   live: boolean;
   clock?: PlayheadClock;
+  /** Time labels in the left margin on wide screens (off in narrow side panels). */
+  gutter?: boolean;
+  /** Phones: the player's controls are docked at the bottom (Sonus), so "Back to now" sits above them. */
+  docked?: boolean;
 }
 
 /**
@@ -55,7 +60,7 @@ interface KaraokeProps {
  * current sentence lit, and its words brightening as they're spoken. Time-driven changes are
  * written to the DOM directly (no React renders while playing).
  */
-export function KaraokeTranscript({ media, cues, live, clock = engineClock }: KaraokeProps) {
+export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutter = true, docked = true }: KaraokeProps) {
   const { settings } = useApp();
   const { pointer, layout } = useLayout();
   const lang = media.lang;
@@ -64,7 +69,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock }: Ka
   // ── Model: one paragraph per cue, words with their states and glosses ──
   const [model, setModel] = useState<ChapterModel | null>(null);
   const text = useMemo(
-    () => ({ id: media.textId ?? `sonus:${media.id}`, lang, kind: 'transcript', source: 'sonus', title: media.title, chapterCount: 1, wordCount: 0, createdAt: 0, updatedAt: 0 }) as Text,
+    () => ({ id: media.textId ?? `sonus:${media.id}`, lang, kind: 'transcript', source: media.kind === 'video' ? 'visio' : 'sonus', title: media.title, chapterCount: 1, wordCount: 0, createdAt: 0, updatedAt: 0 }) as Text,
     [media.id, media.textId, media.title, lang],
   );
   useEffect(() => {
@@ -91,14 +96,15 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock }: Ka
       const cue = cues[Number(p.dataset.b)];
       if (cue) p.dataset.time = formatClock(cue.startMs);
     });
-    const e = new WordEngine(text, model, onWordChange);
+    const e = new ClipEngine(text, model, cues, media, onWordChange);
     e.attach(flow);
     setEngine(e);
-  }, [model, cues, text, onWordChange]);
+    return e.follow();
+  }, [model, cues, text, media, onWordChange]);
 
   // ── Following the audio ─────────────────────────────────────────────────
   const [lost, setLost] = useState(false); // the current sentence is off screen after a manual scroll
-  const userScrolledAt = useRef(0);
+  const userScrolledAt = useRef(-Infinity);
   const followRef = useRef<() => void>(() => {});
 
   useEffect(() => {
@@ -121,7 +127,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock }: Ka
       block.scrollIntoView({ block: 'center', behavior: motionIsReduced() ? 'auto' : 'smooth' });
     };
     followRef.current = () => {
-      userScrolledAt.current = 0;
+      userScrolledAt.current = -Infinity;
       follow(true);
     };
 
@@ -245,7 +251,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock }: Ka
   return (
     <>
       <div onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={() => (gesture.current = null)} onContextMenu={onContextMenu}>
-        <div ref={flowRef} lang={lang} style={style} className={cx('reader-flow karaoke', reader.highlightUnseen && 'hl-unseen', layout === 'wide' && 'has-gutter', !live && 'is-still')}>
+        <div ref={flowRef} lang={lang} style={style} className={cx('reader-flow karaoke', reader.highlightUnseen && 'hl-unseen', layout === 'wide' && gutter && 'has-gutter', !live && 'is-still')}>
           {model && <ChapterBody model={model} lang={lang} />}
         </div>
       </div>
@@ -260,7 +266,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock }: Ka
             exit={{ opacity: 0, y: 10 }}
             transition={spring.snappy}
             className="fixed left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full bg-inverse px-4 py-2.5 text-sm font-semibold text-on-inverse shadow-elev-3"
-            style={{ bottom: layout === 'wide' ? 32 : 'calc(env(safe-area-inset-bottom) + 210px)' }}
+            style={{ bottom: layout === 'wide' || !docked ? 'calc(env(safe-area-inset-bottom) + 28px)' : 'calc(env(safe-area-inset-bottom) + 210px)' }}
           >
             <LocateFixed size={16} aria-hidden /> Back to now
           </motion.button>

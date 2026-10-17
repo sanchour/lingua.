@@ -37,7 +37,9 @@ export function NoTranscript({ media }: { media: Media }) {
   const { settings } = useApp();
   const navigate = useNavigate();
   const progress = useJobs((s) => s.transcribing[media.id]);
-  const hasKey = Boolean(settings.apiKeys.groq);
+  const note = useJobs((s) => s.notes[media.id]);
+  const onDevice = settings.audio.transcriber === 'device';
+  const hasKey = Boolean(settings.apiKeys.groq) || onDevice;
   const spotify = media.kind === 'spotify';
 
   return (
@@ -48,7 +50,7 @@ export function NoTranscript({ media }: { media: Media }) {
       {progress !== undefined ? (
         <>
           <p className="font-serif text-xl font-semibold">Listening closely…</p>
-          <p className="mt-1.5 max-w-sm text-[14.5px] text-ink-soft">Whisper is writing down every word with its timing. You can keep listening meanwhile.</p>
+          <p className="mt-1.5 max-w-sm text-[14.5px] text-ink-soft">{note ?? 'Whisper is writing down every word with its timing.'} You can keep listening meanwhile.</p>
           <div className="mt-5 h-1.5 w-56 overflow-hidden rounded-full bg-sunken">
             <div className="h-full origin-left rounded-full bg-sage transition-transform duration-500" style={{ transform: `scaleX(${Math.max(0.06, progress)})` }} />
           </div>
@@ -76,7 +78,8 @@ export function NoTranscript({ media }: { media: Media }) {
               Add a file
             </Button>
           </div>
-          {!spotify && !hasKey && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Transcripts use Whisper on Groq with your own free key. SRT, VTT and plain text files work without one.</p>}
+          {!spotify && !hasKey && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Transcripts use Whisper on Groq with your own free key, or Whisper on this device (Ordo › Listening). SRT, VTT and plain text files work without either.</p>}
+          {!spotify && onDevice && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Made on this device: private and free, slower than Groq.</p>}
         </>
       )}
     </Card>

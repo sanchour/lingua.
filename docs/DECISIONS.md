@@ -243,3 +243,35 @@ Short records of choices that are not obvious from the code. Newest last.
   Russian, Greek, Hungarian and German) and the recent pace; they say when the pace isn't enough.
 - **Reset:** one language's progress (books, audio and the journal stay), or everything; both need a
   typed word. Erasing keeps the installed app shell, so Lingua still opens offline.
+
+## 2026-10-17 — Visio, Whisper on this device, Home
+
+- **Videos live like Sonus audio:** a `media` row of kind `video`, its file in `blobs`, and two
+  `transcripts` rows (`target`, `native`). "Keep subtitles only" deletes the file and keeps the
+  rest, so cards and words keep working; the file can be attached again.
+- **Lingua draws its own subtitles** over the video (so words can be hovered, tapped and marked);
+  the tracks are also given to the `<video>` as WebVTT, hidden, and shown only in the iPhone's own
+  full-screen player, which can't show page content. Elsewhere full screen is the stage element,
+  and popovers, drawers, glosses and toasts render into whatever element is full screen
+  (`usePortalRoot`).
+- **One word engine per view, kept in step:** a change in the subtitles repaints the transcript
+  beside them and the other way round (a document event; nothing is saved twice). Words found in
+  Sonus or Visio keep the line's clip (`mediaId`, `startMs`, `endMs`), so their cards can play it.
+- **Whisper on this device** runs transformers.js in a module worker: WebGPU (fp16 encoder and q4
+  decoder when the GPU has shader-f16) with WebAssembly (q8) as the fallback, using the
+  `onnx-community/whisper-*_timestamped` models for word timings. Audio is decoded to 16 kHz mono on
+  the main thread (workers have no AudioContext) and cut at pauses into two-minute parts for
+  progress. The 27 MB engine and the models are not precached; transformers.js fetches and caches
+  them on first use (jsDelivr and Hugging Face), and the worker script is cached when first used.
+  Only the model files are downloaded; no audio leaves the device.
+- **Groq takes videos too:** their sound is decoded and sent as 16-bit WAV parts of up to ten
+  minutes (under the 25 MB limit), cut at the quietest moment; long non-MP3 audio works the same way.
+  Whisper sentences are split into subtitle-sized lines with their word timings.
+- **English subtitles** come from a file, from the AI (40 lines a batch with the lines before as
+  context, cached), or one line at a time from the free translators when asked ("Translate this
+  line"), since translating a whole film that way would run past their daily limits.
+- **Streaming sites can't play inside Lingua** (DRM and their terms); their subtitle files can be
+  added as "Subtitles only". Streaming services are revisited in Lingua 2.0.
+- **Home** shows what to do next rather than more statistics: reviews due, the book, episode and
+  video in progress, today's journal prompt; the week as bars; four numbers from the same sources
+  as Ratio; the latest milestone; and a first-steps list that disappears when done or dismissed.

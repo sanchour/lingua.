@@ -1,12 +1,17 @@
 // Transcripts with word timings from Whisper on Groq, with the learner's own key (sent only in
-// the request header). Files over Groq's upload limit are split into parts at MP3 frame
-// boundaries; streamed podcast episodes are fetched by Groq itself from their address.
+// the request header), or from Whisper on this device (./device). Files over Groq's upload limit
+// are split into parts at MP3 frame boundaries, or decoded and sent as WAV parts (videos and
+// other formats); streamed podcast episodes are fetched by Groq itself from their address.
 import { isMp3, splitMp3 } from '@/core/audio/mp3';
 import { cuesFromWhisper } from '@/core/parsers/whisper';
 import type { WhisperResult } from '@/core/parsers/whisper';
 import { audioBlob } from '@/data/media';
 import { getSettings } from '@/data/settings';
 import type { Cue, Media } from '@/data/types';
+import { downloadBlob } from '@/services/sonus/net';
+import { decodeToMono16k, splitAtPauses, wav } from './audio';
+import { DEVICE_MODELS, whisperOnDevice } from './device';
+import type { DeviceModel } from './device';
 
 const ENDPOINT = 'https://api.groq.com/openai/v1/audio/transcriptions';
 /** Groq's free tier accepts uploads up to 25 MB; parts stay safely under it. */
@@ -52,16 +57,70 @@ function form(model: string, lang: string, audio: { file: Blob; name: string } |
   return body;
 }
 
+export type TranscribeProgress = (fraction: number, note?: string) => void;
+
+async function decode(blob: Blob): Promise<Float32Array> {
+  try {
+    return await decodeToMono16k(blob);
+  } catch {
+    throw new TranscribeError('The browser couldn’t read the sound in this file. Try an MP3, M4A or MP4.', 'no-audio');
+  }
+}
+
+/** Sends decoded sound to Groq as WAV parts of up to ten minutes (each well under the upload limit). */
+async function groqSamples(key: string, model: string, lang: string, samples: Float32Array, onProgress?: TranscribeProgress): Promise<Cue[]> {
+  const parts = splitAtPauses(samples, 600);
+  const cues: Cue[] = [];
+  for (let i = 0; i < parts.length; i++) {
+    onProgress?.(0.1 + (0.9 * i) / parts.length);
+    const result = await request(key, form(model, lang, { file: wav(parts[i].samples), name: `part-${i + 1}.wav` }));
+    cues.push(...cuesFromWhisper(result, lang, parts[i].offsetMs));
+  }
+  onProgress?.(1);
+  return cues;
+}
+
+/** Whisper on this device, for any item with stored sound (or one that can be downloaded). */
+async function onDevice(media: Media, model: DeviceModel, onProgress?: TranscribeProgress): Promise<Cue[]> {
+  let blob = await audioBlob(media);
+  if (!blob && media.remoteUrl) {
+    onProgress?.(0.02, 'Fetching the audio…');
+    try {
+      blob = await downloadBlob(media.remoteUrl);
+    } catch {
+      throw new TranscribeError('Save this item on the device first (⋯ › Download), then make the transcript.', 'no-audio');
+    }
+  }
+  if (!blob) throw new TranscribeError('This item has no audio to transcribe.', 'no-audio');
+  onProgress?.(0.04, 'Reading the sound…');
+  const samples = await decode(blob);
+  const size = DEVICE_MODELS[model].size;
+  const result = await whisperOnDevice(samples, media.lang, model, (p) => {
+    if (p.phase === 'model') onProgress?.(0.05 + 0.15 * p.pct, `Getting the speech model ready (${size}, only once)…`);
+    else onProgress?.(0.2 + 0.8 * p.pct, 'Listening on this device…');
+  });
+  return cuesFromWhisper(result, media.lang);
+}
+
 /**
- * Transcribes an item: its downloaded audio when there is some, otherwise its web address.
- * `onProgress` gets 0–1 as parts finish.
+ * Transcribes an item with the transcriber chosen in Ordo › Listening: Whisper on Groq (its
+ * downloaded audio, otherwise its web address) or Whisper on this device. `onProgress` gets 0–1.
  */
-export async function transcribe(media: Media, onProgress?: (fraction: number) => void): Promise<Cue[]> {
+export async function transcribe(media: Media, onProgress?: TranscribeProgress): Promise<{ cues: Cue[]; source: 'whisper-groq' | 'whisper-local' }> {
   const { apiKeys, audio } = await getSettings();
-  const key = apiKeys.groq;
-  if (!key) throw new TranscribeError('Add a free Groq key in Ordo › AI to make transcripts.', 'no-key');
-  const model = audio.whisperModel;
+  if (audio.transcriber === 'device') return { cues: await onDevice(media, audio.deviceModel, onProgress), source: 'whisper-local' };
+  return { cues: await withGroq(media, apiKeys.groq, audio.whisperModel, onProgress), source: 'whisper-groq' };
+}
+
+async function withGroq(media: Media, key: string | undefined, model: string, onProgress?: TranscribeProgress): Promise<Cue[]> {
+  if (!key) throw new TranscribeError('Add a free Groq key in Ordo › AI to make transcripts, or choose Whisper on this device in Ordo › Listening.', 'no-key');
   const blob = await audioBlob(media);
+
+  // Videos: only the sound is sent, as compact WAV parts.
+  if (blob && media.kind === 'video') {
+    onProgress?.(0.04, 'Reading the sound…');
+    return groqSamples(key, model, media.lang, await decode(blob), onProgress);
+  }
 
   if (!blob) {
     if (!media.remoteUrl) throw new TranscribeError('This item has no audio to transcribe.', 'no-audio');
@@ -80,7 +139,7 @@ export async function transcribe(media: Media, onProgress?: (fraction: number) =
   }
 
   const bytes = new Uint8Array(await blob.arrayBuffer());
-  if (!isMp3(bytes)) throw new TranscribeError('Files over 25 MB can be transcribed when they are MP3. Convert this one, or use a shorter file.', 'too-large');
+  if (!isMp3(bytes)) return groqSamples(key, model, media.lang, await decode(blob), onProgress);
   const parts = splitMp3(bytes, PART_SIZE);
   const cues: Cue[] = [];
   let offsetMs = 0;

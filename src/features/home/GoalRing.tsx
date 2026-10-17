@@ -14,6 +14,7 @@ export function GoalRing({ value, goal, size = 132 }: { value: number; goal: num
           cy={size / 2}
           r={r}
           fill="none"
+          opacity={fraction > 0 ? 1 : 0}
           stroke={done ? 'var(--sage)' : 'var(--accent)'}
           strokeWidth={stroke}
           strokeLinecap="round"

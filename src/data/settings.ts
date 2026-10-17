@@ -59,7 +59,12 @@ export interface Settings {
     whisperModel: 'whisper-large-v3-turbo' | 'whisper-large-v3';
     /** Optional relay for podcast hosts that don't let apps download; `{url}` is replaced. */
     downloadProxy: string;
+    /** Where transcripts are made: Whisper on Groq (fast, needs a key) or on this device (private). */
+    transcriber: 'groq' | 'device';
+    deviceModel: 'tiny' | 'base' | 'small';
   };
+  /** Visio's player. */
+  visio: { native: 'show' | 'blur' | 'hide'; autoPause: boolean; subtitleScale: number };
   /** Device-only: spoken words use this device's voices (Web Speech), chosen per language. */
   speech: { rate: number; voices: Record<string, string> };
   /** Device-only. */
@@ -71,6 +76,8 @@ export interface Settings {
     libraryView: 'grid' | 'list';
     deckSort: DeckSort;
     mediaSort: MediaSort;
+    /** Home's "first steps" list, once put away. */
+    firstStepsHidden: boolean;
   };
   /** Device-only. */
   meta: { deviceId: string; onboardedAt: number | null; lastBackupAt: number | null };
@@ -97,9 +104,10 @@ export const DEFAULT_SETTINGS: Settings = {
   translation: { chain: ['local', 'mymemory', 'lingva'], lingvaHost: 'https://lingva.ml' },
   llm: { provider: 'groq', model: 'llama-3.3-70b-versatile' },
   apiKeys: { groq: '', gemini: '' },
-  audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 2, repeatGapMs: 1200, whisperModel: 'whisper-large-v3-turbo', downloadProxy: '' },
+  audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 2, repeatGapMs: 1200, whisperModel: 'whisper-large-v3-turbo', downloadProxy: '', transcriber: 'groq', deviceModel: 'base' },
+  visio: { native: 'blur', autoPause: false, subtitleScale: 1 },
   speech: { rate: 0.95, voices: {} },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent' },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null },
 };
 

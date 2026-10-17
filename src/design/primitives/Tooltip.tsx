@@ -6,6 +6,7 @@ import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react
 import type { Placement } from '@floating-ui/react-dom';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Kbd } from './Kbd';
+import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 
 interface TooltipProps {
   label: ReactNode;
@@ -28,6 +29,7 @@ function mergeRefs<T>(...refs: Array<Ref<T> | undefined>) {
 
 /** Hover / keyboard-focus label for mouse devices. Touch devices never see tooltips. */
 export function Tooltip({ label, shortcut, placement = 'top', disabled = false, children }: TooltipProps) {
+  const portalRoot = usePortalRoot();
   const { pointer } = useLayout();
   const [open, setOpen] = useState(false);
   const timer = useRef<number | undefined>(undefined);
@@ -88,7 +90,7 @@ export function Tooltip({ label, shortcut, placement = 'top', disabled = false, 
             </motion.div>
           )}
         </AnimatePresence>,
-        document.body,
+        portalRoot,
       )}
     </>
   );

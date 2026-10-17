@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { CircleCheck, TriangleAlert } from 'lucide-react';
 import { useLayout } from '@/design/hooks/useLayout';
+import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 import { spring } from '@/design/motion';
 import { useUI } from '@/state/ui';
 import type { ToastItem } from '@/state/ui';
@@ -9,7 +11,8 @@ import type { ToastItem } from '@/state/ui';
 export function Toaster() {
   const toasts = useUI((s) => s.toasts);
   const { layout } = useLayout();
-  return (
+  const portalRoot = usePortalRoot();
+  return createPortal(
     <div
       className="pointer-events-none fixed inset-x-0 z-[80] flex flex-col items-center gap-2 px-4"
       style={{ bottom: layout === 'wide' ? 24 : 'calc(env(safe-area-inset-bottom) + 100px)' }}
@@ -19,7 +22,8 @@ export function Toaster() {
           <Toast key={t.id} toast={t} />
         ))}
       </AnimatePresence>
-    </div>
+    </div>,
+    portalRoot,
   );
 }
 

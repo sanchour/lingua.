@@ -8,6 +8,7 @@ import { useLayout } from '@/design/hooks/useLayout';
 import { fade, spring } from '@/design/motion';
 import { IconButton } from './IconButton';
 import { trapTab, useOverlay } from './overlay';
+import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 
 export interface DrawerProps {
   open: boolean;
@@ -22,12 +23,13 @@ export interface DrawerProps {
  * Secondary content: a slide-over panel on wide screens, a draggable bottom sheet on phones.
  */
 export function Drawer(props: DrawerProps) {
+  const portalRoot = usePortalRoot();
   const { layout } = useLayout();
   return createPortal(
     <AnimatePresence>
       {props.open && (layout === 'wide' ? <SlideOver key="slide" {...props} /> : <BottomSheet key="sheet" {...props} />)}
     </AnimatePresence>,
-    document.body,
+    portalRoot,
   );
 }
 

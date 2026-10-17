@@ -1,20 +1,32 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { motion } from 'motion/react';
-import { ArrowRight, BookMarked, BookOpen, Flame, Gamepad2, Headphones, Layers, Sprout, Target } from 'lucide-react';
+import { ArrowRight, BookOpen, Check, ChevronRight, Clapperboard, Flame, Headphones, Layers, PenLine, Sparkles, Sprout, Trophy, X } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatDuration } from '@/core/audio/cues';
 import { getLanguage } from '@/core/lang/languages';
+import { curatedPrompt } from '@/core/lang/prompts';
+import { useJourney } from '@/data/journey';
+import { useJournal } from '@/data/journal';
 import { useAllProgress, useLibrary } from '@/data/library';
 import { useMediaList, usePlaybackMap } from '@/data/media';
-import { useStreak, useToday } from '@/data/stats';
+import { paceOf } from '@/data/ratio';
+import { patchSetting } from '@/data/settings';
+import { useToday } from '@/data/stats';
 import { useDueSummary } from '@/data/study';
 import { useVocabularyCounts } from '@/data/words';
-import { buttonClasses, Card, CardTitle } from '@/design/primitives';
+import { Card } from '@/design/primitives';
 import { spring } from '@/design/motion';
+import { localDateKey } from '@/lib/format';
 import { cx } from '@/lib/cx';
 import { BookCover } from '@/features/codex/library/BookCover';
 import { Artwork } from '@/features/sonus/library/Artwork';
+import { Poster } from '@/features/visio/library/Poster';
+import { studyMinutes, useHomeFacts } from './facts';
+import type { HomeFacts } from './facts';
 import { GoalRing } from './GoalRing';
 
 function greeting(hour: number): string {
@@ -30,220 +42,342 @@ const enter = (i: number) => ({
   transition: { ...spring.soft, delay: 0.05 * i },
 });
 
+const label = 'text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase';
+
+/**
+ * Home at a glance: today's goal and the next few things worth doing, then the week, the numbers
+ * that matter and the latest milestone. Two columns on wide screens, one on phones.
+ */
 export default function HomePage() {
-  const { language } = useApp();
+  const { language, settings } = useApp();
   const target = getLanguage(language.id);
+  const facts = useHomeFacts(language.id);
+  const steps = facts?.firstSteps;
+  const stepsLeft = steps ? Object.values(steps).filter((d) => !d).length : 0;
+  const showSteps = Boolean(steps) && stepsLeft > 0 && !settings.ui.firstStepsHidden;
 
   return (
     <>
       <PageHeader title={greeting(new Date().getHours())} eyebrow={`${target?.endonym ?? language.id} · ${language.level}`} />
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <motion.div {...enter(0)}>
-          <TodayCard lang={language.id} goal={language.dailyGoal.readMinutes} />
-        </motion.div>
-        <motion.div {...enter(1)}>
-          <StreakCard lang={language.id} />
-        </motion.div>
-        <motion.div {...enter(2)} className="md:col-span-2 lg:col-span-1">
-          <VocabularyCard lang={language.id} />
-        </motion.div>
-        <motion.div {...enter(3)} className="md:col-span-2 lg:col-span-3">
-          <ContinueCard lang={language.id} />
-        </motion.div>
-        <motion.div {...enter(4)} className="md:col-span-2 lg:col-span-3">
-          <ReviewCard lang={language.id} />
-        </motion.div>
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+        <div className="grid min-w-0 grid-cols-1 gap-5">
+          <motion.div {...enter(0)}>
+            <TodayPanel lang={language.id} level={language.level} goal={language.dailyGoal.readMinutes} />
+          </motion.div>
+          {showSteps && (
+            <motion.div {...enter(1)}>
+              <FirstSteps steps={steps!} />
+            </motion.div>
+          )}
+        </div>
+        <div className="grid min-w-0 grid-cols-1 gap-5">
+          <motion.div {...enter(2)}>
+            <WeekCard facts={facts} goal={language.dailyGoal.readMinutes} />
+          </motion.div>
+          <motion.div {...enter(3)}>
+            <NumbersCard lang={language.id} />
+          </motion.div>
+          <motion.div {...enter(4)}>
+            <MilestoneCard lang={language.id} />
+          </motion.div>
+        </div>
       </div>
     </>
   );
 }
 
-function TodayCard({ lang, goal }: { lang: string; goal: number }) {
+// ── Today ─────────────────────────────────────────────────────────────────────
+
+interface Step {
+  key: string;
+  to: string;
+  icon: LucideIcon;
+  tone: 'accent' | 'sage' | 'ink';
+  title: string;
+  detail: string;
+  art?: ReactNode;
+}
+
+function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1]): Step[] | undefined {
+  const due = useDueSummary(lang);
+  const texts = useLibrary(lang);
+  const progress = useAllProgress();
+  const listening = useMediaList(lang);
+  const videos = useMediaList(lang, 'watch');
+  const playback = usePlaybackMap();
+  const journal = useJournal(lang);
+  if (!due || !texts || !listening || !videos || !journal) return undefined;
+
+  const steps: Step[] = [];
+  const cards = due.due + due.fresh;
+  if (cards > 0) {
+    steps.push({
+      key: 'review',
+      to: '/thesaurus/study/all?mode=recall',
+      icon: Layers,
+      tone: 'accent',
+      title: `${cards} ${cards === 1 ? 'card' : 'cards'} to review`,
+      detail: [due.due && `${due.due} due`, due.fresh && `${due.fresh} new`].filter(Boolean).join(' · '),
+    });
+  }
+
+  const book = texts.find((t) => t.kind !== 'shelfItem' && !t.finishedAt && t.lastOpenedAt);
+  if (book) {
+    const pct = Math.round((progress?.get(book.id)?.percent ?? 0) * 100);
+    steps.push({
+      key: 'read',
+      to: `/codex/read/${book.id}`,
+      icon: BookOpen,
+      tone: 'ink',
+      title: book.title,
+      detail: `Continue reading · ${pct}%${book.stats ? ` · ${Math.round(book.stats.knownShare * 100)}% known` : ''}`,
+      art: (
+        <span className="block w-9">
+          <BookCover text={book} size="sm" />
+        </span>
+      ),
+    });
+  }
+
+  const unfinished = (m: { id: string; lastPlayedAt?: number }) => Boolean(m.lastPlayedAt) && !playback?.get(m.id)?.completed;
+  const episode = listening.find((m) => m.kind !== 'spotify' && unfinished(m));
+  if (episode) {
+    const left = episode.durationMs ? episode.durationMs - (playback?.get(episode.id)?.positionMs ?? 0) : 0;
+    steps.push({
+      key: 'listen',
+      to: `/sonus/play/${episode.id}`,
+      icon: Headphones,
+      tone: 'sage',
+      title: episode.title,
+      detail: `Continue listening${left > 60_000 ? ` · ${formatDuration(left)} left` : ''}`,
+      art: <Artwork title={episode.title} coverBlobId={episode.coverBlobId} coverUrl={episode.coverUrl} className="w-10" rounded="rounded-lg" />,
+    });
+  }
+
+  const video = videos.find(unfinished);
+  if (video) {
+    steps.push({
+      key: 'watch',
+      to: `/visio/watch/${video.id}`,
+      icon: Clapperboard,
+      tone: 'accent',
+      title: video.title,
+      detail: 'Continue watching',
+      art: (
+        <span className="block w-16">
+          <Poster title={video.title} coverBlobId={video.coverBlobId} className="rounded-lg shadow-none" />
+        </span>
+      ),
+    });
+  }
+
+  const wroteToday = journal.some((e) => e.date === localDateKey() && e.words > 0);
+  if (!wroteToday) {
+    const prompt = curatedPrompt(lang, level);
+    steps.push({ key: 'write', to: '/codex?tab=diarium', icon: PenLine, tone: 'sage', title: 'Write today’s entry', detail: prompt.en || prompt.text });
+  }
+
+  if (!book) steps.push({ key: 'find', to: '/codex', icon: Sparkles, tone: 'ink', title: 'Find something to read', detail: 'Graded stories, articles, or your own books' });
+  return steps.slice(0, 4);
+}
+
+const TONE: Record<Step['tone'], string> = {
+  accent: 'bg-accent-soft text-accent-text',
+  sage: 'bg-sage-soft text-sage-text',
+  ink: 'bg-sunken text-ink-soft',
+};
+
+function TodayPanel({ lang, level, goal }: { lang: string; level: Parameters<typeof curatedPrompt>[1]; goal: number }) {
   const today = useToday(lang);
-  const minutes = ((today?.readMs ?? 0) + (today?.listenMs ?? 0) + (today?.watchMs ?? 0)) / 60_000;
+  const steps = useNextSteps(lang, level);
+  const minutes = studyMinutes(today);
+  const left = Math.max(0, Math.ceil(goal - minutes));
+  const min = (ms: number | undefined, what: string) => (ms && ms >= 60_000 ? `${Math.round(ms / 60_000)} min ${what}` : null);
+  const parts = [
+    min(today?.readMs, 'read'),
+    min(today?.listenMs, 'listened'),
+    min(today?.watchMs, 'watched'),
+    min(today?.writeMs, 'written'),
+    today?.reviews ? `${today.reviews} ${today.reviews === 1 ? 'card' : 'cards'}` : null,
+  ].filter(Boolean) as string[];
+
   return (
-    <Card className="h-full">
-      <CardTitle icon={Target}>Today</CardTitle>
-      <div className="flex items-center gap-5">
-        <GoalRing value={minutes} goal={goal} size={120} />
-        <dl className="space-y-2 text-sm">
-          <div>
-            <dt className="text-ink-soft">Words read</dt>
-            <dd className="font-serif text-xl font-semibold tabular-nums">{(today?.wordsRead ?? 0).toLocaleString()}</dd>
-          </div>
-          <div>
-            <dt className="text-ink-soft">New words</dt>
-            <dd className="font-serif text-xl font-semibold tabular-nums">{((today?.newKnown ?? 0) + (today?.newLearning ?? 0)).toLocaleString()}</dd>
-          </div>
-        </dl>
+    <Card className="p-5 sm:p-7">
+      <div className="flex items-center gap-5 sm:gap-7">
+        <GoalRing value={minutes} goal={goal} size={112} />
+        <div className="min-w-0">
+          <p className={label}>Today</p>
+          <p className="mt-1 font-serif text-[22px] leading-snug font-semibold sm:text-2xl">
+            {minutes === 0 ? 'A fresh page.' : left === 0 ? 'Goal reached. Lovely.' : `${left} ${left === 1 ? 'minute' : 'minutes'} to your goal`}
+          </p>
+          <p className="mt-1 text-[14px] text-ink-soft">{parts.length ? parts.join(' · ') : `Read, listen, watch or write for ${goal} minutes.`}</p>
+        </div>
+      </div>
+
+      <div className="mt-6 border-t border-line pt-4">
+        <p className={cx(label, 'mb-1')}>Next up</p>
+        <ul className="-mx-2">
+          {(steps ?? []).map((s) => (
+            <li key={s.key}>
+              <Link to={s.to} className="group flex items-center gap-3.5 rounded-2xl px-2 py-2.5 transition-colors hover:bg-surface">
+                {s.art ?? (
+                  <span className={cx('grid size-10 shrink-0 place-items-center rounded-xl', TONE[s.tone])}>
+                    <s.icon size={19} aria-hidden />
+                  </span>
+                )}
+                <span className="min-w-0 flex-1">
+                  <span lang={s.key === 'review' || s.key === 'write' || s.key === 'find' ? undefined : lang} className="block truncate text-[15px] font-semibold">
+                    {s.title}
+                  </span>
+                  <span className="block truncate text-[13px] text-ink-soft">{s.detail}</span>
+                </span>
+                <ChevronRight size={18} className="shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5" aria-hidden />
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </Card>
   );
 }
 
-const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+// ── First steps ───────────────────────────────────────────────────────────────
 
-function StreakCard({ lang }: { lang: string }) {
-  const streak = useStreak(lang);
-  const days = streak?.days ?? 0;
-  // Label the last 7 days ending today.
-  const labels = Array.from({ length: 7 }, (_, i) => WEEKDAYS[(new Date(Date.now() - (6 - i) * 86_400_000).getDay() + 6) % 7]);
+const FIRST: Array<{ key: keyof HomeFacts['firstSteps']; title: string; to: string }> = [
+  { key: 'read', title: 'Read something in Codex', to: '/codex' },
+  { key: 'marked', title: 'Mark a word you’re learning', to: '/codex' },
+  { key: 'reviewed', title: 'Review a few flashcards', to: '/thesaurus' },
+  { key: 'listened', title: 'Listen or watch with a transcript', to: '/sonus' },
+  { key: 'wrote', title: 'Write a first journal entry', to: '/codex?tab=diarium' },
+];
 
+function FirstSteps({ steps }: { steps: HomeFacts['firstSteps'] }) {
+  const done = FIRST.filter((f) => steps[f.key]).length;
   return (
-    <Card className="h-full">
-      <CardTitle icon={Flame}>Streak</CardTitle>
-      <div className="flex items-baseline gap-2">
-        <span className="font-serif text-4xl font-semibold tabular-nums">{days}</span>
-        <span className="text-sm font-semibold text-ink-soft">{days === 1 ? 'day' : 'days'}</span>
+    <Card className="p-5 sm:p-6">
+      <div className="mb-3 flex items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <p className={label}>First steps</p>
+          <p className="mt-0.5 text-[14px] text-ink-soft">
+            {done} of {FIRST.length} done: one turn around every room.
+          </p>
+        </div>
+        <button
+          type="button"
+          aria-label="Hide first steps"
+          onClick={() => void patchSetting('ui', { firstStepsHidden: true })}
+          className="grid size-9 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-surface hover:text-ink"
+        >
+          <X size={17} aria-hidden />
+        </button>
       </div>
-      <div className="mt-4 flex justify-between gap-1.5">
-        {labels.map((label, i) => {
-          const met = streak?.week[i] ?? false;
-          const today = i === 6;
+      <ul className="-mx-2">
+        {FIRST.map((f) => {
+          const ok = steps[f.key];
           return (
-            <div key={i} className="flex flex-col items-center gap-1.5">
-              <span
-                className={cx(
-                  'grid size-8 place-items-center rounded-full',
-                  met ? 'bg-accent-fill text-on-accent' : today ? 'border-2 border-dashed border-accent/60' : 'bg-sunken',
-                )}
-              >
-                {met && <Flame size={15} aria-hidden />}
-              </span>
-              <span className={cx('text-[11px] font-bold', today ? 'text-accent-text' : 'text-ink-faint')}>{label}</span>
+            <li key={f.key}>
+              <Link to={f.to} className={cx('flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-surface', ok && 'pointer-events-none')}>
+                <span className={cx('grid size-6 shrink-0 place-items-center rounded-full border-2', ok ? 'border-sage bg-sage text-on-accent' : 'border-line-strong')}>
+                  {ok && <Check size={13} strokeWidth={3} aria-hidden />}
+                </span>
+                <span className={cx('text-[14.5px]', ok ? 'text-ink-faint line-through decoration-1' : 'font-semibold')}>{f.title}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </Card>
+  );
+}
+
+// ── The week, numbers, milestone ──────────────────────────────────────────────
+
+const WEEKDAY = new Intl.DateTimeFormat('en', { weekday: 'narrow' });
+
+function WeekCard({ facts, goal }: { facts?: HomeFacts; goal: number }) {
+  const week = facts?.week ?? [];
+  let streak = 0;
+  for (let i = week.length - 1; i >= 0; i--) {
+    if (week[i].met) streak++;
+    else if (i < week.length - 1) break;
+  }
+  const max = Math.max(goal, ...week.map((d) => d.minutes));
+  return (
+    <Card className="p-5 sm:p-6">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className={label}>This week</p>
+        {streak > 0 ? (
+          <p className="flex items-center gap-1 text-[13px] font-semibold text-accent-text">
+            <Flame size={14} aria-hidden /> {streak} {streak === 1 ? 'day' : 'days'} in a row
+          </p>
+        ) : (
+          <p className="text-[13px] font-semibold text-ink-faint">{goal} min a day</p>
+        )}
+      </div>
+      <div className="mt-4 flex h-24 items-end justify-between gap-2" role="img" aria-label={`Minutes studied over the last seven days: ${week.map((d) => Math.round(d.minutes)).join(', ')}`}>
+        {week.map((d, i) => {
+          const today = i === week.length - 1;
+          const h = d.minutes ? Math.max(8, (d.minutes / max) * 100) : 0;
+          return (
+            <div key={d.date} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
+              <div className="relative flex w-full max-w-9 flex-1 items-end overflow-hidden rounded-lg bg-sunken">
+                <div className={cx('w-full rounded-lg transition-[height] duration-700', d.met ? 'bg-accent' : 'bg-accent/45')} style={{ height: `${h}%` }} />
+              </div>
+              <span className={cx('text-[11px] font-bold', today ? 'text-accent-text' : 'text-ink-faint')}>{WEEKDAY.format(new Date(`${d.date}T12:00:00`))}</span>
             </div>
           );
         })}
       </div>
-      <p className="mt-4 text-[13px] text-ink-soft">Reach your daily goal to keep the hearth lit.</p>
     </Card>
   );
 }
 
-function VocabularyCard({ lang }: { lang: string }) {
+function NumbersCard({ lang }: { lang: string }) {
   const counts = useVocabularyCounts(lang);
+  const pace = useLiveQuery(() => paceOf(lang), [lang]);
+  const hours = (h?: number) => (h === undefined ? '–' : h < 10 ? h.toFixed(1) : Math.round(h).toLocaleString());
+  const stats: Array<{ value: string; label: string }> = [
+    { value: (counts?.known ?? 0).toLocaleString(), label: 'words known' },
+    { value: (counts?.learning ?? 0).toLocaleString(), label: 'learning' },
+    { value: hours(pace?.hoursThisWeek), label: 'hours this week' },
+    { value: hours(pace?.hours), label: 'hours in all' },
+  ];
   return (
-    <Card className="h-full">
-      <CardTitle icon={Sprout}>Vocabulary</CardTitle>
-      <div className="flex items-baseline gap-2">
-        <span className="font-serif text-4xl font-semibold tabular-nums">{(counts?.known ?? 0).toLocaleString()}</span>
-        <span className="text-sm font-semibold text-ink-soft">words known</span>
+    <Card className="p-5 sm:p-6">
+      <div className="mb-3 flex items-center justify-between">
+        <p className={label}>At a glance</p>
+        <Link to="/ratio" className="inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
+          Ratio <ArrowRight size={14} aria-hidden />
+        </Link>
       </div>
-      <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-soft">
-        <span className="inline-block size-2.5 rounded-full bg-accent" aria-hidden />
-        {(counts?.learning ?? 0).toLocaleString()} learning
-      </p>
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
+        {stats.map((s) => (
+          <div key={s.label}>
+            <dd className="font-serif text-[26px] leading-none font-semibold tabular-nums">{s.value}</dd>
+            <dt className="mt-1 text-[12.5px] font-semibold text-ink-soft">{s.label}</dt>
+          </div>
+        ))}
+      </dl>
     </Card>
   );
 }
 
-function ContinueCard({ lang }: { lang: string }) {
-  const texts = useLibrary(lang);
-  const progress = useAllProgress();
-  const media = useMediaList(lang);
-  const playback = usePlaybackMap();
-  const current = texts?.find((t) => t.kind !== 'shelfItem' && !t.finishedAt && t.lastOpenedAt);
-  const pct = current && progress?.get(current.id) ? Math.round(progress.get(current.id)!.percent * 100) : 0;
-  // Whatever you touched last: a book, or an episode you were listening to.
-  const episode = media?.find((m) => m.kind !== 'spotify' && m.lastPlayedAt && !playback?.get(m.id)?.completed);
-  if (episode && (!current || (episode.lastPlayedAt ?? 0) > (current.lastOpenedAt ?? 0))) {
-    const position = playback?.get(episode.id)?.positionMs ?? 0;
-    return (
-      <Card>
-        <CardTitle icon={Headphones}>Continue listening</CardTitle>
-        <div className="flex items-center gap-4">
-          <Link to={`/sonus/play/${episode.id}`} className="w-14 shrink-0" aria-label={`Open ${episode.title}`}>
-            <Artwork title={episode.title} coverBlobId={episode.coverBlobId} coverUrl={episode.coverUrl} className="w-full" />
-          </Link>
-          <div className="min-w-0 flex-1">
-            <p lang={episode.lang} className="truncate font-serif text-lg font-semibold">
-              {episode.title}
-            </p>
-            <p className="truncate text-sm text-ink-soft">
-              {[episode.collection ?? episode.artist, episode.durationMs && position > 0 && `${formatDuration(episode.durationMs - position)} left`].filter(Boolean).join(' · ')}
-            </p>
-          </div>
-          <Link to={`/sonus/play/${episode.id}`} className={buttonClasses('secondary', 'md')}>
-            Listen <ArrowRight size={16} aria-hidden />
-          </Link>
-        </div>
+const DATE = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'long' });
+
+function MilestoneCard({ lang }: { lang: string }) {
+  const journey = useJourney();
+  const latest = journey?.find((e) => e.lang === lang || e.lang === '*');
+  if (!journey) return null;
+  return (
+    <Link to="/ratio?tab=iter" className="block">
+      <Card className="flex items-center gap-4 p-5 transition-colors hover:bg-surface sm:p-6">
+        <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sage-soft text-sage-text">{latest ? <Trophy size={20} aria-hidden /> : <Sprout size={20} aria-hidden />}</span>
+        <span className="min-w-0 flex-1">
+          <span className={label}>{latest ? `Milestone · ${DATE.format(latest.at)}` : 'Your journey'}</span>
+          <span className="mt-0.5 block truncate font-serif text-[17px] font-semibold">{latest ? latest.title : 'Milestones gather here as you go'}</span>
+        </span>
+        <ChevronRight size={18} className="shrink-0 text-ink-faint" aria-hidden />
       </Card>
-    );
-  }
-
-  return (
-    <Card>
-      <CardTitle icon={BookMarked}>Continue</CardTitle>
-      {current ? (
-        <div className="flex items-center gap-4">
-          <Link to={`/codex/read/${current.id}`} className="w-14 shrink-0" aria-label={`Continue reading ${current.title}`}>
-            <BookCover text={current} size="sm" />
-          </Link>
-          <div className="min-w-0 flex-1">
-            <p lang={current.lang} className="truncate font-serif text-lg font-semibold">
-              {current.title}
-            </p>
-            <p className="text-sm text-ink-soft">
-              {pct}% read{current.stats ? ` · ${Math.round(current.stats.knownShare * 100)}% known` : ''}
-            </p>
-          </div>
-          <Link to={`/codex/read/${current.id}`} className={buttonClasses('secondary', 'md')}>
-            Read <ArrowRight size={16} aria-hidden />
-          </Link>
-        </div>
-      ) : (
-        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          <div className="grid size-14 shrink-0 place-items-center rounded-2xl bg-raised text-ink-faint shadow-elev-1">
-            <BookOpen size={24} aria-hidden />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-serif text-lg font-semibold">Nothing on the lectern yet</p>
-            <p className="mt-0.5 text-sm text-ink-soft">Books and episodes you open will wait for you here.</p>
-          </div>
-          <Link to="/codex" className={buttonClasses('secondary', 'md')}>
-            Open Codex
-          </Link>
-        </div>
-      )}
-    </Card>
-  );
-}
-
-function ReviewCard({ lang }: { lang: string }) {
-  const today = useDueSummary(lang);
-  const total = today ? today.due + today.fresh : 0;
-  return (
-    <Card>
-      <CardTitle icon={Layers}>Review</CardTitle>
-      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-        <div className="flex items-baseline gap-2">
-          <span className="font-serif text-4xl font-semibold tabular-nums">{total}</span>
-          <span className="text-sm font-semibold text-ink-soft">{total === 1 ? 'card today' : 'cards today'}</span>
-        </div>
-        <p className="flex-1 text-sm text-ink-soft">
-          {!today || today.decks === 0
-            ? 'Add a ready-made deck or mark words as Learning while you read.'
-            : total === 0
-              ? 'All caught up. Practise freely with Ludus.'
-              : [today.due && `${today.due} to review`, today.fresh && `${today.fresh} new`].filter(Boolean).join(' · ')}
-        </p>
-        <div className="flex gap-2">
-          {today && today.decks > 0 && (
-            <Link to="/thesaurus/study/all?mode=ludus" className={buttonClasses('ghost', 'md')}>
-              <Gamepad2 size={17} aria-hidden /> Ludus
-            </Link>
-          )}
-          {total > 0 ? (
-            <Link to="/thesaurus/study/all?mode=recall" className={buttonClasses('primary', 'md')}>
-              Review <ArrowRight size={16} aria-hidden />
-            </Link>
-          ) : (
-            <Link to="/thesaurus" className={buttonClasses('secondary', 'md')}>
-              Thesaurus
-            </Link>
-          )}
-        </div>
-      </div>
-    </Card>
+    </Link>
   );
 }

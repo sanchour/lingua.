@@ -13,6 +13,14 @@ import type { ChapterModel } from './model';
  */
 export const nextState = (s: WordState): WordState => (s === 2 ? 1 : 2);
 
+const WORD_EVENT = 'lingua:word';
+interface WordEvent {
+  lang: string;
+  norm: string;
+  state: WordState;
+  engine: WordEngine;
+}
+
 /**
  * Imperative word engine for one rendered chapter. State changes repaint the affected spans
  * directly (no React render) and are then saved; glosses come from the in-memory map.
@@ -107,6 +115,25 @@ export class WordEngine {
     else this.model.states.delete(norm);
     this.onChange?.(norm, state, previous);
     void setWordState(this.lang, norm, state, el ? this.context(el) : {});
+    document.dispatchEvent(new CustomEvent<WordEvent>(WORD_EVENT, { detail: { lang: this.lang, norm, state, engine: this } }));
+  }
+
+  /** Repaints a word changed by another engine on the page, without saving it again. */
+  reflect(norm: string, state: WordState): void {
+    if (this.state(norm) === state) return;
+    this.paint(norm, state);
+    if (state) this.model.states.set(norm, state);
+    else this.model.states.delete(norm);
+  }
+
+  /** Keeps in step with other engines on the same page (Visio's subtitles and its transcript). */
+  follow(): () => void {
+    const on = (e: Event) => {
+      const d = (e as CustomEvent<WordEvent>).detail;
+      if (d.engine !== this && d.lang === this.lang) this.reflect(d.norm, d.state);
+    };
+    document.addEventListener(WORD_EVENT, on);
+    return () => document.removeEventListener(WORD_EVENT, on);
   }
 
   cycle(el: HTMLElement): WordState {

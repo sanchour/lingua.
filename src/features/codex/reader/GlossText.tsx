@@ -7,6 +7,7 @@ import { fetchOnlineGloss, lookupGlosses } from '@/services/translate/gloss';
 import type { GlossInfo } from '@/services/translate/gloss';
 import type { WordEngine } from './engine';
 import { HoverGloss } from './HoverGloss';
+import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 
 /** Just enough of the reader's word engine for translations (no word states here). */
 function glossSource(lang: string, glosses: Map<string, GlossInfo>): WordEngine {
@@ -30,6 +31,7 @@ function glossSource(lang: string, glosses: Map<string, GlossInfo>): WordEngine 
  * Used where Ludus shows sentences in the language being learned.
  */
 export function GlossText({ text, lang, className }: { text: string; lang: string; className?: string }) {
+  const portalRoot = usePortalRoot();
   const { pointer } = useLayout();
   const rootRef = useRef<HTMLSpanElement>(null);
   const hoveredRef = useRef<HTMLElement | null>(null);
@@ -89,7 +91,7 @@ export function GlossText({ text, lang, className }: { text: string; lang: strin
           <div className="reader-tip" data-visible="1" style={{ transform: `translate3d(${Math.round(bubble.left)}px, ${Math.round(bubble.top)}px, 0)`, maxWidth: 240 }}>
             <span className="reader-tip-text">{tapped.text}</span>
           </div>,
-          document.body,
+          portalRoot,
         )}
     </>
   );

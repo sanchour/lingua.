@@ -6,6 +6,7 @@ import type { WordState } from '@/data/types';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import type { WordEngine } from './engine';
+import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 
 interface TapGlossProps {
   el: HTMLElement;
@@ -16,6 +17,7 @@ interface TapGlossProps {
 
 /** Touch: a small bubble above the tapped word with its translation and quick state pills. */
 export function TapGloss({ el, engine, onClose, onOpen }: TapGlossProps) {
+  const portalRoot = usePortalRoot();
   const norm = el.dataset.n!;
   const [gloss, setGloss] = useState(() => engine.gloss(norm)?.text ?? null);
   const [state, setState] = useState<WordState>(() => engine.state(norm));
@@ -92,7 +94,7 @@ export function TapGloss({ el, engine, onClose, onOpen }: TapGlossProps) {
         )}
       </div>
     </motion.div>,
-    document.body,
+    portalRoot,
   );
 }
 

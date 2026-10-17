@@ -58,7 +58,7 @@ export function TopBar() {
         )}
 
         <motion.div
-          className="pointer-events-none absolute left-1/2 max-w-[55%] -translate-x-1/2 truncate font-serif text-[17px] font-semibold"
+          className="pointer-events-none absolute left-1/2 max-w-[46%] -translate-x-1/2 truncate font-serif text-[17px] font-semibold"
           initial={false}
           animate={{ opacity: titleHidden ? 1 : 0, y: titleHidden ? 0 : 6 }}
           transition={spring.snappy}

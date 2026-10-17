@@ -3,6 +3,7 @@ import type { RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import type { WordEngine } from './engine';
 import { wordAt as findWord } from './hit';
+import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 
 const STATE_LABEL = ['', 'Known', 'Learning'] as const;
 
@@ -28,6 +29,7 @@ const FETCH_DELAY_MS = 70;
  * scrolling, page changes and re-renders.
  */
 export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
+  const portalRoot = usePortalRoot();
   const tipRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
   const stateRef = useRef<HTMLSpanElement>(null);
@@ -171,6 +173,6 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
       <span ref={textRef} className="reader-tip-text" />
       <span ref={stateRef} className="reader-tip-state" />
     </div>,
-    document.body,
+    portalRoot,
   );
 }

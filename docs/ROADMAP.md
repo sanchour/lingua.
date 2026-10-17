@@ -94,9 +94,50 @@ Visio and Whisper are skipped here and come in prompt 2.
 - [x] Walk every section on desktop and phone sizes, then fix what's glitchy or slow.
 
 ## Prompt 2: Visio · Whisper · Home
-- [ ] Visio: a dual-subtitle video player (files and links), mining dialogue into decks, transcripts.
-- [ ] Whisper: local transcription (WebGPU), with Groq as the fallback.
-- [ ] Home: easy to read at a glance on desktop and phone.
+
+### 1. Visio: the screening room
+- [x] Library:
+  - add a video file (MP4, WebM, MOV, M4V) or a direct link;
+  - drop a video and its subtitles together, matched by name;
+  - covers taken from a frame of the video;
+  - progress and subtitle badges on each card;
+  - "Keep subtitles only", to save space on a phone.
+- [x] Subtitles:
+  - SRT or VTT for the language you're learning, and for your own;
+  - or a transcript from Whisper (Groq, or on this device);
+  - or an AI translation of the learning-language track as your own track.
+- [x] Player (`/visio/watch/:id`):
+  - dual subtitles over the picture;
+  - every word works as in Codex: hover or tap for a translation, click to mark, long-press for the drawer;
+  - your own line can stay hidden until you hover or tap it;
+  - auto-pause at the end of each line, repeat a line, previous and next line, speed, and a subtitle offset;
+  - fullscreen keeps the subtitles;
+  - the transcript runs beside the video on desktop and below it on phones;
+  - watching time is recorded.
+- [x] Mining:
+  - "Save line" makes a card (deck "From Visio") with the sentence, its translation and the clip times;
+  - words marked Learning keep the clip as well;
+  - cards replay their clip in Thesaurus.
+
+### 2. Whisper on this device
+- [x] `@huggingface/transformers` in a worker, with WebGPU when available and WASM otherwise.
+  - Models: tiny, base or small (multilingual), downloaded once and cached.
+  - Word timings, and progress for both the download and the transcription.
+- [x] Ordo › Listening: transcribe with Groq (fast, needs a key) or on this device (private, no key), and the model size.
+- [x] Sonus and Visio both use it.
+
+### 3. Home at a glance
+- [x] One "Today" panel with the goal ring and the next steps, in order: reviews due, continue reading, listening or watching, today's journal prompt.
+- [x] A week strip, a few honest numbers (known words, coverage, hours this week) linking to Ratio, and the latest milestone.
+- [x] A first-run checklist for an empty app: add a text, start a deck, follow a podcast, write an entry.
+- [x] Clear on desktop (two columns) and on phones (one column, the most important first).
+
+### 4. Check, commit, push
+- [x] Typecheck, 106 tests, production build; every route checked on desktop and phone (no errors, no unnamed buttons, no sideways scrolling).
+- [x] Checked in headless Chrome: a test video with Russian and English subtitles, hover and tap translations on the subtitles, marking words, "Save line", previous and next line, clip replay on the card, Whisper tiny on this device (English test speech, 15 s with the download), and the Groq path for a video (mocked, sends a 16 kHz WAV).
+- [x] Committed and pushed; Pages redeployed.
+
+Notes: Home's numbers are known words, learning, hours this week and hours in all (coverage stays in Ratio). Streaming sites (YouTube, Netflix…) can't play inside Lingua; their subtitle files can be added as "Subtitles only". That is revisited with the streaming services in Lingua 2.0.
 
 ## Lingua 2.0
 New languages, music, grammar ([`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md)), radio, recommendations,

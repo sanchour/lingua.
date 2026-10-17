@@ -86,3 +86,14 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Ratio → Tabula: Notion CSV import from Files works; dragging the handle reorders; a row opens its drawer.
 - [ ] Ratio → Iter: Log time, Add a moment (with a photo) and a reading challenge appear on the page.
 - [ ] Ordo → Reset: the confirm button stays disabled until the word is typed.
+
+## Visio, Whisper on this device and Home
+
+- [ ] Visio → Add → Video files: pick a video and its .srt files together; the card shows a frame and RU/EN badges.
+- [ ] The player: tap a word in the subtitle for its translation (the video pauses); long-press opens the drawer.
+- [ ] The English line is blurred; tapping it shows it. Settings (the sliders icon): Show / Blur / Hide, pause after each line, size.
+- [ ] Previous / repeat / next line and Save line work; the line appears in Thesaurus › From Visio and its card plays the clip.
+- [ ] Full screen (the corner button) opens the iPhone player with the subtitles of the language you learn.
+- [ ] ⋯ → Keep subtitles only frees the space; the lines and cards stay; Attach the video file brings it back.
+- [ ] Ordo → Listening → This device: Make subtitles downloads the model once (progress shows), then works offline.
+- [ ] Home: Next up lists reviews, the book, episode and video in progress, and today's journal prompt; everything fits one column.

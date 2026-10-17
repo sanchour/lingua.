@@ -12,9 +12,15 @@ const recent = (m: Media) => m.lastPlayedAt ?? m.createdAt;
 
 // ── Reading ──────────────────────────────────────────────────────────────────
 
-/** Everything in the listening library for a language, most recently played first. */
-export function useMediaList(lang: string): Media[] | undefined {
-  return useLiveQuery(async () => (await db.media.where('lang').equals(lang).toArray()).filter(alive).sort((a, b) => recent(b) - recent(a)), [lang]);
+/** The listening library (or, with 'watch', the videos) for a language, most recently played first. */
+export function useMediaList(lang: string, shelf: 'listen' | 'watch' = 'listen'): Media[] | undefined {
+  return useLiveQuery(
+    async () =>
+      (await db.media.where('lang').equals(lang).toArray())
+        .filter((m) => alive(m) && (shelf === 'watch') === (m.kind === 'video'))
+        .sort((a, b) => recent(b) - recent(a)),
+    [lang, shelf],
+  );
 }
 
 export function useMedia(id: string | undefined): Media | null | undefined {

@@ -81,7 +81,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
               <MenuItem
                 icon={Sparkles}
                 label={transcribing !== undefined ? 'Transcribing…' : hasTranscript ? 'Transcribe again' : 'Make a transcript'}
-                detail="Whisper on Groq, with word timings"
+                detail="Whisper, with word timings"
                 onClick={() => {
                   close();
                   void startTranscription(media);
