@@ -4,7 +4,7 @@ import { checkMilestones } from './journey';
 import type { LinguaDB } from './db';
 import type { ActivitySession, DailyStat } from './types';
 
-type Counter = 'readMs' | 'wordsRead' | 'listenMs' | 'watchMs' | 'writeMs' | 'wordsWritten' | 'reviews' | 'againCount' | 'newCards' | 'newKnown' | 'newLearning';
+type Counter = 'readMs' | 'wordsRead' | 'listenMs' | 'watchMs' | 'writeMs' | 'wordsWritten' | 'songMs' | 'reviews' | 'againCount' | 'newCards' | 'newKnown' | 'newLearning';
 
 const emptyDay = (lang: string, date: string): DailyStat => ({
   id: `${lang}:${date}`,
@@ -57,6 +57,7 @@ export async function recordSession(session: Omit<ActivitySession, 'id'>, databa
   await database.sessions.add({ ...session, id: crypto.randomUUID() });
   if (session.type === 'read') await bumpDaily(session.lang, { readMs: session.activeMs, wordsRead: session.wordsRead ?? 0 }, database);
   else if (session.type === 'listen') await bumpDaily(session.lang, { listenMs: session.activeMs }, database);
+  else if (session.type === 'sing') await bumpDaily(session.lang, { listenMs: session.activeMs, songMs: session.activeMs }, database);
   else if (session.type === 'watch') await bumpDaily(session.lang, { watchMs: session.activeMs }, database);
   else if (session.type === 'write') await bumpDaily(session.lang, { writeMs: session.activeMs }, database);
   await snapshotVocabulary(session.lang, database);

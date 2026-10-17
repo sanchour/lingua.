@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Cantus's charts are refreshed every Monday (scripts/cantus/charts.ts).
+  schedule:
+    - cron: '0 5 * * 1'
 
 permissions:
   contents: read
@@ -24,6 +27,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # Fresh charts on the weekly run; if the music services are down, the ones in the repository stay.
+      - if: github.event_name != 'push'
+        run: node scripts/cantus/charts.ts
+        continue-on-error: true
       - run: npm test
       - run: npm run build
         env:

@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { BookDetailsPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusFeedPage, SonusPage, SonusPlayerPage, StarterPage, StudyPage, ThesaurusPage, VisioPage, WatchPage } from './pages';
+import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusFeedPage, SongGamesPage, SongPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StudyPage, ThesaurusPage, VisioPage, WatchPage } from './pages';
 import { Root } from './Root';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -25,6 +25,10 @@ export const router = createBrowserRouter(
         { path: 'sonus/play/:mediaId', element: <SonusPlayerPage /> },
         { path: 'sonus/podcast/:feedId', element: <SonusFeedPage /> },
         { path: 'sonus/commute', element: <CommutePage /> },
+        { path: 'cantus', element: <CantusPage /> },
+        { path: 'cantus/song/:songId', element: <SongPage /> },
+        { path: 'cantus/song/:songId/games', element: <SongGamesPage /> },
+        { path: 'cantus/spotify', element: <SpotifyCallbackPage /> },
         { path: 'visio', element: <VisioPage /> },
         { path: 'visio/watch/:mediaId', element: <WatchPage /> },
         { path: 'ratio', element: <RatioPage /> },

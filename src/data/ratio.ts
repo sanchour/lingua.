@@ -39,7 +39,7 @@ export interface Overview {
     finishedThisYear: number;
     books: Array<{ id: string; title: string; lang: string; known: number }>;
   };
-  listening: { minutes: number; watchMinutes: number; finished: number; withTranscript: number; mined: number };
+  listening: { minutes: number; watchMinutes: number; finished: number; withTranscript: number; mined: number; songs: number; songMinutes: number };
   flashcards: {
     reviewsPerDay: Array<{ date: string; reviews: number }>;
     retention30: number | null;
@@ -250,7 +250,7 @@ export async function loadOverview(langs: string[], database: LinguaDB = db, now
     byDate.get(date)![activity] += minutes;
   };
   const byHour = Array.from({ length: 24 }, () => 0);
-  const kindOf = (s: ActivitySession): Activity => (s.type === 'read' || s.type === 'listen' || s.type === 'watch' || s.type === 'review' || s.type === 'ludus' || s.type === 'write' ? s.type : 'review');
+  const kindOf = (s: ActivitySession): Activity => (s.type === 'read' || s.type === 'listen' || s.type === 'watch' || s.type === 'review' || s.type === 'ludus' || s.type === 'write' ? s.type : s.type === 'sing' ? 'listen' : 'review');
   for (const s of sessions) {
     const minutes = s.activeMs / 60_000;
     add(localDateKey(s.startedAt), kindOf(s), minutes);
@@ -299,7 +299,10 @@ export async function loadOverview(langs: string[], database: LinguaDB = db, now
       watchMinutes: daily.reduce((n, d) => n + d.watchMs, 0) / 60_000,
       finished: progress.filter((p) => p.completed && mediaIds.has(p.mediaId)).length,
       withTranscript: [...listenedIds].filter((id) => transcribed.has(id)).length,
-      mined: notes.filter((n) => deckIds.has(n.deckId) && !n.deletedAt && (n.source === 'sonus' || n.source === 'visio')).length,
+      mined: notes.filter((n) => deckIds.has(n.deckId) && !n.deletedAt && (n.source === 'sonus' || n.source === 'visio' || n.source === 'cantus')).length,
+      // Cantus: songs sung along with (for at least half a minute), and the time with them.
+      songs: new Set(sessions.filter((s) => s.type === 'sing' && s.refId && s.activeMs >= 30_000).map((s) => s.refId!)).size,
+      songMinutes: daily.reduce((n, d) => n + (d.songMs ?? 0), 0) / 60_000,
     },
     flashcards: {
       reviewsPerDay,

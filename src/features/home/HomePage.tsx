@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { motion } from 'motion/react';
-import { ArrowRight, BookOpen, Check, ChevronRight, Clapperboard, Flame, Headphones, Layers, PenLine, Sparkles, Sprout, Trophy, X } from 'lucide-react';
+import { ArrowRight, BookOpen, Check, ChevronRight, Clapperboard, Flame, Headphones, Layers, Music2, PenLine, Sparkles, Sprout, Trophy, X } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
@@ -15,6 +15,7 @@ import { useAllProgress, useLibrary } from '@/data/library';
 import { useMediaList, usePlaybackMap } from '@/data/media';
 import { paceOf } from '@/data/ratio';
 import { patchSetting } from '@/data/settings';
+import { useSavedSongs } from '@/data/songs';
 import type { Enjoyment } from '@/data/settings';
 import { useToday } from '@/data/stats';
 import { useDueSummary } from '@/data/study';
@@ -24,6 +25,7 @@ import { spring } from '@/design/motion';
 import { localDateKey } from '@/lib/format';
 import { cx } from '@/lib/cx';
 import { BookCover } from '@/features/codex/library/BookCover';
+import { SongArt } from '@/features/cantus/SongArt';
 import { Artwork } from '@/features/sonus/library/Artwork';
 import { Poster } from '@/features/visio/library/Poster';
 import { studyMinutes, useHomeFacts } from './facts';
@@ -108,7 +110,8 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], 
   const videos = useMediaList(lang, 'watch');
   const playback = usePlaybackMap();
   const journal = useJournal(lang);
-  if (!due || !texts || !listening || !videos || !journal) return undefined;
+  const songs = useSavedSongs(lang);
+  if (!due || !texts || !listening || !videos || !journal || !songs) return undefined;
 
   const steps: Step[] = [];
   const cards = due.due + due.fresh;
@@ -173,6 +176,22 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], 
     });
   }
 
+  // A song for today: one of your songs, a different one each day.
+  if (songs.length) {
+    const byAge = [...songs].sort((a, b) => a.createdAt - b.createdAt);
+    const song = byAge[Math.floor(Date.now() / 86_400_000) % byAge.length];
+    const sungToday = Boolean(song.lastPlayedAt && localDateKey(song.lastPlayedAt) === localDateKey());
+    steps.push({
+      key: 'song',
+      to: `/cantus/song/${encodeURIComponent(song.id)}`,
+      icon: Music2,
+      tone: 'accent',
+      title: song.title,
+      detail: sungToday ? `Song for today · ${song.artist} · sing it once more` : `Song for today · ${song.artist}`,
+      art: <SongArt url={song.artworkUrl} title={song.title} className="w-10" rounded="rounded-lg" size={100} />,
+    });
+  }
+
   const wroteToday = journal.some((e) => e.date === localDateKey() && e.words > 0);
   if (!wroteToday) {
     const prompt = curatedPrompt(lang, level);
@@ -183,6 +202,9 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], 
   // Nothing started yet in a kind you enjoy: a way in.
   if (!episode && enjoys.includes('listening')) {
     steps.push({ key: 'find-listen', to: '/sonus', icon: Headphones, tone: 'sage', title: 'Find something to listen to', detail: 'Podcasts with a transcript that follows along' });
+  }
+  if (!songs.length && enjoys.includes('music')) {
+    steps.push({ key: 'find-song', to: '/cantus?tab=discover', icon: Music2, tone: 'accent', title: 'Find a song to learn', detail: 'Lyrics that light up as they’re sung, every word a tap away' });
   }
   if (!video && enjoys.includes('watching')) {
     steps.push({ key: 'find-watch', to: '/visio', icon: Clapperboard, tone: 'accent', title: 'Watch something', detail: 'A film or an episode with subtitles in both languages' });

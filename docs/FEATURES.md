@@ -158,3 +158,20 @@ Practise writing in the target language; get corrected, explained and graded.
   **Desktop:** the groups in a column, the open one beside it.
 - **Search settings** by name or everyday words ("dark", "font size", "key", "backup"); a result
   opens its page and the setting glows for a moment. On desktop, / focuses the search.
+
+## Cantus — learning through music (2.0-4)
+
+- **Find any song** in the language you're learning (Apple's catalogue; tap the artwork for a
+  30-second preview), or start from Discover: this week's most played songs sung in the language,
+  artists picked for learners (clear, medium or fast), and styles.
+- **The song page:** the lyrics (from LRCLIB) follow the music from YouTube (paste the song's link),
+  Spotify, or music playing anywhere (start the timer with the song). The current line is large
+  and in the song's colour, its words lighting up as they're sung; the English sits under each
+  line, shown, blurred or hidden. Every word works as in Codex. Tap a line's English or the space
+  around it to play from it, save it as a card, or copy it. The album art colours the page.
+- **Your songs:** save with the heart. Recently opened songs sit below; with your own Spotify app
+  (Ordo › Music explains it), your liked songs sung in the language too.
+- **Song games:** fill in the lyric, and put a verse's lines back in order. They count as Ludus.
+- **Everywhere else:** Home suggests a song for today; saved lines go to the "From Cantus" deck and
+  their cards play the line again (with a YouTube or Spotify link); lyrics open in Codex as a text;
+  Ratio counts songs and time with music; Iter marks the first song and every 10, 25, 50 and 100.

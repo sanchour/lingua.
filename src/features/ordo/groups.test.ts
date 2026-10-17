@@ -10,6 +10,7 @@ const SECTION_FILES: Record<string, string[]> = {
   study: ['sections/StudySection.tsx'],
   cards: ['sections/CardsSection.tsx', '../thesaurus/common/CardLookPanel.tsx'],
   listening: ['sections/ListeningSection.tsx'],
+  music: ['sections/MusicSection.tsx'],
   language: ['sections/LanguageSection.tsx'],
   ai: ['sections/AiSection.tsx'],
   storage: ['sections/StorageSection.tsx'],

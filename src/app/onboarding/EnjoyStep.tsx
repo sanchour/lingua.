@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { BookOpen, Clapperboard, Headphones, Layers, PenLine } from 'lucide-react';
+import { BookOpen, Clapperboard, Headphones, Layers, Music2, PenLine } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { Enjoyment, LearningReason } from '@/data/settings';
 import { spring } from '@/design/motion';
@@ -9,6 +9,7 @@ import { StepTitle } from './StepTitle';
 export const ENJOYMENTS: Array<{ id: Enjoyment; name: string; place: string; blurb: string; icon: LucideIcon }> = [
   { id: 'reading', name: 'Reading', place: 'Codex', blurb: 'Books, stories and articles, a tap from every meaning', icon: BookOpen },
   { id: 'listening', name: 'Listening', place: 'Sonus', blurb: 'Podcasts and audio with a transcript that follows along', icon: Headphones },
+  { id: 'music', name: 'Music', place: 'Cantus', blurb: 'Songs you love, with lyrics that light up as they’re sung', icon: Music2 },
   { id: 'watching', name: 'Watching', place: 'Visio', blurb: 'Films and shows with subtitles in both languages', icon: Clapperboard },
   { id: 'writing', name: 'Writing', place: 'Diarium', blurb: 'A few lines a day in your own journal', icon: PenLine },
   { id: 'cards', name: 'Flashcards & games', place: 'Thesaurus', blurb: 'Decks that come back at the right time, and Ludus lessons', icon: Layers },
@@ -21,6 +22,7 @@ export function enjoymentsFor(reasons: LearningReason[]): Enjoyment[] {
   for (const r of reasons) {
     if (r === 'books') add('reading');
     if (r === 'culture') add('watching');
+    if (r === 'culture' || r === 'fun') add('music');
     if (r === 'talk' || r === 'travel') add('listening');
     if (r === 'work') add('cards');
   }

@@ -48,6 +48,7 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   journeyEvents: { policy: 'lww', key: 'id' },
   studyLogs: { policy: 'lww', key: 'id' },
   goals: { policy: 'lww', key: 'id' },
+  songs: { policy: 'lww', key: 'id' },
 };
 
 const BACKED_UP = (Object.keys(BACKUP_POLICIES) as TableName[]).filter((t) => BACKUP_POLICIES[t].policy !== 'skip');

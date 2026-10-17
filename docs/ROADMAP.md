@@ -214,26 +214,26 @@ music raised to a room of its own, every language checked, and a full check at t
 - [x] Checked on a phone and on desktop, light and dark.
 
 ### 2.0-4 · Cantus: learning through music, a room of its own
-- [ ] **Search** any song in the language (Apple's free search: artwork and a preview). Lyrics come
+- [x] **Search** any song in the language (Apple's free search: artwork and a preview). Lyrics come
       from LRCLIB (free, open, often synced to the music).
-- [ ] **The song page:**
+- [x] **The song page:**
   - Lyrics light up line by line with the music: the Spotify player when you're signed in,
     Apple Music, or the preview.
   - Every word works as in Codex.
   - A translation under each line (AI or the free translators), shown, blurred or hidden.
   - Save lines and words.
-- [ ] **Your songs:** songs you save in Lingua, and, with your own Spotify app ID (a free developer
+- [x] **Your songs:** songs you save in Lingua, and, with your own Spotify app ID (a free developer
       app, explained step by step), your Spotify liked songs in that language.
-- [ ] **Discover:** artists, albums and styles per language, picked by hand, with charts where
+- [x] **Discover:** artists, albums and styles per language, picked by hand, with charts where
       available.
-- [ ] Lyrics can be opened in Codex as a text.
-- [ ] **A room of its own, not a tab:** Cantus sits beside Codex, Sonus and Visio in the sidebar
+- [x] Lyrics can be opened in Codex as a text.
+- [x] **A room of its own, not a tab:** Cantus sits beside Codex, Sonus and Visio in the sidebar
       and the tab bar, with its own icon and colour, and is part of the whole app:
   - Home suggests a song for today; "music" is one of the things you can enjoy in onboarding.
   - Words and lines saved from songs are cards that replay their bit of the song.
   - Ludus gets song exercises: fill in the lyric, put the lines in order.
-  - Ratio and Iter count songs and minutes; Mundus links to artists.
-- [ ] **Aesthetic:** the album art sets the page's colours; the lyric sheet scrolls with the song,
+  - Ratio and Iter count songs and minutes. (Mundus links to artists arrive with Mundus, 2.0-8.)
+- [x] **Aesthetic:** the album art sets the page's colours; the lyric sheet scrolls with the song,
       the current line large and clear; calm, simple controls that work one-handed on a phone.
 
 ### 2.0-5 · Twenty languages with their flags, every one well supported
@@ -274,6 +274,7 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
   - Buttons open them on the web, Spotify, YouTube, Goodreads, Amazon, Netflix, Max, Disney+ and others.
   - "Add to Codex/Sonus/Visio" where it fits.
   - Reached from Home and the sidebar.
+  - Its music links to the artists in Cantus (opening their songs there).
 - [ ] **Visio › Services:** choose the services you have (Netflix, Max, Disney+, Prime Video,
       Apple TV+, SkyShowtime, Viaplay, and free public ones such as RTVE Play, ARD, arte, NRK).
   - The picks show which of your services carry them.

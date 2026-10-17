@@ -35,6 +35,8 @@ export interface WordContext {
   blockIndex?: number;
   /** Found while listening or watching: the item and the line's clip. */
   mediaId?: string;
+  /** Heard in a song. */
+  songId?: string;
   startMs?: number;
   endMs?: number;
   source?: Note['source'];
@@ -96,7 +98,7 @@ export async function setWordState(lang: string, norm: string, state: WordState,
           term: ctx.surface?.toLocaleLowerCase(lang) ?? norm,
           meaning: existing?.gloss ?? ctx.gloss ?? '',
           lemma: ctx.lemma,
-          context: ctx.sentence ? { sentence: ctx.sentence, textId: ctx.textId, chapterIndex: ctx.chapterIndex, blockIndex: ctx.blockIndex, mediaId: ctx.mediaId, startMs: ctx.startMs, endMs: ctx.endMs } : undefined,
+          context: ctx.sentence ? { sentence: ctx.sentence, textId: ctx.textId, chapterIndex: ctx.chapterIndex, blockIndex: ctx.blockIndex, mediaId: ctx.mediaId, songId: ctx.songId, startMs: ctx.startMs, endMs: ctx.endMs } : undefined,
           tags: [],
           source: ctx.source ?? 'codex',
           wordId: id,

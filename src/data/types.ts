@@ -44,7 +44,7 @@ export interface Text extends Synced {
   id: string;
   lang: Lang;
   kind: 'book' | 'article' | 'transcript' | 'shelfItem';
-  source: 'epub' | 'pdf' | 'txt' | 'paste' | 'article' | 'goodreads' | 'sonus' | 'visio';
+  source: 'epub' | 'pdf' | 'txt' | 'paste' | 'article' | 'goodreads' | 'sonus' | 'visio' | 'cantus';
   title: string;
   author?: string;
   coverBlobId?: string;
@@ -219,7 +219,7 @@ export interface TranslationCacheRow {
 export interface LlmCacheRow {
   /** hash(kind + model + prompt) */
   id: string;
-  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine' | 'journalCheck' | 'journalPrompt';
+  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine' | 'journalCheck' | 'journalPrompt' | 'lyrics';
   model: string;
   response: unknown;
   createdAt: number;
@@ -251,7 +251,7 @@ export interface Deck extends Synced {
   name: string;
   description?: string;
   order: number;
-  kind: 'custom' | 'mined' | 'starterFrequency' | 'starterTheme' | 'apkg' | 'csv' | 'visio';
+  kind: 'custom' | 'mined' | 'starterFrequency' | 'starterTheme' | 'apkg' | 'csv' | 'visio' | 'cantus';
   starter?: { packId: string; rankFrom?: number; rankTo?: number; theme?: string; materialized: Bit };
   config: DeckConfig;
 }
@@ -274,13 +274,15 @@ export interface Note extends Synced {
     chapterIndex?: number;
     blockIndex?: number;
     mediaId?: string;
+    /** Heard in a song (Cantus): the song, and the line's time in it. */
+    songId?: string;
     startMs?: number;
     endMs?: number;
   };
   imageBlobId?: string;
   audioBlobId?: string;
   tags: string[];
-  source: 'manual' | 'codex' | 'sonus' | 'visio' | 'starter' | 'apkg' | 'csv';
+  source: 'manual' | 'codex' | 'sonus' | 'visio' | 'cantus' | 'starter' | 'apkg' | 'csv';
   wordId?: string;
   /** Unmapped Anki / CSV fields, preserved verbatim. */
   extra?: Record<string, string>;
@@ -415,12 +417,61 @@ export interface BlobRow {
   createdAt: number;
 }
 
+// ── Cantus ──────────────────────────────────────────────────────────────────
+
+export interface LyricLine {
+  /** When the line starts, for timed lyrics. */
+  startMs?: number;
+  /** Empty for a break between verses. */
+  text: string;
+}
+
+/**
+ * A song: found through Apple's catalogue (or Spotify), with its lyrics from LRCLIB. Songs you open
+ * are kept so they open instantly next time; `savedAt` puts one in Your songs.
+ */
+export interface Song extends Synced {
+  /** `${lang}:itunes:${id}`, `${lang}:spotify:${id}` or a random id. */
+  id: string;
+  lang: Lang;
+  title: string;
+  artist: string;
+  album?: string;
+  year?: number;
+  genre?: string;
+  artworkUrl?: string;
+  durationMs?: number;
+  itunesId?: number;
+  appleUrl?: string;
+  /** Apple's 30-second preview. */
+  previewUrl?: string;
+  spotifyId?: string;
+  youtubeId?: string;
+  lrclibId?: number;
+  /** Empty until lyrics are found (or when none exist). */
+  lines: LyricLine[];
+  /** Lyrics were looked for and none were found; or the song has no words. */
+  lyricsMissing?: Bit;
+  instrumental?: Bit;
+  /** An English line for each lyric line (same length), from the AI or the free translators. */
+  translation?: { lines: string[]; by: 'ai' | 'online' };
+  /** Colours taken from the artwork for the song's page. */
+  palette?: { base: string; deep: string; soft: string };
+  /** Moves the lyrics' timing against the music (ms; positive = lyrics later). */
+  offsetMs?: number;
+  savedAt?: number;
+  lastPlayedAt?: number;
+  /** The lyrics opened in Codex as a text. */
+  textId?: string;
+}
+
 // ── Ratio ───────────────────────────────────────────────────────────────────
 
 export interface ActivitySession {
   id: string;
   lang: Lang;
-  type: 'read' | 'listen' | 'watch' | 'review' | 'ludus' | 'write';
+  /** 'sing': time with a song in Cantus (counted as listening too). */
+  type: 'read' | 'listen' | 'watch' | 'review' | 'ludus' | 'write' | 'sing';
   refId?: string;
   startedAt: number;
   endedAt: number;
@@ -515,6 +566,7 @@ export type JourneyKind =
   | 'grade'
   | 'level'
   | 'deck'
+  | 'song'
   | 'manual';
 
 /** A moment on the journey: automatic milestones and the learner's own entries. */
@@ -565,6 +617,8 @@ export interface DailyStat {
   /** Diarium (added later, so older rows may lack them). */
   writeMs?: number;
   wordsWritten?: number;
+  /** Cantus (added later): time with songs, also counted in `listenMs`. */
+  songMs?: number;
   reviews: number;
   againCount: number;
   newCards: number;

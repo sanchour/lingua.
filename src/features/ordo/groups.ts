@@ -1,10 +1,10 @@
 // How Ordo is arranged: a few groups, each a page of one or more sections, and an index of every
 // setting so the search can take you straight to it.
 import type { LucideIcon } from 'lucide-react';
-import { BookOpenText, Database, GraduationCap, Headphones, Info, Languages, Palette, Sparkles } from 'lucide-react';
+import { BookOpenText, Database, GraduationCap, Headphones, Info, Languages, Music2, Palette, Sparkles } from 'lucide-react';
 import { searchKey } from '@/design/primitives';
 
-export type SectionId = 'appearance' | 'reading' | 'study' | 'cards' | 'listening' | 'language' | 'ai' | 'storage' | 'backup' | 'reset' | 'keyboard' | 'performance' | 'about';
+export type SectionId = 'appearance' | 'reading' | 'study' | 'cards' | 'listening' | 'music' | 'language' | 'ai' | 'storage' | 'backup' | 'reset' | 'keyboard' | 'performance' | 'about';
 
 export interface SettingsGroup {
   id: string;
@@ -20,6 +20,7 @@ export const GROUPS: SettingsGroup[] = [
   { id: 'reading', title: 'Reading', icon: BookOpenText, color: '#c98a6b', sections: ['reading'] },
   { id: 'study', title: 'Study and cards', icon: GraduationCap, color: '#7f9f7a', sections: ['study', 'cards'] },
   { id: 'listening', title: 'Listening', icon: Headphones, color: '#6f9cc0', sections: ['listening'] },
+  { id: 'music', title: 'Music', icon: Music2, color: '#b4587e', sections: ['music'] },
   { id: 'languages', title: 'Languages', icon: Languages, color: '#9d8fcb', sections: ['language'] },
   { id: 'look', title: 'Look and feel', icon: Palette, color: '#c9a650', sections: ['appearance'] },
   { id: 'ai', title: 'AI and translation', icon: Sparkles, color: '#cf8299', sections: ['ai'] },
@@ -30,7 +31,7 @@ export const GROUPS: SettingsGroup[] = [
 /** "2.0.0" reads as "2.0"; a patch release keeps its third number. */
 export const APP_VERSION = __APP_VERSION__.replace(/^(\d+\.\d+)\.0$/, '$1');
 
-export const LEARNING_GROUPS = ['reading', 'study', 'listening', 'languages'];
+export const LEARNING_GROUPS = ['reading', 'study', 'listening', 'music', 'languages'];
 
 export function groupOf(section: string): SettingsGroup | undefined {
   return GROUPS.find((g) => (g.sections as string[]).includes(section));
@@ -83,6 +84,9 @@ export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Model on this device', section: 'listening', also: 'whisper tiny base small offline' },
   { label: 'Download relay address', section: 'listening', also: 'proxy podcast download cors' },
 
+  { label: 'English under each line', section: 'music', also: 'cantus songs lyrics translation blur hide' },
+  { label: 'Spotify liked songs', section: 'music', also: 'spotify connect client id music cantus library' },
+
   { label: 'Level', find: 'Level in', section: 'language', also: 'a1 a2 b1 b2 c1 beginner' },
   { label: 'Daily goal', section: 'language', also: 'reviews minutes reading listening goal' },
   { label: 'I already speak', section: 'language', also: 'native language' },
@@ -115,6 +119,7 @@ const SECTION_TITLES: Record<SectionId, string> = {
   study: 'Study',
   cards: 'Flashcards',
   listening: 'Listening',
+  music: 'Music',
   language: 'Languages',
   ai: 'AI & translation',
   storage: 'Storage',

@@ -13,12 +13,12 @@ import { useUI } from '@/state/ui';
 import { DesktopShell } from './desktop/DesktopShell';
 import { TouchShell } from './touch/TouchShell';
 
-/** Routes that take the whole screen (no sidebar, no tab bar). On phones the Sonus and Visio players do too. */
+/** Routes that take the whole screen (no sidebar, no tab bar). On phones the Sonus and Visio players and a Cantus song do too. */
 const isImmersive = (pathname: string, wide: boolean) =>
   pathname.startsWith('/codex/read/') ||
   pathname.startsWith('/thesaurus/study/') ||
   pathname === '/sonus/commute' ||
-  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/visio/watch/')));
+  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/visio/watch/') || /^\/cantus\/song\/[^/]+$/.test(pathname)));
 
 /** On wide screens Ordo's groups open beside their list, so moving between them isn't a new page. */
 const pageKey = (pathname: string, wide: boolean) => (wide && /^\/ordo(?:\/(?!lab)[\w-]+)?\/?$/.test(pathname) ? '/ordo' : pathname);

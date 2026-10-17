@@ -354,3 +354,47 @@ Short records of choices that are not obvious from the code. Newest last.
   pages, so a renamed setting can't silently drop out of search.
 - **Old links still land.** `/ordo#ai`, `/ordo#reset` and the like redirect to the group that
   holds that section and scroll to it; links inside the app now point at the groups directly.
+
+## 2026-10-17 — Lingua 2.0-4: Cantus, learning through music
+
+- **A room of its own.** Cantus sits between Sonus and Visio in the sidebar and the tab bar (six
+  tabs now fit a phone) with its own warm rose, and is part of the rest of the app: Home's song for
+  today, "Music" in onboarding and in what you enjoy, saved lines as cards, song games counted as
+  Ludus, songs and minutes in Ratio, song milestones in Iter.
+- **Songs come from Apple's public catalogue** (no key, CORS allowed): artwork, a 30-second
+  preview, length and album, searched in the store of the language's main country. **Lyrics come
+  from LRCLIB**, free and open and often timed to the line. A lookup that fails (offline, busy) is
+  never taken for "no lyrics": the page offers to try again, and the lyrics can be searched under
+  another name or pasted.
+- **The music plays where it can, and the lyrics follow it.** Three clocks look the same to the
+  lyric sheet: YouTube's embedded player (the whole song for everyone; the learner pastes a link),
+  Spotify's (the whole song when signed in to Spotify in the browser), and a timer for music
+  playing anywhere else, Apple Music included, with a second back or ahead. Apple Music's own
+  player needs a developer token, so it is the timer's case. A song's timing can be nudged in
+  quarter seconds and is remembered. Apple's preview is only a taste: where it starts in the song
+  isn't known, so the lyrics don't follow it.
+- **The lyric sheet** is built like the reader (the same word spans, states, taps, bubbles and
+  word sheet), one block per line, with the English under each line shown, blurred until tapped,
+  or hidden. Lines around the current one step back; the current one is larger, and its words take
+  the song's colour as they are sung (paced at about 95 ms a letter, so a long instrumental gap
+  isn't read as slow singing). Following the song pauses for four seconds after you scroll, with
+  "Back to the song". Tapping the space or the English of a line offers From here, Save line and
+  Copy.
+- **Translations** read the whole song when there is an AI key (one request, the verse as context),
+  otherwise the free translators line by line; a chorus is translated once.
+- **The album art sets the page's colours**: the artwork is shrunk to 24×24 and the most colourful
+  common shade becomes the tint, mixed into the theme so Paper and Nocturne both stay calm.
+- **Spotify through the learner's own app**, as the roadmap asked: Spotify only lets apps read a
+  library through a registered app, so Ordo › Music explains making a free one (five steps, with
+  the exact redirect address to copy). Sign-in is PKCE, so there's no secret; the tokens are
+  device-only and never in backups. Liked songs are sorted by the language they're sung in: the
+  alphabet for Russian and Greek, otherwise the lyrics' little words (a small detector,
+  core/lang/detect.ts), remembered per track on the device.
+- **Charts are built with the app**, because Deezer allows no browser requests and Apple's chart
+  feed is too flaky to rely on live: scripts/cantus/charts.ts reads Apple's and Deezer's "most
+  played" for the language's countries, keeps the songs whose lyrics are in the language, and
+  writes public/cantus/charts.json. The deploy workflow refreshes it every Monday; if the services
+  are down, the file in the repository stays. A language with fewer than six charting songs in
+  its own language shows no chart row.
+- **Discover** has artists picked by hand per language, each with why they're good to learn with
+  and how clear they are to follow, and styles to explore.

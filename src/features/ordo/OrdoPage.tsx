@@ -25,6 +25,7 @@ import { CardsSection } from './sections/CardsSection';
 import { KeyboardSection } from './sections/KeyboardSection';
 import { LanguageSection } from './sections/LanguageSection';
 import { ListeningSection } from './sections/ListeningSection';
+import { MusicSection } from './sections/MusicSection';
 import { PerformanceSection } from './sections/PerformanceSection';
 import { ReadingSection } from './sections/ReadingSection';
 import { ResetSection } from './sections/ResetSection';
@@ -209,6 +210,8 @@ function SectionView({ id }: { id: SectionId }) {
       return <CardsSection look={settings.cards} lang={language.id} />;
     case 'listening':
       return <ListeningSection audio={settings.audio} />;
+    case 'music':
+      return <MusicSection cantus={settings.cantus} spotify={settings.spotify} />;
     case 'language':
       return <LanguageSection active={language} />;
     case 'ai':
@@ -281,6 +284,7 @@ function useSummaries(hidden: ReadonlySet<SectionId>): Summaries {
     reading: { text: `${getReaderFont(reader.font).label} · ${reader.sizePx} px · ${reader.mode === 'paged' ? 'page flip' : 'smooth scroll'}` },
     study: { text: `${study.newPerDay} new cards a day · remember ${Math.round(study.desiredRetention * 100)}%` },
     listening: { text: `${+audio.rate.toFixed(2)}× speed · transcripts ${audio.transcriber === 'groq' ? 'with Groq' : 'on this device'}` },
+    music: { text: `English ${{ show: 'shown', blur: 'blurred', hide: 'hidden' }[settings.cantus.translation]} · ${settings.spotify.refreshToken ? 'Spotify connected' : 'Spotify not connected'}` },
     languages: { text: names.join(', ') },
     look: { text: `${themeName} · ${motionName}` },
     ai: hasKey ? { text: `${llm.provider === 'groq' ? 'Groq' : 'Gemini'} key connected` } : { text: 'Add a free key for explanations', attention: true },

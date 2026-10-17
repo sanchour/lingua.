@@ -23,6 +23,7 @@ import type {
   LlmCacheRow,
   Media,
   Note,
+  Song,
   PlaybackProgress,
   ReadingProgress,
   ReviewLog,
@@ -94,7 +95,12 @@ export const SCHEMA_V6 = {
   goals: 'id, lang, updatedAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6 };
+/** Version 7 (Lingua 2.0): Cantus, songs with their lyrics. */
+export const SCHEMA_V7 = {
+  songs: 'id, lang, [lang+savedAt], lastPlayedAt, updatedAt',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -132,6 +138,7 @@ export type LinguaDB = Dexie & {
   journeyEvents: EntityTable<JourneyEvent, 'id'>;
   studyLogs: EntityTable<StudyLog, 'id'>;
   goals: EntityTable<Goal, 'id'>;
+  songs: EntityTable<Song, 'id'>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -142,6 +149,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(4).stores(SCHEMA_V4);
   db.version(5).stores(SCHEMA_V5);
   db.version(6).stores(SCHEMA_V6);
+  db.version(7).stores(SCHEMA_V7);
   return db;
 }
 

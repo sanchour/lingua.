@@ -129,3 +129,20 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
       glows briefly.
 - [ ] A missing AI key's "Open Ordo" button lands on AI and translation.
 - [ ] Everything fits the width in Paper and Nocturne; nothing scrolls sideways.
+
+## Lingua 2.0-4: Cantus
+
+- [ ] The tab bar has six tabs and every label fits; Cantus is rose when chosen.
+- [ ] Cantus › search "Natalia Lafourcade": tap the artwork for the preview; tap a song: it opens
+      full screen with the lyrics and the album's colour.
+- [ ] Start, then − and +: the current line moves with the timer and stays a little above the
+      middle; scroll away and "Back to the song" appears.
+- [ ] Translate every line; switch English / Blurred / Hidden; a blurred line clears when tapped.
+- [ ] Tap a word: its bubble. Tap a line's English: From here · Save line · Copy. A saved line
+      shows a mark and a card in "From Cantus".
+- [ ] Paste a YouTube link for the song (⋯ › Add a link): the video plays and the lyrics follow;
+      the card of a saved line plays its line.
+- [ ] Song games: fill in the lyric, put lines in order, the score at the end.
+- [ ] Ordo › Music: the Spotify steps; with your own Client ID, Connect returns to Cantus with your
+      liked songs in the language.
+- [ ] Home shows a song for today once a song is saved.

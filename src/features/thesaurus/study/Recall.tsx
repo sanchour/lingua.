@@ -126,7 +126,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
     if (!note) return;
     setLookup({
       norm: normalizeWord(note.term, lang),
-      context: { surface: note.term, sentence: note.context?.sentence, gloss: note.meaning, lemma: note.lemma, source: note.source === 'visio' || note.source === 'sonus' ? note.source : undefined },
+      context: { surface: note.term, sentence: note.context?.sentence, gloss: note.meaning, lemma: note.lemma, source: note.source === 'visio' || note.source === 'sonus' || note.source === 'cantus' ? note.source : undefined },
     });
   }, [note, lang]);
   const press = useRef<{ timer: number; x: number; y: number; held: boolean } | null>(null);

@@ -89,6 +89,19 @@ export async function checkMilestones(lang: string, database: LinguaDB = db, now
     found.push({ id: `${lang}:grade:${best.review!.scores.overall}`, lang, kind: 'grade', at: best.review!.reviewedAt, title: `Best journal grade: ${best.review!.scores.overall}`, detail: best.review!.cefr ? `Reads like ${best.review!.cefr}` : undefined, value: best.review!.scores.overall });
   }
 
+  // Songs: the first one sung along with, then every milestone of different songs.
+  const sung = sessions.filter((s) => s.type === 'sing' && s.refId && s.activeMs >= 30_000).sort((a, b) => a.endedAt - b.endedAt);
+  const firstAt = new Map<string, number>();
+  for (const s of sung) if (!firstAt.has(s.refId!)) firstAt.set(s.refId!, s.endedAt);
+  const order = [...firstAt].sort((a, b) => a[1] - b[1]);
+  if (order.length) {
+    const first = await database.songs.get(order[0][0]);
+    found.push({ id: `${lang}:song:first`, lang, kind: 'song', at: order[0][1], title: first ? `First song: ${first.title}` : 'First song sung along with', detail: first?.artist });
+  }
+  for (const n of [10, 25, 50, 100]) {
+    if (order.length >= n) found.push({ id: `${lang}:song:${n}`, lang, kind: 'song', at: order[n - 1][1], title: `${n} songs in ${name}`, value: n });
+  }
+
   // Decks learned: every card mature (at least 20 cards).
   for (const deck of decks.filter((d) => !d.deletedAt)) {
     const cards = await database.cards.where('[deckId+state]').between([deck.id, 0], [deck.id, 3], true, true).toArray();

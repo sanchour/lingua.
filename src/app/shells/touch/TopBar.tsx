@@ -15,6 +15,7 @@ const BACK_TO: Record<string, string> = {
   'codex/diarium': '/codex?tab=diarium',
   'thesaurus/ready': '/thesaurus?tab=discover',
   'ordo/lab': '/ordo/about',
+  'cantus/spotify': '/cantus',
 };
 
 export function TopBar() {
@@ -35,7 +36,9 @@ export function TopBar() {
 
   const segments = pathname.split('/').filter(Boolean);
   // Sub-pages go back to their section (e.g. /codex/book/:id → /codex), or to the tab they came from.
-  const parent = segments.length > 1 ? (BACK_TO[`${segments[0]}/${segments[1]}`] ?? `/${segments[0]}`) : null;
+  // A song's games go back to the song.
+  const songPage = segments[0] === 'cantus' && segments[1] === 'song' && segments.length > 3 ? `/${segments.slice(0, 3).join('/')}` : null;
+  const parent = segments.length > 1 ? (songPage ?? BACK_TO[`${segments[0]}/${segments[1]}`] ?? `/${segments[0]}`) : null;
 
   return (
     <header ref={ref} className="no-callout sticky top-0 z-30 pt-safe">

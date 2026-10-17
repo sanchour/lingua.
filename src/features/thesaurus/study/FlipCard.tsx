@@ -9,6 +9,7 @@ import { cx } from '@/lib/cx';
 import { cardLookProps } from '../common/cardLook';
 import type { CardLook } from '../common/cardLook';
 import { ClipPlayer, useClip } from '../common/Clip';
+import { SongClip } from '../common/SongClip';
 import { articleFor, genderName, posName, splitAt } from '../common/words';
 
 /** The flip: a soft 3D turn on a spring. Only transform animates (docs/PERFORMANCE.md). */
@@ -99,7 +100,7 @@ function Sentence({ note, lang }: { note: Note; lang: string }) {
       {ex?.translation && <p className="mt-1 text-[14px] text-ink-soft italic">{ex.translation}</p>}
       {!ex && note.context && (
         <p className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-ink-faint">
-          <BookOpen size={13} aria-hidden /> {note.source === 'visio' ? 'Heard in Visio' : note.source === 'sonus' ? 'Heard in Sonus' : 'From your reading'}
+          <BookOpen size={13} aria-hidden /> {note.source === 'visio' ? 'Heard in Visio' : note.source === 'sonus' ? 'Heard in Sonus' : note.source === 'cantus' ? 'Sung in a song' : 'From your reading'}
         </p>
       )}
     </div>
@@ -182,6 +183,7 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName }: 
               </p>
             )}
             <Sentence note={note} lang={lang} />
+            {note.context?.songId && <SongClip note={note} />}
             {clip?.kind === 'video' && (
               <div className={cx('mx-auto w-full', line ? 'mt-5 max-w-sm' : 'mt-3 max-w-xs')}>
                 <ClipPlayer clip={clip} large={line} />

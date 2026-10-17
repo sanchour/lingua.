@@ -9,6 +9,8 @@ const KIND: Record<string, Enjoyment> = {
   find: 'reading',
   listen: 'listening',
   'find-listen': 'listening',
+  song: 'music',
+  'find-song': 'music',
   watch: 'watching',
   'find-watch': 'watching',
   write: 'writing',

@@ -24,7 +24,7 @@ export type MotionPref = 'system' | 'reduced' | 'full';
 /** Why someone learns, from onboarding (kept for later suggestions). */
 export type LearningReason = 'travel' | 'books' | 'talk' | 'family' | 'work' | 'culture' | 'fun';
 /** The kinds of practice someone enjoys most, in their order: Home lists these first. */
-export type Enjoyment = 'reading' | 'listening' | 'watching' | 'writing' | 'cards';
+export type Enjoyment = 'reading' | 'listening' | 'music' | 'watching' | 'writing' | 'cards';
 
 export interface Settings {
   theme: ThemePref;
@@ -73,6 +73,13 @@ export interface Settings {
   };
   /** Visio's player. */
   visio: { native: 'show' | 'blur' | 'hide'; autoPause: boolean; subtitleScale: number };
+  /** Cantus: how a song's lines are translated underneath, and whether its page follows the song. */
+  cantus: { translation: 'show' | 'blur' | 'hide' };
+  /**
+   * Device-only: the learner's own Spotify app (a free developer app) and its sign-in, for liked
+   * songs and finding a song on Spotify. Never in backups.
+   */
+  spotify: { clientId: string; accessToken: string; refreshToken: string; expiresAt: number; user: string };
   /** Device-only. */
   ui: {
     motion: MotionPref;
@@ -114,12 +121,14 @@ export const DEFAULT_SETTINGS: Settings = {
   apiKeys: { groq: '', gemini: '' },
   audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 2, repeatGapMs: 1200, whisperModel: 'whisper-large-v3-turbo', downloadProxy: '', transcriber: 'groq', deviceModel: 'base' },
   visio: { native: 'blur', autoPause: false, subtitleScale: 1 },
+  cantus: { translation: 'show' },
+  spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
   ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null },
 };
 
 /** Settings that describe this device rather than the learner; excluded from backup merges. */
-export const DEVICE_LOCAL_SETTINGS: ReadonlySet<string> = new Set<SettingKey>(['apiKeys', 'ui', 'meta']);
+export const DEVICE_LOCAL_SETTINGS: ReadonlySet<string> = new Set<SettingKey>(['apiKeys', 'spotify', 'ui', 'meta']);
 
 function mergeValue<K extends SettingKey>(key: K, stored: unknown): Settings[K] {
   const fallback = DEFAULT_SETTINGS[key];

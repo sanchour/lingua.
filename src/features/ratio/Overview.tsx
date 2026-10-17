@@ -262,11 +262,13 @@ function Dashboard({ data, summaries, single }: { data: OverviewData; summaries:
 
         <div className="space-y-5">
           {/* Listening */}
-          <Panel title="Listening and watching" icon={Headphones}>
-            <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <Panel title="Listening, music and watching" icon={Headphones}>
+            <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               <Stat value={hours(l.minutes)} label="Listened" />
               <Stat value={l.finished} label="Finished" />
               <Stat value={l.withTranscript} label="Read along" />
+              <Stat value={l.songs} label={l.songs === 1 ? 'Song sung' : 'Songs sung'} />
+              <Stat value={hours(l.songMinutes)} label="With music" />
               <Stat value={l.mined} label="Words saved" />
             </dl>
           </Panel>

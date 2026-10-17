@@ -84,7 +84,7 @@ function SidebarLink({ section, collapsed, index }: { section: Section; collapse
             {isActive && (
               <motion.span layoutId="sidebar-active" className="absolute inset-0 rounded-xl bg-raised shadow-elev-1" transition={spring.snappy} />
             )}
-            <Icon size={20} strokeWidth={isActive ? 2.2 : 1.9} className={cx('relative shrink-0', isActive && 'text-accent-text')} aria-hidden />
+            <Icon size={20} strokeWidth={isActive ? 2.2 : 1.9} className={cx('relative shrink-0', isActive && (section.tint ? 'text-[var(--cantus-text)]' : 'text-accent-text'))} aria-hidden />
             <motion.span
               className="relative min-w-0 flex-1 text-[15px] font-semibold whitespace-nowrap"
               animate={{ opacity: collapsed ? 0 : 1 }}
