@@ -1,6 +1,8 @@
 // Source data for the offline language packs. Run with Node 24 (native TypeScript):
-//   node scripts/lang-data/fetch.ts      → downloads into scripts/.cache (git-ignored)
-//   node scripts/lang-data/build.ts ru   → writes public/packs/ru.v1.json.gz
+//   node scripts/lang-data/fetch.ts         → downloads into scripts/.cache (git-ignored, about 2 GB)
+//   node scripts/lang-data/translations.ts  → scripts/.cache/en-translations.json
+//   node scripts/lang-data/themes.ts        → scripts/.cache/themes.json
+//   node scripts/lang-data/build.ts ru      → writes public/packs/ru.v1.json.gz
 
 export interface PackSource {
   code: string;
@@ -12,6 +14,12 @@ export interface PackSource {
   frequencyYear?: 2016 | 2018;
   /** Leipzig Corpora Collection word list (CC BY), e.g. `lat_wikipedia_2021_100K`. */
   leipzig?: string;
+  /**
+   * OPUS OpenSubtitles 2018 monolingual corpus code, for languages whose FrequencyWords list doesn't
+   * match how the reader splits words (Japanese is split into morphemes; Mandarin has no spaces):
+   * their words are counted again from the subtitles themselves.
+   */
+  opus?: string;
 }
 
 export const PACK_SOURCES: PackSource[] = [
@@ -27,11 +35,11 @@ export const PACK_SOURCES: PackSource[] = [
   { code: 'hu', kaikki: 'Hungarian', frequency: 'hu' },
   // Lingua 2.0: ten more.
   { code: 'ar', kaikki: 'Arabic', frequency: 'ar' },
-  { code: 'zh', kaikki: 'Chinese', frequency: 'zh_cn' },
+  { code: 'zh', kaikki: 'Chinese', frequency: 'zh_cn', opus: 'zh_cn' },
   { code: 'nl', kaikki: 'Dutch', frequency: 'nl' },
   { code: 'nb', kaikki: 'Norwegian Bokmål', frequency: 'no' },
   { code: 'tr', kaikki: 'Turkish', frequency: 'tr' },
-  { code: 'ja', kaikki: 'Japanese', frequency: 'ja', frequencyYear: 2016 },
+  { code: 'ja', kaikki: 'Japanese', frequency: 'ja', frequencyYear: 2016, opus: 'ja' },
   { code: 'ko', kaikki: 'Korean', frequency: 'ko' },
   { code: 'la', kaikki: 'Latin', frequency: 'la', leipzig: 'lat_wikipedia_2021_100K' },
   { code: 'sw', kaikki: 'Swahili', frequency: 'sw', leipzig: 'swa_wikipedia_2021_100K' },
@@ -52,3 +60,5 @@ export const frequencyUrl = (s: PackSource) =>
 /** A Leipzig corpus is downloaded whole; its word list becomes the frequency file. */
 export const leipzigFile = (s: PackSource) => new URL(`leipzig-${s.code}.tar.gz`, CACHE_DIR);
 export const frequencyFile = (s: PackSource) => new URL(`freq-${s.code}.txt`, CACHE_DIR);
+export const opusUrl = (s: PackSource) => `https://object.pouta.csc.fi/OPUS-OpenSubtitles/v2018/mono/${s.opus}.txt.gz`;
+export const opusFile = (s: PackSource) => new URL(`opus-${s.opus}.txt.gz`, CACHE_DIR);

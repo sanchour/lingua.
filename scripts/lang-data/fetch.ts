@@ -5,7 +5,7 @@ import { createWriteStream, existsSync, mkdirSync, readdirSync, readFileSync, re
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { fileURLToPath } from 'node:url';
-import { CACHE_DIR, frequencyFile, frequencyUrl, kaikkiFile, kaikkiUrl, leipzigFile, PACK_SOURCES } from './sources.ts';
+import { CACHE_DIR, frequencyFile, frequencyUrl, kaikkiFile, kaikkiUrl, leipzigFile, opusFile, opusUrl, PACK_SOURCES } from './sources.ts';
 import type { PackSource } from './sources.ts';
 
 /** Big downloads sometimes drop half way: try again a few times before giving up. */
@@ -95,6 +95,8 @@ for (const s of sources) {
     await download(frequencyUrl(s), frequencyFile(s));
   }
 }
+// Subtitle corpora to count Japanese and Mandarin words from (35 and 173 MB).
+for (const s of sources) if (s.opus) await download(opusUrl(s), opusFile(s));
 const order = ['sw', 'id', 'nb', 'el', 'ko', 'nl', 'sv', 'tr', 'ja', 'ar', 'hu', 'pt', 'fr', 'it', 'ru', 'es', 'de', 'la', 'zh', 'en'];
 for (const s of [...sources].sort((a, b) => order.indexOf(a.code) - order.indexOf(b.code))) {
   await download(kaikkiUrl(s), kaikkiFile(s));
