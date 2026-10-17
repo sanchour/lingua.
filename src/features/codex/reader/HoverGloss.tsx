@@ -5,8 +5,6 @@ import type { WordEngine } from './engine';
 import { wordAt as findWord } from './hit';
 import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 
-const STATE_LABEL = ['', 'Known', 'Learning'] as const;
-
 interface HoverGlossProps {
   rootRef: RefObject<HTMLElement | null>;
   engine: WordEngine | null;
@@ -18,6 +16,8 @@ interface HoverGlossProps {
 const GRACE_MS = 120;
 /** A word missing from the offline dictionary is looked up online once the mouse rests this long. */
 const FETCH_DELAY_MS = 70;
+/** Resting this long on a word asks the AI for its sentence's meanings (when that's switched on). */
+const CONTEXT_DELAY_MS = 300;
 
 /**
  * Desktop hover translation. One always-mounted element, positioned with a transform and filled
@@ -32,7 +32,6 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
   const portalRoot = usePortalRoot();
   const tipRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
-  const stateRef = useRef<HTMLSpanElement>(null);
   const engineRef = useRef(engine);
   const syncRef = useRef<() => void>(() => {});
 
@@ -45,13 +44,13 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
   useEffect(() => {
     const tip = tipRef.current;
     const label = textRef.current;
-    const badge = stateRef.current;
-    if (!tip || !label || !badge) return;
+    if (!tip || !label) return;
     // The text element is replaced on every chapter change, so it is looked up on each use.
     const inText = (el: HTMLElement | null | undefined): HTMLElement | null => (el && rootRef.current?.contains(el) ? el : null);
     let current: HTMLElement | null = null;
     let hideTimer = 0;
     let fetchTimer = 0;
+    let contextTimer = 0;
     let frame = 0;
     // Last mouse position in client coordinates (-1 = outside the window or not a mouse).
     let x = -1;
@@ -71,15 +70,13 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
       const engine = engineRef.current;
       if (!engine) return;
       window.clearTimeout(fetchTimer);
+      window.clearTimeout(contextTimer);
       current = el;
       hoveredRef.current = el;
       const norm = el.dataset.n!;
-      const gloss = engine.gloss(norm);
+      const gloss = engine.glossAt(el);
+      contextTimer = window.setTimeout(() => void engine.requestContext(el, resync), CONTEXT_DELAY_MS);
       label.textContent = gloss?.text ?? '…';
-      // The word's state, so a click visibly lands: nothing for Unseen, Learning or Known.
-      const state = engine.state(norm);
-      badge.textContent = STATE_LABEL[state];
-      badge.dataset.s = String(state);
       tip.dataset.pending = gloss ? '0' : '1';
       place(el);
       tip.dataset.visible = '1';
@@ -97,6 +94,7 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
 
     const hide = () => {
       window.clearTimeout(fetchTimer);
+      window.clearTimeout(contextTimer);
       current = null;
       hoveredRef.current = null;
       tip.dataset.visible = '0';
@@ -124,6 +122,11 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === 'touch') {
         x = -1;
+        return;
+      }
+      // Dragging across words chooses a phrase; its own bubble takes over.
+      if (e.buttons & 1) {
+        if (current) hide();
         return;
       }
       x = e.clientX;
@@ -171,7 +174,6 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
   return createPortal(
     <div ref={tipRef} className="reader-tip" role="tooltip" data-visible="0">
       <span ref={textRef} className="reader-tip-text" />
-      <span ref={stateRef} className="reader-tip-state" />
     </div>,
     portalRoot,
   );

@@ -15,6 +15,7 @@ import { useAllProgress, useLibrary } from '@/data/library';
 import { useMediaList, usePlaybackMap } from '@/data/media';
 import { paceOf } from '@/data/ratio';
 import { patchSetting } from '@/data/settings';
+import type { Enjoyment } from '@/data/settings';
 import { useToday } from '@/data/stats';
 import { useDueSummary } from '@/data/study';
 import { useVocabularyCounts } from '@/data/words';
@@ -28,6 +29,7 @@ import { Poster } from '@/features/visio/library/Poster';
 import { studyMinutes, useHomeFacts } from './facts';
 import type { HomeFacts } from './facts';
 import { GoalRing } from './GoalRing';
+import { orderSteps } from './order';
 
 function greeting(hour: number): string {
   if (hour >= 5 && hour < 12) return 'Good morning';
@@ -62,7 +64,7 @@ export default function HomePage() {
       <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
         <div className="grid min-w-0 grid-cols-1 gap-5">
           <motion.div {...enter(0)}>
-            <TodayPanel lang={language.id} level={language.level} goal={language.dailyGoal.readMinutes} />
+            <TodayPanel lang={language.id} level={language.level} goal={language.dailyGoal.readMinutes} enjoys={settings.learner.enjoys} />
           </motion.div>
           {showSteps && (
             <motion.div {...enter(1)}>
@@ -98,7 +100,7 @@ interface Step {
   art?: ReactNode;
 }
 
-function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1]): Step[] | undefined {
+function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], enjoys: Enjoyment[]): Step[] | undefined {
   const due = useDueSummary(lang);
   const texts = useLibrary(lang);
   const progress = useAllProgress();
@@ -178,7 +180,14 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1]):
   }
 
   if (!book) steps.push({ key: 'find', to: '/codex', icon: Sparkles, tone: 'ink', title: 'Find something to read', detail: 'Graded stories, articles, or your own books' });
-  return steps.slice(0, 4);
+  // Nothing started yet in a kind you enjoy: a way in.
+  if (!episode && enjoys.includes('listening')) {
+    steps.push({ key: 'find-listen', to: '/sonus', icon: Headphones, tone: 'sage', title: 'Find something to listen to', detail: 'Podcasts with a transcript that follows along' });
+  }
+  if (!video && enjoys.includes('watching')) {
+    steps.push({ key: 'find-watch', to: '/visio', icon: Clapperboard, tone: 'accent', title: 'Watch something', detail: 'A film or an episode with subtitles in both languages' });
+  }
+  return orderSteps(steps, enjoys).slice(0, 4);
 }
 
 const TONE: Record<Step['tone'], string> = {
@@ -187,9 +196,9 @@ const TONE: Record<Step['tone'], string> = {
   ink: 'bg-sunken text-ink-soft',
 };
 
-function TodayPanel({ lang, level, goal }: { lang: string; level: Parameters<typeof curatedPrompt>[1]; goal: number }) {
+function TodayPanel({ lang, level, goal, enjoys }: { lang: string; level: Parameters<typeof curatedPrompt>[1]; goal: number; enjoys: Enjoyment[] }) {
   const today = useToday(lang);
-  const steps = useNextSteps(lang, level);
+  const steps = useNextSteps(lang, level, enjoys);
   const minutes = studyMinutes(today);
   const left = Math.max(0, Math.ceil(goal - minutes));
   const min = (ms: number | undefined, what: string) => (ms && ms >= 60_000 ? `${Math.round(ms / 60_000)} min ${what}` : null);
@@ -226,7 +235,7 @@ function TodayPanel({ lang, level, goal }: { lang: string; level: Parameters<typ
                   </span>
                 )}
                 <span className="min-w-0 flex-1">
-                  <span lang={s.key === 'review' || s.key === 'write' || s.key === 'find' ? undefined : lang} className="block truncate text-[15px] font-semibold">
+                  <span lang={s.key === 'review' || s.key === 'write' || s.key.startsWith('find') ? undefined : lang} className="block truncate text-[15px] font-semibold">
                     {s.title}
                   </span>
                   <span className="block truncate text-[13px] text-ink-soft">{s.detail}</span>

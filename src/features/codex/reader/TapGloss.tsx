@@ -19,7 +19,7 @@ interface TapGlossProps {
 export function TapGloss({ el, engine, onClose, onOpen }: TapGlossProps) {
   const portalRoot = usePortalRoot();
   const norm = el.dataset.n!;
-  const [gloss, setGloss] = useState(() => engine.gloss(norm)?.text ?? null);
+  const [gloss, setGloss] = useState(() => engine.glossAt(el)?.text ?? null);
   const [state, setState] = useState<WordState>(() => engine.state(norm));
   const [pos, setPos] = useState<{ x: number; y: number; below: boolean } | null>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -28,6 +28,15 @@ export function TapGloss({ el, engine, onClose, onOpen }: TapGlossProps) {
     el.classList.add('is-active');
     return () => el.classList.remove('is-active');
   }, [el]);
+
+  // The meaning in this sentence, when the AI reads it (switched on, with a key).
+  useEffect(() => {
+    let alive = true;
+    void engine.requestContext(el, () => alive && setGloss(engine.glossAt(el)?.text ?? null));
+    return () => {
+      alive = false;
+    };
+  }, [engine, el]);
 
   useEffect(() => {
     if (gloss) return;

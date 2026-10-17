@@ -1,11 +1,14 @@
 import { BookCheck, Download, Languages, Plus } from 'lucide-react';
+import { ENJOYMENTS } from '@/app/onboarding/EnjoyStep';
 import { getLanguage, LANGUAGES } from '@/core/lang/languages';
 import { LEVELS } from '@/core/lang/levels';
 import type { Level } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
 import { startAnotherLanguage, switchLanguage, updateLanguage, useLanguages } from '@/data/languages';
+import { setSetting, useSettings } from '@/data/settings';
 import type { LanguageProfile } from '@/data/types';
 import { Badge, Button, Select } from '@/design/primitives';
+import { cx } from '@/lib/cx';
 import { formatBytes } from '@/lib/format';
 import { installPack, useInstalledPacks, usePackJobs } from '@/services/packs/packs';
 import { toast } from '@/state/ui';
@@ -17,6 +20,10 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
   const languages = useLanguages() ?? [];
   const packs = useInstalledPacks() ?? [];
   const jobs = usePackJobs((s) => s.jobs);
+  const settings = useSettings();
+  const learner = settings?.learner ?? { reasons: [], enjoys: [] };
+  const toggleEnjoy = (id: (typeof ENJOYMENTS)[number]['id']) =>
+    void setSetting('learner', { ...learner, enjoys: learner.enjoys.includes(id) ? learner.enjoys.filter((e) => e !== id) : [...learner.enjoys, id] });
   const target = getLanguage(active.id);
 
   return (
@@ -97,6 +104,35 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
       <Button variant="ghost" icon={Plus} className="mt-3" onClick={() => void startAnotherLanguage()}>
         Learn another language
       </Button>
+
+      <div className="mt-6">
+        <p className="text-[14px] font-semibold">What you enjoy most</p>
+        <p className="mt-0.5 mb-3 text-[13px] text-ink-soft">Home suggests these first, in the order you pick them.</p>
+        <div role="group" aria-label="What you enjoy most" className="flex flex-wrap gap-2">
+          {ENJOYMENTS.map((e) => {
+            const rank = learner.enjoys.indexOf(e.id);
+            return (
+              <button
+                key={e.id}
+                type="button"
+                aria-pressed={rank >= 0}
+                onClick={() => toggleEnjoy(e.id)}
+                className={cx(
+                  'no-callout inline-flex h-10 items-center gap-2 rounded-full border px-3.5 text-[14px] font-semibold transition-[transform,background-color,border-color] duration-150 active:scale-[0.97]',
+                  rank >= 0 ? 'border-accent bg-accent-soft text-accent-text' : 'border-line bg-raised text-ink hover:border-line-strong',
+                )}
+              >
+                {rank >= 0 ? (
+                  <span className="grid size-5 place-items-center rounded-full bg-accent-fill text-[11px] font-bold text-on-accent tabular-nums">{rank + 1}</span>
+                ) : (
+                  <e.icon size={16} aria-hidden />
+                )}
+                {e.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </SettingsSection>
   );
 }

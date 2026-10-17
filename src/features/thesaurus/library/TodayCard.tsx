@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
-import { Gamepad2, Layers, Sparkles } from 'lucide-react';
+import { Layers, Puzzle, Sparkles } from 'lucide-react';
 import { useToday } from '@/data/stats';
 import { useDueSummary } from '@/data/study';
 import { buttonClasses, Card } from '@/design/primitives';
@@ -56,7 +56,7 @@ export function TodayCard({ lang, hasDecks, forecast, onDiscover }: { lang: stri
         </div>
         <div className="flex gap-2">
           <Link to="/thesaurus/study/all?mode=ludus" className={buttonClasses(waiting > 0 ? 'secondary' : 'primary', 'md')}>
-            <Gamepad2 size={17} aria-hidden />
+            <Puzzle size={17} aria-hidden />
             Ludus
           </Link>
           {waiting > 0 && (

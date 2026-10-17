@@ -14,7 +14,6 @@ import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { toast } from '@/state/ui';
 import { THEME_ICONS } from './common/DeckIcon';
-import { SpeakButton } from './common/SpeakButton';
 import { articleFor, posName } from './common/words';
 
 const PAGE = 120;
@@ -178,7 +177,6 @@ function Booklet({ spec }: { spec: StarterSpec }) {
                       <Layers size={13} aria-label="In your decks" />
                     </span>
                   ) : null}
-                  <SpeakButton text={item.term} lang={lang} size={16} className="size-9 opacity-60 group-hover:opacity-100" label={`Hear ${item.term}`} />
                 </motion.li>
               );
             })}

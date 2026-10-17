@@ -16,7 +16,7 @@ export interface LudusItem {
   isNew: boolean;
 }
 
-export type ExerciseKind = 'choose-meaning' | 'choose-term' | 'match' | 'cloze' | 'build' | 'type' | 'listen' | 'listen-build' | 'translate' | 'article' | 'speak';
+export type ExerciseKind = 'choose-meaning' | 'choose-term' | 'match' | 'cloze' | 'build' | 'type' | 'translate' | 'article' | 'speak';
 
 interface Base {
   /** Unique within a session. */
@@ -26,13 +26,10 @@ export type Exercise = Base &
   (
     | { kind: 'choose-meaning'; item: LudusItem; options: string[]; answer: number }
     | { kind: 'choose-term'; item: LudusItem; options: string[]; answer: number }
-    | { kind: 'listen'; item: LudusItem; options: string[]; answer: number }
     | { kind: 'cloze'; item: LudusItem; before: string; gap: string; after: string; options: string[]; answer: number }
     | { kind: 'build'; item: LudusItem; translation: string; tiles: string[]; answer: string[] }
     | { kind: 'type'; item: LudusItem }
     | { kind: 'match'; items: LudusItem[] }
-    /** Hear the sentence, build it from the word bank. */
-    | { kind: 'listen-build'; item: LudusItem; tiles: string[]; answer: string[] }
     /** Read the sentence, build its translation from English tiles. */
     | { kind: 'translate'; item: LudusItem; tiles: string[]; answer: string[] }
     /** der, die or das: the noun's article. */
@@ -44,12 +41,10 @@ export type Exercise = Base &
 export const MODE_OF: Record<ExerciseKind, ReviewMode> = {
   'choose-meaning': 'mcq',
   'choose-term': 'mcq',
-  listen: 'listen',
   cloze: 'cloze',
   build: 'build',
   type: 'type',
   match: 'match',
-  'listen-build': 'listen',
   translate: 'build',
   article: 'mcq',
   speak: 'speak',
@@ -58,12 +53,10 @@ export const MODE_OF: Record<ExerciseKind, ReviewMode> = {
 export const EXERCISE_LABEL: Record<ExerciseKind, string> = {
   'choose-meaning': 'What does this mean?',
   'choose-term': 'Choose the right word',
-  listen: 'What did you hear?',
   cloze: 'Fill in the gap',
   build: 'Build the sentence',
   type: 'Type the word',
   match: 'Match the pairs',
-  'listen-build': 'Tap what you hear',
   translate: 'Translate the sentence',
   article: 'Which article?',
   speak: 'Say it out loud',
@@ -126,10 +119,6 @@ const canBuild = (i: LudusItem) => {
   const n = i.example?.translation ? sentenceTiles(i.example.text).length : 0;
   return n >= 3 && n <= 9;
 };
-const canHearSentence = (i: LudusItem) => {
-  const n = i.example ? sentenceTiles(i.example.text).length : 0;
-  return n >= 3 && n <= 8;
-};
 const canTranslate = (i: LudusItem) => {
   const n = i.example?.translation ? sentenceTiles(i.example.translation).length : 0;
   return n >= 3 && n <= 10;
@@ -137,8 +126,6 @@ const canTranslate = (i: LudusItem) => {
 
 export interface PlanOptions {
   random: () => number;
-  /** The device has a voice for this language (Web Speech). */
-  canListen: boolean;
   /** Include one "match the pairs" round when there are enough cards. */
   match?: boolean;
   /** The device can recognise speech in this language. */
@@ -150,10 +137,10 @@ export interface PlanOptions {
 
 /**
  * A lesson for the given cards: a matching warm-up, then one exercise per card, harder for cards the
- * learner has seen before (typing, gaps, sentences, listening) and gentle for new ones (recognition).
+ * learner has seen before (typing, gaps, sentences, speaking) and gentle for new ones (recognition).
  * New cards get a second, production exercise later in the lesson.
  */
-export function planLesson(items: LudusItem[], pool: LudusItem[], { random, canListen, match = true, canSpeak = false, articleOf, articles = [] }: PlanOptions): Exercise[] {
+export function planLesson(items: LudusItem[], pool: LudusItem[], { random, match = true, canSpeak = false, articleOf, articles = [] }: PlanOptions): Exercise[] {
   const hasArticle = (i: LudusItem) => {
     const a = articleOf?.(i);
     return Boolean(a && articles.includes(a));
@@ -178,8 +165,6 @@ export function planLesson(items: LudusItem[], pool: LudusItem[], { random, canL
     const kinds: ExerciseKind[] = ['type', 'choose-term'];
     if (canCloze(item)) kinds.push('cloze', 'cloze');
     if (canBuild(item)) kinds.push('build');
-    if (canListen) kinds.push('listen');
-    if (canListen && canHearSentence(item)) kinds.push('listen-build');
     if (canTranslate(item)) kinds.push('translate');
     if (hasArticle(item)) kinds.push('article');
     if (canSpeak) kinds.push('speak');
@@ -191,7 +176,6 @@ export function planLesson(items: LudusItem[], pool: LudusItem[], { random, canL
   function build(kind: ExerciseKind, item: LudusItem): Exercise {
     switch (kind) {
       case 'choose-meaning':
-      case 'listen':
         return { key: key(), kind, item, ...choice(item, others, 'meaning', random) };
       case 'choose-term':
         return { key: key(), kind, item, ...choice(item, others, 'term', random) };
@@ -208,13 +192,6 @@ export function planLesson(items: LudusItem[], pool: LudusItem[], { random, canL
           .filter((w) => !answer.some((a) => norm(a) === norm(w)))
           .slice(0, 2);
         return { key: key(), kind, item, translation: item.example!.translation!, tiles: shuffle([...answer, ...extra], random), answer };
-      }
-      case 'listen-build': {
-        const answer = sentenceTiles(item.example!.text);
-        const extra = shuffle(others.flatMap((o) => (o.example ? sentenceTiles(o.example.text) : [o.term])), random)
-          .filter((w) => !answer.some((a) => norm(a) === norm(w)))
-          .slice(0, 2);
-        return { key: key(), kind, item, tiles: shuffle([...answer, ...extra], random), answer };
       }
       case 'translate': {
         const answer = sentenceTiles(item.example!.translation!);
@@ -245,7 +222,7 @@ export function retryOf(ex: Exercise, random: () => number, seq: number): Exerci
     const correct = ex.options[ex.answer];
     return { ...ex, key, options, answer: options.indexOf(correct) } as Exercise;
   }
-  if (ex.kind === 'build' || ex.kind === 'listen-build' || ex.kind === 'translate') return { ...ex, key, tiles: shuffle(ex.tiles, random) };
+  if (ex.kind === 'build' || ex.kind === 'translate') return { ...ex, key, tiles: shuffle(ex.tiles, random) };
   return { ...ex, key };
 }
 

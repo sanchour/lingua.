@@ -71,7 +71,7 @@ export default function OrdoPage() {
         <div className="flex min-w-0 flex-col gap-5">
           <AppearanceSection theme={settings.theme} motion={settings.ui.motion} />
           <ReadingSection reader={settings.reader} lang={language.id} />
-          <StudySection study={settings.study} speech={settings.speech} lang={language.id} />
+          <StudySection study={settings.study} />
           <CardsSection look={settings.cards} lang={language.id} />
           <ListeningSection audio={settings.audio} />
           <LanguageSection active={language} />

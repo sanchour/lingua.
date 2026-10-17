@@ -9,7 +9,6 @@ import { cx } from '@/lib/cx';
 import { cardLookProps } from '../common/cardLook';
 import type { CardLook } from '../common/cardLook';
 import { ClipPlayer, useClip } from '../common/Clip';
-import { SpeakButton } from '../common/SpeakButton';
 import { articleFor, genderName, posName, splitAt } from '../common/words';
 
 /** The flip: a soft 3D turn on a spring. Only transform animates (docs/PERFORMANCE.md). */
@@ -130,7 +129,6 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName }: 
       <span className="flex shrink-0 items-center">
         {note.audioBlobId && <AudioButton blobId={note.audioBlobId} />}
         {clip?.kind === 'audio' && (!production || flipped) && <ClipPlayer clip={clip} />}
-        {!clip && !line && (!production || flipped) && <SpeakButton text={note.term} lang={lang} label={`Listen to ${note.term}`} />}
       </span>
     </div>
   );

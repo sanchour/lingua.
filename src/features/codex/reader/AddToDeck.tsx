@@ -1,20 +1,30 @@
 import { useState } from 'react';
-import { Check, Layers, Plus } from 'lucide-react';
+import { ArrowRightLeft, Check, Layers, Plus } from 'lucide-react';
 import { db } from '@/data/db';
-import { addNote, createDeck, useDecks } from '@/data/decks';
+import { addNote, createDeck, moveNote, useDecks } from '@/data/decks';
 import type { NoteInput } from '@/data/decks';
 import { Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { toast } from '@/state/ui';
 
-/** A small "+ Deck" button: puts this word (with its meaning and sentence) into a deck you choose. */
-export function AddToDeck({ lang, note }: { lang: string; note: NoteInput }) {
+/**
+ * A small "+ Deck" button: puts this word (with its meaning and sentence) into a deck you choose.
+ * A word already saved by marking it Learning (`move`) is moved to that deck instead of copied.
+ */
+export function AddToDeck({ lang, note, move }: { lang: string; note: NoteInput; move?: { noteId: string; deckId: string } }) {
   const decks = useDecks(lang);
   const [naming, setNaming] = useState(false);
   const [name, setName] = useState('');
   const [added, setAdded] = useState<string | null>(null);
 
   const add = async (deckId: string, deckName: string, close: () => void) => {
+    if (move) {
+      close();
+      if (deckId === move.deckId) return toast(`“${note.term}” is already in ${deckName}.`);
+      await moveNote(move.noteId, deckId);
+      setAdded(deckName);
+      return toast(`Moved “${note.term}” to ${deckName}.`, { tone: 'success' });
+    }
     const existing = (await db.notes.where('deckId').equals(deckId).toArray()).find((n) => !n.deletedAt && n.term.toLocaleLowerCase(lang) === note.term.toLocaleLowerCase(lang));
     close();
     if (existing) return toast(`“${note.term}” is already in ${deckName}.`);
@@ -25,7 +35,7 @@ export function AddToDeck({ lang, note }: { lang: string; note: NoteInput }) {
 
   return (
     <Popover
-      label="Add to a deck"
+      label={move ? 'Move to a deck' : 'Add to a deck'}
       placement="bottom-end"
       className="w-72"
       onOpenChange={(open) => !open && setNaming(false)}
@@ -33,22 +43,22 @@ export function AddToDeck({ lang, note }: { lang: string; note: NoteInput }) {
         <button
           {...props}
           type="button"
-          title={added ? `In ${added}` : 'Add to a deck'}
+          title={added ? `In ${added}` : move ? 'Move to another deck' : 'Add to a deck'}
           className={cx(
             'flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[12.5px] font-bold transition-colors',
             added ? 'border-sage/40 bg-sage-soft text-sage-text' : 'border-line bg-raised text-ink-soft hover:border-line-strong hover:text-ink',
           )}
         >
-          {added ? <Check size={14} aria-hidden /> : <Plus size={14} aria-hidden />}
-          Deck
+          {added ? <Check size={14} aria-hidden /> : move ? <ArrowRightLeft size={13} aria-hidden /> : <Plus size={14} aria-hidden />}
+          {move && !added ? 'Move' : 'Deck'}
         </button>
       )}
     >
       {(close) => (
         <div>
-          <p className="px-3 pt-1.5 pb-1 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">Add to</p>
+          <p className="px-3 pt-1.5 pb-1 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">{move ? 'Move to' : 'Add to'}</p>
           <div className="max-h-64 overflow-y-auto">
-            {(decks ?? []).map((d) => (
+            {(decks ?? []).filter((d) => d.id !== move?.deckId).map((d) => (
               <button
                 key={d.id}
                 type="button"

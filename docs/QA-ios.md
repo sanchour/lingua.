@@ -39,7 +39,9 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Review: tap the card → it turns over smoothly in 3D; the four grades sit within thumb reach.
 - [ ] Ludus: multiple choice, match the pairs, fill the gap, build the sentence and typing all work
       with the on-screen keyboard (it doesn't cover the Check button).
-- [ ] Listening exercises speak (Settings › Accessibility › Spoken Content › Voices adds voices).
+- [ ] No speaker buttons anywhere on cards, in Ludus or in the word drawer (the device voice is gone).
+- [ ] Long-press a flashcard: the word drawer opens, and the card doesn't turn over.
+- [ ] Grading a card: it slides away, then the next one comes in, with no overlap or flash.
 - [ ] Ordo › Flashcards: font, style and colour change the preview and the study card at once.
 - [ ] Import an Anki .apkg from Files: decks appear with their cards and progress.
 - [ ] Home → Review shows today's cards and opens the session.
@@ -72,8 +74,13 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Thesaurus → Discover: the vocabulary journey scrolls to "You are here"; a ready-made deck
       opens full screen and its add bar sits above the tab bar.
 - [ ] Ludus: say it out loud asks for the microphone once and accepts the word; "Can’t speak now"
-      switches to typing; translate and tap-what-you-hear tiles fit the screen.
-- [ ] The end of a lesson: "Another lesson" on top, "Done" below.
+      switches to typing; translate tiles fit the screen.
+- [ ] The end of a lesson: "Another lesson" on top, "Done" below. After Recall: "Practise again",
+      "Practise with Ludus", then "Done".
+- [ ] Codex: long-press a word and slide across others: they highlight, the page doesn't scroll, and
+      a bubble shows the translation with "Save as a card". Long-press and let go opens the drawer.
+- [ ] Onboarding (Ordo › Learn another language): "What brings you here?" and "What do you enjoy
+      most?" fit the screen; the choices show on Home's "Next up".
 
 ## Diarium, Ratio and the new icon
 

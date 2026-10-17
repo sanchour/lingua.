@@ -22,6 +22,9 @@ import { WordEngine } from './engine';
 import { CLICK_SLOP_PX, wordAt } from './hit';
 import { HoverGloss } from './HoverGloss';
 import { updateCachedState, useChapterModel } from './model';
+import { PhraseSelector } from './phrase';
+import { PhraseBubble } from './PhraseBubble';
+import type { Phrase } from './PhraseBubble';
 import { ReaderChrome } from './ReaderChrome';
 import { TapGloss } from './TapGloss';
 import { usePager } from './usePager';
@@ -183,6 +186,8 @@ export default function ReaderPage() {
   // ── Drawer, tap bubble, chrome ──────────────────────────────────────────
   const [drawer, setDrawer] = useState<DrawerWord | null>(null);
   const [tapped, setTapped] = useState<HTMLElement | null>(null);
+  const [phrase, setPhrase] = useState<Phrase | null>(null);
+  const selector = useRef<PhraseSelector | null>(null);
   const [contents, setContents] = useState(false);
   const [typographyOpen, setTypographyOpen] = useState(false);
   const [chrome, setChrome] = useState(true);
@@ -209,16 +214,64 @@ export default function ReaderPage() {
   );
 
   // ── Pointer: desktop clicks, touch taps / long-presses / swipes ─────────
-  const gesture = useRef<{ x: number; y: number; t: number; word: HTMLElement | null; swiping: boolean; longPressed: boolean; timer: number; type: string } | null>(null);
+  // A phrase: drag across words with the mouse, or long-press a word and slide (touch). A long-press
+  // released without sliding opens the word's drawer.
+  type Gesture = { x: number; y: number; t: number; word: HTMLElement | null; swiping: boolean; longPressed: boolean; selectReady: boolean; selecting: boolean; timer: number; type: string };
+  const gesture = useRef<Gesture | null>(null);
+  const swallowNextClick = () => {
+    const swallow = (e: MouseEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    document.addEventListener('click', swallow, { capture: true, once: true });
+    window.setTimeout(() => document.removeEventListener('click', swallow, { capture: true }), 450);
+  };
+
+  const startSelecting = (g: Gesture) => {
+    const root = flowRef.current;
+    if (!root || !g.word) return;
+    g.word.classList.remove('is-active');
+    flowRef.current?.dispatchEvent(new Event('reader:hide-tip', { bubbles: true }));
+    setTapped(null);
+    setPhrase(null);
+    selector.current?.clear();
+    selector.current = new PhraseSelector(root);
+    selector.current.begin(g.word);
+    g.selecting = true;
+  };
+  const closePhrase = useCallback(() => {
+    selector.current?.clear();
+    selector.current = null;
+    setPhrase(null);
+  }, []);
+  const finishSelecting = () => {
+    const sel = selector.current;
+    if (!sel || !engine || sel.count < 2 || !sel.first || !sel.last) return closePhrase();
+    const ctx = engine.context(sel.first);
+    setPhrase({ text: sel.text(), anchor: sel.last, context: { sentence: ctx.sentence, textId: ctx.textId, chapterIndex: ctx.chapterIndex, blockIndex: ctx.blockIndex } });
+  };
+
+  // While a touch is choosing words, the page must not scroll.
+  useEffect(() => {
+    const flow = flowRef.current;
+    if (!flow) return;
+    const hold = (e: TouchEvent) => {
+      if (gesture.current?.selectReady) e.preventDefault();
+    };
+    flow.addEventListener('touchmove', hold, { passive: false });
+    return () => flow.removeEventListener('touchmove', hold);
+  }, [model]);
 
   const onPointerDown = (e: ReactPointerEvent) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const word = wordAt(e.target, e.clientX, e.clientY, flowRef.current);
-    const g = { x: e.clientX, y: e.clientY, t: performance.now(), word, swiping: false, longPressed: false, timer: 0, type: e.pointerType };
+    const g: Gesture = { x: e.clientX, y: e.clientY, t: performance.now(), word, swiping: false, longPressed: false, selectReady: false, selecting: false, timer: 0, type: e.pointerType };
     if (e.pointerType !== 'mouse' && word) {
       g.timer = window.setTimeout(() => {
         g.longPressed = true;
-        openDrawer(word);
+        g.selectReady = true;
+        word.classList.add('is-active');
+        navigator.vibrate?.(8);
       }, LONG_PRESS_MS);
     }
     gesture.current = g;
@@ -226,9 +279,20 @@ export default function ReaderPage() {
 
   const onPointerMove = (e: ReactPointerEvent) => {
     const g = gesture.current;
-    if (!g || g.type === 'mouse') return;
+    if (!g) return;
     const dx = e.clientX - g.x;
     const dy = e.clientY - g.y;
+    if (g.type === 'mouse') {
+      if (!(e.buttons & 1) || !g.word) return;
+      if (!g.selecting && Math.hypot(dx, dy) > CLICK_SLOP_PX) startSelecting(g);
+      if (g.selecting) selector.current?.update(e.clientX, e.clientY);
+      return;
+    }
+    if (g.selectReady) {
+      if (!g.selecting && Math.hypot(dx, dy) > 8) startSelecting(g);
+      if (g.selecting) selector.current?.update(e.clientX, e.clientY);
+      return;
+    }
     if (!g.swiping && Math.hypot(dx, dy) > 10) window.clearTimeout(g.timer);
     if (paged && !g.swiping && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.2) {
       g.swiping = true;
@@ -243,6 +307,13 @@ export default function ReaderPage() {
     if (!g) return;
     window.clearTimeout(g.timer);
     session.touch();
+    if (g.selecting) return finishSelecting();
+    if (g.selectReady && g.word) {
+      g.word.classList.remove('is-active');
+      // The click that follows the lift would land on the drawer's backdrop and close it.
+      swallowNextClick();
+      return openDrawer(g.word);
+    }
     if (g.type === 'mouse') {
       if (g.word && Math.hypot(e.clientX - g.x, e.clientY - g.y) < CLICK_SLOP_PX && engine) {
         engine.cycle(g.word);
@@ -276,6 +347,8 @@ export default function ReaderPage() {
     const g = gesture.current;
     if (g?.swiping) pager.drag(null);
     if (g) window.clearTimeout(g.timer);
+    g?.word?.classList.remove('is-active');
+    if (g?.selecting) closePhrase();
     gesture.current = null;
   };
 
@@ -429,6 +502,7 @@ export default function ReaderPage() {
 
       {pointer === 'fine' && <HoverGloss rootRef={flowRef} engine={engine} hoveredRef={hoveredRef} />}
       {tapped && engine && tapped.isConnected && <TapGloss el={tapped} engine={engine} onClose={() => setTapped(null)} onOpen={openDrawer} />}
+      {phrase && phrase.anchor.isConnected && <PhraseBubble phrase={phrase} lang={lang} onClose={closePhrase} />}
 
       <WordDrawer
         lang={lang}

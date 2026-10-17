@@ -1,21 +1,13 @@
-import { GraduationCap, Volume2 } from 'lucide-react';
-import { getLanguage } from '@/core/lang/languages';
+import { GraduationCap } from 'lucide-react';
 import { patchSetting } from '@/data/settings';
 import type { Settings } from '@/data/settings';
-import { Button, Select, Slider, ToggleRow } from '@/design/primitives';
-import { speak, useVoices } from '@/services/speech/tts';
+import { Slider, ToggleRow } from '@/design/primitives';
 import { SettingsSection } from '../SettingsSection';
 import { useDraft } from '../useDraft';
 
-const AUTO = '__auto';
-
-export function StudySection({ study, speech, lang }: { study: Settings['study']; speech: Settings['speech']; lang: string }) {
+export function StudySection({ study }: { study: Settings['study'] }) {
   const [newPerDay, setNewPerDay] = useDraft(study.newPerDay, (v) => void patchSetting('study', { newPerDay: v }));
   const [retention, setRetention] = useDraft(Math.round(study.desiredRetention * 100), (v) => void patchSetting('study', { desiredRetention: v / 100 }));
-  const [rate, setRate] = useDraft(speech.rate, (v) => void patchSetting('speech', { rate: v }));
-  const voices = useVoices(lang);
-  const language = getLanguage(lang);
-  const sample = language?.sample.split(/(?<=[.!?…])\s/)[0] ?? '';
 
   return (
     <SettingsSection id="study" icon={GraduationCap} title="Study" description="How flashcards and Ludus behave. Each deck can change its own pace in its settings.">
@@ -35,32 +27,6 @@ export function StudySection({ study, speech, lang }: { study: Settings['study']
           onChange={(v) => void patchSetting('study', { autoPromoteMature: v })}
         />
       </div>
-
-      <h3 className="mt-6 mb-1 text-[13px] font-bold tracking-wide text-ink-soft uppercase">Voice</h3>
-      {voices.length ? (
-        <>
-          <p className="mb-3 text-[13px] text-ink-soft">Words are read aloud by this device’s own {language?.name} voices, offline. Listening exercises use them too.</p>
-          <div className="flex items-end gap-2">
-            <div className="min-w-0 flex-1">
-              <Select
-                label={`${language?.name} voice`}
-                hideLabel
-                value={speech.voices[lang] ?? AUTO}
-                onChange={(v) => void patchSetting('speech', { voices: { ...speech.voices, [lang]: v === AUTO ? '' : v } })}
-                options={[{ value: AUTO, label: `Best available (${voices[0].name})` }, ...voices.map((v) => ({ value: v.voiceURI, label: `${v.name} · ${v.lang}` }))]}
-              />
-            </div>
-            <Button variant="secondary" icon={Volume2} onClick={() => void speak(sample, lang, { rate, voiceUri: speech.voices[lang] || undefined })}>
-              Listen
-            </Button>
-          </div>
-          <Slider label="Speed" value={rate} min={0.6} max={1.3} step={0.05} onChange={setRate} format={(v) => `${v.toFixed(2)}×`} />
-        </>
-      ) : (
-        <p className="text-[13px] leading-relaxed text-ink-soft">
-          This device has no {language?.name} voice yet, so listening exercises are left out. On iPhone, add one in Settings › Accessibility › Spoken Content › Voices; on Windows, in Settings › Time &amp; language › Speech.
-        </p>
-      )}
     </SettingsSection>
   );
 }

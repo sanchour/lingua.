@@ -27,6 +27,8 @@ export interface WordContext {
   surface?: string;
   sentence?: string;
   gloss?: string;
+  /** Set when `gloss` was picked for this sentence: the word's usual meaning, which it differs from. */
+  usualGloss?: string;
   lemma?: string;
   textId?: string;
   chapterIndex?: number;

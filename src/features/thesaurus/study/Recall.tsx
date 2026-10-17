@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Pencil, Type, Undo2 } from 'lucide-react';
 import { countQueue, requeue } from '@/core/srs/queue';
@@ -9,13 +10,16 @@ import { answerCard, undoAnswer } from '@/data/study';
 import type { AnswerUndo, StudySession } from '@/data/study';
 import { useSettings } from '@/data/settings';
 import type { Card, Note } from '@/data/types';
+import { setWordGloss, setWordState } from '@/data/words';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { IconButton, Kbd, Popover } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
-import { speak } from '@/services/speech/tts';
 import { DEFAULT_SETTINGS } from '@/data/settings';
+import { normalizeWord } from '@/core/text/normalize';
+import { WordDrawer } from '@/features/codex/reader/WordDrawer';
+import type { DrawerWord } from '@/features/codex/reader/WordDrawer';
 import { CardLookPanel } from '../common/CardLookPanel';
 import { NoteEditor } from '../deck/NoteEditor';
 import type { EditorTarget } from '../deck/NoteEditor';
@@ -37,10 +41,14 @@ interface RecallProps {
   onFinish: (stats: SummaryStats) => void;
   onClose: () => void;
   onActive: (ms: number) => void;
+  /** Another pass over cards just studied: grading only sends missed cards round again, the schedule stays as it is. */
+  practice?: boolean;
 }
 
+const LONG_PRESS_MS = 520;
+
 /** Classic Recall: turn the card, grade yourself (Again · Hard · Good · Easy), FSRS does the rest. */
-export function Recall({ lang, title, session, onFinish, onClose, onActive }: RecallProps) {
+export function Recall({ lang, title, session, onFinish, onClose, onActive, practice = false }: RecallProps) {
   const { pointer } = useLayout();
   const settings = useSettings();
   const [queue, setQueue] = useState<Card[]>(session.queue);
@@ -50,7 +58,8 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive }: Re
   const [editor, setEditor] = useState<EditorTarget | null>(null);
   const [styling, setStyling] = useState(false);
   const look = settings?.cards ?? DEFAULT_SETTINGS.cards;
-  const history = useRef<Array<{ undo: AnswerUndo; queue: Card[] }>>([]);
+  const [lookup, setLookup] = useState<DrawerWord | null>(null);
+  const history = useRef<Array<{ undo?: AnswerUndo; queue: Card[] }>>([]);
   const stats = useRef({ answered: 0, misses: 0, cards: new Set<string>(), ms: 0 });
   const shownAt = useRef(performance.now());
   const [done, setDone] = useState(0);
@@ -66,8 +75,8 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive }: Re
   }, [card?.id, card?.reps]);
 
   const intervals = useMemo(
-    () => (card && flipped ? previewIntervals(card, Date.now(), deck?.config.desiredRetention ?? 0.9) : null),
-    [card, flipped, deck],
+    () => (card && flipped && !practice ? previewIntervals(card, Date.now(), deck?.config.desiredRetention ?? 0.9) : null),
+    [card, flipped, deck, practice],
   );
 
   const flip = useCallback(() => setFlipped(true), []);
@@ -76,37 +85,83 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive }: Re
     if (!card || !flipped || busy) return;
     setBusy(true);
     const ms = Math.min(60_000, performance.now() - shownAt.current);
-    const { card: next, undo } = await answerCard(card, grade, { lang, mode: 'classic', durationMs: ms });
-    history.current.push({ undo, queue });
+    let rest: Card[];
+    if (practice) {
+      history.current.push({ queue });
+      rest = grade === 1 ? [...queue.slice(1), card] : queue.slice(1);
+    } else {
+      const { card: next, undo } = await answerCard(card, grade, { lang, mode: 'classic', durationMs: ms });
+      history.current.push({ undo, queue });
+      rest = requeue(queue, next, Date.now());
+    }
     const s = stats.current;
     s.answered++;
     if (grade === 1) s.misses++;
     s.cards.add(card.id);
     s.ms += ms;
     onActive(ms);
-    const rest = requeue(queue, next, Date.now());
     setQueue(rest);
     setDone((d) => d + 1);
     setFlipped(false);
     setBusy(false);
-    if (!rest.length) onFinish({ cards: s.cards.size, accuracy: s.answered ? 1 - s.misses / s.answered : 1, ms: s.ms });
+    if (!rest.length) onFinish({ cards: s.cards.size, accuracy: s.answered ? 1 - s.misses / s.answered : 1, ms: s.ms, cardIds: [...s.cards] });
   };
 
   const undo = async () => {
     const last = history.current.pop();
     if (!last || busy) return;
     setBusy(true);
-    await undoAnswer(last.undo);
+    if (last.undo) await undoAnswer(last.undo);
     const s = stats.current;
     s.answered = Math.max(0, s.answered - 1);
-    if (last.undo.counted.againCount) s.misses = Math.max(0, s.misses - 1);
+    if (last.undo?.counted.againCount) s.misses = Math.max(0, s.misses - 1);
     setQueue(last.queue);
     setDone((d) => Math.max(0, d - 1));
     setFlipped(false);
     setBusy(false);
   };
 
-  const editing = Boolean(editor) || styling;
+  // Right-click (or long-press on a phone) a card to look the word up, as in the reader.
+  const lookUp = useCallback(() => {
+    if (!note) return;
+    setLookup({
+      norm: normalizeWord(note.term, lang),
+      context: { surface: note.term, sentence: note.context?.sentence, gloss: note.meaning, lemma: note.lemma, source: note.source === 'visio' || note.source === 'sonus' ? note.source : undefined },
+    });
+  }, [note, lang]);
+  const press = useRef<{ timer: number; x: number; y: number; held: boolean } | null>(null);
+  const holdHandlers = {
+    onContextMenu: (e: ReactMouseEvent) => {
+      e.preventDefault();
+      if (!press.current?.held) lookUp();
+    },
+    onPointerDown: (e: ReactPointerEvent) => {
+      if (e.pointerType === 'mouse') return;
+      const p = { timer: 0, x: e.clientX, y: e.clientY, held: false };
+      p.timer = window.setTimeout(() => {
+        p.held = true;
+        navigator.vibrate?.(8);
+        lookUp();
+      }, LONG_PRESS_MS);
+      press.current = p;
+    },
+    onPointerMove: (e: ReactPointerEvent) => {
+      const p = press.current;
+      if (p && !p.held && Math.hypot(e.clientX - p.x, e.clientY - p.y) > 10) window.clearTimeout(p.timer);
+    },
+    onPointerUp: () => press.current && window.clearTimeout(press.current.timer),
+    onPointerCancel: () => press.current && window.clearTimeout(press.current.timer),
+    // The tap that ends a long-press must not also turn the card.
+    onClickCapture: (e: ReactMouseEvent) => {
+      if (press.current?.held) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      press.current = null;
+    },
+  };
+
+  const editing = Boolean(editor) || styling || lookup !== null;
   useHotkeys(
     {
       ' ': () => (flipped ? void rate(3) : flip()),
@@ -118,7 +173,6 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive }: Re
       z: () => void undo(),
       'mod+z': () => void undo(),
       e: () => card && note && setEditor({ mode: 'edit', note, cards: [card] }),
-      s: () => note && void speak(note.term, lang, { rate: settings?.speech.rate, voiceUri: settings?.speech.voices[lang] }),
       escape: onClose,
     },
     !editing,
@@ -159,15 +213,17 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive }: Re
         </p>
 
         <div className="flex flex-1 items-start justify-center">
-          <AnimatePresence mode="popLayout" initial={false}>
+          {/* One card at a time: the graded card slips away before the next one comes in, so the two never overlap. */}
+          <AnimatePresence mode="wait" initial={false}>
             {card && note && (
               <motion.div
                 key={`${card.id}:${card.reps}:${done}`}
                 className="w-full"
-                initial={{ opacity: 0, y: 18, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, x: -36, scale: 0.98, transition: { duration: 0.16 } }}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -28, transition: { duration: 0.12, ease: 'easeIn' } }}
                 transition={spring.soft}
+                {...holdHandlers}
               >
                 <FlipCard look={look} card={card} note={note} lang={lang} flipped={flipped} onFlip={flip} deckName={session.decks.size > 1 ? deck?.name : undefined} />
               </motion.div>
@@ -176,7 +232,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive }: Re
         </div>
 
         <div className="mx-auto mt-6 w-full max-w-xl">
-          {flipped && intervals ? (
+          {flipped && (intervals || practice) ? (
             <motion.div className="grid grid-cols-4 gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>
               {GRADES.map((g) => (
                 <button
@@ -190,7 +246,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive }: Re
                   )}
                 >
                   <span className="text-[15px]">{GRADE_NAMES[g]}</span>
-                  <span className="text-[12px] font-semibold text-ink-faint tabular-nums">{formatInterval(intervals[g])}</span>
+                  {intervals && <span className="text-[12px] font-semibold text-ink-faint tabular-nums">{formatInterval(intervals[g])}</span>}
                   {pointer === 'fine' && <Kbd>{g}</Kbd>}
                 </button>
               ))}
@@ -208,6 +264,13 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive }: Re
       </main>
 
       <NoteEditor lang={lang} target={editor} onClose={() => void closeEditor()} />
+      <WordDrawer
+        lang={lang}
+        word={lookup}
+        onClose={() => setLookup(null)}
+        onState={(norm, state) => void setWordState(lang, norm, state, lookup?.context)}
+        onGloss={(norm, gloss) => void setWordGloss(lang, norm, gloss)}
+      />
     </>
   );
 }

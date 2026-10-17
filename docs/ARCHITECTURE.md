@@ -176,7 +176,8 @@ lingua/
    engine, Tier-1 + Tier-2 translation, word drawer, AI settings, activity recording, real streak,
    daily reading-goal ring on Home.
 3. **Thesaurus** ✅ — folders/decks/editor, Classic Recall (ts-fsrs, 3D flip), Ludus (multiple choice,
-   match pairs, cloze, word-bank sentences, typing, listening via device voices), CSV + `.apkg` import,
+   match pairs, cloze, word-bank sentences, typing, speaking; the device-voice listening was removed
+   in 2.0), CSV + `.apkg` import,
    starter library (frequency bands + 14 themed categories) for all ten languages, Home review queue,
    review statistics recording.
 4. **Sonus** ✅ — one audio engine outside React (lock screen via Media Session, sentence repeats,

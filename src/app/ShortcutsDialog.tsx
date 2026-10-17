@@ -24,7 +24,6 @@ export const STUDY_SHORTCUTS: Array<[string[], string]> = [
   [['1', '4'], 'Again · Hard · Good · Easy'],
   [['Z'], 'Undo the last answer'],
   [['E'], 'Edit the card'],
-  [['S'], 'Hear the word'],
   [['Enter'], 'Ludus: check, then continue'],
 ];
 
@@ -36,6 +35,17 @@ export const LISTENING_SHORTCUTS: Array<[string[], string]> = [
   [['Click'], 'A word: learning, again: known · its time: jump there'],
 ];
 
+export const WATCHING_SHORTCUTS: Array<[string[], string]> = [
+  [['Space'], 'Play or pause'],
+  [['←', '→'], 'Back / forward 5 seconds'],
+  [['↑', '↓'], 'Previous / next line'],
+  [['R'], 'Repeat the line'],
+  [['S'], 'Save the line as a card'],
+  [['C'], 'English line: show, blur, hide'],
+  [['P'], 'Pause after each line'],
+  [['F'], 'Full screen'],
+];
+
 /** Every desktop shortcut, grouped. Shown in Ordo and in the `?` dialog. */
 export function ShortcutList() {
   return (
@@ -44,6 +54,7 @@ export function ShortcutList() {
       <Group title="Reading" rows={READER_SHORTCUTS} />
       <Group title="Studying" rows={STUDY_SHORTCUTS} />
       <Group title="Listening" rows={LISTENING_SHORTCUTS} />
+      <Group title="Watching" rows={WATCHING_SHORTCUTS} />
     </div>
   );
 }

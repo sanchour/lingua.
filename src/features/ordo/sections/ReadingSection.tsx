@@ -120,6 +120,12 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
           checked={reader.autoKnownOnPageTurn}
           onChange={(autoKnownOnPageTurn) => void patchSetting('reader', { autoKnownOnPageTurn })}
         />
+        <ToggleRow
+          title="Translations that read the sentence"
+          description="With an AI key (AI & translation), a word you look up gets the meaning its sentence needs. One small request per sentence, remembered. Without a key, the words around it still help choose."
+          checked={reader.contextGlosses}
+          onChange={(contextGlosses) => void patchSetting('reader', { contextGlosses })}
+        />
       </div>
     </SettingsSection>
   );

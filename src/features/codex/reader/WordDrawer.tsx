@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { BookMarked, Check, Circle, Layers, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
+import { cefrForRank } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
 import type { WordState } from '@/data/types';
@@ -52,9 +53,12 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
     const entries = (await db.dictEntries.bulkGet(lemmas.map((l) => [pack, l] as [string, string]))).filter(Boolean);
     const rank = (await db.frequency.get(`${lang}:${norm}`))?.rank;
     const examples = (await db.dictExamples.bulkGet(lemmas.map((l) => [pack, l] as [string, string]))).flatMap((e) => e?.ex ?? []).slice(0, 2);
-    return { form, entries, rank, examples };
-  }, [lang, norm]);
+    const hasParadigm = entries[0] ? Boolean(await db.dictParadigms.get([pack, entries[0].lemma])) : false;
+    const note = saved?.noteId ? await db.notes.get(saved.noteId) : undefined;
+    return { form, entries, rank, examples, hasParadigm, noteDeckId: note && !note.deletedAt ? note.deckId : undefined };
+  }, [lang, norm, saved?.noteId]);
 
+  const [tab, setTab] = useState<'meaning' | 'forms'>('meaning');
   const [gloss, setGloss] = useState('');
   useEffect(() => setGloss(saved?.gloss ?? context.gloss ?? ''), [saved?.gloss, context.gloss]);
 
@@ -76,7 +80,11 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
         {subtitle && <p className="-mt-2 mb-3 font-serif text-[15px] text-ink-soft">{subtitle}</p>}
         <div className="flex flex-wrap items-center gap-1.5">
           {main?.ipa && <Badge>{main.ipa}</Badge>}
-          {dict?.rank && <Badge tone="sage">#{dict.rank.toLocaleString()} most common</Badge>}
+          {dict?.rank && (
+            <Badge tone="sage">
+              #{dict.rank.toLocaleString()} most common · {cefrForRank(dict.rank)}
+            </Badge>
+          )}
           {state === 2 && saved?.noteId && (
             <Badge tone="accent">
               <Layers size={12} aria-hidden /> In “From my reading”
@@ -97,86 +105,114 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
         ]}
       />
 
-      <section>
-        <div className="mb-2 flex items-center gap-2">
-          <h3 className="flex-1 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</h3>
-          <AddToDeck
-            lang={lang}
-            note={{
-              term: main?.head ?? main?.lemma ?? context.surface ?? norm,
-              meaning: gloss.trim() || main?.senses[0]?.glosses[0] || '',
-              lemma: main?.lemma,
-              pos: main?.senses[0]?.pos,
-              gender: main?.gender,
-              ipa: main?.ipa,
-              source: 'codex',
-              context: context.sentence ? { sentence: context.sentence, textId: context.textId, chapterIndex: context.chapterIndex, blockIndex: context.blockIndex } : undefined,
-            }}
-          />
-        </div>
-        <input
-          value={gloss}
-          onChange={(e) => setGloss(e.target.value)}
-          onBlur={commitGloss}
-          onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget as HTMLInputElement).blur()}
-          placeholder="Add your own translation"
-          aria-label="Your translation"
-          className="h-11 w-full rounded-xl border border-line bg-bg px-3.5 text-[16px] font-semibold transition-colors hover:border-line-strong focus:border-accent"
+      {dict?.hasParadigm && (
+        <Segmented
+          label="Show"
+          value={tab}
+          onChange={setTab}
+          block
+          options={[
+            { value: 'meaning', label: 'Meaning' },
+            { value: 'forms', label: 'Forms' },
+          ]}
         />
-        {dict?.form?.d && <p className="mt-2 text-[13px] text-ink-soft">{dict.form.d}</p>}
-      </section>
+      )}
 
+      {tab === 'forms' && dict?.hasParadigm && main ? (
+        <>
+          {dict.form?.d && <p className="text-[14px] text-ink-soft">{dict.form.d}</p>}
+          <WordForms lang={lang} lemma={main.lemma} seen={norm} heading={false} />
+        </>
+      ) : (
+        <>
+          <section>
+            <div className="mb-2 flex items-center gap-2">
+              <h3 className="flex-1 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</h3>
+              <AddToDeck
+                lang={lang}
+                note={{
+                  term: main?.head ?? main?.lemma ?? context.surface ?? norm,
+                  meaning: gloss.trim() || main?.senses[0]?.glosses[0] || '',
+                  lemma: main?.lemma,
+                  pos: main?.senses[0]?.pos,
+                  gender: main?.gender,
+                  ipa: main?.ipa,
+                  source: 'codex',
+                  context: context.sentence ? { sentence: context.sentence, textId: context.textId, chapterIndex: context.chapterIndex, blockIndex: context.blockIndex } : undefined,
+                }}
+                move={state === 2 && saved?.noteId && dict?.noteDeckId ? { noteId: saved.noteId, deckId: dict.noteDeckId } : undefined}
+              />
+            </div>
+            <input
+              value={gloss}
+              onChange={(e) => setGloss(e.target.value)}
+              onBlur={commitGloss}
+              onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget as HTMLInputElement).blur()}
+              placeholder="Add your own translation"
+              aria-label="Your translation"
+              className="h-11 w-full rounded-xl border border-line bg-bg px-3.5 text-[16px] font-semibold transition-colors hover:border-line-strong focus:border-accent"
+            />
+            {context.usualGloss && !saved?.gloss && gloss === context.gloss && (
+              <p className="mt-2 flex items-start gap-1.5 text-[13px] leading-snug text-sage-text">
+                <Sparkles size={13} aria-hidden className="mt-0.5 shrink-0" />
+                <span>
+                  The meaning in this sentence. Usually “{context.usualGloss}”.
+                </span>
+              </p>
+            )}
+            {dict?.form?.d && !dict.hasParadigm && <p className="mt-2 text-[13px] text-ink-soft">{dict.form.d}</p>}
+          </section>
 
-      {dict && dict.entries.length > 0 && (
-        <section>
-          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Dictionary</h3>
-          <div className="space-y-4">
-            {dict.entries.map((entry) => (
-              <div key={entry!.lemma}>
-                <p lang={lang} className="font-serif text-lg font-semibold">
-                  {entry!.head ?? entry!.lemma}
-                </p>
-                <ol className="mt-1 space-y-1.5">
-                  {entry!.senses.map((sense, i) => (
-                    <li key={i} className="flex gap-2 text-[14.5px] leading-snug">
-                      <span className="mt-0.5 shrink-0 text-[11px] font-bold tracking-wide text-ink-faint uppercase">{sense.pos}</span>
-                      <span>{sense.glosses.join('; ')}</span>
+          {dict && dict.entries.length > 0 && (
+            <section>
+              <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Dictionary</h3>
+              <div className="space-y-4">
+                {dict.entries.map((entry) => (
+                  <div key={entry!.lemma}>
+                    <p lang={lang} className="font-serif text-lg font-semibold">
+                      {entry!.head ?? entry!.lemma}
+                    </p>
+                    <ol className="mt-1 space-y-1.5">
+                      {entry!.senses.map((sense, i) => (
+                        <li key={i} className="flex gap-2 text-[14.5px] leading-snug">
+                          <span className="mt-0.5 shrink-0 text-[11px] font-bold tracking-wide text-ink-faint uppercase">{sense.pos}</span>
+                          <span>{sense.glosses.join('; ')}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                ))}
+              </div>
+              {dict.examples.length > 0 && (
+                <ul className="mt-4 space-y-2.5 border-t border-line/70 pt-3">
+                  {dict.examples.map(([sentence, translation, start, end]) => (
+                    <li key={sentence}>
+                      <p lang={lang} className="font-serif text-[15px] leading-snug">
+                        {sentence.slice(0, start)}
+                        <span className="font-semibold">{sentence.slice(start, end)}</span>
+                        {sentence.slice(end)}
+                      </p>
+                      {translation && <p className="text-[13px] text-ink-soft italic">{translation}</p>}
                     </li>
                   ))}
-                </ol>
-              </div>
-            ))}
-          </div>
-          {dict.examples.length > 0 && (
-            <ul className="mt-4 space-y-2.5 border-t border-line/70 pt-3">
-              {dict.examples.map(([sentence, translation, start, end]) => (
-                <li key={sentence}>
-                  <p lang={lang} className="font-serif text-[15px] leading-snug">
-                    {sentence.slice(0, start)}
-                    <span className="font-semibold">{sentence.slice(start, end)}</span>
-                    {sentence.slice(end)}
-                  </p>
-                  {translation && <p className="text-[13px] text-ink-soft italic">{translation}</p>}
-                </li>
-              ))}
-            </ul>
+                </ul>
+              )}
+              <p className="mt-3 text-[11.5px] text-ink-faint">Wiktionary via kaikki.org · CC BY-SA</p>
+            </section>
           )}
-          <p className="mt-3 text-[11.5px] text-ink-faint">Wiktionary via kaikki.org · CC BY-SA</p>
-        </section>
+
+          {context.sentence && (
+            <section>
+              <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">In context</h3>
+              <p lang={lang} className="rounded-2xl bg-surface px-4 py-3 font-serif text-[16px] leading-relaxed">
+                <Highlighted sentence={context.sentence} word={context.surface ?? norm} />
+              </p>
+            </section>
+          )}
+
+          <Explain lang={lang} word={context.surface ?? norm} sentence={context.sentence ?? context.surface ?? norm} />
+        </>
       )}
-
-      {main && <WordForms lang={lang} lemma={main.lemma} seen={norm} />}
-
-      {context.sentence && (
-        <section>
-          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">In context</h3>
-          <p lang={lang} className="rounded-2xl bg-surface px-4 py-3 font-serif text-[16px] leading-relaxed">
-            <Highlighted sentence={context.sentence} word={context.surface ?? norm} />
-          </p>
-        </section>
-      )}
-
-      <Explain lang={lang} word={context.surface ?? norm} sentence={context.sentence ?? context.surface ?? norm} />
     </div>
   );
 }

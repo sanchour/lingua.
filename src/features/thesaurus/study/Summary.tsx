@@ -8,12 +8,19 @@ export interface SummaryStats {
   /** 0–1, answers without a miss. */
   accuracy: number;
   ms: number;
+  /** The cards gone through, for another pass. */
+  cardIds?: string[];
+}
+
+export interface SummaryAction {
+  label: string;
+  onClick: () => void;
 }
 
 const minutes = (ms: number) => (ms < 60_000 ? `${Math.max(1, Math.round(ms / 1000))} s` : `${Math.round(ms / 60_000)} min`);
 
 /** The end of a session: what was done, kindly, and where to go next. */
-export function Summary({ title, stats, onAgain, againLabel, onDone }: { title: string; stats: SummaryStats; onAgain?: () => void; againLabel?: string; onDone: () => void }) {
+export function Summary({ title, stats, actions = [], onDone }: { title: string; stats: SummaryStats; actions?: SummaryAction[]; onDone: () => void }) {
   return (
     <motion.div className="mx-auto flex max-w-md flex-col items-center px-6 text-center" initial={{ opacity: 0, y: 14, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={spring.gentle}>
       <motion.span
@@ -37,14 +44,14 @@ export function Summary({ title, stats, onAgain, againLabel, onDone }: { title: 
           </div>
         ))}
       </dl>
-      {/* Always stacked: the next step first, a quiet way out beneath it. */}
+      {/* Always stacked: the next steps first, a quiet way out beneath them. */}
       <div className="mt-8 flex w-full flex-col gap-2">
-        {onAgain && (
-          <Button size="lg" block onClick={onAgain}>
-            {againLabel ?? 'Another round'}
+        {actions.map((a, i) => (
+          <Button key={a.label} size="lg" variant={i === 0 ? 'primary' : 'secondary'} block onClick={a.onClick}>
+            {a.label}
           </Button>
-        )}
-        <Button size="lg" variant={onAgain ? 'ghost' : 'primary'} block onClick={onDone}>
+        ))}
+        <Button size="lg" variant={actions.length ? 'ghost' : 'primary'} block onClick={onDone}>
           Done
         </Button>
       </div>

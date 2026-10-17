@@ -275,3 +275,29 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Home** shows what to do next rather than more statistics: reviews due, the book, episode and
   video in progress, today's journal prompt; the week as bars; four numbers from the same sources
   as Ratio; the latest milestone; and a first-steps list that disappears when done or dismissed.
+
+## 2026-10-17 — Lingua 2.0-1: reading, words and cards
+
+- **The device voice is gone.** Web Speech voices sounded poor and often didn't speak at all, so
+  the speaker buttons, the listening exercises and the voice settings were removed rather than
+  patched. Real audio (clips from Sonus and Visio) stays.
+- **Context glosses in two layers.** Without a key, the word before decides between a form's
+  senses (an article or a quantifier points to a noun, a pronoun to a verb, "muy" to an adjective
+  or adverb), from small per-language word lists and the pack's parts of speech. With an AI key, the
+  sentence is sent once when you first hover or tap a word in it (not every paragraph in the
+  background), so a long book never costs more than what you actually look up.
+- **Phrase selection is Lingua's own**, not the browser's text selection: words are spans that
+  toggle on click, and iOS's selection handles would fight the long-press. Mouse: drag beyond a few
+  pixels. Touch: long-press marks the word, sliding extends; letting go without sliding opens the
+  drawer. Up to 60 words, so a paragraph fits but a chapter doesn't.
+- **Phrases are cards** in "From my reading" tagged `phrase`, with the sentence as context, so
+  they study like any other card.
+- **"+ Deck" moves Learning words.** A word marked Learning already has a card in "From my
+  reading"; adding it elsewhere used to make a second card. Now it moves the one card, with its
+  history.
+- **Practise again** goes over the session's cards once more, shuffled, without touching their
+  schedule (FSRS would treat a second look minutes later as a real review). Missed cards come round
+  again at the end of the pass.
+- **Onboarding asks two light questions**, both optional: why (kept for later suggestions) and what
+  you enjoy (orders Home's "Next up"; due cards never drop below second place, since reviews pile
+  up when skipped). The time-a-day choice becomes the daily goal.

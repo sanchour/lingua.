@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
-import { Ellipsis, FolderInput, Gamepad2, Layers, Pencil, Plus, Search, Settings2, Trash2 } from 'lucide-react';
+import { Ellipsis, FolderInput, Layers, Pencil, Plus, Puzzle, Search, Settings2, Trash2 } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatInterval, maturityOf } from '@/core/srs/scheduler';
@@ -139,7 +139,7 @@ export default function DeckPage() {
             {due ? `Review ${due}` : 'Nothing due'}
           </Link>
           <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} className={buttonClasses('secondary', 'lg')}>
-            <Gamepad2 size={18} aria-hidden />
+            <Puzzle size={18} aria-hidden />
             Ludus
           </Link>
         </div>

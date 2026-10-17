@@ -129,7 +129,7 @@ describe('ludus', () => {
   ];
 
   it('plans a lesson: a match round, an exercise per card, and a second one for new cards', () => {
-    const plan = planLesson(items, items, { random: seededRandom(7), canListen: false });
+    const plan = planLesson(items, items, { random: seededRandom(7) });
     expect(plan[0].kind).toBe('match');
     const perCard = new Map<string, number>();
     for (const ex of plan.slice(1)) if ('item' in ex) perCard.set(ex.item.id, (perCard.get(ex.item.id) ?? 0) + 1);
@@ -140,15 +140,14 @@ describe('ludus', () => {
         expect(new Set(ex.options).size).toBe(ex.options.length);
         expect(ex.options[ex.answer]).toBeDefined();
       }
-      expect(ex.kind).not.toBe('listen');
     }
     // Same seed, same lesson.
-    expect(planLesson(items, items, { random: seededRandom(7), canListen: false }).map((e) => e.kind)).toEqual(plan.map((e) => e.kind));
+    expect(planLesson(items, items, { random: seededRandom(7) }).map((e) => e.kind)).toEqual(plan.map((e) => e.kind));
   });
 
   it('makes gaps and word banks from examples', () => {
     for (let seed = 1; seed < 40; seed++) {
-      const plan = planLesson([items[0]], items, { random: seededRandom(seed), canListen: true, match: false });
+      const plan = planLesson([items[0]], items, { random: seededRandom(seed), match: false });
       const ex = plan[0];
       if (ex.kind === 'cloze') {
         expect(ex.before + ex.gap + ex.after).toBe(items[0].example!.text);
@@ -162,13 +161,12 @@ describe('ludus', () => {
     expect(sentenceTiles('¿Dónde está, Ana?')).toEqual(['Dónde', 'está', 'Ana']);
   });
 
-  it('adds translations, listening sentences, articles and speaking when they can be made', () => {
+  it('adds translations, articles and speaking when they can be made', () => {
     const kinds = new Set<string>();
     const gendered = { ...items[0], gender: 'm' };
     for (let seed = 1; seed < 120; seed++) {
       const [ex] = planLesson([gendered], items, {
         random: seededRandom(seed),
-        canListen: true,
         match: false,
         canSpeak: true,
         articleOf: (i) => (i.gender === 'm' ? 'el' : null),
@@ -179,17 +177,16 @@ describe('ludus', () => {
         expect(ex.answer).toEqual(['The', 'dog', 'sleeps', 'at', 'home']);
         expect(ex.tiles.length).toBeGreaterThan(ex.answer.length);
       }
-      if (ex.kind === 'listen-build') expect(ex.answer.join(' ')).toBe('El perro duerme en casa');
       if (ex.kind === 'article') expect(ex.options[ex.answer]).toBe('el');
     }
-    for (const k of ['translate', 'listen-build', 'article', 'speak']) expect(kinds).toContain(k);
+    for (const k of ['translate', 'article', 'speak']) expect(kinds).toContain(k);
     // Without a microphone or an article, those never appear.
-    const plain = planLesson(items, items, { random: seededRandom(5), canListen: false });
+    const plain = planLesson(items, items, { random: seededRandom(5) });
     expect(plain.some((e) => e.kind === 'speak' || e.kind === 'article')).toBe(false);
   });
 
   it('retries keep the right answer and grades follow mistakes', () => {
-    const plan = planLesson([items[1]], items, { random: seededRandom(3), canListen: false, match: false });
+    const plan = planLesson([items[1]], items, { random: seededRandom(3), match: false });
     const first = plan[0];
     const again = retryOf(first, seededRandom(9), 1);
     if ('options' in first && 'options' in again) expect(again.options[again.answer]).toBe(first.options[first.answer]);

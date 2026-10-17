@@ -93,7 +93,7 @@ Visio and Whisper are skipped here and come in prompt 2.
 ### 6. Check everything
 - [x] Walk every section on desktop and phone sizes, then fix what's glitchy or slow.
 
-## Prompt 2: Visio · Whisper · Home
+## Prompt 2: Visio · Whisper · Home ✅
 
 ### 1. Visio: the screening room
 - [x] Library:
@@ -140,5 +140,110 @@ Visio and Whisper are skipped here and come in prompt 2.
 Notes: Home's numbers are known words, learning, hours this week and hours in all (coverage stays in Ratio). Streaming sites (YouTube, Netflix…) can't play inside Lingua; their subtitle files can be added as "Subtitles only". That is revisited with the streaming services in Lingua 2.0.
 
 ## Lingua 2.0
-New languages, music, grammar ([`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md)), radio, recommendations,
-streaming services, and the list of improvements. It is planned in detail when prompt 2 is done.
+
+Built as seven prompts, in this order. Each is checked, committed and pushed on its own, so the
+live app gets better step by step. Fixes to what already exists come first, because they make
+every later feature feel better.
+
+### 2.0-1 · Reading, words and cards feel right ✅
+- [x] **No more voiceover:** the device voice is removed from Codex and Thesaurus (buttons, drawer,
+      Ludus, the Ordo voice settings). The listening exercises went with it; cards found in Sonus or
+      Visio still replay their real clip.
+- [x] **Hover translation** shows only the translation (no Learning/Known badge).
+- [x] **Smarter translations in context:**
+  - The gloss is chosen with the words around it: after an article or a quantifier ("cada tarde")
+    a noun sense wins over an adverb, after a pronoun a verb, and so on (per-language rules on the
+    pack's parts of speech).
+  - With an AI key, a word you hover or tap gets the meaning its sentence needs: one request per
+    sentence, only for sentences you look at, cached (Ordo › Reading can turn it off).
+  - A small "the meaning in this sentence" line in the drawer when it differs from the usual one.
+- [x] **Select to translate:** press and drag over words (mouse), or long-press and slide (touch), to
+      select a phrase, a sentence or a paragraph (up to 60 words). A bubble shows its translation
+      (AI when there's a key, else the free translators) and can save it as a phrase card.
+- [x] **Word drawer:**
+  - Two tabs, *Meaning* and *Forms*, so grammar tables get their own space.
+  - The CEFR level beside "most common #N".
+  - "+ Deck" moves a Learning word from "From my reading" to the deck you pick, instead of copying it.
+- [x] **Thesaurus:**
+  - The flicker between flashcards after grading is fixed (one card at a time, no overlap).
+  - Right-clicking (or long-pressing) a flashcard opens the same word drawer as Codex.
+  - A new Ludus icon: a puzzle piece.
+  - After Recall: "Practise again" (the same cards, schedule untouched) and "Practise with Ludus"
+    above Done; after Ludus: "Another lesson".
+  - Discover: ready-made deck tiles with their own colour, a large faint illustration, sample
+    words and a gentle lift on hover.
+- [x] **Onboarding:** two more steps: why you're learning and how much time a day (sets the daily
+      goal), and what you enjoy most (reading, listening, watching, writing, cards), which orders
+      Home's next steps (also in Ordo › Languages).
+
+### 2.0-2 · Codex: adding and editing, articles, PDFs, better dictionaries
+- [ ] Reading level (A1–C1) can be chosen when adding a text and edited later.
+- [ ] **Edit** in a book's ⋯ menu: title, author, cover, level, the text itself (chapters), and
+      adding a file.
+- [ ] **PDFs:** text is pulled out with pdf.js (loaded only when needed), split into chapters by
+      headings or pages, and read like any book. Scanned PDFs without text say so.
+- [ ] **News articles:** paste a link; the article's text is read through a reader service (with a
+      note about what it sees), with a paste-the-text fallback. Plus a few news sources per
+      language with one-tap "Latest" lists.
+- [ ] **Better dictionaries (Portuguese, Spanish, Swedish, Hungarian first, then all):**
+  - Rebuild the packs choosing the most common sense first, not the first listed.
+  - More inflected forms (Hungarian suffixes, Swedish definite forms, Portuguese clitics and contractions).
+  - A lemma fallback for forms that aren't listed.
+  - Glosses checked against a test list of 200 common words per language.
+
+### 2.0-3 · Twenty languages with their flags
+- [ ] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and
+      Indonesian (Bahasa).
+  - Packs from Wiktionary (kaikki) and frequency lists (FrequencyWords; Latin from a corpus list).
+  - Word splitting with `Intl.Segmenter` for Mandarin and Japanese, plus readings (pinyin, kana).
+  - Right-to-left reading for Arabic, everywhere text is shown.
+  - Fonts loaded only for the scripts in use (Arabic, CJK, Hangul).
+  - Starter decks, Diarium prompts and level hours for each.
+- [ ] **Flags as icons** for all twenty, drawn in the app's soft style (rounded, slightly muted).
+      Each language has a default flag and can switch to another, such as English UK/US,
+      Portuguese PT/BR, Spanish ES/MX, Arabic by country, Mandarin CN/TW, Swahili TZ/KE. Latin gets
+      a laurel emblem.
+
+### 2.0-4 · Grammatica
+Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
+- [ ] Grammar files, the topic browser, explanations and tables.
+- [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
+- [ ] Topic maps for every language (Spanish and German first).
+- [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
+
+### 2.0-5 · Cantus: learning through music (in Sonus)
+- [ ] **Search** any song in the language (Apple's free search: artwork and a preview). Lyrics come
+      from LRCLIB (free, open, often synced to the music).
+- [ ] **The song page:**
+  - Lyrics light up line by line with the music: the Spotify player when you're signed in,
+    Apple Music, or the preview.
+  - Every word works as in Codex.
+  - A translation under each line (AI or the free translators), shown, blurred or hidden.
+  - Save lines and words.
+- [ ] **Your songs:** songs you save in Lingua, and, with your own Spotify app ID (a free developer
+      app, explained step by step), your Spotify liked songs in that language.
+- [ ] **Discover:** artists, albums and styles per language, picked by hand, with charts where
+      available.
+- [ ] Placed as a *Music* tab in Sonus. Lyrics can be opened in Codex as a text.
+
+### 2.0-6 · Radio (in Sonus)
+- [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
+      search, favourites; only secure (https) streams.
+- [ ] A minimal "night sky" map: every station a dot at its place, so the dots draw the world;
+      tap one to tune in, like Radio Garden.
+- [ ] Plays in Sonus's player and mini player, with now playing when the station shares it.
+      Listening time counts.
+
+### 2.0-7 · Mundus: recommendations, and streaming services in Visio
+- [ ] **Mundus**, a deep-dive page per language: video games, series, films, books, podcasts,
+      music, YouTube channels and dictionaries. Picked by hand for all twenty languages, with level
+      hints and why each is good for learners.
+  - Buttons open them on the web, Spotify, YouTube, Goodreads, Amazon, Netflix, Max, Disney+ and others.
+  - "Add to Codex/Sonus/Visio" where it fits.
+  - Reached from Home and the sidebar.
+- [ ] **Visio › Services:** choose the services you have (Netflix, Max, Disney+, Prime Video,
+      Apple TV+, SkyShowtime, Viaplay, and free public ones such as RTVE Play, ARD, arte, NRK).
+  - The picks show which of your services carry them.
+  - With a free TMDB key, live lists of series and films originally in the language, on your
+    services in your country, with posters.
+  - Each opens in its app. "Add its subtitles" uses the Subtitles-only flow.

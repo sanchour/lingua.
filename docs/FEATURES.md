@@ -12,8 +12,9 @@ Things the original brief asked for that the plan now covers explicitly:
 
 - **More Duolingo-style ways to learn a deck (Thesaurus › Ludus, Phase 3):** multiple choice · match
   the pairs · fill the gap (cloze) · **build the sentence from a word bank** · **type the answer** ·
-  **listen and choose / type what you hear** (spoken by the device's own offline voices via the Web
-  Speech API). A Ludus session mixes them, Duolingo-style, with gentle progress and no hearts/penalties.
+  **say it out loud**. A Ludus session mixes them, Duolingo-style, with gentle progress and no
+  hearts/penalties. (The device-voice listening exercises were removed in Lingua 2.0: the voices
+  sounded poor and often didn't work. Cards found in Sonus or Visio replay their real clip instead.)
 - **More ready-made categories (Phase 3):** Top 100 → 10,000 · Basics · Verbs · Connectors ·
   Animals · Food & drink · Family & people · Home & everyday objects · Numbers, time & dates ·
   Colours & adjectives · Body & health · Travel & places · Weather & nature · Feelings.

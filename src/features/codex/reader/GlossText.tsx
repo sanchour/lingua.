@@ -13,6 +13,8 @@ import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 function glossSource(lang: string, glosses: Map<string, GlossInfo>): WordEngine {
   return {
     gloss: (norm: string) => glosses.get(norm),
+    glossAt: (el: HTMLElement) => glosses.get(el.dataset.n!),
+    requestContext: async () => undefined,
     state: () => 0,
     ensureGloss: async (norm: string, surface: string) => {
       const known = glosses.get(norm);

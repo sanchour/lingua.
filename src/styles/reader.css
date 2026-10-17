@@ -96,6 +96,17 @@
   background-color: var(--accent-soft);
 }
 
+/* A phrase being chosen (drag across words, or long-press and slide). */
+.reader-flow .w.is-selected {
+  background-color: var(--accent-soft);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+  border-radius: 2px;
+}
+.reader-flow {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* Paged mode: CSS columns, moved with a transform. */
 .reader-flow.is-paged {
   column-fill: auto;
@@ -225,27 +236,6 @@
   100% {
     box-shadow: 0 0 0 9px transparent;
   }
-}
-
-/* The hovered word's state, beside its translation. */
-.reader-tip-state:empty {
-  display: none;
-}
-.reader-tip-state {
-  flex-shrink: 0;
-  margin-left: 0.15rem;
-  padding: 0.1rem 0.45rem;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  background: color-mix(in oklab, var(--on-inverse) 14%, transparent);
-}
-.reader-tip-state[data-s='2'] {
-  background: color-mix(in oklab, var(--learning-line) 55%, transparent);
-}
-.reader-tip-state[data-s='1'] {
-  background: color-mix(in oklab, var(--sage) 55%, transparent);
 }
 
 /* Sentences with instant translations outside the reader (Ludus). */

@@ -7,7 +7,7 @@ import { getLanguage, LANGUAGES } from '@/core/lang/languages';
 import type { Level } from '@/core/lang/levels';
 import { completeOnboarding } from '@/data/languages';
 import { patchSetting, setSetting, useSettings } from '@/data/settings';
-import type { ThemePref } from '@/data/settings';
+import type { Enjoyment, LearningReason, ThemePref } from '@/data/settings';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { Button } from '@/design/primitives';
 import { spring } from '@/design/motion';
@@ -15,10 +15,12 @@ import { requestPersistence } from '@/services/storage/persist';
 import { toast } from '@/state/ui';
 import { cx } from '@/lib/cx';
 import { AestheticStep } from './AestheticStep';
+import { EnjoyStep, enjoymentsFor } from './EnjoyStep';
+import { GoalStep } from './GoalStep';
 import { LanguageStep } from './LanguageStep';
 import { LevelStep } from './LevelStep';
 
-const STEPS = ['Language', 'Level', 'Aesthetic'] as const;
+const STEPS = ['Language', 'Level', 'Goal', 'Enjoy', 'Aesthetic'] as const;
 
 function guessNative(): string {
   const code = (navigator.language || 'en').split('-')[0].toLowerCase();
@@ -44,12 +46,20 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
   const [native, setNative] = useState(guessNative);
   const [level, setLevel] = useState<Level>('A0');
   const [seedKnown, setSeedKnown] = useState(true);
+  const [reasons, setReasons] = useState<LearningReason[] | null>(null);
+  const [enjoys, setEnjoys] = useState<Enjoyment[] | null>(null);
+  const [minutes, setMinutes] = useState(15);
   const [busy, setBusy] = useState(false);
   const theme: ThemePref = settings?.theme ?? 'paper';
+  // Adding another language starts from what was chosen the first time.
+  const reasonsNow = reasons ?? settings?.learner.reasons ?? [];
+  const enjoysNow = enjoys ?? settings?.learner.enjoys ?? [];
 
   const canContinue = step !== 0 || (target !== null && target !== native);
 
   const go = (next: number) => {
+    // Leaving "what brings you here" with nothing picked yet on the next step: guess from the reasons.
+    if (STEPS[next] === 'Enjoy' && !enjoysNow.length) setEnjoys(enjoymentsFor(reasonsNow));
     setDir(next > step ? 1 : -1);
     setStep(next);
   };
@@ -58,7 +68,7 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
     if (!target) return;
     setBusy(true);
     try {
-      await completeOnboarding({ target, native, level, seedKnown, theme });
+      await completeOnboarding({ target, native, level, seedKnown, theme, minutes, learner: { reasons: reasonsNow, enjoys: enjoysNow } });
       void requestPersistence();
       navigate('/', { replace: true });
       toast(canCancel ? `Now studying ${getLanguage(target)?.name ?? target}.` : 'Welcome to Lingua. Happy reading!', { tone: 'success' });
@@ -105,7 +115,9 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
             <motion.section key={step} custom={dir} variants={slide} initial="enter" animate="center" exit="exit" transition={spring.gentle}>
               {step === 0 && <LanguageStep target={target} native={native} onTarget={setTarget} onNative={setNative} />}
               {step === 1 && <LevelStep level={level} seedKnown={seedKnown} onLevel={setLevel} onSeedKnown={setSeedKnown} />}
-              {step === 2 && target && (
+              {step === 2 && <GoalStep reasons={reasonsNow} minutes={minutes} onReasons={setReasons} onMinutes={setMinutes} />}
+              {step === 3 && <EnjoyStep enjoys={enjoysNow} onEnjoys={setEnjoys} />}
+              {step === 4 && target && (
                 <AestheticStep
                   pref={theme}
                   sample={getLanguage(target)?.sample ?? LANGUAGES[0].sample}

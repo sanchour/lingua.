@@ -1,5 +1,6 @@
 // Tier-1 translations: everything a chapter needs is read in one go into an in-memory map, so a
 // hover/tap is a Map lookup (≈1 ms). Only words missing from the offline dictionary go online.
+import type { SenseOption } from '@/core/lang/context';
 import { GLOSS_LANG } from '@/core/lang/languages';
 import { packId } from '@/core/packs/format';
 import { foldKey } from '@/core/text/normalize';
@@ -10,7 +11,8 @@ import { wordId } from '@/data/words';
 export interface GlossInfo {
   text: string;
   lemma?: string;
-  source: 'user' | 'dict' | 'online';
+  /** `context`: chosen for this occurrence (by its neighbours, or by the AI reading the sentence). */
+  source: 'user' | 'dict' | 'online' | 'context';
 }
 
 const onlineKey = (lang: string, norm: string) => `online:${lang}>${GLOSS_LANG}:${norm}`;
@@ -40,6 +42,29 @@ export async function lookupGlosses(lang: string, norms: string[]): Promise<Map<
   // The learner's own translations win.
   const words = await db.words.bulkGet(norms.map((n) => wordId(lang, n)));
   words.forEach((w, i) => w?.gloss && out.set(norms[i], { text: w.gloss, lemma: out.get(norms[i])?.lemma, source: 'user' }));
+  return out;
+}
+
+/**
+ * Every sense of the forms that can mean different things (a noun and an adverb, two lemmas), so
+ * the reader can pick the one the sentence needs. Forms with a single part of speech are left out.
+ */
+export async function lookupSenses(lang: string, norms: string[]): Promise<Map<string, SenseOption[]>> {
+  const out = new Map<string, SenseOption[]>();
+  if (!norms.length) return out;
+  const pack = packId(lang);
+  const forms = await db.dictForms.bulkGet(norms.map((n) => [pack, n] as [string, string]));
+  const lemmas = new Set<string>();
+  for (const f of forms) for (const l of f?.lemmas ?? []) lemmas.add(l);
+  if (!lemmas.size) return out;
+  const entries = await db.dictEntries.bulkGet([...lemmas].map((l) => [pack, l] as [string, string]));
+  const byLemma = new Map(entries.filter((e) => e !== undefined).map((e) => [e.lemma, e]));
+  forms.forEach((f, i) => {
+    if (!f) return;
+    const options: SenseOption[] = [];
+    for (const lemma of f.lemmas) for (const s of byLemma.get(lemma)?.senses ?? []) if (s.glosses.length) options.push({ lemma, pos: s.pos, glosses: s.glosses });
+    if (new Set(options.map((o) => o.pos)).size > 1) out.set(norms[i], options);
+  });
   return out;
 }
 

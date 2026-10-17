@@ -4,7 +4,7 @@ import { getLevel } from '@/core/lang/levels';
 import { db } from './db';
 import type { LinguaDB } from './db';
 import { patchSetting, setSetting } from './settings';
-import type { ThemePref } from './settings';
+import type { Settings, ThemePref } from './settings';
 import type { LanguageProfile } from './types';
 
 /** The language being studied right now; `null` before onboarding, `undefined` while loading. */
@@ -18,6 +18,9 @@ export interface OnboardingChoice {
   level: Level;
   seedKnown: boolean;
   theme: ThemePref;
+  /** Minutes a day: the daily goal. */
+  minutes?: number;
+  learner?: Settings['learner'];
 }
 
 export async function completeOnboarding(choice: OnboardingChoice, database: LinguaDB = db): Promise<void> {
@@ -31,13 +34,14 @@ export async function completeOnboarding(choice: OnboardingChoice, database: Lin
       level: choice.level,
       isActive: 1,
       dictPackId: existing?.dictPackId,
-      dailyGoal: existing?.dailyGoal ?? { reviews: 50, readMinutes: 15, listenMinutes: 10 },
+      dailyGoal: choice.minutes ? { reviews: 50, listenMinutes: 10, ...existing?.dailyGoal, readMinutes: choice.minutes } : (existing?.dailyGoal ?? { reviews: 50, readMinutes: 15, listenMinutes: 10 }),
       seededKnownTopN: choice.seedKnown ? getLevel(choice.level).seedKnownTopN : 0,
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
     };
     await database.languages.put(profile);
     await setSetting('theme', choice.theme, database);
+    if (choice.learner) await setSetting('learner', choice.learner, database);
     await patchSetting('meta', { onboardedAt: now }, database);
   });
 }

@@ -1,26 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Mic, MicOff, Volume2 } from 'lucide-react';
+import { Mic, MicOff } from 'lucide-react';
 import { normalizeAnswer } from '@/core/srs/answer';
 import type { Exercise, LudusItem } from '@/core/srs/ludus';
-import { useSettings } from '@/data/settings';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Kbd } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { listenOnce, RecognitionError } from '@/services/speech/recognition';
-import { speak } from '@/services/speech/tts';
 import { GlossText } from '@/features/codex/reader/GlossText';
 import { articleFor } from '../common/words';
 
 export type Phase = 'answer' | 'right' | 'wrong';
 type Of<K extends Exercise['kind']> = Extract<Exercise, { kind: K }>;
-
-export function useSpeak(lang: string) {
-  const settings = useSettings();
-  return (text: string, slow = false) => speak(text, lang, { rate: (settings?.speech.rate ?? 0.95) * (slow ? 0.7 : 1), voiceUri: settings?.speech.voices[lang] });
-}
 
 function Prompt({ children, lang }: { children: ReactNode; lang?: string }) {
   return (
@@ -73,13 +66,7 @@ function Options({ options, value, onChange, phase, answer, lang }: { options: s
   );
 }
 
-export function ChoiceExercise({ ex, lang, value, onChange, phase }: { ex: Of<'choose-meaning'> | Of<'choose-term'> | Of<'listen'>; lang: string; value: number | null; onChange: (v: number) => void; phase: Phase }) {
-  const say = useSpeak(lang);
-  useEffect(() => {
-    if (ex.kind === 'listen') void say(ex.item.term);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ex.key]);
-
+export function ChoiceExercise({ ex, lang, value, onChange, phase }: { ex: Of<'choose-meaning'> | Of<'choose-term'>; lang: string; value: number | null; onChange: (v: number) => void; phase: Phase }) {
   return (
     <div className="space-y-8">
       <div className="text-center">
@@ -89,21 +76,6 @@ export function ChoiceExercise({ ex, lang, value, onChange, phase }: { ex: Of<'c
           </Prompt>
         )}
         {ex.kind === 'choose-term' && <Prompt>{ex.item.meaning}</Prompt>}
-        {ex.kind === 'listen' && (
-          <div className="flex items-center justify-center gap-3">
-            <button
-              type="button"
-              aria-label="Play again"
-              onClick={() => void say(ex.item.term)}
-              className="no-callout grid size-24 place-items-center rounded-[28px] bg-accent-fill text-on-accent shadow-elev-2 transition-transform active:scale-95"
-            >
-              <Volume2 size={40} aria-hidden />
-            </button>
-            <button type="button" onClick={() => void say(ex.item.term, true)} className="rounded-xl px-3 py-2 text-sm font-semibold text-ink-soft hover:bg-surface">
-              Slower
-            </button>
-          </div>
-        )}
       </div>
       <Options options={ex.options} value={value} onChange={onChange} phase={phase} answer={ex.answer} lang={ex.kind === 'choose-term' ? lang : undefined} />
     </div>
@@ -136,7 +108,7 @@ export function ClozeExercise({ ex, lang, value, onChange, phase }: { ex: Of<'cl
 
 // ── Build the sentence ──────────────────────────────────────────────────────
 
-type Buildable = Of<'build'> | Of<'listen-build'> | Of<'translate'>;
+type Buildable = Of<'build'> | Of<'translate'>;
 export const builtSentence = (ex: Buildable, picked: number[]) => picked.map((i) => ex.tiles[i]).join(' ');
 /** Translations are built in English, so they're compared as English. */
 export const buildIsRight = (ex: Buildable, picked: number[], lang: string) => {
@@ -144,15 +116,10 @@ export const buildIsRight = (ex: Buildable, picked: number[], lang: string) => {
   return normalizeAnswer(builtSentence(ex, picked), l) === normalizeAnswer(ex.answer.join(' '), l);
 };
 
-/** Word-bank exercises: build the sentence (from its translation), what you hear, or a translation. */
+/** Word-bank exercises: build the sentence (from its translation), or build its translation. */
 export function BuildExercise({ ex, lang, value, onChange, phase }: { ex: Buildable; lang: string; value: number[]; onChange: (v: number[]) => void; phase: Phase }) {
   const locked = phase !== 'answer';
-  const say = useSpeak(lang);
   const sentence = ex.item.example?.text ?? ex.item.term;
-  useEffect(() => {
-    if (ex.kind === 'listen-build') void say(sentence);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ex.key]);
   // Tiles are in the language being learned, except when building an English translation.
   const tileLang = ex.kind === 'translate' ? undefined : lang;
   return (
@@ -162,16 +129,6 @@ export function BuildExercise({ ex, lang, value, onChange, phase }: { ex: Builda
         <p lang={lang} className="text-center [font-family:var(--card-font,var(--font-serif))] text-[clamp(1.4rem,4.5vw,1.9rem)] leading-snug">
           <GlossText text={sentence} lang={lang} />
         </p>
-      )}
-      {ex.kind === 'listen-build' && (
-        <div className="flex items-center justify-center gap-3">
-          <button type="button" aria-label="Play the sentence" onClick={() => void say(sentence)} className="no-callout grid size-20 place-items-center rounded-[26px] bg-accent-fill text-on-accent shadow-elev-2 transition-transform active:scale-95">
-            <Volume2 size={34} aria-hidden />
-          </button>
-          <button type="button" onClick={() => void say(sentence, true)} className="rounded-xl px-3 py-2 text-sm font-semibold text-ink-soft hover:bg-surface">
-            Slower
-          </button>
-        </div>
       )}
       <div
         className={cx(
@@ -204,7 +161,6 @@ export function BuildExercise({ ex, lang, value, onChange, phase }: { ex: Builda
           {ex.answer.join(' ')}
         </p>
       )}
-      {phase !== 'answer' && ex.kind === 'listen-build' && ex.item.example?.translation && <p className="-mt-4 text-center text-[15px] text-ink-soft italic">{ex.item.example.translation}</p>}
       <div className="flex flex-wrap justify-center gap-2">
         {ex.tiles.map((t, i) => {
           const used = value.includes(i);
@@ -321,11 +277,9 @@ export function MatchExercise({ ex, lang, onDone, random }: { ex: Of<'match'>; l
   const [matched, setMatched] = useState<Set<string>>(new Set());
   const [shake, setShake] = useState<string[]>([]);
   const mistakes = useRef(new Map<string, number>());
-  const say = useSpeak(lang);
 
   const choose = (side: 'l' | 'r', id: string) => {
     if (matched.has(id)) return;
-    if (side === 'l') void say(ex.items.find((i) => i.id === id)!.term);
     if (!pick || pick.side === side) {
       setPick({ side, id });
       return;
@@ -404,7 +358,6 @@ export function ArticleExercise({ ex, lang, value, onChange, phase }: { ex: Of<'
 
 /** The word to say, a microphone, and what was heard. `onHeard` gets the recogniser's best guesses. */
 export function SpeakExercise({ ex, lang, heard, onHeard, phase, onSkip }: { ex: Of<'speak'>; lang: string; heard: string[]; onHeard: (alternatives: string[]) => void; phase: Phase; onSkip: () => void }) {
-  const say = useSpeak(lang);
   const [listening, setListening] = useState(false);
   const [live, setLive] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -436,9 +389,6 @@ export function SpeakExercise({ ex, lang, heard, onHeard, phase, onSkip }: { ex:
           {ex.item.term}
         </Prompt>
         <p className="mt-2 text-[15px] text-ink-soft">{ex.item.meaning}</p>
-        <button type="button" onClick={() => void say(ex.item.term)} className="mt-3 inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-semibold text-ink-soft hover:bg-surface">
-          <Volume2 size={16} aria-hidden /> Hear it first
-        </button>
       </div>
       <div className="flex flex-col items-center gap-3">
         <motion.button

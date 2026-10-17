@@ -1,7 +1,9 @@
+import { posFromContext, senseInContext, shortGloss } from '@/core/lang/context';
 import { sentenceAt } from '@/core/text/tokenizer';
 import type { Text, WordState } from '@/data/types';
 import { markKnownBulk, setWordState } from '@/data/words';
 import type { WordContext } from '@/data/words';
+import { contextGlosses, contextGlossesEnabled } from '@/services/llm/contextGloss';
 import { fetchOnlineGloss } from '@/services/translate/gloss';
 import type { GlossInfo } from '@/services/translate/gloss';
 import type { ChapterModel } from './model';
@@ -25,8 +27,15 @@ interface WordEvent {
  * Imperative word engine for one rendered chapter. State changes repaint the affected spans
  * directly (no React render) and are then saved; glosses come from the in-memory map.
  */
+const SENTENCE_END = /[.!?;:…]/;
+const sentenceSegmenters = new Map<string, Intl.Segmenter>();
+
 export class WordEngine {
   private index = new Map<string, HTMLElement[]>();
+  /** Glosses for one occurrence (`block:offset`): chosen by the neighbours, or read by the AI. */
+  private contextual = new Map<string, GlossInfo>();
+  /** Sentences already sent to the AI (`block:start`). */
+  private asked = new Set<string>();
 
   constructor(
     readonly text: Text,
@@ -57,6 +66,73 @@ export class WordEngine {
     return this.model.glosses.get(norm);
   }
 
+  /**
+   * The gloss for this occurrence of a word: the learner's own translation wins; then what the AI
+   * read in this sentence; then the dictionary sense the neighbouring word points to; else the
+   * word's usual gloss.
+   */
+  glossAt(el: HTMLElement): GlossInfo | undefined {
+    const norm = el.dataset.n!;
+    const base = this.gloss(norm);
+    if (base?.source === 'user') return base;
+    const b = Number(el.closest<HTMLElement>('[data-b]')?.dataset.b ?? -1);
+    const offset = Number(el.dataset.o ?? -1);
+    const key = `${b}:${offset}`;
+    const known = this.contextual.get(key);
+    if (known) return known;
+    const options = this.model.senses?.get(norm);
+    const tokens = this.model.blocks[b]?.tokens;
+    if (!options || !tokens) return base;
+    const at = tokens.findIndex((t) => t.start === offset);
+    let previous: string | undefined;
+    for (let i = at - 1; i >= 0; i--) {
+      const t = tokens[i];
+      if (t.isWord) {
+        previous = t.norm;
+        break;
+      }
+      if (SENTENCE_END.test(t.text)) break;
+    }
+    const sense = senseInContext(options, posFromContext(this.lang, previous));
+    if (!sense) return base;
+    const info: GlossInfo = { text: shortGloss(sense.glosses), lemma: sense.lemma, source: 'context' };
+    this.contextual.set(key, info);
+    return info;
+  }
+
+  /**
+   * With an AI key: asks once for the meanings every word has in this sentence. `onReady` runs when
+   * they arrive (the tooltip then refreshes itself).
+   */
+  async requestContext(el: HTMLElement, onReady?: () => void): Promise<void> {
+    const blockEl = el.closest<HTMLElement>('[data-b]');
+    const b = Number(blockEl?.dataset.b ?? -1);
+    const block = this.model.blocks[b];
+    if (!block?.tokens || block.block.t === 'img') return;
+    const text = block.block.text;
+    let seg = sentenceSegmenters.get(this.lang);
+    if (!seg) sentenceSegmenters.set(this.lang, (seg = new Intl.Segmenter(this.lang, { granularity: 'sentence' })));
+    const sentence = seg.segment(text).containing(Number(el.dataset.o ?? 0));
+    if (!sentence) return;
+    const key = `${b}:${sentence.index}`;
+    if (this.asked.has(key)) return;
+    this.asked.add(key);
+    if (!(await contextGlossesEnabled())) return;
+    const end = sentence.index + sentence.segment.length;
+    const words = block.tokens.filter((t) => t.isWord && t.start >= sentence.index && t.start < end);
+    if (!words.length || words.length > 80) return;
+    try {
+      const glosses = await contextGlosses(this.lang, sentence.segment.trim(), words.map((w) => w.text));
+      words.forEach((w, i) => {
+        const g = glosses[i];
+        if (g) this.contextual.set(`${b}:${w.start}`, { text: g, lemma: this.gloss(w.norm!)?.lemma, source: 'context' });
+      });
+      onReady?.();
+    } catch {
+      this.asked.delete(key); // offline or no answer: try again on a later look
+    }
+  }
+
   /** Online fallback for a missing gloss; the answer is remembered for the chapter. */
   async ensureGloss(norm: string, surface: string): Promise<GlossInfo | null> {
     const known = this.gloss(norm);
@@ -78,11 +154,13 @@ export class WordEngine {
     const b = Number(blockEl?.dataset.b ?? 0);
     const block = this.model.blocks[b]?.block;
     const norm = el.dataset.n!;
-    const gloss = this.gloss(norm);
+    const gloss = this.glossAt(el);
+    const usual = this.gloss(norm)?.text;
     return {
       surface: el.textContent ?? norm,
       sentence: block && block.t !== 'img' ? sentenceAt(block.text, Number(el.dataset.o ?? 0), this.lang) : undefined,
       gloss: gloss?.text,
+      usualGloss: gloss?.source === 'context' && usual && usual !== gloss.text ? usual : undefined,
       lemma: gloss?.lemma,
       textId: this.text.id,
       chapterIndex: this.model.chapter.index,

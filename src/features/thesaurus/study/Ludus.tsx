@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Check, Volume2 } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { checkAnswer } from '@/core/srs/answer';
 import type { AnswerCheck } from '@/core/srs/answer';
 import { EXERCISE_LABEL, gradeFor, MODE_OF, planLesson, retryOf, seededRandom } from '@/core/srs/ludus';
@@ -16,7 +16,7 @@ import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { recognitionSupported } from '@/services/speech/recognition';
 import { ARTICLE_SETS, articleFor } from '../common/words';
-import { ArticleExercise, BuildExercise, buildIsRight, ChoiceExercise, ClozeExercise, MatchExercise, SpeakExercise, TypeExercise, useSpeak } from './exercises';
+import { ArticleExercise, BuildExercise, buildIsRight, ChoiceExercise, ClozeExercise, MatchExercise, SpeakExercise, TypeExercise } from './exercises';
 import type { Phase } from './exercises';
 import { StudyBar } from './StudyBar';
 import type { SummaryStats } from './Summary';
@@ -44,7 +44,7 @@ const ids = (ex: Exercise) => (ex.kind === 'match' ? ex.items.map((i) => i.id) :
 /** "der Hund", but "l’ami" (an elided article takes no space). */
 const withArticle = (article: string, term: string) => (article.endsWith('’') ? article + term : `${article} ${term}`);
 
-const isBuild = (ex: Exercise): ex is Extract<Exercise, { kind: 'build' | 'listen-build' | 'translate' }> => ex.kind === 'build' || ex.kind === 'listen-build' || ex.kind === 'translate';
+const isBuild = (ex: Exercise): ex is Extract<Exercise, { kind: 'build' | 'translate' }> => ex.kind === 'build' || ex.kind === 'translate';
 
 /** Recognisers often add the article or other words: the last words are compared too. */
 function saidIt(heard: string[], term: string, lang: string): boolean {
@@ -56,11 +56,9 @@ function solution(ex: Exercise): string {
   switch (ex.kind) {
     case 'choose-meaning':
     case 'choose-term':
-    case 'listen':
     case 'cloze':
       return ex.options[ex.answer];
     case 'build':
-    case 'listen-build':
     case 'translate':
       return ex.answer.join(' ');
     case 'article':
@@ -78,16 +76,14 @@ interface LudusProps {
   title: string;
   entries: LudusEntry[];
   pool: LudusItem[];
-  canListen: boolean;
   onFinish: (stats: SummaryStats) => void;
   onClose: () => void;
   onActive: (ms: number) => void;
 }
 
 /** A Duolingo-style lesson over the chosen cards. No hearts, no penalties: mistakes come back once. */
-export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose, onActive }: LudusProps) {
+export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive }: LudusProps) {
   const { pointer } = useLayout();
-  const say = useSpeak(lang);
   const look = useSettings()?.cards ?? DEFAULT_SETTINGS.cards;
   const random = useMemo(() => seededRandom(Date.now() % 2 ** 31), []);
   const plan = useMemo(
@@ -95,9 +91,9 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
       planLesson(
         entries.map((e) => e.item),
         pool,
-        { random, canListen, canSpeak: recognitionSupported(), articleOf: (i) => articleFor(lang, i.gender, i.term, i.pos), articles: ARTICLE_SETS[lang] ?? [] },
+        { random, canSpeak: recognitionSupported(), articleOf: (i) => articleFor(lang, i.gender, i.term, i.pos), articles: ARTICLE_SETS[lang] ?? [] },
       ),
-    [entries, pool, random, canListen, lang],
+    [entries, pool, random, lang],
   );
   const tracks = useRef<Map<string, Track> | null>(null);
   if (!tracks.current) {
@@ -245,7 +241,7 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
                 {ex.key.includes('-r') ? 'One more try · ' : ''}
                 {EXERCISE_LABEL[ex.kind]}
               </p>
-              {(ex.kind === 'choose-meaning' || ex.kind === 'choose-term' || ex.kind === 'listen') && <ChoiceExercise ex={ex} lang={lang} value={choice} onChange={setChoice} phase={phase} />}
+              {(ex.kind === 'choose-meaning' || ex.kind === 'choose-term') && <ChoiceExercise ex={ex} lang={lang} value={choice} onChange={setChoice} phase={phase} />}
               {ex.kind === 'cloze' && <ClozeExercise ex={ex} lang={lang} value={choice} onChange={setChoice} phase={phase} />}
               {isBuild(ex) && <BuildExercise ex={ex} lang={lang} value={tiles} onChange={setTiles} phase={phase} />}
               {ex.kind === 'article' && <ArticleExercise ex={ex} lang={lang} value={choice} onChange={setChoice} phase={phase} />}
@@ -289,7 +285,7 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
             {phase === 'wrong' && ex && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>
                 <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase">Correct answer</p>
-                <p lang={ex.kind === 'choose-meaning' || ex.kind === 'listen' || ex.kind === 'translate' ? undefined : lang} className="font-serif text-xl font-semibold">
+                <p lang={ex.kind === 'choose-meaning' || ex.kind === 'translate' ? undefined : lang} className="font-serif text-xl font-semibold">
                   {solution(ex)}
                 </p>
                 {item && <p className="truncate text-sm text-ink-soft">{item.term} — {item.meaning}</p>}
@@ -297,11 +293,6 @@ export function Ludus({ lang, title, entries, pool, canListen, onFinish, onClose
             )}
           </div>
           <div className="flex items-center gap-2">
-            {phase !== 'answer' && item && canListen && (
-              <button type="button" aria-label="Listen" onClick={() => void say(isBuild(ex) ? (item.example?.text ?? item.term) : item.term)} className="grid size-12 place-items-center rounded-2xl text-ink-soft hover:bg-surface">
-                <Volume2 size={20} aria-hidden />
-              </button>
-            )}
             {ex?.kind === 'match' && phase === 'answer' ? (
               <p className="text-sm text-ink-soft">Tap a word, then its meaning</p>
             ) : (

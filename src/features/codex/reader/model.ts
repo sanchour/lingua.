@@ -4,7 +4,8 @@ import type { Token } from '@/core/text/tokenizer';
 import { getChapter } from '@/data/library';
 import type { Block, Chapter, Text, WordState } from '@/data/types';
 import { getWordStates } from '@/data/words';
-import { lookupGlosses } from '@/services/translate/gloss';
+import type { SenseOption } from '@/core/lang/context';
+import { lookupGlosses, lookupSenses } from '@/services/translate/gloss';
 import type { GlossInfo } from '@/services/translate/gloss';
 
 export interface BlockModel {
@@ -20,6 +21,8 @@ export interface ChapterModel {
   /** Mutable: the word engine keeps it current as states change. */
   states: Map<string, WordState>;
   glosses: Map<string, GlossInfo>;
+  /** Senses of the forms that are ambiguous, for choosing by context. */
+  senses: Map<string, SenseOption[]>;
 }
 
 // A few recent chapters stay in memory so turning back and forth is instant.
@@ -41,8 +44,8 @@ export async function modelFromChapter(text: Pick<Text, 'lang'>, chapter: Chapte
     return { block, tokens };
   });
   const norms = [...unique];
-  const [states, glosses] = await Promise.all([getWordStates(text.lang, norms), lookupGlosses(text.lang, norms)]);
-  return { chapter, blocks, norms, states, glosses };
+  const [states, glosses, senses] = await Promise.all([getWordStates(text.lang, norms), lookupGlosses(text.lang, norms), lookupSenses(text.lang, norms).catch(() => new Map<string, SenseOption[]>())]);
+  return { chapter, blocks, norms, states, glosses, senses };
 }
 
 export function loadChapterModel(text: Text, index: number): Promise<ChapterModel | null> {

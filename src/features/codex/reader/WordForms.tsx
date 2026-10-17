@@ -15,7 +15,7 @@ const FIRST = 2;
  * case and number, and the remaining forms (infinitive, participles, comparative). The form met in
  * the text is highlighted.
  */
-export function WordForms({ lang, lemma, seen }: { lang: string; lemma: string; seen: string }) {
+export function WordForms({ lang, lemma, seen, heading = true }: { lang: string; lemma: string; seen: string; heading?: boolean }) {
   const paradigm = useLiveQuery(() => db.dictParadigms.get([packId(lang), lemma]), [lang, lemma]);
   const [all, setAll] = useState(false);
   const built = useMemo(() => (paradigm ? formTables(lang, paradigm.forms, paradigm.pos) : null), [paradigm, lang]);
@@ -27,7 +27,7 @@ export function WordForms({ lang, lemma, seen }: { lang: string; lemma: string; 
 
   return (
     <section>
-      <h3 className="mb-2.5 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Forms</h3>
+      {heading && <h3 className="mb-2.5 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Forms</h3>}
       <div className="grid gap-3 sm:grid-cols-2">
         {tables.map((table) => (
           <div key={table.title} className={cx('rounded-2xl border border-line/70 bg-surface px-3.5 py-3', table.columns && table.columns.length > 2 && 'sm:col-span-2')}>

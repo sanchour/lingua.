@@ -3,20 +3,20 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
 import { Coffee } from 'lucide-react';
 import { useApp } from '@/app/context';
+import { shuffle } from '@/core/srs/ludus';
 import type { LudusItem } from '@/core/srs/ludus';
 import { recordSession } from '@/data/activity';
 import { db } from '@/data/db';
 import { loadPracticeCards, loadStudySession } from '@/data/study';
 import type { StudySession } from '@/data/study';
-import type { Card, Note } from '@/data/types';
+import type { Card, Deck, Note } from '@/data/types';
 import { buttonClasses } from '@/design/primitives';
 import { spring } from '@/design/motion';
-import { useCanSpeak } from '@/services/speech/tts';
 import { Ludus } from './Ludus';
 import type { LudusEntry } from './Ludus';
 import { Recall } from './Recall';
 import { Summary } from './Summary';
-import type { SummaryStats } from './Summary';
+import type { SummaryAction, SummaryStats } from './Summary';
 
 const LESSON_CARDS = 10;
 const POOL = 300;
@@ -53,7 +53,16 @@ async function loadLudus(lang: string, deckId: string | null, affectSchedule: bo
   return { entries, pool };
 }
 
-type Loaded = { kind: 'recall'; session: StudySession } | { kind: 'ludus'; entries: LudusEntry[]; pool: LudusItem[] };
+type Loaded = { kind: 'recall'; session: StudySession; practice?: boolean } | { kind: 'ludus'; entries: LudusEntry[]; pool: LudusItem[] };
+
+/** The cards of a finished session, shuffled, for a practice pass that leaves their schedule alone. */
+async function loadPass(cardIds: string[]): Promise<StudySession> {
+  const cards = (await db.cards.bulkGet(cardIds)).filter((c): c is Card => Boolean(c && !c.deletedAt));
+  const notes = (await db.notes.bulkGet([...new Set(cards.map((c) => c.noteId))])).filter((n): n is Note => Boolean(n && !n.deletedAt));
+  const decks = (await db.decks.bulkGet([...new Set(cards.map((c) => c.deckId))])).filter((d): d is Deck => Boolean(d));
+  const noteMap = new Map(notes.map((n) => [n.id, n]));
+  return { queue: shuffle(cards.filter((c) => noteMap.has(c.noteId)), Math.random), notes: noteMap, decks: new Map(decks.map((d) => [d.id, d])) };
+}
 
 export default function StudyPage() {
   const { deckId: param } = useParams();
@@ -63,12 +72,12 @@ export default function StudyPage() {
   const lang = language.id;
   const deckId = param && param !== 'all' ? param : null;
   const navigate = useNavigate();
-  const canListen = useCanSpeak(lang);
 
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState<SummaryStats | null>(null);
   const [round, setRound] = useState(0);
+  const [pass, setPass] = useState(0);
   const active = useRef({ ms: 0, startedAt: Date.now(), cards: 0 });
 
   useEffect(() => {
@@ -111,15 +120,29 @@ export default function StudyPage() {
   }, []);
 
   if (summary) {
+    const ids = summary.cardIds ?? [];
+    const actions: SummaryAction[] =
+      mode === 'ludus'
+        ? [{ label: 'Another lesson', onClick: () => setRound((r) => r + 1) }]
+        : [
+            ...(ids.length
+              ? [
+                  {
+                    label: 'Practise again',
+                    onClick: () =>
+                      void loadPass(ids).then((session) => {
+                        setLoaded({ kind: 'recall', session, practice: true });
+                        setPass((p) => p + 1);
+                        setSummary(null);
+                      }),
+                  },
+                ]
+              : []),
+            { label: 'Practise with Ludus', onClick: () => navigate(`/thesaurus/study/${param}?mode=ludus`, { replace: true }) },
+          ];
     return (
       <div className="grid min-h-dvh place-items-center py-10">
-        <Summary
-          title={mode === 'ludus' ? 'Lesson complete' : 'Done for now'}
-          stats={summary}
-          onDone={back}
-          onAgain={mode === 'ludus' ? () => setRound((r) => r + 1) : () => navigate(`/thesaurus/study/${param}?mode=ludus`, { replace: true })}
-          againLabel={mode === 'ludus' ? 'Another lesson' : 'Practise with Ludus'}
-        />
+        <Summary title={mode === 'ludus' ? 'Lesson complete' : loaded?.kind === 'recall' && loaded.practice ? 'Another pass done' : 'Done for now'} stats={summary} onDone={back} actions={actions} />
       </div>
     );
   }
@@ -154,8 +177,8 @@ export default function StudyPage() {
   }
 
   return loaded.kind === 'recall' ? (
-    <Recall key={round} lang={lang} title={title} session={loaded.session} onFinish={finish} onClose={back} onActive={onActive} />
+    <Recall key={`${round}:${pass}`} lang={lang} title={loaded.practice ? `Practice · ${title}` : title} session={loaded.session} practice={loaded.practice} onFinish={finish} onClose={back} onActive={onActive} />
   ) : (
-    <Ludus key={round} lang={lang} title={`Ludus · ${title}`} entries={loaded.entries} pool={loaded.pool} canListen={canListen} onFinish={finish} onClose={back} onActive={onActive} />
+    <Ludus key={round} lang={lang} title={`Ludus · ${title}`} entries={loaded.entries} pool={loaded.pool} onFinish={finish} onClose={back} onActive={onActive} />
   );
 }

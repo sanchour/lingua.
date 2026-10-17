@@ -21,8 +21,14 @@ export type MediaSort = 'recent' | 'added' | 'title' | 'longest' | 'shortest';
 /** System follows the device; Reduced keeps movement minimal; Full adds richer, longer motion. */
 export type MotionPref = 'system' | 'reduced' | 'full';
 
+/** Why someone learns, from onboarding (kept for later suggestions). */
+export type LearningReason = 'travel' | 'books' | 'talk' | 'family' | 'work' | 'culture' | 'fun';
+/** The kinds of practice someone enjoys most, in their order: Home lists these first. */
+export type Enjoyment = 'reading' | 'listening' | 'watching' | 'writing' | 'cards';
+
 export interface Settings {
   theme: ThemePref;
+  learner: { reasons: LearningReason[]; enjoys: Enjoyment[] };
   reader: {
     font: ReaderFontId;
     sizePx: number;
@@ -35,6 +41,8 @@ export interface Settings {
     /** Page colour while reading, for Paper and for Nocturne. */
     paperLight: PaperLightId;
     paperDark: PaperDarkId;
+    /** With an AI key: words get the meaning their sentence needs (one request per sentence looked up). */
+    contextGlosses: boolean;
   };
   /** How flashcards look (Thesaurus). */
   cards: { font: ReaderFontId; style: CardStyleId; tint: CardTintId; size: 'sm' | 'md' | 'lg' };
@@ -65,8 +73,6 @@ export interface Settings {
   };
   /** Visio's player. */
   visio: { native: 'show' | 'blur' | 'hide'; autoPause: boolean; subtitleScale: number };
-  /** Device-only: spoken words use this device's voices (Web Speech), chosen per language. */
-  speech: { rate: number; voices: Record<string, string> };
   /** Device-only. */
   ui: {
     motion: MotionPref;
@@ -87,6 +93,7 @@ export type SettingKey = keyof Settings;
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: 'paper',
+  learner: { reasons: [], enjoys: [] },
   reader: {
     font: 'literata',
     sizePx: 20,
@@ -98,6 +105,7 @@ export const DEFAULT_SETTINGS: Settings = {
     autoKnownOnPageTurn: false,
     paperLight: 'cream',
     paperDark: 'charcoal',
+    contextGlosses: true,
   },
   cards: { font: 'literata', style: 'plain', tint: 'paper', size: 'md' },
   study: { newPerDay: 15, maxReviews: 200, desiredRetention: 0.9, ludusAffectsSchedule: true, autoPromoteMature: true },
@@ -106,13 +114,12 @@ export const DEFAULT_SETTINGS: Settings = {
   apiKeys: { groq: '', gemini: '' },
   audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 2, repeatGapMs: 1200, whisperModel: 'whisper-large-v3-turbo', downloadProxy: '', transcriber: 'groq', deviceModel: 'base' },
   visio: { native: 'blur', autoPause: false, subtitleScale: 1 },
-  speech: { rate: 0.95, voices: {} },
   ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null },
 };
 
 /** Settings that describe this device rather than the learner; excluded from backup merges. */
-export const DEVICE_LOCAL_SETTINGS: ReadonlySet<string> = new Set<SettingKey>(['apiKeys', 'ui', 'meta', 'speech']);
+export const DEVICE_LOCAL_SETTINGS: ReadonlySet<string> = new Set<SettingKey>(['apiKeys', 'ui', 'meta']);
 
 function mergeValue<K extends SettingKey>(key: K, stored: unknown): Settings[K] {
   const fallback = DEFAULT_SETTINGS[key];
