@@ -6,8 +6,12 @@ export interface PackSource {
   code: string;
   /** Language name as used by kaikki.org URLs. */
   kaikki: string;
-  /** FrequencyWords (OpenSubtitles 2018) list code. */
+  /** FrequencyWords (OpenSubtitles) list code, or a Leipzig corpus for languages without subtitles. */
   frequency: string;
+  /** FrequencyWords edition when 2018 has none (Japanese). */
+  frequencyYear?: 2016 | 2018;
+  /** Leipzig Corpora Collection word list (CC BY), e.g. `lat_wikipedia_2021_100K`. */
+  leipzig?: string;
 }
 
 export const PACK_SOURCES: PackSource[] = [
@@ -21,13 +25,30 @@ export const PACK_SOURCES: PackSource[] = [
   { code: 'it', kaikki: 'Italian', frequency: 'it' },
   { code: 'sv', kaikki: 'Swedish', frequency: 'sv' },
   { code: 'hu', kaikki: 'Hungarian', frequency: 'hu' },
+  // Lingua 2.0: ten more.
+  { code: 'ar', kaikki: 'Arabic', frequency: 'ar' },
+  { code: 'zh', kaikki: 'Chinese', frequency: 'zh_cn' },
+  { code: 'nl', kaikki: 'Dutch', frequency: 'nl' },
+  { code: 'nb', kaikki: 'Norwegian Bokmål', frequency: 'no' },
+  { code: 'tr', kaikki: 'Turkish', frequency: 'tr' },
+  { code: 'ja', kaikki: 'Japanese', frequency: 'ja', frequencyYear: 2016 },
+  { code: 'ko', kaikki: 'Korean', frequency: 'ko' },
+  { code: 'la', kaikki: 'Latin', frequency: 'la', leipzig: 'lat_wikipedia_2021_100K' },
+  { code: 'sw', kaikki: 'Swahili', frequency: 'sw', leipzig: 'swa_wikipedia_2021_100K' },
+  { code: 'id', kaikki: 'Indonesian', frequency: 'id' },
 ];
 
 export const CACHE_DIR = new URL('../.cache/', import.meta.url);
 export const PACKS_DIR = new URL('../../public/packs/', import.meta.url);
 
-export const kaikkiUrl = (s: PackSource) => `https://kaikki.org/dictionary/${s.kaikki}/kaikki.org-dictionary-${s.kaikki}.jsonl.gz`;
+/** kaikki.org keeps a language in a folder by its name; the file name drops the spaces. */
+export const kaikkiUrl = (s: PackSource) =>
+  `https://kaikki.org/dictionary/${encodeURIComponent(s.kaikki)}/kaikki.org-dictionary-${encodeURIComponent(s.kaikki.replace(/ /g, ''))}.jsonl.gz`;
 export const kaikkiFile = (s: PackSource) => new URL(`kaikki-${s.code}.jsonl.gz`, CACHE_DIR);
 export const frequencyUrl = (s: PackSource) =>
-  `https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/${s.frequency}/${s.frequency}_50k.txt`;
+  s.leipzig
+    ? `https://downloads.wortschatz-leipzig.de/corpora/${s.leipzig}.tar.gz`
+    : `https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/${s.frequencyYear ?? 2018}/${s.frequency}/${s.frequency}_50k.txt`;
+/** A Leipzig corpus is downloaded whole; its word list becomes the frequency file. */
+export const leipzigFile = (s: PackSource) => new URL(`leipzig-${s.code}.tar.gz`, CACHE_DIR);
 export const frequencyFile = (s: PackSource) => new URL(`freq-${s.code}.txt`, CACHE_DIR);

@@ -15,7 +15,7 @@ import { cx } from '@/lib/cx';
 import { SettingsSection } from '../SettingsSection';
 import { useDraft } from '../useDraft';
 
-const SCRIPT_NAMES: Record<Script, string> = { Latn: 'Latin', Cyrl: 'Cyrillic', Grek: 'Greek' };
+const SCRIPT_NAMES: Record<Script, string> = { Latn: 'Latin', Cyrl: 'Cyrillic', Grek: 'Greek', Arab: 'Arabic', Hans: 'Chinese', Jpan: 'Japanese', Kore: 'Hangul' };
 const PREVIEW_SCRIPTS: Script[] = ['Latn', 'Cyrl', 'Grek'];
 
 export function ReadingSection({ reader, lang }: { reader: Settings['reader']; lang: string }) {
@@ -33,7 +33,7 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
       <div
         lang={target.code}
         className="rounded-2xl border border-line bg-bg px-5 py-4 text-ink transition-colors duration-200"
-        style={{ ...paperStyle(paper), fontFamily: readerFontStack(font), fontSize: size, lineHeight } as CSSProperties}
+        style={{ ...paperStyle(paper), fontFamily: readerFontStack(font, target.code), fontSize: size, lineHeight } as CSSProperties}
       >
         {target.sample}
       </div>

@@ -8,7 +8,7 @@ import { resolveTheme, syncThemeColor } from '@/app/theme';
 import { db } from '@/data/db';
 import { markOpened, refreshTextStats, saveProgress, updateText, useText } from '@/data/library';
 import type { WordState } from '@/data/types';
-import { getReaderFont, readerFontStack } from '@/design/fonts';
+import { getReaderFont, readerFontStack, useScriptFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { useMediaQuery } from '@/design/hooks/useMediaQuery';
@@ -377,12 +377,13 @@ export default function ReaderPage() {
   const flowStyle = useMemo(
     () =>
       ({
-        '--reader-font': readerFontStack(font),
+        '--reader-font': readerFontStack(font, lang),
         '--reader-size': `${reader.sizePx}px`,
         '--reader-lh': String(reader.lineHeight),
       }) as CSSProperties,
-    [font, reader.sizePx, reader.lineHeight],
+    [font, lang, reader.sizePx, reader.lineHeight],
   );
+  useScriptFont(lang);
   const flowClass = cx('reader-flow', paged && 'is-paged', reader.justify && 'is-justified', reader.highlightUnseen && 'hl-unseen');
   const chapterTitle = model?.chapter.title ? `${model.chapter.title}${model.chapter.part ? ` · ${model.chapter.part[0]}/${model.chapter.part[1]}` : ''}` : undefined;
   const wide = layout === 'wide';

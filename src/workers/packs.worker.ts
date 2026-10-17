@@ -60,12 +60,13 @@ async function install({ lang, url }: PackWorkerRequest): Promise<void> {
     gender: gender || undefined,
     senses: senses.map(([pos, glosses]) => ({ pos, glosses })),
   }));
-  const forms: DictForm[] = pack.forms.map(([form, lemmaIdx, g, d]) => ({
+  const forms: DictForm[] = pack.forms.map(([form, lemmaIdx, g, d, r]) => ({
     pack: id,
     form,
     lemmas: lemmaIdx.map((i) => pack.lemmas[i][0]),
     g,
     d: d || undefined,
+    r: r || undefined,
   }));
   const byLemma = new Map<string, DictExample>();
   for (const [i, sentence, translation, start, end] of pack.examples ?? []) {

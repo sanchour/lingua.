@@ -43,6 +43,8 @@ export interface Settings {
     paperDark: PaperDarkId;
     /** With an AI key: words get the meaning their sentence needs (one request per sentence looked up). */
     contextGlosses: boolean;
+    /** Mandarin and Japanese: pinyin or kana over words you don't know yet, over every word, or none. */
+    readings: 'new' | 'all' | 'off';
   };
   /** How flashcards look (Thesaurus). */
   cards: { font: ReaderFontId; style: CardStyleId; tint: CardTintId; size: 'sm' | 'md' | 'lg' };
@@ -113,6 +115,7 @@ export const DEFAULT_SETTINGS: Settings = {
     paperLight: 'cream',
     paperDark: 'charcoal',
     contextGlosses: true,
+    readings: 'new',
   },
   cards: { font: 'literata', style: 'plain', tint: 'paper', size: 'md' },
   study: { newPerDay: 15, maxReviews: 200, desiredRetention: 0.9, ludusAffectsSchedule: true, autoPromoteMature: true },

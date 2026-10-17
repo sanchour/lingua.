@@ -5,6 +5,7 @@ import { getChapter } from '@/data/library';
 import type { Block, Chapter, Text, WordState } from '@/data/types';
 import { getWordStates } from '@/data/words';
 import type { SenseOption } from '@/core/lang/context';
+import { ensureLexicon } from '@/services/packs/lexicon';
 import { lookupGlosses, lookupSenses } from '@/services/translate/gloss';
 import type { GlossInfo } from '@/services/translate/gloss';
 
@@ -36,6 +37,8 @@ async function build(text: Text, index: number): Promise<ChapterModel | null> {
 
 /** Tokens, word states and glosses for a chapter (also used for Sonus transcripts, held in memory). */
 export async function modelFromChapter(text: Pick<Text, 'lang'>, chapter: Chapter): Promise<ChapterModel> {
+  // Japanese is split by its dictionary's words: read them first.
+  await ensureLexicon(text.lang);
   const unique = new Set<string>();
   const blocks: BlockModel[] = chapter.blocks.map((block) => {
     if (block.t === 'img') return { block, tokens: null };

@@ -6,9 +6,11 @@ import { useFullMotion } from '@/app/motion';
 import { SECTIONS } from '@/app/sections';
 import { ShortcutsDialog } from '@/app/ShortcutsDialog';
 import { MiniPlayer } from '@/features/sonus/MiniPlayer';
+import { loadScriptFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { pageEnter, pageEnterFull } from '@/design/motion';
+import { ensureLexicon } from '@/services/packs/lexicon';
 import { useUI } from '@/state/ui';
 import { DesktopShell } from './desktop/DesktopShell';
 import { TouchShell } from './touch/TouchShell';
@@ -37,6 +39,12 @@ export function AppShell() {
   // Lets a language switch know when the new language is on screen (see app/languageSwitch.ts).
   useLayoutEffect(() => {
     document.documentElement.dataset.studying = language.id;
+  }, [language.id]);
+
+  // Arabic, Chinese, Japanese and Korean bring their own reading face; Japanese its word list.
+  useEffect(() => {
+    loadScriptFont(language.id);
+    void ensureLexicon(language.id);
   }, [language.id]);
 
   useEffect(() => {
