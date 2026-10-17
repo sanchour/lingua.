@@ -12,6 +12,17 @@
   --cantus-soft: color-mix(in oklab, #b4587e 26%, var(--bg));
 }
 
+/* Finding the place: every line is a target. */
+.lyric-sheet.is-syncing [data-line] {
+  cursor: pointer;
+  border-radius: 14px;
+  transition: background-color 150ms;
+}
+.lyric-sheet.is-syncing [data-line]:hover,
+.lyric-sheet.is-syncing [data-line]:active {
+  background: color-mix(in oklab, var(--song-soft, var(--color-sunken)) 70%, transparent);
+}
+
 .song-page {
   --song: var(--cantus);
   --song-ink: color-mix(in oklab, var(--song-deep, var(--song)) 82%, var(--ink));
@@ -146,4 +157,9 @@
 /* Big lyric type makes the reader's dotted "unseen" underline loud: keep it as a hint. */
 .lyric-sheet.hl-unseen .w[data-s='0'] {
   text-decoration-color: color-mix(in oklab, var(--unseen-line) 50%, transparent);
+}
+
+/* Music keeps its own colour inside Sonus: the room's headings in rose. */
+.music-room h2 {
+  color: var(--cantus-text);
 }

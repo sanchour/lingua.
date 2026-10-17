@@ -448,6 +448,8 @@ export interface Song extends Synced {
   spotifyId?: string;
   youtubeId?: string;
   lrclibId?: number;
+  /** Where the lyrics came from, for the credit under them (none: LRCLIB, as before 2.0-4b). */
+  lyricsFrom?: 'lrclib' | 'lyrics.ovh' | 'pasted';
   /** Empty until lyrics are found (or when none exist). */
   lines: LyricLine[];
   /** Lyrics were looked for and none were found; or the song has no words. */

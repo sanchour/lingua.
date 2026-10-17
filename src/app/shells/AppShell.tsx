@@ -18,7 +18,7 @@ const isImmersive = (pathname: string, wide: boolean) =>
   pathname.startsWith('/codex/read/') ||
   pathname.startsWith('/thesaurus/study/') ||
   pathname === '/sonus/commute' ||
-  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/visio/watch/') || /^\/cantus\/song\/[^/]+$/.test(pathname)));
+  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/visio/watch/') || /^\/sonus\/song\/[^/]+$/.test(pathname)));
 
 /** On wide screens Ordo's groups open beside their list, so moving between them isn't a new page. */
 const pageKey = (pathname: string, wide: boolean) => (wide && /^\/ordo(?:\/(?!lab)[\w-]+)?\/?$/.test(pathname) ? '/ordo' : pathname);

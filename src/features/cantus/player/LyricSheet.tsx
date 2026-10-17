@@ -36,6 +36,12 @@ interface LyricSheetProps {
   onSaveLine: (index: number) => void;
   /** Phones: "Back to the song" sits above the docked controls. */
   dockedHeight?: number;
+  /**
+   * Music playing elsewhere (the Music app, a speaker): the next tap on a line starts the lyrics
+   * from that line, then `onSynced`.
+   */
+  syncByTap?: boolean;
+  onSynced?: () => void;
 }
 
 /**
@@ -44,7 +50,7 @@ interface LyricSheetProps {
  * Codex; tapping between words picks the line (play from it, save it, copy it). Time-driven changes
  * go straight to the DOM, so following the song never re-renders the sheet.
  */
-export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLine, dockedHeight = 0 }: LyricSheetProps) {
+export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLine, dockedHeight = 0, syncByTap = false, onSynced }: LyricSheetProps) {
   const { settings } = useApp();
   const { pointer, layout } = useLayout();
   const lang = song.lang;
@@ -197,6 +203,12 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
     if (!g) return;
     window.clearTimeout(g.timer);
     if (g.long || Math.hypot(e.clientX - g.x, e.clientY - g.y) > CLICK_SLOP_PX) return;
+    // Finding the place: any tap on a line, word or not, starts the lyrics there.
+    if (syncByTap && g.line >= 0 && lines[g.line]?.startMs !== undefined) {
+      playFrom(g.line);
+      onSynced?.();
+      return;
+    }
     if (g.word && engine) {
       setPicked(null);
       if (g.type === 'mouse') engine.cycle(g.word);
@@ -261,7 +273,12 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
   return (
     <>
       <div onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={() => (gesture.current = null)} onContextMenu={onContextMenu}>
-        <div ref={flowRef} lang={lang} style={style} className={cx('reader-flow lyric-sheet', reader.highlightUnseen && 'hl-unseen', timed ? 'is-live' : 'is-still')}>
+        {syncByTap && timed && (
+          <p role="status" className="pointer-events-none fixed top-[calc(env(safe-area-inset-top)+3.75rem)] left-1/2 z-30 -translate-x-1/2 rounded-full bg-[var(--song-ink)] px-4 py-2 text-[13.5px] font-semibold whitespace-nowrap text-bg shadow-elev-3 lg:top-6">
+            Tap the line you’re hearing
+          </p>
+        )}
+        <div ref={flowRef} lang={lang} style={style} className={cx('reader-flow lyric-sheet', reader.highlightUnseen && 'hl-unseen', timed ? 'is-live' : 'is-still', syncByTap && timed && 'is-syncing')}>
           {model && (
             <LyricBody
               model={model}

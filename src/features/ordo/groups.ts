@@ -86,6 +86,7 @@ export const SETTINGS_INDEX: SettingEntry[] = [
 
   { label: 'English under each line', section: 'music', also: 'cantus songs lyrics translation blur hide' },
   { label: 'Spotify liked songs', section: 'music', also: 'spotify connect client id music cantus library' },
+  { label: 'Where lyrics come from', section: 'music', also: 'genius lyrics words songs lyrics.ovh lrclib timed paste' },
 
   { label: 'Level', find: 'Level in', section: 'language', also: 'a1 a2 b1 b2 c1 beginner' },
   { label: 'Daily goal', section: 'language', also: 'reviews minutes reading listening goal' },

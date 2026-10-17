@@ -65,3 +65,8 @@ Thesaurus	Improve ludus icon and make it more fitting, not a gaming controller
 Thesaurus & Codex	Remove the voiceover of words. its bad and it doesnt work
 Onboarding	Expand onboarding with just 2 more steps
 
+---
+Status (2026-10-17): Lingua 2.0 is done up to and including music in Sonus with Apple Music (2.0-4b).
+Everything still open above (the ten new languages and flags, the grammar section with alphabet
+lessons, radio, the recommendations page, the streaming services in Visio, and the full check) is
+Lingua 3.0, planned in docs/ROADMAP.md under "Lingua 3.0", with a handover for the new session.

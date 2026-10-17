@@ -10,7 +10,7 @@ import { SettingsSection } from '../SettingsSection';
 /** Cantus: the translation under each lyric line, and your own Spotify app for liked songs. */
 export function MusicSection({ cantus, spotify }: { cantus: Settings['cantus']; spotify: Settings['spotify'] }) {
   return (
-    <SettingsSection id="music" icon={Music2} title="Music" description="How Cantus shows a song’s lyrics, and your Spotify liked songs in the language you’re learning.">
+    <SettingsSection id="music" icon={Music2} title="Music" description="How songs in Sonus show their lyrics, where more lyrics come from, and your Spotify liked songs in the language you’re learning.">
       <div>
         <p className="mb-2 text-[15px] font-semibold">English under each line</p>
         <Segmented
@@ -25,6 +25,12 @@ export function MusicSection({ cantus, spotify }: { cantus: Settings['cantus']; 
           ]}
         />
         <p className="mt-2 text-[13px] text-ink-soft">Blurred lines clear when you tap them: try the song first, then check.</p>
+      </div>
+      <div className="mt-6 border-t border-line pt-5">
+        <p className="text-[15px] font-semibold">Where lyrics come from</p>
+        <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">
+          LRCLIB first, often timed line by line to the music; then lyrics.ovh. For a song neither has, its page links to Genius: copy the words there and paste them in. Lyrics without timings are shown whole, to read along as you listen.
+        </p>
       </div>
       <SpotifySetup spotify={spotify} />
     </SettingsSection>
@@ -50,7 +56,7 @@ function SpotifySetup({ spotify }: { spotify: Settings['spotify'] }) {
   const connect = async () => {
     setBusy(true);
     try {
-      await startSpotifySignIn(clientId, '/cantus');
+      await startSpotifySignIn(clientId, '/sonus');
     } catch (e) {
       setBusy(false);
       toast(e instanceof Error ? e.message : 'Spotify couldn’t connect.', { tone: 'error' });
@@ -65,7 +71,7 @@ function SpotifySetup({ spotify }: { spotify: Settings['spotify'] }) {
       </div>
       {connected ? (
         <>
-          <p className="mt-1 text-[13px] text-ink-soft">Cantus shows your liked songs sung in the language you’re learning, and finds each song on Spotify so its lyrics follow Spotify’s player.</p>
+          <p className="mt-1 text-[13px] text-ink-soft">Sonus › Music shows your liked songs sung in the language you’re learning, and finds each song on Spotify so its lyrics follow Spotify’s player.</p>
           <Button className="mt-3" variant="secondary" size="sm" icon={LogOut} onClick={() => void disconnectSpotify().then(() => toast('Spotify is disconnected.'))}>
             Disconnect
           </Button>

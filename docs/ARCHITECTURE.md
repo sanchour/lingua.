@@ -15,11 +15,10 @@ Every phase starts by reading this file, `FEATURES.md`, `DECISIONS.md` and `PERF
 | 1 | **Home** | Streak, continue reading/listening, daily review queue, language overview strip | sidebar | tab bar |
 | 2 | **Codex** | *Library* (reader + word engine) · *Diarium* (writing journal with AI corrections) | sidebar | tab bar |
 | 3 | **Thesaurus** | Folders, decks, Classic Recall (FSRS) + Ludus exercises | sidebar | tab bar |
-| 4 | **Sonus** | Audio player, karaoke transcripts, commute mode, Spotify links | sidebar | tab bar |
-| 5 | **Cantus** | Songs: Apple catalogue search, LRCLIB lyrics that follow the music (YouTube, Spotify, or a timer), translation per line, song games, Spotify liked songs, weekly charts | sidebar | tab bar |
-| 6 | **Visio** | Dual-subtitle video player, dialogue mining | sidebar | tab bar |
-| 7 | **Ratio** | *Overview* (statistics) · *Tabula* (capabilities table) · *Iter* (journey) | sidebar | header button |
-| 8 | **Ordo** | Settings in groups with a search: reading, study, listening, music, languages, look, AI keys, your data, about | sidebar | header button |
+| 4 | **Sonus** | *Music* (Cantus: songs from Apple's catalogue, lyrics from LRCLIB or lyrics.ovh that follow Apple Music, YouTube, Spotify or a timer, translation per line, song games, Spotify liked songs, weekly charts) · *Library* (audio player, karaoke transcripts, commute mode) · *Podcasts* (followed and discovery) | sidebar | tab bar |
+| 5 | **Visio** | Dual-subtitle video player, dialogue mining | sidebar | tab bar |
+| 6 | **Ratio** | *Overview* (statistics) · *Tabula* (capabilities table) · *Iter* (journey) | sidebar | header button |
+| 7 | **Ordo** | Settings in groups with a search: reading, study, listening, music, languages, look, AI keys, your data, about | sidebar | header button |
 
 **Languages with full support from the start:** English, Spanish, Russian, Portuguese, French, Greek,
 German, Italian, Swedish, Hungarian. Each gets an offline dictionary pack (instant translations into
@@ -82,7 +81,7 @@ New tables are added with a new Dexie version (non-destructive; existing data is
 | Language packs (Phase 3) | `dictExamples` (usage examples per lemma), `starterLists` (frequency-ranked lemmas, themed lists) | v3 |
 | Diarium | `journalEntries` (text, prompt, versions, AI review) | v6 |
 | Tabula / Iter | `capabilities`, `journeyEvents` (milestones + moments), `studyLogs`, `goals` | v6 |
-| Cantus | `songs` (catalogue facts, lyric lines with times, translation, colours, saved / played) | v7 |
+| Sonus › Music | `songs` (catalogue facts, lyric lines with times, translation, colours, saved / played) | v7 |
 
 Conventions: ids are `crypto.randomUUID()` (except deterministic ids like `words.id = "ru:слово"`);
 times are epoch ms; indexed booleans are `0 | 1`; user-owned rows carry `createdAt`, `updatedAt`,

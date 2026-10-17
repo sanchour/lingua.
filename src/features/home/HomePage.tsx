@@ -183,7 +183,7 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], 
     const sungToday = Boolean(song.lastPlayedAt && localDateKey(song.lastPlayedAt) === localDateKey());
     steps.push({
       key: 'song',
-      to: `/cantus/song/${encodeURIComponent(song.id)}`,
+      to: `/sonus/song/${encodeURIComponent(song.id)}`,
       icon: Music2,
       tone: 'accent',
       title: song.title,
@@ -204,7 +204,7 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], 
     steps.push({ key: 'find-listen', to: '/sonus', icon: Headphones, tone: 'sage', title: 'Find something to listen to', detail: 'Podcasts with a transcript that follows along' });
   }
   if (!songs.length && enjoys.includes('music')) {
-    steps.push({ key: 'find-song', to: '/cantus?tab=discover', icon: Music2, tone: 'accent', title: 'Find a song to learn', detail: 'Lyrics that light up as they’re sung, every word a tap away' });
+    steps.push({ key: 'find-song', to: '/sonus', icon: Music2, tone: 'accent', title: 'Find a song to learn', detail: 'Lyrics that light up as they’re sung, every word a tap away' });
   }
   if (!video && enjoys.includes('watching')) {
     steps.push({ key: 'find-watch', to: '/visio', icon: Clapperboard, tone: 'accent', title: 'Watch something', detail: 'A film or an episode with subtitles in both languages' });

@@ -9,7 +9,7 @@ import { StepTitle } from './StepTitle';
 export const ENJOYMENTS: Array<{ id: Enjoyment; name: string; place: string; blurb: string; icon: LucideIcon }> = [
   { id: 'reading', name: 'Reading', place: 'Codex', blurb: 'Books, stories and articles, a tap from every meaning', icon: BookOpen },
   { id: 'listening', name: 'Listening', place: 'Sonus', blurb: 'Podcasts and audio with a transcript that follows along', icon: Headphones },
-  { id: 'music', name: 'Music', place: 'Cantus', blurb: 'Songs you love, with lyrics that light up as they’re sung', icon: Music2 },
+  { id: 'music', name: 'Music', place: 'Sonus', blurb: 'Songs you love, with lyrics that light up as they’re sung', icon: Music2 },
   { id: 'watching', name: 'Watching', place: 'Visio', blurb: 'Films and shows with subtitles in both languages', icon: Clapperboard },
   { id: 'writing', name: 'Writing', place: 'Diarium', blurb: 'A few lines a day in your own journal', icon: PenLine },
   { id: 'cards', name: 'Flashcards & games', place: 'Thesaurus', blurb: 'Decks that come back at the right time, and Ludus lessons', icon: Layers },

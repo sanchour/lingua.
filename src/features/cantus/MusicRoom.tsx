@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import type { CSSProperties, ReactNode } from 'react';
+import { Link, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { ChevronRight, Heart, LoaderCircle, Music2, Pause, Play, SearchX, Sparkles } from 'lucide-react';
+import { ChevronRight, Heart, LoaderCircle, Music2, Pause, Play, SearchX } from 'lucide-react';
 import { useApp } from '@/app/context';
-import { PageHeader } from '@/app/PageHeader';
 import { formatClock } from '@/core/audio/cues';
 import { getLanguage } from '@/core/lang/languages';
 import { openSong, useRecentSongs, useSavedSongs } from '@/data/songs';
 import type { Song } from '@/data/types';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
-import { buttonClasses, Card, SearchInput, Segmented } from '@/design/primitives';
+import { buttonClasses, Card, SearchInput } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { pause as pauseSonus, usePlayer } from '@/services/audio/engine';
@@ -23,30 +22,23 @@ import { openByName, useCharts, useSpotifyLikes } from './library';
 import type { ChartSong } from './library';
 import { SongArt } from './SongArt';
 
-type Tab = 'songs' | 'discover';
-
 const enter = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { ...spring.soft, delay: 0.04 * Math.min(i, 8) } });
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
 
 /**
- * Cantus, learning through music: find any song in the language, sing along with its lyrics
- * (every word tappable, a translation under each line), keep the songs you love, and discover
- * artists and this week's charts.
+ * Music in Sonus (Cantus, learning through music): find any song in the language, sing along with its
+ * lyrics (every word tappable, a translation under each line), keep the songs you love, and discover
+ * this week's charts, artists and styles. One room, from your own songs to new ones.
  */
-export default function CantusPage() {
+export function MusicRoom({ initialQuery = '' }: { initialQuery?: string }) {
   const { language } = useApp();
   const lang = language.id;
-  const name = getLanguage(lang)?.name ?? lang;
   const { pointer } = useLayout();
   const saved = useSavedSongs(lang);
   const recent = useRecentSongs(lang, 10);
+  const connected = Boolean(useApp().settings.spotify.refreshToken);
 
-  const [params, setParams] = useSearchParams();
-  const requested = params.get('tab') as Tab | null;
-  const tab: Tab = requested ?? (saved && !saved.length && !recent?.length ? 'discover' : 'songs');
-  const setTab = (next: Tab) => setParams(next === 'songs' ? {} : { tab: next }, { replace: true });
-
-  const [query, setQuery] = useState(params.get('q') ?? '');
+  const [query, setQuery] = useState(initialQuery);
   const [byArtist, setByArtist] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   useHotkeys({ '/': () => searchRef.current?.focus() }, pointer === 'fine');
@@ -57,28 +49,17 @@ export default function CantusPage() {
   };
 
   return (
-    <>
-      <PageHeader title="Cantus" eyebrow={`Songs in ${name}`} />
-      <SearchInput ref={searchRef} value={query} onChange={(q) => searchFor(q, false)} placeholder="Search songs or artists" className="mb-6" />
+    <div className="music-room">
+      <SearchInput ref={searchRef} value={query} onChange={(q) => searchFor(q, false)} placeholder={`Search songs or artists in ${getLanguage(lang)?.name ?? lang}`} className="mb-7" />
       {query.trim() ? (
         <SearchResults lang={lang} query={query.trim()} byArtist={byArtist} />
       ) : (
-        <>
-          <div className="mb-6">
-            <Segmented<Tab>
-              label="Cantus"
-              value={tab}
-              onChange={setTab}
-              options={[
-                { value: 'songs', label: 'Your songs' },
-                { value: 'discover', label: 'Discover' },
-              ]}
-            />
-          </div>
-          {tab === 'songs' ? <YourSongs lang={lang} saved={saved} recent={recent} onDiscover={() => setTab('discover')} /> : <DiscoverTab lang={lang} onSearch={searchFor} />}
-        </>
+        <div className="space-y-10">
+          <YourSongs lang={lang} saved={saved} recent={recent} />
+          <DiscoverTab lang={lang} onSearch={searchFor} between={connected ? <SpotifyLikes lang={lang} /> : <SpotifyInvite />} />
+        </div>
       )}
-    </>
+    </div>
   );
 }
 
@@ -90,7 +71,7 @@ function useOpen(lang: string) {
   const open = async (key: string, get: () => Promise<string>) => {
     setOpening(key);
     try {
-      navigate(`/cantus/song/${encodeURIComponent(await get())}`);
+      navigate(`/sonus/song/${encodeURIComponent(await get())}`);
     } catch {
       toast('That song couldn’t be opened. Try again in a moment.', { tone: 'error' });
     } finally {
@@ -218,7 +199,7 @@ function SongTile({ song, i }: { song: Song; i: number }) {
   const tint = song.palette ? { '--song': song.palette.base } : undefined;
   return (
     <motion.li {...enter(i)} className="min-w-0">
-      <Link to={`/cantus/song/${encodeURIComponent(song.id)}`} className="group block" style={tint as CSSProperties}>
+      <Link to={`/sonus/song/${encodeURIComponent(song.id)}`} className="group block" style={tint as CSSProperties}>
         <SongArt url={song.artworkUrl} title={song.title} className="song-art w-full transition-transform duration-300 group-hover:-translate-y-0.5 group-active:scale-[0.98]" rounded="rounded-2xl" size={400} />
         <span className="mt-2 block truncate text-[14.5px] leading-snug font-semibold">{song.title}</span>
         <span className="block truncate text-[13px] text-ink-soft">{song.artist}</span>
@@ -227,15 +208,14 @@ function SongTile({ song, i }: { song: Song; i: number }) {
   );
 }
 
-function YourSongs({ lang, saved, recent, onDiscover }: { lang: string; saved?: Song[]; recent?: Song[]; onDiscover: () => void }) {
-  const { settings } = useApp();
-  const connected = Boolean(settings.spotify.refreshToken);
+function YourSongs({ lang, saved, recent }: { lang: string; saved?: Song[]; recent?: Song[] }) {
   if (!saved || !recent) return null;
   const others = recent.filter((s) => !s.savedAt);
   return (
     <div className="space-y-9">
       {saved.length ? (
-        <section aria-label="Saved songs">
+        <section aria-label="Your songs">
+          <h2 className={cx(label, 'mb-3')}>Your songs</h2>
           <ul className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {saved.map((s, i) => (
               <SongTile key={s.id} song={s} i={i} />
@@ -243,15 +223,14 @@ function YourSongs({ lang, saved, recent, onDiscover }: { lang: string; saved?: 
           </ul>
         </section>
       ) : (
-        <Card className="flex flex-col items-center p-8 text-center">
-          <span className="grid size-14 place-items-center rounded-2xl bg-accent-soft text-accent-text">
-            <Heart size={24} aria-hidden />
+        <Card className="flex items-center gap-4 p-5">
+          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[var(--cantus-soft)] text-[var(--cantus-text)]">
+            <Heart size={22} aria-hidden />
           </span>
-          <p className="mt-4 font-serif text-xl font-semibold">Songs you love, in {getLanguage(lang)?.name}</p>
-          <p className="mt-1 max-w-sm text-[14.5px] text-ink-soft">Search for a song above, or find one in Discover. Save it with the heart and it lives here, lyrics and all.</p>
-          <button type="button" onClick={onDiscover} className={cx(buttonClasses('primary', 'md'), 'mt-5')}>
-            <Sparkles size={17} aria-hidden /> Discover songs
-          </button>
+          <span className="min-w-0 flex-1">
+            <span className="block font-serif text-lg font-semibold">Songs you love, in {getLanguage(lang)?.name}</span>
+            <span className="block text-[14px] leading-snug text-ink-soft">Search for one above, or pick from the charts and artists below. Save it with the heart and it lives here, lyrics and all.</span>
+          </span>
         </Card>
       )}
       {others.length > 0 && (
@@ -260,7 +239,7 @@ function YourSongs({ lang, saved, recent, onDiscover }: { lang: string; saved?: 
           <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
             {others.map((s) => (
               <li key={s.id} className="w-32 shrink-0 snap-start sm:w-36">
-                <Link to={`/cantus/song/${encodeURIComponent(s.id)}`} className="block">
+                <Link to={`/sonus/song/${encodeURIComponent(s.id)}`} className="block">
                   <SongArt url={s.artworkUrl} title={s.title} className="w-full" rounded="rounded-xl" size={300} />
                   <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{s.title}</span>
                   <span className="block truncate text-[12.5px] text-ink-soft">{s.artist}</span>
@@ -270,7 +249,6 @@ function YourSongs({ lang, saved, recent, onDiscover }: { lang: string; saved?: 
           </ul>
         </section>
       )}
-      {connected ? <SpotifyLikes lang={lang} /> : <SpotifyInvite />}
     </div>
   );
 }
@@ -283,7 +261,7 @@ function SpotifyInvite() {
       </span>
       <div className="min-w-0 flex-1">
         <p className="font-semibold">Your Spotify liked songs</p>
-        <p className="text-[13.5px] text-ink-soft">Connect your own free Spotify app and Cantus finds the ones sung in this language.</p>
+        <p className="text-[13.5px] text-ink-soft">Connect your own free Spotify app and Lingua finds the ones sung in this language.</p>
       </div>
       <Link to="/ordo/music" className={cx(buttonClasses('secondary', 'sm'), 'shrink-0')}>
         Set up
@@ -338,7 +316,8 @@ function SpotifyLikes({ lang }: { lang: string }) {
 
 // ── Discover ────────────────────────────────────────────────────────────────────────────────────
 
-function DiscoverTab({ lang, onSearch }: { lang: string; onSearch: (term: string, byArtist?: boolean) => void }) {
+/** This week's charts, then (between) your Spotify, then artists and styles to explore. */
+function DiscoverTab({ lang, onSearch, between }: { lang: string; onSearch: (term: string, byArtist?: boolean) => void; between?: ReactNode }) {
   const picks = DISCOVER[lang];
   const charts = useCharts(lang);
   const { opening, open } = useOpen(lang);
@@ -358,6 +337,7 @@ function DiscoverTab({ lang, onSearch }: { lang: string; onSearch: (term: string
           </ul>
         </section>
       )}
+      {between}
       {picks && (
         <>
           <section aria-label="Artists to start with">

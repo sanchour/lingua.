@@ -1,12 +1,12 @@
-// Where a song's playhead comes from: Spotify's embed, YouTube's, or the learner's own timer when
-// the music plays somewhere else (a speaker, the Apple Music app). All three look the same to the
-// lyric sheet. Positions are carried forward smoothly between the players' updates.
+// Where a song's playhead comes from: Spotify's embed, YouTube's, Apple Music's (a timer its Play
+// button starts), or the learner's own timer when the music plays somewhere else (a speaker, the
+// Music app). All look the same to the lyric sheet. Positions are carried forward smoothly between the players' updates.
 import type { PlayheadClock } from '@/features/sonus/player/KaraokeTranscript';
 import type { SpotifyController } from '@/services/sonus/spotify';
 import { YT_PLAYING } from '@/services/cantus/youtube';
 import type { YTPlayer } from '@/services/cantus/youtube';
 
-export type ClockKind = 'spotify' | 'youtube' | 'timer';
+export type ClockKind = 'spotify' | 'youtube' | 'apple' | 'timer';
 
 export interface SongClock extends PlayheadClock {
   kind: ClockKind;
@@ -76,9 +76,14 @@ function createCore(kind: ClockKind, controls: () => Controls | null) {
   return { clock, update, now, isPaused: () => paused };
 }
 
-/** The learner's own timer: start it when the song starts wherever it plays, nudge it to match. */
-export function createTimerClock(): SongClock & { nudge(ms: number): void } {
-  const core = createCore('timer', () => controls);
+export type TimerClock = SongClock & { nudge(ms: number): void };
+
+/**
+ * The learner's own timer: start it when the song starts wherever it plays, nudge it to match.
+ * Apple Music's player tells the page nothing, so it runs on one too (`apple`).
+ */
+export function createTimerClock(kind: 'timer' | 'apple' = 'timer'): TimerClock {
+  const core = createCore(kind, () => controls);
   const controls: Controls = {
     play: () => core.update(core.now(), false),
     pause: () => core.update(core.now(), true),
