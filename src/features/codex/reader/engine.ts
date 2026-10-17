@@ -94,7 +94,8 @@ export class WordEngine {
       if (SENTENCE_END.test(t.text)) break;
     }
     const sense = senseInContext(options, posFromContext(this.lang, previous));
-    if (!sense) return base;
+    // The usual reading keeps the dictionary's own short gloss ("perro" after "el" is still "dog").
+    if (!sense || (sense === options[0] && base)) return base;
     const info: GlossInfo = { text: shortGloss(sense.glosses), lemma: sense.lemma, source: 'context' };
     this.contextual.set(key, info);
     return info;

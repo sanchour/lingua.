@@ -1,7 +1,7 @@
 // Row types for every IndexedDB table. This file is the schema of record (docs/ARCHITECTURE.md → Data).
 // Conventions: ids are crypto.randomUUID() unless noted · times are epoch ms · indexed booleans are 0 | 1.
 
-import type { Level } from '@/core/lang/levels';
+import type { Cefr, Level } from '@/core/lang/levels';
 
 export type Lang = string;
 /** 0 Unseen · 1 Known · 2 Learning */
@@ -44,15 +44,19 @@ export interface Text extends Synced {
   id: string;
   lang: Lang;
   kind: 'book' | 'article' | 'transcript' | 'shelfItem';
-  source: 'epub' | 'txt' | 'paste' | 'goodreads' | 'sonus' | 'visio';
+  source: 'epub' | 'pdf' | 'txt' | 'paste' | 'article' | 'goodreads' | 'sonus' | 'visio';
   title: string;
   author?: string;
   coverBlobId?: string;
   /** A designed cover (cloth colour and ornament) for texts without a picture of their own. */
   cover?: CoverDesign;
   mediaId?: string;
+  /** Where an article came from. */
+  sourceUrl?: string;
   shelf?: 'to-read' | 'reading' | 'read';
   goodreads?: { bookId?: string; isbn13?: string; rating?: number; dateRead?: string; shelves?: string[] };
+  /** The reading level the learner gave it (Lingua's own guess is in `stats.level`). */
+  level?: Cefr;
   chapterCount: number;
   wordCount: number;
   lastOpenedAt?: number;
@@ -75,6 +79,8 @@ export interface TextStats {
   knownShare: number;
   /** Distinct forms still Unseen. */
   newWords: number;
+  /** Lingua's guess at the reading level, from how common its words are. */
+  level?: Cefr;
   computedAt: number;
 }
 
@@ -91,7 +97,11 @@ export type Block =
   | { t: 'p' | 'h' | 'quote'; text: string; cue?: number }
   | { t: 'img'; blobId: string; alt?: string };
 
-/** Immutable after import (insert-only on merge). */
+/**
+ * A chapter (or part of one). Edited chapters carry `updatedAt` and merge newest-wins; removed ones
+ * stay as empty tombstones (`deletedAt`) so a backup can't bring them back. Imported chapters that
+ * were never edited have neither.
+ */
 export interface Chapter {
   id: string;
   textId: string;
@@ -101,6 +111,8 @@ export interface Chapter {
   part?: [number, number];
   wordCount: number;
   blocks: Block[];
+  updatedAt?: number;
+  deletedAt?: number;
 }
 
 export interface ReadingProgress {

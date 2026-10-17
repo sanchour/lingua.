@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { BookMarked, Check, Circle, Layers, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
+import { plainGloss } from '@/core/lang/context';
 import { cefrForRank } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
@@ -12,6 +13,7 @@ import type { WordContext } from '@/data/words';
 import { Badge, Button, Drawer, Segmented } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { explainWord } from '@/services/llm/explain';
+import { findBaseForms } from '@/services/translate/gloss';
 import type { WordExplanation } from '@/services/llm/explain';
 import { LlmError } from '@/services/llm/client';
 import { AddToDeck } from './AddToDeck';
@@ -48,14 +50,17 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
 
   const dict = useLiveQuery(async () => {
     const pack = packId(lang);
-    const form = await db.dictForms.get([pack, norm]);
+    const listed = await db.dictForms.get([pack, norm]);
+    // Not listed as written: the entry of a likely base form, said as such.
+    const base = listed ? undefined : (await findBaseForms(lang, [norm])).get(norm);
+    const form = listed ?? base?.form;
     const lemmas = form?.lemmas ?? [];
     const entries = (await db.dictEntries.bulkGet(lemmas.map((l) => [pack, l] as [string, string]))).filter(Boolean);
     const rank = (await db.frequency.get(`${lang}:${norm}`))?.rank;
     const examples = (await db.dictExamples.bulkGet(lemmas.map((l) => [pack, l] as [string, string]))).flatMap((e) => e?.ex ?? []).slice(0, 2);
     const hasParadigm = entries[0] ? Boolean(await db.dictParadigms.get([pack, entries[0].lemma])) : false;
     const note = saved?.noteId ? await db.notes.get(saved.noteId) : undefined;
-    return { form, entries, rank, examples, hasParadigm, noteDeckId: note && !note.deletedAt ? note.deckId : undefined };
+    return { form, base, entries, rank, examples, hasParadigm, noteDeckId: note && !note.deletedAt ? note.deckId : undefined };
   }, [lang, norm, saved?.noteId]);
 
   const [tab, setTab] = useState<'meaning' | 'forms'>('meaning');
@@ -132,7 +137,7 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
                 lang={lang}
                 note={{
                   term: main?.head ?? main?.lemma ?? context.surface ?? norm,
-                  meaning: gloss.trim() || main?.senses[0]?.glosses[0] || '',
+                  meaning: gloss.trim() || plainGloss(main?.senses[0]?.glosses[0] ?? ''),
                   lemma: main?.lemma,
                   pos: main?.senses[0]?.pos,
                   gender: main?.gender,
@@ -160,7 +165,21 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
                 </span>
               </p>
             )}
-            {dict?.form?.d && !dict.hasParadigm && <p className="mt-2 text-[13px] text-ink-soft">{dict.form.d}</p>}
+            {dict?.base && (
+              <p className="mt-2 text-[13px] text-ink-soft">
+                Not in the dictionary as written.{' '}
+                {dict.base.part ? (
+                  <>
+                    Its last part, <span lang={lang} className="font-semibold">…{dict.base.via}</span>, is below.
+                  </>
+                ) : (
+                  <>
+                    Read as <span lang={lang} className="font-semibold">{dict.base.via}</span>.
+                  </>
+                )}
+              </p>
+            )}
+            {dict?.form?.d && !dict.hasParadigm && !dict.base && <p className="mt-2 text-[13px] text-ink-soft">{dict.form.d}</p>}
           </section>
 
           {dict && dict.entries.length > 0 && (

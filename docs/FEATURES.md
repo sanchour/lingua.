@@ -134,3 +134,17 @@ Practise writing in the target language; get corrected, explained and graded.
 - **Privacy:** a clear note that checked entries are sent to the chosen AI provider.
 - **Data:** `journalEntries` (text, prompt, versions, review JSON, scores; Synced). Word diff in
   `core/diff` (tested).
+
+---
+
+## Codex in Lingua 2.0 — adding, editing and better meanings (2.0-2)
+
+- **Add** (Codex › +): Write or paste · File (EPUB, PDF or plain text) · News (a link,
+  or a source's latest stories; read through Jina Reader) · Goodreads shelves. Every way can set a
+  **reading level** (A1–C2) or leave it to Lingua's guess.
+- **Edit** (a book's ⋯): title, author, level, shelf and cover, plus the chapters themselves —
+  edit a chapter's text, remove it, add one, or add more from a file. A news article keeps a link
+  to the original.
+- **Dictionaries:** the short meaning a tap shows is the everyday one (from translation tables),
+  forms show what they mean themselves ("ellos" they, "estoy" am), and words the dictionary lacks
+  are read through a likely base form before going online. The word's sheet says when it did that.

@@ -104,3 +104,19 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] ⋯ → Keep subtitles only frees the space; the lines and cards stay; Attach the video file brings it back.
 - [ ] Ordo → Listening → This device: Make subtitles downloads the model once (progress shows), then works offline.
 - [ ] Home: Next up lists reviews, the book, episode and video in progress, and today's journal prompt; everything fits one column.
+
+## Lingua 2.0-2: adding and editing, PDFs, news, dictionaries
+
+- [ ] Tap one word, then another while the bubble is still open: each shows its own translation.
+- [ ] Codex → + : Write / File / News / Goodreads fit on one line; the keyboard only opens when you
+      tap the text box.
+- [ ] File: a PDF from Files becomes a book with chapters; a scanned PDF says it has no text.
+- [ ] News: the Latest list loads; tapping a story adds it and opens it; a link to an article
+      shows a preview with its level first.
+- [ ] A book's ⋯ → Edit: change the level, edit a chapter's text, remove one, add one; the reader
+      shows the change.
+- [ ] Words in a sentence: "perro" reads "dog" (not a long dictionary line); a word written with
+      its pronouns ("dímelo") or a case ending still gets a meaning.
+- [ ] Sonus → Discover: podcast rows fit the width. Ratio → All your languages: one line per
+      language. Visio: the video's position bar is easy to drag with a finger.
+- [ ] Ordo → About says Lingua 2.0.

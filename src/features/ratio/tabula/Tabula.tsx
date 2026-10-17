@@ -176,7 +176,7 @@ function Row({ capability: c, wide, live, onOpen, onDrop }: { capability: Capabi
       type="button"
       aria-label={`Move ${c.name}`}
       onPointerDown={(e) => controls.start(e)}
-      className="grid size-7 cursor-grab touch-none place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink active:cursor-grabbing"
+      className="grid size-7 cursor-grab touch-none place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink active:cursor-grabbing pointer-coarse:size-10"
     >
       <GripVertical size={16} aria-hidden />
     </button>

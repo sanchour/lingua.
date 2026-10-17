@@ -57,8 +57,8 @@ export default defineConfig({
           '**/inter-{cyrillic,greek}-wght-normal-*.woff2',
           '**/literata-{latin,latin-ext,cyrillic,greek}-wght-normal-*.woff2',
         ],
-        // Whisper on this device is optional and large: it is cached when first used.
-        globIgnores: ['**/apple-splash-*', '**/whisper.worker-*.js'],
+        // Whisper on this device and the PDF reader are optional and large: they are cached when first used.
+        globIgnores: ['**/apple-splash-*', '**/whisper.worker-*.js', '**/pdf-*.js', '**/pdf.worker.min-*'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -73,6 +73,12 @@ export default defineConfig({
             urlPattern: ({ url, sameOrigin }) => sameOrigin && (url.pathname.endsWith('.wasm') || url.pathname.includes('/whisper.worker-')),
             handler: 'CacheFirst',
             options: { cacheName: 'lingua-wasm', expiration: { maxEntries: 6 } },
+          },
+          {
+            // pdf.js (about 400 kB) and its worker (1.2 MB) load the first time a PDF is added.
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && /\/assets\/pdf(?:\.worker\.min)?-[\w-]+\.m?js$/.test(url.pathname),
+            handler: 'CacheFirst',
+            options: { cacheName: 'lingua-pdf', expiration: { maxEntries: 6 } },
           },
         ],
       },

@@ -211,8 +211,8 @@ function Dashboard({ data, summaries, single }: { data: OverviewData; summaries:
         {/* Flashcards */}
         <Panel title="Flashcards" icon={Layers}>
           <dl className="mb-5 grid grid-cols-3 gap-3">
-            <Stat value={f.retention30 === null ? '—' : pct(f.retention30)} label="Retention 30 d" />
-            <Stat value={f.retention90 === null ? '—' : pct(f.retention90)} label="90 days" />
+            <Stat value={f.retention30 === null ? '—' : pct(f.retention30)} label="Recall 30 d" />
+            <Stat value={f.retention90 === null ? '—' : pct(f.retention90)} label="Recall 90 d" />
             <Stat value={f.secondsPerCard === null ? '—' : `${f.secondsPerCard} s`} label="Per card" />
           </dl>
           <p className="mb-3 text-[13px] font-semibold text-ink-soft">Reviews, last 30 days</p>
@@ -276,7 +276,7 @@ function Dashboard({ data, summaries, single }: { data: OverviewData; summaries:
             title="Writing"
             icon={Feather}
             action={
-              <Link to="/codex?tab=diarium" className="inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
+              <Link to="/codex?tab=diarium" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
                 Diarium <ArrowRight size={14} aria-hidden />
               </Link>
             }
@@ -306,7 +306,29 @@ function Dashboard({ data, summaries, single }: { data: OverviewData; summaries:
       {/* Polyglot */}
       {summaries && (summaries.length > 1 || !single) && (
         <Panel title="All your languages" icon={Globe2}>
-          <div className="-mx-2 overflow-x-auto">
+          {/* On a phone: one line per language instead of a table to scroll sideways. */}
+          <ul className="divide-y divide-line sm:hidden">
+            {[...summaries]
+              .sort((a, b) => b.hours - a.hours)
+              .map((s) => {
+                const up = s.hoursThisMonth >= s.hoursLastMonth;
+                const Arrow = up ? ArrowUpRight : ArrowDownRight;
+                return (
+                  <li key={s.lang} className="flex items-center gap-3 py-2.5">
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-[14.5px] font-semibold">{langName(s.lang)}</span>
+                      <span className="block text-[12.5px] text-ink-soft tabular-nums">
+                        {hours(s.hours * 60)} · {s.known.toLocaleString()} known{s.lastStudied ? ` · ${shortDate(s.lastStudied)}` : ''}
+                      </span>
+                    </span>
+                    <span className={cx('inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold', up ? 'text-sage-text' : 'text-accent-text')} title="This month">
+                      <Arrow size={14} aria-hidden /> {hours(s.hoursThisMonth * 60)}
+                    </span>
+                  </li>
+                );
+              })}
+          </ul>
+          <div className="-mx-2 hidden overflow-x-auto sm:block">
             <table className="w-full min-w-[520px] text-left text-[14px]">
               <thead>
                 <tr className="text-[11.5px] font-bold tracking-wide text-ink-faint uppercase">

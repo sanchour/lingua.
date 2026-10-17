@@ -1,13 +1,14 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { toGoodreadsCsv } from '@/core/parsers/goodreads';
 import type { GoodreadsBook } from '@/core/parsers/goodreads';
+import { estimateLevel } from '@/core/lang/levels';
 import { splitIntoParts } from '@/core/parsers/text';
 import type { ChapterDraft } from '@/core/parsers/text';
 import { countWords, tokenize } from '@/core/text/tokenizer';
 import { localDateKey } from '@/lib/format';
 import { db } from './db';
 import type { LinguaDB } from './db';
-import type { BlobRow, Chapter, ReadingProgress, Text, TextStats, TextVocab } from './types';
+import type { BlobRow, Block, Chapter, ReadingProgress, Text, TextStats, TextVocab } from './types';
 import { wordId } from './words';
 
 const yieldToBrowser = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
@@ -24,6 +25,13 @@ export interface NewText {
   coverDesign?: Text['cover'];
   images?: Array<{ id: string; blob: Blob; mime: string }>;
   shelf?: Text['shelf'];
+  level?: Text['level'];
+  sourceUrl?: string;
+}
+
+/** A text's chapters in reading order, without removed ones. */
+export async function textChapters(textId: string, database: LinguaDB = db): Promise<Chapter[]> {
+  return (await database.chapters.where('[textId+index]').between([textId, 0], [textId, Infinity]).toArray()).filter((c) => !c.deletedAt);
 }
 
 /** Counts distinct normalised forms across all text blocks (yields between chapters). */
@@ -85,6 +93,8 @@ export async function addText(input: NewText, database: LinguaDB = db): Promise<
     coverBlobId,
     cover: input.coverDesign,
     shelf: input.shelf ?? 'reading',
+    level: input.level,
+    sourceUrl: input.sourceUrl,
     chapterCount: chapters.length,
     wordCount: chapters.reduce((sum, c) => sum + c.wordCount, 0),
     createdAt: now,
@@ -131,17 +141,19 @@ export async function refreshTextStats(textId: string, database: LinguaDB = db):
   if (!text || text.kind === 'shelfItem') return undefined;
   let vocab = await database.textVocab.get(textId);
   if (!vocab) {
-    vocab = await buildVocab(textId, text.lang, await database.chapters.where('[textId+index]').between([textId, 0], [textId, Infinity]).toArray());
+    vocab = await buildVocab(textId, text.lang, await textChapters(textId, database));
     await database.textVocab.put(vocab);
   }
   const words = await database.words.bulkGet(vocab.norms.map((n) => wordId(text.lang, n)));
+  const ranks = await database.frequency.bulkGet(vocab.norms.map((n) => `${text.lang}:${n}`));
   let knownTokens = 0;
   let newWords = 0;
   words.forEach((w, i) => {
     if (w && !w.deletedAt && w.state) knownTokens += vocab!.counts[i];
     else newWords++;
   });
-  const stats: TextStats = { uniqueWords: vocab.norms.length, knownShare: vocab.tokens ? knownTokens / vocab.tokens : 0, newWords, computedAt: Date.now() };
+  const level = estimateLevel(ranks.map((r, i) => [r?.rank, vocab!.counts[i]]));
+  const stats: TextStats = { uniqueWords: vocab.norms.length, knownShare: vocab.tokens ? knownTokens / vocab.tokens : 0, newWords, level, computedAt: Date.now() };
   await database.texts.update(textId, { stats });
   return stats;
 }
@@ -161,7 +173,11 @@ export function useText(id: string | undefined): Text | null | undefined {
 }
 
 export function getChapter(textId: string, index: number, database: LinguaDB = db): Promise<Chapter | undefined> {
-  return database.chapters.where('[textId+index]').equals([textId, index]).first();
+  return database.chapters
+    .where('[textId+index]')
+    .equals([textId, index])
+    .filter((c) => !c.deletedAt)
+    .first();
 }
 
 export function useProgress(textId: string | undefined): ReadingProgress | null | undefined {
@@ -180,7 +196,7 @@ export async function markOpened(textId: string, database: LinguaDB = db): Promi
   await database.texts.update(textId, { lastOpenedAt: Date.now(), updatedAt: Date.now(), shelf: 'reading' });
 }
 
-export async function updateText(textId: string, patch: Partial<Pick<Text, 'title' | 'author' | 'shelf' | 'finishedAt' | 'cover'>>, database: LinguaDB = db): Promise<void> {
+export async function updateText(textId: string, patch: Partial<Pick<Text, 'title' | 'author' | 'shelf' | 'finishedAt' | 'cover' | 'level'>>, database: LinguaDB = db): Promise<void> {
   await database.texts.update(textId, { ...patch, updatedAt: Date.now() });
 }
 
@@ -202,6 +218,81 @@ export async function removeCoverImage(textId: string, database: LinguaDB = db):
     if (text?.coverBlobId) await database.blobs.delete(text.coverBlobId);
     await database.texts.update(textId, { coverBlobId: undefined, updatedAt: Date.now() });
   });
+}
+
+export interface ChapterEdit {
+  /** The chapter being kept or edited; none for a new one. */
+  id?: string;
+  title?: string;
+  blocks: Block[];
+}
+
+const sameBlocks = (a: Block[], b: Block[]) => JSON.stringify(a) === JSON.stringify(b);
+const imagesOf = (blocks: Block[]) => blocks.flatMap((b) => (b.t === 'img' ? [b.blobId] : []));
+
+/**
+ * Replaces a text's chapters with `list`, in order: untouched chapters keep their row, edited ones are
+ * updated in place, new ones are added (long ones split into parts, as on import) and the rest become
+ * tombstones. Pictures nothing uses any more are deleted. Counts, vocabulary and stats follow, and a
+ * reading position past the end moves to the last chapter.
+ */
+export async function rewriteChapters(textId: string, list: ChapterEdit[], images: NonNullable<NewText['images']> = [], database: LinguaDB = db): Promise<void> {
+  const text = await database.texts.get(textId);
+  if (!text) throw new Error('This text isn’t in your library.');
+  const current = await textChapters(textId, database);
+  const byId = new Map(current.map((c) => [c.id, c]));
+  const count = (t: string) => countWords(t, text.lang);
+  const now = Date.now();
+
+  const next: Chapter[] = [];
+  const writes: Chapter[] = [];
+  for (const edit of list) {
+    const old = edit.id ? byId.get(edit.id) : undefined;
+    if (old && old.title === edit.title && sameBlocks(old.blocks, edit.blocks)) {
+      const kept = { ...old, index: next.length };
+      next.push(kept);
+      if (old.index !== kept.index) writes.push({ ...kept, updatedAt: now });
+      continue;
+    }
+    const parts = splitIntoParts({ title: edit.title, blocks: edit.blocks }, count);
+    parts.forEach((part, i) => {
+      const row: Chapter = {
+        id: i === 0 && old ? old.id : crypto.randomUUID(),
+        textId,
+        index: next.length,
+        title: part.title,
+        part: parts.length > 1 ? [i + 1, parts.length] : undefined,
+        wordCount: part.wordCount,
+        blocks: part.blocks,
+        updatedAt: now,
+      };
+      next.push(row);
+      writes.push(row);
+    });
+  }
+  const keptIds = new Set(next.map((c) => c.id));
+  const removed = current.filter((c) => !keptIds.has(c.id));
+  const stillUsed = new Set([...next.flatMap((c) => imagesOf(c.blocks)), ...images.map((i) => i.id)]);
+  const unusedImages = [...new Set(current.flatMap((c) => imagesOf(c.blocks)))].filter((id) => !stillUsed.has(id));
+
+  await database.transaction('rw', [database.texts, database.chapters, database.blobs, database.textVocab, database.readingProgress], async () => {
+    await database.chapters.bulkPut([...writes, ...removed.map((c) => ({ ...c, blocks: [], wordCount: 0, deletedAt: now, updatedAt: now }))]);
+    if (images.length) await database.blobs.bulkPut(images.map((img) => ({ id: img.id, kind: 'image' as const, mime: img.mime, size: img.blob.size, blob: img.blob, createdAt: now })));
+    if (unusedImages.length) await database.blobs.bulkDelete(unusedImages);
+    await database.texts.update(textId, { chapterCount: next.length, wordCount: next.reduce((n, c) => n + c.wordCount, 0), stats: undefined, updatedAt: now });
+    await database.textVocab.delete(textId);
+    const progress = await database.readingProgress.get(textId);
+    if (progress && progress.chapterIndex >= next.length) {
+      await database.readingProgress.put({ ...progress, chapterIndex: Math.max(0, next.length - 1), blockIndex: 0, updatedAt: now });
+    }
+  });
+  await refreshTextStats(textId, database);
+}
+
+/** Adds chapters (from a pasted text or a file) after the last one. */
+export async function appendChapters(textId: string, drafts: ChapterDraft[], images: NewText['images'] = [], database: LinguaDB = db): Promise<void> {
+  const current = await textChapters(textId, database);
+  await rewriteChapters(textId, [...current.map((c) => ({ id: c.id, title: c.title, blocks: c.blocks })), ...drafts], images, database);
 }
 
 /** Removes a text: the row is kept as a tombstone (so backups merge correctly); its content is deleted. */

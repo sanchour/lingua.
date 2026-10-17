@@ -1,10 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import type { DragEvent, ReactNode } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
 import { AnimatePresence, motion } from 'motion/react';
-import { BookUp, ClipboardPaste, FileText, Library, Sparkles, UploadCloud } from 'lucide-react';
+import { BookUp, ClipboardPaste, FileText, Library, Newspaper, Sparkles, UploadCloud } from 'lucide-react';
 import { useApp } from '@/app/context';
+import type { Cefr } from '@/core/lang/levels';
 import { countWords } from '@/core/text/tokenizer';
 import type { CoverDesign } from '@/data/types';
 import { useLayout } from '@/design/hooks/useLayout';
@@ -12,13 +13,16 @@ import { Button, Card, Segmented } from '@/design/primitives';
 import { fade } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { EpubError } from '@/services/import/epub';
-import { importEpubFile, importGoodreads, importPasted, importSample, importTxtFile } from '@/services/import/importers';
+import { BOOK_FILE_ACCEPT, bookFileKind, importBookFile, importGoodreads, importPasted, importSample } from '@/services/import/importers';
 import { pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
 import { CLOTHS } from './library/covers';
 import { CoverDesigner } from './library/CoverDesigner';
+import { LevelPicker } from './library/LevelPicker';
+import { NewsPanel } from './library/NewsPanel';
 
-type Way = 'write' | 'file' | 'goodreads';
+type Way = 'write' | 'file' | 'news' | 'goodreads';
+const WAYS: Way[] = ['write', 'file', 'news', 'goodreads'];
 
 /** Adding to the library, on a page of its own: write or paste, import a file, or bring Goodreads shelves. */
 export default function NewTextPage() {
@@ -26,7 +30,8 @@ export default function NewTextPage() {
   const compact = useLayout().layout === 'compact';
   const lang = language.id;
   const navigate = useNavigate();
-  const [way, setWay] = useState<Way>('write');
+  const [params] = useSearchParams();
+  const [way, setWay] = useState<Way>(() => (WAYS.includes(params.get('way') as Way) ? (params.get('way') as Way) : 'write'));
 
   return (
     <>
@@ -42,10 +47,12 @@ export default function NewTextPage() {
           value={way}
           onChange={setWay}
           block={compact}
+          // On a phone the four ways fit as words alone.
           options={[
-            { value: 'write', label: compact ? 'Write' : 'Write or paste', icon: ClipboardPaste },
-            { value: 'file', label: compact ? 'File' : 'Import a file', icon: BookUp },
-            { value: 'goodreads', label: 'Goodreads', icon: Library },
+            { value: 'write', label: compact ? 'Write' : 'Write or paste', icon: compact ? undefined : ClipboardPaste },
+            { value: 'file', label: compact ? 'File' : 'Import a file', icon: compact ? undefined : BookUp },
+            { value: 'news', label: compact ? 'News' : 'News & links', icon: compact ? undefined : Newspaper },
+            { value: 'goodreads', label: 'Goodreads', icon: compact ? undefined : Library },
           ]}
         />
       </div>
@@ -54,6 +61,7 @@ export default function NewTextPage() {
         <motion.div key={way} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={fade}>
           {way === 'write' && <WriteOrPaste lang={lang} onDone={(id) => navigate(`/codex/read/${id}`)} />}
           {way === 'file' && <ImportFile lang={lang} onDone={(id) => navigate(`/codex/book/${id}?new=1`)} />}
+          {way === 'news' && <NewsPanel lang={lang} onDone={(id) => navigate(`/codex/read/${id}`)} onPaste={() => setWay('write')} />}
           {way === 'goodreads' && <Goodreads lang={lang} onDone={() => navigate('/codex')} />}
         </motion.div>
       </AnimatePresence>
@@ -74,13 +82,16 @@ function WriteOrPaste({ lang, onDone }: { lang: string; onDone: (id: string) => 
   const [body, setBody] = useState('');
   const [design, setDesign] = useState<CoverDesign>(() => ({ cloth: CLOTHS[Math.floor(Math.random() * CLOTHS.length)].id, ornament: 'rule' }));
   const [image, setImage] = useState<Blob | null>(null);
+  const [level, setLevel] = useState<Cefr | undefined>(undefined);
   const [busy, setBusy] = useState(false);
+  // On a phone the keyboard waits for a tap instead of covering the page on arrival.
+  const { pointer } = useLayout();
   const words = useMemo(() => (body.trim() ? countWords(body, lang) : 0), [body, lang]);
 
   const save = async () => {
     setBusy(true);
     try {
-      onDone(await importPasted(lang, title.trim(), body, { author: author.trim() || undefined, coverDesign: design, coverImage: image ?? undefined }));
+      onDone(await importPasted(lang, title.trim(), body, { author: author.trim() || undefined, level, coverDesign: design, coverImage: image ?? undefined }));
     } catch (error) {
       toast(error instanceof Error ? error.message : 'The text couldn’t be added.', { tone: 'error' });
       setBusy(false);
@@ -102,11 +113,15 @@ function WriteOrPaste({ lang, onDone }: { lang: string; onDone: (id: string) => 
             onChange={(e) => setBody(e.target.value)}
             lang={lang}
             rows={16}
-            autoFocus
+            autoFocus={pointer === 'fine'}
             placeholder="Paste an article, a chapter or song lyrics, or write your own. Empty lines start new paragraphs; a line starting with # becomes a chapter."
             className="min-h-[34dvh] w-full resize-y rounded-2xl border border-line bg-raised px-5 py-4 font-serif text-[17px] leading-relaxed transition-colors focus:border-accent"
           />
         </Field>
+        <div>
+          <span className="mb-1.5 block text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase">Reading level</span>
+          <LevelPicker value={level} onChange={setLevel} />
+        </div>
         <div className="flex items-center gap-3">
           <Button size="lg" icon={Sparkles} onClick={() => void save()} loading={busy} disabled={!body.trim()}>
             Add and read
@@ -127,16 +142,16 @@ function WriteOrPaste({ lang, onDone }: { lang: string; onDone: (id: string) => 
 
 function ImportFile({ lang, onDone }: { lang: string; onDone: (id: string) => void }) {
   const [busy, setBusy] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const [over, setOver] = useState(false);
   const depth = useRef(0);
 
   const take = async (file: File) => {
-    const epub = /\.epub$/i.test(file.name) || file.type === 'application/epub+zip';
-    const txt = /\.txt$/i.test(file.name) || file.type.startsWith('text/');
-    if (!epub && !txt) return toast('Lingua reads DRM-free EPUB books and plain text files.', { tone: 'error' });
+    if (!bookFileKind(file)) return toast('Lingua reads DRM-free EPUB books, PDFs with text, and plain text files.', { tone: 'error' });
     setBusy(file.name);
+    setProgress(0);
     try {
-      onDone(epub ? await importEpubFile(lang, file) : await importTxtFile(lang, file));
+      onDone(await importBookFile(lang, file, setProgress));
     } catch (error) {
       toast(error instanceof EpubError || error instanceof Error ? error.message : 'That file couldn’t be imported.', { tone: 'error' });
       setBusy(null);
@@ -171,16 +186,16 @@ function ImportFile({ lang, onDone }: { lang: string; onDone: (id: string) => vo
       <span className="mb-4 grid size-16 place-items-center rounded-2xl bg-sage-soft text-sage-text">
         <UploadCloud size={28} aria-hidden />
       </span>
-      <p className="font-serif text-2xl font-semibold">{busy ? `Shelving “${busy}”…` : 'Drop a book here'}</p>
+      <p className="font-serif text-2xl font-semibold">{busy ? `Shelving “${busy}”…${progress > 0 && progress < 1 ? ` ${Math.round(progress * 100)}%` : ''}` : 'Drop a book here'}</p>
       <p className="mt-2 max-w-md text-[14.5px] leading-relaxed text-ink-soft">
-        DRM-free EPUB books and plain text files. On iPhone, choose a file from Files or iCloud Drive. Books bought in Apple Books are locked to that app.
+        DRM-free EPUB books, PDFs with real text, and plain text files. On iPhone, choose a file from Files or iCloud Drive. Books bought in Apple Books are locked to that app.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
-        <Button icon={BookUp} loading={busy !== null} onClick={() => void pickFile('.epub,application/epub+zip').then((f) => f && take(f))}>
-          Choose an EPUB
+        <Button icon={BookUp} loading={busy !== null} onClick={() => void pickFile(BOOK_FILE_ACCEPT).then((f) => f && take(f))}>
+          Choose a book
         </Button>
-        <Button variant="secondary" icon={FileText} disabled={busy !== null} onClick={() => void pickFile('.txt,text/plain').then((f) => f && take(f))}>
-          Choose a text file
+        <Button variant="secondary" icon={FileText} disabled={busy !== null} onClick={() => void pickFile('.pdf,application/pdf').then((f) => f && take(f))}>
+          Choose a PDF
         </Button>
       </div>
       <button
@@ -189,7 +204,7 @@ function ImportFile({ lang, onDone }: { lang: string; onDone: (id: string) => vo
           setBusy('a short sample');
           onDone(await importSample(lang));
         }}
-        className="mt-6 text-[13px] font-semibold text-accent-text underline-offset-2 hover:underline"
+        className="hit mt-6 text-[13px] font-semibold text-accent-text underline-offset-2 hover:underline"
       >
         Or start with a short sample text
       </button>

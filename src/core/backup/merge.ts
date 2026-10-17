@@ -2,7 +2,7 @@
  * Pure merge planning for backup restore.
  * - lww:        newest `updatedAt` wins (tombstones via `deletedAt` travel with the row)
  * - union:      append-only rows (logs, sessions): add what is missing
- * - insertOnly: immutable rows (chapters, blobs, caches): add what is missing
+ * - insertOnly: immutable rows (blobs, caches): add what is missing
  */
 export type MergePolicy = 'lww' | 'union' | 'insertOnly';
 

@@ -10,6 +10,10 @@
 // - since v2: lemmas ranked by frequency (Top-N decks), short usage examples with their translation,
 //   and the themed starter lists made by themes.ts (run that first)
 // - since v6: inflection tables (conjugations, declensions) for the most frequent lemmas
+// - since v7: meanings in order of use (translations.ts evidence), plain short glosses, contractions
+//   and forms with the meaning their own entry states, forms of forms, and the reading a form
+//   belongs to; run translations.ts once before building. src/core/packs/glosses.test.ts checks
+//   the result for everyday words.
 import { createReadStream, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createGunzip, gzipSync } from 'node:zlib';
@@ -120,6 +124,158 @@ interface LexicalData {
 type ThemeCandidates = [Array<[string, string, number]>, string, string];
 
 const hasLetter = /\p{L}/u;
+
+// ── Which meaning is the common one ─────────────────────────────────────────
+// Wiktionary lists meanings by history, not by use. English Wiktionary's translation tables say
+// which words are the usual translation of common English words (translations.ts), so a meaning
+// that is the first translation of a frequent English word comes first: "obrigado" is "thank you"
+// before "obligatory", "tempo" is "time" before "time out".
+
+/** `share`: of the English word's translation tables, how many list the word (1 = all of them). */
+interface Evidence { en: string; pos: string; position: number; share: number; rank: number }
+/** Evidence for the language being built: lemma key → English words it translates. */
+let evidence = new Map<string, Evidence[]>();
+let evidenceLang = '';
+
+type TranslationData = { rank: Record<string, number>; translations: Record<string, Record<string, Array<[string, string, number, number]>>> };
+/** Read once for all languages; null when translations.ts hasn't been run. */
+let translationData: TranslationData | null | undefined;
+
+function loadEvidence(lang: string): void {
+  evidence = new Map();
+  evidenceLang = lang;
+  if (translationData === undefined) {
+    const file = new URL('en-translations.json', CACHE_DIR);
+    translationData = existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as TranslationData) : null;
+  }
+  const data = translationData;
+  if (!data) {
+    console.warn(`  ${lang}: no translation evidence (run translations.ts first)`);
+    return;
+  }
+  const rankOf = (en: string) => Math.max(...en.split(' ').map((w) => data.rank[w] ?? Infinity));
+  for (const [word, list] of Object.entries(data.translations[lang] ?? {})) {
+    const key = normalizeWord(word, lang);
+    const items = evidence.get(key) ?? [];
+    for (const [en, pos, position, share] of list) {
+      const rank = rankOf(en);
+      if (Number.isFinite(rank)) items.push({ en, pos, position, share: share ?? 1, rank });
+    }
+    if (items.length) evidence.set(key, items);
+  }
+}
+
+/** A gloss as plain words: notes in brackets go, and a leading grammar note gives way to what follows it. */
+function plainGloss(gloss: string): string {
+  // Brackets go first, so that what they say ("(in some implied group, often all people); one, you")
+  // isn't taken for the gloss's own wording.
+  let g =
+    gloss
+      .replace(/\s*\([^()]*\)/g, '')
+      .replace(/\s*\([^()]*\)/g, '')
+      // A bracket left open ("yes, yeah, (used to respond…") ends the gloss.
+      .replace(/\s*\([^)]*$/, '')
+      .replace(/\s+/g, ' ')
+      .trim() || gloss;
+  const semi = g.indexOf('; ');
+  if (semi > 0 && LEAD_NOTE.test(g)) g = g.slice(semi + 2);
+  // "third-person feminine singular nominative pronoun she; it" → "she; it"; "…personal pronoun, formal in Portugal; you" → "you"
+  let rest = g.replace(NOTE_PREFIX, '');
+  if (rest !== g) {
+    if (/^\s*,/.test(rest)) rest = rest.includes('; ') ? rest.slice(rest.indexOf('; ') + 2) : '';
+    rest = rest.replace(/^[\s,;:.]+/, '');
+    if (rest && /\p{L}/u.test(rest)) g = rest;
+  }
+  // "to, introduces the indirect object" → "to"
+  g = g.replace(/,\s*(?:introduces|indicates|used|denotes|expresses|especially|usually|often|typically|generally|chiefly|mainly)\b.*$/i, '');
+  // "he, him, masculine personal third person subject and object pronoun" → "he, him"
+  g = g.replace(/,\s*(?:(?:masculine|feminine|neuter|personal|possessive|reflexive)\s+)*(?:first|second|third)[- ]person\b.*$/i, '');
+  // "the definite masculine singular article. the" → "the"
+  g = g.replace(/^[^.;]*\barticle\.\s+(?=\S)/i, '');
+  // "to her, for her; dative of ella" → "to her, for her"; "to have; forms the perfect aspect" → "to have"
+  g = g
+    .split('; ')
+    .filter((p, i) => i === 0 || (!FORM_DESCRIPTION.test(p) && !LEAD_NOTE.test(p)))
+    .join('; ');
+  const plain = g
+    .replace(/\s+/g, ' ')
+    .replace(/[\s,;:]+$/, '')
+    .trim();
+  return plain || g;
+}
+
+/** "second-person singular personal pronoun", "masculine third-person plural nominative personal pronoun", "Third-person singular possessive determiner." */
+const NOTE_PREFIX =
+  /^(?:(?:masculine|feminine|neuter|common|plural|singular|formal|informal|polite|familiar|nominative|objective|accusative|dative|tonic|stressed|unstressed|emphatic)\s+)*(?:(?:first|second|third)[- ]person\b[^;]*?\b(?:pronoun|determiner|article|formal|informal)|(?:definite|indefinite) article|(?:personal|reflexive|possessive|relative|demonstrative|interrogative) (?:pronoun|determiner))\b\.?/i;
+/** A gloss that only names its grammar. */
+const isGrammarNote = (g: string) => {
+  if (!NOTE_PREFIX.test(g) || g.includes(';')) return false;
+  const rest = g.replace(NOTE_PREFIX, '').trim();
+  return !rest || /^[,(]/.test(rest);
+};
+
+/** "used to form the comparative…; more", "indicates…; to", "An expression of intensity; hey": a description before the word itself. */
+const LEAD_NOTE =
+  /^(?:used (?:to|as|in|with|for)|forms?|makes|indicates?|denotes?|introduces?|expresses|an? (?:expression|filler)\b|in the (?:nominative|accusative|dative|genitive) case)\b/i;
+
+/** Parts of speech whose commonest members are glossed by their usual English equivalent. */
+const FUNCTION_POS = new Set(['pron', 'det', 'article', 'prep', 'conj', 'contraction', 'particle', 'adv', 'intj', 'num']);
+
+const POSITION_WEIGHT = [1, 0.7, 0.5, 0.35];
+/** A small head start for the order Wiktionary gives (first meaning ×1.5, second ×1.25, …). */
+const listedFirst = (i: number) => 1 + 0.5 / (1 + i);
+const POS_KIN = [
+  ['det', 'article', 'pron'],
+  ['intj', 'particle'],
+  ['prep', 'contraction'],
+];
+const sameishPos = (a: string, b: string) => a === b || POS_KIN.some((kin) => kin.includes(a) && kin.includes(b));
+
+/** How strongly a gloss is the common meaning of the word `key` (0 when nothing says so), and the part of it that says so. */
+function glossMatch(key: string, pos: string, gloss: string, accept?: (e: Evidence) => boolean): { score: number; part: string } {
+  let best = { score: 0, part: '' };
+  const items = evidence.get(key);
+  if (!items) return best;
+  const parts = plainGloss(gloss)
+    .split(/[;,]\s*|\s+or\s+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  for (const e of items) {
+    if (accept && !accept(e)) continue;
+    const en = e.en.replace(/^to\s+/, '');
+    const article = ['a', 'an', 'the'].includes(en);
+    // English articles say nothing about meanings ("per; a; each").
+    if (article && !['article', 'det'].includes(pos)) continue;
+    // "to go" is "go" and the pronoun "to her" (le) is "her", but "his, to her" (su) is not "her".
+    const lead = e.pos === 'verb' || pos === 'pron' ? /^(?:to|a|an)\s+/ : /^(?:a|an)\s+/;
+    const part = parts.find((p) => {
+      const q = p.toLowerCase().replace(lead, '').replace(/[?!.]+$/, '');
+      return q === en || q === `${en} the` || q === `${en} a`;
+    });
+    if (!part) continue;
+    // The first translation of a common English word, across most of its senses, counts most. A
+    // word spelled like the English one ("lá" for the note "la", "era" for "era") counts for less,
+    // unless it is a function word ("me" is "me").
+    // "the" lists every article of a language (el, la, los, las), so there its order says nothing.
+    const lookalike = !FUNCTION_POS.has(pos) && foldKey(e.en, 'en') === foldKey(key, evidenceLang) ? 0.3 : 1;
+    const [position, share] = article ? [0, 1] : [e.position, e.share];
+    // A phrase ("go with") has few senses and common words, so its table looks surer than it is:
+    // "megy" is "to go" before "to go with".
+    const phrase = e.en.includes(' ') ? 0.35 : 1;
+    const score = ((POSITION_WEIGHT[position] ?? 0.25) * (sameishPos(pos, e.pos) ? 1 : 0.6) * Math.sqrt(share) * lookalike * phrase) / Math.log2(e.rank + 50);
+    if (score > best.score) best = { score, part };
+  }
+  return best;
+}
+
+const glossScore = (key: string, pos: string, gloss: string) => glossMatch(key, pos, gloss).score;
+
+/** For a sense that only describes its grammar ("first-person singular prepositional pronoun"): the usual English word. */
+function plainWordFor(key: string, pos: string): string | undefined {
+  return (evidence.get(key) ?? [])
+    .filter((e) => sameishPos(pos, e.pos) && e.position <= 1 && e.rank <= 2000)
+    .sort((a, b) => a.position - b.position || b.share - a.share || a.rank - b.rank)[0]?.en;
+}
 
 function cleanForm(raw: string): string | null {
   const t = raw.replace(/\^\*|\*|\([^)]*\)|\[[^\]]*\]/g, '').trim();
@@ -239,13 +395,34 @@ function lexicalOf(entry: KaikkiEntry, lang: string, key: string, senses: Kaikki
   // "¿no" for no or Italian dictionary accents like "èssere" are not).
   const sameWord = display !== key && normalizeWord(display, lang) === key;
   const paradigm = paradigmOf(entry);
+  // Meanings marked rare, archaic or regional go last; then the common meaning first.
+  const usual = [...senses].sort((a, b) => Number(marginal(a)) - Number(marginal(b)));
+  // A meaning that only names its grammar ("first-person singular prepositional pronoun") gets the
+  // English word translators use for it: "me (first-person singular prepositional pronoun)".
+  // Only when no usual meaning says it in words ("seu" has "his", "her" beside its grammar note).
+  const onlyNotes = usual.filter((s) => !marginal(s)).every((s) => (s.glosses ?? []).every((g) => isGrammarNote(tidyGloss(g))));
+  const word = onlyNotes ? plainWordFor(key, entry.pos) : undefined;
+  const raw = usual.flatMap((s) => s.glosses ?? []).map((g) => (word && isGrammarNote(tidyGloss(g)) ? `${word} (${tidyGloss(g)})` : g));
+  const glosses = cleanGlosses(raw, entry.pos);
+  // Evidence doesn't lift a rare or regional meaning over the usual ones ("le" is "to her" before
+  // the Spanish "her").
+  const glossesOf = (list: KaikkiSense[]) => new Set(list.flatMap((s) => s.glosses ?? []).map(tidyGloss));
+  const usualGlosses = glossesOf(usual.filter((s) => !marginal(s)));
+  const rareGlosses = glossesOf(usual.filter(marginal));
+  // What a form's own entry says it means counts extra ("dich": "accusative of du; you, thee" before
+  // the reflexive "yourself").
+  const saidGlosses = glossesOf(usual.filter((s) => s.tags?.includes(SAID)));
+  const rarity = (g: string) => (rareGlosses.has(g) && !usualGlosses.has(g) ? 0.3 : 1) * (saidGlosses.has(g) ? 1.5 : 1);
+  const ranked = glosses.map((g, i) => ({ g, i, s: glossScore(key, entry.pos, g) * listedFirst(i) * rarity(g) })).sort((a, b) => b.s - a.s || a.i - b.i);
+  const reading: [string, string[]] = [entry.pos, ranked.map((r) => r.g).slice(0, MAX_GLOSSES)];
+  if (senses.every(marginal)) marginalReadings.add(reading);
   return {
     head: sameWord ? display : '',
     paradigm,
     paradigmPos: paradigm.length ? entry.pos : '',
     ipa: entry.sounds?.find((s) => s.ipa)?.ipa ?? '',
     gender: entry.pos === 'noun' ? gender : '',
-    senses: [[entry.pos, cleanGlosses(senses.flatMap((s) => s.glosses ?? []), entry.pos).slice(0, MAX_GLOSSES)]],
+    senses: [reading],
     tableForms,
     examples: usableExamples(senses, lang),
     priority: entryPriority(entry, key, senses),
@@ -264,7 +441,59 @@ function entryPriority(entry: KaikkiEntry, key: string, senses: KaikkiSense[]): 
   return entry.word === key ? 0 : 1;
 }
 
-const LETTER_NAME = /^(?:the )?name of the\b.*\bletter\b/i;
+/** "name of the letter Я", "nu; the Greek letter Ν, ν", "he; the Hebrew letter ה". */
+const LETTER_NAME = /^(?:the )?name of the\b.*\bletter\b|^[^\s;,]+[;,] the (?:name of the )?(?:[\p{L}-]+ )*letter\b/iu;
+/** Languages whose free-standing articles are mostly pronouns. */
+const PRONOUN_ARTICLES = new Set(['sv', 'nb', 'no', 'da']);
+/** Languages whose article forms are entered as pronouns, with the article only as their lemma. */
+const ARTICLE_FORMS_AS_PRONOUNS = new Set(['el']);
+/** A dictionary line that describes grammar or a form instead of saying the word. */
+const isDescription = (g: string) => LEAD_NOTE.test(g) || FORM_DESCRIPTION.test(g) || /\bform of\b/i.test(g) || isGrammarNote(g);
+/** A personal or question pronoun's English. */
+const PERSONAL = /^(?:I|you|he|she|it|we|they|who|me|him|her|us|them|whom|thou|ye)\b/i;
+/** Tag on the meaning a form-of entry states outright (see formMeaning). */
+const SAID = 'lingua-said';
+
+/** A part of a form-of gloss that names another form ("…; first-person singular preterite indicative of ser"). */
+const FORM_DESCRIPTION =
+  /\b(?:form|inflection|plural|singular|participle|gerund|infinitive|indicative|subjunctive|imperative|conditional|preterite|imperfect|[a-z]+-person|nominative|accusative|dative|genitive|apocopic|contraction|diminutive|augmentative|superlative|masculine|feminine|neuter|possessive) of\b|^representing\b/i;
+
+/**
+ * What a form-of or contraction sense says the word means: "accusative of ellos; them" → them,
+ * "plural of él (“they, them”)" → they, them, "contraction of de + o, literally “of the, from the,
+ * -'s”" → of the, from the. Verb forms ("first-person singular present indicative of ser") say nothing.
+ */
+const isContraction = (sense: KaikkiSense) => Boolean(sense.tags?.includes('contraction') || /^contraction of\b/i.test(sense.glosses?.[0] ?? ''));
+
+function formMeaning(sense: KaikkiSense, pos: string): string[] {
+  const gloss = sense.glosses?.[0] ?? '';
+  const form = isContraction(sense) || Boolean(sense.form_of?.length);
+  if (!form && !sense.alt_of?.length) return [];
+  // What follows a semicolon or colon says it outright ("dative of nosotros: to us, for us"); a
+  // bracket after the lemma can be the lemma's own meaning ("accusative of én (“I”): me").
+  // (Outside brackets: "apocopic form of que (“that, which; only; etc.”)" says nothing outright.)
+  const said = gloss
+    .replace(/\s*\([^()]*\)/g, '')
+    .split(/;\s*|:\s+/)
+    .slice(1)
+    .filter((p) => p.trim() && !FORM_DESCRIPTION.test(p));
+  // A spelling variant counts only when it says so outright (Italian "ad": "…for euphony; to, at,
+  // in"); its bracket is its word's meaning ("tête" for note de tête, “top note”).
+  if (!form && !said.length) return [];
+  const literal = /literally [“"]([^”"]+)[”"]/.exec(gloss)?.[1] ?? /\(\s*[“"]([^”"]+)[”"]\s*\)/.exec(gloss)?.[1];
+  // A function word can say it after a comma too: "neuter singular of din, your, yours".
+  const listed = FUNCTION_POS.has(pos) ? /\bof [^\s,]+, ([\p{L}' ]+(?:, [\p{L}' ]+)*)$/u.exec(gloss.replace(/\s*\([^()]*\)/g, ''))?.[1] : undefined;
+  const parts = said.length ? said : literal ? literal.split(/,\s*/) : listed ? listed.split(/,\s*/) : [];
+  return parts
+    .map((p) => p.replace(/\s*\([^()]*\)/g, '').replace(/\s*\([^()]*\)/g, '').replace(/[“”"]/g, '').trim())
+    .filter((p) => p && !p.startsWith('-') && p.length <= 30);
+}
+
+/** Meanings few readers will meet. Regional labels (Brazil, Portugal) are not among them. */
+const MARGINAL = new Set(['rare', 'archaic', 'obsolete', 'dated', 'dialectal', 'proscribed', 'nonstandard', 'historical', 'uncommon', 'obsolete-form', 'poetic', 'neologism']);
+const marginal = (sense: KaikkiSense) => Boolean(sense.tags?.some((t) => MARGINAL.has(t)));
+/** Readings made only of such meanings ("les" as a neologism article) go after the word's usual ones. */
+const marginalReadings = new WeakSet<object>();
 
 /**
  * One gloss made short and plain: grammar tags ("[with prepositional] in, at") go, descriptions that
@@ -275,7 +504,17 @@ function tidyGloss(raw: string): string {
   let s = raw.replace(/\[[^\]]*\]\s*/g, '').replace(/\s+/g, ' ').trim();
   const quoted = [...s.matchAll(/["“]([^"”]{1,30})["”]/g)].map((m) => m[1]);
   if (s.length > 40 && quoted.length && /translat|rendered|equivalent/i.test(s)) s = quoted.join(', ');
-  const colon = s.indexOf(': ');
+  // "The most common adverb of negation in French, typically translating into English as not, don't…" → not, don't
+  const translating = /\btranslat\w* (?:into English )?as ([^.;()]+)/i.exec(s)?.[1];
+  if (s.length > 40 && translating) s = translating.replace(/,?\s*etc\.?$/i, '').trim();
+  // A colon inside brackets ("other (from something: -tól/-től)") is not the gloss's own.
+  let depth = 0;
+  let colon = -1;
+  for (let i = 0; i < s.length - 1 && colon < 0; i++) {
+    if (s[i] === '(') depth++;
+    else if (s[i] === ')') depth = Math.max(0, depth - 1);
+    else if (!depth && s[i] === ':' && s[i + 1] === ' ') colon = i;
+  }
   if (colon > 0) {
     const head = s.slice(0, colon);
     s = /^to\s/.test(head) || head.split(' ').length <= 2 ? head : s.slice(colon + 2);
@@ -288,11 +527,13 @@ function cleanGlosses(glosses: string[], pos: string): string[] {
   const out = [
     ...new Set(
       glosses
-        .filter((g) => !/:\s*$/.test(g) && !LETTER_NAME.test(g))
+        .filter((g) => !/:\s*$/.test(g) && !LETTER_NAME.test(g) && !/^(?:same as|see)\b/i.test(g))
         .map((g) => tidyGloss(g.replace(/^(?:Used|Denotes)\b[^.]*\.\s+(?=\S)/, '')))
         .filter(Boolean),
     ),
   ];
+  // "Third-person singular possessive determiner." beside "his", "her", "its": keep the words.
+  if (out.some((g) => !isGrammarNote(g))) out.splice(0, out.length, ...out.filter((g) => !isGrammarNote(g)));
   return pos === 'verb' ? [...out.filter((g) => g.startsWith('to ')), ...out.filter((g) => !g.startsWith('to '))] : out;
 }
 
@@ -316,12 +557,25 @@ function mergeLexical(into: LexicalData, add: LexicalData): void {
 async function build(source: PackSource): Promise<void> {
   const lang = source.code;
   const started = Date.now();
+  loadEvidence(lang);
   const { forms: freq, counts: freqCount } = readFrequency(source);
   const freqRank = new Map(freq.map((f, i) => [f, i + 1]));
 
   const lexical = new Map<string, LexicalData>();
   const formLinks = new Map<string, Set<string>>(); // form → lemmas (from form-of entries)
   const formDesc = new Map<string, string>();
+  const formGloss = new Map<string, string>(); // verb form → what it means ("estoy" → am)
+  const articleForms = new Set<string>(); // Greek article forms shown as "the" first (see lemmasFor)
+  const linkPos = new Map<string, Set<string>>(); // "form|lemma" → the parts of speech it is a form of
+  const notePos = (form: string, lemma: string, pos: string) => {
+    const k = `${form}|${lemma}`;
+    linkPos.set(k, (linkPos.get(k) ?? new Set()).add(pos));
+  };
+  /** Whether a form belongs to its lemma's main reading ("hittar" is the plural of the noun hit, not of the adverb). */
+  const ofMainReading = (form: string, lemma: string) => {
+    const pos = linkPos.get(`${form}|${lemma}`);
+    return !pos || pos.has(lexical.get(lemma)?.senses[0]?.[0] ?? '');
+  };
   const tableLinks = new Map<string, Set<string>>(); // form → lemmas (from inflection tables)
   const link = (map: Map<string, Set<string>>, form: string, lemma: string) => {
     let set = map.get(form);
@@ -333,12 +587,31 @@ async function build(source: PackSource): Promise<void> {
     const key = normalizeWord(entry.word, lang);
     const formOf = (entry.senses ?? []).filter((s) => s.form_of?.length || s.alt_of?.length);
     const real = (entry.senses ?? []).filter((s) => !s.form_of?.length && !s.alt_of?.length && s.glosses?.length);
-    for (const s of formOf) {
-      for (const target of [...(s.form_of ?? []), ...(s.alt_of ?? [])]) {
-        const lemma = normalizeWord(target.word, lang);
-        if (lemma !== key) link(formLinks, key, lemma);
+    // Contractions and some forms mean something of their own: "do" (de + o) is "of the", "pelo" is
+    // "by the", "ellos" (plural of él) is "they, them". That meaning comes first ("al" is "to the"
+    // before "upon").
+    let at = 0;
+    for (const s of entry.senses ?? []) {
+      const meaning = formMeaning(s, entry.pos);
+      if (!meaning.length) continue;
+      // A verb form's meaning ("estoy": am) glosses the form, while the verb stays its word.
+      if (entry.pos === 'verb' && !isContraction(s)) {
+        if (!formGloss.has(key)) formGloss.set(key, meaning.join(', '));
+        continue;
       }
-      if (!formDesc.has(key) && s.glosses?.[0]) {
+      // Only rarity labels carry over: contractions are tagged "abbreviation" too.
+      real.splice(at++, 0, { glosses: meaning, tags: [...(s.tags ?? []).filter((t) => MARGINAL.has(t)), SAID] });
+    }
+    for (const s of formOf) {
+      // Targets are words; Wiktionary sometimes leaves a note among them ("sometimes used when…").
+      const targets = [...(s.form_of ?? []), ...(s.alt_of ?? [])].map((t) => normalizeWord(t.word, lang)).filter((t) => t && !/\s/.test(t) && t.length <= 30);
+      for (const lemma of targets) {
+        if (lemma === key) continue;
+        link(formLinks, key, lemma);
+        notePos(key, lemma, entry.pos);
+      }
+      // "Honorific alternative letter-case form of eu" describes "Eu", not "eu".
+      if (!formDesc.has(key) && s.glosses?.[0] && targets.some((t) => t !== key)) {
         // "plural past of чита́ть (čitátʹ)." → "plural past of чита́ть" (romanisations and trailing punctuation removed)
         const desc = s.glosses[0].replace(/\s*\([^)]*\)/g, '').replace(/[\s:.]+$/, '');
         formDesc.set(key, shorten(desc, 80));
@@ -346,10 +619,16 @@ async function build(source: PackSource): Promise<void> {
     }
     if (!real.length || !keep(key)) return;
     const data = lexicalOf(entry, lang, key, real);
+    // Nothing left once letter names and labels are gone ("ni" as the Greek letter nu).
+    if (!data.senses[0][1].length) return;
     const existing = lexical.get(key);
     if (existing) mergeLexical(existing, data);
     else lexical.set(key, data);
-    for (const f of data.tableForms) if (freqRank.has(f) && f !== key) link(tableLinks, f, key);
+    for (const f of data.tableForms) {
+      if (!freqRank.has(f) || f === key) continue;
+      link(tableLinks, f, key);
+      notePos(f, key, entry.pos);
+    }
   };
 
   // Pass 1: lexical data for frequent words, plus every form → lemma link.
@@ -371,14 +650,40 @@ async function build(source: PackSource): Promise<void> {
     }
   }
 
+  // Wiktionary sometimes lacks a common word's main reading (Swedish "i" has only the archaic "ye",
+  // not the preposition "in"): for the commonest words, a sure translation table fills it in.
+  for (const [key, data] of lexical) {
+    if ((freqRank.get(key) ?? Infinity) > 300) continue;
+    // Only where nothing supports the readings it has ("ma" is "today", whatever "this" lists it).
+    if (data.senses.some(([pos, gl]) => gl.some((g) => glossScore(key, pos, g) > 0))) continue;
+    const sure = (evidence.get(key) ?? []).filter((e) => ['prep', 'conj', 'pron', 'det', 'article'].includes(e.pos) && e.position === 0 && e.share >= 0.5 && e.rank <= 100);
+    for (const e of sure) if (!data.senses.some(([pos]) => sameishPos(pos, e.pos))) data.senses.unshift([e.pos, [e.en]]);
+  }
+
   // The most common words are mostly function words: there, "у" is "at, by" before the noun "Wu" and
   // "о" is "about" before the interjection "oh".
+  // Beyond that, the common meaning first (translation evidence), with nouns and interjections
+  // among the top 500 words counting for less.
   const weight = (pos: string) => (pos === 'noun' ? 2 : pos === 'intj' ? 1 : 0);
   for (const [key, data] of lexical) {
-    if ((freqRank.get(key) ?? Infinity) > 500) continue;
-    const sorted = [...data.senses].sort((a, b) => weight(a[0]) - weight(b[0]));
-    if (sorted[0] === data.senses[0]) continue;
-    data.senses = sorted;
+    const top = (freqRank.get(key) ?? Infinity) <= 500;
+    // A noun counts for less only beside a reading that translates a common English word ("vilja" is
+    // "to want" before "will"; "amigo" stays a friend before "friendly").
+    const commonOther = top && data.senses.some(([pos, gl]) => pos !== 'noun' && gl.some((g) => glossMatch(key, pos, g, (e) => e.rank <= 1000).score > 0));
+    const scored = data.senses.map((s, i) => {
+      const score = Math.max(0, ...s[1].map((g) => glossScore(key, s[0], g))) * listedFirst(i);
+      const damp = (top ? (s[0] === 'noun' ? (commonOther ? 0.5 : 1) : s[0] === 'intj' ? 0.75 : 1) : 1) * (marginalReadings.has(s) ? 0.3 : 1);
+      return { s, i, score: score * damp, rare: Number(marginalReadings.has(s)) };
+    });
+    // Among the 50 commonest words an article is first an article (Greek "το" is "the" before "it",
+    // German "dem" before "to whom"), when its dictionary line says the word, not only its grammar
+    // ("Forms the partitive article"). Not in the Scandinavian languages, whose den, det and de are
+    // mostly "it", "that" and "they".
+    const articleFirst = (freqRank.get(key) ?? Infinity) <= 50 && !PRONOUN_ARTICLES.has(lang);
+    const article = (s: PackSense) => Number(articleFirst && s[0] === 'article' && !isDescription(s[1][0] ?? ''));
+    scored.sort((a, b) => article(b.s) - article(a.s) || b.score - a.score || a.rare - b.rare || (top ? weight(a.s[0]) - weight(b.s[0]) : 0) || a.i - b.i);
+    if (scored.every((x, i) => x.i === i)) continue;
+    data.senses = scored.map((x) => x.s);
     if (data.senses[0][0] !== 'noun') data.gender = '';
   }
 
@@ -394,27 +699,179 @@ async function build(source: PackSource): Promise<void> {
     }
     return i;
   };
-  const glossOf = (key: string) => lexical.get(key)?.senses[0]?.[1][0] ?? '';
+  const glossOf = (key: string) => plainGloss(lexical.get(key)?.senses[0]?.[1][0] ?? '');
+  /** How well a lemma's meanings match what the form itself translates (0 when nothing says). */
+  const fit = (form: string, key: string) => Math.max(0, ...(lexical.get(key)?.senses ?? []).flatMap(([pos, gl]) => gl.map((g) => glossScore(form, pos, g))));
+  // A form's own translations pick the lemma's meaning that fits it: "mi" (of mío, "mine; of mine;
+  // mine, my") is "my", with the matching word first.
+  // Only function words and adjectives, and only a first translation or a sure second one of a common
+  // English word ("sua" is in the second place of "its" and "you", which say little).
+  const sure = (e: Evidence) => e.position === 0 || (e.position === 1 && e.share >= 0.6 && e.rank <= 300);
+  // A form reads as the kind of word it is a form of: "azt" (accusative of the pronoun az) is "that", not "the".
+  const glossAs = (form: string, key: string) => {
+    const pos = linkPos.get(`${form}|${key}`);
+    const senses = lexical.get(key)?.senses ?? [];
+    const sense = (ofMainReading(form, key) ? senses[0] : senses.find(([p]) => pos?.has(p))) ?? senses[0];
+    return plainGloss(sense?.[1][0] ?? '');
+  };
+  const glossFor = (form: string, key: string) => {
+    if (form === key) return glossOf(key);
+    if (!evidence.has(form)) return glossAs(form, key);
+    let best = { score: 0, part: '', gloss: '' };
+    for (const [pos, gl] of lexical.get(key)?.senses ?? []) {
+      if (!FUNCTION_POS.has(pos) && pos !== 'adj') continue;
+      for (const g of gl) {
+        const m = glossMatch(form, pos, g, sure);
+        if (m.score > best.score) best = { ...m, gloss: g };
+      }
+    }
+    if (!best.score) return glossAs(form, key);
+    const rest = plainGloss(best.gloss)
+      .split(/[;,]\s*/)
+      .map((p) => p.trim())
+      .filter((p) => p && p !== best.part);
+    return [best.part, ...rest].join(', ');
+  };
 
   const forms = new Map<string, PackForm>();
   const addForm = (form: string, lemmaKeys: string[], desc = formDesc.get(form) ?? '') => {
-    const keys = [...new Set(lemmaKeys)].filter((k) => lexical.has(k)).slice(0, 3);
+    let keys = [...new Set(lemmaKeys)].filter((k) => lexical.has(k));
+    // A word of its own stays among its readings ("comida" after comer, comido and comedir).
+    keys = keys.length > 3 && keys.indexOf(form) > 2 ? [...keys.slice(0, 2), form] : keys.slice(0, 3);
     if (!keys.length || forms.has(form)) return;
-    // A word that is itself the first lemma speaks for itself ("как" → how, not also "poo" from кака).
-    const shown = keys[0] === form ? keys.slice(0, 1) : keys.slice(0, 2);
-    const glosses = [...new Set(shown.map(glossOf).filter(Boolean))];
-    forms.set(form, [form, keys.map(indexOf), shorten(glosses.join('; '), SHORT_GLOSS), desc]);
+    // A word that is itself the first lemma speaks for itself ("как" → how, not also "poo" from кака),
+    // and so does a lemma the form's translations clearly prefer ("mis" → my, not also the note mi).
+    const glossed = keys.filter((k) => glossOf(k));
+    const fits = glossed.slice(0, 2).map((k) => fit(form, k));
+    const alone = glossed[0] === form || (fits[0] > 0 && fits[0] > 2 * (fits[1] ?? 0));
+    // A second reading only through a word's side meaning stays in the list, not in the gloss ("es" is "is", not also the letter's plural).
+    const shown = alone || !glossed[1] || !ofMainReading(form, glossed[1]) ? glossed.slice(0, 1) : glossed.slice(0, 2);
+    let glosses = [...new Set(shown.map((k) => glossFor(form, k)).filter(Boolean))];
+    // A Greek article form reads "the", then its pronoun meaning.
+    if (articleForms.has(form)) {
+      const art = lexical.get(keys[0])?.senses.find(([pos]) => pos === 'article');
+      if (art) glosses = [...new Set([plainGloss(art[1][0] ?? ''), ...glosses.slice(1)])].filter(Boolean);
+    }
+    // What Wiktionary says the verb form itself means ("estoy" → am) reads better than its infinitive.
+    const meaning = formGloss.get(form);
+    if (meaning && keys[0] !== form && lexical.get(keys[0])?.senses[0]?.[0] === 'verb') glosses = [meaning];
+    // A contraction without a meaning of its own reads as its parts: "dela" (de + ela) → "of + she".
+    const parts = /^contraction of ([^\s,:;]+) \+ ([^\s,:;]+)/i.exec(desc);
+    if (!lexical.has(form) && parts) {
+      const first = (k: string) => glossOf(normalizeWord(k, lang)).split(/[;,]/)[0].trim();
+      const joined = [first(parts[1]), first(parts[2])].filter(Boolean);
+      if (joined.length === 2) glosses = [joined.join(' + ')];
+    }
+    // The commonest function words: when Wiktionary's wording doesn't lead with the usual English
+    // equivalent ("in the nominative case; I", "nu; the Greek letter"), that equivalent is the gloss.
+    const lead = (glosses[0] ?? '').split(/[;,]/)[0].toLowerCase();
+    // Only where the wording reads like a description, a grammar label or the word itself.
+    // (A gloss that is the word itself only describes it when no table says so: French "me" is "me".)
+    const itself = lead === form && !(evidence.get(form) ?? []).some((e) => e.en === lead);
+    const describes = !lead || itself || /\b(?:form|pronoun|case|person|apocopic|letter|used|makes|auxiliary|plural|singular|masculine|feminine|nominative|dative|accusative|genitive|indicates|denotes)\b/i.test(glosses[0] ?? '');
+    // A form of a personal pronoun is what its own table says, not what its lemma says (Russian "нас"
+    // is "us", not "we"; Greek "αυτόν" is "him"). Demonstratives don't get this: tables list
+    // Portuguese "esses" under "these".
+    const lemmaPos = lexical.get(keys[0])?.senses[0]?.[0] ?? '';
+    const personal = (lexical.get(keys[0])?.senses ?? []).some(([pos, gl]) => pos === 'pron' && PERSONAL.test(plainGloss(gl[0] ?? '')));
+    const inflected = keys[0] !== form && personal && (freqRank.get(form) ?? Infinity) <= 2000;
+    if (((freqRank.get(form) ?? Infinity) <= 300 && describes) || inflected) {
+      const usual = (evidence.get(form) ?? [])
+        .filter((e) => FUNCTION_POS.has(e.pos) && e.position === 0 && e.share >= 0.5 && e.rank <= 2000)
+        .filter((e) => !inflected || e.pos === 'pron')
+        // English articles only stand for articles.
+        .filter((e) => !['a', 'an', 'the'].includes(e.en) || ['article', 'det'].includes(e.pos))
+        .sort((a, b) => a.rank - b.rank);
+      const cased = (en: string) => (en === 'i' ? 'I' : en === 'ok' ? 'OK' : en);
+      if (usual.length && !usual.some((e) => lead.split(/\s+/).includes(e.en) || lead === e.en)) glosses = [[...new Set(usual.map((e) => cased(e.en)))].slice(0, 2).join('; ')];
+    }
+    // The plural of a demonstrative: "estos" (of este, this) is "these", "esses" (of esse, that) "those".
+    if (keys[0] !== form && ['det', 'pron'].includes(lemmaPos) && /\bplural\b/.test(desc)) {
+      glosses = glosses.map((g) => g.replace(/^this\b/, 'these').replace(/^that\b/, 'those'));
+    }
+    // A form of a form reads like the form it comes from ("tus", the plural of tu, is "your" like tu).
+    const through = lexical.has(form) ? undefined : [...(formLinks.get(form) ?? [])].find((l) => !lexical.has(l) && forms.get(l)?.[1][0] === indexOf(keys[0]));
+    if (through) glosses = [forms.get(through)![2]];
+    forms.set(form, [form, keys.map(indexOf), shorten(glosses.join('; ').replace(/[\s;,]+$/, ''), SHORT_GLOSS), desc]);
   };
   // Lemma order: a word's own meaning first ("весь" → all, "дома" → at home), except nouns/adjectives that
   // are also forms of a very common verb ("είναι" → to be, not "being"). Inflection tables only count when
   // Wiktionary has no direct link (pronoun tables list every pronoun).
+  // How often a word is met through forms that are no other word's: "haber" itself is rarer than
+  // "hemos", "han" and "habían".
+  const reach = new Map<string, number>();
+  for (const form of freq) {
+    const links = formLinks.get(form);
+    if (lexical.has(form) || links?.size !== 1) continue;
+    const [l] = links;
+    reach.set(l, (reach.get(l) ?? 0) + (freqCount.get(form) ?? 0));
+  }
+  const topCount = freqCount.get(freq[149]) ?? Infinity;
   const lemmasFor = (form: string) => {
-    const direct = [...(formLinks.get(form) ?? [])];
+    // The commonest word a form belongs to first ("são" is a form of ser before it is one of santo).
+    // How often a lemma is met: as itself or through its forms ("a" is first a form of avoir, whose
+    // infinitive is rarer than "elle", but whose forms are everywhere).
+    const met = (l: string) => Math.max(freqCount.get(l) ?? 0, reach.get(l) ?? 0);
+    const byRank = (a: string, b: string) => met(b) - met(a) || (freqRank.get(a) ?? Infinity) - (freqRank.get(b) ?? Infinity);
+    // A lemma's frequency speaks for the form only through its main reading ("hittar" is "find" before the noun "hit").
+    const linked = [...(formLinks.get(form) ?? [])].sort((a, b) => Number(!ofMainReading(form, a)) - Number(!ofMainReading(form, b)) || byRank(a, b));
+    const first = linked.filter((l) => lexical.has(l));
+    // A form of a form: "tus" is the plural of "tu", itself the short form of tuyo.
+    const further = [...new Set(linked.flatMap((l) => [...(formLinks.get(l) ?? [])]))].filter((l) => l !== form && lexical.has(l) && !first.includes(l)).sort(byRank);
+    let direct = first.length ? first : further;
+    // …which comes first where the form's own translations say so: "mis" (plural of mi, the note) is "my", of mío.
     const own = lexical.get(form);
+    const ahead = own
+      ? undefined
+      : further
+          .filter((l) => !direct.includes(l))
+          .map((l) => ({ l, s: fit(form, l) }))
+          .sort((a, b) => b.s - a.s)[0];
+    if (ahead && ahead.s > 2 * Math.max(0, ...direct.map((l) => fit(form, l)))) direct = [ahead.l, ...direct];
+    // Greek article forms double as pronouns and are entered only as pronouns: "το", "την", "του"
+    // are first "the" (forms of ο), then "it", "her", "his".
+    const theArticle =
+      ARTICLE_FORMS_AS_PRONOUNS.has(lang) && (freqRank.get(form) ?? Infinity) <= 100 && !own?.senses.some(([pos]) => pos === 'article')
+        ? direct.find((l) => lexical.get(l)?.senses[0]?.[0] === 'article')
+        : undefined;
+    if (theArticle) {
+      articleForms.add(form);
+      return [theArticle, ...(own ? [form] : []), ...direct.filter((l) => l !== theArticle)];
+    }
     if (!own) return direct.length ? direct : [...(tableLinks.get(form) ?? [])];
+    // An abbreviation or a letter (Portuguese "no" as "NO", northwest) gives way to what the form is of,
+    // and so does a reading that only describes grammar ("había": "makes pluperfect to verbs…").
+    const describesOnly = own.senses.every(([, gl]) => gl.every((g) => isGrammarNote(g) || (LEAD_NOTE.test(g) && !g.includes('; '))));
+    if ((own.priority === 2 || describesOnly) && direct.length) return [...direct, form];
     const ownPos = own.senses[0]?.[0];
+    // A word translators use for a common English word is itself first ("casa" is a house before it is "he marries").
+    const ownIsCommon =
+      ['noun', 'adj'].includes(ownPos) &&
+      (evidence.get(form) ?? []).some(
+        (e) =>
+          (e.position === 0 ? e.share >= 0.3 : e.position === 1 && e.share >= 0.9) &&
+          e.rank <= 1000 &&
+          // …as that kind of word: "seus" is in the table of "their" as a determiner, not as "kin".
+          own.senses.some(([pos, gl]) => sameishPos(pos, e.pos) && gl.some((g) => glossMatch(form, pos, g, (x) => x === e).score > 0)),
+      );
     const commonVerb = direct.some((l) => lexical.get(l)?.senses[0]?.[0] === 'verb' && (freqRank.get(l) ?? Infinity) <= 2000);
-    return commonVerb && ['noun', 'adj', 'intj', 'particle'].includes(ownPos) ? [...direct, form] : [form, ...direct];
+    // Likewise for forms of the commonest words ("essa" is "that" before it is a catafalque, "boa" "good" before the snake).
+    const commonWord = direct.some((l) => ['pron', 'det', 'article', 'adj', 'num'].includes(lexical.get(l)?.senses[0]?.[0] ?? '') && (freqRank.get(l) ?? Infinity) <= 300);
+    // A form of the very commonest verbs is that verb, whatever else it spells ("era" is "was", not "era").
+    const topVerb = direct.some((l) => lexical.get(l)?.senses[0]?.[0] === 'verb' && ((freqRank.get(l) ?? Infinity) <= 150 || (reach.get(l) ?? 0) >= topCount));
+    const contentWord = ['noun', 'adj', 'intj', 'particle'].includes(ownPos);
+    // So is an adverb or conjunction nothing translates as such ("he" is "I have" before "here is",
+    // "quer" "wants" before "whether… or"; "fuera" stays "outside").
+    // (Also a pronoun nothing translates: Quebec French "a" for elle is first "has".)
+    if ((contentWord || (['adv', 'conj', 'pron', 'prep'].includes(ownPos) && !fit(form, form))) && topVerb) return [...direct, form];
+    const list = contentWord && (commonVerb || commonWord) && !ownIsCommon ? [...direct, form] : [form, ...direct];
+    // What the form itself translates decides between its readings: Spanish "mi" is "my" (a form of
+    // mío) before it is the note mi, "su" is "his, her" before "apocopic form of suyo".
+    // Only to move the form's own reading aside, never to put it before a verb chosen above.
+    if (list[0] !== form) return list;
+    const ownFit = fit(form, form);
+    const better = list.slice(1).map((l) => ({ l, s: fit(form, l) })).sort((a, b) => b.s - a.s)[0];
+    return better && better.s > 2 * ownFit ? [better.l, ...list.filter((l) => l !== better.l)] : list;
   };
 
   for (const form of freq) addForm(form, lemmasFor(form));

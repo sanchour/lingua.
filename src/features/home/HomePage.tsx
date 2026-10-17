@@ -355,7 +355,7 @@ function NumbersCard({ lang }: { lang: string }) {
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center justify-between">
         <p className={label}>At a glance</p>
-        <Link to="/ratio" className="inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
+        <Link to="/ratio" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
           Ratio <ArrowRight size={14} aria-hidden />
         </Link>
       </div>

@@ -301,3 +301,38 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Onboarding asks two light questions**, both optional: why (kept for later suggestions) and what
   you enjoy (orders Home's "Next up"; due cards never drop below second place, since reviews pile
   up when skipped). The time-a-day choice becomes the daily goal.
+
+## 2026-10-17 — Lingua 2.0-2: adding and editing, PDFs, news, better dictionaries
+
+- **Chapters are now merged like everything else (last writer wins), with tombstones.** Editing a
+  book rewrites only the chapters that changed; a removed chapter keeps its row, emptied and marked
+  deleted, so a backup from another device can't bring it back. Long edits are split the same way
+  imports are. Reading progress is clamped to the chapters that are left.
+- **The reading level is a guess you can change.** "Lingua's guess" comes from the share of a
+  text's words among the 5,000 most common (names, unranked words seen three times or more, are
+  left out); under 40 words there is no guess. The thresholds were set on real texts so a simple
+  story reads A1–A2, not B2.
+- **PDFs are read with pdf.js, loaded only when a PDF is chosen** (it is large). Paragraphs come
+  from geometry, not from the text alone: a gap wider than the usual line gap (the 25th percentile,
+  capped at 1.6× the body size), a change of size, or a short last line ending a sentence. Lines
+  repeated on most pages (headers, page numbers) go. Chapters follow the PDF's bookmarks, else its
+  headings, else ten-page parts. A PDF with almost no text per page is called scanned rather than
+  shown empty.
+- **News articles go through Jina Reader, and only when asked.** Browsers can't fetch most news
+  pages directly (CORS), and a reader service returns clean text. It sees the article's link and
+  nothing else; the page says so. Lingua then keeps the article's main run of prose (menus, link
+  lists, cookie and subscription prompts and timestamps go). Sources were chosen for working
+  feeds that allow cross-origin reads; Telex and Index were dropped (bot checks, consent walls).
+- **Dictionaries choose the common meaning from translation tables.** English Wiktionary's
+  translation tables list, for each English word, the words translators use in each language, in
+  order. A gloss counts as common when a common English word's table lists the word first and
+  across most of that word's senses (the share of its tables). Phrases ("go with"), look-alikes
+  ("era" for era) and rare or regional senses count for less; "the" counts fully for articles,
+  since its table lists every article of a language. A form's own entry is read for what it states
+  ("ellos": they, them; "estoy": am), a form's part of speech decides which reading it shows
+  (Hungarian "azt" is "that", not "the"), and forms of forms are followed ("tus" → tu → tuyo).
+- **A lemma fallback for words the dictionary lacks**, tried before going online: case and
+  definite endings, attached pronouns, Portuguese hyphens, and the end of a German or Swedish
+  compound, which says it is only the end. The dictionary decides which guess is a word.
+- **A test of everyday words per language** guards the builder's choices, so a later tweak that
+  makes "la" read "it" or "megy" read "to go with" fails the build's tests instead of shipping.

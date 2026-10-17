@@ -1,7 +1,7 @@
 import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { BookCheck, BookOpen, Ellipsis, Palette, Paperclip, Star, Trash2 } from 'lucide-react';
+import { BookCheck, BookOpen, Ellipsis, Paperclip, Pencil, Star, Trash2 } from 'lucide-react';
 import { deleteText, updateText } from '@/data/library';
 import type { ReadingProgress, Text } from '@/data/types';
 import { Button, Dialog, MenuItem, Popover } from '@/design/primitives';
@@ -32,6 +32,7 @@ function BookMeta({ text, progress }: Pick<BookProps, 'text' | 'progress'>) {
   }
   return (
     <>
+      {(text.level ?? text.stats?.level) && <span className="rounded bg-sunken px-1 py-px text-[10.5px] text-ink-soft">{text.level ?? text.stats?.level}</span>}
       {text.finishedAt ? <span className="text-sage-text">Finished</span> : pct > 0 ? <span>{pct}% read</span> : <span>New</span>}
       {known !== null && <span aria-label={`${known} percent of words known`}>· {known}% known</span>}
     </>
@@ -98,8 +99,8 @@ function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
             )}
             {!shelfOnly && (
               <MenuItem
-                icon={Palette}
-                label="Cover & details"
+                icon={Pencil}
+                label="Edit"
                 onClick={() => {
                   close();
                   navigate(`/codex/book/${text.id}`);

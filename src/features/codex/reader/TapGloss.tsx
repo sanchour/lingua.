@@ -15,8 +15,22 @@ interface TapGlossProps {
   onOpen: (el: HTMLElement) => void;
 }
 
+/** One key per word span, so a bubble never carries one word's translation over to the next. */
+const spanKeys = new WeakMap<HTMLElement, number>();
+let nextKey = 0;
+const keyOf = (el: HTMLElement) => {
+  let key = spanKeys.get(el);
+  if (key === undefined) spanKeys.set(el, (key = ++nextKey));
+  return key;
+};
+
 /** Touch: a small bubble above the tapped word with its translation and quick state pills. */
-export function TapGloss({ el, engine, onClose, onOpen }: TapGlossProps) {
+export function TapGloss(props: TapGlossProps) {
+  // Tapping another word while the bubble is open starts a fresh bubble for it.
+  return <TapBubble key={keyOf(props.el)} {...props} />;
+}
+
+function TapBubble({ el, engine, onClose, onOpen }: TapGlossProps) {
   const portalRoot = usePortalRoot();
   const norm = el.dataset.n!;
   const [gloss, setGloss] = useState(() => engine.glossAt(el)?.text ?? null);

@@ -363,3 +363,18 @@
   border-radius: 999px;
   background: #fff;
 }
+/* A finger needs a taller strip to catch and a bigger knob to see under it. */
+@media (pointer: coarse) {
+  .visio-range {
+    height: 32px;
+  }
+  .visio-range::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+    margin-top: -7px;
+  }
+  .visio-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+  }
+}

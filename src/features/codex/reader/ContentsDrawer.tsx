@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '@/data/db';
+import { textChapters } from '@/data/library';
 import type { Text } from '@/data/types';
 import { Drawer } from '@/design/primitives';
 import { cx } from '@/lib/cx';
@@ -17,7 +17,7 @@ export function ContentsDrawer({ open, onClose, text, current, onChoose }: Conte
   const chapters = useLiveQuery(
     async () =>
       open
-        ? (await db.chapters.where('[textId+index]').between([text.id, 0], [text.id, Infinity]).toArray()).map((c) => ({ index: c.index, title: c.title, part: c.part }))
+        ? (await textChapters(text.id)).map((c) => ({ index: c.index, title: c.title, part: c.part }))
         : [],
     [open, text.id],
   );

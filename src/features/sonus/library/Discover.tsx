@@ -97,11 +97,12 @@ export function Discover({ lang, feeds }: { lang: string; feeds: Feed[] }) {
             Nothing found for “{term}”.
           </div>
         ) : (
-          <ul className="grid gap-2 sm:grid-cols-2">
+          // Explicit columns: a long one-line author would otherwise widen the column past the screen.
+          <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {hits.map((hit) => {
               const isFollowed = followed.has(hit.feedUrl);
               return (
-                <li key={hit.feedUrl} className="flex items-center gap-3 rounded-2xl border border-line/70 bg-surface p-2.5">
+                <li key={hit.feedUrl} className="flex min-w-0 items-center gap-3 rounded-2xl border border-line/70 bg-surface p-2.5">
                   <Artwork title={hit.title} coverUrl={hit.imageUrl} className="w-16" />
                   <div className="min-w-0 flex-1">
                     <p className="line-clamp-2 text-[14.5px] leading-snug font-semibold">{hit.title}</p>

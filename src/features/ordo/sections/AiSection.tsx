@@ -93,7 +93,7 @@ export function AiSection({ llm, apiKeys, translation }: AiSectionProps) {
           </Button>
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-3 text-[13px]">
-          <a href={PROVIDERS[provider].keyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
+          <a href={PROVIDERS[provider].keyUrl} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
             Get a free key <ExternalLink size={13} aria-hidden />
           </a>
           {status && <Badge tone={status.ok ? 'sage' : 'accent'}>{status.text}</Badge>}

@@ -66,9 +66,22 @@ export interface SenseOption {
 }
 
 /** A short gloss from a sense (the first meanings, as the tooltip shows them). */
+/** A dictionary line without its notes in brackets: "dog (the species Canis familiaris (…))" → "dog". */
+export function plainGloss(gloss: string): string {
+  const plain = gloss
+    .replace(/\s*\([^()]*\)/g, '')
+    .replace(/\s*\([^()]*\)/g, '')
+    .replace(/\s*\([^)]*$/, '')
+    .replace(/\s+/g, ' ')
+    .replace(/[\s,;:]+$/, '')
+    .trim();
+  return plain || gloss.trim();
+}
+
 export function shortGloss(glosses: string[], max = 60): string {
-  let out = glosses[0] ?? '';
-  for (const g of glosses.slice(1)) {
+  const list = glosses.map(plainGloss).filter(Boolean);
+  let out = list[0] ?? '';
+  for (const g of list.slice(1)) {
     if (out.length + g.length + 2 > max) break;
     out += `; ${g}`;
   }

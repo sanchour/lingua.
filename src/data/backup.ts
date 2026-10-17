@@ -16,7 +16,7 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   languages: { policy: 'lww', key: 'id' },
   settings: { policy: 'lww', key: 'key' },
   texts: { policy: 'lww', key: 'id' },
-  chapters: { policy: 'insertOnly', key: 'id' },
+  chapters: { policy: 'lww', key: 'id' },
   readingProgress: { policy: 'lww', key: 'textId' },
   words: { policy: 'lww', key: 'id' },
   frequency: { policy: 'skip', key: 'id' },

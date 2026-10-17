@@ -28,7 +28,8 @@ describe('meaning from context', () => {
   });
 
   it('keeps glosses short', () => {
-    expect(shortGloss(['afternoon', 'evening (after sunset)'])).toBe('afternoon; evening (after sunset)');
+    expect(shortGloss(['afternoon', 'evening (after sunset)'])).toBe('afternoon; evening');
+    expect(shortGloss(['dog (the species Canis familiaris (sometimes designated Canis lupus familiaris), domesticated)', 'clothes peg'])).toBe('dog; clothes peg');
     expect(shortGloss(['a'.repeat(70)]).length).toBe(60);
   });
 });

@@ -47,6 +47,15 @@
 @utility pr-safe {
   padding-right: env(safe-area-inset-right);
 }
+/* A small text link with a finger-sized hit area (about 44px tall on touch), its look unchanged. */
+@utility hit {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -12px -8px;
+  }
+}
 /* Interactive chrome: no iOS long-press callout, no accidental text selection. */
 @utility no-callout {
   -webkit-touch-callout: none;

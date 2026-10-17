@@ -57,16 +57,18 @@ export function Segmented<T extends string>({ value, onChange, options, label, b
             onClick={() => onChange(o.value)}
             onKeyDown={(e) => onKeyDown(e, i)}
             className={cx(
-              'relative h-9 flex-1 rounded-xl px-3.5 text-sm font-semibold whitespace-nowrap transition-colors duration-150 pointer-coarse:h-10',
+              'relative h-9 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors duration-150 pointer-coarse:h-10',
+              // Full-width rows share a phone's width: tighter padding, and a label that can't push the row off screen.
+              block ? 'min-w-0 flex-auto px-2 sm:px-3.5' : 'flex-1 px-3.5',
               active ? 'text-ink' : 'text-ink-soft hover:text-ink',
             )}
           >
             {active && (
               <motion.span layoutId={`segmented-${id}`} className="absolute inset-0 rounded-xl bg-raised shadow-elev-1" transition={spring.snappy} />
             )}
-            <span className="relative flex items-center justify-center gap-1.5">
-              {Icon && <Icon size={16} aria-hidden />}
-              {o.label}
+            <span className="relative flex min-w-0 items-center justify-center gap-1.5">
+              {Icon && <Icon size={16} aria-hidden className="shrink-0" />}
+              <span className="truncate">{o.label}</span>
             </span>
           </button>
         );

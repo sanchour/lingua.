@@ -3,7 +3,7 @@
 
 export const PACK_FORMAT = 1;
 /** Bump when packs are rebuilt with better data; installed packs older than this are refreshed. */
-export const PACK_VERSION = 6;
+export const PACK_VERSION = 7;
 
 /** [lemma key, display headword or "", ipa or "", gender or "", senses] */
 export type PackLemma = [string, string, string, string, PackSense[]];

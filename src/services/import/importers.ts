@@ -1,13 +1,27 @@
 import { parseGoodreadsCsv } from '@/core/parsers/goodreads';
 import { decodeText, textToChapters } from '@/core/parsers/text';
+import type { ChapterDraft } from '@/core/parsers/text';
 import { SAMPLES } from '@/core/lang/samples';
 import { db } from '@/data/db';
 import { addShelfItems, addText, deleteText } from '@/data/library';
+import type { NewText } from '@/data/library';
 import type { Text } from '@/data/types';
 import { parseEpub } from './epub';
+import { parsePdf } from './pdf';
+
+/** The books Lingua can read from a file. */
+export const BOOK_FILE_ACCEPT = '.epub,application/epub+zip,.pdf,application/pdf,.txt,text/plain';
+
+export function bookFileKind(file: File): 'epub' | 'pdf' | 'txt' | null {
+  if (/\.epub$/i.test(file.name) || file.type === 'application/epub+zip') return 'epub';
+  if (/\.pdf$/i.test(file.name) || file.type === 'application/pdf') return 'pdf';
+  if (/\.txt$/i.test(file.name) || file.type.startsWith('text/')) return 'txt';
+  return null;
+}
 
 export interface PasteExtras {
   author?: string;
+  level?: Text['level'];
   coverDesign?: Text['cover'];
   coverImage?: Blob;
 }
@@ -22,6 +36,7 @@ export async function importPasted(lang: string, title: string, body: string, ex
     kind: chapters.length > 1 ? 'book' : 'article',
     source: 'paste',
     chapters,
+    level: extras.level,
     coverDesign: extras.coverDesign,
     cover: extras.coverImage ? { blob: extras.coverImage, mime: extras.coverImage.type || 'image/jpeg' } : undefined,
   });
@@ -38,6 +53,33 @@ export async function importTxtFile(lang: string, file: File): Promise<string> {
 export async function importEpubFile(lang: string, file: File, onProgress?: (fraction: number) => void): Promise<string> {
   const book = await parseEpub(file, onProgress);
   return addText({ lang, title: book.title, author: book.author, kind: 'book', source: 'epub', chapters: book.chapters, cover: book.cover, images: book.images });
+}
+
+export async function importPdfFile(lang: string, file: File, onProgress?: (fraction: number) => void, level?: Text['level']): Promise<string> {
+  const pdf = await parsePdf(file, onProgress);
+  if (!pdf.chapters.length) throw new Error('No text was found in this PDF.');
+  return addText({ lang, title: pdf.title, author: pdf.author, kind: 'book', source: 'pdf', chapters: pdf.chapters, level });
+}
+
+/** Any supported book file. */
+export async function importBookFile(lang: string, file: File, onProgress?: (fraction: number) => void): Promise<string> {
+  const kind = bookFileKind(file);
+  if (kind === 'epub') return importEpubFile(lang, file, onProgress);
+  if (kind === 'pdf') return importPdfFile(lang, file, onProgress);
+  if (kind === 'txt') return importTxtFile(lang, file);
+  throw new Error('Lingua reads DRM-free EPUB books, PDFs with text, and plain text files.');
+}
+
+/** A file's chapters (and pictures), to add to a text that already exists. */
+export async function readFileChapters(lang: string, file: File, onProgress?: (fraction: number) => void): Promise<{ chapters: ChapterDraft[]; images: NonNullable<NewText['images']> }> {
+  const kind = bookFileKind(file);
+  if (kind === 'epub') {
+    const book = await parseEpub(file, onProgress);
+    return { chapters: book.chapters, images: book.images ?? [] };
+  }
+  if (kind === 'pdf') return { chapters: (await parsePdf(file, onProgress)).chapters, images: [] };
+  if (kind === 'txt') return { chapters: textToChapters(decodeText(new Uint8Array(await file.arrayBuffer()), lang), file.name.replace(/\.txt$/i, '')), images: [] };
+  throw new Error('Lingua reads DRM-free EPUB books, PDFs with text, and plain text files.');
 }
 
 /** Gives a Goodreads shelf item its text: the EPUB becomes the book, keeping shelf and rating. */

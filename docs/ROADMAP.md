@@ -177,19 +177,28 @@ every later feature feel better.
       Home's next steps (also in Ordo › Languages).
 
 ### 2.0-2 · Codex: adding and editing, articles, PDFs, better dictionaries
-- [ ] Reading level (A1–C1) can be chosen when adding a text and edited later.
-- [ ] **Edit** in a book's ⋯ menu: title, author, cover, level, the text itself (chapters), and
-      adding a file.
-- [ ] **PDFs:** text is pulled out with pdf.js (loaded only when needed), split into chapters by
-      headings or pages, and read like any book. Scanned PDFs without text say so.
-- [ ] **News articles:** paste a link; the article's text is read through a reader service (with a
-      note about what it sees), with a paste-the-text fallback. Plus a few news sources per
-      language with one-tap "Latest" lists.
-- [ ] **Better dictionaries (Portuguese, Spanish, Swedish, Hungarian first, then all):**
-  - Rebuild the packs choosing the most common sense first, not the first listed.
-  - More inflected forms (Hungarian suffixes, Swedish definite forms, Portuguese clitics and contractions).
-  - A lemma fallback for forms that aren't listed.
-  - Glosses checked against a test list of 200 common words per language.
+- [x] Reading level (A1–C2) can be chosen when adding a text and edited later; "Lingua's guess" is
+      worked out from how many of the text's words are among the 5,000 most common.
+- [x] **Edit** in a book's ⋯ menu: title, author, cover, level, the text itself (chapters: edit,
+      remove, add one, add from a file).
+- [x] **PDFs:** text is pulled out with pdf.js (loaded only when needed), split into chapters by
+      the PDF's bookmarks, else headings, else ten-page parts, and read like any book. Paragraphs
+      come from line gaps and short last lines; running headers and page numbers go. Scanned PDFs
+      without text and locked PDFs say so.
+- [x] **News articles:** paste a link; the article's text is read through Jina Reader (with a note
+      about what it sees), with a paste-the-text fallback. Plus news sources for ten languages with
+      one-tap "Latest" lists (El País, DW, Agência Brasil, franceinfo, Radio-Canada, Corriere,
+      Il Sole 24 Ore, tagesschau, Ekot, Proto Thema, HVG, 24.hu).
+- [x] **Better dictionaries (Portuguese, Spanish, Swedish, Hungarian first, then all):**
+  - [x] Rebuild the packs choosing the most common sense first, not the first listed: English
+        Wiktionary's translation tables say which word translators use for common English words.
+  - [x] More inflected forms: forms of forms (Spanish "tus" → tu → tuyo), what a form means of its
+        own ("ellos" → they, "estoy" → am), and the part of speech a form belongs to (Hungarian
+        "azt" is "that", not "the").
+  - [x] A lemma fallback for forms that aren't listed: case and definite endings, attached
+        pronouns, Portuguese hyphens, and the end of a German or Swedish compound.
+  - [x] Glosses checked by a test of everyday words in each of the four languages
+        (`src/core/packs/glosses.test.ts`), and the top 200 of each reviewed by hand.
 
 ### 2.0-3 · Twenty languages with their flags
 - [ ] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and

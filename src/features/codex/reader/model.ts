@@ -59,6 +59,11 @@ export function loadChapterModel(text: Text, index: number): Promise<ChapterMode
   return job;
 }
 
+/** Drops a text's prepared chapters after its text was edited. */
+export function forgetChapterModels(textId: string): void {
+  for (const key of [...cache.keys()]) if (key.startsWith(`${textId}:`)) cache.delete(key);
+}
+
 /** Keeps preloaded chapters in step when a word's state changes in the open one. */
 export function updateCachedState(norm: string, state: WordState): void {
   for (const job of cache.values()) {

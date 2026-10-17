@@ -35,7 +35,7 @@ export default function StarterPage() {
     return (
       <div className="py-20 text-center">
         <p className="font-serif text-xl">That ready-made deck doesn’t exist.</p>
-        <Link to="/thesaurus?tab=discover" className="mt-4 inline-block font-semibold text-accent-text">
+        <Link to="/thesaurus?tab=discover" className="hit mt-4 inline-block font-semibold text-accent-text">
           Back to Discover
         </Link>
       </div>

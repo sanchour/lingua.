@@ -71,7 +71,7 @@ export default function CommutePage() {
         <div>
           <p className="font-serif text-2xl font-semibold">Nothing is playing</p>
           <p className="mt-2 text-ink-soft">Start an episode in Sonus, then come back for the big controls.</p>
-          <Link to="/sonus" className="mt-5 inline-block font-semibold text-accent-text">
+          <Link to="/sonus" className="hit mt-5 inline-block font-semibold text-accent-text">
             Go to Sonus
           </Link>
         </div>

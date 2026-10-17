@@ -79,3 +79,36 @@ export function splitIntoParts(chapter: ChapterDraft, countWords: (text: string)
   if (blocks.length) parts.push({ title: chapter.title, blocks, wordCount: words });
   return parts;
 }
+
+/**
+ * A chapter as editable plain text: paragraphs separated by blank lines, headings as "# …", quotes as
+ * "> …" and pictures as "![picture](id)", so they survive the round trip through `textToBlocks`.
+ */
+export function blocksToText(blocks: Block[]): string {
+  return blocks
+    .map((b) => {
+      if (b.t === 'img') return `![${b.alt ?? 'picture'}](${b.blobId})`;
+      if (b.t === 'h') return `# ${b.text}`;
+      if (b.t === 'quote') return `> ${b.text}`;
+      return b.text;
+    })
+    .join('\n\n');
+}
+
+const IMAGE_LINE = /^!\[([^\]]*)\]\(([^)\s]+)\)$/;
+
+/** The edited text of one chapter back into blocks (see `blocksToText`). */
+export function textToBlocks(text: string): Block[] {
+  return text
+    .replace(/\r\n?/g, '\n')
+    .split(/\n\s*\n/)
+    .map((p) => p.replace(/\s*\n\s*/g, ' ').replace(/[ \t]+/g, ' ').trim())
+    .filter(Boolean)
+    .map((p): Block => {
+      const img = IMAGE_LINE.exec(p);
+      if (img) return { t: 'img', blobId: img[2], alt: img[1] && img[1] !== 'picture' ? img[1] : undefined };
+      if (p.startsWith('# ')) return { t: 'h', text: p.slice(2).trim() };
+      if (p.startsWith('> ')) return { t: 'quote', text: p.slice(2).trim() };
+      return { t: 'p', text: p };
+    });
+}

@@ -1,6 +1,8 @@
 // Tier-1 translations: everything a chapter needs is read in one go into an in-memory map, so a
 // hover/tap is a Map lookup (≈1 ms). Only words missing from the offline dictionary go online.
 import type { SenseOption } from '@/core/lang/context';
+import { baseCandidates, compoundHeads } from '@/core/lang/inflect';
+import type { DictForm } from '@/data/types';
 import { GLOSS_LANG } from '@/core/lang/languages';
 import { packId } from '@/core/packs/format';
 import { foldKey } from '@/core/text/normalize';
@@ -13,9 +15,46 @@ export interface GlossInfo {
   lemma?: string;
   /** `context`: chosen for this occurrence (by its neighbours, or by the AI reading the sentence). */
   source: 'user' | 'dict' | 'online' | 'context';
+  /** Not listed as written: the dictionary form it was read as ("könyvtárban" → könyvtár). */
+  via?: string;
 }
 
 const onlineKey = (lang: string, norm: string) => `online:${lang}>${GLOSS_LANG}:${norm}`;
+
+export interface BaseForm {
+  form: DictForm;
+  /** The listed word it was read as. */
+  via: string;
+  /** Only the end of a compound was found ("Kinderzimmerlampe" → lampe). */
+  part: boolean;
+}
+
+/**
+ * For words the dictionary doesn't list as written: the first likely base form it does list (a
+ * case ending, a definite form, attached pronouns taken off), else the head of a compound.
+ */
+export async function findBaseForms(lang: string, norms: string[]): Promise<Map<string, BaseForm>> {
+  const out = new Map<string, BaseForm>();
+  const pack = packId(lang);
+  for (const [kind, candidatesOf] of [
+    ['base', baseCandidates],
+    ['part', compoundHeads],
+  ] as const) {
+    const lists = norms.filter((n) => !out.has(n)).map((n) => [n, candidatesOf(n, lang)] as const);
+    const keys = [...new Set(lists.flatMap(([, c]) => c))];
+    if (!keys.length) continue;
+    const rows = await db.dictForms.bulkGet(keys.map((k) => [pack, k] as [string, string]));
+    const listed = new Map(keys.map((k, i) => [k, rows[i]]));
+    for (const [norm, candidates] of lists) {
+      const via = candidates.find((c) => listed.get(c));
+      if (via) out.set(norm, { form: listed.get(via)!, via, part: kind === 'part' });
+    }
+  }
+  return out;
+}
+
+/** How a base form reads in a tooltip: its gloss, and for a compound's end, which end. */
+export const baseGloss = (b: BaseForm) => (b.part ? `…${b.via}: ${b.form.g}` : b.form.g);
 
 export async function lookupGlosses(lang: string, norms: string[]): Promise<Map<string, GlossInfo>> {
   const out = new Map<string, GlossInfo>();
@@ -32,6 +71,13 @@ export async function lookupGlosses(lang: string, norms: string[]): Promise<Map<
     const still: string[] = [];
     folded.forEach((f, i) => (f ? out.set(misses[i], { text: f.g, lemma: f.lemmas[0], source: 'dict' }) : still.push(misses[i])));
     misses = still;
+  }
+
+  // Forms the pack doesn't list: read as a likely base form.
+  if (misses.length) {
+    const found = await findBaseForms(lang, misses);
+    for (const [norm, b] of found) out.set(norm, { text: baseGloss(b), lemma: b.form.lemmas[0], source: 'dict', via: b.via });
+    misses = misses.filter((n) => !found.has(n));
   }
 
   if (misses.length) {
