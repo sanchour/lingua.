@@ -236,6 +236,17 @@ music raised to a room of its own, every language checked, and a full check at t
 - [x] **Aesthetic:** the album art sets the page's colours; the lyric sheet scrolls with the song,
       the current line large and clear; calm, simple controls that work one-handed on a phone.
 
+### 2.0-4b · Cantus moves into Sonus; Apple Music; lyrics from more places
+- [ ] **Music lives in Sonus:** Sonus becomes listening and music, with Music first (songs, charts,
+      your Spotify likes) beside podcasts and your own audio. The Cantus tab goes; its pages move to
+      `/sonus/music` and `/sonus/song/…`, and old `/cantus` links still open them. Music keeps
+      its own colour inside Sonus.
+- [ ] **Apple Music:** songs play in Apple Music's own player (signed in: the whole song; otherwise
+      the preview), and the lyrics follow along. On a phone, "Play in Apple Music" opens the Music
+      app and starts the lyrics with it.
+- [ ] **Lyrics from more places:** after LRCLIB, other free lyric sources (and Genius-based ones
+      where a browser may read them), then a "find them on Genius" link and pasting.
+
 ### 2.0-5 · Twenty languages with their flags, every one well supported
 - [ ] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and
       Indonesian (Bahasa).
@@ -258,6 +269,11 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
 - [ ] Topic maps for every language (Spanish and German first).
 - [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
+- [ ] **Alphabets** for the languages with a script of their own (Russian, Greek, Arabic, Japanese
+      kana, Korean Hangul; Mandarin: pinyin and tones, then the first characters): the full
+      alphabet as a chart with sound, and short lessons in the spirit of Duolingo. See the letters,
+      hear them, match sound to letter, read real words, then write them. Letters are FSRS cards
+      with mastery rings, like grammar topics. Offered first to beginners in these languages.
 
 ### 2.0-7 · Radio (in Sonus)
 - [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
