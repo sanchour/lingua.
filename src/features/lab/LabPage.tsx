@@ -6,6 +6,7 @@ import { PageHeader } from '@/app/PageHeader';
 import { Button } from '@/design/primitives';
 import { toast } from '@/state/ui';
 import { AudioTest } from './AudioTest';
+import { FlagsCard } from './FlagsCard';
 import { EnvironmentCard, LongPressCard, ShareCard, SheetCard, StorageCard, WordsCard } from './LabTests';
 import { useLabReport } from './report';
 import { SmoothnessTest } from './SmoothnessTest';
@@ -46,6 +47,7 @@ export default function LabPage() {
         <SheetCard />
         <StorageCard />
         <ShareCard />
+        <FlagsCard />
       </div>
       {fallbackText && (
         <textarea

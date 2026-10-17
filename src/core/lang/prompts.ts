@@ -84,6 +84,56 @@ const PROMPTS: Record<string, Record<Band, string[]>> = {
     middle: ['Mesélj el egy utazást, amelyre jól emlékszel.', 'Mit változtatnál meg a városodban, és miért?', 'Írj egy könyvről, filmről vagy sorozatról, amely nemrég tetszett.', 'Írj egy szokásról, amelyet szívesen elkezdenél.', 'Mit tanultál ezen a héten, órán vagy azon kívül?'],
     high: ['Közelebb hoz minket a technológia, vagy eltávolít? Érvelj a véleményed mellett.', 'Írj egy pillanatról, amely megváltoztatta, hogyan látsz valamit.', 'Melyik hagyományodat magyaráznád el egy idegennek, és hogyan?', 'Írj egy rövid levelet önmagadnak tíz év múlva.'],
   },
+  nl: {
+    start: ['Beschrijf je ochtend van vandaag.', 'Wat heb je vandaag gegeten? Vond je het lekker?', 'Schrijf over iemand uit je familie.', 'Wat voor weer is het, en wat doe je vandaag?', 'Beschrijf je kamer of je favoriete plek in huis.'],
+    middle: ['Vertel over een reis die je je goed herinnert.', 'Wat zou je aan je stad veranderen, en waarom?', 'Beschrijf een boek, film of serie die je onlangs mooi vond.', 'Schrijf over een gewoonte waarmee je zou willen beginnen.', 'Wat heb je deze week geleerd, in of buiten de les?'],
+    high: ['Brengt technologie ons dichter bij elkaar of juist verder uit elkaar? Verdedig je mening.', 'Beschrijf een moment dat je kijk op iets heeft veranderd.', 'Welke traditie uit je cultuur zou je aan een vreemde uitleggen, en hoe?', 'Schrijf een korte brief aan jezelf over tien jaar.'],
+  },
+  nb: {
+    start: ['Beskriv morgenen din i dag.', 'Hva har du spist i dag? Likte du det?', 'Skriv om en person i familien din.', 'Hvordan er været, og hva gjør du i dag?', 'Beskriv rommet ditt eller favorittstedet ditt hjemme.'],
+    middle: ['Fortell om en reise du husker godt.', 'Hva ville du forandret i byen din, og hvorfor?', 'Beskriv en bok, en film eller en serie du likte nylig.', 'Skriv om en vane du gjerne vil begynne med.', 'Hva har du lært denne uka, i eller utenfor timene?'],
+    high: ['Bringer teknologien oss nærmere hverandre eller lenger fra hverandre? Argumenter for synet ditt.', 'Beskriv et øyeblikk som forandret hvordan du ser på noe.', 'Hvilken tradisjon fra kulturen din ville du forklart for en fremmed, og hvordan?', 'Skriv et kort brev til deg selv om ti år.'],
+  },
+  tr: {
+    start: ['Bugünkü sabahını anlat.', 'Bugün ne yedin? Beğendin mi?', 'Ailenden birini anlat.', 'Hava nasıl, bugün ne yapıyorsun?', 'Odanı ya da evdeki en sevdiğin yeri anlat.'],
+    middle: ['İyi hatırladığın bir yolculuğu anlat.', 'Şehrinde neyi değiştirirdin, neden?', 'Son zamanlarda beğendiğin bir kitabı, filmi ya da diziyi anlat.', 'Başlamak istediğin bir alışkanlık hakkında yaz.', 'Bu hafta derste ya da ders dışında ne öğrendin?'],
+    high: ['Teknoloji bizi birbirimize yaklaştırıyor mu, uzaklaştırıyor mu? Görüşünü savun.', 'Bir şeye bakışını değiştiren bir anı anlat.', 'Kültüründen hangi geleneği bir yabancıya anlatırdın, nasıl?', 'On yıl sonraki kendine kısa bir mektup yaz.'],
+  },
+  id: {
+    start: ['Ceritakan pagimu hari ini.', 'Apa yang kamu makan hari ini? Kamu suka?', 'Tulislah tentang seseorang di keluargamu.', 'Bagaimana cuacanya, dan apa yang kamu lakukan hari ini?', 'Gambarkan kamarmu atau tempat favoritmu di rumah.'],
+    middle: ['Ceritakan perjalanan yang kamu ingat dengan baik.', 'Apa yang ingin kamu ubah di kotamu, dan mengapa?', 'Ceritakan buku, film, atau serial yang kamu sukai baru-baru ini.', 'Tulislah tentang kebiasaan yang ingin kamu mulai.', 'Apa yang kamu pelajari minggu ini, di dalam atau di luar kelas?'],
+    high: ['Apakah teknologi membuat kita lebih dekat atau lebih jauh? Pertahankan pendapatmu.', 'Ceritakan saat yang mengubah caramu memandang sesuatu.', 'Tradisi apa dari budayamu yang akan kamu jelaskan kepada orang asing, dan bagaimana?', 'Tulislah surat pendek untuk dirimu sepuluh tahun lagi.'],
+  },
+  sw: {
+    start: ['Eleza asubuhi yako ya leo.', 'Umekula nini leo? Ulipenda?', 'Andika kuhusu mtu mmoja katika familia yako.', 'Hali ya hewa ikoje, na unafanya nini leo?', 'Eleza chumba chako au mahali unapopenda zaidi nyumbani.'],
+    middle: ['Simulia safari unayoikumbuka vizuri.', 'Ungebadilisha nini katika mji wako, na kwa nini?', 'Eleza kitabu, filamu au tamthilia uliyoipenda hivi karibuni.', 'Andika kuhusu tabia ambayo ungependa kuanza.', 'Umejifunza nini wiki hii, darasani au nje ya darasa?'],
+    high: ['Je, teknolojia inatuleta karibu zaidi au inatutenganisha? Tetea maoni yako.', 'Eleza wakati uliobadilisha jinsi unavyoona jambo fulani.', 'Ni desturi gani ya utamaduni wako ungemweleza mgeni, na vipi?', 'Andika barua fupi kwako mwenyewe miaka kumi ijayo.'],
+  },
+  la: {
+    start: ['Describe mane tuum hodiernum.', 'Quid hodie edisti? Placuitne tibi?', 'Scribe de aliquo ex familia tua.', 'Quale est caelum, et quid hodie agis?', 'Describe cubiculum tuum aut locum domi tibi carissimum.'],
+    middle: ['Narra iter quod bene meministi.', 'Quid in urbe tua mutares, et cur?', 'Describe librum, pelliculam aut seriem quae tibi nuper placuit.', 'Scribe de consuetudine quam incipere velis.', 'Quid hac hebdomade didicisti, in schola aut extra?'],
+    high: ['Utrum ars technica nos coniungit an seiungit? Sententiam tuam defende.', 'Describe momentum quod mutavit quomodo rem aliquam videas.', 'Quem morem gentis tuae homini ignoto explicares, et quomodo?', 'Scribe brevem epistulam tibi ipsi post decem annos.'],
+  },
+  ar: {
+    start: ['صف صباحك اليوم.', 'ماذا أكلت اليوم؟ هل أعجبك؟', 'اكتب عن شخص من عائلتك.', 'كيف الطقس، وماذا تفعل اليوم؟', 'صف غرفتك أو مكانك المفضل في البيت.'],
+    middle: ['احكِ قصة رحلة تتذكرها جيدًا.', 'ماذا كنت ستغير في مدينتك، ولماذا؟', 'صف كتابًا أو فيلمًا أو مسلسلًا أعجبك مؤخرًا.', 'اكتب عن عادة تود أن تبدأها.', 'ماذا تعلمت هذا الأسبوع، داخل الدروس أو خارجها؟'],
+    high: ['هل تقربنا التكنولوجيا من بعضنا أم تبعدنا؟ دافع عن رأيك.', 'صف لحظة غيرت نظرتك إلى شيء ما.', 'أي تقليد من ثقافتك ستشرحه لشخص غريب، وكيف؟', 'اكتب رسالة قصيرة إلى نفسك بعد عشر سنوات.'],
+  },
+  zh: {
+    start: ['描述一下你今天的早上。', '你今天吃了什么？好吃吗？', '写一写你家里的一个人。', '今天天气怎么样？你今天做什么？', '描述一下你的房间或家里你最喜欢的地方。'],
+    middle: ['讲一次你记得很清楚的旅行。', '你想改变你的城市的什么？为什么？', '介绍一本你最近喜欢的书、电影或电视剧。', '写一个你想开始养成的习惯。', '这个星期你学到了什么？课上课外都可以。'],
+    high: ['科技让我们更亲近还是更疏远？说说你的观点。', '描述一个改变了你对某件事看法的时刻。', '你会向陌生人介绍你文化中的哪个传统？怎么介绍？', '给十年后的自己写一封短信。'],
+  },
+  ja: {
+    start: ['今日の朝について書いてください。', '今日は何を食べましたか。おいしかったですか。', '家族の一人について書いてください。', '今日の天気はどうですか。今日は何をしますか。', '自分の部屋か、家で一番好きな場所について書いてください。'],
+    middle: ['よく覚えている旅行について話してください。', '自分の町の何を変えたいですか。それはなぜですか。', '最近気に入った本、映画、ドラマについて書いてください。', '始めたい習慣について書いてください。', '今週、授業の中や外で何を学びましたか。'],
+    high: ['テクノロジーは私たちを近づけていますか、それとも遠ざけていますか。自分の意見を述べてください。', 'ものの見方が変わった瞬間について書いてください。', '自分の文化のどんな伝統を、知らない人にどう説明しますか。', '十年後の自分に短い手紙を書いてください。'],
+  },
+  ko: {
+    start: ['오늘 아침에 대해 써 보세요.', '오늘 무엇을 먹었어요? 맛있었어요?', '가족 중 한 사람에 대해 써 보세요.', '오늘 날씨는 어때요? 오늘 무엇을 해요?', '내 방이나 집에서 가장 좋아하는 곳을 묘사해 보세요.'],
+    middle: ['잘 기억나는 여행 이야기를 해 보세요.', '내가 사는 도시에서 무엇을 바꾸고 싶어요? 왜요?', '최근에 마음에 든 책, 영화, 드라마를 소개해 보세요.', '시작하고 싶은 습관에 대해 써 보세요.', '이번 주에 수업 안팎에서 무엇을 배웠어요?'],
+    high: ['기술은 우리를 더 가깝게 만들까요, 더 멀어지게 만들까요? 자신의 의견을 주장해 보세요.', '어떤 것을 보는 시각이 바뀐 순간을 묘사해 보세요.', '낯선 사람에게 우리 문화의 어떤 전통을 어떻게 설명하겠어요?', '10년 후의 나에게 짧은 편지를 써 보세요.'],
+  },
 };
 
 /** Today's offline prompt: the same all day, a different one tomorrow. */

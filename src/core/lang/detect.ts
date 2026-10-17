@@ -11,7 +11,24 @@ const STOPWORDS: Record<string, string[]> = {
   it: ['che', 'e', 'di', 'non', 'il', 'la', 'mi', 'un', 'ti', 'io', 'è', 'a', 'per', 'tu', 'una', 'ma', 'si', 'lo', 'sono', 'me', 'con', 'come', 'più', 'se', 'del', 'te', 'della', 'nel', 'cuore', 'amore', 'sei', 'anche', 'tutto', 'ho', 'gli', 'questo', 'quando', 'ancora', 'perché', 'niente'],
   sv: ['och', 'jag', 'du', 'det', 'att', 'är', 'en', 'som', 'inte', 'på', 'i', 'med', 'mig', 'dig', 'för', 'vi', 'den', 'har', 'så', 'om', 'kan', 'vill', 'när', 'ett', 'min', 'av', 'men', 'bara', 'till', 'ska', 'här', 'aldrig', 'mitt', 'allt', 'var', 'nu', 'hon', 'han', 'hur'],
   hu: ['a', 'az', 'és', 'hogy', 'nem', 'egy', 'én', 'te', 'is', 'de', 'van', 'meg', 'csak', 'már', 'mint', 'még', 'ha', 'mert', 'vagy', 'el', 'ki', 'be', 'fel', 'minden', 'nekem', 'neked', 'engem', 'téged', 'szeretlek', 'ez', 'azt', 'volt', 'lesz', 'így', 'mi', 'most', 'sem', 'nincs', 'itt', 'ott'],
+  nl: ['ik', 'je', 'de', 'het', 'een', 'en', 'is', 'niet', 'dat', 'van', 'in', 'op', 'me', 'mij', 'jij', 'we', 'wat', 'zijn', 'maar', 'met', 'voor', 'nog', 'als', 'er', 'ze', 'die', 'dan', 'mijn', 'jou', 'heb', 'ben', 'wil', 'weet', 'nooit', 'alles', 'naar', 'hier', 'gaan', 'liefde', 'hart'],
+  nb: ['jeg', 'du', 'og', 'det', 'er', 'en', 'som', 'ikke', 'på', 'i', 'med', 'meg', 'deg', 'for', 'vi', 'den', 'har', 'så', 'om', 'kan', 'vil', 'når', 'et', 'min', 'av', 'men', 'bare', 'til', 'skal', 'her', 'aldri', 'mitt', 'alt', 'var', 'nå', 'hun', 'han', 'hvor', 'hva', 'ikkje'],
+  tr: ['bir', 've', 'bu', 'ben', 'sen', 'ne', 'de', 'da', 'ki', 'için', 'gibi', 'çok', 'var', 'yok', 'ama', 'beni', 'seni', 'bana', 'sana', 'her', 'şey', 'daha', 'olan', 'kadar', 'mi', 'mı', 'değil', 'aşk', 'bütün', 'hiç', 'gel', 'benim', 'senin', 'o', 'bizi', 'şimdi', 'artık', 'neden', 'nasıl'],
+  id: ['aku', 'kamu', 'yang', 'dan', 'di', 'ini', 'itu', 'tak', 'tidak', 'ku', 'akan', 'dengan', 'untuk', 'ada', 'dia', 'kita', 'cinta', 'hati', 'bisa', 'ke', 'dari', 'saja', 'lagi', 'semua', 'karena', 'sudah', 'mau', 'apa', 'jangan', 'selalu', 'hanya', 'masih', 'pernah', 'kau', 'engkau', 'bukan', 'juga', 'harus', 'sampai', 'kami'],
+  sw: ['na', 'ya', 'wa', 'kwa', 'ni', 'za', 'la', 'katika', 'mimi', 'wewe', 'yeye', 'sisi', 'nakupenda', 'pia', 'hii', 'huo', 'lakini', 'kama', 'sana', 'tu', 'hapa', 'leo', 'nini', 'gani', 'bado', 'kila', 'wangu', 'wako', 'moyo', 'mapenzi', 'sasa', 'hakuna', 'hata', 'tena', 'kwenye', 'yangu', 'yako', 'nataka', 'mpenzi', 'kweli'],
+  la: ['et', 'in', 'est', 'non', 'ad', 'cum', 'quod', 'ut', 'sed', 'qui', 'quae', 'de', 'ex', 'per', 'enim', 'sunt', 'esse', 'nec', 'atque', 'ac', 'autem', 'quam', 'tamen', 'etiam', 'nos', 'vos', 'tu', 'ego', 'mea', 'tua', 'deus', 'domine', 'nobis', 'pro', 'sicut', 'sub', 'super', 'omnia', 'hic', 'mihi', 'tuum', 'tuus', 'meum', 'meus', 'nomen', 'quia', 'ubi', 'regnum', 'sum', 'es'],
 };
+
+/** Letters that belong to one script each: the alphabet says the language before any word does. */
+const SCRIPTS: Array<[RegExp, string]> = [
+  [/\p{Script=Cyrillic}/u, 'ru'],
+  [/\p{Script=Greek}/u, 'el'],
+  [/\p{Script=Arabic}/u, 'ar'],
+  [/\p{Script=Hangul}/u, 'ko'],
+  // Kana means Japanese; Han characters alone mean Mandarin (see below).
+  [/[\p{Script=Hiragana}\p{Script=Katakana}]/u, 'ja'],
+  [/\p{Script=Han}/u, 'zh'],
+];
 
 /** Letters only some languages use, each a gentle hint. */
 const LETTER_HINTS: Array<[RegExp, string[]]> = [
@@ -38,10 +55,14 @@ export interface Detected {
 export function detectLanguage(text: string): Detected | null {
   const letters = text.match(/\p{L}/gu) ?? [];
   if (letters.length < 12) return null;
-  const cyr = letters.filter((c) => /\p{Script=Cyrillic}/u.test(c)).length;
-  const grk = letters.filter((c) => /\p{Script=Greek}/u.test(c)).length;
-  if (cyr / letters.length > 0.5) return { lang: 'ru', confidence: Math.min(1, cyr / letters.length) };
-  if (grk / letters.length > 0.5) return { lang: 'el', confidence: Math.min(1, grk / letters.length) };
+  const share: Record<string, number> = {};
+  for (const c of letters) {
+    const hit = SCRIPTS.find(([re]) => re.test(c));
+    if (hit) share[hit[1]] = (share[hit[1]] ?? 0) + 1 / letters.length;
+  }
+  // Japanese mixes kana with Han characters: a fair share of kana is enough.
+  if ((share.ja ?? 0) > 0.15 && (share.ja ?? 0) + (share.zh ?? 0) > 0.5) return { lang: 'ja', confidence: Math.min(1, (share.ja ?? 0) + (share.zh ?? 0)) };
+  for (const lang of ['ru', 'el', 'ar', 'ko', 'zh']) if ((share[lang] ?? 0) > 0.5) return { lang, confidence: Math.min(1, share[lang]) };
 
   const words = (text.toLocaleLowerCase().match(WORD) ?? []).map((w) => w.replace(/'/g, '’').replace(/^’|’$/g, ''));
   if (words.length < 4) return null;

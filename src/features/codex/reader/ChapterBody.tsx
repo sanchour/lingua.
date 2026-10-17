@@ -1,4 +1,5 @@
 import { memo, useEffect, useState } from 'react';
+import { READING_LANGS } from '@/core/lang/languages';
 import { blobUrl } from '@/data/library';
 import type { ChapterModel } from './model';
 
@@ -8,13 +9,21 @@ import type { ChapterModel } from './model';
  * spans directly, so word clicks never re-render this tree.
  */
 export const ChapterBody = memo(function ChapterBody({ model, lang }: { model: ChapterModel; lang: string }) {
+  const readings = READING_LANGS.has(lang);
   return (
     <>
       {model.blocks.map(({ block, tokens }, b) => {
         if (block.t === 'img') return <ReaderImage key={b} index={b} blobId={block.blobId} alt={block.alt} />;
         const children = tokens!.map((t, i) =>
           t.isWord ? (
-            <span key={i} className="w" data-n={t.norm} data-o={t.start} data-s={model.states.get(t.norm!) ?? 0}>
+            <span
+              key={i}
+              className="w"
+              data-n={t.norm}
+              data-o={t.start}
+              data-s={model.states.get(t.norm!) ?? 0}
+              data-r={readings ? readingFor(lang, t.text, model.glosses.get(t.norm!)?.reading) : undefined}
+            >
               {t.text}
             </span>
           ) : (
@@ -44,6 +53,18 @@ export const ChapterBody = memo(function ChapterBody({ model, lang }: { model: C
     </>
   );
 });
+
+const HAN = /\p{Script=Han}/u;
+
+/**
+ * The reading drawn over a word (pinyin, or kana for Japanese words written with kanji); none
+ * when it would only repeat the word (kana words, or a reading the dictionary doesn't have).
+ */
+export function readingFor(lang: string, text: string, reading: string | undefined): string | undefined {
+  if (!reading || reading === text) return undefined;
+  if (lang === 'ja' && !HAN.test(text)) return undefined;
+  return reading;
+}
 
 function ReaderImage({ blobId, alt, index }: { blobId: string; alt?: string; index: number }) {
   const [url, setUrl] = useState<string | null>(null);

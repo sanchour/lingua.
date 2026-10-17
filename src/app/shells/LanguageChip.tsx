@@ -5,20 +5,9 @@ import { switchLanguageSmoothly } from '@/app/languageSwitch';
 import { getLanguage } from '@/core/lang/languages';
 import { getLevel } from '@/core/lang/levels';
 import { startAnotherLanguage, useLanguages } from '@/data/languages';
+import { LanguageFlag } from '@/design/flags';
 import { MenuItem, Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
-
-const CodeTile = ({ code, active = false, size = 'md' }: { code: string; active?: boolean; size?: 'sm' | 'md' }) => (
-  <span
-    className={cx(
-      'grid shrink-0 place-items-center rounded-md font-bold uppercase transition-colors',
-      size === 'sm' ? 'size-6 text-[11px]' : 'size-8 rounded-lg text-[12px]',
-      active ? 'bg-accent-soft text-accent-text' : 'bg-sage-soft text-sage-text',
-    )}
-  >
-    {code}
-  </span>
-);
 
 /** The language being studied. Opens a switcher with every language you study. */
 export function LanguageChip({ compact = false, placement }: { compact?: boolean; placement?: 'bottom-start' | 'right-start' }) {
@@ -52,7 +41,7 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
             compact ? 'size-11 justify-center' : 'h-11 w-full px-3',
           )}
         >
-          <CodeTile code={language.id} size="sm" />
+          <LanguageFlag lang={language.id} chosen={language.flag} width={24} />
           {!compact && (
             <>
               <span className="min-w-0 flex-1 truncate text-sm font-semibold">{target?.endonym ?? language.id}</span>
@@ -79,7 +68,7 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
                   onClick={() => choose(l.id, close)}
                   className={cx('no-callout flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-left transition-colors', active ? 'bg-surface' : 'hover:bg-surface')}
                 >
-                  <CodeTile code={l.id} active={active} />
+                  <LanguageFlag lang={l.id} chosen={l.flag} width={30} />
                   <span className="min-w-0 flex-1">
                     <span lang={l.id} className="block truncate font-serif text-[16px] leading-tight font-semibold">
                       {info?.endonym ?? l.id}

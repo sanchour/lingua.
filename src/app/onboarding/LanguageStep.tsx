@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { LANGUAGES } from '@/core/lang/languages';
+import { LanguageFlag } from '@/design/flags';
 import { Select } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
@@ -18,7 +19,7 @@ export function LanguageStep({ target, native, onTarget, onNative }: LanguageSte
     <div>
       <StepTitle title="What will you read?" body="Pick the language you’re learning. You can add more later." />
 
-      <div role="radiogroup" aria-label="Language to learn" className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+      <div role="radiogroup" aria-label="Language to learn" className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         {LANGUAGES.map((lang) => {
           const isSelected = target === lang.code;
           return (
@@ -30,14 +31,17 @@ export function LanguageStep({ target, native, onTarget, onNative }: LanguageSte
               disabled={native === lang.code}
               onClick={() => onTarget(lang.code)}
               className={cx(
-                'no-callout rounded-2xl border px-3.5 py-3 text-left transition-[transform,background-color,border-color] duration-150 active:scale-[0.97] disabled:opacity-35',
+                'no-callout flex min-w-0 items-center gap-3 rounded-2xl border px-3 py-3 text-left transition-[transform,background-color,border-color] duration-150 active:scale-[0.97] disabled:opacity-35',
                 isSelected ? 'border-accent bg-accent-soft' : 'border-line bg-raised hover:border-line-strong',
               )}
             >
-              <span lang={lang.code} className="block truncate font-serif text-[17px] font-semibold">
-                {lang.endonym}
+              <LanguageFlag lang={lang.code} width={30} />
+              <span className="min-w-0">
+                <span lang={lang.code} dir={lang.rtl ? 'rtl' : undefined} className="block truncate font-serif text-[17px] font-semibold">
+                  {lang.endonym}
+                </span>
+                <span className="block truncate text-xs text-ink-faint">{lang.name}</span>
               </span>
-              <span className="block truncate text-xs text-ink-faint">{lang.name}</span>
             </button>
           );
         })}
@@ -50,6 +54,7 @@ export function LanguageStep({ target, native, onTarget, onNative }: LanguageSte
             <motion.p
               key={selected.code}
               lang={selected.code}
+              dir={selected.rtl ? 'rtl' : undefined}
               className="rounded-2xl border border-line/70 bg-surface px-5 py-4 font-serif text-[17px] leading-relaxed text-ink-soft"
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}

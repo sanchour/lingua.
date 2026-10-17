@@ -30,6 +30,8 @@ export interface LanguageProfile extends Synced {
   seededKnownTopN: number;
   /** Set once the seeding has been applied (it needs the language pack). */
   seedAppliedAt?: number;
+  /** The flag shown for the language (one of its flags in core/lang/languages); its usual one when unset. */
+  flag?: string;
 }
 
 export interface SettingRow {

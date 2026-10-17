@@ -34,6 +34,15 @@ export const NEWS_SOURCES: Record<string, NewsSource[]> = {
   ],
   ru: [{ id: 'dw-ru', name: 'DW Русский', feed: 'https://rss.dw.com/xml/rss-ru-all' }],
   tr: [{ id: 'dw-tr', name: 'DW Türkçe', feed: 'https://rss.dw.com/xml/rss-tur-all' }],
+  // Lingua 3.0. Dutch news sites don't let apps read their feeds; Tweakers (technology) does.
+  nl: [{ id: 'tweakers', name: 'Tweakers', feed: 'https://tweakers.net/feeds/mixed.xml' }],
+  nb: [{ id: 'nrk', name: 'NRK', feed: 'https://www.nrk.no/toppsaker.rss' }],
+  ar: [{ id: 'dw-ar', name: 'DW عربية', feed: 'https://rss.dw.com/xml/rss-ar-all' }],
+  zh: [{ id: 'dw-zh', name: 'DW 中文', feed: 'https://rss.dw.com/xml/rss-chi-all' }],
+  ja: [{ id: 'nhk', name: 'NHK ニュース', feed: 'https://www3.nhk.or.jp/rss/news/cat0.xml' }],
+  ko: [{ id: 'jtbc', name: 'JTBC 뉴스', feed: 'https://fs.jtbc.co.kr/RSS/newsflash.xml' }],
+  id: [{ id: 'antara', name: 'ANTARA', feed: 'https://www.antaranews.com/rss/terkini.xml' }],
+  sw: [{ id: 'dw-sw', name: 'DW Kiswahili', feed: 'https://rss.dw.com/xml/rss-kis-all' }],
 };
 
 export const newsSources = (lang: string): NewsSource[] => NEWS_SOURCES[lang] ?? [];

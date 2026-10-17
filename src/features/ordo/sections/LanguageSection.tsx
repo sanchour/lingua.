@@ -7,6 +7,7 @@ import { packId } from '@/core/packs/format';
 import { startAnotherLanguage, switchLanguage, updateLanguage, useLanguages } from '@/data/languages';
 import { setSetting, useSettings } from '@/data/settings';
 import type { LanguageProfile } from '@/data/types';
+import { Flag, flagFor, flagName, LanguageFlag } from '@/design/flags';
 import { Badge, Button, Select } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { formatBytes } from '@/lib/format';
@@ -56,7 +57,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
           const job = jobs[l.id];
           return (
             <li key={l.id} className="flex items-center gap-3 px-4 py-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-sage-soft text-xs font-bold text-sage-text uppercase">{l.id}</span>
+              <LanguageFlag lang={l.id} chosen={l.flag} width={36} />
               <span className="min-w-0 flex-1">
                 <span className="block font-semibold">{info?.endonym ?? l.id}</span>
                 <span className="flex items-center gap-1.5 text-[13px] text-ink-soft">
@@ -104,6 +105,34 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
       <Button variant="ghost" icon={Plus} className="mt-3" onClick={() => void startAnotherLanguage()}>
         Learn another language
       </Button>
+
+      {(target?.flags.length ?? 0) > 1 && (
+        <div className="mt-6">
+          <p className="text-[14px] font-semibold">Flag for {target?.name}</p>
+          <p className="mt-0.5 mb-3 text-[13px] text-ink-soft">The flag shown beside {target?.name} throughout Lingua.</p>
+          <div role="radiogroup" aria-label={`Flag for ${target?.name}`} className="flex flex-wrap gap-2">
+            {target?.flags.map((code) => {
+              const chosen = flagFor(active.id, active.flag) === code;
+              return (
+                <button
+                  key={code}
+                  type="button"
+                  role="radio"
+                  aria-checked={chosen}
+                  onClick={() => void updateLanguage(active.id, { flag: code })}
+                  className={cx(
+                    'no-callout inline-flex h-11 items-center gap-2.5 rounded-xl border px-3 text-[14px] font-semibold transition-[transform,background-color,border-color] duration-150 active:scale-[0.97]',
+                    chosen ? 'border-accent bg-accent-soft text-accent-text' : 'border-line bg-raised text-ink hover:border-line-strong',
+                  )}
+                >
+                  <Flag code={code} width={27} />
+                  {flagName(code)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="mt-6">
         <p className="text-[14px] font-semibold">What you enjoy most</p>
