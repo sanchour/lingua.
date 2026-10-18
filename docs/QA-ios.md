@@ -160,3 +160,14 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Podcasts: followed podcasts, then Find podcasts below; ＋ Add › Find a podcast lands there.
 - [ ] On an iPad or Mac: Apple Music's player in the song page; pressing its Play starts the
       lyrics, pressing again pauses them; its artwork opens the song in Apple Music without pausing.
+
+## Lingua 3.0-2: Liquid Glass, themes, commute
+
+- [ ] Tab bar: glass capsule over content, lens slides and stretches between tabs, follows a drag
+      along the bar and settles on the nearest tab; no lens on Ordo or Ratio.
+- [ ] Settings › Accessibility › Reduce Transparency: the bar turns solid. Reduce Motion: the lens
+      jumps instead of sliding.
+- [ ] Look and feel: each of the twelve themes; the status bar follows the page colour after reopening.
+- [ ] Commute mode: the moon/sun button switches Paper and Nocturne; the phone button keeps the
+      screen on.
+- [ ] Sonus and Thesaurus: the section bar fits the width, nothing scrolls sideways.

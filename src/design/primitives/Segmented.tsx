@@ -64,7 +64,7 @@ export function Segmented<T extends string>({ value, onChange, options, label, b
             )}
           >
             {active && (
-              <motion.span layoutId={`segmented-${id}`} className="absolute inset-0 rounded-xl bg-raised shadow-elev-1" transition={spring.snappy} />
+              <motion.span layoutId={`segmented-${id}`} className="segmented-lens absolute inset-0 rounded-xl bg-raised shadow-elev-1" transition={spring.snappy} />
             )}
             <span className="relative flex min-w-0 items-center justify-center gap-1.5">
               {Icon && <Icon size={16} aria-hidden className="shrink-0" />}

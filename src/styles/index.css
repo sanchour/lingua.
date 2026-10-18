@@ -229,3 +229,70 @@
 .lingua-range:active::-webkit-slider-thumb {
   transform: scale(1.12);
 }
+
+/* Liquid Glass (3.0-2): the phone's tab bar and segmented controls float as frosted, saturated glass
+   with a bright rim; a glass lens marks the choice. Solid where the device asks for less transparency. */
+.glass-bar {
+  background: color-mix(in srgb, var(--raised) 58%, transparent);
+  backdrop-filter: blur(22px) saturate(1.8);
+  -webkit-backdrop-filter: blur(22px) saturate(1.8);
+  border: 1px solid color-mix(in srgb, var(--ink) 9%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    inset 0 -1px 0 rgb(255 255 255 / 0.12),
+    0 10px 30px -8px rgb(0 0 0 / 0.22),
+    0 2px 6px rgb(0 0 0 / 0.08);
+}
+[data-theme='nocturne'] .glass-bar {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    inset 0 -1px 0 rgb(255 255 255 / 0.04),
+    0 10px 30px -8px rgb(0 0 0 / 0.6);
+}
+.glass-lens {
+  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.6), rgb(255 255 255 / 0.16));
+  background-color: var(--lens-tint, var(--accent-soft));
+  box-shadow:
+    inset 0 1px 1px rgb(255 255 255 / 0.9),
+    inset 0 -1px 2px rgb(0 0 0 / 0.06),
+    0 2px 8px rgb(0 0 0 / 0.1);
+  backdrop-filter: blur(4px) saturate(2.2) brightness(1.05);
+  -webkit-backdrop-filter: blur(4px) saturate(2.2) brightness(1.05);
+  transform-origin: center;
+}
+[data-theme='nocturne'] .glass-lens {
+  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.04));
+  box-shadow:
+    inset 0 1px 1px rgb(255 255 255 / 0.22),
+    0 2px 8px rgb(0 0 0 / 0.3);
+}
+.glass-lens-cantus {
+  --lens-tint: var(--cantus-soft);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass-bar {
+    background: var(--raised);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .glass-lens {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* On touch screens the segmented controls' choice is a glass lens too. */
+@media (pointer: coarse) {
+  .segmented-lens {
+    background-image: linear-gradient(180deg, rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.25));
+    box-shadow:
+      inset 0 1px 1px rgb(255 255 255 / 0.9),
+      0 1px 4px rgb(0 0 0 / 0.1);
+  }
+  [data-theme='nocturne'] .segmented-lens {
+    background-image: linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.03));
+    box-shadow:
+      inset 0 1px 1px rgb(255 255 255 / 0.2),
+      0 1px 4px rgb(0 0 0 / 0.3);
+  }
+}

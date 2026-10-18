@@ -384,8 +384,19 @@ conversation, and the full check follow as 3.0-5 … 3.0-9. A second list the us
 evening (better grammar exercises, writing practice for alphabets, a tips section, comics,
 audiobooks and audio courses, AI conversation) is planned into 3.0-5, 3.0-7 and 3.0-8.
 
-### 3.0-2 · A real app on phone and desktop, and a look of your own
-- [ ] **Phone and desktop alike, neither first** (the user's words: functional and fitting for
+### 3.0-2 · A real app on phone and desktop, and a look of your own ✅
+
+**Built (2026-10-18), in this order:** onboarding without the Enjoy step (Home orders itself from
+the reasons; Ordo › Languages keeps the choice); Commute mode's sun was "keep the screen on", which
+looked like a theme switch, so it got a real light/dark button and the screen-on button a phone
+icon; six palettes each for Paper and Nocturne (`design/palettes.ts`, swatches in Look and feel,
+applied before first paint); the Liquid Glass tab bar (spring lens that stretches with its speed,
+drag to choose, hidden on pages without a tab); segmented controls with a glass lens on touch
+screens; Sonus's and Thesaurus's section bars fill the width instead of scrolling; Home in two
+columns from tablet width. Checked by script at 375 px: no room or Discover tab is wider than the
+screen, and no tap target is under 32 px. Not checked on a real iPhone yet (QA-ios).
+
+- [x] **Phone and desktop alike, neither first** (the user's words: functional and fitting for
       both): every room looks and works properly on both.
   - On a phone (375 px and up) it feels like a native app: nothing wider than the screen, no
     sideways page scroll, no zoom, tap targets of at least 44 px, sheets and lists that scroll
@@ -396,21 +407,21 @@ audiobooks and audio courses, AI conversation) is planned into 3.0-5, 3.0-7 and 
     375, 768, 1280 and 1600 px wide.
   - The sub-tab bars (Library · Discover · Podcasts and the like) fit the width as a segmented
     control instead of scrolling sideways.
-- [ ] **Liquid Glass tab bar (phone only):** the iPhone tab bar as iOS 26 draws it: a floating
+- [x] **Liquid Glass tab bar (phone only):** the iPhone tab bar as iOS 26 draws it: a floating
       glass capsule (blur, saturation, a bright rim and soft refraction), with a glass "lens"
       that slides between tabs with a spring and stretches as it moves, following the finger
       when dragged. Sub-tab segmented controls get the same sliding lens. Desktop stays as it is.
       Respects reduced motion and reduced transparency.
-- [ ] **Home, reorganised** for desktop and phone so every element has its proper size: a clear
+- [x] **Home, reorganised** for desktop and phone so every element has its proper size: a clear
       grid on desktop (main column with today's plan, a side column with progress), one tidy
       column on the phone; no cramped or oversized cards.
-- [ ] **Themes:** under Look and feel, at least six themes for Paper (light) and six for Nocturne
+- [x] **Themes:** under Look and feel, at least six themes for Paper (light) and six for Nocturne
       (dark), each a background and element colours that belong together: cream and paper
       whites, a slightly pink white with a rose accent, sage, sand, and more; for Nocturne ink,
       plum, forest, slate and others. Shown as small swatches; the room colours stay readable on
       every theme (contrast checked).
-- [ ] **Commute mode:** its light/dark button works.
-- [ ] **Onboarding:** the "What do you enjoy most" step goes (Home's order keeps a sensible
+- [x] **Commute mode:** its light/dark button works.
+- [x] **Onboarding:** the "What do you enjoy most" step goes (Home's order keeps a sensible
       default; Ordo › Languages keeps the choice for those who want it).
 
 ### 3.0-3 · Sonus and music, fully working
@@ -536,7 +547,7 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 
 ### Handover for the Lingua 3.0 session
 
-**3.0-1 and 3.0-1b are done and on `main` (2026-10-18, third computer).** Next is 3.0-2. Known gaps
+**3.0-1, 3.0-1b and 3.0-2 are done and on `main` (2026-10-18, third computer).** Next is 3.0-3. Known gaps
 to pick up there: Japanese place names the dictionary keeps only as names (日本) are left out of
 the counting lexicon, so the reader splits them (日|本); count with names included and rebuild
 `ja`. The first ten packs were not rebuilt with this session's builder (see DECISIONS).

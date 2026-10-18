@@ -1,7 +1,10 @@
 import { Monitor, Moon, Sparkles, SlidersHorizontal, Sun, Waves, Wind } from 'lucide-react';
 import { AnimatePresence, motion as m } from 'motion/react';
 import { patchSetting, setSetting } from '@/data/settings';
-import type { MotionPref, ThemePref } from '@/data/settings';
+import type { MotionPref, Settings, ThemePref } from '@/data/settings';
+import { NOCTURNE_PALETTES, PAPER_PALETTES } from '@/design/palettes';
+import type { Palette } from '@/design/palettes';
+import { cx } from '@/lib/cx';
 import { Segmented } from '@/design/primitives';
 import { fade } from '@/design/motion';
 import { SettingsSection } from '../SettingsSection';
@@ -12,7 +15,39 @@ const MOTION_NOTES: Record<MotionPref, string> = {
   full: 'Rich and liquid: pages glide in, lists reorder smoothly, everything settles softly. Smoothest on 120 Hz screens.',
 };
 
-export function AppearanceSection({ theme, motion }: { theme: ThemePref; motion: MotionPref }) {
+/** A row of theme swatches: the page colour with its accent, and the name below. */
+function PaletteRow({ title, palettes, value, onChange }: { title: string; palettes: Palette[]; value: string; onChange: (id: string) => void }) {
+  return (
+    <div className="mt-4">
+      <p className="mb-2 text-[13px] font-semibold text-ink-soft">{title}</p>
+      <div role="radiogroup" aria-label={`${title} themes`} className="grid grid-cols-6 gap-1 sm:flex sm:flex-wrap sm:gap-3">
+        {palettes.map((p) => {
+          const selected = p.id === value;
+          return (
+            <button
+              key={p.id}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => onChange(p.id)}
+              className="flex min-w-11 flex-col items-center gap-1.5 rounded-xl py-1 transition-transform active:scale-95"
+            >
+              <span
+                className={cx('grid size-10 place-items-center rounded-full border transition-shadow', selected ? 'border-transparent ring-2 ring-accent ring-offset-2 ring-offset-raised' : 'border-line-strong')}
+                style={{ backgroundColor: p.swatch[0] }}
+              >
+                <span className="size-3.5 rounded-full" style={{ backgroundColor: p.swatch[1] }} />
+              </span>
+              <span className={cx('text-[12px] leading-none', selected ? 'font-semibold text-ink' : 'text-ink-soft')}>{p.name}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function AppearanceSection({ theme, motion, palette }: { theme: ThemePref; motion: MotionPref; palette: Settings['palette'] }) {
   return (
     <SettingsSection id="appearance" icon={SlidersHorizontal} title="Preferences" description="How Lingua looks and moves.">
       <div>
@@ -29,6 +64,8 @@ export function AppearanceSection({ theme, motion }: { theme: ThemePref; motion:
           ]}
         />
         <p className="mt-2 text-[13px] text-ink-soft">Paper for daylight, Nocturne for the evening. On iPhone, the status bar colour updates the next time you open Lingua.</p>
+        <PaletteRow title="Paper" palettes={PAPER_PALETTES} value={palette.paper} onChange={(id) => void patchSetting('palette', { paper: id as Settings['palette']['paper'] })} />
+        <PaletteRow title="Nocturne" palettes={NOCTURNE_PALETTES} value={palette.nocturne} onChange={(id) => void patchSetting('palette', { nocturne: id as Settings['palette']['nocturne'] })} />
       </div>
 
       <div className="mt-6">

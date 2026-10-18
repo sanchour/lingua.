@@ -50,7 +50,7 @@ const label = 'text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase'
 
 /**
  * Home at a glance: today's goal and the next few things worth doing, then the week, the numbers
- * that matter and the latest milestone. Two columns on wide screens, one on phones.
+ * that matter and the latest milestone. Two columns from tablet width up, one on phones.
  */
 export default function HomePage() {
   const { language, settings } = useApp();
@@ -63,7 +63,7 @@ export default function HomePage() {
   return (
     <>
       <PageHeader title={greeting(new Date().getHours())} eyebrow={`${target?.endonym ?? language.id} · ${language.level}`} />
-      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
         <div className="grid min-w-0 grid-cols-1 gap-5">
           <motion.div {...enter(0)}>
             <TodayPanel lang={language.id} level={language.level} goal={language.dailyGoal.readMinutes} enjoys={settings.learner.enjoys} />

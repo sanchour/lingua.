@@ -488,3 +488,17 @@ Short records of choices that are not obvious from the code. Newest last.
 - **The first ten packs stay as they are.** The builder's new rules would change them a little,
   but their checks pass and a new pack version would make every installed app download all of
   them again; they are rebuilt when there's a reason to.
+
+## 2026-10-18 — Lingua 3.0-2: a look of your own, Liquid Glass on the phone
+
+- **Palettes, not new themes.** Paper and Nocturne stay the two themes (light and dark, following
+  the device if wanted); each gets six palettes that change the page, surfaces, lines and accent
+  but keep the ink, so text contrast never drops. Accent text is held at 4.5 : 1 or better. The
+  reader's own page colours (papers) stay a separate choice.
+- **Glass by CSS, motion by springs.** The tab bar's glass is backdrop blur and saturation with a
+  bright inner rim; the lens is one element moved by a spring whose speed stretches it (scaleX) and
+  slims it (scaleY). Dragging moves it directly; release snaps to the nearest tab. Reduced motion
+  sets it in place; reduced transparency makes the bar solid. Desktop keeps its sidebar.
+- **Commute's light/dark button was the wake lock.** A sun icon for "keep the screen on" read as a
+  theme switch that did nothing; the screen-on button is now a phone, and a real moon/sun button
+  switches the theme.

@@ -132,6 +132,7 @@ export default function ThesaurusPage() {
             ) : (
               <motion.div key="tabs" className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
                 <Segmented<Tab>
+                  block
                   label="Thesaurus sections"
                   value={tab}
                   onChange={setTab}

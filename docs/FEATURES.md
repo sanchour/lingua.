@@ -200,3 +200,14 @@ now lives). The music room still goes by Cantus inside (its deck is "From Cantus
   Ludus, Diarium with English prompts, subtitles, podcast searches and music searches with three
   style searches. Onboarding lists them under "More languages · Beta", and Ordo › Languages marks
   them and says what they include. No grammar, alphabet or hand-picked recommendations.
+
+## Look and feel in Lingua 3.0 (3.0-2)
+
+- **Themes:** Paper (light) and Nocturne (dark), or following the device; within each, six palettes
+  shown as swatches (Paper: Cream, Rose, Sage, Sand, Linen, Lavender; Nocturne: Charcoal, Ink, Plum,
+  Forest, Slate, Ember). Each changes the page, surfaces and accent; text keeps its contrast.
+- **On a phone:** a Liquid Glass tab bar with a lens that slides and stretches between sections and
+  can be dragged; segmented controls with the same glass lens; section bars that fit the width.
+- **Commute mode:** a light/dark button, and a separate button that keeps the screen on.
+- **Onboarding:** language, level, goal and look (four steps); what you enjoy is set in Ordo ›
+  Languages, and Home starts from your reasons.

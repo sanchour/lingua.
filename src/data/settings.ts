@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from './db';
 import type { LinguaDB } from './db';
 import type { SettingRow } from './types';
+import type { NocturnePaletteId, PaperPaletteId } from '@/design/palettes';
 
 export const READER_FONT_IDS = ['literata', 'lora', 'newsreader', 'merriweather', 'atkinson', 'comfortaa'] as const;
 export type ReaderFontId = (typeof READER_FONT_IDS)[number];
@@ -28,6 +29,8 @@ export type Enjoyment = 'reading' | 'listening' | 'music' | 'watching' | 'writin
 
 export interface Settings {
   theme: ThemePref;
+  /** The look within Paper and within Nocturne (design/palettes): a page colour and its accent. */
+  palette: { paper: PaperPaletteId; nocturne: NocturnePaletteId };
   learner: { reasons: LearningReason[]; enjoys: Enjoyment[] };
   reader: {
     font: ReaderFontId;
@@ -102,6 +105,7 @@ export type SettingKey = keyof Settings;
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: 'paper',
+  palette: { paper: 'cream', nocturne: 'charcoal' },
   learner: { reasons: [], enjoys: [] },
   reader: {
     font: 'literata',

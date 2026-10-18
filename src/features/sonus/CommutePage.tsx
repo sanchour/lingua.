@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ChevronDown, Pause, Play, Repeat, RotateCcw, RotateCw, Sun, SunDim, Undo2 } from 'lucide-react';
+import { ChevronDown, Moon, Pause, Play, Repeat, RotateCcw, RotateCw, Smartphone, Sun, Undo2 } from 'lucide-react';
+import { setSetting } from '@/data/settings';
 import { cueIndexAt } from '@/core/audio/cues';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { fade } from '@/design/motion';
@@ -53,6 +54,13 @@ export default function CommutePage() {
   const [index, setIndex] = useState(-1);
   const [awake, setAwake] = useState(false);
   useWakeLock(awake);
+  // Light or dark right here, for a dark bus or a bright street (it changes the app's theme).
+  const [dark, setDark] = useState(() => document.documentElement.dataset.theme === 'nocturne');
+  const flipTheme = () => {
+    const next = dark ? 'paper' : 'nocturne';
+    setDark(!dark);
+    void setSetting('theme', next);
+  };
 
   useEffect(() => {
     if (!cues?.length) return setIndex(-1);
@@ -94,15 +102,25 @@ export default function CommutePage() {
         <p className="min-w-0 flex-1 truncate text-center text-[13px] font-bold tracking-[0.12em] text-ink-faint uppercase">Commute</p>
         <button
           type="button"
+          aria-label={dark ? 'Switch to Paper (light)' : 'Switch to Nocturne (dark)'}
+          title={dark ? 'Paper' : 'Nocturne'}
+          onClick={flipTheme}
+          className="grid size-12 place-items-center rounded-2xl text-ink-soft transition-colors hover:bg-sunken"
+        >
+          {dark ? <Sun size={22} aria-hidden /> : <Moon size={22} aria-hidden />}
+        </button>
+        <button
+          type="button"
           aria-pressed={awake}
           aria-label="Keep the screen on"
+          title="Keep the screen on"
           onClick={() => {
             if (!('wakeLock' in navigator)) return toast('This browser can’t keep the screen on.');
             setAwake((v) => !v);
           }}
           className={cx('grid size-12 place-items-center rounded-2xl transition-colors', awake ? 'bg-accent-soft text-accent-text' : 'text-ink-soft')}
         >
-          {awake ? <Sun size={22} aria-hidden /> : <SunDim size={22} aria-hidden />}
+          <Smartphone size={22} aria-hidden />
         </button>
       </header>
 

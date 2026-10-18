@@ -16,6 +16,10 @@ import '@fontsource/atkinson-hyperlegible/700.css';
 import './styles/index.css';
 
 import { router } from './app/router';
+import { installPaletteStyles } from './design/palettes';
+
+// The chosen theme's colours before the first render (index.html already set data-palette).
+installPaletteStyles();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -107,8 +107,10 @@ export default function SonusPage() {
                 <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search episodes and files" onClose={closeSearch} autoFocus />
               </motion.div>
             ) : (
-              <motion.div key="tabs" className="absolute inset-0 overflow-x-auto [scrollbar-width:none]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
+              <motion.div key="tabs" className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
+                {/* The sections fit the width as one control: nothing to scroll sideways on a phone. */}
                 <Segmented<Tab>
+                  block
                   label="Sonus sections"
                   value={tab}
                   onChange={setTab}

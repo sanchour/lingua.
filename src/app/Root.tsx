@@ -23,7 +23,7 @@ const PerfHud = lazy(() => import('@/features/lab/PerfHud'));
 export function Root() {
   const settings = useSettings();
   const language = useActiveLanguage();
-  useThemeController(settings?.theme);
+  useThemeController(settings?.theme, settings?.palette);
 
   // Motion preference: mirrored on <html data-motion> for CSS and imperative animations.
   const motionPref = settings?.ui.motion ?? 'system';
