@@ -106,3 +106,9 @@ practicing writing letters, characters in alphabet section
 a short section full of fun, engaging and interactive tips to make language learning even more fun outside of the app! stuff like changing the language of your phone
 
 implement these fully, and well, complete to a high standard
+
+---
+Tier 2 (added by the user on 2026-10-18; planned in docs/ROADMAP.md as 3.0-1b)
+
+A second tier of beta languages that only get what takes very little time, effort and tokens. The twenty languages stay the main tier. Twenty in total (fifteen named so far):
+Hindi, Polish, Vietnamese, Tagalog, Thai, Farsi, Cantonese, Czech, Romanian, Serbo-Croatian, Malay, Tamil, Georgian, Uzbek, Mongolian
