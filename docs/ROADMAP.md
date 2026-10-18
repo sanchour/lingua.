@@ -286,6 +286,62 @@ stopping, then commit, push and check the live site. Version 3.0 in the app when
       language like 2.0-2's (`glosses.test.ts`), the 200 commonest words reviewed, the lemma
       fallback rules, news sources, starter decks and Diarium prompts.
 - [ ] Music for the new languages: Apple stores, artists to learn with, styles and charts.
+- [ ] **Complete support for each new language, nothing left out** (the user asked for this
+      explicitly): dictionary pack with readings, starter and Top-N decks, Diarium prompts,
+      welcome text, news, music (store, artists, styles, charts), **podcasts** (suggested
+      searches and learner podcasts), speech recognition locale, subtitle language codes,
+      typing helpers for special letters, article and pronoun tables for cards and grammar
+      forms, context rules for glosses, language detection, flags, fonts and level hours.
+
+### 3.0-1b · Tier 2 (beta): more languages, built automatically
+Asked for on 2026-10-18: a second tier that gets only what costs little time, effort and tokens.
+The twenty languages above stay the main tier. Built right after 3.0-1, because it reuses 3.0-1's
+pack pipeline; nothing here is reviewed by hand.
+
+**The languages (15 named; the user said twenty, so five slots are open for them to name):**
+Hindi (hi), Polish (pl), Vietnamese (vi), Tagalog (tl), Thai (th), Farsi (fa), Cantonese (yue),
+Czech (cs), Romanian (ro), Serbo-Croatian (sh), Malay (ms), Tamil (ta), Georgian (ka), Uzbek (uz),
+Mongolian (mn). Suggestions for the open five: Ukrainian, Hebrew, Bengali, Finnish, Danish.
+
+**What a tier-2 language gets** (all automatic or one line each):
+- Reader with tap and select-to-translate (online translators, AI with a key), flashcards,
+  Ludus, Diarium (English prompts; AI corrections with a key), Visio subtitles, Sonus transcripts.
+- An offline pack from Wiktionary (kaikki) and a frequency list, through the same `build.ts`:
+  glosses, forms, Top-N decks and the themed starter decks (themes.ts covers any code).
+- Podcasts: suggested searches made from the name ("learn Polish podcast", "{endonym} podcast").
+- Music: Apple search and LRCLIB lyrics, a store per language, charts where Deezer or Apple has a
+  country chart; Discover shows three generic style searches, no hand-picked artists.
+- Radio (3.0-6) by language, automatically. A speech locale, language detection by script, a
+  flag (simple shapes in the existing style), one sample sentence.
+
+**Not for tier 2:** hand-picked artists, Mundus, Grammatica and alphabets, news feeds, Diarium
+prompts in the language, a welcome text, hand-checked glosses, morphology rules, readings.
+The app marks these languages "Beta" and says what they include.
+
+**Steps (small, in this order):**
+- [ ] `languages.ts`: a `tier: 1 | 2` field; the fifteen entries (code, name, endonym, script,
+      `rtl` for Farsi, flags, one sample sentence). Flags: in, pl, vn, ph, th, ir (also af, tj),
+      hk, cz, ro (md), hr / rs / ba / me, my, lk / sg, ge, uz, mn.
+- [ ] `sources.ts`: one line each. Frequency lists: FrequencyWords has hi, pl, vi, tl, th, fa, cs,
+      ro, hr (for sh), ms, ta, ka; Uzbek and Mongolian use a Leipzig corpus (pick the largest
+      `uzb_*` / `mon_*` list on downloads.wortschatz-leipzig.de when building).
+- [ ] Special cases, kept minimal:
+  - **Cantonese:** from the Chinese dictionary (kaikki "Chinese"), keyed by Traditional
+    characters, Jyutping (zh_pron tagged Cantonese, Jyutping) as the reading; frequency counted
+    from OPUS `zh_tw` with `count.ts`. Beta: written Cantonese words (嘅, 佢, 係) may be thin.
+  - **Serbo-Croatian:** code `sh`, kaikki "Serbo-Croatian"; Cyrillic text is transliterated to
+    Latin in `normalizeWord` (one table), so one pack serves both scripts. Locale `hr`.
+  - **Vietnamese:** words split at spaces (syllables); multi-syllable entries stay in the pack
+    for the drawer. **Thai:** `Intl.Segmenter` splits it. **Malay:** reuses Indonesian's rules.
+  - **Farsi:** the `[lang='ar']` CSS rule becomes `[lang='ar'], [lang='fa']`; keep ZWNJ in words.
+  - Scripts without a bundled font (Devanagari, Thai, Tamil, Georgian) use the device's own.
+- [ ] App: onboarding shows tier 2 under "More languages · Beta"; Ordo › Languages says what a
+      beta language includes. Missing tables fall back cleanly (prompts → English, no sample →
+      the generic one, no Discover picks → style searches only).
+- [ ] Build: `fetch.ts <codes>`, `translations.ts`, `themes.ts`, `count.ts yue`,
+      `build.ts <codes>`; keep packs under about 8 MB each (lower `FREQ_KEEP` for tier 2 if needed).
+- [ ] Check: each pack installs and the sample sentence gets glosses; typecheck, tests, build;
+      one look at a phone and a desktop. Docs, commit, push.
 
 The user added the next three steps on 2026-10-17 (their list is under "Lingua 3.0" in
 "Lingua updates.txt"). They come straight after 3.0-1, before the new rooms, because they fix
@@ -294,11 +350,16 @@ conversation, and the full check follow as 3.0-5 … 3.0-9. A second list the us
 evening (better grammar exercises, writing practice for alphabets, a tips section, comics,
 audiobooks and audio courses, AI conversation) is planned into 3.0-5, 3.0-7 and 3.0-8.
 
-### 3.0-2 · A real phone app, and a look of your own
-- [ ] **Phone first, strictly:** every room at 375 px wide works like a native app: nothing wider
-      than the screen, no sideways page scroll, no zoom, tap targets of at least 44 px, sheets
-      and lists that scroll on their own while the page stays fixed. The Discover pages (Codex,
-      Thesaurus, Sonus, Visio) and their widgets first.
+### 3.0-2 · A real app on phone and desktop, and a look of your own
+- [ ] **Phone and desktop alike, neither first** (the user's words: functional and fitting for
+      both): every room looks and works properly on both.
+  - On a phone (375 px and up) it feels like a native app: nothing wider than the screen, no
+    sideways page scroll, no zoom, tap targets of at least 44 px, sheets and lists that scroll
+    on their own while the page stays fixed.
+  - On desktop (1024 px to wide screens) it uses the room well: sensible widths, grids that fill
+    the space without stretching, hover states, keyboard use, no phone layout blown up.
+  - The Discover pages (Codex, Thesaurus, Sonus, Visio) and their widgets first, checked at
+    375, 768, 1280 and 1600 px wide.
   - The sub-tab bars (Library · Discover · Podcasts and the like) fit the width as a segmented
     control instead of scrolling sideways.
 - [ ] **Liquid Glass tab bar (phone only):** the iPhone tab bar as iOS 26 draws it: a floating
@@ -440,6 +501,42 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] The app's version says 3.0. Docs, then commit, push and the live site checked.
 
 ### Handover for the Lingua 3.0 session
+
+**Where 3.0-1 stands (2026-10-18, end of the second PC's session):** everything is on the branch
+`lingua-3.0/languages-wip` (pushed). Typecheck and the 191 tests pass there; no new pack is built yet.
+- Done on the branch: flags for all twenty (`src/design/flags.tsx`, a flag picker in Ordo ›
+  Languages, a flag sheet in the Device lab); readings over words in the reader (Ordo › Reading);
+  Arabic right to left by CSS (`[lang='ar']`); for the ten new languages: writing prompts,
+  welcome texts, news feeds (checked for CORS), level hours, detection, context rules, pronoun
+  rows, card samples, articles, typing helpers, podcast searches, speech locales, subtitle codes,
+  Apple stores, chart sources (`scripts/cantus/charts.ts`) and Discover artists and styles.
+- Data tools: `count.ts` (new: Japanese and Mandarin counts from OPUS, split the reader's way);
+  `themes.ts` maps Mandarin (`cmn`) and Norwegian (`no`) and prefers Simplified characters.
+- **Half done, in `scripts/lang-data/build.ts`:** imports, `entryReading` (pinyin / kana),
+  `readSpellings` (Simplified ↔ Traditional; kanji spelling → kana entries), Mandarin entries
+  re-keyed to Simplified in `readEntries`, Mandarin "character" entries kept, `reading` on
+  `LexicalData` and in the lemma's IPA slot. **Still to wire inside `build()`:**
+  1. At the start: `spellings = await readSpellings(source)`, `traditionalOf.clear()`,
+     `japaneseLexicon = null`.
+  2. Japanese: link each kanji spelling to its kana entries (`formLinks`), and in `lemmasFor`
+     put the redirect targets (`kanaOfKanji`) first. Consider keeping the soft-redirect targets
+     apart from kana entries' listed kanji, and only use the latter when the kanji has no entry.
+  3. Build-time rule linking for forms nothing links to: `baseCandidates(form, lang)` (and for a
+     kana word, the kanji entries whose reading is that kana, `kanjiOfKana`); add candidates to
+     `needed` before pass 2, then link the first one found in `lexical` through `tableLinks`.
+  4. `addForm`: the fifth field, the reading (Mandarin: the lemma's pinyin; Japanese: the kana
+     lemma for a kanji spelling, else `readingOf(form, lemma, lemmaReading)`).
+  5. Mandarin: add each lemma's Traditional spelling as a form (`traditionalOf`).
+  6. Japanese: set `japaneseLexicon` once forms exist and split example sentences with
+     `segmentJapanese` in `wordsOf` (`JAPANESE_RUN` is already defined).
+  7. The pack's `source` line: name OPUS for Japanese and Mandarin, Leipzig for Latin and Swahili.
+  Then `node scripts/lang-data/count.ts zh` (Japanese was counted already, but redo it on a new
+  PC), build the ten packs, add everyday-word checks for each to `glosses.test.ts`, run the
+  charts script, and check every new language in the browser.
+- `counted-ja.txt` looked mostly right, but stray endings (い, る, す, た, って) rank high: the
+  splitter leaves some colloquial endings alone. Look at `deinflect`'s rules for て/た/る forms
+  before building Japanese.
+- After 3.0-1: **3.0-1b, the tier-2 beta languages** (planned above).
 
 **Started work, on a branch of its own:** `lingua-3.0/languages-wip` (pushed, not merged; based
 on the commit before 2.0-4b, so expect small conflicts in `src/app/shells/AppShell.tsx`,

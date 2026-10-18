@@ -76,6 +76,7 @@ Building or rebuilding packs (Lingua 3.0-1) needs the raw sources, about 2 GB, i
 ```bash
 git switch lingua-3.0/languages-wip
 node scripts/lang-data/fetch.ts           # all sources; re-running skips finished files
+node scripts/lang-data/count.ts           # → counted-ja.txt, counted-zh.txt (about 20 min)
 node scripts/lang-data/translations.ts    # → scripts/.cache/en-translations.json
 node scripts/lang-data/themes.ts          # → scripts/.cache/themes.json
 node scripts/lang-data/build.ts ru el     # → public/packs/<code>.v1.json.gz (no codes: all)
