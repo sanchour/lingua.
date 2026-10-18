@@ -18,6 +18,9 @@ import { createReadStream, existsSync, mkdirSync, readFileSync, writeFileSync } 
 import { fileURLToPath } from 'node:url';
 import { createGunzip, gzipSync } from 'node:zlib';
 import { foldKey, normalizeWord } from '../../src/core/text/normalize.ts';
+import { baseCandidates } from '../../src/core/lang/inflect.ts';
+import { deinflect, hasKanji, JAPANESE_CHAR, readingOf, segmentJapanese, toHiragana } from '../../src/core/lang/japanese.ts';
+import type { JapaneseLexicon } from '../../src/core/lang/japanese.ts';
 import { PACK_FORMAT, PACK_VERSION, packFileName } from '../../src/core/packs/format.ts';
 import type { PackExample, PackFile, PackForm, PackLemma, PackParadigm, PackSense, PackThemeItem } from '../../src/core/packs/format.ts';
 import { CACHE_DIR, frequencyFile, kaikkiFile, PACK_SOURCES, PACKS_DIR } from './sources.ts';
@@ -34,7 +37,9 @@ const LEMMA_FREQ_KEEP = 10_000;
 /** Examples per lemma: two for the most frequent lemmas, one for the rest of the top 10k. */
 const EXAMPLES_RICH_RANK = 2000;
 
-const SKIP_POS = new Set(['name', 'character', 'symbol', 'punct', 'prefix', 'suffix', 'infix', 'interfix', 'circumfix', 'affix', 'romanization']);
+const SKIP_POS = new Set(['name', 'character', 'symbol', 'punct', 'prefix', 'suffix', 'infix', 'interfix', 'circumfix', 'affix', 'romanization', 'soft-redirect', 'syllable']);
+/** Mandarin single characters carry their meanings as "character" entries: words of their own. */
+const KEEP_CHARACTERS = new Set(['zh']);
 /** Related words listed in Wiktionary form tables that are not inflections of the headword. */
 const NOT_INFLECTION = new Set([
   'romanization', 'canonical', 'table-tags', 'inflection-template', 'class', 'relational', 'diminutive', 'augmentative',
@@ -42,7 +47,7 @@ const NOT_INFLECTION = new Set([
 ]);
 const GENDER: Record<string, string> = { masculine: 'm', feminine: 'f', neuter: 'n', common: 'c' };
 
-interface KaikkiForm { form?: string; tags?: string[] }
+interface KaikkiForm { form?: string; tags?: string[]; ruby?: Array<[string, string]> }
 interface KaikkiExample { text?: string; english?: string; translation?: string; type?: string; ref?: string }
 interface KaikkiSense { glosses?: string[]; tags?: string[]; form_of?: { word: string }[]; alt_of?: { word: string }[]; examples?: KaikkiExample[] }
 interface KaikkiEntry {
@@ -51,8 +56,99 @@ interface KaikkiEntry {
   tags?: string[];
   forms?: KaikkiForm[];
   senses?: KaikkiSense[];
-  sounds?: { ipa?: string }[];
+  /** Japanese kana in `other`, Mandarin pinyin in `zh_pron` (tagged Mandarin, Standard, Pinyin). */
+  sounds?: { ipa?: string; other?: string; zh_pron?: string; tags?: string[] }[];
+  /** Soft redirects: a Simplified Mandarin spelling → its Traditional entry; a kanji spelling → its kana entries. */
+  redirects?: string[];
 }
+
+// ── Readings (Mandarin pinyin, Japanese kana) ───────────────────────────────
+
+const JAPANESE_RUN = new RegExp(`${JAPANESE_CHAR.source}+`, 'gu');
+
+/** The reading Wiktionary gives an entry as written: pinyin for Mandarin, kana for Japanese words with kanji. */
+function entryReading(entry: KaikkiEntry, lang: string): string {
+  if (lang === 'zh') {
+    const sound =
+      entry.sounds?.find((s) => s.zh_pron && s.tags?.includes('Mandarin') && s.tags.includes('Pinyin') && s.tags.includes('Standard')) ??
+      entry.sounds?.find((s) => s.zh_pron && s.tags?.includes('Mandarin') && s.tags.includes('Pinyin'));
+    // "ě (wo³, e³)" → ě
+    return sound?.zh_pron?.replace(/\s*\(.*$/, '').trim() ?? '';
+  }
+  if (lang === 'ja') {
+    if (!hasKanji(entry.word)) return '';
+    const canonical = entry.forms?.find((f) => f.tags?.includes('canonical') && f.ruby?.length);
+    if (canonical?.ruby && canonical.form) {
+      // 食べる with [[食, た]] → たべる: each ruby base replaced by its kana, in order.
+      let rest = canonical.form.replace(/\s.*$/, '');
+      let out = '';
+      for (const [base, kana] of canonical.ruby) {
+        const at = rest.indexOf(base);
+        if (at < 0) break;
+        out += rest.slice(0, at) + kana;
+        rest = rest.slice(at + base.length);
+      }
+      out += rest;
+      if (!hasKanji(out)) return toHiragana(out);
+    }
+    const other = entry.sounds?.find((s) => s.other && !hasKanji(s.other))?.other;
+    return other ? toHiragana(other) : '';
+  }
+  return '';
+}
+
+/**
+ * What a first read of the whole dictionary tells about spellings:
+ * - Mandarin: each Traditional entry's Simplified spelling (the pack is keyed by Simplified, since
+ *   texts and the frequency list are).
+ * - Japanese: the kana entries a kanji spelling belongs to (今日 → きょう), from soft redirects and
+ *   from kana entries listing their kanji; and the kanji entries a kana word may be (たべる → 食べる).
+ */
+interface Spellings {
+  simplified: Map<string, string>;
+  kanaOfKanji: Map<string, string[]>;
+  kanjiOfKana: Map<string, string[]>;
+}
+
+async function readSpellings(source: PackSource): Promise<Spellings> {
+  const lang = source.code;
+  const out: Spellings = { simplified: new Map(), kanaOfKanji: new Map(), kanjiOfKana: new Map() };
+  if (lang !== 'zh' && lang !== 'ja') return out;
+  const add = (map: Map<string, string[]>, key: string, value: string) => {
+    const list = map.get(key) ?? [];
+    if (!list.includes(value)) map.set(key, [...list, value]);
+  };
+  for await (const line of readLines(source)) {
+    if (!line.includes('"redirects"') && !(lang === 'ja' && line.includes('"kanji"'))) continue;
+    let entry: KaikkiEntry;
+    try {
+      entry = JSON.parse(line) as KaikkiEntry;
+    } catch {
+      continue;
+    }
+    if (lang === 'zh') {
+      // 学校 → [學校]: each Traditional spelling has one Simplified one.
+      for (const trad of entry.redirects ?? []) if (trad !== entry.word && !out.simplified.has(trad)) out.simplified.set(trad, entry.word);
+      continue;
+    }
+    if (entry.redirects?.length) {
+      if (hasKanji(entry.word)) for (const kana of entry.redirects) if (!hasKanji(kana)) add(out.kanaOfKanji, entry.word, kana);
+      if (!hasKanji(entry.word)) for (const kanji of entry.redirects) if (hasKanji(kanji)) add(out.kanjiOfKana, entry.word, kanji);
+    }
+    if (!hasKanji(entry.word) && entry.pos !== 'name' && entry.pos !== 'soft-redirect') {
+      for (const f of entry.forms ?? []) {
+        if (f.form && f.tags?.includes('kanji') && hasKanji(f.form) && !f.tags.includes('rare') && !f.tags.includes('obsolete')) add(out.kanaOfKanji, f.form, entry.word);
+      }
+    }
+  }
+  return out;
+}
+
+/** Japanese split the reader's way, for finding a word in an example sentence; set while building Japanese. */
+let japaneseLexicon: JapaneseLexicon | null = null;
+/** The language being built's spellings (readSpellings), and Mandarin lemmas' Traditional spellings. */
+let spellings: Spellings = { simplified: new Map(), kanaOfKanji: new Map(), kanjiOfKana: new Map() };
+const traditionalOf = new Map<string, string>();
 
 /** Paradigms (inflection tables) are kept for this many of the most frequent lemmas. */
 const PARADIGM_KEEP = 6000;
@@ -111,6 +207,8 @@ interface LexicalData {
   paradigm: Array<[string, string]>;
   paradigmPos: string;
   ipa: string;
+  /** Mandarin pinyin or Japanese kana for the word as written (entryReading). */
+  reading: string;
   gender: string;
   senses: PackSense[];
   tableForms: Set<string>;
@@ -324,7 +422,14 @@ async function* readEntries(source: PackSource): AsyncGenerator<KaikkiEntry> {
       malformed++;
       continue;
     }
-    if (!entry.word || SKIP_POS.has(entry.pos) || /\s/.test(entry.word)) continue;
+    if (!entry.word || /\s/.test(entry.word)) continue;
+    if (SKIP_POS.has(entry.pos) && !(entry.pos === 'character' && KEEP_CHARACTERS.has(source.code))) continue;
+    // Mandarin: the entry speaks for its Simplified spelling; the Traditional one becomes a form.
+    const simplified = source.code === 'zh' ? spellings.simplified.get(entry.word) : undefined;
+    if (simplified) {
+      traditionalOf.set(simplified, entry.word);
+      entry.word = simplified;
+    }
     yield entry;
   }
 }
@@ -421,6 +526,7 @@ function lexicalOf(entry: KaikkiEntry, lang: string, key: string, senses: Kaikki
     paradigm,
     paradigmPos: paradigm.length ? entry.pos : '',
     ipa: entry.sounds?.find((s) => s.ipa)?.ipa ?? '',
+    reading: entryReading(entry, lang),
     gender: entry.pos === 'noun' ? gender : '',
     senses: [reading],
     tableForms,
@@ -541,6 +647,7 @@ function mergeLexical(into: LexicalData, add: LexicalData): void {
   const [first, second] = add.priority < into.priority ? [add, into] : [into, add];
   into.senses = [...first.senses, ...second.senses].slice(0, MAX_SENSES);
   into.ipa = first.ipa || second.ipa;
+  into.reading = first.reading || second.reading;
   // Gender belongs to the first (main) sense only, e.g. "весь" (all) must not inherit "весь" (village, f).
   into.gender = into.senses[0][0] === 'noun' ? first.gender || second.gender : '';
   // A headword comes from the entry that speaks for the word ("sein", not "Sein").
@@ -694,7 +801,8 @@ async function build(source: PackSource): Promise<void> {
     let i = lemmaIndex.get(key);
     if (i === undefined) {
       const d = lexical.get(key)!;
-      i = lemmas.push([key, d.head, d.ipa, d.gender, d.senses]) - 1;
+      // Mandarin and Japanese lemmas carry their reading where others carry IPA.
+      i = lemmas.push([key, d.head, d.reading || d.ipa, d.gender, d.senses]) - 1;
       lemmaIndex.set(key, i);
     }
     return i;

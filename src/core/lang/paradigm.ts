@@ -35,6 +35,13 @@ const PRONOUNS: Record<string, string[]> = {
   el: ['εγώ', 'εσύ', 'αυτός / αυτή', 'εμείς', 'εσείς', 'αυτοί'],
   hu: ['én', 'te', 'ő', 'mi', 'ti', 'ők'],
   sv: ['jag', 'du', 'han / hon', 'vi', 'ni', 'de'],
+  nl: ['ik', 'jij', 'hij / zij', 'wij', 'jullie', 'zij'],
+  nb: ['jeg', 'du', 'han / hun', 'vi', 'dere', 'de'],
+  tr: ['ben', 'sen', 'o', 'biz', 'siz', 'onlar'],
+  la: ['ego', 'tū', 'is / ea', 'nōs', 'vōs', 'eī / eae'],
+  sw: ['mimi', 'wewe', 'yeye', 'sisi', 'ninyi', 'wao'],
+  id: ['aku', 'kamu', 'dia', 'kami', 'kalian', 'mereka'],
+  ar: ['أنا', 'أنت', 'هو / هي', 'نحن', 'أنتم', 'هم'],
 };
 /** Past forms by gender in Russian read most naturally with the pronoun. */
 const GENDER_PRONOUNS: Record<string, Record<string, string>> = {

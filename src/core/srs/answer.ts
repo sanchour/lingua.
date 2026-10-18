@@ -24,6 +24,13 @@ const ARTICLES: Record<string, string[]> = {
   nl: ['de', 'het', 'een', "'t"],
   nb: ['en', 'ei', 'et'],
   ru: [],
+  tr: [],
+  id: [],
+  sw: [],
+  la: [],
+  zh: [],
+  ja: [],
+  ko: [],
 };
 
 /** Lower-case, no stress marks or punctuation, single spaces, no leading article. */

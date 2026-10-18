@@ -17,6 +17,16 @@ const SAMPLE: Record<string, [article: string, word: string]> = {
   it: ['la', 'biblioteca'],
   sv: ['ett', 'bibliotek'],
   hu: ['', 'könyvtár'],
+  nl: ['de', 'bibliotheek'],
+  nb: ['et', 'bibliotek'],
+  tr: ['', 'kütüphane'],
+  id: ['', 'perpustakaan'],
+  sw: ['', 'maktaba'],
+  la: ['', 'bibliothēca'],
+  ar: ['', 'مكتبة'],
+  zh: ['', '图书馆'],
+  ja: ['', '図書館'],
+  ko: ['', '도서관'],
 };
 
 export function CardsSection({ look, lang }: { look: Settings['cards']; lang: string }) {

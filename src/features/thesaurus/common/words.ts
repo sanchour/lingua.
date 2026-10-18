@@ -8,6 +8,8 @@ const ARTICLES: Record<string, Partial<Record<string, string>>> = {
   fr: { m: 'le', f: 'la' },
   el: { m: 'ο', f: 'η', n: 'το' },
   sv: { c: 'en', n: 'ett' },
+  nl: { m: 'de', f: 'de', c: 'de', n: 'het' },
+  nb: { m: 'en', f: 'ei', n: 'et' },
 };
 
 const VOWEL_START = /^[aeiouàâäéèêëíìîïóòôöúùûüh]/i;
@@ -58,4 +60,6 @@ export const ARTICLE_SETS: Record<string, string[]> = {
   fr: ['le', 'la', 'l’'],
   el: ['ο', 'η', 'το'],
   sv: ['en', 'ett'],
+  nl: ['de', 'het'],
+  nb: ['en', 'ei', 'et'],
 };

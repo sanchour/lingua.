@@ -1,5 +1,6 @@
 // Source data for the offline language packs. Run with Node 24 (native TypeScript):
 //   node scripts/lang-data/fetch.ts         → downloads into scripts/.cache (git-ignored, about 2 GB)
+//   node scripts/lang-data/count.ts         → scripts/.cache/counted-ja.txt, counted-zh.txt
 //   node scripts/lang-data/translations.ts  → scripts/.cache/en-translations.json
 //   node scripts/lang-data/themes.ts        → scripts/.cache/themes.json
 //   node scripts/lang-data/build.ts ru      → writes public/packs/ru.v1.json.gz
@@ -62,3 +63,5 @@ export const leipzigFile = (s: PackSource) => new URL(`leipzig-${s.code}.tar.gz`
 export const frequencyFile = (s: PackSource) => new URL(`freq-${s.code}.txt`, CACHE_DIR);
 export const opusUrl = (s: PackSource) => `https://object.pouta.csc.fi/OPUS-OpenSubtitles/v2018/mono/${s.opus}.txt.gz`;
 export const opusFile = (s: PackSource) => new URL(`opus-${s.opus}.txt.gz`, CACHE_DIR);
+/** count.ts output: words counted from the OPUS corpus, split the way the reader splits them. */
+export const countedFile = (s: PackSource) => new URL(`counted-${s.code}.txt`, CACHE_DIR);

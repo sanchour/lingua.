@@ -195,6 +195,10 @@ const LETTERS: Record<string, string[]> = {
   it: ['à', 'è', 'é', 'ì', 'ò', 'ù'],
   sv: ['å', 'ä', 'ö'],
   hu: ['á', 'é', 'í', 'ó', 'ö', 'ő', 'ú', 'ü', 'ű'],
+  nl: ['é', 'è', 'ë', 'ï', 'ö', 'ü', 'ĳ'],
+  nb: ['æ', 'ø', 'å', 'é'],
+  tr: ['ç', 'ğ', 'ı', 'İ', 'ö', 'ş', 'ü', 'â'],
+  la: ['ā', 'ē', 'ī', 'ō', 'ū', 'ȳ'],
 };
 
 export function TypeExercise({ ex, lang, value, onChange, phase, onSubmit }: { ex: Of<'type'>; lang: string; value: string; onChange: (v: string) => void; phase: Phase; onSubmit: () => void }) {

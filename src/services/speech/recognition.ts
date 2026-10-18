@@ -12,6 +12,15 @@ const LOCALES: Record<string, string> = {
   it: 'it-IT',
   sv: 'sv-SE',
   hu: 'hu-HU',
+  nl: 'nl-NL',
+  nb: 'nb-NO',
+  tr: 'tr-TR',
+  id: 'id-ID',
+  sw: 'sw-KE',
+  ar: 'ar-SA',
+  zh: 'zh-CN',
+  ja: 'ja-JP',
+  ko: 'ko-KR',
 };
 
 interface RecognitionResultList {
