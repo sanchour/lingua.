@@ -79,6 +79,13 @@ describe('segmentJapanese', () => {
     expect(split('言って')).toEqual(['言って']);
     expect(split('した')).toEqual(['した']);
   });
+  it('reads 今日は as "today" and a particle, even when subtitles made the greeting common', () => {
+    const common = ['は', '今日は', '今日', 'こんにちは', 'こんにち'];
+    const lex3: JapaneseLexicon = { has: (w) => common.includes(w), cost: (w) => Math.log(common.indexOf(w) + 2) };
+    const split = (s: string) => segmentJapanese(s, lex3).map((w) => s.slice(w.start, w.end));
+    expect(split('今日は')).toEqual(['今日', 'は']);
+    expect(split('こんにちは')).toEqual(['こんにちは']);
+  });
 });
 
 describe('readings', () => {

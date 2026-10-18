@@ -60,4 +60,22 @@ export const GLOSS_FIXES: Record<string, Record<string, string>> = {
     了: '(action done; something changed)', 的: '’s; of (links a describing word)', 吗: '(yes/no question particle)', 嘛: '(stresses the obvious)', 哦: 'oh; I see',
     时: 'time; when; hour', 斯: '(in names) si', 克: '(in names) ke; gram', 德: '(in names) de; virtue', 尔: '(in names) er', 在: 'in, at; (doing) now; to be at',
   },
+  ja: {
+    は: '(topic) as for …', を: '(marks the object)', が: '(marks the subject); but', に: 'to, at, in (place, time, person)',
+    で: 'at, in; by, with (place, means)', よ: '(emphasis) you know, I tell you', な: '(feeling) …, huh; don’t (after a verb)',
+    わ: '(soft emphasis)', ね: '…, right? (seeks agreement)', ぞ: '(strong emphasis)', さ: '(casual emphasis)', んだ: '(explains) it’s that …',
+    こと: 'thing, matter; (that) …', 事: 'thing, matter', 人: 'person, people', ない: 'not; there isn’t', って: '(quoting) said that; as for',
+    その: 'that (near you)', いる: 'to be, to exist (people, animals)', お: '(polite prefix)', さん: 'Mr., Ms. (polite title)', どこ: 'where',
+    もの: 'thing; (because)', や: 'and (in lists); oh', 中: 'inside, in; middle', なる: 'to become', 時: 'time, when', し: '(form of する); and (giving reasons)',
+    だろう: 'probably, I suppose; …, right?', いや: 'no; well …', なんだ: 'what?; it’s that …', やる: 'to do; to give', 奴: 'guy, fellow',
+    なんて: 'such as; how (…!)', ろ: '(command ending)', よう: 'way, like; as if', だ: 'is, are (plain)', です: 'is, are (polite)', か: '(question) …?; or',
+    と: 'and; with; (quoting) that', も: 'too, also; even', の: '’s, of; (explains)', から: 'from; because', まだ: 'still; not yet',
+    日本: 'Japan', 一日: 'one day; all day',
+  },
+};
+
+/** Readings Wiktionary gives in a rarer form than the usual one for a word on its own. */
+export const READING_FIXES: Record<string, Record<string, string>> = {
+  zh: { 的: 'de' },
+  ja: { 今日: 'きょう', 一日: 'いちにち', 日本: 'にほん', 中: 'なか', 時: 'とき', 奴: 'やつ', 何: 'なに', 人: 'ひと', 今: 'いま', 方: 'ほう', 上: 'うえ', 下: 'した', 前: 'まえ', 後: 'あと' },
 };

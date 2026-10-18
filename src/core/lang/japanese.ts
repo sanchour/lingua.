@@ -186,6 +186,7 @@ const CONJUGATED = 0.4;
  * The quotative って and the explanatory ん are words, so they cost less extra (行くって stays
  * 行く って, while 言って is one word).
  */
+const CASE_PARTICLE_END = /[はをが]$/;
 const BOUND: Record<string, number> = { い: 6, る: 6, す: 6, た: 6, て: 6, う: 6, く: 6, れ: 6, っ: 6, って: 5, った: 5, ん: 3 };
 
 export interface JapaneseWord {
@@ -225,7 +226,12 @@ export function segmentJapanese(text: string, lex: JapaneseLexicon): JapaneseWor
       const w = text.slice(i, i + len);
       let cost = Infinity;
       let base: string | undefined;
-      if (lex.has(w)) cost = lex.cost(w) + (BOUND[w] ?? 0);
+      if (lex.has(w)) {
+        cost = lex.cost(w) + (BOUND[w] ?? 0);
+        // A word and a case particle listed as a phrase (今日は, "hello") reads as the word and the
+        // particle: "today" is far more common. Kana phrases (こんにちは) stay whole.
+        if (len >= 2 && CASE_PARTICLE_END.test(w) && hasKanji(w) && lex.has(w.slice(0, -1))) cost += 4;
+      }
       const b = viaConjugation(w);
       if (b) {
         const c = lex.cost(b) + CONJUGATED;

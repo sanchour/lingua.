@@ -83,11 +83,16 @@ const CHECKS: Record<string, Record<string, RegExp>> = {
     我: /^I\b/, 你: /^you\b/, 是: /\bbe\b/, 不: /^no/, 好: /^good\b/, 还: /^still\b/, 但: /^but\b/, 去: /^to go\b/, 现在: /^now\b/,
     什么: /^what\b/, 我们: /^we\b/, 听: /\blisten\b/, 吗: /question/,
   },
+  ja: {
+    私: /^I\b/, 何: /^what\b/, 彼: /^he\b/, あなた: /^you\b/, いい: /^good\b/, ここ: /^here\b/, 今: /^now\b/, 行く: /^to go\b/,
+    ありがとう: /^thank/, はい: /^yes\b/, を: /object/, は: /topic/, やる: /^to do\b/, まだ: /^still\b/, 食べる: /^to eat\b/,
+  },
 };
 
 /** The reading over common words (Mandarin pinyin; Japanese kana): the usual one, not a rare one. */
 const READINGS: Record<string, Record<string, string>> = {
   zh: { 我: 'wǒ', 的: 'de', 还: 'hái', 听: 'tīng', 现在: 'xiànzài', 吗: 'ma' },
+  ja: { 今日: 'きょう', 私: 'わたし', 今: 'いま', 中: 'なか', 時間: 'じかん', 行く: 'いく', 行きました: 'いきました', 家: 'いえ' },
 };
 
 const packFile = (lang: string) => new URL(`../../../public/packs/${lang}.v${PACK_VERSION}.json.gz`, import.meta.url);

@@ -23,7 +23,7 @@ import { deinflect, hasKanji, JAPANESE_CHAR, readingOf, segmentJapanese, toHirag
 import type { JapaneseLexicon } from '../../src/core/lang/japanese.ts';
 import { PACK_FORMAT, PACK_VERSION, packFileName } from '../../src/core/packs/format.ts';
 import type { PackExample, PackFile, PackForm, PackLemma, PackParadigm, PackSense, PackThemeItem } from '../../src/core/packs/format.ts';
-import { GLOSS_FIXES } from './fixes.ts';
+import { GLOSS_FIXES, READING_FIXES } from './fixes.ts';
 import { CACHE_DIR, countedFile, frequencyFile, kaikkiFile, PACK_SOURCES, PACKS_DIR, unihanVariants } from './sources.ts';
 import type { PackSource } from './sources.ts';
 
@@ -39,10 +39,12 @@ const LEMMA_FREQ_KEEP = 10_000;
 const EXAMPLES_RICH_RANK = 2000;
 
 const SKIP_POS = new Set(['name', 'character', 'symbol', 'punct', 'prefix', 'suffix', 'infix', 'interfix', 'circumfix', 'affix', 'romanization', 'soft-redirect', 'syllable']);
-/** Mandarin single characters carry their meanings as "character" entries: words of their own. */
-const KEEP_CHARACTERS = new Set(['zh']);
-/** Written without spaces between words. */
-const UNSPACED = new Set(['zh', 'ja']);
+/** Mandarin and Cantonese (both from kaikki's "Chinese"; Cantonese keeps Traditional characters). */
+const CHINESE = new Set(['zh', 'yue']);
+/** Chinese single characters carry their meanings as "character" entries: words of their own. */
+const KEEP_CHARACTERS = CHINESE;
+/** Written without spaces between words (Thai puts them only between phrases). */
+const UNSPACED = new Set(['zh', 'yue', 'ja', 'th']);
 /** Related words listed in Wiktionary form tables that are not inflections of the headword. */
 const NOT_INFLECTION = new Set([
   'romanization', 'canonical', 'table-tags', 'inflection-template', 'class', 'relational', 'diminutive', 'augmentative',
@@ -67,19 +69,20 @@ interface KaikkiEntry {
 
 // ── Readings (Mandarin pinyin, Japanese kana) ───────────────────────────────
 
-/** Where Wiktionary gives only a word's rarer reading: 的 as a particle is "de", not "dì". */
-const MANDARIN_READING: Record<string, string> = { 的: 'de' };
-
 const JAPANESE_RUN = new RegExp(`${JAPANESE_CHAR.source}+`, 'gu');
 
 /** The reading Wiktionary gives an entry as written: pinyin for Mandarin, kana for Japanese words with kanji. */
 function entryReading(entry: KaikkiEntry, lang: string): string {
   if (lang === 'zh') {
-    if (MANDARIN_READING[entry.word]) return MANDARIN_READING[entry.word];
     const sound =
       entry.sounds?.find((s) => s.zh_pron && s.tags?.includes('Mandarin') && s.tags.includes('Pinyin') && s.tags.includes('Standard')) ??
       entry.sounds?.find((s) => s.zh_pron && s.tags?.includes('Mandarin') && s.tags.includes('Pinyin'));
     // "ě (wo³, e³)" → ě
+    return sound?.zh_pron?.replace(/\s*\(.*$/, '').trim() ?? '';
+  }
+  if (lang === 'yue') {
+    // Jyutping: "nei5" for 你.
+    const sound = entry.sounds?.find((s) => s.zh_pron && s.tags?.includes('Cantonese') && s.tags.includes('Jyutping'));
     return sound?.zh_pron?.replace(/\s*\(.*$/, '').trim() ?? '';
   }
   if (lang === 'ja') {
@@ -868,7 +871,9 @@ async function build(source: PackSource): Promise<void> {
     const candidates: Array<[string, string]> = bases.map((b) => [b, '']);
     if (lang === 'ja') {
       for (const b of [form, ...bases]) {
-        if (!hasKanji(b)) for (const k of spellings.kanjiOfKana.get(b) ?? []) candidates.push([normalizeWord(k, lang), toHiragana(b)]);
+        // A kana word's own redirect is enough (まだ → 未だ, though 未だ reads いまだ first); a
+        // conjugation's base must also read that way.
+        if (!hasKanji(b)) for (const k of spellings.kanjiOfKana.get(b) ?? []) candidates.push([normalizeWord(k, lang), b === form ? '' : toHiragana(b)]);
         else for (const kana of kanaTargets.get(b) ?? []) candidates.push([kana, '']);
       }
     }
@@ -889,8 +894,8 @@ async function build(source: PackSource): Promise<void> {
     }
   }
   // Mandarin: a character with meanings of its own is not also an old variant's "alternative form"
-  // (了 is not 嫽, 这 not 遮).
-  if (lang === 'zh') {
+  // (了 is not 嫽, 这 not 遮). Cantonese likewise.
+  if (CHINESE.has(lang)) {
     for (const key of [...formLinks.keys()]) {
       if (!lexical.has(key)) continue;
       formLinks.delete(key);
@@ -955,7 +960,15 @@ async function build(source: PackSource): Promise<void> {
   // the meaning they match.
   const fixes = GLOSS_FIXES[lang] ?? {};
   for (const [form, gloss] of Object.entries(fixes)) {
-    const data = lexical.get(form);
+    let data = lexical.get(form);
+    // A common word the dictionary keeps only as a name (日本, Japan) gets an entry of its own.
+    const linked = [...(formLinks.get(form) ?? []), ...(tableLinks.get(form) ?? [])];
+    if (!data && freqRank.has(form) && !linked.some((l) => lexical.has(l))) {
+      const reading = READING_FIXES[lang]?.[form] ?? '';
+      data = { head: '', paradigm: [], paradigmPos: '', ipa: '', reading, gender: '', senses: [['name', [gloss]]], senseReadings: [reading], tableForms: new Set(), examples: [], priority: 0 };
+      lexical.set(form, data);
+      continue;
+    }
     if (!data) continue;
     const head = gloss.split(/[;,(]/)[0].trim().toLowerCase();
     const at = data.senses.findIndex(([, gl]) => gl.some((g) => plainGloss(g).toLowerCase().startsWith(head)));
@@ -967,6 +980,13 @@ async function build(source: PackSource): Promise<void> {
     data.senseReadings = [reading, ...rest.map(([, r]) => r)].slice(0, MAX_SENSES);
     data.reading = reading;
     if (pos !== 'noun') data.gender = '';
+  }
+  // …and readings: 的 as a particle is "de" (Wiktionary gives only dì), 中 on its own なか.
+  for (const [form, reading] of Object.entries(READING_FIXES[lang] ?? {})) {
+    const data = lexical.get(form);
+    if (!data) continue;
+    data.reading = reading;
+    data.senseReadings[0] = reading;
   }
 
   // Assemble forms and lemmas.
@@ -1087,7 +1107,7 @@ async function build(source: PackSource): Promise<void> {
    * たべました).
    */
   function readingFor(form: string, lemma: string): string {
-    if (lang === 'zh') return lexical.get(lemma)?.reading ?? '';
+    if (CHINESE.has(lang)) return lexical.get(lemma)?.reading ?? '';
     if (lang !== 'ja' || !hasKanji(form)) return '';
     if (!hasKanji(lemma)) {
       if (kanaTargets.get(form)?.includes(lemma)) return lemma;
@@ -1227,7 +1247,7 @@ async function build(source: PackSource): Promise<void> {
   // Mandarin: the browser's splitter joins some words no dictionary lists (我的, 不知道); they read as
   // their parts, "我 + 的", like a contraction.
   let compounds = 0;
-  if (lang === 'zh') {
+  if (CHINESE.has(lang)) {
     const known = (w: string) => Boolean(lexical.get(w)?.senses[0]?.[1].length);
     for (const form of freq) {
       const chars = [...form];
@@ -1247,7 +1267,8 @@ async function build(source: PackSource): Promise<void> {
       const gloss = parts.map((p) => glossOf(p).split(/[;,]/)[0].trim()).join(' + ');
       const readings = parts.map((p) => lexical.get(p)?.reading ?? '');
       const entry: PackForm = [form, parts.map(indexOf), shorten(gloss, SHORT_GLOSS), parts.join(' + ')];
-      if (readings.every(Boolean)) entry.push(readings.join(''));
+      // Pinyin joins a word's syllables; Jyutping keeps them apart.
+      if (readings.every(Boolean)) entry.push(readings.join(lang === 'yue' ? ' ' : ''));
       forms.set(form, entry);
       compounds++;
     }
