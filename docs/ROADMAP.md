@@ -317,10 +317,20 @@ at the new languages in the browser; docs; merge into `main`, push, check the li
       typing helpers for special letters, article and pronoun tables for cards and grammar
       forms, context rules for glosses, language detection, flags, fonts and level hours.
 
-### 3.0-1b · Tier 2 (beta): more languages, built automatically
+### 3.0-1b · Tier 2 (beta): more languages, built automatically ✅
 Asked for on 2026-10-18: a second tier that gets only what costs little time, effort and tokens.
 The twenty languages above stay the main tier. Built right after 3.0-1, because it reuses 3.0-1's
 pack pipeline; nothing here is reviewed by hand.
+
+**How it went (2026-10-18):** every pack well under 8 MB (0.3–3.1 MB). Word lists had to change
+for six: FrequencyWords' Hindi, Tamil and Tagalog lists are a few thousand words (Leipzig news or
+Wikipedia instead), Georgian's is garbled by old non-Unicode fonts (Leipzig news), and Thai's is
+cut into syllables (counted from OPUS subtitles with the reader's own splitter, as Cantonese is).
+Share of each language's 1,000 commonest words with a meaning: Polish 98, Vietnamese 96,
+Cantonese 95, Czech 95, Serbo-Croatian 93, Malay 92, Hindi 88, Thai 87, Romanian 83, Georgian 79,
+Tagalog 69, Persian 59, Tamil 52, Mongolian 52, Uzbek 46 (a thin Wiktionary and no suffix rules).
+Known beta rough edges: some commonest words lead with a rare meaning (Thai ฉัน "to eat" before
+"I", Vietnamese tôi "to temper" before "I"), since tier 2 has no hand-checked list.
 
 **The languages (15 named; the user said twenty, so five slots are open for them to name):**
 Hindi (hi), Polish (pl), Vietnamese (vi), Tagalog (tl), Thai (th), Farsi (fa), Cantonese (yue),
@@ -343,13 +353,13 @@ prompts in the language, a welcome text, hand-checked glosses, morphology rules,
 The app marks these languages "Beta" and says what they include.
 
 **Steps (small, in this order):**
-- [ ] `languages.ts`: a `tier: 1 | 2` field; the fifteen entries (code, name, endonym, script,
+- [x] `languages.ts`: a `tier: 1 | 2` field; the fifteen entries (code, name, endonym, script,
       `rtl` for Farsi, flags, one sample sentence). Flags: in, pl, vn, ph, th, ir (also af, tj),
       hk, cz, ro (md), hr / rs / ba / me, my, lk / sg, ge, uz, mn.
-- [ ] `sources.ts`: one line each. Frequency lists: FrequencyWords has hi, pl, vi, tl, th, fa, cs,
+- [x] `sources.ts`: one line each. Frequency lists: FrequencyWords has hi, pl, vi, tl, th, fa, cs,
       ro, hr (for sh), ms, ta, ka; Uzbek and Mongolian use a Leipzig corpus (pick the largest
       `uzb_*` / `mon_*` list on downloads.wortschatz-leipzig.de when building).
-- [ ] Special cases, kept minimal:
+- [x] Special cases, kept minimal:
   - **Cantonese:** from the Chinese dictionary (kaikki "Chinese"), keyed by Traditional
     characters, Jyutping (zh_pron tagged Cantonese, Jyutping) as the reading; frequency counted
     from OPUS `zh_tw` with `count.ts`. Beta: written Cantonese words (嘅, 佢, 係) may be thin.
@@ -359,12 +369,12 @@ The app marks these languages "Beta" and says what they include.
     for the drawer. **Thai:** `Intl.Segmenter` splits it. **Malay:** reuses Indonesian's rules.
   - **Farsi:** the `[lang='ar']` CSS rule becomes `[lang='ar'], [lang='fa']`; keep ZWNJ in words.
   - Scripts without a bundled font (Devanagari, Thai, Tamil, Georgian) use the device's own.
-- [ ] App: onboarding shows tier 2 under "More languages · Beta"; Ordo › Languages says what a
+- [x] App: onboarding shows tier 2 under "More languages · Beta"; Ordo › Languages says what a
       beta language includes. Missing tables fall back cleanly (prompts → English, no sample →
       the generic one, no Discover picks → style searches only).
-- [ ] Build: `fetch.ts <codes>`, `translations.ts`, `themes.ts`, `count.ts yue`,
+- [x] Build: `fetch.ts <codes>`, `translations.ts`, `themes.ts`, `count.ts yue`,
       `build.ts <codes>`; keep packs under about 8 MB each (lower `FREQ_KEEP` for tier 2 if needed).
-- [ ] Check: each pack installs and the sample sentence gets glosses; typecheck, tests, build;
+- [x] Check: each pack installs and the sample sentence gets glosses; typecheck, tests, build;
       one look at a phone and a desktop. Docs, commit, push.
 
 The user added the next three steps on 2026-10-17 (their list is under "Lingua 3.0" in
@@ -526,7 +536,7 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 
 ### Handover for the Lingua 3.0 session
 
-**3.0-1 is done and merged into `main` (2026-10-18, third computer).** Next is 3.0-1b. Known gaps
+**3.0-1 and 3.0-1b are done and on `main` (2026-10-18, third computer).** Next is 3.0-2. Known gaps
 to pick up there: Japanese place names the dictionary keeps only as names (日本) are left out of
 the counting lexicon, so the reader splits them (日|本); count with names included and rebuild
 `ja`. The first ten packs were not rebuilt with this session's builder (see DECISIONS).

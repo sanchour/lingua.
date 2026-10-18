@@ -470,6 +470,21 @@ Short records of choices that are not obvious from the code. Newest last.
 - **A short list by hand.** After the rules, each new language's 200 commonest words were read
   through; the few still wrong (particles, pronoun forms, words whose first dictionary meaning is
   archaic) are set in `scripts/lang-data/fixes.ts`. Tests check them, as they do for the first ten.
+- **Tier 2 is automatic, with honest limits (3.0-1b).** Fifteen beta languages share the pipeline
+  and the app's fallbacks: English Diarium prompts, the generic sample text, three style searches
+  in music, podcast searches made from the name, the device's own fonts for Devanagari, Thai,
+  Tamil, Georgian and Traditional Chinese. Where a source was broken, the source changed (Leipzig
+  for Hindi, Tamil, Tagalog and Georgian; subtitles counted the reader's way for Thai), but no
+  meanings were set by hand, so a few common words lead with a rare meaning. The check is the
+  sample sentence: at least half its words glossed (a third for Uzbek, whose Wiktionary is thin).
+- **One pack, two scripts, for Serbo-Croatian.** Cyrillic is turned into Latin inside
+  `normalizeWord` (кућа → kuća) and dictionary tone marks are dropped, so Serbian, Croatian,
+  Bosnian and Montenegrin text all find the same entries.
+- **Uzbek's ʻ is an apostrophe.** oʻ and gʻ are written with U+02BB, which the app now folds like
+  the other apostrophes, so text and dictionary spellings meet.
+- **A translation table can feed two packs.** Cantonese reads Mandarin's tables too (Traditional
+  spellings); the evidence map now lets one table code serve several languages, after Cantonese
+  briefly took Mandarin's evidence away.
 - **The first ten packs stay as they are.** The builder's new rules would change them a little,
   but their checks pass and a new pack version would make every installed app download all of
   them again; they are rebuilt when there's a reason to.

@@ -4,7 +4,7 @@ import { Check, LoaderCircle, Plus, SearchX } from 'lucide-react';
 import type { Feed } from '@/data/types';
 import { SearchInput } from '@/design/primitives';
 import { cx } from '@/lib/cx';
-import { searchPodcasts, subscribe, SUGGESTED_SEARCHES } from '@/services/sonus/podcasts';
+import { searchPodcasts, subscribe, suggestedSearches } from '@/services/sonus/podcasts';
 import type { PodcastHit } from '@/services/sonus/podcasts';
 import { toast } from '@/state/ui';
 import { Artwork } from './Artwork';
@@ -15,7 +15,7 @@ const cache = new Map<string, PodcastHit[]>();
 /** Search Apple's podcast directory, with starting points for the language being studied. */
 export function Discover({ lang, feeds }: { lang: string; feeds: Feed[] }) {
   const navigate = useNavigate();
-  const suggestions = SUGGESTED_SEARCHES[lang] ?? SUGGESTED_SEARCHES.en;
+  const suggestions = suggestedSearches(lang);
   const [query, setQuery] = useState('');
   const [term, setTerm] = useState(suggestions[0]);
   const [hits, setHits] = useState<PodcastHit[] | null>(() => cache.get(suggestions[0]) ?? null);

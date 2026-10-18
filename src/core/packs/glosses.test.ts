@@ -4,6 +4,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
 import { PACK_VERSION } from './format';
+import { getLanguage, LANGUAGES } from '../lang/languages';
+import { normalizeWord } from '../text/normalize';
 
 /** form → a pattern its short gloss must match. */
 const CHECKS: Record<string, Record<string, RegExp>> = {
@@ -118,5 +120,21 @@ describe.each(Object.keys(READINGS))('the %s readings', (lang) => {
       .filter(([form, r]) => reading.get(form) !== r)
       .map(([form]) => `${form} = ${reading.get(form) ?? 'MISSING'}`);
     expect(wrong).toEqual([]);
+  });
+});
+
+// Beta languages (3.0-1b) are built without review: their sample sentence must mostly get glosses.
+// Uzbek's Wiktionary is thin (about 2,000 entries) and beta languages get no suffix rules: a third.
+const SAMPLE_SHARE: Record<string, number> = { uz: 0.3 };
+describe.each(LANGUAGES.filter((l) => l.tier === 2).map((l) => l.code))('the beta %s dictionary', (lang) => {
+  const file = packFile(lang);
+  it.skipIf(!existsSync(file))('knows most words of its sample sentence', () => {
+    const pack = JSON.parse(gunzipSync(readFileSync(file)).toString('utf8')) as { forms: Array<[string, number[], string]> };
+    const forms = new Set(pack.forms.map((f) => f[0]));
+    const words = [...new Intl.Segmenter(lang, { granularity: 'word' }).segment(getLanguage(lang)!.sample)]
+      .filter((s) => s.isWordLike && /\p{L}/u.test(s.segment))
+      .map((s) => normalizeWord(s.segment, lang));
+    const known = words.filter((w) => forms.has(w));
+    expect(known.length / words.length, `${lang}: ${words.filter((w) => !forms.has(w)).join(' ')}`).toBeGreaterThanOrEqual(SAMPLE_SHARE[lang] ?? 0.5);
   });
 });

@@ -14,7 +14,9 @@ const SUB_EXT = /\.(srt|vtt)$/i;
 
 const MIME_BY_EXT: Record<string, string> = { mp4: 'video/mp4', m4v: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', ogv: 'video/ogg' };
 
-const THREE: Record<string, string> = { eng: 'en', spa: 'es', rus: 'ru', por: 'pt', fra: 'fr', fre: 'fr', deu: 'de', ger: 'de', ita: 'it', swe: 'sv', hun: 'hu', ell: 'el', gre: 'el', nld: 'nl', dut: 'nl', nor: 'nb', nob: 'nb', tur: 'tr', ind: 'id', swa: 'sw', lat: 'la', ara: 'ar', zho: 'zh', chi: 'zh', cmn: 'zh', jpn: 'ja', kor: 'ko' };
+const THREE: Record<string, string> = { eng: 'en', spa: 'es', rus: 'ru', por: 'pt', fra: 'fr', fre: 'fr', deu: 'de', ger: 'de', ita: 'it', swe: 'sv', hun: 'hu', ell: 'el', gre: 'el', nld: 'nl', dut: 'nl', nor: 'nb', nob: 'nb', tur: 'tr', ind: 'id', swa: 'sw', lat: 'la', ara: 'ar', zho: 'zh', chi: 'zh', cmn: 'zh', jpn: 'ja', kor: 'ko',
+  hin: 'hi', pol: 'pl', vie: 'vi', tgl: 'tl', fil: 'tl', tha: 'th', fas: 'fa', per: 'fa', yue: 'yue', ces: 'cs', cze: 'cs', ron: 'ro', rum: 'ro',
+  hbs: 'sh', hrv: 'sh', srp: 'sh', bos: 'sh', scr: 'sh', scc: 'sh', msa: 'ms', may: 'ms', zsm: 'ms', tam: 'ta', kat: 'ka', geo: 'ka', uzb: 'uz', mon: 'mn' };
 
 /** "Show.S01E02.es.forced.srt" → { base: "show s01e02", lang: "es" } */
 export function subtitleName(name: string): { base: string; lang?: string } {

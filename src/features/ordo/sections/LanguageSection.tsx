@@ -1,6 +1,6 @@
 import { BookCheck, Download, Languages, Plus } from 'lucide-react';
 import { ENJOYMENTS } from '@/app/onboarding/EnjoyStep';
-import { getLanguage, LANGUAGES } from '@/core/lang/languages';
+import { BETA_INCLUDES, getLanguage, LANGUAGES } from '@/core/lang/languages';
 import { LEVELS } from '@/core/lang/levels';
 import type { Level } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
@@ -59,7 +59,14 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
             <li key={l.id} className="flex items-center gap-3 px-4 py-3">
               <LanguageFlag lang={l.id} chosen={l.flag} width={36} />
               <span className="min-w-0 flex-1">
-                <span className="block font-semibold">{info?.endonym ?? l.id}</span>
+                <span className="flex items-center gap-2 font-semibold">
+                  {info?.endonym ?? l.id}
+                  {info?.tier === 2 && (
+                    <span title={BETA_INCLUDES}>
+                      <Badge>Beta</Badge>
+                    </span>
+                  )}
+                </span>
                 <span className="flex items-center gap-1.5 text-[13px] text-ink-soft">
                   {l.level}
                   <span aria-hidden>·</span>
@@ -102,6 +109,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
           );
         })}
       </ul>
+      {languages.some((l) => getLanguage(l.id)?.tier === 2) && <p className="mt-2 px-1 text-[13px] leading-snug text-ink-soft">{BETA_INCLUDES}</p>}
       <Button variant="ghost" icon={Plus} className="mt-3" onClick={() => void startAnotherLanguage()}>
         Learn another language
       </Button>

@@ -38,9 +38,15 @@ const SCRIPT_SANS: Partial<Record<Script, string>> = {
   Hans: "'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC'",
   Jpan: "'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, 'Noto Sans JP', 'Noto Sans CJK JP'",
   Kore: "'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', 'Noto Sans CJK KR'",
+  // Beta languages' scripts (3.0-1b): the device's own faces, in serif text too.
+  Hant: "'PingFang HK', 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', 'Noto Sans CJK TC'",
+  Deva: "'Kohinoor Devanagari', 'Nirmala UI', 'Noto Sans Devanagari'",
+  Thai: "'Thonburi', 'Leelawadee UI', 'Noto Sans Thai'",
+  Taml: "'Tamil Sangam MN', 'Nirmala UI', 'Noto Sans Tamil'",
+  Geor: "'Helvetica Neue', 'Sylfaen', 'Noto Sans Georgian'",
 };
 /** Han characters look different in Japanese and Chinese: the language on screen goes first. */
-const SCRIPT_ORDER: Script[] = ['Hans', 'Jpan', 'Kore', 'Arab'];
+const SCRIPT_ORDER: Script[] = ['Hans', 'Hant', 'Jpan', 'Kore', 'Arab', 'Deva', 'Thai', 'Taml', 'Geor'];
 
 const SERIF_FALLBACK = "'Noto Serif Variable', Georgia, serif";
 const SANS_FALLBACK = "'Inter Variable', system-ui, sans-serif";
@@ -52,7 +58,8 @@ export function getReaderFont(id: ReaderFontId): ReaderFont {
 /** CSS font-family for reader text in `lang`. Missing scripts fall through to a covering font. */
 export function readerFontStack(font: ReaderFont, lang?: string): string {
   const own = lang ? getLanguage(lang)?.script : undefined;
-  const faces = font.kind === 'serif' ? SCRIPT_SERIF : SCRIPT_SANS;
+  // Scripts without a bundled serif face use the device's own, in serif text too.
+  const faces = font.kind === 'serif' ? { ...SCRIPT_SANS, ...SCRIPT_SERIF } : SCRIPT_SANS;
   const order = own && faces[own] ? [own, ...SCRIPT_ORDER.filter((s) => s !== own)] : SCRIPT_ORDER;
   const scripts = order.map((s) => faces[s]).filter(Boolean);
   return `${font.family}, ${font.kind === 'serif' ? `${scripts.join(', ')}, ${SERIF_FALLBACK}` : `${SANS_FALLBACK.replace(', system-ui', `, ${scripts.join(', ')}, system-ui`)}`}`;
@@ -62,6 +69,7 @@ export function readerFontStack(font: ReaderFont, lang?: string): string {
 export function fallbackFamily(font: ReaderFont, script: Script): string | null {
   if (font.scripts.includes(script)) return null;
   if (script in SCRIPT_SERIF) return font.kind === 'serif' ? SCRIPT_SERIF[script]!.replace(/'| Variable/g, '') : 'your device’s own font';
+  if (script in SCRIPT_SANS) return 'your device’s own font';
   return font.kind === 'serif' ? 'Noto Serif' : 'Inter';
 }
 

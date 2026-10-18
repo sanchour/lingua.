@@ -488,7 +488,9 @@ async function* readEntries(source: PackSource): AsyncGenerator<KaikkiEntry> {
       continue;
     }
     if (!entry.word || /\s/.test(entry.word)) continue;
-    if (SKIP_POS.has(entry.pos) && !(entry.pos === 'character' && KEEP_CHARACTERS.has(source.code))) continue;
+    // Japanese keeps names that texts use often (日本, 東京): the reader splits by the pack's words.
+    const kept = (entry.pos === 'character' && KEEP_CHARACTERS.has(source.code)) || (entry.pos === 'name' && source.code === 'ja');
+    if (SKIP_POS.has(entry.pos) && !kept) continue;
     // Left-overs of links in Swahili glosses: "]/] inflected form of -ake".
     for (const s of entry.senses ?? []) if (s.glosses) s.glosses = s.glosses.map((g) => g.replace(/^[\]/\s]+(?=\S)/, ''));
     // Mandarin: the entry speaks for its Simplified spelling; the Traditional one becomes a form.
@@ -631,6 +633,8 @@ function lexicalOf(entry: KaikkiEntry, lang: string, key: string, senses: Kaikki
  * before capitalised ones (das Sein), and abbreviations (CE, A, NO) last.
  */
 function entryPriority(entry: KaikkiEntry, key: string, senses: KaikkiSense[]): number {
+  // A name comes after a word spelled alike (森 is a forest before it is Mori).
+  if (entry.pos === 'name') return 1;
   const abbreviation = entry.word !== key && entry.word === entry.word.toUpperCase();
   if (abbreviation || senses.every((s) => s.tags?.some((t) => t === 'abbreviation' || t === 'initialism' || t === 'acronym'))) return 2;
   // "я" is first the pronoun "I", not "the name of the Cyrillic letter Я".

@@ -1,6 +1,6 @@
 // Word frequencies for languages written without spaces, counted from OpenSubtitles text split the
 // way the reader splits it, so a pack's ranks match the words the reader shows:
-// - Mandarin: Intl.Segmenter (what the reader uses).
+// - Mandarin, Cantonese and Thai: Intl.Segmenter (what the reader uses).
 // - Japanese: the reader's own dictionary splitter (core/lang/japanese.ts), with Wiktionary's
 //   Japanese words as its lexicon. FrequencyWords' Japanese list is counted in morphemes (い, て, た),
 //   so it only seeds the first pass; the second pass uses the first pass's own counts.
@@ -37,17 +37,26 @@ function write(source: PackSource, counts: Map<string, number>): void {
   console.log(`✓ ${source.code}: ${counts.size.toLocaleString()} words counted, top ${top.length.toLocaleString()} written (${top.slice(0, 12).map(([w]) => w).join(' ')} …)`);
 }
 
-async function countMandarin(source: PackSource): Promise<void> {
-  const seg = new Intl.Segmenter('zh-Hans', { granularity: 'word' });
+/** Languages the browser's own splitter cuts into words, as the reader shows them: locale and script. */
+const SEGMENTED: Record<string, [locale: string, script: RegExp]> = {
+  zh: ['zh-Hans', HAN],
+  yue: ['zh-Hant', HAN],
+  th: ['th', /\p{Script=Thai}/u],
+};
+
+/** Mandarin, Cantonese and Thai: words as Intl.Segmenter splits them (what the reader uses). */
+async function countSegmented(source: PackSource): Promise<void> {
+  const [locale, script] = SEGMENTED[source.code];
+  const seg = new Intl.Segmenter(locale, { granularity: 'word' });
   const counts = new Map<string, number>();
   let n = 0;
   for await (const line of lines(opusFile(source), LINES)) {
     for (const s of seg.segment(line)) {
-      if (!s.isWordLike || !HAN.test(s.segment)) continue;
-      const w = normalizeWord(s.segment, 'zh');
+      if (!s.isWordLike || !script.test(s.segment)) continue;
+      const w = normalizeWord(s.segment, source.code);
       counts.set(w, (counts.get(w) ?? 0) + 1);
     }
-    if (++n % 500_000 === 0) console.log(`  zh: ${n.toLocaleString()} lines…`);
+    if (++n % 500_000 === 0) console.log(`  ${source.code}: ${n.toLocaleString()} lines…`);
   }
   write(source, counts);
 }
@@ -65,7 +74,8 @@ async function japaneseWords(source: PackSource): Promise<Set<string>> {
     } catch {
       continue;
     }
-    if (!e.word || e.pos === 'name' || e.pos === 'character' || e.pos === 'syllable' || e.pos === 'romanization') continue;
+    // Names are words too: without them 日本 is cut into 日|本.
+    if (!e.word || e.pos === 'character' || e.pos === 'syllable' || e.pos === 'romanization') continue;
     if (isJa(e.word)) words.add(e.word);
     for (const f of e.forms ?? []) {
       const form = f.form?.replace(/\s*\^$/, '').trim();
@@ -169,6 +179,6 @@ for (const source of PACK_SOURCES.filter((s) => (s.opus || s.corpora) && (!wante
     console.warn(`  ${source.code}: ${opusFile(source).pathname} is missing (run fetch.ts first)`);
     continue;
   }
-  if (source.code === 'zh') await countMandarin(source);
+  if (source.code in SEGMENTED) await countSegmented(source);
   else await countJapanese(source);
 }

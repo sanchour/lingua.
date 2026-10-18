@@ -329,7 +329,8 @@ export function baseCandidates(word: string, lang: string): string[] {
   else if (lang === 'ko') out.push(...korean(w));
   else if (lang === 'tr') out.push(...turkish(w));
   else if (lang === 'ar') out.push(...arabic(w));
-  else if (lang === 'id') out.push(...indonesian(w));
+  // Malay shares Indonesian's affixes.
+  else if (lang === 'id' || lang === 'ms') out.push(...indonesian(w));
   else if (lang === 'sw') out.push(...swahili(w));
   else if (lang === 'nl') out.push(...dutch(w));
   else if (RULES[lang]) out.push(...bySuffix(w, RULES[lang]));
@@ -340,7 +341,7 @@ export function baseCandidates(word: string, lang: string): string[] {
 }
 
 /** Languages that pile endings onto a word: more candidates are worth looking up. */
-const AGGLUTINATIVE = new Set(['tr', 'ko', 'ja', 'sw', 'id', 'ar', 'hu']);
+const AGGLUTINATIVE = new Set(['tr', 'ko', 'ja', 'sw', 'id', 'ms', 'ar', 'hu']);
 
 /**
  * The head of a German or Swedish compound the dictionary doesn't list ("Kinderzimmerlampe" →

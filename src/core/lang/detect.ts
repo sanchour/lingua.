@@ -17,6 +17,15 @@ const STOPWORDS: Record<string, string[]> = {
   id: ['aku', 'kamu', 'yang', 'dan', 'di', 'ini', 'itu', 'tak', 'tidak', 'ku', 'akan', 'dengan', 'untuk', 'ada', 'dia', 'kita', 'cinta', 'hati', 'bisa', 'ke', 'dari', 'saja', 'lagi', 'semua', 'karena', 'sudah', 'mau', 'apa', 'jangan', 'selalu', 'hanya', 'masih', 'pernah', 'kau', 'engkau', 'bukan', 'juga', 'harus', 'sampai', 'kami'],
   sw: ['na', 'ya', 'wa', 'kwa', 'ni', 'za', 'la', 'katika', 'mimi', 'wewe', 'yeye', 'sisi', 'nakupenda', 'pia', 'hii', 'huo', 'lakini', 'kama', 'sana', 'tu', 'hapa', 'leo', 'nini', 'gani', 'bado', 'kila', 'wangu', 'wako', 'moyo', 'mapenzi', 'sasa', 'hakuna', 'hata', 'tena', 'kwenye', 'yangu', 'yako', 'nataka', 'mpenzi', 'kweli'],
   la: ['et', 'in', 'est', 'non', 'ad', 'cum', 'quod', 'ut', 'sed', 'qui', 'quae', 'de', 'ex', 'per', 'enim', 'sunt', 'esse', 'nec', 'atque', 'ac', 'autem', 'quam', 'tamen', 'etiam', 'nos', 'vos', 'tu', 'ego', 'mea', 'tua', 'deus', 'domine', 'nobis', 'pro', 'sicut', 'sub', 'super', 'omnia', 'hic', 'mihi', 'tuum', 'tuus', 'meum', 'meus', 'nomen', 'quia', 'ubi', 'regnum', 'sum', 'es'],
+  // Beta languages (3.0-1b), written in Latin letters: a short list each.
+  pl: ['i', 'nie', 'się', 'w', 'na', 'to', 'że', 'jest', 'z', 'do', 'ja', 'ty', 'co', 'jak', 'mnie', 'tak', 'ale', 'mi', 'już', 'mój'],
+  cs: ['a', 'je', 'se', 'na', 'to', 'že', 'v', 'jsem', 'ne', 's', 'já', 'ty', 'co', 'jak', 'mě', 'tak', 'ale', 'mi', 'už', 'můj'],
+  ro: ['și', 'de', 'în', 'nu', 'la', 'că', 'cu', 'mai', 'pe', 'o', 'un', 'eu', 'tu', 'ce', 'mă', 'te', 'am', 'e', 'este', 'dar'],
+  vi: ['và', 'là', 'của', 'không', 'có', 'tôi', 'anh', 'em', 'một', 'những', 'cho', 'với', 'này', 'đã', 'được', 'người', 'trong', 'yêu', 'thì', 'mình'],
+  tl: ['ang', 'ng', 'sa', 'na', 'ko', 'mo', 'ako', 'ikaw', 'ka', 'at', 'hindi', 'mga', 'siya', 'ay', 'kita', 'lang', 'pa', 'ba', 'naman', 'pag'],
+  ms: ['yang', 'dan', 'di', 'ini', 'itu', 'tidak', 'aku', 'kau', 'awak', 'saya', 'akan', 'dengan', 'untuk', 'ada', 'dia', 'kita', 'cinta', 'hati', 'sudah', 'tak'],
+  uz: ['va', 'bu', 'men', 'sen', 'u', 'bilan', 'uchun', 'emas', 'bor', 'yoʻq', 'ham', 'edi', 'bir', 'nima', 'qanday', 'meni', 'seni', 'sevgi', 'juda', 'endi'],
+  sh: ['i', 'je', 'da', 'se', 'u', 'na', 'ne', 'ja', 'ti', 'to', 'sam', 'si', 'mi', 'me', 'te', 'ali', 'kao', 'što', 'sve', 'moj'],
 };
 
 /** Letters that belong to one script each: the alphabet says the language before any word does. */
@@ -28,6 +37,19 @@ const SCRIPTS: Array<[RegExp, string]> = [
   // Kana means Japanese; Han characters alone mean Mandarin (see below).
   [/[\p{Script=Hiragana}\p{Script=Katakana}]/u, 'ja'],
   [/\p{Script=Han}/u, 'zh'],
+  [/\p{Script=Devanagari}/u, 'hi'],
+  [/\p{Script=Thai}/u, 'th'],
+  [/\p{Script=Tamil}/u, 'ta'],
+  [/\p{Script=Georgian}/u, 'ka'],
+];
+
+/** Within a shared script, letters or characters only one of its languages uses. */
+const SCRIPT_SPLITS: Array<[from: string, re: RegExp, to: string]> = [
+  ['ar', /[پچژگکی]/, 'fa'],
+  ['ru', /[өүӨҮ]/, 'mn'],
+  ['ru', /[ђјљњћџЂЈЉЊЋЏ]/, 'sh'],
+  // Written Cantonese: 嘅 咗 喺 佢 冇 嘢 唔 哋 啲.
+  ['zh', /[嘅咗喺佢冇嘢唔哋啲]/, 'yue'],
 ];
 
 /** Letters only some languages use, each a gentle hint. */
@@ -40,6 +62,12 @@ const LETTER_HINTS: Array<[RegExp, string[]]> = [
   [/ß/, ['de']],
   [/[ìò]/, ['it']],
   [/[êœ]/, ['fr', 'pt']],
+  [/[ąęłńśźż]/, ['pl']],
+  [/[ěřů]/, ['cs']],
+  [/[șțăî]/, ['ro']],
+  [/[ơưạảậắằặẹẻẽếềểễệịọỏốồổỗộớờởỡợụủứừửữự]/, ['vi']],
+  [/[og]ʻ/, ['uz']],
+  [/[ćđ]/, ['sh']],
 ];
 
 const WORD = /[\p{L}’']+/gu;
@@ -62,7 +90,11 @@ export function detectLanguage(text: string): Detected | null {
   }
   // Japanese mixes kana with Han characters: a fair share of kana is enough.
   if ((share.ja ?? 0) > 0.15 && (share.ja ?? 0) + (share.zh ?? 0) > 0.5) return { lang: 'ja', confidence: Math.min(1, (share.ja ?? 0) + (share.zh ?? 0)) };
-  for (const lang of ['ru', 'el', 'ar', 'ko', 'zh']) if ((share[lang] ?? 0) > 0.5) return { lang, confidence: Math.min(1, share[lang]) };
+  for (const lang of ['ru', 'el', 'ar', 'ko', 'zh', 'hi', 'th', 'ta', 'ka']) {
+    if ((share[lang] ?? 0) <= 0.5) continue;
+    const split = SCRIPT_SPLITS.find(([from, re]) => from === lang && re.test(text));
+    return { lang: split?.[2] ?? lang, confidence: Math.min(1, share[lang]) };
+  }
 
   const words = (text.toLocaleLowerCase().match(WORD) ?? []).map((w) => w.replace(/'/g, '’').replace(/^’|’$/g, ''));
   if (words.length < 4) return null;

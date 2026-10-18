@@ -17,7 +17,7 @@ import { pause as pauseSonus, usePlayer } from '@/services/audio/engine';
 import { searchSongs } from '@/services/cantus/catalog';
 import type { SongHit } from '@/services/cantus/catalog';
 import { toast } from '@/state/ui';
-import { DISCOVER, EASE_LABEL } from './discover';
+import { discoverFor, EASE_LABEL } from './discover';
 import { openByName, useCharts, useSpotifyLikes } from './library';
 import type { ChartSong } from './library';
 import { SongArt } from './SongArt';
@@ -318,7 +318,7 @@ function SpotifyLikes({ lang }: { lang: string }) {
 
 /** This week's charts, then (between) your Spotify, then artists and styles to explore. */
 function DiscoverTab({ lang, onSearch, between }: { lang: string; onSearch: (term: string, byArtist?: boolean) => void; between?: ReactNode }) {
-  const picks = DISCOVER[lang];
+  const picks = discoverFor(lang);
   const charts = useCharts(lang);
   const { opening, open } = useOpen(lang);
   const where = charts ? [...new Set(charts.songs.map((s) => s.where))] : [];
@@ -340,6 +340,7 @@ function DiscoverTab({ lang, onSearch, between }: { lang: string; onSearch: (ter
       {between}
       {picks && (
         <>
+          {picks.artists.length > 0 && (
           <section aria-label="Artists to start with">
             <h2 className={cx(label, 'mb-3')}>Artists to learn with</h2>
             <ul className="grid gap-2 sm:grid-cols-2">
@@ -361,6 +362,7 @@ function DiscoverTab({ lang, onSearch, between }: { lang: string; onSearch: (ter
               ))}
             </ul>
           </section>
+          )}
           <section aria-label="Styles">
             <h2 className={cx(label, 'mb-3')}>Styles to explore</h2>
             <div className="flex flex-wrap gap-2">

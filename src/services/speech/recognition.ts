@@ -21,6 +21,22 @@ const LOCALES: Record<string, string> = {
   zh: 'zh-CN',
   ja: 'ja-JP',
   ko: 'ko-KR',
+  // Beta languages (3.0-1b). Serbo-Croatian listens as Croatian; Cantonese as Hong Kong's.
+  hi: 'hi-IN',
+  pl: 'pl-PL',
+  vi: 'vi-VN',
+  tl: 'fil-PH',
+  th: 'th-TH',
+  fa: 'fa-IR',
+  yue: 'zh-HK',
+  cs: 'cs-CZ',
+  ro: 'ro-RO',
+  sh: 'hr-HR',
+  ms: 'ms-MY',
+  ta: 'ta-IN',
+  ka: 'ka-GE',
+  uz: 'uz-UZ',
+  mn: 'mn-MN',
 };
 
 interface RecognitionResultList {

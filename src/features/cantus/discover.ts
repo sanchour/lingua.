@@ -1,3 +1,4 @@
+import { getLanguage } from '@/core/lang/languages';
 // Cantus › Discover: artists and styles picked by hand for each language, with a word on why
 // they're good to learn with. Tapping one searches Apple's catalogue for their songs.
 
@@ -13,6 +14,15 @@ export interface Discover {
   artists: PickedArtist[];
   /** Styles to explore: [label, search term]. */
   styles: Array<[string, string]>;
+}
+
+/** A language's picks; a beta language gets three style searches made from its name, no artists. */
+export function discoverFor(lang: string): Discover | undefined {
+  const own = DISCOVER[lang];
+  const info = getLanguage(lang);
+  if (own || !info) return own;
+  const styles: Array<[string, string]> = [`${info.name} pop`, `${info.name} hip hop`, `${info.name} folk`].map((s) => [s, s]);
+  return { artists: [], styles };
 }
 
 export const DISCOVER: Record<string, Discover> = {

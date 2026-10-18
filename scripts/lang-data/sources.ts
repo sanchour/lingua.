@@ -27,6 +27,10 @@ export interface PackSource {
    * `Corpus/version`. count.ts blends their counts with the Leipzig list.
    */
   corpora?: string[];
+  /** Whose kaikki file to read when it is another language's (Cantonese reads the Chinese one). */
+  kaikkiOf?: string;
+  /** Beta languages (Lingua 3.0-1b): packs built automatically, kept smaller. */
+  tier?: 2;
 }
 
 export const PACK_SOURCES: PackSource[] = [
@@ -52,15 +56,34 @@ export const PACK_SOURCES: PackSource[] = [
   { code: 'la', kaikki: 'Latin', frequency: 'la', leipzig: 'lat_wikipedia_2021_100K', corpora: ['Tatoeba/v2023-04-12', 'bible-uedin/v1'] },
   { code: 'sw', kaikki: 'Swahili', frequency: 'sw', leipzig: 'swa_wikipedia_2021_100K', corpora: ['ParaCrawl/v9', 'GlobalVoices/v2018q4'] },
   { code: 'id', kaikki: 'Indonesian', frequency: 'id' },
+  // Lingua 3.0-1b: beta languages, one line each. FrequencyWords' Hindi, Tagalog and Tamil lists are
+  // tiny (subtitles are rare) and Georgian's is garbled (old non-Unicode fonts), so they and Uzbek
+  // and Mongolian use Leipzig's; Cantonese and Thai are counted from subtitles split the reader's way
+  // (Thai's list is cut into syllables).
+  { tier: 2, code: 'hi', kaikki: 'Hindi', frequency: 'hi', leipzig: 'hin_news_2020_100K' },
+  { tier: 2, code: 'pl', kaikki: 'Polish', frequency: 'pl' },
+  { tier: 2, code: 'vi', kaikki: 'Vietnamese', frequency: 'vi' },
+  { tier: 2, code: 'tl', kaikki: 'Tagalog', frequency: 'tl', leipzig: 'tgl_wikipedia_2021_100K' },
+  { tier: 2, code: 'th', kaikki: 'Thai', frequency: 'th', opus: 'th' },
+  { tier: 2, code: 'fa', kaikki: 'Persian', frequency: 'fa' },
+  { tier: 2, code: 'yue', kaikki: 'Chinese', kaikkiOf: 'zh', frequency: 'zh_tw', opus: 'zh_tw' },
+  { tier: 2, code: 'cs', kaikki: 'Czech', frequency: 'cs' },
+  { tier: 2, code: 'ro', kaikki: 'Romanian', frequency: 'ro' },
+  { tier: 2, code: 'sh', kaikki: 'Serbo-Croatian', frequency: 'hr' },
+  { tier: 2, code: 'ms', kaikki: 'Malay', frequency: 'ms' },
+  { tier: 2, code: 'ta', kaikki: 'Tamil', frequency: 'ta', leipzig: 'tam_news_2020_100K' },
+  { tier: 2, code: 'ka', kaikki: 'Georgian', frequency: 'ka', leipzig: 'kat_news_2020_100K' },
+  { tier: 2, code: 'uz', kaikki: 'Uzbek', frequency: 'uz', leipzig: 'uzb_wikipedia_2021_100K' },
+  { tier: 2, code: 'mn', kaikki: 'Mongolian', frequency: 'mn', leipzig: 'mon_news_2020_100K' },
 ];
 
 export const CACHE_DIR = new URL('../.cache/', import.meta.url);
 export const PACKS_DIR = new URL('../../public/packs/', import.meta.url);
 
-/** kaikki.org keeps a language in a folder by its name; the file name drops the spaces. */
+/** kaikki.org keeps a language in a folder by its name; the file name drops spaces and hyphens. */
 export const kaikkiUrl = (s: PackSource) =>
-  `https://kaikki.org/dictionary/${encodeURIComponent(s.kaikki)}/kaikki.org-dictionary-${encodeURIComponent(s.kaikki.replace(/ /g, ''))}.jsonl.gz`;
-export const kaikkiFile = (s: PackSource) => new URL(`kaikki-${s.code}.jsonl.gz`, CACHE_DIR);
+  `https://kaikki.org/dictionary/${encodeURIComponent(s.kaikki)}/kaikki.org-dictionary-${encodeURIComponent(s.kaikki.replace(/[ -]/g, ''))}.jsonl.gz`;
+export const kaikkiFile = (s: PackSource) => new URL(`kaikki-${s.kaikkiOf ?? s.code}.jsonl.gz`, CACHE_DIR);
 export const frequencyUrl = (s: PackSource) =>
   s.leipzig
     ? `https://downloads.wortschatz-leipzig.de/corpora/${s.leipzig}.tar.gz`

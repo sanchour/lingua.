@@ -12,6 +12,10 @@ const EN_KEEP = 30_000;
 const CODES: Record<string, string[]> = {
   es: ['es'], pt: ['pt'], fr: ['fr'], it: ['it'], de: ['de'], sv: ['sv'], el: ['el'], hu: ['hu'], ru: ['ru'],
   ar: ['ar'], zh: ['cmn', 'zh'], nl: ['nl'], nb: ['nb', 'no'], tr: ['tr'], ja: ['ja'], ko: ['ko'], la: ['la'], sw: ['sw'], id: ['id'],
+  // Lingua 3.0-1b. Cantonese tables are thin: Mandarin's Traditional spellings help. Serbo-Croatian
+  // appears under its own code and the four standards' codes.
+  hi: ['hi'], pl: ['pl'], vi: ['vi'], tl: ['tl'], th: ['th'], fa: ['fa'], yue: ['yue', 'cmn', 'zh'], cs: ['cs'], ro: ['ro'],
+  sh: ['sh', 'hr', 'sr', 'bs'], ms: ['ms'], ta: ['ta'], ka: ['ka'], uz: ['uz'], mn: ['mn'],
 };
 
 interface Translation { code?: string; word?: string; sense?: string; tags?: string[] }
@@ -24,8 +28,9 @@ for (const line of readFileSync(frequencyFile(en), 'utf8').split('\n')) {
   if (word && !rank.has(word) && rank.size < EN_KEEP) rank.set(word, rank.size + 1);
 }
 
-const byCode = new Map<string, string>();
-for (const [lang, codes] of Object.entries(CODES)) for (const c of codes) byCode.set(c, lang);
+// A table code can serve several packs (Mandarin's tables feed Cantonese too).
+const byCode = new Map<string, string[]>();
+for (const [lang, codes] of Object.entries(CODES)) for (const c of codes) byCode.set(c, [...(byCode.get(c) ?? []), lang]);
 
 /**
  * lang → target word → [English word, its part of speech, best position in a table (0 = first), share
@@ -58,10 +63,9 @@ const take = (line: string) => {
   // many tables list it.
   const tables = new Map<string, Map<string, number>>();
   const words = new Map<string, Map<string, { best: number; tables: Set<string> }>>();
-  for (const t of all) {
+  for (const t of all) for (const lang of (t.code && byCode.get(t.code)) || []) {
     const sense = t.sense ?? '';
-    const lang = t.code ? byCode.get(t.code) : undefined;
-    if (!lang || !t.word) continue;
+    if (!t.word) continue;
     const word = t.word.trim().toLowerCase();
     if (!word || word.length > 40) continue;
     let langTables = tables.get(lang);

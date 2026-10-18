@@ -184,3 +184,19 @@ now lives). The music room still goes by Cantus inside (its deck is "From Cantus
 - **Everywhere else:** Home suggests a song for today; saved lines go to the "From Cantus" deck and
   their cards play the line again (with a YouTube or Spotify link); lyrics open in Codex as a text;
   Ratio counts songs and time with music; Iter marks the first song and every 10, 25, 50 and 100.
+
+## Languages in Lingua 3.0 — twenty, and fifteen in beta (3.0-1, 3.0-1b)
+
+- **Twenty languages with everything:** English, Spanish, French, German, Italian, Portuguese,
+  Russian, Greek, Swedish, Hungarian, Dutch, Norwegian, Turkish, Indonesian, Swahili, Latin,
+  Arabic (right to left), Mandarin (pinyin over words), Japanese (kana over words, split by its own
+  dictionary) and Korean. Each has an offline dictionary pack, starter and Top-N decks, Diarium
+  prompts, news, music, podcasts, speech recognition and a flag of its own (with a choice of
+  regional flags).
+- **Beta languages:** Hindi, Polish, Vietnamese, Tagalog, Thai, Persian (right to left), Cantonese
+  (Jyutping over words, Traditional characters), Czech, Romanian, Serbo-Croatian (one pack for Latin
+  and Cyrillic text), Malay, Tamil, Georgian, Uzbek and Mongolian. They get what is built
+  automatically: the reader with tap and select to translate, an offline dictionary, flashcards and
+  Ludus, Diarium with English prompts, subtitles, podcast searches and music searches with three
+  style searches. Onboarding lists them under "More languages · Beta", and Ordo › Languages marks
+  them and says what they include. No grammar, alphabet or hand-picked recommendations.

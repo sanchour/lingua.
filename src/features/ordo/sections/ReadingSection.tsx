@@ -15,7 +15,10 @@ import { cx } from '@/lib/cx';
 import { SettingsSection } from '../SettingsSection';
 import { useDraft } from '../useDraft';
 
-const SCRIPT_NAMES: Record<Script, string> = { Latn: 'Latin', Cyrl: 'Cyrillic', Grek: 'Greek', Arab: 'Arabic', Hans: 'Chinese', Jpan: 'Japanese', Kore: 'Hangul' };
+const SCRIPT_NAMES: Record<Script, string> = {
+  Latn: 'Latin', Cyrl: 'Cyrillic', Grek: 'Greek', Arab: 'Arabic', Hans: 'Chinese', Hant: 'Traditional Chinese', Jpan: 'Japanese', Kore: 'Hangul',
+  Deva: 'Devanagari', Thai: 'Thai', Taml: 'Tamil', Geor: 'Georgian',
+};
 const PREVIEW_SCRIPTS: Script[] = ['Latn', 'Cyrl', 'Grek'];
 
 export function ReadingSection({ reader, lang }: { reader: Settings['reader']; lang: string }) {

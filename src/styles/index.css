@@ -112,14 +112,14 @@
   ::selection {
     background-color: var(--accent-soft);
   }
-  /* Arabic reads right to left wherever it appears: every text in the language being learned
+  /* Arabic and Persian read right to left wherever they appear: every text in the language being learned
      carries its lang attribute, so one rule covers the reader, cards, lyrics and subtitles. */
-  [lang='ar']:not(html) {
+  :is([lang='ar'], [lang='fa']):not(html) {
     direction: rtl;
     unicode-bidi: isolate;
   }
   /* CJK text breaks lines by its own rules, never inside a word the reader treats as one. */
-  :is([lang='zh'], [lang='ja']):not(html) {
+  :is([lang='zh'], [lang='yue'], [lang='ja']):not(html) {
     line-break: strict;
   }
   :focus-visible {

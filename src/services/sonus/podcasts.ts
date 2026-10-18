@@ -1,3 +1,4 @@
+import { getLanguage } from '@/core/lang/languages';
 // Finding and following podcasts: Apple's public podcast directory for search, RSS for episodes.
 import { parseFeed } from '@/core/parsers/rss';
 import { saveFeed } from '@/data/media';
@@ -36,6 +37,14 @@ export const SUGGESTED_SEARCHES: Record<string, string[]> = {
   ja: ['learn japanese podcast', 'nihongo con teppei', 'japanese podcast'],
   ko: ['learn korean podcast', 'talk to me in korean', 'korean podcast'],
 };
+
+/** The suggested searches for a language; for a beta language, made from its names. */
+export function suggestedSearches(lang: string): string[] {
+  const own = SUGGESTED_SEARCHES[lang];
+  const info = getLanguage(lang);
+  if (own || !info) return own ?? SUGGESTED_SEARCHES.en;
+  return [`learn ${info.name.toLowerCase()} podcast`, `${info.endonym} podcast`, `${info.name.toLowerCase()} podcast`];
+}
 
 /** Searches Apple's podcast directory (public, no key; returns each show's RSS address). */
 export async function searchPodcasts(term: string): Promise<PodcastHit[]> {

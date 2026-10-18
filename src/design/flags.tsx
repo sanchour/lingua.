@@ -1,4 +1,4 @@
-// Flags for the twenty languages, drawn in Lingua's soft style: rounded, colours a little muted,
+// Flags for Lingua’s languages, drawn in its soft style: rounded, colours a little muted,
 // details simplified so they read at 20 px. Each is drawn on a 36 × 24 canvas.
 import { useId } from 'react';
 import type { ReactNode } from 'react';
@@ -415,6 +415,239 @@ const FLAGS: Record<string, { name: string; draw: () => ReactNode }> = {
     ),
   },
 };
+
+// Beta languages (3.0-1b): simple shapes, emblems reduced to what reads at 20 px.
+const BETA_FLAGS: Record<string, { name: string; draw: () => ReactNode }> = {
+  in: {
+    name: 'India',
+    draw: () => (
+      <>
+        {hStripes([C.orange, C.white, C.green])}
+        <circle cx={18} cy={12} r={2.9} fill="none" stroke={C.navy} strokeWidth={0.8} />
+        <circle cx={18} cy={12} r={0.7} fill={C.navy} />
+      </>
+    ),
+  },
+  pl: { name: 'Poland', draw: () => hStripes([C.white, C.red]) },
+  vn: {
+    name: 'Vietnam',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill={C.red} />
+        <Star x={18} y={12.6} r={6.2} fill={C.yellow} />
+      </>
+    ),
+  },
+  ph: {
+    name: 'Philippines',
+    draw: () => (
+      <>
+        {hStripes([C.blue, C.red])}
+        <polygon points="0,0 20.8,12 0,24" fill={C.white} />
+        <circle cx={6.6} cy={12} r={2.6} fill={C.yellow} />
+        <Star x={2.4} y={3.6} r={1.2} fill={C.yellow} />
+        <Star x={2.4} y={20.4} r={1.2} fill={C.yellow} />
+        <Star x={16.4} y={12} r={1.2} fill={C.yellow} />
+      </>
+    ),
+  },
+  th: {
+    name: 'Thailand',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill={C.red} />
+        <rect y={4} width={36} height={16} fill={C.white} />
+        <rect y={8} width={36} height={8} fill={C.navy} />
+      </>
+    ),
+  },
+  ir: {
+    name: 'Iran',
+    draw: () => (
+      <>
+        {hStripes([C.green, C.white, C.red])}
+        <g fill="none" stroke={C.red} strokeWidth={0.9} strokeLinecap="round">
+          <path d="M18 9v6" />
+          <path d="M15.6 9.6c-1.4 2.2-.6 4.6 1.2 5.2" />
+          <path d="M20.4 9.6c1.4 2.2.6 4.6-1.2 5.2" />
+        </g>
+      </>
+    ),
+  },
+  af: {
+    name: 'Afghanistan',
+    draw: () => (
+      <>
+        {vStripes([C.black, C.red, C.green])}
+        <circle cx={18} cy={12} r={4} fill="none" stroke={C.white} strokeWidth={0.9} />
+        <rect x={16.6} y={10.4} width={2.8} height={3} fill={C.white} />
+      </>
+    ),
+  },
+  tj: {
+    name: 'Tajikistan',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill={C.white} />
+        <rect width={36} height={6.9} fill={C.red} />
+        <rect y={17.1} width={36} height={6.9} fill={C.green} />
+        <path d="M15.6 14l.6-2.6 1.8 1.2 1.8-1.2.6 2.6z" fill={C.gold} />
+        {[-5, -3.2, -1.2, 1.2, 3.2, 5].map((dx, i) => (
+          <Star key={i} x={18 + dx} y={10.2 - (Math.abs(dx) > 4 ? 0 : Math.abs(dx) > 2 ? 0.9 : 1.4)} r={0.7} fill={C.gold} />
+        ))}
+      </>
+    ),
+  },
+  hk: {
+    name: 'Hong Kong',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill={C.red} />
+        {[0, 72, 144, 216, 288].map((a) => (
+          <ellipse key={a} cx={18} cy={8.4} rx={1.9} ry={3.6} fill={C.white} transform={`rotate(${a} 18 12)`} />
+        ))}
+      </>
+    ),
+  },
+  cz: {
+    name: 'Czechia',
+    draw: () => (
+      <>
+        {hStripes([C.white, C.red])}
+        <polygon points="0,0 18,12 0,24" fill={C.blue} />
+      </>
+    ),
+  },
+  ro: { name: 'Romania', draw: () => vStripes([C.blue, C.yellow, C.red]) },
+  md: {
+    name: 'Moldova',
+    draw: () => (
+      <>
+        {vStripes([C.blue, C.yellow, C.red])}
+        <path d="M16.2 9h3.6v4.2c0 1.5-1.8 2.4-1.8 2.4s-1.8-.9-1.8-2.4z" fill="#8a5a2b" />
+      </>
+    ),
+  },
+  hr: {
+    name: 'Croatia',
+    draw: () => (
+      <>
+        {hStripes([C.red, C.white, C.blue])}
+        <path d="M14.8 7.6h6.4v5.6c0 2.2-3.2 3.6-3.2 3.6s-3.2-1.4-3.2-3.6z" fill={C.white} stroke={C.red} strokeWidth={0.5} />
+        {[0, 1, 2, 3].flatMap((row) =>
+          [0, 1, 2, 3].map((col) =>
+            (row + col) % 2 === 0 && row < 3 ? <rect key={`${row}-${col}`} x={14.8 + col * 1.6} y={7.6 + row * 1.6} width={1.6} height={1.6} fill={C.red} /> : null,
+          ),
+        )}
+      </>
+    ),
+  },
+  rs: {
+    name: 'Serbia',
+    draw: () => (
+      <>
+        {hStripes([C.red, C.blue, C.white])}
+        <path d="M9.4 6.6h5.2v6c0 2-2.6 3.2-2.6 3.2s-2.6-1.2-2.6-3.2z" fill={C.red} stroke={C.white} strokeWidth={0.5} />
+        <path d="M12 7.8v6M10.2 10.4h3.6" stroke={C.white} strokeWidth={0.7} />
+      </>
+    ),
+  },
+  ba: {
+    name: 'Bosnia and Herzegovina',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill={C.blue} />
+        <polygon points="10,0 26,0 26,24" fill={C.yellow} />
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <Star key={i} x={7 + i * 3.3} y={-1.2 + i * 4.5} r={1.1} fill={C.white} />
+        ))}
+      </>
+    ),
+  },
+  me: {
+    name: 'Montenegro',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill={C.gold} />
+        <rect x={1.4} y={1.4} width={33.2} height={21.2} fill={C.deepRed} />
+        <path d="M18 7.4l2.6 1.8 2.6-1.2-.8 3.2 1.6 1.4-2.4.6-1.2 3.6h-4.8l-1.2-3.6-2.4-.6 1.6-1.4-.8-3.2 2.6 1.2z" fill={C.gold} />
+      </>
+    ),
+  },
+  my: {
+    name: 'Malaysia',
+    draw: () => (
+      <>
+        {hStripes([C.red, C.white, C.red, C.white, C.red, C.white, C.red, C.white, C.red, C.white, C.red, C.white, C.red, C.white])}
+        <rect width={18} height={13.7} fill={C.navy} />
+        {crescent(7.4, 6.85, 4.4, C.yellow, C.navy, 0.3)}
+        <Star x={12.6} y={6.85} r={2.6} fill={C.yellow} />
+      </>
+    ),
+  },
+  lk: {
+    name: 'Sri Lanka',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill={C.gold} />
+        <rect x={1.4} y={1.4} width={4.4} height={21.2} fill="#2f7d5a" />
+        <rect x={5.8} y={1.4} width={4.4} height={21.2} fill={C.orange} />
+        <rect x={11.4} y={1.4} width={23.2} height={21.2} fill="#8a2335" />
+        <path d="M18.6 16.6l1-4.2 2.2-1.6 2.6.4 1.4-2 1.6 1.2-.8 2.2 1.4 2.2-.6 1.8h-1.6l-.4-1.4-2.4.4-.4 1h-4z" fill={C.gold} />
+      </>
+    ),
+  },
+  ge: {
+    name: 'Georgia',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill={C.white} />
+        <rect x={16} width={4} height={24} fill={C.red} />
+        <rect y={10} width={36} height={4} fill={C.red} />
+        {[
+          [8, 5],
+          [28, 5],
+          [8, 19],
+          [28, 19],
+        ].map(([x, y]) => (
+          <path key={`${x}-${y}`} d={`M${x} ${y - 2.2}v4.4M${x - 2.2} ${y}h4.4`} stroke={C.red} strokeWidth={1.2} />
+        ))}
+      </>
+    ),
+  },
+  uz: {
+    name: 'Uzbekistan',
+    draw: () => (
+      <>
+        {hStripes(['#2f8fc0', C.white, C.green])}
+        <rect y={7.7} width={36} height={0.6} fill={C.red} />
+        <rect y={15.7} width={36} height={0.6} fill={C.red} />
+        {crescent(5, 4, 2.6, C.white, '#2f8fc0', 0.3)}
+        {[0, 1, 2].map((i) => (
+          <Star key={i} x={10 + i * 2.4} y={4} r={0.8} />
+        ))}
+      </>
+    ),
+  },
+  mn: {
+    name: 'Mongolia',
+    draw: () => (
+      <>
+        {vStripes([C.red, '#2f5fa8', C.red])}
+        <g fill={C.yellow}>
+          <circle cx={6} cy={5.6} r={1.2} />
+          <path d="M4.4 8h3.2l-1.6 1.4z" />
+          <rect x={4.4} y={10} width={3.2} height={0.8} />
+          <circle cx={6} cy={13.2} r={1.4} />
+          <rect x={4.4} y={15.6} width={3.2} height={0.8} />
+          <rect x={3.2} y={8} width={0.7} height={9.4} />
+          <rect x={8.1} y={8} width={0.7} height={9.4} />
+        </g>
+      </>
+    ),
+  },
+};
+Object.assign(FLAGS, BETA_FLAGS);
 
 export const flagName = (code: string) => FLAGS[code]?.name ?? code.toUpperCase();
 export const hasFlag = (code: string) => code in FLAGS;
