@@ -94,7 +94,7 @@ const CHECKS: Record<string, Record<string, RegExp>> = {
 /** The reading over common words (Mandarin pinyin; Japanese kana): the usual one, not a rare one. */
 const READINGS: Record<string, Record<string, string>> = {
   zh: { 我: 'wǒ', 的: 'de', 还: 'hái', 听: 'tīng', 现在: 'xiànzài', 吗: 'ma' },
-  ja: { 今日: 'きょう', 私: 'わたし', 今: 'いま', 中: 'なか', 時間: 'じかん', 行く: 'いく', 行きました: 'いきました', 家: 'いえ' },
+  ja: { 今日: 'きょう', 私: 'わたし', 今: 'いま', 中: 'なか', 時間: 'じかん', 行く: 'いく', 行きました: 'いきました', 家: 'いえ', 日本: 'にほん' },
 };
 
 const packFile = (lang: string) => new URL(`../../../public/packs/${lang}.v${PACK_VERSION}.json.gz`, import.meta.url);
