@@ -18,9 +18,13 @@ import { createReadStream, existsSync, mkdirSync, readFileSync, writeFileSync } 
 import { fileURLToPath } from 'node:url';
 import { createGunzip, gzipSync } from 'node:zlib';
 import { foldKey, normalizeWord } from '../../src/core/text/normalize.ts';
+import { baseCandidates } from '../../src/core/lang/inflect.ts';
+import { deinflect, hasKanji, JAPANESE_CHAR, readingOf, segmentJapanese, toHiragana } from '../../src/core/lang/japanese.ts';
+import type { JapaneseLexicon } from '../../src/core/lang/japanese.ts';
 import { PACK_FORMAT, PACK_VERSION, packFileName } from '../../src/core/packs/format.ts';
 import type { PackExample, PackFile, PackForm, PackLemma, PackParadigm, PackSense, PackThemeItem } from '../../src/core/packs/format.ts';
-import { CACHE_DIR, frequencyFile, kaikkiFile, PACK_SOURCES, PACKS_DIR } from './sources.ts';
+import { GLOSS_FIXES, READING_FIXES } from './fixes.ts';
+import { CACHE_DIR, countedFile, frequencyFile, kaikkiFile, PACK_SOURCES, PACKS_DIR, unihanVariants } from './sources.ts';
 import type { PackSource } from './sources.ts';
 
 const FREQ_KEEP = 20_000;
@@ -34,7 +38,13 @@ const LEMMA_FREQ_KEEP = 10_000;
 /** Examples per lemma: two for the most frequent lemmas, one for the rest of the top 10k. */
 const EXAMPLES_RICH_RANK = 2000;
 
-const SKIP_POS = new Set(['name', 'character', 'symbol', 'punct', 'prefix', 'suffix', 'infix', 'interfix', 'circumfix', 'affix', 'romanization']);
+const SKIP_POS = new Set(['name', 'character', 'symbol', 'punct', 'prefix', 'suffix', 'infix', 'interfix', 'circumfix', 'affix', 'romanization', 'soft-redirect', 'syllable']);
+/** Mandarin and Cantonese (both from kaikki's "Chinese"; Cantonese keeps Traditional characters). */
+const CHINESE = new Set(['zh', 'yue']);
+/** Chinese single characters carry their meanings as "character" entries: words of their own. */
+const KEEP_CHARACTERS = CHINESE;
+/** Written without spaces between words (Thai puts them only between phrases). */
+const UNSPACED = new Set(['zh', 'yue', 'ja', 'th']);
 /** Related words listed in Wiktionary form tables that are not inflections of the headword. */
 const NOT_INFLECTION = new Set([
   'romanization', 'canonical', 'table-tags', 'inflection-template', 'class', 'relational', 'diminutive', 'augmentative',
@@ -42,7 +52,7 @@ const NOT_INFLECTION = new Set([
 ]);
 const GENDER: Record<string, string> = { masculine: 'm', feminine: 'f', neuter: 'n', common: 'c' };
 
-interface KaikkiForm { form?: string; tags?: string[] }
+interface KaikkiForm { form?: string; tags?: string[]; ruby?: Array<[string, string]> }
 interface KaikkiExample { text?: string; english?: string; translation?: string; type?: string; ref?: string }
 interface KaikkiSense { glosses?: string[]; tags?: string[]; form_of?: { word: string }[]; alt_of?: { word: string }[]; examples?: KaikkiExample[] }
 interface KaikkiEntry {
@@ -51,8 +61,154 @@ interface KaikkiEntry {
   tags?: string[];
   forms?: KaikkiForm[];
   senses?: KaikkiSense[];
-  sounds?: { ipa?: string }[];
+  /** Japanese kana in `other`, Mandarin pinyin in `zh_pron` (tagged Mandarin, Standard, Pinyin). */
+  sounds?: { ipa?: string; other?: string; zh_pron?: string; tags?: string[] }[];
+  /** Soft redirects: a Simplified Mandarin spelling → its Traditional entry; a kanji spelling → its kana entries. */
+  redirects?: string[];
 }
+
+// ── Readings (Mandarin pinyin, Japanese kana) ───────────────────────────────
+
+const JAPANESE_RUN = new RegExp(`${JAPANESE_CHAR.source}+`, 'gu');
+
+/** The reading Wiktionary gives an entry as written: pinyin for Mandarin, kana for Japanese words with kanji. */
+function entryReading(entry: KaikkiEntry, lang: string): string {
+  if (lang === 'zh') {
+    const sound =
+      entry.sounds?.find((s) => s.zh_pron && s.tags?.includes('Mandarin') && s.tags.includes('Pinyin') && s.tags.includes('Standard')) ??
+      entry.sounds?.find((s) => s.zh_pron && s.tags?.includes('Mandarin') && s.tags.includes('Pinyin'));
+    // "ě (wo³, e³)" → ě
+    return sound?.zh_pron?.replace(/\s*\(.*$/, '').trim() ?? '';
+  }
+  if (lang === 'yue') {
+    // Jyutping: "nei5" for 你.
+    const sound = entry.sounds?.find((s) => s.zh_pron && s.tags?.includes('Cantonese') && s.tags.includes('Jyutping'));
+    return sound?.zh_pron?.replace(/\s*\(.*$/, '').trim() ?? '';
+  }
+  if (lang === 'ja') {
+    if (!hasKanji(entry.word)) return '';
+    const canonical = entry.forms?.find((f) => f.tags?.includes('canonical') && f.ruby?.length);
+    if (canonical?.ruby && canonical.form) {
+      // 食べる with [[食, た]] → たべる: each ruby base replaced by its kana, in order.
+      let rest = canonical.form.replace(/\s.*$/, '');
+      let out = '';
+      for (const [base, kana] of canonical.ruby) {
+        const at = rest.indexOf(base);
+        if (at < 0) break;
+        out += rest.slice(0, at) + kana;
+        rest = rest.slice(at + base.length);
+      }
+      out += rest;
+      if (!hasKanji(out)) return toHiragana(out);
+    }
+    const other = entry.sounds?.find((s) => s.other && !hasKanji(s.other))?.other;
+    return other ? toHiragana(other) : '';
+  }
+  return '';
+}
+
+/**
+ * What a first read of the whole dictionary tells about spellings:
+ * - Mandarin: each Traditional entry's Simplified spelling (the pack is keyed by Simplified, since
+ *   texts and the frequency list are).
+ * - Japanese: the kana entries a kanji spelling belongs to (今日 → きょう), from soft redirects and
+ *   from kana entries listing their kanji; and the kanji entries a kana word may be (たべる → 食べる).
+ */
+interface Spellings {
+  simplified: Map<string, string>;
+  /** From soft redirects: what Wiktionary says a kanji spelling is (今日 → きょう, こんにち). */
+  kanaOfKanji: Map<string, string[]>;
+  /** From kana entries listing their kanji: looser (きょう lists 京 too), used only for kanji without an entry. */
+  listedKana: Map<string, string[]>;
+  kanjiOfKana: Map<string, string[]>;
+}
+
+async function readSpellings(source: PackSource): Promise<Spellings> {
+  const lang = source.code;
+  const out: Spellings = { simplified: new Map(), kanaOfKanji: new Map(), listedKana: new Map(), kanjiOfKana: new Map() };
+  if (lang !== 'zh' && lang !== 'ja') return out;
+  const add = (map: Map<string, string[]>, key: string, value: string) => {
+    const list = map.get(key) ?? [];
+    if (!list.includes(value)) map.set(key, [...list, value]);
+  };
+  if (lang === 'zh') unihan = readUnihan();
+  for await (const line of readLines(source)) {
+    if (!line.includes('"redirects"') && !(lang === 'ja' && line.includes('"kanji"')) && !(lang === 'zh' && line.includes('Simplified-Chinese'))) continue;
+    let entry: KaikkiEntry;
+    try {
+      entry = JSON.parse(line) as KaikkiEntry;
+    } catch {
+      continue;
+    }
+    if (lang === 'zh') {
+      // 學校 names its Simplified spelling, 学校. (Wiktionary's redirects mix in old variants, 㦱 →
+      // 我, so single characters go by Unihan instead: see toSimplified.) Not the abandoned second
+      // round of simplification, nor a character described by its parts (⿱占一).
+      for (const f of entry.forms ?? []) {
+        if (!f.form || f.form === entry.word || !f.tags?.includes('Simplified-Chinese')) continue;
+        if (f.tags.some((t) => t === 'alternative' || t === 'obsolete' || t === 'Second-Round-Simplified-Chinese') || /[⿰-⿿]/.test(f.form)) continue;
+        if (!out.simplified.has(entry.word)) out.simplified.set(entry.word, f.form);
+      }
+      continue;
+    }
+    if (entry.redirects?.length) {
+      if (hasKanji(entry.word)) for (const kana of entry.redirects) if (!hasKanji(kana)) add(out.kanaOfKanji, entry.word, kana);
+      if (!hasKanji(entry.word)) for (const kanji of entry.redirects) if (hasKanji(kanji)) add(out.kanjiOfKana, entry.word, kanji);
+    }
+    if (!hasKanji(entry.word) && entry.pos !== 'name' && entry.pos !== 'soft-redirect') {
+      for (const f of entry.forms ?? []) {
+        if (f.form && f.tags?.includes('kanji') && hasKanji(f.form) && !f.tags.includes('rare') && !f.tags.includes('obsolete')) add(out.listedKana, f.form, entry.word);
+      }
+    }
+  }
+  // A Simplified word is never itself renamed (发 stays 发, though it is also a Traditional spelling).
+  for (const simp of new Set(out.simplified.values())) out.simplified.delete(simp);
+  return out;
+}
+
+/**
+ * From Unihan: a Traditional character's Simplified one (還 → 还), leaving out characters that may stay
+ * as they are (乾); and a Simplified character's Traditional one where it differs (着 → 著).
+ */
+let unihan = { simplified: new Map<string, string>(), traditional: new Map<string, string>() };
+
+function readUnihan(): typeof unihan {
+  const out = { simplified: new Map<string, string>(), traditional: new Map<string, string>() };
+  if (!existsSync(unihanVariants)) {
+    console.warn('  zh: no Unihan_Variants.txt (run fetch.ts zh): Traditional spellings come only from Wiktionary');
+    return out;
+  }
+  const char = (u: string) => String.fromCodePoint(parseInt(u.slice(2), 16));
+  for (const line of readFileSync(unihanVariants, 'utf8').split('\n')) {
+    const [code, field, values] = line.split('\t');
+    if (!values || (field !== 'kSimplifiedVariant' && field !== 'kTraditionalVariant')) continue;
+    const c = char(code);
+    const variants = values.trim().split(/\s+/).map(char);
+    if (field === 'kSimplifiedVariant' && !variants.includes(c)) out.simplified.set(c, variants[0]);
+    const other = variants.find((v) => v !== c);
+    if (field === 'kTraditionalVariant' && other) out.traditional.set(c, other);
+  }
+  return out;
+}
+
+/**
+ * A Mandarin word as Simplified texts write it: a single character by Unihan (Wiktionary names rare
+ * variants: 買 lists 𧹒), a longer word by Wiktionary's own pairing, else character by character.
+ */
+function toSimplified(word: string): string | undefined {
+  const chars = [...word];
+  if (chars.length === 1) return unihan.simplified.get(word) ?? spellings.simplified.get(word);
+  const named = spellings.simplified.get(word);
+  if (named) return named;
+  const out = chars.map((c) => unihan.simplified.get(c) ?? c).join('');
+  return out !== word ? out : undefined;
+}
+
+/** Japanese split the reader's way, for finding a word in an example sentence; set while building Japanese. */
+let japaneseLexicon: JapaneseLexicon | null = null;
+/** The language being built's spellings (readSpellings), and Mandarin lemmas' Traditional spellings. */
+let spellings: Spellings = { simplified: new Map(), kanaOfKanji: new Map(), listedKana: new Map(), kanjiOfKana: new Map() };
+const traditionalOf = new Map<string, Set<string>>();
 
 /** Paradigms (inflection tables) are kept for this many of the most frequent lemmas. */
 const PARADIGM_KEEP = 6000;
@@ -111,8 +267,12 @@ interface LexicalData {
   paradigm: Array<[string, string]>;
   paradigmPos: string;
   ipa: string;
+  /** Mandarin pinyin or Japanese kana for the word as written (entryReading). */
+  reading: string;
   gender: string;
   senses: PackSense[];
+  /** Each sense's reading, from the entry it came from: 还 is hái as "still", huán as "to return". */
+  senseReadings: string[];
   tableForms: Set<string>;
   /** Candidate usage examples: [sentence, translation]. */
   examples: [string, string][];
@@ -155,13 +315,16 @@ function loadEvidence(lang: string): void {
   }
   const rankOf = (en: string) => Math.max(...en.split(' ').map((w) => data.rank[w] ?? Infinity));
   for (const [word, list] of Object.entries(data.translations[lang] ?? {})) {
-    const key = normalizeWord(word, lang);
-    const items = evidence.get(key) ?? [];
-    for (const [en, pos, position, share] of list) {
-      const rank = rankOf(en);
-      if (Number.isFinite(rank)) items.push({ en, pos, position, share: share ?? 1, rank });
+    // Mandarin tables write both spellings, "現在／现在": each half is the word.
+    for (const part of word.split(/\s*[/／]\s*/).filter(Boolean)) {
+      const key = normalizeWord(part, lang);
+      const items = evidence.get(key) ?? [];
+      for (const [en, pos, position, share] of list) {
+        const rank = rankOf(en);
+        if (Number.isFinite(rank) && !items.some((e) => e.en === en && e.pos === pos)) items.push({ en, pos, position, share: share ?? 1, rank });
+      }
+      if (items.length) evidence.set(key, items);
     }
-    if (items.length) evidence.set(key, items);
   }
 }
 
@@ -324,7 +487,16 @@ async function* readEntries(source: PackSource): AsyncGenerator<KaikkiEntry> {
       malformed++;
       continue;
     }
-    if (!entry.word || SKIP_POS.has(entry.pos) || /\s/.test(entry.word)) continue;
+    if (!entry.word || /\s/.test(entry.word)) continue;
+    if (SKIP_POS.has(entry.pos) && !(entry.pos === 'character' && KEEP_CHARACTERS.has(source.code))) continue;
+    // Left-overs of links in Swahili glosses: "]/] inflected form of -ake".
+    for (const s of entry.senses ?? []) if (s.glosses) s.glosses = s.glosses.map((g) => g.replace(/^[\]/\s]+(?=\S)/, ''));
+    // Mandarin: the entry speaks for its Simplified spelling; the Traditional one becomes a form.
+    const simplified = source.code === 'zh' ? toSimplified(entry.word) : undefined;
+    if (simplified) {
+      traditionalOf.set(simplified, (traditionalOf.get(simplified) ?? new Set()).add(entry.word));
+      entry.word = simplified;
+    }
     yield entry;
   }
 }
@@ -332,7 +504,14 @@ async function* readEntries(source: PackSource): AsyncGenerator<KaikkiEntry> {
 function readFrequency(source: PackSource): { forms: string[]; counts: Map<string, number> } {
   const counts = new Map<string, number>();
   const out: string[] = [];
-  for (const line of readFileSync(frequencyFile(source), 'utf8').split('\n')) {
+  // Japanese and Mandarin: words counted the way the reader splits them; Latin and Swahili: blended
+  // with everyday text (count.ts).
+  let file = frequencyFile(source);
+  if (source.opus || source.corpora) {
+    if (existsSync(countedFile(source))) file = countedFile(source);
+    else console.warn(`  ${source.code}: no counted-${source.code}.txt (run count.ts first); using FrequencyWords' list`);
+  }
+  for (const line of readFileSync(file, 'utf8').split('\n')) {
     const [word, n] = line.trim().split(' ');
     if (!word || !hasLetter.test(word) || /\d/.test(word)) continue;
     const norm = normalizeWord(word, source.code);
@@ -356,9 +535,15 @@ function usableExamples(senses: KaikkiSense[], lang: string): [string, string][]
       const text = ex.text?.replace(/\s+/g, ' ').trim();
       const translation = (ex.translation ?? ex.english ?? '').replace(/\s+/g, ' ').trim();
       if (!text || ex.ref || ex.type === 'quotation' || /[―|[\]{}]/.test(text)) continue;
-      if (text.length < 12 || text.length > 110 || translation.length > 140) continue;
-      const words = text.split(' ').length;
-      if (words < 3 || words > 14) continue;
+      if (translation.length > 140) continue;
+      // Mandarin and Japanese have no spaces: a sentence of 5 to 40 characters is about as long.
+      if (UNSPACED.has(lang)) {
+        if (text.length < 5 || text.length > 40) continue;
+      } else {
+        if (text.length < 12 || text.length > 110) continue;
+        const words = text.split(' ').length;
+        if (words < 3 || words > 14) continue;
+      }
       if (lang !== 'en' && !translation) continue;
       out.push([text, lang === 'en' ? '' : translation]);
       if (out.length >= 4) return out;
@@ -373,10 +558,19 @@ function wordsOf(text: string, lang: string): { start: number; end: number; norm
   let seg = segmenters.get(lang);
   if (!seg) segmenters.set(lang, (seg = new Intl.Segmenter(lang, { granularity: 'word' })));
   const out: { start: number; end: number; norm: string }[] = [];
+  // Japanese runs are split by the pack's own words, as the reader splits them (core/text/tokenizer.ts).
+  const lex = lang === 'ja' ? japaneseLexicon : null;
+  const runs = lex ? [...text.matchAll(JAPANESE_RUN)].map((m) => [m.index, m.index + m[0].length] as const) : [];
+  for (const [start, end] of runs) {
+    for (const w of segmentJapanese(text.slice(start, end), lex!)) {
+      out.push({ start: start + w.start, end: start + w.end, norm: normalizeWord(text.slice(start + w.start, start + w.end), lang) });
+    }
+  }
   for (const s of seg.segment(text)) {
+    if (runs.some(([a, b]) => s.index >= a && s.index < b)) continue;
     if (s.isWordLike && hasLetter.test(s.segment)) out.push({ start: s.index, end: s.index + s.segment.length, norm: normalizeWord(s.segment, lang) });
   }
-  return out;
+  return runs.length ? out.sort((a, b) => a.start - b.start) : out;
 }
 
 function lexicalOf(entry: KaikkiEntry, lang: string, key: string, senses: KaikkiSense[]): LexicalData {
@@ -416,13 +610,16 @@ function lexicalOf(entry: KaikkiEntry, lang: string, key: string, senses: Kaikki
   const ranked = glosses.map((g, i) => ({ g, i, s: glossScore(key, entry.pos, g) * listedFirst(i) * rarity(g) })).sort((a, b) => b.s - a.s || a.i - b.i);
   const reading: [string, string[]] = [entry.pos, ranked.map((r) => r.g).slice(0, MAX_GLOSSES)];
   if (senses.every(marginal)) marginalReadings.add(reading);
+  const said = entryReading(entry, lang);
   return {
     head: sameWord ? display : '',
     paradigm,
     paradigmPos: paradigm.length ? entry.pos : '',
     ipa: entry.sounds?.find((s) => s.ipa)?.ipa ?? '',
+    reading: said,
     gender: entry.pos === 'noun' ? gender : '',
     senses: [reading],
+    senseReadings: [said],
     tableForms,
     examples: usableExamples(senses, lang),
     priority: entryPriority(entry, key, senses),
@@ -540,7 +737,9 @@ function cleanGlosses(glosses: string[], pos: string): string[] {
 function mergeLexical(into: LexicalData, add: LexicalData): void {
   const [first, second] = add.priority < into.priority ? [add, into] : [into, add];
   into.senses = [...first.senses, ...second.senses].slice(0, MAX_SENSES);
+  into.senseReadings = [...first.senseReadings, ...second.senseReadings].slice(0, MAX_SENSES);
   into.ipa = first.ipa || second.ipa;
+  into.reading = first.reading || second.reading;
   // Gender belongs to the first (main) sense only, e.g. "весь" (all) must not inherit "весь" (village, f).
   into.gender = into.senses[0][0] === 'noun' ? first.gender || second.gender : '';
   // A headword comes from the entry that speaks for the word ("sein", not "Sein").
@@ -559,6 +758,9 @@ async function build(source: PackSource): Promise<void> {
   const started = Date.now();
   loadEvidence(lang);
   const { forms: freq, counts: freqCount } = readFrequency(source);
+  spellings = await readSpellings(source);
+  traditionalOf.clear();
+  japaneseLexicon = null;
   const freqRank = new Map(freq.map((f, i) => [f, i + 1]));
 
   const lexical = new Map<string, LexicalData>();
@@ -633,9 +835,50 @@ async function build(source: PackSource): Promise<void> {
 
   // Pass 1: lexical data for frequent words, plus every form → lemma link.
   let count = 0;
+  const headwords = new Set<string>(); // Japanese: every spelling with an entry of its own
   for await (const entry of readEntries(source)) {
     absorb(entry, (key) => freqRank.has(key));
+    if (lang === 'ja') headwords.add(normalizeWord(entry.word, lang));
     if (++count % 200_000 === 0) console.log(`  ${lang}: ${count.toLocaleString()} entries…`);
+  }
+
+  // Japanese: a kanji spelling without an entry of its own is its kana entries (今日 → きょう,
+  // こんにち, in Wiktionary's order). Kana entries' own lists of kanji are looser, so they count
+  // only for kanji nothing else speaks for.
+  const kanaTargets = new Map<string, string[]>();
+  if (lang === 'ja') {
+    const n = (w: string) => normalizeWord(w, lang);
+    for (const [kanji, kanas] of spellings.kanaOfKanji) kanaTargets.set(n(kanji), kanas.map(n));
+    for (const [kanji, kanas] of spellings.listedKana) {
+      if (!kanaTargets.has(n(kanji)) && !headwords.has(n(kanji))) kanaTargets.set(n(kanji), kanas.map(n));
+    }
+    for (const [kanji, kanas] of kanaTargets) {
+      if (headwords.has(kanji)) continue;
+      for (const kana of kanas) link(formLinks, kanji, kana);
+    }
+  }
+  headwords.clear();
+
+  // Forms nothing links to: the language's own rules guess the word they come from (a Turkish
+  // case ending, a Japanese conjugation), and the dictionary decides. For a kana word, also the
+  // kanji entries that read so (たべました → たべる → 食べる).
+  const ruleCandidates = new Map<string, Array<[word: string, reading: string]>>();
+  for (const form of freq) {
+    if (lexical.has(form) || formLinks.has(form) || tableLinks.has(form)) continue;
+    const bases = baseCandidates(form, lang).map((b) => normalizeWord(b, lang));
+    // A Simplified character with no entry of its own is its Traditional one's (着 → 著).
+    if (lang === 'zh') bases.push([...form].map((c) => unihan.traditional.get(c) ?? c).join(''));
+    const candidates: Array<[string, string]> = bases.map((b) => [b, '']);
+    if (lang === 'ja') {
+      for (const b of [form, ...bases]) {
+        // A kana word's own redirect is enough (まだ → 未だ, though 未だ reads いまだ first); a
+        // conjugation's base must also read that way.
+        if (!hasKanji(b)) for (const k of spellings.kanjiOfKana.get(b) ?? []) candidates.push([normalizeWord(k, lang), b === form ? '' : toHiragana(b)]);
+        else for (const kana of kanaTargets.get(b) ?? []) candidates.push([kana, '']);
+      }
+    }
+    const unique = candidates.filter(([w], i) => w !== form && candidates.findIndex(([x]) => x === w) === i);
+    if (unique.length) ruleCandidates.set(form, unique);
   }
 
   // Pass 2 (only if needed): lemmas reached through frequent forms but not frequent themselves.
@@ -643,11 +886,29 @@ async function build(source: PackSource): Promise<void> {
   for (const form of freq) {
     for (const map of [formLinks, tableLinks]) for (const l of map.get(form) ?? []) if (!lexical.has(l)) needed.add(l);
   }
+  for (const list of ruleCandidates.values()) for (const [w] of list) if (!lexical.has(w)) needed.add(w);
   if (needed.size) {
     for await (const entry of readEntries(source)) {
       const key = normalizeWord(entry.word, lang);
       if (needed.has(key)) absorb(entry, (k) => needed.has(k));
     }
+  }
+  // Mandarin: a character with meanings of its own is not also an old variant's "alternative form"
+  // (了 is not 嫽, 这 not 遮). Cantonese likewise.
+  if (CHINESE.has(lang)) {
+    for (const key of [...formLinks.keys()]) {
+      if (!lexical.has(key)) continue;
+      formLinks.delete(key);
+      formDesc.delete(key);
+    }
+  }
+  let ruleLinked = 0;
+  for (const [form, list] of ruleCandidates) {
+    // A kanji entry found through its kana must read that way.
+    const hit = list.find(([w, reading]) => lexical.has(w) && (!reading || !lexical.get(w)!.reading || toHiragana(lexical.get(w)!.reading) === reading));
+    if (!hit) continue;
+    link(tableLinks, form, hit[0]);
+    ruleLinked++;
   }
 
   // Wiktionary sometimes lacks a common word's main reading (Swedish "i" has only the archaic "ye",
@@ -657,7 +918,11 @@ async function build(source: PackSource): Promise<void> {
     // Only where nothing supports the readings it has ("ma" is "today", whatever "this" lists it).
     if (data.senses.some(([pos, gl]) => gl.some((g) => glossScore(key, pos, g) > 0))) continue;
     const sure = (evidence.get(key) ?? []).filter((e) => ['prep', 'conj', 'pron', 'det', 'article'].includes(e.pos) && e.position === 0 && e.share >= 0.5 && e.rank <= 100);
-    for (const e of sure) if (!data.senses.some(([pos]) => sameishPos(pos, e.pos))) data.senses.unshift([e.pos, [e.en]]);
+    for (const e of sure) {
+      if (data.senses.some(([pos]) => sameishPos(pos, e.pos))) continue;
+      data.senses.unshift([e.pos, [e.en]]);
+      data.senseReadings.unshift(data.reading);
+    }
   }
 
   // The most common words are mostly function words: there, "у" is "at, by" before the noun "Wu" and
@@ -684,7 +949,44 @@ async function build(source: PackSource): Promise<void> {
     scored.sort((a, b) => article(b.s) - article(a.s) || b.score - a.score || a.rare - b.rare || (top ? weight(a.s[0]) - weight(b.s[0]) : 0) || a.i - b.i);
     if (scored.every((x, i) => x.i === i)) continue;
     data.senses = scored.map((x) => x.s);
+    const readings = data.senseReadings;
+    data.senseReadings = scored.map((x) => readings[x.i] ?? '');
+    // The word is read the way its first meaning is (听 tīng "to listen", not the rare yǐn).
+    data.reading = data.senseReadings[0] || data.reading;
     if (data.senses[0][0] !== 'noun') data.gender = '';
+  }
+
+  // Hand-checked meanings of the commonest words (fixes.ts) come first, under the part of speech of
+  // the meaning they match.
+  const fixes = GLOSS_FIXES[lang] ?? {};
+  for (const [form, gloss] of Object.entries(fixes)) {
+    let data = lexical.get(form);
+    // A common word the dictionary keeps only as a name (日本, Japan) gets an entry of its own.
+    const linked = [...(formLinks.get(form) ?? []), ...(tableLinks.get(form) ?? [])];
+    if (!data && freqRank.has(form) && !linked.some((l) => lexical.has(l))) {
+      const reading = READING_FIXES[lang]?.[form] ?? '';
+      data = { head: '', paradigm: [], paradigmPos: '', ipa: '', reading, gender: '', senses: [['name', [gloss]]], senseReadings: [reading], tableForms: new Set(), examples: [], priority: 0 };
+      lexical.set(form, data);
+      continue;
+    }
+    if (!data) continue;
+    const head = gloss.split(/[;,(]/)[0].trim().toLowerCase();
+    const at = data.senses.findIndex(([, gl]) => gl.some((g) => plainGloss(g).toLowerCase().startsWith(head)));
+    const pos = (at >= 0 ? data.senses[at] : data.senses[0])?.[0] ?? '';
+    const sense: PackSense = [pos, [gloss, ...(at >= 0 ? data.senses[at][1].filter((g) => plainGloss(g).toLowerCase() !== head) : [])].slice(0, MAX_GLOSSES)];
+    const reading = (at >= 0 ? data.senseReadings[at] : data.senseReadings[0]) || data.reading;
+    const rest = data.senses.map((s, i) => [s, data.senseReadings[i] ?? ''] as const).filter((_, i) => i !== at);
+    data.senses = [sense, ...rest.map(([s]) => s)].slice(0, MAX_SENSES);
+    data.senseReadings = [reading, ...rest.map(([, r]) => r)].slice(0, MAX_SENSES);
+    data.reading = reading;
+    if (pos !== 'noun') data.gender = '';
+  }
+  // …and readings: 的 as a particle is "de" (Wiktionary gives only dì), 中 on its own なか.
+  for (const [form, reading] of Object.entries(READING_FIXES[lang] ?? {})) {
+    const data = lexical.get(form);
+    if (!data) continue;
+    data.reading = reading;
+    data.senseReadings[0] = reading;
   }
 
   // Assemble forms and lemmas.
@@ -694,7 +996,8 @@ async function build(source: PackSource): Promise<void> {
     let i = lemmaIndex.get(key);
     if (i === undefined) {
       const d = lexical.get(key)!;
-      i = lemmas.push([key, d.head, d.ipa, d.gender, d.senses]) - 1;
+      // Mandarin and Japanese lemmas carry their reading where others carry IPA.
+      i = lemmas.push([key, d.head, d.reading || d.ipa, d.gender, d.senses]) - 1;
       lemmaIndex.set(key, i);
     }
     return i;
@@ -792,8 +1095,29 @@ async function build(source: PackSource): Promise<void> {
     // A form of a form reads like the form it comes from ("tus", the plural of tu, is "your" like tu).
     const through = lexical.has(form) ? undefined : [...(formLinks.get(form) ?? [])].find((l) => !lexical.has(l) && forms.get(l)?.[1][0] === indexOf(keys[0]));
     if (through) glosses = [forms.get(through)![2]];
-    forms.set(form, [form, keys.map(indexOf), shorten(glosses.join('; ').replace(/[\s;,]+$/, ''), SHORT_GLOSS), desc]);
+    if (fixes[form]) glosses = [fixes[form]];
+    const reading = readingFor(form, keys[0]);
+    const entry: PackForm = [form, keys.map(indexOf), shorten(glosses.join('; ').replace(/[\s;,]+$/, ''), SHORT_GLOSS), desc];
+    if (reading) entry.push(reading);
+    forms.set(form, entry);
   };
+  /**
+   * The reading over a form: Mandarin, its lemma's pinyin; Japanese, for a spelling with kanji, the
+   * kana entry it spells (今日 → きょう) or its dictionary form's reading carried over (食べました →
+   * たべました).
+   */
+  function readingFor(form: string, lemma: string): string {
+    if (CHINESE.has(lang)) return lexical.get(lemma)?.reading ?? '';
+    if (lang !== 'ja' || !hasKanji(form)) return '';
+    if (!hasKanji(lemma)) {
+      if (kanaTargets.get(form)?.includes(lemma)) return lemma;
+      // A conjugated kanji spelling of a kana entry: 食べました, through 食べる, of たべる.
+      for (const base of deinflect(form)) if (kanaTargets.get(base)?.includes(lemma)) return readingOf(form, base, lemma) ?? '';
+      return '';
+    }
+    const lemmaReading = lexical.get(lemma)?.reading;
+    return lemmaReading ? (readingOf(form, lemma, lemmaReading) ?? '') : '';
+  }
   // Lemma order: a word's own meaning first ("весь" → all, "дома" → at home), except nouns/adjectives that
   // are also forms of a very common verb ("είναι" → to be, not "being"). Inflection tables only count when
   // Wiktionary has no direct link (pronoun tables list every pronoun).
@@ -815,6 +1139,12 @@ async function build(source: PackSource): Promise<void> {
     const byRank = (a: string, b: string) => met(b) - met(a) || (freqRank.get(a) ?? Infinity) - (freqRank.get(b) ?? Infinity);
     // A lemma's frequency speaks for the form only through its main reading ("hittar" is "find" before the noun "hit").
     const linked = [...(formLinks.get(form) ?? [])].sort((a, b) => Number(!ofMainReading(form, a)) - Number(!ofMainReading(form, b)) || byRank(a, b));
+    // A Japanese kanji spelling's readings in Wiktionary's order (今日 is first きょう, then こんにち).
+    const targets = kanaTargets.get(form);
+    if (targets) {
+      const order = (l: string) => (targets.includes(l) ? targets.indexOf(l) : targets.length);
+      linked.sort((a, b) => order(a) - order(b));
+    }
     const first = linked.filter((l) => lexical.has(l));
     // A form of a form: "tus" is the plural of "tu", itself the short form of tuyo.
     const further = [...new Set(linked.flatMap((l) => [...(formLinks.get(l) ?? [])]))].filter((l) => l !== form && lexical.has(l) && !first.includes(l)).sort(byRank);
@@ -893,7 +1223,8 @@ async function build(source: PackSource): Promise<void> {
   // Added only where the variant isn't a word of its own.
   const variantOf = (form: string): string | null => {
     if (lang === 'ru') return form.includes('ё') ? form.replaceAll('ё', 'е') : null;
-    if (lang === 'el') return foldKey(form, lang);
+    // Arabic texts often leave out the hamza (ان for أن, الى for إلى) and write ى as ي.
+    if (lang === 'el' || lang === 'ar') return foldKey(form, lang);
     return null;
   };
   const variants = new Map<string, Set<number>>();
@@ -905,6 +1236,64 @@ async function build(source: PackSource): Promise<void> {
     for (const i of entry[1]) set.add(i);
   }
   for (const [v, idx] of variants) addForm(v, [...idx].map((i) => lemmas[i][0]), formDesc.get(v) ?? '');
+
+  // Mandarin: a word's Traditional spelling finds its Simplified entry (學校 → 学校).
+  if (lang === 'zh') {
+    for (const key of [...lemmaIndex.keys()]) {
+      for (const trad of traditionalOf.get(key) ?? []) addForm(normalizeWord(trad, lang), [key], `Traditional spelling of ${key}`);
+    }
+  }
+
+  // Mandarin: the browser's splitter joins some words no dictionary lists (我的, 不知道); they read as
+  // their parts, "我 + 的", like a contraction.
+  let compounds = 0;
+  if (CHINESE.has(lang)) {
+    const known = (w: string) => Boolean(lexical.get(w)?.senses[0]?.[1].length);
+    for (const form of freq) {
+      const chars = [...form];
+      if (forms.has(form) || chars.length < 2 || chars.length > 8) continue;
+      // Fewest parts, each a dictionary word.
+      const best: Array<string[] | null> = [[]];
+      for (let end = 1; end <= chars.length; end++) {
+        best[end] = null;
+        for (let len = Math.min(4, end); len >= 1; len--) {
+          const prev = best[end - len];
+          const part = chars.slice(end - len, end).join('');
+          if (prev && known(part) && (!best[end] || prev.length + 1 < best[end]!.length)) best[end] = [...prev, part];
+        }
+      }
+      const parts = best[chars.length];
+      if (!parts || parts.length < 2) continue;
+      const gloss = parts.map((p) => glossOf(p).split(/[;,]/)[0].trim()).join(' + ');
+      const readings = parts.map((p) => lexical.get(p)?.reading ?? '');
+      const entry: PackForm = [form, parts.map(indexOf), shorten(gloss, SHORT_GLOSS), parts.join(' + ')];
+      // Pinyin joins a word's syllables; Jyutping keeps them apart.
+      if (readings.every(Boolean)) entry.push(readings.join(lang === 'yue' ? ' ' : ''));
+      forms.set(form, entry);
+      compounds++;
+    }
+    // Traditional spellings met in Simplified texts (這是) read as the Simplified word.
+    for (const form of freq) {
+      if (forms.has(form)) continue;
+      const simp = [...form].map((c) => unihan.simplified.get(c) ?? c).join('');
+      const same = simp !== form ? forms.get(simp) : undefined;
+      if (!same) continue;
+      const entry: PackForm = [form, same[1], same[2], `Traditional spelling of ${simp}`];
+      if (same[4]) entry.push(same[4]);
+      forms.set(form, entry);
+    }
+  }
+
+  // Japanese: from here on, example sentences and themed words are split by the pack's own words.
+  if (lang === 'ja') {
+    japaneseLexicon = {
+      has: (w) => forms.has(w) || lexical.has(w),
+      cost: (w) => {
+        const rank = freqRank.get(w);
+        return rank ? Math.log(rank + 20) : 11.5;
+      },
+    };
+  }
 
   // Lemma frequency: every frequent form counts towards its main lemma (было, были → быть).
   const lemmaCount = new Map<number, number>();
@@ -988,7 +1377,13 @@ async function build(source: PackSource): Promise<void> {
     gloss: 'en',
     version: PACK_VERSION,
     builtAt: new Date().toISOString(),
-    source: 'Wiktionary via kaikki.org (CC BY-SA 4.0) · FrequencyWords, OpenSubtitles 2018 (CC BY-SA 4.0)',
+    source: `Wiktionary via kaikki.org (CC BY-SA 4.0) · ${
+      source.leipzig
+        ? `Leipzig Corpora Collection, Wikipedia (CC BY 4.0)${source.corpora ? ` · OPUS ${source.corpora.map((c) => c.split('/')[0]).join(', ')}` : ''}`
+        : source.opus
+          ? 'OPUS OpenSubtitles 2018, counted for Lingua'
+          : 'FrequencyWords, OpenSubtitles 2018 (CC BY-SA 4.0)'
+    }`,
     freq: freq.slice(0, FREQ_KEEP),
     lemmas,
     forms: [...forms.values()],
@@ -1010,6 +1405,8 @@ async function build(source: PackSource): Promise<void> {
       `${lemmaFreq.length.toLocaleString()} ranked lemmas, ${examples.length.toLocaleString()} examples, ` +
       `${paradigms.length.toLocaleString()} tables (${tagSets.length} tag sets), ` +
       `${Object.values(themes ?? {}).reduce((n, list) => n + list.length, 0)} themed words · ` +
+      `${ruleLinked.toLocaleString()} forms linked by rule · ` +
+      (compounds ? `${compounds.toLocaleString()} read as their parts · ` : '') +
       `${((Date.now() - started) / 1000).toFixed(0)} s` +
       (malformed ? ` · ${malformed} malformed lines skipped` : ''),
   );

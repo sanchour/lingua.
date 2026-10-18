@@ -25,6 +25,16 @@ export const SUGGESTED_SEARCHES: Record<string, string[]> = {
   it: ['learn italian podcast', 'podcast italiano', 'italiano lento'],
   sv: ['learn swedish', 'klartext', 'swedish podcast'],
   hu: ['learn hungarian', 'hungarian podcast', 'magyar podcast'],
+  nl: ['learn dutch podcast', 'nederlands leren', 'dutch slow'],
+  nb: ['learn norwegian', 'norsk podcast', 'norwegian podcast'],
+  tr: ['learn turkish podcast', 'türkçe podcast', 'turkish slow'],
+  id: ['learn indonesian', 'bahasa indonesia podcast', 'indonesian podcast'],
+  sw: ['learn swahili', 'swahili podcast', 'kiswahili'],
+  la: ['latin podcast', 'latinum', 'lingua latina'],
+  ar: ['learn arabic podcast', 'arabic podcast', 'بودكاست عربي'],
+  zh: ['learn chinese podcast', 'mandarin podcast', 'slow chinese'],
+  ja: ['learn japanese podcast', 'nihongo con teppei', 'japanese podcast'],
+  ko: ['learn korean podcast', 'talk to me in korean', 'korean podcast'],
 };
 
 /** Searches Apple's podcast directory (public, no key; returns each show's RSS address). */

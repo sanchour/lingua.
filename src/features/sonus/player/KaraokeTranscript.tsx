@@ -5,7 +5,7 @@ import { LocateFixed } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { cueIndexAt, formatClock, wordStarts } from '@/core/audio/cues';
 import type { Chapter, Cue, Media, Text, WordState } from '@/data/types';
-import { getReaderFont, readerFontStack } from '@/design/fonts';
+import { getReaderFont, readerFontStack, useScriptFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { motionIsReduced } from '@/design/motionPref';
@@ -64,6 +64,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
   const { settings } = useApp();
   const { pointer, layout } = useLayout();
   const lang = media.lang;
+  useScriptFont(lang);
   const reader = settings.reader;
 
   // ── Model: one paragraph per cue, words with their states and glosses ──
@@ -243,7 +244,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
 
   const font = getReaderFont(reader.font);
   const style = {
-    '--reader-font': readerFontStack(font),
+    '--reader-font': readerFontStack(font, lang),
     '--reader-size': `${Math.round(reader.sizePx * 0.95)}px`,
     '--reader-lh': String(Math.max(1.5, reader.lineHeight - 0.05)),
   } as CSSProperties;

@@ -2,6 +2,7 @@
 // hover/tap is a Map lookup (≈1 ms). Only words missing from the offline dictionary go online.
 import type { SenseOption } from '@/core/lang/context';
 import { baseCandidates, compoundHeads } from '@/core/lang/inflect';
+import { readingOf } from '@/core/lang/japanese';
 import type { DictForm } from '@/data/types';
 import { GLOSS_LANG } from '@/core/lang/languages';
 import { packId } from '@/core/packs/format';
@@ -17,7 +18,12 @@ export interface GlossInfo {
   source: 'user' | 'dict' | 'online' | 'context';
   /** Not listed as written: the dictionary form it was read as ("könyvtárban" → könyvtár). */
   via?: string;
+  /** Mandarin pinyin or Japanese kana for the word as written. */
+  reading?: string;
 }
+
+/** Languages whose packs index a looser spelling too: Greek without accents, Arabic with a bare alef. */
+const FOLDED = new Set(['el', 'ar']);
 
 const onlineKey = (lang: string, norm: string) => `online:${lang}>${GLOSS_LANG}:${norm}`;
 
@@ -63,20 +69,34 @@ export async function lookupGlosses(lang: string, norms: string[]): Promise<Map<
 
   const forms = await db.dictForms.bulkGet(norms.map((n) => [pack, n] as [string, string]));
   let misses: string[] = [];
-  forms.forEach((f, i) => (f ? out.set(norms[i], { text: f.g, lemma: f.lemmas[0], source: 'dict' }) : misses.push(norms[i])));
+  const fromForm = (f: DictForm): GlossInfo => (f.r ? { text: f.g, lemma: f.lemmas[0], source: 'dict', reading: f.r } : { text: f.g, lemma: f.lemmas[0], source: 'dict' });
+  forms.forEach((f, i) => (f ? out.set(norms[i], fromForm(f)) : misses.push(norms[i])));
 
-  // Greek written without accents (ALL CAPS, subtitles): the pack indexes accent-free spellings.
-  if (misses.length && lang === 'el') {
+  // Greek written without accents (ALL CAPS, subtitles), Arabic with a bare alef: the pack indexes those spellings.
+  if (misses.length && FOLDED.has(lang)) {
     const folded = await db.dictForms.bulkGet(misses.map((n) => [pack, foldKey(n, lang)] as [string, string]));
     const still: string[] = [];
-    folded.forEach((f, i) => (f ? out.set(misses[i], { text: f.g, lemma: f.lemmas[0], source: 'dict' }) : still.push(misses[i])));
+    folded.forEach((f, i) => (f ? out.set(misses[i], fromForm(f)) : still.push(misses[i])));
     misses = still;
   }
 
   // Forms the pack doesn't list: read as a likely base form.
   if (misses.length) {
     const found = await findBaseForms(lang, misses);
-    for (const [norm, b] of found) out.set(norm, { text: baseGloss(b), lemma: b.form.lemmas[0], source: 'dict', via: b.via });
+    for (const [norm, b] of found) {
+      const info: GlossInfo = { text: baseGloss(b), lemma: b.form.lemmas[0], source: 'dict', via: b.via };
+      // A Japanese conjugation reads like its dictionary form: 食べました (たべました) from 食べる (たべる).
+      const reading = lang === 'ja' && b.form.r && !b.part ? readingOf(norm, b.via, b.form.r) : undefined;
+      if (reading) info.reading = reading;
+      out.set(norm, info);
+    }
+    misses = misses.filter((n) => !found.has(n));
+  }
+
+  // Mandarin words the pack doesn't list (听不懂, 第一次): read as the listed words they're made of.
+  if (misses.length && lang === 'zh') {
+    const found = await composeChinese(pack, misses);
+    for (const [norm, info] of found) out.set(norm, info);
     misses = misses.filter((n) => !found.has(n));
   }
 
@@ -87,7 +107,42 @@ export async function lookupGlosses(lang: string, norms: string[]): Promise<Map<
 
   // The learner's own translations win.
   const words = await db.words.bulkGet(norms.map((n) => wordId(lang, n)));
-  words.forEach((w, i) => w?.gloss && out.set(norms[i], { text: w.gloss, lemma: out.get(norms[i])?.lemma, source: 'user' }));
+  words.forEach((w, i) => {
+    if (!w?.gloss) return;
+    const before = out.get(norms[i]);
+    out.set(norms[i], before?.reading ? { text: w.gloss, lemma: before.lemma, source: 'user', reading: before.reading } : { text: w.gloss, lemma: before?.lemma, source: 'user' });
+  });
+  return out;
+}
+
+/**
+ * Mandarin words missing from the pack, cut into the longest listed words from the left: 听不懂 is
+ * 听 + 不 + 懂 ("to listen + not + to understand", tīng bù dǒng).
+ */
+async function composeChinese(pack: string, norms: string[]): Promise<Map<string, GlossInfo>> {
+  const out = new Map<string, GlossInfo>();
+  const pieces = new Set<string>();
+  for (const n of norms) for (let i = 0; i < n.length; i++) for (let j = i + 1; j <= Math.min(n.length, i + 4); j++) if (j - i < n.length) pieces.add(n.slice(i, j));
+  if (!pieces.size) return out;
+  const keys = [...pieces];
+  const rows = await db.dictForms.bulkGet(keys.map((k) => [pack, k] as [string, string]));
+  const listed = new Map(keys.map((k, i) => [k, rows[i]]));
+  for (const n of norms) {
+    const parts: DictForm[] = [];
+    for (let i = 0; i < n.length; ) {
+      let hit: DictForm | undefined;
+      for (let j = Math.min(n.length, i + 4); j > i && !hit; j--) hit = j - i < n.length ? listed.get(n.slice(i, j)) : undefined;
+      if (!hit) break;
+      parts.push(hit);
+      i += hit.form.length;
+    }
+    if (parts.length < 2 || parts.reduce((len, p) => len + p.form.length, 0) !== n.length) continue;
+    const first = (g: string) => g.split(/[;,]/)[0].trim();
+    const reading = parts.every((p) => p.r) ? parts.map((p) => p.r).join(' ') : undefined;
+    const info: GlossInfo = { text: parts.map((p) => first(p.g)).join(' + '), lemma: parts[0].lemmas[0], source: 'dict', via: parts.map((p) => p.form).join(' + ') };
+    if (reading) info.reading = reading;
+    out.set(n, info);
+  }
   return out;
 }
 
@@ -116,8 +171,15 @@ export async function lookupSenses(lang: string, norms: string[]): Promise<Map<s
 
 const inflight = new Map<string, Promise<string | null>>();
 
+/** The code online translators know a language by (Mandarin as zh-CN, Norwegian Bokmål as no). */
+export function onlineCode(lang: string, service: 'mymemory' | 'google'): string {
+  if (lang === 'nb') return 'no';
+  if (lang === 'zh') return service === 'mymemory' ? 'zh-CN' : 'zh';
+  return lang;
+}
+
 async function myMemory(lang: string, text: string): Promise<string | null> {
-  const params = new URLSearchParams({ q: text, langpair: `${lang}|${GLOSS_LANG}` });
+  const params = new URLSearchParams({ q: text, langpair: `${onlineCode(lang, 'mymemory')}|${GLOSS_LANG}` });
   const res = await fetch(`https://api.mymemory.translated.net/get?${params}`, { signal: AbortSignal.timeout(5000) });
   if (!res.ok) return null;
   const data = (await res.json()) as { responseData?: { translatedText?: string }; responseStatus?: number };
@@ -127,7 +189,7 @@ async function myMemory(lang: string, text: string): Promise<string | null> {
 }
 
 async function lingva(host: string, lang: string, text: string): Promise<string | null> {
-  const res = await fetch(`${host.replace(/\/$/, '')}/api/v1/${lang}/${GLOSS_LANG}/${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(5000) });
+  const res = await fetch(`${host.replace(/\/$/, '')}/api/v1/${onlineCode(lang, 'google')}/${GLOSS_LANG}/${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(5000) });
   if (!res.ok) return null;
   const data = (await res.json()) as { translation?: string };
   return data.translation?.trim() || null;

@@ -19,6 +19,15 @@ const CHARTS: Record<string, Array<[country: string, playlist: number]>> = {
   sv: [['Sweden', 1313620305]],
   hu: [['Hungary', 1362506695]],
   en: [['the USA', 1313621735], ['the UK', 1111142221]],
+  nl: [['the Netherlands', 1266971851], ['Belgium', 1266968331]],
+  nb: [['Norway', 1313619885]],
+  tr: [['Türkiye', 1116189071]],
+  id: [['Indonesia', 1116188761]],
+  sw: [['Kenya', 1362509215]],
+  ar: [['Egypt', 1362501615], ['Saudi Arabia', 1362521285], ['Morocco', 1362512715], ['Lebanon', 1362511155], ['Jordan', 1362508765], ['the UAE', 1362491345], ['Algeria', 1362501015]],
+  zh: [['Singapore', 1313620765]],
+  ja: [['Japan', 1362508955]],
+  ko: [['South Korea', 1362510315]],
 };
 
 const PER_LANGUAGE = 30;
@@ -72,6 +81,15 @@ const APPLE: Record<string, Array<[country: string, store: string]>> = {
   sv: [['Sweden', 'se']],
   hu: [['Hungary', 'hu']],
   en: [['the USA', 'us'], ['the UK', 'gb']],
+  nl: [['the Netherlands', 'nl'], ['Belgium', 'be']],
+  nb: [['Norway', 'no']],
+  tr: [['Türkiye', 'tr']],
+  id: [['Indonesia', 'id']],
+  sw: [['Kenya', 'ke'], ['Tanzania', 'tz']],
+  ar: [['Egypt', 'eg'], ['Saudi Arabia', 'sa'], ['the UAE', 'ae'], ['Morocco', 'ma'], ['Jordan', 'jo'], ['Lebanon', 'lb']],
+  zh: [['Taiwan', 'tw'], ['China', 'cn'], ['Singapore', 'sg']],
+  ja: [['Japan', 'jp']],
+  ko: [['South Korea', 'kr']],
 };
 
 interface Candidate {

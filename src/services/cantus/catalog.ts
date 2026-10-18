@@ -15,7 +15,7 @@ export interface SongHit {
 }
 
 /** Apple store per language: its songs come first in that store's results. */
-export const STORE: Record<string, string> = { en: 'us', es: 'es', pt: 'br', fr: 'fr', de: 'de', it: 'it', ru: 'ru', el: 'gr', sv: 'se', hu: 'hu' };
+export const STORE: Record<string, string> = { en: 'us', es: 'es', pt: 'br', fr: 'fr', de: 'de', it: 'it', ru: 'ru', el: 'gr', sv: 'se', hu: 'hu', nl: 'nl', nb: 'no', tr: 'tr', id: 'id', sw: 'ke', la: 'it', ar: 'eg', zh: 'tw', ja: 'jp', ko: 'kr' };
 
 /** Apple's artwork URLs carry their size; ask for a large square. */
 export const bigArtwork = (url: string | undefined, px = 600) => url?.replace(/\/\d+x\d+(bb|cc)?\.(jpg|png|webp)$/, `/${px}x${px}bb.jpg`);

@@ -5,12 +5,12 @@ export const PACK_FORMAT = 1;
 /** Bump when packs are rebuilt with better data; installed packs older than this are refreshed. */
 export const PACK_VERSION = 7;
 
-/** [lemma key, display headword or "", ipa or "", gender or "", senses] */
+/** [lemma key, display headword or "", ipa (Mandarin and Japanese: the reading) or "", gender or "", senses] */
 export type PackLemma = [string, string, string, string, PackSense[]];
 /** [part of speech, glosses] */
 export type PackSense = [string, string[]];
-/** [form key, lemma indexes, short gloss, form description or ""] */
-export type PackForm = [string, number[], string, string];
+/** [form key, lemma indexes, short gloss, form description or "", reading (Mandarin pinyin, Japanese kana; since 2.0)] */
+export type PackForm = [string, number[], string, string, string?];
 /** [lemma index, sentence, English translation or "", cloze start, cloze end] — the span is the lemma's form in the sentence. */
 export type PackExample = [number, string, string, number, number];
 /** A themed starter word: [term as written, meaning, part of speech, gender (m/f/n/c) or ""] */

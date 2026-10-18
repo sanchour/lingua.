@@ -30,6 +30,8 @@ export interface LanguageProfile extends Synced {
   seededKnownTopN: number;
   /** Set once the seeding has been applied (it needs the language pack). */
   seedAppliedAt?: number;
+  /** The flag shown for the language (one of its flags in core/lang/languages); its usual one when unset. */
+  flag?: string;
 }
 
 export interface SettingRow {
@@ -157,6 +159,8 @@ export interface DictForm {
   g: string;
   /** Grammatical description, e.g. "plural past of чита́ть". */
   d?: string;
+  /** How it reads: pinyin for Mandarin (xuéxí), kana for Japanese (たべました). */
+  r?: string;
 }
 
 export interface DictEntry {
@@ -164,6 +168,7 @@ export interface DictEntry {
   lemma: string;
   /** Headword as written in dictionaries (stress marks, German capitals), when it differs. */
   head?: string;
+  /** Pronunciation; for Mandarin and Japanese, the reading (pinyin, kana). */
   ipa?: string;
   gender?: string;
   senses: { pos: string; glosses: string[]; tags?: string[] }[];

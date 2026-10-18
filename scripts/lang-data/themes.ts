@@ -137,6 +137,11 @@ interface Entry {
 const AVOID = new Set(['obsolete', 'archaic', 'dated', 'rare', 'poetic', 'dialectal', 'slang', 'vulgar', 'derogatory', 'offensive', 'literary', 'regional', 'Ancient', 'Katharevousa', 'historical', 'humorous', 'childish', 'euphemistic', 'figuratively']);
 const AVOID_NOTE = /\((?:disused|archaic|obsolete|dated|rare|slang|dialectal)\)/i;
 const TARGETS = PACK_SOURCES.map((s) => s.code).filter((c) => c !== 'en');
+/** Translation-table codes that aren't the pack's own: Mandarin is "cmn", Norwegian Bokmål "nb" or "no". */
+const TABLE_CODES: Record<string, string[]> = { zh: ['cmn', 'zh'], nb: ['nb', 'no'] };
+const inLanguage = (t: Translation, lang: string) => (TABLE_CODES[lang] ?? [lang]).includes(t.lang_code ?? t.code ?? '');
+/** Mandarin tables give each word in Traditional and in Simplified characters; packs use Simplified. */
+const TRADITIONAL = /Traditional/;
 const MAX_CANDIDATES = 4;
 
 const concepts: Concept[] = Object.entries(CONCEPTS).flatMap(([theme, list]) =>
@@ -241,7 +246,8 @@ for (const concept of concepts) {
     const gender = (tags: string[] = []) => (pos === 'noun' ? (tags.find((t) => ['masculine', 'feminine', 'neuter', 'common'].includes(t))?.[0] ?? '') : '');
     const candidates: Array<[string, string, number]> = translations
       .map((t, i) => ({ t, i, word: clean(t.word ?? ''), regional: isRegional(lang, t.tags) ? 1 : 0 }))
-      .filter(({ t, word }) => (t.lang_code ?? t.code) === lang && word && /\p{L}/u.test(word) && !AVOID_NOTE.test(t.word ?? '') && !t.tags?.some((tag) => AVOID.has(tag)))
+      .filter(({ t }) => lang !== 'zh' || !t.tags?.some((tag) => TRADITIONAL.test(tag)))
+      .filter(({ t, word }) => inLanguage(t, lang) && word && /\p{L}/u.test(word) && !AVOID_NOTE.test(t.word ?? '') && !t.tags?.some((tag) => AVOID.has(tag)))
       .sort((a, b) => a.regional - b.regional || a.i - b.i)
       .filter((c, i, list) => list.findIndex((o) => o.word === c.word) === i)
       .slice(0, MAX_CANDIDATES)

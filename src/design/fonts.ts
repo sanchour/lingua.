@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { getLanguage } from '@/core/lang/languages';
 import type { Script } from '@/core/lang/languages';
 
 export type ReaderFontId = 'literata' | 'lora' | 'newsreader' | 'merriweather' | 'atkinson' | 'comfortaa';
@@ -21,6 +23,25 @@ export const READER_FONTS: ReaderFont[] = [
   { id: 'comfortaa', label: 'Comfortaa', family: "'Comfortaa Variable'", kind: 'sans', scripts: ['Latn', 'Cyrl', 'Grek'], blurb: 'Round, soft and friendly' },
 ];
 
+/**
+ * Faces for the scripts no reading font has: serif ones are bundled (and loaded only when the script
+ * is used, see useScriptFont); sans text uses the system's own, which every phone has.
+ */
+const SCRIPT_SERIF: Partial<Record<Script, string>> = {
+  Arab: "'Noto Naskh Arabic Variable'",
+  Hans: "'Noto Serif SC Variable'",
+  Jpan: "'Noto Serif JP Variable'",
+  Kore: "'Noto Serif KR Variable'",
+};
+const SCRIPT_SANS: Partial<Record<Script, string>> = {
+  Arab: "'SF Arabic', 'Segoe UI', 'Noto Sans Arabic', Tahoma",
+  Hans: "'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans CJK SC'",
+  Jpan: "'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, 'Noto Sans JP', 'Noto Sans CJK JP'",
+  Kore: "'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', 'Noto Sans CJK KR'",
+};
+/** Han characters look different in Japanese and Chinese: the language on screen goes first. */
+const SCRIPT_ORDER: Script[] = ['Hans', 'Jpan', 'Kore', 'Arab'];
+
 const SERIF_FALLBACK = "'Noto Serif Variable', Georgia, serif";
 const SANS_FALLBACK = "'Inter Variable', system-ui, sans-serif";
 
@@ -28,13 +49,41 @@ export function getReaderFont(id: ReaderFontId): ReaderFont {
   return READER_FONTS.find((f) => f.id === id) ?? READER_FONTS[0];
 }
 
-/** CSS font-family for reader text. Missing scripts fall through to a covering font. */
-export function readerFontStack(font: ReaderFont): string {
-  return `${font.family}, ${font.kind === 'serif' ? SERIF_FALLBACK : SANS_FALLBACK}`;
+/** CSS font-family for reader text in `lang`. Missing scripts fall through to a covering font. */
+export function readerFontStack(font: ReaderFont, lang?: string): string {
+  const own = lang ? getLanguage(lang)?.script : undefined;
+  const faces = font.kind === 'serif' ? SCRIPT_SERIF : SCRIPT_SANS;
+  const order = own && faces[own] ? [own, ...SCRIPT_ORDER.filter((s) => s !== own)] : SCRIPT_ORDER;
+  const scripts = order.map((s) => faces[s]).filter(Boolean);
+  return `${font.family}, ${font.kind === 'serif' ? `${scripts.join(', ')}, ${SERIF_FALLBACK}` : `${SANS_FALLBACK.replace(', system-ui', `, ${scripts.join(', ')}, system-ui`)}`}`;
 }
 
 /** Name of the font that will actually draw `script`, when the chosen font lacks it. */
 export function fallbackFamily(font: ReaderFont, script: Script): string | null {
   if (font.scripts.includes(script)) return null;
+  if (script in SCRIPT_SERIF) return font.kind === 'serif' ? SCRIPT_SERIF[script]!.replace(/'| Variable/g, '') : 'your device’s own font';
   return font.kind === 'serif' ? 'Noto Serif' : 'Inter';
+}
+
+// Each face's CSS comes as a chunk of its own; its font files load only for characters on screen.
+const LOADERS: Partial<Record<Script, () => Promise<unknown>>> = {
+  Arab: () => import('@fontsource-variable/noto-naskh-arabic/wght.css'),
+  Hans: () => import('@fontsource-variable/noto-serif-sc/wght.css'),
+  Jpan: () => import('@fontsource-variable/noto-serif-jp/wght.css'),
+  Kore: () => import('@fontsource-variable/noto-serif-kr/wght.css'),
+};
+const loaded = new Set<Script>();
+
+/** Loads the reading face for a language's script, the first time it's needed. */
+export function loadScriptFont(lang: string): void {
+  const script = getLanguage(lang)?.script;
+  if (!script || loaded.has(script) || !LOADERS[script]) return;
+  loaded.add(script);
+  void LOADERS[script]!().catch(() => loaded.delete(script));
+}
+
+export function useScriptFont(lang: string | undefined): void {
+  useEffect(() => {
+    if (lang) loadScriptFont(lang);
+  }, [lang]);
 }

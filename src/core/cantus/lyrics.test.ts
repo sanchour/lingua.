@@ -40,6 +40,16 @@ describe('detectLanguage', () => {
     ['Я люблю тебя, и ты это знаешь, мы будем вместе', 'ru'],
     ['Σ’ αγαπώ, και θα σ’ αγαπώ για πάντα, όσο ζω', 'el'],
     ['I just called to say I love you, and I mean it from the bottom of my heart', 'en'],
+    ['Ik weet niet wat ik moet doen, maar ik wil bij jou zijn voor altijd', 'nl'],
+    ['Jeg vet ikke hva jeg skal si, men jeg vil bare være her med deg', 'nb'],
+    ['Seni çok seviyorum ama sen beni hiç anlamıyorsun, neden böyle', 'tr'],
+    ['Aku tak bisa hidup tanpa kamu, karena cinta ini hanya untukmu', 'id'],
+    ['Nakupenda sana mpenzi wangu, wewe ni moyo wangu kweli', 'sw'],
+    ['Pater noster, qui es in caelis, sanctificetur nomen tuum, adveniat regnum tuum', 'la'],
+    ['أحبك من كل قلبي، وأنت كل حياتي يا حبيبي', 'ar'],
+    ['我爱你，你是我心中最美的风景，永远不会改变', 'zh'],
+    ['君のことが好きだよ、ずっとそばにいてほしい', 'ja'],
+    ['사랑해요, 당신이 없으면 나는 살 수 없어요', 'ko'],
   ];
   it.each(cases)('%s', (text, lang) => {
     expect(detectLanguage(text)?.lang).toBe(lang);

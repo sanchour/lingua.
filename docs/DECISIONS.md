@@ -447,3 +447,29 @@ Short records of choices that are not obvious from the code. Newest last.
 - **AI conversation stays outside by default.** Voice chats happen in the AI apps the learner
   already has; Lingua prepares the prompt (level, due words, current grammar) and opens the app,
   sending nothing itself. A text chat inside Lingua only with the learner's own key.
+
+## 2026-10-18 — Lingua 3.0-1: twenty languages, every one with its dictionary
+
+- **Unihan for Simplified Chinese, not Wiktionary's redirects.** Wiktionary points old variants at
+  their modern character the same way it points Simplified at Traditional (㦱 → 我, 勺 → 的), and
+  one page (还) points at the wrong characters. Unicode's own table is exact for single characters;
+  Wiktionary's pairing is kept for words (學校 → 学校), where it is reliable.
+- **A word's reading follows its first meaning.** Characters with two readings (还 hái/huán, 听
+  tīng/yǐn) took the reading of whichever entry came first in the file; now each meaning keeps its
+  entry's reading and the word is read as its usual meaning is. 的 as a particle is "de" by hand:
+  Wiktionary gives only dì and dí.
+- **What no dictionary lists reads as its parts.** The browser's word splitter joins 我的, 我是,
+  不知道; rather than leave those blank, the tap reads "I + of", like a contraction.
+- **Endings are not words.** Japanese counts from a morpheme list made い, る, た and the stem 言
+  cheaper than whole words; the splitter now charges bare endings extra wherever a whole word
+  fits. The same splitter runs in the reader, so it cuts sentences the way the counts did.
+- **Everyday text for Latin and Swahili.** Their only word lists are Wikipedia's, where bot-made
+  stubs ("…is a language with N speakers, census…") rank high. Blending in OPUS text (Tatoeba
+  and the Vulgate; ParaCrawl and Global Voices) per million words keeps Wikipedia's breadth
+  without its stubs.
+- **A short list by hand.** After the rules, each new language's 200 commonest words were read
+  through; the few still wrong (particles, pronoun forms, words whose first dictionary meaning is
+  archaic) are set in `scripts/lang-data/fixes.ts`. Tests check them, as they do for the first ten.
+- **The first ten packs stay as they are.** The builder's new rules would change them a little,
+  but their checks pass and a new pack version would make every installed app download all of
+  them again; they are rebuilt when there's a reason to.

@@ -267,8 +267,32 @@ Everything still open from "Lingua updates.txt", as its own version, built in a 
 the handover at the end). Same way of working: plan each prompt here first, build without
 stopping, then commit, push and check the live site. Version 3.0 in the app when it's done.
 
-### 3.0-1 · Twenty languages with their flags, every one well supported
-- [ ] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and
+### 3.0-1 · Twenty languages with their flags, every one well supported ✅
+
+**Plan for finishing it (2026-10-18, third computer):** merge `main` into the branch; wire the
+rest of `build.ts` as the handover lists; fix the Japanese splitter's stray endings before
+counting; count Japanese and Mandarin again; build the ten packs and review each one's commonest
+words, fixing what reads wrong; tests for everyday words and readings; charts for all twenty; look
+at the new languages in the browser; docs; merge into `main`, push, check the live site.
+
+**What it took, beyond the handover's list:**
+- Japanese: the morpheme-based seed list (い, る, 言 ranked above いる, 言う) made the counter cut
+  whole words apart (い|る, で|す, 言|って). Bare endings now cost extra in `segmentJapanese` (the
+  reader uses it too), the first counting pass treats words the seed list lacks as fairly common,
+  and the spoken negative ん (知らん, わからん) deinflects.
+- Mandarin: Wiktionary's redirects mix old variants with Simplified spellings (㦱 → 我, 勺 → 的),
+  so single characters now go by Unicode's Unihan table (`Unihan_Variants.txt`, fetched with
+  the rest); readings follow the meaning that comes first (还 hái "still", 听 tīng); words the
+  browser joins that no dictionary lists (我的, 不知道) read as their parts ("I + of"); the
+  translation evidence for "現在／现在" counts for both spellings. Top 1k glossed: 72% → 99.7%.
+- Latin and Swahili: Wikipedia's word lists ranked bot-written stubs high ("census", "speakers");
+  their ranks now blend in everyday text from OPUS (Tatoeba and the Vulgate for Latin, ParaCrawl
+  and Global Voices for Swahili).
+- `scripts/lang-data/fixes.ts`: the commonest words whose dictionary meaning still read wrong
+  (Dutch "niet" as "staple", Turkish "şey" as "well", Swahili "ya" as "the"), set by hand.
+- Arabic forms also under their hamza-less spelling (ان, الى), like Greek without accents.
+
+- [x] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and
       Indonesian (Bahasa).
   - Packs from Wiktionary (kaikki) and frequency lists (FrequencyWords; Latin and Swahili from
     Leipzig corpus lists; Japanese and Mandarin counted from OpenSubtitles text split the way the
@@ -278,15 +302,15 @@ stopping, then commit, push and check the live site. Version 3.0 in the app when
   - Right-to-left reading for Arabic, everywhere text is shown.
   - Fonts loaded only for the scripts in use (Arabic, CJK, Hangul).
   - Starter decks, Diarium prompts and level hours for each.
-- [ ] **Flags as icons** for all twenty, drawn in the app's soft style (rounded, slightly muted).
+- [x] **Flags as icons** for all twenty, drawn in the app's soft style (rounded, slightly muted).
       Each language has a default flag and can switch to another, such as English UK/US,
       Portuguese PT/BR, Spanish ES/MX, Arabic by country, Mandarin CN/TW, Swahili TZ/KE. Latin gets
       a laurel emblem.
-- [ ] **Every language checked, the ten existing ones too:** a test list of everyday words per
+- [x] **Every language checked, the ten existing ones too:** a test list of everyday words per
       language like 2.0-2's (`glosses.test.ts`), the 200 commonest words reviewed, the lemma
       fallback rules, news sources, starter decks and Diarium prompts.
-- [ ] Music for the new languages: Apple stores, artists to learn with, styles and charts.
-- [ ] **Complete support for each new language, nothing left out** (the user asked for this
+- [x] Music for the new languages: Apple stores, artists to learn with, styles and charts.
+- [x] **Complete support for each new language, nothing left out** (the user asked for this
       explicitly): dictionary pack with readings, starter and Top-N decks, Diarium prompts,
       welcome text, news, music (store, artists, styles, charts), **podcasts** (suggested
       searches and learner podcasts), speech recognition locale, subtitle language codes,
@@ -502,7 +526,14 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 
 ### Handover for the Lingua 3.0 session
 
-**Where 3.0-1 stands (2026-10-18, end of the second PC's session):** everything is on the branch
+**3.0-1 is done and merged into `main` (2026-10-18, third computer).** Next is 3.0-1b. Known gaps
+to pick up there: Japanese place names the dictionary keeps only as names (日本) are left out of
+the counting lexicon, so the reader splits them (日|本); count with names included and rebuild
+`ja`. The first ten packs were not rebuilt with this session's builder (see DECISIONS).
+
+The rest of this handover is the state before that session, kept for its notes.
+
+**Where 3.0-1 stood (2026-10-18, end of the second PC's session):** everything is on the branch
 `lingua-3.0/languages-wip` (pushed). Typecheck and the 191 tests pass there; no new pack is built yet.
 - Done on the branch: flags for all twenty (`src/design/flags.tsx`, a flag picker in Ordo ›
   Languages, a flag sheet in the Device lab); readings over words in the reader (Ordo › Reading);

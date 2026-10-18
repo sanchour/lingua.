@@ -25,13 +25,13 @@ const SCALE = { sm: 0.88, md: 1, lg: 1.16 } as const;
 export type CardLook = Settings['cards'];
 
 /** Attributes for a .flashcard element (see styles/cards.css). */
-export function cardLookProps(look: CardLook): { 'data-look': string; 'data-tint': string; style: CSSProperties } {
+export function cardLookProps(look: CardLook, lang?: string): { 'data-look': string; 'data-tint': string; style: CSSProperties } {
   return {
     'data-look': look.style,
     'data-tint': look.tint,
     style: {
       '--card-tint': CARD_TINTS.find((t) => t.id === look.tint)?.color,
-      '--card-font': readerFontStack(getReaderFont(look.font)),
+      '--card-font': readerFontStack(getReaderFont(look.font), lang),
       '--card-scale': SCALE[look.size],
     } as CSSProperties,
   };

@@ -5,6 +5,7 @@ import { packFileName, packId, PACK_VERSION } from '@/core/packs/format';
 import { db } from '@/data/db';
 import type { DictPack } from '@/data/types';
 import { applyKnownSeed } from '@/data/words';
+import { ensureLexicon, resetLexicon } from './lexicon';
 import type { PackWorkerMessage } from '@/workers/packs.worker';
 import PacksWorker from '@/workers/packs.worker?worker';
 
@@ -59,6 +60,11 @@ export function installPack(lang: string): Promise<void> {
     worker.postMessage({ lang, url: `${import.meta.env.BASE_URL}packs/${packFileName(lang)}` });
   })
     .then(() => applyKnownSeed(lang))
+    .then(() => {
+      // Japanese text is split by the pack's words: from now on, by the new ones.
+      resetLexicon(lang);
+      return ensureLexicon(lang);
+    })
     .then(() => undefined)
     .finally(() => running.delete(lang));
 
@@ -81,6 +87,7 @@ export async function removePack(lang: string): Promise<void> {
   await db.dictParadigms.where('[pack+lemma]').between([id, Dexie.minKey], [id, Dexie.maxKey]).delete();
   await db.starterLists.delete(lang);
   await db.dictPacks.delete(id);
+  resetLexicon(lang);
 }
 
 export function useInstalledPacks(): DictPack[] | undefined {

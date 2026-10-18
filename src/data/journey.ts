@@ -186,7 +186,11 @@ export async function removeGoal(id: string, database: LinguaDB = db): Promise<v
  * Swedish…). Harder languages take longer; the projection says so instead of promising a date.
  */
 export const HOURS_TO_LEVEL: Record<CefrLevel, number> = { A0: 0, A1: 60, A2: 160, B1: 350, B2: 550, C1: 800, C2: 1100 };
-const HARDER: Record<string, number> = { ru: 1.6, el: 1.6, hu: 1.8, de: 1.15 };
+// From the FSI's language categories: about 1× for Dutch and Norwegian, up to 2.2× (88 weeks
+// against 24–30) for Arabic, Mandarin, Japanese and Korean.
+const HARDER: Record<string, number> = {
+  ru: 1.6, el: 1.6, hu: 1.8, de: 1.15, tr: 1.6, la: 1.4, id: 1.25, sw: 1.25, nl: 1, nb: 1, ar: 2.2, zh: 2.2, ja: 2.4, ko: 2.2,
+};
 
 export interface GoalProgress {
   /** 0–1 */

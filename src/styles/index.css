@@ -112,6 +112,16 @@
   ::selection {
     background-color: var(--accent-soft);
   }
+  /* Arabic reads right to left wherever it appears: every text in the language being learned
+     carries its lang attribute, so one rule covers the reader, cards, lyrics and subtitles. */
+  [lang='ar']:not(html) {
+    direction: rtl;
+    unicode-bidi: isolate;
+  }
+  /* CJK text breaks lines by its own rules, never inside a word the reader treats as one. */
+  :is([lang='zh'], [lang='ja']):not(html) {
+    line-break: strict;
+  }
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;

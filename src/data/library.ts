@@ -5,6 +5,7 @@ import { estimateLevel } from '@/core/lang/levels';
 import { splitIntoParts } from '@/core/parsers/text';
 import type { ChapterDraft } from '@/core/parsers/text';
 import { countWords, tokenize } from '@/core/text/tokenizer';
+import { ensureLexicon } from '@/services/packs/lexicon';
 import { localDateKey } from '@/lib/format';
 import { db } from './db';
 import type { LinguaDB } from './db';
@@ -36,6 +37,7 @@ export async function textChapters(textId: string, database: LinguaDB = db): Pro
 
 /** Counts distinct normalised forms across all text blocks (yields between chapters). */
 async function buildVocab(textId: string, lang: string, chapters: Array<Pick<Chapter, 'blocks'>>): Promise<TextVocab> {
+  await ensureLexicon(lang);
   const counts = new Map<string, number>();
   let tokens = 0;
   for (const chapter of chapters) {
@@ -56,6 +58,7 @@ async function buildVocab(textId: string, lang: string, chapters: Array<Pick<Cha
 export async function addText(input: NewText, database: LinguaDB = db): Promise<string> {
   const id = crypto.randomUUID();
   const now = Date.now();
+  await ensureLexicon(input.lang);
   const count = (text: string) => countWords(text, input.lang);
 
   const chapters: Chapter[] = [];

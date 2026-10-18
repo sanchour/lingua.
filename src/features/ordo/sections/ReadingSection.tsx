@@ -2,7 +2,7 @@ import { BookOpenText, Check } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { useApp } from '@/app/context';
 import { resolveTheme } from '@/app/theme';
-import { getLanguage, LANGUAGES } from '@/core/lang/languages';
+import { getLanguage, LANGUAGES, READING_LANGS } from '@/core/lang/languages';
 import type { Script } from '@/core/lang/languages';
 import { patchSetting } from '@/data/settings';
 import type { Settings } from '@/data/settings';
@@ -15,7 +15,7 @@ import { cx } from '@/lib/cx';
 import { SettingsSection } from '../SettingsSection';
 import { useDraft } from '../useDraft';
 
-const SCRIPT_NAMES: Record<Script, string> = { Latn: 'Latin', Cyrl: 'Cyrillic', Grek: 'Greek' };
+const SCRIPT_NAMES: Record<Script, string> = { Latn: 'Latin', Cyrl: 'Cyrillic', Grek: 'Greek', Arab: 'Arabic', Hans: 'Chinese', Jpan: 'Japanese', Kore: 'Hangul' };
 const PREVIEW_SCRIPTS: Script[] = ['Latn', 'Cyrl', 'Grek'];
 
 export function ReadingSection({ reader, lang }: { reader: Settings['reader']; lang: string }) {
@@ -33,7 +33,7 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
       <div
         lang={target.code}
         className="rounded-2xl border border-line bg-bg px-5 py-4 text-ink transition-colors duration-200"
-        style={{ ...paperStyle(paper), fontFamily: readerFontStack(font), fontSize: size, lineHeight } as CSSProperties}
+        style={{ ...paperStyle(paper), fontFamily: readerFontStack(font, target.code), fontSize: size, lineHeight } as CSSProperties}
       >
         {target.sample}
       </div>
@@ -106,6 +106,25 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
           ]}
         />
       </div>
+
+      {READING_LANGS.has(target.code) && (
+        <div className="mt-5">
+          <p className="text-[15px] font-semibold">{target.code === 'ja' ? 'Furigana over words' : 'Pinyin over words'}</p>
+          <p className="mt-0.5 mb-2 text-[13px] text-ink-soft">
+            {target.code === 'ja' ? 'Kana above words written with kanji.' : 'The pinyin of each word, with its tones, above the characters.'}
+          </p>
+          <Segmented
+            label={target.code === 'ja' ? 'Furigana' : 'Pinyin'}
+            value={reader.readings}
+            onChange={(readings) => void patchSetting('reader', { readings })}
+            options={[
+              { value: 'new', label: 'New words' },
+              { value: 'all', label: 'All words' },
+              { value: 'off', label: 'Off' },
+            ]}
+          />
+        </div>
+      )}
 
       <div className="mt-3 divide-y divide-line">
         <ToggleRow

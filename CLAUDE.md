@@ -11,10 +11,9 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
 - Lingua 2.0 is closed (last step 2.0-4b). Everything still open is **Lingua 3.0**, in order
   3.0-1 … 3.0-9 under "## Lingua 3.0" in the roadmap. Read its "Handover for the Lingua 3.0
   session" before starting.
-- 3.0-1 is under way on the branch `lingua-3.0/languages-wip` (pushed). Don't merge it into
-  `main` as it is: merge `main` into it, finish 3.0-1 there, then bring it to `main`. Exactly
-  what is done and what is left (the pack builder is half wired) is at the top of the handover.
-- Right after 3.0-1 comes **3.0-1b, tier-2 beta languages**: more languages with only the
+- 3.0-1 is done (merged into `main` on 2026-10-18). Work on `main` from here; the branch
+  `lingua-3.0/languages-wip` is history. Known gaps are at the top of the handover.
+- Next is **3.0-1b, tier-2 beta languages**: more languages with only the
   features that cost little (automatic packs, decks, podcasts, music search). Keep it cheap.
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
@@ -50,6 +49,8 @@ Commit as `sanchour <255895307+sanchour@users.noreply.github.com>`
   Heredocs and `node -e` there lose backslashes: write patch scripts to a file instead.
 - Antivirus software (Kaspersky did this on the first PC) can rewrite a local headless Chrome's
   traffic and fake CORS failures; check in the app's built-in browser before blaming the code.
+- Pack builds and `count.ts` take 1–2 GB of memory each and the Japanese count about an hour: on
+  an 8 GB laptop run them one at a time, with the dev server stopped.
 - `scripts/.cache` (about 2 GB, git-ignored) holds the raw word data for building language packs.
   It isn't needed to run the app (the packs in `public/packs` are committed); rebuild it as
   docs/SETUP.md says, only for pack work.

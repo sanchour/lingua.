@@ -71,6 +71,33 @@
     box-shadow 160ms ease;
 }
 
+/* Pinyin or kana over words (Mandarin, Japanese): drawn by a pseudo-element, so the word's text,
+   selection and copy stay clean. Lines get room above for it. */
+.reader-flow:is(.readings-new, .readings-all) {
+  --reader-lh-ruby: max(var(--reader-lh, 1.7), 2.25);
+}
+.reader-flow:is(.readings-new, .readings-all) :is(p, h2, blockquote) {
+  line-height: var(--reader-lh-ruby);
+}
+.reader-flow:is(.readings-new, .readings-all) .w[data-r] {
+  position: relative;
+}
+.reader-flow.readings-all .w[data-r]::before,
+.reader-flow.readings-new .w[data-r]:not([data-s='1'])::before {
+  content: attr(data-r);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, 0.18em);
+  font-family: var(--font-sans);
+  font-size: 0.48em;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
 .reader-flow.hl-unseen .w[data-s='0'] {
   text-decoration-line: underline;
   text-decoration-style: dotted;

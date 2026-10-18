@@ -21,7 +21,16 @@ const ARTICLES: Record<string, string[]> = {
   sv: ['en', 'ett'],
   el: ['ο', 'η', 'το', 'οι', 'τα', 'ένας', 'μια', 'ένα'],
   hu: ['a', 'az', 'egy'],
+  nl: ['de', 'het', 'een', "'t"],
+  nb: ['en', 'ei', 'et'],
   ru: [],
+  tr: [],
+  id: [],
+  sw: [],
+  la: [],
+  zh: [],
+  ja: [],
+  ko: [],
 };
 
 /** Lower-case, no stress marks or punctuation, single spaces, no leading article. */
@@ -43,11 +52,18 @@ export function normalizeAnswer(text: string, lang: string): string {
       break;
     }
   }
+  // Arabic writes its article onto the word: "الكتاب" and "كتاب" are both the book.
+  if (lang === 'ar') s = s.replace(/(^|\s)ال(?=\S{2})/g, '$1');
   return s;
 }
 
+/** Languages where one character is a whole syllable or word: a "slip" is another word. */
+const NO_TYPOS = new Set(['zh', 'ja']);
+
 /** Without any diacritics (é → e, ё → е, ά → α), for accent-insensitive comparison. */
-export function foldAccents(text: string): string {
+export function foldAccents(text: string, lang?: string): string {
+  // Japanese voicing marks (が, ぱ) make another letter, not an accent.
+  if (lang === 'ja') return text;
   return text.normalize('NFD').replace(/\p{M}/gu, '').normalize('NFC');
 }
 
@@ -83,12 +99,12 @@ export function checkAnswer(typed: string, expected: string, lang: string): Answ
   for (const option of options) {
     const target = normalizeAnswer(option, lang);
     if (input === target) return { verdict: 'exact', expected: option };
-    if (foldAccents(input) === foldAccents(target)) {
+    if (foldAccents(input, lang) === foldAccents(target, lang)) {
       best = { verdict: 'close', expected: option, note: 'accent' };
       continue;
     }
-    const allowed = target.length >= 10 ? 2 : target.length >= 4 ? 1 : 0;
-    if (allowed && best.verdict === 'wrong' && editDistance(foldAccents(input), foldAccents(target), allowed) <= allowed) {
+    const allowed = NO_TYPOS.has(lang) ? 0 : target.length >= 10 ? 2 : target.length >= 4 ? 1 : 0;
+    if (allowed && best.verdict === 'wrong' && editDistance(foldAccents(input, lang), foldAccents(target, lang), allowed) <= allowed) {
       best = { verdict: 'close', expected: option, note: 'typo' };
     }
   }

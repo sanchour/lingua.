@@ -139,7 +139,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
   };
 
   const date = new Date(`${entry.date}T12:00:00`);
-  const fontStyle = { '--entry-font': readerFontStack(getReaderFont(settings.reader.font)) } as CSSProperties;
+  const fontStyle = { '--entry-font': readerFontStack(getReaderFont(settings.reader.font), lang) } as CSSProperties;
 
   return (
     <div className="pb-36" style={fontStyle}>

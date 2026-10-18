@@ -19,6 +19,11 @@ const NOUN_AFTER: Record<string, Set<string>> = {
   el: words('ο η το οι τα ένας μια μία ένα κάθε του της των τον την τη στο στη στην στον στα στις στους'),
   hu: words('a az egy minden'),
   ru: words('каждый каждая каждое каждую каждого каждой этот эта это эту мой моя моё мою твой твоя наш наша'),
+  nl: words('de het een elk elke ieder iedere dit deze dat die mijn mijne je jouw zijn haar ons onze hun uw geen veel weinig'),
+  nb: words('en ei et den det de hver hvert min mi mitt mine din di ditt dine sin si sitt sine hans hennes vår vårt våre denne dette disse ingen noen mange'),
+  tr: words('bir her bu şu hiçbir birçok'),
+  id: words('sebuah seorang setiap para beberapa banyak semua'),
+  sw: words('kila'),
 };
 
 /** Subject pronouns, object clitics, negation and mood particles: a verb follows. */
@@ -33,6 +38,10 @@ const VERB_AFTER: Record<string, Set<string>> = {
   el: words('εγώ εσύ αυτός αυτή εμείς εσείς αυτοί θα να δεν μην'),
   hu: words('nem ne'),
   ru: words('я ты он она мы вы они не'),
+  nl: words('ik jij je hij zij ze wij we jullie men niet'),
+  nb: words('jeg du han hun vi dere de man ikke å'),
+  id: words('aku saya kamu anda dia ia kami kita mereka tidak akan sedang sudah belum mau ingin bisa harus'),
+  la: words('non'),
 };
 
 /** Intensifiers: an adjective (or adverb) follows. */
@@ -47,6 +56,11 @@ const ADJ_AFTER: Record<string, Set<string>> = {
   el: words('πολύ πιο τόσο αρκετά'),
   hu: words('nagyon túl elég'),
   ru: words('очень слишком так довольно'),
+  nl: words('heel erg zeer te zo nogal best'),
+  nb: words('veldig svært for så ganske litt'),
+  tr: words('çok daha en pek oldukça'),
+  id: words('sangat amat terlalu cukup agak paling lebih'),
+  la: words('valde tam nimis minus magis'),
 };
 
 /** The part of speech the word before calls for, or null when it doesn't say. */

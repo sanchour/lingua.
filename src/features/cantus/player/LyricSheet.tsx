@@ -6,7 +6,7 @@ import { useApp } from '@/app/context';
 import { cueIndexAt, wordStarts } from '@/core/audio/cues';
 import { linesToCues } from '@/core/cantus/lyrics';
 import type { Chapter, Song, Text, WordState } from '@/data/types';
-import { getReaderFont, readerFontStack } from '@/design/fonts';
+import { getReaderFont, readerFontStack, useScriptFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { spring } from '@/design/motion';
@@ -54,6 +54,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
   const { settings } = useApp();
   const { pointer, layout } = useLayout();
   const lang = song.lang;
+  useScriptFont(lang);
   const lines = song.lines;
   const timed = clock !== null && lines.some((l) => l.startMs !== undefined);
   const cues = useMemo(() => linesToCues(lines, song.durationMs), [lines, song.durationMs]);
@@ -266,7 +267,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
 
   const reader = settings.reader;
   const style = {
-    '--reader-font': readerFontStack(getReaderFont(reader.font)),
+    '--reader-font': readerFontStack(getReaderFont(reader.font), lang),
     '--lyric-size': `${Math.round(Math.min(34, Math.max(22, reader.sizePx * 1.25)))}px`,
   } as CSSProperties;
 
