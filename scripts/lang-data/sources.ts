@@ -21,6 +21,12 @@ export interface PackSource {
    * their words are counted again from the subtitles themselves.
    */
   opus?: string;
+  /**
+   * Everyday text to count words from, for languages whose only word list is Wikipedia's (where
+   * bot-written stubs push "census" and "speakers" into Swahili's top 50): OPUS corpora as
+   * `Corpus/version`. count.ts blends their counts with the Leipzig list.
+   */
+  corpora?: string[];
 }
 
 export const PACK_SOURCES: PackSource[] = [
@@ -42,8 +48,9 @@ export const PACK_SOURCES: PackSource[] = [
   { code: 'tr', kaikki: 'Turkish', frequency: 'tr' },
   { code: 'ja', kaikki: 'Japanese', frequency: 'ja', frequencyYear: 2016, opus: 'ja' },
   { code: 'ko', kaikki: 'Korean', frequency: 'ko' },
-  { code: 'la', kaikki: 'Latin', frequency: 'la', leipzig: 'lat_wikipedia_2021_100K' },
-  { code: 'sw', kaikki: 'Swahili', frequency: 'sw', leipzig: 'swa_wikipedia_2021_100K' },
+  // Latin: Tatoeba's learner sentences; Swahili: web text (ParaCrawl) and news (Global Voices).
+  { code: 'la', kaikki: 'Latin', frequency: 'la', leipzig: 'lat_wikipedia_2021_100K', corpora: ['Tatoeba/v2023-04-12', 'bible-uedin/v1'] },
+  { code: 'sw', kaikki: 'Swahili', frequency: 'sw', leipzig: 'swa_wikipedia_2021_100K', corpora: ['ParaCrawl/v9', 'GlobalVoices/v2018q4'] },
   { code: 'id', kaikki: 'Indonesian', frequency: 'id' },
 ];
 
@@ -63,5 +70,14 @@ export const leipzigFile = (s: PackSource) => new URL(`leipzig-${s.code}.tar.gz`
 export const frequencyFile = (s: PackSource) => new URL(`freq-${s.code}.txt`, CACHE_DIR);
 export const opusUrl = (s: PackSource) => `https://object.pouta.csc.fi/OPUS-OpenSubtitles/v2018/mono/${s.opus}.txt.gz`;
 export const opusFile = (s: PackSource) => new URL(`opus-${s.opus}.txt.gz`, CACHE_DIR);
+export const corpusUrl = (s: PackSource, corpus: string) => `https://object.pouta.csc.fi/OPUS-${corpus}/mono/${s.code}.txt.gz`;
+export const corpusFile = (s: PackSource, corpus: string) => new URL(`opus-${corpus.split('/')[0].toLowerCase()}-${s.code}.txt.gz`, CACHE_DIR);
+/**
+ * Unicode's Han database (Unihan): which Simplified character each Traditional one is written as
+ * (還 → 还). Wiktionary's own redirects mix in old variants (㦱 → 我), so the Mandarin pack uses this.
+ */
+export const UNIHAN_URL = 'https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip';
+export const unihanZip = new URL('unihan.zip', CACHE_DIR);
+export const unihanVariants = new URL('Unihan_Variants.txt', CACHE_DIR);
 /** count.ts output: words counted from the OPUS corpus, split the way the reader splits them. */
 export const countedFile = (s: PackSource) => new URL(`counted-${s.code}.txt`, CACHE_DIR);

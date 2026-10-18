@@ -5,7 +5,8 @@ import { createWriteStream, existsSync, mkdirSync, readdirSync, readFileSync, re
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { fileURLToPath } from 'node:url';
-import { CACHE_DIR, frequencyFile, frequencyUrl, kaikkiFile, kaikkiUrl, leipzigFile, opusFile, opusUrl, PACK_SOURCES } from './sources.ts';
+import JSZip from 'jszip';
+import { CACHE_DIR, corpusFile, corpusUrl, frequencyFile, frequencyUrl, kaikkiFile, kaikkiUrl, leipzigFile, opusFile, opusUrl, PACK_SOURCES, UNIHAN_URL, unihanVariants, unihanZip } from './sources.ts';
 import type { PackSource } from './sources.ts';
 
 /** Big downloads sometimes drop half way: try again a few times before giving up. */
@@ -95,8 +96,22 @@ for (const s of sources) {
     await download(frequencyUrl(s), frequencyFile(s));
   }
 }
-// Subtitle corpora to count Japanese and Mandarin words from (35 and 173 MB).
+// Subtitle corpora to count Japanese and Mandarin words from (35 and 173 MB), and everyday text
+// for Latin and Swahili (under 10 MB each).
 for (const s of sources) if (s.opus) await download(opusUrl(s), opusFile(s));
+for (const s of sources) for (const c of s.corpora ?? []) await download(corpusUrl(s, c), corpusFile(s, c));
+// Traditional → Simplified characters for the Mandarin pack (8 MB; only its variants file is kept).
+if (sources.some((s) => s.code === 'zh')) {
+  await download(UNIHAN_URL, unihanZip);
+  if (!existsSync(unihanVariants)) {
+    // jszip rather than tar: Git Bash's GNU tar can't open zip files.
+    const zip = await JSZip.loadAsync(readFileSync(unihanZip));
+    const text = await zip.file('Unihan_Variants.txt')?.async('string');
+    if (!text) throw new Error('Unihan_Variants.txt is missing from unihan.zip');
+    writeFileSync(unihanVariants, text);
+    console.log('✓ Unihan_Variants.txt');
+  }
+}
 const order = ['sw', 'id', 'nb', 'el', 'ko', 'nl', 'sv', 'tr', 'ja', 'ar', 'hu', 'pt', 'fr', 'it', 'ru', 'es', 'de', 'la', 'zh', 'en'];
 for (const s of [...sources].sort((a, b) => order.indexOf(a.code) - order.indexOf(b.code))) {
   await download(kaikkiUrl(s), kaikkiFile(s));

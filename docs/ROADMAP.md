@@ -268,7 +268,31 @@ the handover at the end). Same way of working: plan each prompt here first, buil
 stopping, then commit, push and check the live site. Version 3.0 in the app when it's done.
 
 ### 3.0-1 · Twenty languages with their flags, every one well supported
-- [ ] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and
+
+**Plan for finishing it (2026-10-18, third computer):** merge `main` into the branch; wire the
+rest of `build.ts` as the handover lists; fix the Japanese splitter's stray endings before
+counting; count Japanese and Mandarin again; build the ten packs and review each one's commonest
+words, fixing what reads wrong; tests for everyday words and readings; charts for all twenty; look
+at the new languages in the browser; docs; merge into `main`, push, check the live site.
+
+**What it took, beyond the handover's list:**
+- Japanese: the morpheme-based seed list (い, る, 言 ranked above いる, 言う) made the counter cut
+  whole words apart (い|る, で|す, 言|って). Bare endings now cost extra in `segmentJapanese` (the
+  reader uses it too), the first counting pass treats words the seed list lacks as fairly common,
+  and the spoken negative ん (知らん, わからん) deinflects.
+- Mandarin: Wiktionary's redirects mix old variants with Simplified spellings (㦱 → 我, 勺 → 的),
+  so single characters now go by Unicode's Unihan table (`Unihan_Variants.txt`, fetched with
+  the rest); readings follow the meaning that comes first (还 hái "still", 听 tīng); words the
+  browser joins that no dictionary lists (我的, 不知道) read as their parts ("I + of"); the
+  translation evidence for "現在／现在" counts for both spellings. Top 1k glossed: 72% → 99.7%.
+- Latin and Swahili: Wikipedia's word lists ranked bot-written stubs high ("census", "speakers");
+  their ranks now blend in everyday text from OPUS (Tatoeba and the Vulgate for Latin, ParaCrawl
+  and Global Voices for Swahili).
+- `scripts/lang-data/fixes.ts`: the commonest words whose dictionary meaning still read wrong
+  (Dutch "niet" as "staple", Turkish "şey" as "well", Swahili "ya" as "the"), set by hand.
+- Arabic forms also under their hamza-less spelling (ان, الى), like Greek without accents.
+
+- [x] New: Arabic, Mandarin, Dutch, Norwegian, Turkish, Japanese, Korean, Latin, Swahili and
       Indonesian (Bahasa).
   - Packs from Wiktionary (kaikki) and frequency lists (FrequencyWords; Latin and Swahili from
     Leipzig corpus lists; Japanese and Mandarin counted from OpenSubtitles text split the way the

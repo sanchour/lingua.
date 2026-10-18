@@ -81,7 +81,8 @@ godan(A, 'ない', ['adj']);
 add('しない', 'する', ['adj'], 'vs');
 add('こない', 'くる', ['adj'], 'vk');
 add('来ない', '来る', ['adj'], 'vk');
-for (const s of ['ず', 'ずに', 'ぬ']) {
+// ん is the spoken ぬ: 知らん, わからん, できん.
+for (const s of ['ず', 'ずに', 'ぬ', 'ん']) {
   add(s, 'る', null, 'v1');
   godan(A, s, null);
 }
@@ -179,6 +180,13 @@ const UNKNOWN_CHAR = 14;
 const UNKNOWN_RUN = 13;
 /** A conjugated form costs a little more than its dictionary form. */
 const CONJUGATED = 0.4;
+/**
+ * Endings that are not words on their own, though dictionaries and morpheme counts list them: left
+ * cheap, they cut words into pieces (い|る, で|す, し|た, い|い). Where a whole word fits, it wins.
+ * The quotative って and the explanatory ん are words, so they cost less extra (行くって stays
+ * 行く って, while 言って is one word).
+ */
+const BOUND: Record<string, number> = { い: 6, る: 6, す: 6, た: 6, て: 6, う: 6, く: 6, れ: 6, っ: 6, って: 5, った: 5, ん: 3 };
 
 export interface JapaneseWord {
   start: number;
@@ -202,7 +210,8 @@ export function segmentJapanese(text: string, lex: JapaneseLexicon): JapaneseWor
   const viaConjugation = (w: string): string | null => {
     let hit = deinflected.get(w);
     if (hit === undefined) {
-      hit = isHiragana(w[w.length - 1]) && w.length >= 2 ? (deinflect(w).find((b) => lex.has(b)) ?? null) : null;
+      // An ending is no dictionary form (さん is not a form of す).
+      hit = isHiragana(w[w.length - 1]) && w.length >= 2 ? (deinflect(w).find((b) => lex.has(b) && !(b in BOUND)) ?? null) : null;
       deinflected.set(w, hit);
     }
     return hit;
@@ -216,7 +225,7 @@ export function segmentJapanese(text: string, lex: JapaneseLexicon): JapaneseWor
       const w = text.slice(i, i + len);
       let cost = Infinity;
       let base: string | undefined;
-      if (lex.has(w)) cost = lex.cost(w);
+      if (lex.has(w)) cost = lex.cost(w) + (BOUND[w] ?? 0);
       const b = viaConjugation(w);
       if (b) {
         const c = lex.cost(b) + CONJUGATED;

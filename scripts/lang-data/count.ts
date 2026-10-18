@@ -13,7 +13,7 @@ import { createGunzip } from 'node:zlib';
 import { JAPANESE_CHAR, segmentJapanese } from '../../src/core/lang/japanese.ts';
 import type { JapaneseLexicon } from '../../src/core/lang/japanese.ts';
 import { normalizeWord } from '../../src/core/text/normalize.ts';
-import { countedFile, frequencyFile, kaikkiFile, opusFile, PACK_SOURCES } from './sources.ts';
+import { corpusFile, countedFile, frequencyFile, kaikkiFile, opusFile, PACK_SOURCES } from './sources.ts';
 import type { PackSource } from './sources.ts';
 
 /** Subtitle lines to count (each corpus has tens of millions; this many give stable ranks). */
@@ -86,11 +86,11 @@ async function countJapanese(source: PackSource): Promise<void> {
       if (w && !seedRank.has(w)) seedRank.set(w, seedRank.size + 1);
     }
   }
-  const lexicon = (rankOf: (w: string) => number | undefined): JapaneseLexicon => ({
+  const lexicon = (rankOf: (w: string) => number | undefined, unseen: number): JapaneseLexicon => ({
     has: (w) => words.has(w),
     cost: (w) => {
       const r = rankOf(w);
-      return r ? Math.log(r + 20) : 11.5;
+      return r ? Math.min(Math.log(r + 20), unseen) : unseen;
     },
   });
   const pass = async (lex: JapaneseLexicon, max: number) => {
@@ -109,13 +109,62 @@ async function countJapanese(source: PackSource): Promise<void> {
     }
     return counts;
   };
-  const first = await pass(lexicon((w) => seedRank.get(w)), 600_000);
+  // The seed list lacks most dictionary forms (いる, 言う) while ranking verb stems high (言, 行), so
+  // in the first pass a word it doesn't list counts as fairly common, not rare; the second pass
+  // ranks by the first one's own counts, where missing does mean rare.
+  const first = await pass(lexicon((w) => seedRank.get(w), 8), 600_000);
   const firstRank = new Map([...first].sort((a, b) => b[1] - a[1]).map(([w], i) => [w, i + 1]));
-  write(source, await pass(lexicon((w) => firstRank.get(w)), LINES));
+  write(source, await pass(lexicon((w) => firstRank.get(w), 11.5), LINES));
+}
+
+/**
+ * Latin and Swahili: words counted from everyday text, blended with the Wikipedia list (each source
+ * weighed alike, per million words), so "census" sinks and "come" rises.
+ */
+async function countBlended(source: PackSource): Promise<void> {
+  const seg = new Intl.Segmenter(source.code, { granularity: 'word' });
+  const perMillion = (counts: Map<string, number>) => {
+    const total = [...counts.values()].reduce((a, b) => a + b, 0) || 1;
+    return new Map([...counts].map(([w, n]) => [w, (n * 1e6) / total]));
+  };
+  const blend = new Map<string, number>();
+  const add = (counts: Map<string, number>) => {
+    for (const [w, n] of perMillion(counts)) blend.set(w, (blend.get(w) ?? 0) + n);
+  };
+  for (const corpus of source.corpora ?? []) {
+    if (!existsSync(corpusFile(source, corpus))) {
+      console.warn(`  ${source.code}: ${corpus} is missing (run fetch.ts ${source.code} first)`);
+      continue;
+    }
+    const counts = new Map<string, number>();
+    for await (const line of lines(corpusFile(source, corpus), LINES)) {
+      for (const s of seg.segment(line)) {
+        if (!s.isWordLike || !/\p{L}/u.test(s.segment) || /\d/.test(s.segment)) continue;
+        const w = normalizeWord(s.segment, source.code);
+        counts.set(w, (counts.get(w) ?? 0) + 1);
+      }
+    }
+    console.log(`  ${source.code}: ${corpus}, ${[...counts.values()].reduce((a, b) => a + b, 0).toLocaleString()} words`);
+    add(counts);
+  }
+  if (existsSync(frequencyFile(source))) {
+    const base = new Map<string, number>();
+    for (const line of readFileSync(frequencyFile(source), 'utf8').split('\n')) {
+      const [w, n] = line.trim().split(' ');
+      if (w) base.set(normalizeWord(w, source.code), (base.get(normalizeWord(w, source.code)) ?? 0) + (Number(n) || 0));
+    }
+    add(base);
+  }
+  // Whole numbers, as the pack builder reads them.
+  write(source, new Map([...blend].map(([w, n]) => [w, Math.round(n * 100)])));
 }
 
 const wanted = process.argv.slice(2);
-for (const source of PACK_SOURCES.filter((s) => s.opus && (!wanted.length || wanted.includes(s.code)))) {
+for (const source of PACK_SOURCES.filter((s) => (s.opus || s.corpora) && (!wanted.length || wanted.includes(s.code)))) {
+  if (source.corpora) {
+    await countBlended(source);
+    continue;
+  }
   if (!existsSync(opusFile(source))) {
     console.warn(`  ${source.code}: ${opusFile(source).pathname} is missing (run fetch.ts first)`);
     continue;

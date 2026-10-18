@@ -50,6 +50,8 @@ Commit as `sanchour <255895307+sanchour@users.noreply.github.com>`
   Heredocs and `node -e` there lose backslashes: write patch scripts to a file instead.
 - Antivirus software (Kaspersky did this on the first PC) can rewrite a local headless Chrome's
   traffic and fake CORS failures; check in the app's built-in browser before blaming the code.
+- Pack builds and `count.ts` take 1–2 GB of memory each and the Japanese count about an hour: on
+  an 8 GB laptop run them one at a time, with the dev server stopped.
 - `scripts/.cache` (about 2 GB, git-ignored) holds the raw word data for building language packs.
   It isn't needed to run the app (the packs in `public/packs` are committed); rebuild it as
   docs/SETUP.md says, only for pack work.

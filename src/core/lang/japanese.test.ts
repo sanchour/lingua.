@@ -35,6 +35,9 @@ describe('deinflect', () => {
     finds('でした', 'です');
     finds('だった', 'だ');
     finds('食べちゃった', '食べる');
+    finds('知らん', '知る');
+    finds('わからん', 'わかる');
+    finds('できん', 'できる');
   });
   it('leaves dictionary forms alone', () => {
     expect(deinflect('食べる')).not.toContain('食べる');
@@ -60,6 +63,21 @@ describe('segmentJapanese', () => {
   });
   it('keeps an unknown katakana run together', () => {
     expect(words('私はマリアです')).toEqual(['私', 'は', 'マリア', 'です']);
+  });
+  it('does not cut whole words into common endings', () => {
+    // Morpheme counts rank い, る, た and the stem 言 far above いる, いい and 言う.
+    const pieces = ['い', 'る', 'た', 'し', 'で', 'す', 'に', 'ここ', '言', 'って', 'は'];
+    const rare = ['いる', 'いい', 'した', 'です', '言う', 'する'];
+    const lex2: JapaneseLexicon = {
+      has: (w) => pieces.includes(w) || rare.includes(w),
+      // 8: what count.ts's first pass gives a word its seed list doesn't rank.
+      cost: (w) => (pieces.includes(w) ? Math.log(pieces.indexOf(w) + 2) : 8),
+    };
+    const split = (s: string) => segmentJapanese(s, lex2).map((w) => s.slice(w.start, w.end));
+    expect(split('ここにいる')).toEqual(['ここ', 'に', 'いる']);
+    expect(split('いいです')).toEqual(['いい', 'です']);
+    expect(split('言って')).toEqual(['言って']);
+    expect(split('した')).toEqual(['した']);
   });
 });
 
