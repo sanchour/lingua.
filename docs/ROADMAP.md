@@ -550,6 +550,20 @@ testing), the camera scan, and an iPhone on a mobile network.
       "Sync now" in Ordo, with the last sync time. API keys only if chosen.
 
 ### 3.0-5 · Radio (in Sonus)
+
+**Plan (2026-10-19):** a fourth tab, **Radio**, in Sonus (Library · Music · Podcasts · Radio); your
+favourite stations also show in Library. Stations come from radio-browser.info (de1, then de2, then
+the round-robin name), searched by the language's names there, exactly (`spanish`; Norwegian is
+`norwegian` and `norsk`, Serbo-Croatian is Croatian, Serbian, Bosnian and Montenegrin), only
+https streams the browser can play (HLS only where it plays natively), most listened first, kept
+for half a day. The map: the world drawn faintly by the places of radio stations everywhere (a
+small grid made once by a script), the language's stations bright on top, fitted to where they
+are; tap a place for its stations. Countries as chips (the flag's first) and a search by name.
+Favourites and recently played stations are a table that is backed up and synced. Stations play
+through Sonus's one player as a live item: no position saved, the stream fresh again after a
+pause, "Live" in the mini player, listening time counted as listening. Now playing comes from
+the station's Icecast status where it shares one. A click is reported to radio-browser when a
+station is played, as its API asks.
 - [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
       search, favourites; only secure (https) streams.
 - [ ] A minimal "night sky" map: every station a dot at its place, so the dots draw the world;
@@ -570,6 +584,15 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
       mixes new items with due ones, ends with a short review, and unlocks the next topic only
       when it is mastered. Transform, spot-the-mistake and, with an AI key, free sentences that are
       corrected and explained.
+- [ ] **Grammar when it's needed, examples first** (the user's notes, 2026-10-19). Cases, verb
+      aspect, verbs of motion and the other structures that translation drills alone can't teach
+      get short lessons of their own, in a set order: a few example sentences first (with audio),
+      then a concise explanation of the rule, then the learner uses it straight away, then more
+      examples. Explicit side-by-side comparisons of structures that are easily confused (ser and
+      estar, perfective and imperfective, accusative and dative, идти and ходить). No long grammar
+      chapters: a lesson is offered at the moment it's needed. When a form in the reader, a song,
+      a card or a drill uses the structure, "Why this form?" opens just that lesson, and a
+      mistake in a drill links to it too.
 - [ ] **Alphabets** for the languages with a script of their own (Russian, Greek, Arabic, Japanese
       kana, Korean Hangul; Mandarin: pinyin and tones, then the first characters): the full
       alphabet as a chart with sound, and short lessons in the spirit of Duolingo. See the letters,
