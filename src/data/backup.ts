@@ -49,6 +49,8 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   studyLogs: { policy: 'lww', key: 'id' },
   goals: { policy: 'lww', key: 'id' },
   songs: { policy: 'lww', key: 'id' },
+  // Spoken audio is a cache: made again on the other device when needed.
+  speech: { policy: 'skip', key: 'id' },
 };
 
 const BACKED_UP = (Object.keys(BACKUP_POLICIES) as TableName[]).filter((t) => BACKUP_POLICIES[t].policy !== 'skip');
@@ -71,6 +73,8 @@ type Row = Record<string, unknown>;
 export interface ExportOptions {
   includeMedia: boolean;
   includeApiKeys: boolean;
+  /** Record it as the last backup (a sync between devices isn't one). Default true. */
+  markBackup?: boolean;
 }
 
 export async function exportBackup(options: ExportOptions, database: LinguaDB = db): Promise<File> {
@@ -109,7 +113,7 @@ export async function exportBackup(options: ExportOptions, database: LinguaDB = 
   zip.file('manifest.json', JSON.stringify(manifest, null, 2));
 
   const bytes = await zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE', compressionOptions: { level: 6 } });
-  await patchSetting('meta', { lastBackupAt: manifest.exportedAt }, database);
+  if (options.markBackup !== false) await patchSetting('meta', { lastBackupAt: manifest.exportedAt }, database);
   return new File([bytes as Uint8Array<ArrayBuffer>], `lingua-backup-${localDateKey(manifest.exportedAt)}.zip`, { type: 'application/zip' });
 }
 

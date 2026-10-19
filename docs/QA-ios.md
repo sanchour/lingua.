@@ -188,3 +188,19 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] An open podcast: the player stays, only the transcript scrolls.
 - [ ] Learn it: words first, the song last; at the end, "Add N words to your cards", then the
       cards show in Thesaurus with the sung line.
+
+## Lingua 3.0-4: voices and your devices
+
+- [ ] With a Gemini key: Ordo › Languages › Voice names a Gemini voice and the flag's accent;
+      "Hear a sample" plays (the first time after a moment, then at once).
+- [ ] Change the flag (Spain → Mexico): the voice changes accent; "Choose another voice" lists
+      voices to hear and pick.
+- [ ] The speaker in the word drawer, the phrase bubble and on a flashcard plays on the first tap
+      (the phone allows it), and a word heard before plays offline.
+- [ ] Without a key: an Enhanced or Premium iOS voice for that accent reads aloud (Settings ›
+      Accessibility › Spoken Content › Voices to download one); with none, no speaker buttons.
+- [ ] Pair with the desktop app: the desktop shows the code; the iPhone scans it with the camera
+      (allow the camera), or types it. Both say they're paired and synced.
+- [ ] Mark a word on the iPhone, open the desktop app: it's there within a moment ("Sync now"
+      too). Try once on Wi-Fi and once on mobile data.
+- [ ] Restoring a backup on a third device doesn't pair it: pairings never travel in backups.

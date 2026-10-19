@@ -41,6 +41,11 @@ export function Root() {
     if (onboarded) return preloadSections();
   }, [onboarded]);
 
+  // Paired devices sync whenever both are open (the sync code loads only when there's a pairing).
+  useEffect(() => {
+    if (onboarded) void import('@/services/sync/engine').then((m) => m.startAutoSync());
+  }, [onboarded]);
+
   // The studied language's dictionary installs quietly in the background the first time.
   const activeLang = onboarded ? language?.id : undefined;
   useEffect(() => {

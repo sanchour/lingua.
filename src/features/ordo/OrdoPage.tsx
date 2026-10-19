@@ -30,6 +30,7 @@ import { PerformanceSection } from './sections/PerformanceSection';
 import { ReadingSection } from './sections/ReadingSection';
 import { ResetSection } from './sections/ResetSection';
 import { StorageSection } from './sections/StorageSection';
+import { SyncSection } from './sections/SyncSection';
 import { StudySection } from './sections/StudySection';
 
 /** Keyboard shortcuts only matter with a keyboard and a mouse or trackpad. */
@@ -216,6 +217,8 @@ function SectionView({ id }: { id: SectionId }) {
       return <LanguageSection active={language} />;
     case 'ai':
       return <AiSection llm={settings.llm} apiKeys={settings.apiKeys} translation={settings.translation} />;
+    case 'sync':
+      return <SyncSection sync={settings.sync} />;
     case 'storage':
       return <StorageSection />;
     case 'backup':

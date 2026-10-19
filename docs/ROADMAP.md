@@ -497,14 +497,53 @@ turning questions away while busy, not songs it lacks.
       song in the learner's level as cards, fill in the word with its meaning, grammar spotted in
       the line, translate the line, then put the lines in order.
 
-### 3.0-4 · Natural voices, and sync between your devices
-- [ ] **A natural voice for every language**, cheap and automatic, in the regional accent of the
+### 3.0-4 · Natural voices, and sync between your devices ✅
+
+**Built (2026-10-19):** natural voices from Gemini's voice library, chosen by the flag's locale
+(`gemini-3.8-flash-tts` through the Interactions API, the key in a header; each word or line
+generated once and kept in a `speech` table that never leaves the device), else a good device
+voice for exactly that locale (Natural, Neural, Premium, Enhanced, Google or Siri), else no
+speaker button; speaker buttons in the word drawer, the phrase bubble and on flashcards;
+Ordo › Languages › Voice (who reads the language, in which accent, another library voice to try
+and pick, a sample, an off switch). Device sync without accounts in Ordo › Your data › Your
+devices: a QR code and a 16-character code, scanned with the camera or typed; PeerJS's broker
+introduces the two at meeting places derived from the secret, each proves it knows the secret
+(HMAC) before anything is sent, then each sends a backup (no media, keys only if chosen) and
+merges the other's. Sync on opening, every ten minutes, on coming back to the app, and with "Sync
+now". Checked in the browser with two separate devices (two origins): pairing by typed code,
+the first sync, and later syncs both ways. Not checked: a real Gemini key (none is used in
+testing), the camera scan, and an iPhone on a mobile network.
+
+**Plan (2026-10-19):**
+1. **Voice, Gemini first.** Gemini's current speech models (`gemini-3.8-flash-tts`, then the
+   Lite model) through the Interactions API, with the learner's Gemini key in the
+   `x-goog-api-key` header. The accent comes from the voice, not the prompt: Gemini's voice
+   library is asked for voices of the flag's locale (`language_code=es-ES`, `es-MX`, `pt-BR`…),
+   and the first (or the learner's pick) is kept. Each word or line is spoken once and the WAV
+   kept on the device (a `speech` table, never backed up), so a word costs one request ever.
+2. **Fallbacks, named.** No key, or no Gemini voice for that locale: the device's own voice for
+   exactly that locale, but only a good one (Natural, Neural, Premium, Enhanced, Google or Siri
+   voices). Nothing good: no speaker button at all. Latin has no natural voice anywhere, so it
+   has none; a flag whose locale Gemini lacks says so in Ordo.
+3. **Where you hear it:** a speaker button in the word drawer, the phrase bubble (reader, lyrics,
+   transcripts, subtitles) and on flashcards; Ordo › Languages › Voice shows which voice speaks
+   the language (Gemini voice and accent, the device voice, or none), lets you pick another
+   library voice, and plays a sample.
+4. **Sync without accounts.** Ordo › Your data › Your devices: "Pair a device" shows a QR code and
+   a short code (a random secret); the other device scans it with its camera or types the code.
+   Both derive their broker ids from the secret, so only they can find each other; PeerJS's
+   public broker introduces them and the data goes device to device over WebRTC, after each
+   proves it knows the secret (HMAC). Each sends the other a backup (no media; API keys only if
+   chosen) and merges what it receives with the backup's newest-edit-wins merge. They sync when
+   both are open (on opening, every ten minutes, and on coming back to the app), and "Sync now"
+   shows the last sync time. Pairings stay on the device and never travel in backups.
+- [x] **A natural voice for every language**, cheap and automatic, in the regional accent of the
       chosen flag (Castilian or Mexican Spanish, European or Brazilian Portuguese, never an
       American voice for a non-English language): Gemini's text-to-speech with the learner's own
       Gemini key (in a header), each word or sentence generated once and kept on the device. With
       no key, only the device's own high-quality voices for that region, else no voice button.
       Every language listened to; the plan names the fallback where Gemini has no voice.
-- [ ] **Sync between the desktop app and the iPhone**, without accounts: pair the two once with a
+- [x] **Sync between the desktop app and the iPhone**, without accounts: pair the two once with a
       QR code; whenever both are open they sync directly, device to device (WebRTC; a public
       broker only introduces them, the data never sits on a server), using the backup's merge.
       "Sync now" in Ordo, with the last sync time. API keys only if chosen.
@@ -596,10 +635,11 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 
 ### Handover for the Lingua 3.0 session
 
-**3.0-1, 3.0-1b, 3.0-2 and 3.0-3 are done and on `main` (2026-10-19, third computer).** Next is
-3.0-4. Japanese place names (日本) are now counted, so the reader keeps them whole. The first ten
+**3.0-1 to 3.0-4 are done and on `main` (2026-10-19, third computer).** Next is 3.0-5; the user
+asked to stop after 3.0-4, so it waits for them. Japanese place names (日本) are now counted, so the reader keeps them whole. The first ten
 packs were not rebuilt with this session's builder (see DECISIONS). Not checked on an iPhone yet:
-hold to translate on touch, the preview clock and the fixed song page (QA-ios.md, 3.0-3).
+hold to translate on touch, the preview clock and the fixed song page (QA-ios.md, 3.0-3); voices
+with a real Gemini key, the camera scan and syncing over a mobile network (QA-ios.md, 3.0-4).
 
 The rest of this handover is the state before that session, kept for its notes.
 

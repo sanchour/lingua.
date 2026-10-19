@@ -28,6 +28,7 @@ import type {
   ReadingProgress,
   ReviewLog,
   SettingRow,
+  SpeechRow,
   StarterList,
   StudyLog,
   Text,
@@ -100,7 +101,12 @@ export const SCHEMA_V7 = {
   songs: 'id, lang, [lang+savedAt], lastPlayedAt, updatedAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7 };
+/** Version 8 (Lingua 3.0-4): spoken words and lines, kept so each is generated once. */
+export const SCHEMA_V8 = {
+  speech: 'id, createdAt',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -139,6 +145,7 @@ export type LinguaDB = Dexie & {
   studyLogs: EntityTable<StudyLog, 'id'>;
   goals: EntityTable<Goal, 'id'>;
   songs: EntityTable<Song, 'id'>;
+  speech: EntityTable<SpeechRow, 'id'>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -150,6 +157,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(5).stores(SCHEMA_V5);
   db.version(6).stores(SCHEMA_V6);
   db.version(7).stores(SCHEMA_V7);
+  db.version(8).stores(SCHEMA_V8);
   return db;
 }
 

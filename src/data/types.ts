@@ -413,6 +413,17 @@ export interface PlaybackProgress {
 }
 
 /** Large binaries live apart so list queries never load them. */
+/** A word or line spoken by a natural voice, kept on this device (never backed up). */
+export interface SpeechRow {
+  /** `${voice}|${text}` */
+  id: string;
+  lang: Lang;
+  text: string;
+  voice: string;
+  blob: Blob;
+  createdAt: number;
+}
+
 export interface BlobRow {
   id: string;
   kind: 'audio' | 'video' | 'image' | 'cover';

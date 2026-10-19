@@ -197,6 +197,20 @@ inside (its deck is "From Cantus").
   their cards play the line again (with a YouTube or Spotify link); lyrics open in Codex as a text;
   Ratio counts songs and time with music; Iter marks the first song and every 10, 25, 50 and 100.
 
+## Voices and your devices (3.0-4)
+
+- **Natural voices:** a speaker button on words (the word drawer), on selected phrases and on
+  flashcards reads them aloud in the accent of the language's flag (Castilian or Mexican Spanish,
+  Brazilian or European Portuguese). With a free Gemini key it's one of Gemini's natural voices,
+  each word made once and kept on the device; without one, the device's own voice if it's a good
+  one for that accent; otherwise no button. Ordo › Languages › Voice says which voice reads the
+  language, plays a sample, lets you try and pick another Gemini voice, and turns reading aloud off.
+- **Your devices:** pair the desktop app and the phone once (Ordo › Your data › Your devices: one
+  shows a QR code and a code, the other scans or types it). Whenever both are open they sync
+  directly, device to device: words, cards, reviews, books, songs, progress and settings (not
+  audio and video files; API keys only if you choose). "Sync now" and the last sync time are
+  there too. No account, and nothing kept on a server.
+
 ## Languages in Lingua 3.0 — twenty, and fifteen in beta (3.0-1, 3.0-1b)
 
 - **Twenty languages with everything:** English, Spanish, French, German, Italian, Portuguese,

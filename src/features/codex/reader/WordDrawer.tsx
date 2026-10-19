@@ -18,6 +18,7 @@ import type { WordExplanation } from '@/services/llm/explain';
 import { LlmError } from '@/services/llm/client';
 import { AddToDeck } from './AddToDeck';
 import { WordForms } from './WordForms';
+import { SpeakButton } from '@/features/speech/SpeakButton';
 
 export interface DrawerWord {
   norm: string;
@@ -84,6 +85,7 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
       <div>
         {subtitle && <p className="-mt-2 mb-3 font-serif text-[15px] text-ink-soft">{subtitle}</p>}
         <div className="flex flex-wrap items-center gap-1.5">
+          <SpeakButton lang={lang} text={context.surface ?? norm} size={16} label="Hear the word" className="size-8 bg-sunken text-ink-soft hover:text-ink" />
           {main?.ipa && <Badge>{main.ipa}</Badge>}
           {dict?.rank && (
             <Badge tone="sage">

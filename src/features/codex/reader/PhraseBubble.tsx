@@ -10,6 +10,7 @@ import { cx } from '@/lib/cx';
 import { translatePhrase } from '@/services/translate/phrase';
 import type { PhraseTranslation } from '@/services/translate/phrase';
 import { toast } from '@/state/ui';
+import { SpeakButton } from '@/features/speech/SpeakButton';
 
 export interface Phrase {
   text: string;
@@ -104,6 +105,7 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
         >
           <Copy size={15} aria-hidden /> Copy
         </button>
+        <SpeakButton lang={lang} text={phrase.text} size={15} label="Hear it" className="ml-auto size-8 hover:bg-on-inverse/10" />
       </div>
     </motion.div>,
     portalRoot,

@@ -537,3 +537,33 @@ Short records of choices that are not obvious from the code. Newest last.
   in "langues de bois" is wood) → the line in English → the verse in order. Wrong options are
   real words of the song, never "pa-pala". The words can be added as cards with the line they're
   sung in. Without a translation the lesson translates the song first (and can start without it).
+
+## 2026-10-19 — Lingua 3.0-4: natural voices, and sync between your devices
+
+- **The accent is the voice's, not the prompt's.** Gemini's speech models (3.8 Flash TTS, through
+  the Interactions API) take the text verbatim; Google's guide says to choose a regional voice
+  rather than ask for an accent. So Lingua asks the voice library for voices of the flag's locale
+  (`language_code=es-MX`) and uses the first, or the one the learner picks in Ordo. A locale with
+  no library voice gets no Gemini voice: Gemini's general voices could sound American.
+- **Each text is spoken once.** The WAV is kept in a `speech` table keyed by voice and text, so a
+  card heard every day costs one request ever, and works offline after. It is a cache: never
+  backed up or synced, made again on the other device when needed.
+- **A device voice only if it's a good one.** 2.0-1 removed the device voice for sounding robotic
+  and American. Now only voices for exactly the flag's locale, and only the natural kinds
+  (Natural, Neural, Premium, Enhanced, Google, Siri), are used; otherwise there's no speaker button.
+  Latin has no natural voice anywhere, so it has none.
+- **Sync is a backup sent both ways.** Each device sends the other a backup (no media) and merges
+  what comes back with the restore's newest-edit-wins merge, so there's one way data moves between
+  devices, already tested. Media stays on its device (too large for a quick sync); a backup file
+  still carries it.
+- **No accounts, no server holding data.** PeerJS's free public broker introduces the devices;
+  the data goes over WebRTC, encrypted, directly or through PeerJS's relay when a network blocks
+  direct links (still encrypted, never stored). Each pairing has a 16-character secret (80 bits)
+  that names both meeting places (hashed) and must be proven (HMAC of a fresh challenge) before
+  anything is sent, so finding the meeting place isn't enough to get the data.
+- **Pairings stay on their device.** The secret and the list of paired devices are device-only
+  settings, like API keys, and never travel in a backup. API keys go along only if "Send API
+  keys too" is on.
+- **A code to type as well as a QR code.** iPhone home-screen apps don't share storage with
+  Safari, so a QR code that opens a link couldn't pair the installed app; the app reads the QR
+  code with its own camera view (jsQR), and the code can always be typed.

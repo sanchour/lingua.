@@ -14,6 +14,7 @@ import { formatBytes } from '@/lib/format';
 import { installPack, useInstalledPacks, usePackJobs } from '@/services/packs/packs';
 import { toast } from '@/state/ui';
 import { SettingsSection } from '../SettingsSection';
+import { VoicePanel } from './VoicePanel';
 
 const GOALS = [5, 10, 15, 20, 30, 45, 60];
 
@@ -141,6 +142,8 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
           </div>
         </div>
       )}
+
+      <VoicePanel active={active} />
 
       <div className="mt-6">
         <p className="text-[14px] font-semibold">What you enjoy most</p>

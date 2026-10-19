@@ -78,6 +78,11 @@ export interface Settings {
   };
   /** Visio's player. */
   visio: { native: 'show' | 'blur' | 'hide'; autoPause: boolean; subtitleScale: number };
+  /**
+   * Natural voices: off, or which voice speaks each locale (a Gemini voice-library id the learner
+   * picked; the first good one when unset).
+   */
+  voice: { off: boolean; chosen: Record<string, { id: string; name: string }> };
   /** Cantus: how a song's lines are translated underneath, and whether its page follows the song. */
   cantus: { translation: 'show' | 'blur' | 'hide' };
   /**
@@ -99,6 +104,23 @@ export interface Settings {
   };
   /** Device-only. */
   meta: { deviceId: string; onboardedAt: number | null; lastBackupAt: number | null };
+  /**
+   * Device-only: the devices this one is paired with (each pairing's secret, which side of it this
+   * device is, and when they last synced), and whether API keys go along. Never in backups.
+   */
+  sync: { devices: PairedDevice[]; includeApiKeys: boolean };
+}
+
+export interface PairedDevice {
+  /** The other device's id (its settings.meta.deviceId). */
+  id: string;
+  name: string;
+  /** Shared by the two devices only: it names their meeting point and proves who's who. */
+  secret: string;
+  /** Which side of the pairing this device is: 'a' showed the code, 'b' typed or scanned it. */
+  role: 'a' | 'b';
+  pairedAt: number;
+  lastSyncAt: number | null;
 }
 
 export type SettingKey = keyof Settings;
@@ -128,14 +150,16 @@ export const DEFAULT_SETTINGS: Settings = {
   apiKeys: { groq: '', gemini: '' },
   audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 2, repeatGapMs: 1200, whisperModel: 'whisper-large-v3-turbo', downloadProxy: '', transcriber: 'groq', deviceModel: 'base' },
   visio: { native: 'blur', autoPause: false, subtitleScale: 1 },
+  voice: { off: false, chosen: {} },
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
   ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null },
+  sync: { devices: [], includeApiKeys: false },
 };
 
 /** Settings that describe this device rather than the learner; excluded from backup merges. */
-export const DEVICE_LOCAL_SETTINGS: ReadonlySet<string> = new Set<SettingKey>(['apiKeys', 'spotify', 'ui', 'meta']);
+export const DEVICE_LOCAL_SETTINGS: ReadonlySet<string> = new Set<SettingKey>(['apiKeys', 'spotify', 'ui', 'meta', 'sync']);
 
 function mergeValue<K extends SettingKey>(key: K, stored: unknown): Settings[K] {
   const fallback = DEFAULT_SETTINGS[key];

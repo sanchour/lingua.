@@ -4,7 +4,7 @@ import type { LucideIcon } from 'lucide-react';
 import { BookOpenText, Database, GraduationCap, Headphones, Info, Languages, Music2, Palette, Sparkles } from 'lucide-react';
 import { searchKey } from '@/design/primitives';
 
-export type SectionId = 'appearance' | 'reading' | 'study' | 'cards' | 'listening' | 'music' | 'language' | 'ai' | 'storage' | 'backup' | 'reset' | 'keyboard' | 'performance' | 'about';
+export type SectionId = 'appearance' | 'reading' | 'study' | 'cards' | 'listening' | 'music' | 'language' | 'ai' | 'sync' | 'storage' | 'backup' | 'reset' | 'keyboard' | 'performance' | 'about';
 
 export interface SettingsGroup {
   id: string;
@@ -24,7 +24,7 @@ export const GROUPS: SettingsGroup[] = [
   { id: 'languages', title: 'Languages', icon: Languages, color: '#9d8fcb', sections: ['language'] },
   { id: 'look', title: 'Look and feel', icon: Palette, color: '#c9a650', sections: ['appearance'] },
   { id: 'ai', title: 'AI and translation', icon: Sparkles, color: '#cf8299', sections: ['ai'] },
-  { id: 'data', title: 'Your data', icon: Database, color: '#5f9e96', sections: ['storage', 'backup', 'reset'] },
+  { id: 'data', title: 'Your data', icon: Database, color: '#5f9e96', sections: ['sync', 'storage', 'backup', 'reset'] },
   { id: 'about', title: 'About and more', icon: Info, color: '#948d82', sections: ['keyboard', 'performance', 'about'] },
 ];
 
@@ -93,6 +93,7 @@ export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'I already speak', section: 'language', also: 'native language' },
   { label: 'Learn another language', section: 'language', also: 'add new language switch start' },
   { label: 'What you enjoy most', section: 'language', also: 'interests recommendations home suggestions' },
+  { label: 'Voice', find: 'Voice', section: 'language', also: 'read aloud speak speech pronunciation accent audio gemini tts listen' },
 
   { label: 'AI provider', section: 'ai', also: 'groq gemini llm' },
   { label: 'API key', section: 'ai', also: 'key groq gemini connect free' },
@@ -106,6 +107,8 @@ export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Include audio, video and images', section: 'backup', also: 'media backup' },
   { label: 'Include API keys', section: 'backup', also: 'backup keys' },
   { label: 'Books for Goodreads', section: 'backup', also: 'export csv goodreads' },
+  { label: 'Pair a device', section: 'sync', also: 'sync iphone phone desktop computer qr code devices transfer move' },
+  { label: 'Sync now', section: 'sync', also: 'sync devices iphone phone desktop' },
   { label: 'Reset a language', find: 'Reset ', section: 'reset', also: 'start over progress' },
   { label: 'Erase everything', section: 'reset', also: 'delete wipe clear all data' },
 
@@ -123,6 +126,7 @@ const SECTION_TITLES: Record<SectionId, string> = {
   music: 'Music',
   language: 'Languages',
   ai: 'AI & translation',
+  sync: 'Your devices',
   storage: 'Storage',
   backup: 'Backup & move devices',
   reset: 'Reset',

@@ -11,6 +11,7 @@ import type { CardLook } from '../common/cardLook';
 import { ClipPlayer, useClip } from '../common/Clip';
 import { SongClip } from '../common/SongClip';
 import { articleFor, genderName, posName, splitAt } from '../common/words';
+import { SpeakButton } from '@/features/speech/SpeakButton';
 
 /** The flip: a soft 3D turn on a spring. Only transform animates (docs/PERFORMANCE.md). */
 const FLIP = { type: 'spring', stiffness: 230, damping: 25, mass: 0.9 } as const;
@@ -129,6 +130,7 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName }: 
       <span className="truncate text-[12px] font-bold tracking-wide text-ink-faint uppercase">{deckName}</span>
       <span className="flex shrink-0 items-center">
         {note.audioBlobId && <AudioButton blobId={note.audioBlobId} />}
+        {!note.audioBlobId && !clip && (!production || flipped) && <SpeakButton lang={lang} text={note.term} label="Hear the word" className="size-9 text-ink-soft hover:text-ink" />}
         {clip?.kind === 'audio' && (!production || flipped) && <ClipPlayer clip={clip} />}
       </span>
     </div>
