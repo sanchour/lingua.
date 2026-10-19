@@ -11,7 +11,8 @@ import { buttonClasses, Card } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { pickFiles } from '@/services/files/files';
-import { playStation } from '@/services/radio/play';
+import { usePlayer } from '@/services/audio/engine';
+import { playStation, stationMediaId } from '@/services/radio/play';
 import { stationPlace } from '@/services/radio/stations';
 import { AUDIO_ACCEPT, importAudioFiles } from '@/services/sonus/files';
 import { SongArt } from '@/features/cantus/SongArt';
@@ -44,15 +45,18 @@ interface LibraryHomeProps {
 export function LibraryHome({ lang, media, visible, feeds, playback, transcribed, onMusic, onPodcasts, onRadio }: LibraryHomeProps) {
   const saved = useSavedSongs(lang);
   const recentSongs = useRecentSongs(lang, 12);
-  const stations = useSavedStations(lang)?.filter((s) => s.favorite);
+  const savedStations = useSavedStations(lang);
+  const stations = savedStations?.filter((s) => s.favorite);
+  const onAir = usePlayer((p) => (p.media?.kind === 'radio' ? p.media.id : null));
   const navigate = useNavigate();
 
-  // Songs and episodes played lately, in one row.
+  // Songs, episodes and stations played lately, in one row.
   const recent = useMemo(() => {
     const songs = (recentSongs ?? []).map((s) => ({ at: s.lastPlayedAt ?? 0, song: s }) as const);
     const items = media.filter((m) => m.lastPlayedAt && m.kind !== 'video').map((m) => ({ at: m.lastPlayedAt!, media: m }) as const);
-    return [...songs, ...items].sort((a, b) => b.at - a.at).slice(0, 14);
-  }, [recentSongs, media]);
+    const radios = (savedStations ?? []).filter((s) => s.playedAt).map((s) => ({ at: s.playedAt!, station: s }) as const);
+    return [...songs, ...items, ...radios].sort((a, b) => b.at - a.at).slice(0, 14);
+  }, [recentSongs, media, savedStations]);
 
   // The newest episodes of the podcasts you follow.
   const fresh = useMemo(
@@ -76,8 +80,27 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
         <Shelf title="Recently played">
           <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
             {recent.map((r) => (
-              <li key={'song' in r ? `s:${r.song.id}` : `m:${r.media.id}`} className="w-32 shrink-0 snap-start sm:w-36">
-                {'song' in r ? (
+              <li key={'song' in r ? `s:${r.song.id}` : 'station' in r ? `r:${r.station.id}` : `m:${r.media.id}`} className="w-32 shrink-0 snap-start sm:w-36">
+                {'station' in r ? (
+                  // A station plays from where it is now, and opens full screen.
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onAir !== stationMediaId(r.station.id)) playStation(r.station, lang);
+                      navigate(`/sonus/station/${r.station.id}`);
+                    }}
+                    className="group block w-full text-left"
+                  >
+                    <span className="relative block">
+                      <Artwork title={r.station.name} coverUrl={r.station.favicon} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
+                      <span className="absolute top-2 left-2 rounded-full bg-black/55 px-1.5 py-0.5 text-[10px] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-sm">Live</span>
+                    </span>
+                    <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{r.station.name}</span>
+                    <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
+                      <Radio size={12} className="shrink-0 text-sage-text" aria-hidden /> {stationPlace(r.station) ?? 'Radio'}
+                    </span>
+                  </button>
+                ) : 'song' in r ? (
                   <Link to={`/sonus/song/${encodeURIComponent(r.song.id)}`} className="group block">
                     <SongArt url={r.song.artworkUrl} title={r.song.title} className="w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" size={300} />
                     <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{r.song.title}</span>

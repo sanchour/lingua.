@@ -50,7 +50,7 @@ export function MiniPlayer() {
           style={wide ? undefined : { bottom: 'calc(max(10px, env(safe-area-inset-bottom) - 10px) + 76px)' }}
         >
           <div className="flex items-center gap-3 p-2 pr-2.5">
-            <Link to={live ? '/sonus?tab=radio' : `/sonus/play/${media.id}`} className="flex min-w-0 flex-1 items-center gap-3" aria-label={`Open ${media.title}`}>
+            <Link to={live ? `/sonus/station/${media.id.replace(/^radio:/, '')}` : `/sonus/play/${media.id}`} className="flex min-w-0 flex-1 items-center gap-3" aria-label={`Open ${media.title}`}>
               <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="w-11" rounded="rounded-lg" />
               <span className="min-w-0">
                 <span lang={media.lang} className="block truncate text-[14px] font-semibold">

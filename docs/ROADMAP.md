@@ -613,28 +613,34 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
    up as they are read.
 4. **Conversation**: the corner with prompts and links, and the in-app text chat with a key.
 
-- [ ] **Radio, a real map** (the user's note): the world's countries drawn as shapes (Natural Earth
+- [x] **Radio, a real map** (the user's note): the world's countries drawn as shapes (Natural Earth
       data, made small by a script), in the app's own colours, light and dark, with a touch of
       radio (stations send out rings, like a signal). The countries where the language is on air
       are tinted, each with a node showing how many stations it has; tap a country or its node and
       the map flies to it and lists its stations. Zoomed in, the places with stations show as
       lights. Drag to move, pinch, scroll or double-tap to zoom, +/− and "World" buttons;
-      smooth on a phone (one canvas, drawn once per frame).
-- [ ] **A full-screen player for a station** (the user's note), like a podcast's: tap the mini
+      smooth on a phone (one canvas, drawn once per frame). *Done:* nodes that would overlap join
+      into one (tap it to fly in until they part), names never cover each other or a node, and
+      countries go by their everyday names ("Venezuela", not "Bolivarian Republic Of Venezuela").
+- [x] **A full-screen player for a station** (the user's note), like a podcast's: tap the mini
       player or the station on air. Artwork, name, place, what's on, live, the heart, play and
       pause, the station's site, and **commute mode** (the big-button page: play and pause, your
       stations one after another, what's on in large type).
-- [ ] **A live transcript, where the station allows it:** Lingua listens along in parts of about
-      fifteen seconds and Whisper writes them out (Groq with a key, or on the device), a few
+- [x] **A live transcript, where the station allows it:** Lingua listens along in parts of about
+      twelve seconds and Whisper writes them out (Groq with a key, or on the device), a few
       seconds behind the sound. Every word works as in Codex (hover, tap, hold, drag to translate,
       save to cards). Off until you turn it on, since it streams the station a second time; only
       stations whose servers let web pages read the stream (many Icecast servers do) can be
-      transcribed, and the player says so when one can't.
-- [ ] **Library › Recently played** has the stations you played lately, with songs and episodes.
-- [ ] **Music, made to explore** (the user's note): the "Songs you love" card goes. Shelves in the
+      transcribed, and the player says so when one can't. *Done;* without a key or Whisper on the
+      device it turns itself off at once and says where to add one. Not yet heard with a real key.
+- [x] **Library › Recently played** has the stations you played lately, with songs and episodes.
+- [x] **Music, made to explore** (the user's note): the "Songs you love" card goes. Shelves in the
       style of "Recently opened": your most played songs, songs from the artists to learn with
       (a different few each day), a style of the day, and "Surprise me" (a random song in the
       language). Apple's search is asked a few times a day at most; results are kept for the day.
+      *Done:* Recently opened, Explore today (with shuffle, and a round button on each song for
+      Apple's 30-second preview), the charts, your songs, Most played by you (from three songs
+      opened twice or more), Style of the day, then styles, Spotify and artists.
 - [ ] **Comics, fully supported in Codex:** open CBZ/CBR-style archives (zip), image folders and
       PDFs page by page, with a reader made for panels: fit to width or page, swipe on a phone,
       two pages on desktop, zoom into a panel. Speech bubbles become text by on-device OCR

@@ -217,3 +217,20 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] The heart keeps a station: it shows under "Your stations" and in Library, and on the other
       paired device after a sync.
 - [ ] A country chip and a search ("jazz") list their stations.
+
+## Lingua 3.0-6, part 1: Radio and Music
+
+- [ ] Radio: the map shows the countries in the app's colours; drag it, pinch to zoom, double-tap
+      to zoom in. It follows light and dark (Ordo › Look).
+- [ ] Tap a country's node: the map flies to it and its stations show under the map. A node with a
+      white ring holds several countries: a tap flies in until they part.
+- [ ] Zoomed in, towns glow; a tap lists that town's stations.
+- [ ] Play a station, then tap the mini player: the station opens full screen; the arrow closes it.
+- [ ] Live text without a Groq key: it turns itself off and says where to add one. With a key: lines
+      appear about fifteen seconds after they're said; tap a word for its meaning.
+- [ ] The bike button opens commute mode: previous and next go through your stations; Save and Live
+      text work with big buttons.
+- [ ] Library › Recently played shows the station with "Live"; a tap plays it and opens it.
+- [ ] Music: no "Songs you love" card. Explore today shows songs; the round button plays 30 seconds
+      (Sonus pauses); the shuffle button brings other songs; "Surprise me" opens one.
+- [ ] Open three songs twice each (a minute apart): "Most played by you" appears with the counts.

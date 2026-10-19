@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { LANGUAGES } from '@/core/lang/languages';
 import { createDb } from '@/data/db';
 import { markStationPlayed, toggleFavorite } from '@/data/radio';
-import { BRIGHT_CELLS, DIM_CELLS } from '@/features/sonus/radio/worldDots';
-import { decodeCells, fitView, projector } from '@/features/sonus/radio/sky';
-import { cleanStations, countriesOf, placesOf, radioNames, readAzuraCast, readIcecast } from './stations';
+import { WORLD_MAP } from '@/features/sonus/radio/worldMap';
+import { between, boxAround, clampCamera, decodeCountries, decodePolyline, fitBox, latToY, lonToX, minZoom, xToLon, yToLat } from '@/features/sonus/radio/sky';
+import { cleanStations, countriesOf, countryName, placesOf, radioNames, readAzuraCast, readIcecast, toStation } from './stations';
 import type { RawStation } from './stations';
 
 const raw = (over: Partial<RawStation>): RawStation => ({ stationuuid: over.name ?? 'x', name: 'Radio', url_resolved: 'https://stream.example/live', codec: 'MP3', lastcheckok: 1, clickcount: 1, ...over });
@@ -17,6 +17,12 @@ describe('radio stations', () => {
     expect(radioNames('es')).toEqual(['spanish']);
     expect(radioNames('sh')).toEqual(['croatian', 'serbian', 'bosnian', 'montenegrin']);
     expect(radioNames('nb')).toContain('norsk');
+  });
+
+  it('calls countries by their everyday names', () => {
+    expect(toStation(raw({ country: 'Bolivarian Republic Of Venezuela', countrycode: 've' }))?.country).toBe('Venezuela');
+    expect(countryName('US', 'The United States Of America')).toBe('United States');
+    expect(countryName(undefined, 'Somewhere')).toBe('Somewhere');
   });
 
   it('keeps only https streams that play here, each once, most listened first', () => {
@@ -79,35 +85,45 @@ describe('radio stations', () => {
     expect(readAzuraCast({})).toBeNull();
   });
 
-  it('draws the world from its cells, and fits the view to the stations', () => {
-    const cells = [...decodeCells(DIM_CELLS), ...decodeCells(BRIGHT_CELLS)];
-    expect(cells.length).toBeGreaterThan(1000);
-    for (const [lat, lon] of cells) {
-      expect(Math.abs(lat)).toBeLessThanOrEqual(90);
-      expect(Math.abs(lon)).toBeLessThanOrEqual(180);
-    }
-    // Madrid is somewhere in the cells.
-    expect(cells.some(([lat, lon]) => Math.abs(lat - 40.4) < 0.5 && Math.abs(lon + 3.7) < 0.5)).toBe(true);
+  it('draws the countries, and moves and fits the map', () => {
+    expect(decodePolyline('_p~iF~ps|U')).toEqual([[38500, -120200]]); // Google's example (38.5, -120.2), read at 0.01° steps
+    const countries = decodeCountries(WORLD_MAP);
+    expect(countries.length).toBeGreaterThan(200);
+    const spain = countries.find((c) => c.code === 'ES')!;
+    const france = countries.find((c) => c.code === 'FR')!;
+    const usa = countries.find((c) => c.code === 'US')!;
+    // Madrid is inside Spain's mainland box; France's box is Europe's France, not French Guiana.
+    const [mx, my] = [lonToX(-3.7), latToY(40.4)];
+    expect(mx > spain.main.x0 && mx < spain.main.x1 && my > spain.main.y0 && my < spain.main.y1).toBe(true);
+    expect(xToLon(france.main.x0)).toBeGreaterThan(-6);
+    expect(xToLon(usa.main.x0)).toBeGreaterThan(-130); // the lower 48, not Alaska
+    expect(yToLat(latToY(52.5))).toBeCloseTo(52.5, 6);
 
-    const germany = [
+    // A camera can't leave the world or zoom out past it.
+    const [w, h] = [400, 300];
+    const out = clampCamera({ x: -2, y: 5, z: 1 }, w, h);
+    expect(out.z).toBe(minZoom(w, h));
+    expect(out.x).toBe(0.5);
+    const germany = boxAround([
       { lat: 52.5, lon: 13.4 },
       { lat: 48.1, lon: 11.6 },
       { lat: 53.6, lon: 10 },
       { lat: 50.9, lon: 6.9 },
-      { lat: 48.2, lon: 16.4 },
-    ];
-    const view = fitView(germany, 16 / 10);
-    expect(view.west).toBeLessThan(6.9);
-    expect(view.east).toBeGreaterThan(16.4);
-    expect(view.north - view.south).toBeLessThan(20);
-    const at = projector(view, 320, 200);
-    for (const p of germany) {
-      const [x, y] = at(p.lat, p.lon);
+    ])!;
+    const view = fitBox(germany, w, h);
+    for (const [lat, lon] of [
+      [52.5, 13.4],
+      [50.9, 6.9],
+    ]) {
+      const x = (lonToX(lon) - view.x) * view.z + w / 2;
+      const y = (latToY(lat) - view.y) * view.z + h / 2;
       expect(x).toBeGreaterThan(0);
-      expect(x).toBeLessThan(320);
+      expect(x).toBeLessThan(w);
       expect(y).toBeGreaterThan(0);
-      expect(y).toBeLessThan(200);
+      expect(y).toBeLessThan(h);
     }
+    // Halfway between two zooms is halfway in scale.
+    expect(between({ x: 0, y: 0, z: 100 }, { x: 1, y: 1, z: 400 }, 0.5).z).toBeCloseTo(200, 6);
   });
 
   it('keeps favourites and stations played lately, and favourites survive being played', async () => {

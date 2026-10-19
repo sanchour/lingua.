@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { ChevronRight, Heart, LoaderCircle, Music2, Pause, Play, SearchX } from 'lucide-react';
+import { ChevronRight, LoaderCircle, Music2, Pause, Play, SearchX, Shuffle, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { formatClock } from '@/core/audio/cues';
 import { getLanguage } from '@/core/lang/languages';
-import { openSong, useRecentSongs, useSavedSongs } from '@/data/songs';
+import { openSong, useMostPlayed, useRecentSongs, useSavedSongs } from '@/data/songs';
 import type { Song } from '@/data/types';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
@@ -18,6 +18,7 @@ import { searchSongs } from '@/services/cantus/catalog';
 import type { SongHit } from '@/services/cantus/catalog';
 import { toast } from '@/state/ui';
 import { discoverFor, EASE_LABEL } from './discover';
+import { useExplore } from './explore';
 import { openByName, useCharts, useSpotifyLikes } from './library';
 import type { ChartSong } from './library';
 import { SongArt } from './SongArt';
@@ -27,15 +28,16 @@ const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase'
 
 /**
  * Music in Sonus (Cantus, learning through music): find any song in the language, sing along with its
- * lyrics (every word tappable, a translation under each line), keep the songs you love, and discover
- * this week's charts, artists and styles. One room, from your own songs to new ones.
+ * lyrics (every word tappable, a translation under each line), and explore: shelves of songs to tap,
+ * from what you opened lately to today's finds, this week's charts and a style of the day.
  */
 export function MusicRoom({ initialQuery = '' }: { initialQuery?: string }) {
   const { language } = useApp();
   const lang = language.id;
   const { pointer } = useLayout();
   const saved = useSavedSongs(lang);
-  const recent = useRecentSongs(lang, 10);
+  const recent = useRecentSongs(lang, 14);
+  const mostPlayed = useMostPlayed(lang);
   const connected = Boolean(useApp().settings.spotify.refreshToken);
 
   const [query, setQuery] = useState(initialQuery);
@@ -55,9 +57,13 @@ export function MusicRoom({ initialQuery = '' }: { initialQuery?: string }) {
         <SearchResults lang={lang} query={query.trim()} byArtist={byArtist} />
       ) : (
         <div className="space-y-10">
+          {recent && recent.length > 0 && <SongShelf title="Recently opened" songs={recent} />}
+          <ExploreShelves key={lang} lang={lang} />
+          {saved && saved.length > 0 && <SongShelf title="Your songs" songs={saved} />}
+          {mostPlayed && mostPlayed.length >= 3 && <SongShelf title="Most played by you" songs={mostPlayed} plays />}
           <Styles lang={lang} onSearch={searchFor} />
-          <YourSongs lang={lang} saved={saved} recent={recent} />
-          <DiscoverTab lang={lang} onSearch={searchFor} between={connected ? <SpotifyLikes lang={lang} /> : <SpotifyInvite />} />
+          {connected ? <SpotifyLikes lang={lang} /> : <SpotifyInvite />}
+          <Artists lang={lang} onSearch={searchFor} />
         </div>
       )}
     </div>
@@ -145,10 +151,11 @@ function HitRow({ hit, busy, onOpen }: { hit: SongHit; busy: boolean; onOpen: ()
 let previewAudio: HTMLAudioElement | null = null;
 let stopPreview: (() => void) | null = null;
 
-/** Artwork that plays Apple's 30-second preview when tapped. */
-function PreviewArt({ url, preview, title }: { url?: string; preview?: string; title: string }) {
+/** Apple's 30-second preview, one at a time across the room; Sonus pauses while it plays. */
+function usePreview(preview?: string) {
   const [playing, setPlaying] = useState(false);
-  useEffect(() => () => void (playing && previewAudio?.pause()), [playing]);
+  // Gone or stopped: pause, unless another preview has taken the player since.
+  useEffect(() => () => void (playing && previewAudio?.src === preview && previewAudio?.pause()), [playing, preview]);
   const toggle = () => {
     if (!preview) return;
     if (playing) {
@@ -161,11 +168,20 @@ function PreviewArt({ url, preview, title }: { url?: string; preview?: string; t
     previewAudio.src = preview;
     previewAudio.onended = () => setPlaying(false);
     if (usePlayer.getState().status === 'playing') pauseSonus();
-    void previewAudio.play().then(() => {
-      setPlaying(true);
-      stopPreview = () => setPlaying(false);
-    });
+    void previewAudio
+      .play()
+      .then(() => {
+        setPlaying(true);
+        stopPreview = () => setPlaying(false);
+      })
+      .catch(() => toast('The preview couldn’t play. Try again in a moment.', { tone: 'error' }));
   };
+  return { playing, toggle };
+}
+
+/** Artwork that plays Apple's 30-second preview when tapped. */
+function PreviewArt({ url, preview, title }: { url?: string; preview?: string; title: string }) {
+  const { playing, toggle } = usePreview(preview);
   return (
     <button type="button" onClick={toggle} disabled={!preview} aria-label={playing ? 'Stop the preview' : `Hear a preview of ${title}`} className="group relative shrink-0">
       <SongArt url={url} title={title} className="w-12" rounded="rounded-lg" size={100} />
@@ -194,63 +210,125 @@ function SkeletonRows() {
   );
 }
 
-// ── Your songs ──────────────────────────────────────────────────────────────────────────────────
+// ── Shelves ─────────────────────────────────────────────────────────────────────────────────────
 
-function SongTile({ song, i }: { song: Song; i: number }) {
-  const tint = song.palette ? { '--song': song.palette.base } : undefined;
+const shelf = '-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]';
+
+/** A row of your songs: recently opened, saved, or played most. */
+function SongShelf({ title, songs, plays = false }: { title: string; songs: Song[]; plays?: boolean }) {
   return (
-    <motion.li {...enter(i)} className="min-w-0">
-      <Link to={`/sonus/song/${encodeURIComponent(song.id)}`} className="group block" style={tint as CSSProperties}>
-        <SongArt url={song.artworkUrl} title={song.title} className="song-art w-full transition-transform duration-300 group-hover:-translate-y-0.5 group-active:scale-[0.98]" rounded="rounded-2xl" size={400} />
-        <span className="mt-2 block truncate text-[14.5px] leading-snug font-semibold">{song.title}</span>
-        <span className="block truncate text-[13px] text-ink-soft">{song.artist}</span>
-      </Link>
+    <section aria-label={title}>
+      <h2 className={cx(label, 'mb-3')}>{title}</h2>
+      <ul className={shelf}>
+        {songs.map((s, i) => (
+          <motion.li key={s.id} {...enter(i)} className="w-32 shrink-0 snap-start sm:w-36">
+            <Link to={`/sonus/song/${encodeURIComponent(s.id)}`} className="group block" style={s.palette ? ({ '--song': s.palette.base } as CSSProperties) : undefined}>
+              <span className="relative block">
+                <SongArt url={s.artworkUrl} title={s.title} className="song-art w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" size={300} />
+                {plays && <span className="absolute top-1.5 left-1.5 rounded-full bg-black/55 px-1.5 text-[11.5px] font-bold text-white tabular-nums">{s.plays}×</span>}
+              </span>
+              <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{s.title}</span>
+              <span className="block truncate text-[12.5px] text-ink-soft">{s.artist}</span>
+            </Link>
+          </motion.li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/** A song to explore: tap it to open it with its lyrics, or its round button to hear 30 seconds first. */
+function HitTile({ hit, busy, onOpen, i }: { hit: SongHit; busy: boolean; onOpen: () => void; i: number }) {
+  const { playing, toggle } = usePreview(hit.previewUrl);
+  return (
+    <motion.li {...enter(i)} className="relative w-32 shrink-0 snap-start sm:w-36">
+      <button type="button" onClick={onOpen} className="group block w-full text-left">
+        <span className="relative block">
+          <SongArt url={hit.artworkUrl} title={hit.title} className="w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" size={300} />
+          {busy && (
+            <span className="absolute inset-0 grid place-items-center rounded-xl bg-black/30 text-white">
+              <LoaderCircle size={20} className="animate-spin" aria-hidden />
+            </span>
+          )}
+        </span>
+        <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{hit.title}</span>
+        <span className="block truncate text-[12.5px] text-ink-soft">{hit.artist}</span>
+      </button>
+      {hit.previewUrl && (
+        <span className="pointer-events-none absolute inset-x-0 top-0 aspect-square">
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={playing ? 'Stop the preview' : `Hear a preview of ${hit.title}`}
+            className={cx('pointer-events-auto absolute right-1.5 bottom-1.5 grid size-9 place-items-center rounded-full text-white shadow-elev-1 backdrop-blur-sm transition-transform active:scale-90', playing ? 'bg-[var(--cantus)]' : 'bg-black/55 hover:bg-black/70')}
+          >
+            {playing ? <Pause size={15} className="fill-current" aria-hidden /> : <Play size={15} className="translate-x-px fill-current" aria-hidden />}
+          </button>
+        </span>
+      )}
     </motion.li>
   );
 }
 
-function YourSongs({ lang, saved, recent }: { lang: string; saved?: Song[]; recent?: Song[] }) {
-  if (!saved || !recent) return null;
-  const others = recent.filter((s) => !s.savedAt);
+function SkeletonTiles() {
   return (
-    <div className="space-y-9">
-      {saved.length ? (
-        <section aria-label="Your songs">
-          <h2 className={cx(label, 'mb-3')}>Your songs</h2>
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {saved.map((s, i) => (
-              <SongTile key={s.id} song={s} i={i} />
-            ))}
-          </ul>
-        </section>
-      ) : (
-        <Card className="flex items-center gap-4 p-5">
-          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[var(--cantus-soft)] text-[var(--cantus-text)]">
-            <Heart size={22} aria-hidden />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block font-serif text-lg font-semibold">Songs you love, in {getLanguage(lang)?.name}</span>
-            <span className="block text-[14px] leading-snug text-ink-soft">Search for one above, or pick from the charts and artists below. Save it with the heart and it lives here, lyrics and all.</span>
-          </span>
-        </Card>
-      )}
-      {others.length > 0 && (
-        <section aria-label="Recently opened">
-          <h2 className={cx(label, 'mb-3')}>Recently opened</h2>
-          <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
-            {others.map((s) => (
-              <li key={s.id} className="w-32 shrink-0 snap-start sm:w-36">
-                <Link to={`/sonus/song/${encodeURIComponent(s.id)}`} className="block">
-                  <SongArt url={s.artworkUrl} title={s.title} className="w-full" rounded="rounded-xl" size={300} />
-                  <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{s.title}</span>
-                  <span className="block truncate text-[12.5px] text-ink-soft">{s.artist}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+    <div className={shelf} aria-label="Finding songs">
+      {Array.from({ length: 6 }, (_, i) => (
+        <div key={i} className="w-32 shrink-0 sm:w-36">
+          <div className="aspect-square w-full animate-pulse rounded-xl bg-sunken" />
+          <div className="mt-2 h-3.5 w-3/4 animate-pulse rounded bg-sunken" />
+          <div className="mt-1.5 h-3 w-1/2 animate-pulse rounded bg-sunken" />
+        </div>
+      ))}
     </div>
+  );
+}
+
+/** Today's songs from the language's artists, this week's charts, and a style of the day. */
+function ExploreShelves({ lang }: { lang: string }) {
+  const { explore, loading, failed, shuffle } = useExplore(lang);
+  const { opening, openHit } = useOpen(lang);
+  const pool = [...(explore?.finds ?? []), ...(explore?.style?.songs ?? [])];
+  const surprise = () => pool.length && void openHit(pool[Math.floor(Math.random() * pool.length)]);
+  const small = 'inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border border-line bg-surface px-3 text-[13px] font-semibold text-ink-soft transition-colors hover:text-ink active:scale-[0.97] disabled:opacity-50';
+  return (
+    <>
+      <section aria-label="Songs to explore">
+        <div className="mb-3 flex items-center gap-2">
+          <h2 className={cx(label, 'min-w-0 flex-1')}>Explore today</h2>
+          <button type="button" onClick={surprise} disabled={!pool.length} className={small}>
+            <Sparkles size={14} className="text-[var(--cantus-text)]" aria-hidden /> Surprise me
+          </button>
+          <button type="button" onClick={shuffle} disabled={loading} aria-label="Other songs" title="Other songs" className={cx(small, 'w-8 justify-center px-0')}>
+            {loading && explore ? <LoaderCircle size={14} className="animate-spin" aria-hidden /> : <Shuffle size={14} aria-hidden />}
+          </button>
+        </div>
+        {explore?.finds.length ? (
+          <ul className={shelf}>
+            {explore.finds.map((hit, i) => (
+              <HitTile key={hit.itunesId} hit={hit} i={i} busy={opening === String(hit.itunesId)} onOpen={() => void openHit(hit)} />
+            ))}
+          </ul>
+        ) : failed ? (
+          <p className="text-[14px] text-ink-soft">Apple’s music search didn’t answer, so there are no new songs to show. Check the connection and shuffle again.</p>
+        ) : (
+          <SkeletonTiles />
+        )}
+      </section>
+      <Charts lang={lang} />
+      {explore?.style && (
+        <section aria-label={`Style of the day: ${explore.style.name}`}>
+          <h2 className={cx(label, 'mb-3')}>
+            Style of the day · <span className="text-[var(--cantus-text)]">{explore.style.name}</span>
+          </h2>
+          <ul className={shelf}>
+            {explore.style.songs.map((hit, i) => (
+              <HitTile key={hit.itunesId} hit={hit} i={i} busy={opening === String(hit.itunesId)} onOpen={() => void openHit(hit)} />
+            ))}
+          </ul>
+        </section>
+      )}
+    </>
   );
 }
 
@@ -317,60 +395,57 @@ function SpotifyLikes({ lang }: { lang: string }) {
 
 // ── Discover ────────────────────────────────────────────────────────────────────────────────────
 
-/** This week's charts, then (between) your Spotify, then artists and styles to explore. */
-function DiscoverTab({ lang, onSearch, between }: { lang: string; onSearch: (term: string, byArtist?: boolean) => void; between?: ReactNode }) {
-  const picks = discoverFor(lang);
+/** This week's charts in the language's countries. */
+function Charts({ lang }: { lang: string }) {
   const charts = useCharts(lang);
   const { opening, open } = useOpen(lang);
-  const where = charts ? [...new Set(charts.songs.map((s) => s.where))] : [];
+  if (!charts) return null;
+  const where = [...new Set(charts.songs.map((s) => s.where))];
   return (
-    <div className="space-y-9">
-      {charts && (
-        <section aria-label="Charts">
-          <div className="mb-3 flex items-baseline gap-3">
-            <h2 className={cx(label, 'flex-1')}>Most played now</h2>
-            <span className="truncate text-[12.5px] text-ink-faint">in {where.join(', ')}</span>
-          </div>
-          <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
-            {charts.songs.map((s, i) => (
-              <ChartTile key={`${s.title}|${s.artist}`} song={s} rank={i + 1} busy={opening === `${s.title}|${s.artist}`} onOpen={() => void open(`${s.title}|${s.artist}`, () => openByName(lang, s.title, s.artist, { cover: s.cover, durationMs: s.durationMs }))} />
-            ))}
-          </ul>
-        </section>
-      )}
-      {between}
-      {picks && (
-        <>
-          {picks.artists.length > 0 && (
-          <section aria-label="Artists to start with">
-            <h2 className={cx(label, 'mb-3')}>Artists to learn with</h2>
-            <ul className="grid gap-2 sm:grid-cols-2">
-              {picks.artists.map((a, i) => (
-                <motion.li key={a.name} {...enter(i)}>
-                  <button type="button" onClick={() => onSearch(a.name, true)} className="flex w-full items-center gap-3 rounded-2xl border border-line/70 bg-surface p-3.5 text-left transition-colors hover:bg-raised active:scale-[0.99]">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent-soft font-serif text-[17px] font-semibold text-accent-text" aria-hidden>
-                      {a.name.replace(/^(the|los|las|la|le|les|die|il|i)\s+/i, '').charAt(0)}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[15px] font-semibold">{a.name}</span>
-                      <span className="block text-[13px] leading-snug text-ink-soft">{a.why}</span>
-                    </span>
-                    <span className={cx('shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold', a.ease === 'clear' ? 'bg-sage-soft text-sage-text' : a.ease === 'fast' ? 'bg-accent-soft text-accent-text' : 'bg-sunken text-ink-soft')}>
-                      {EASE_LABEL[a.ease]}
-                    </span>
-                  </button>
-                </motion.li>
-              ))}
-            </ul>
-          </section>
-          )}
-        </>
-      )}
-    </div>
+    <section aria-label="Charts">
+      <div className="mb-3 flex items-baseline gap-3">
+        <h2 className={cx(label, 'flex-1')}>Most played now</h2>
+        <span className="truncate text-[12.5px] text-ink-faint">in {where.join(', ')}</span>
+      </div>
+      <ul className={shelf}>
+        {charts.songs.map((s, i) => (
+          <ChartTile key={`${s.title}|${s.artist}`} song={s} rank={i + 1} busy={opening === `${s.title}|${s.artist}`} onOpen={() => void open(`${s.title}|${s.artist}`, () => openByName(lang, s.title, s.artist, { cover: s.cover, durationMs: s.durationMs }))} />
+        ))}
+      </ul>
+    </section>
   );
 }
 
-/** Styles to explore, at the top of the room: one tap searches Apple's catalogue for that style. */
+/** Artists picked by hand for learners, with why; one tap shows their songs. */
+function Artists({ lang, onSearch }: { lang: string; onSearch: (term: string, byArtist?: boolean) => void }) {
+  const picks = discoverFor(lang);
+  if (!picks?.artists.length) return null;
+  return (
+    <section aria-label="Artists to start with">
+      <h2 className={cx(label, 'mb-3')}>Artists to learn with</h2>
+      <ul className="grid gap-2 sm:grid-cols-2">
+        {picks.artists.map((a, i) => (
+          <motion.li key={a.name} {...enter(i)}>
+            <button type="button" onClick={() => onSearch(a.name, true)} className="flex w-full items-center gap-3 rounded-2xl border border-line/70 bg-surface p-3.5 text-left transition-colors hover:bg-raised active:scale-[0.99]">
+              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent-soft font-serif text-[17px] font-semibold text-accent-text" aria-hidden>
+                {a.name.replace(/^(the|los|las|la|le|les|die|il|i)\s+/i, '').charAt(0)}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[15px] font-semibold">{a.name}</span>
+                <span className="block text-[13px] leading-snug text-ink-soft">{a.why}</span>
+              </span>
+              <span className={cx('shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold', a.ease === 'clear' ? 'bg-sage-soft text-sage-text' : a.ease === 'fast' ? 'bg-accent-soft text-accent-text' : 'bg-sunken text-ink-soft')}>
+                {EASE_LABEL[a.ease]}
+              </span>
+            </button>
+          </motion.li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/** Styles to explore: one tap searches Apple's catalogue for that style. */
 function Styles({ lang, onSearch }: { lang: string; onSearch: (term: string) => void }) {
   const picks = discoverFor(lang);
   if (!picks?.styles.length) return null;

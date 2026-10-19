@@ -20,7 +20,7 @@ const isImmersive = (pathname: string, wide: boolean) =>
   pathname.startsWith('/codex/read/') ||
   pathname.startsWith('/thesaurus/study/') ||
   pathname === '/sonus/commute' ||
-  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/visio/watch/') || /^\/sonus\/song\/[^/]+$/.test(pathname)));
+  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/sonus/station/') || pathname.startsWith('/visio/watch/') || /^\/sonus\/song\/[^/]+$/.test(pathname)));
 
 /** On wide screens Ordo's groups open beside their list, so moving between them isn't a new page. */
 const pageKey = (pathname: string, wide: boolean) => (wide && /^\/ordo(?:\/(?!lab)[\w-]+)?\/?$/.test(pathname) ? '/ordo' : pathname);
@@ -32,7 +32,7 @@ export function AppShell() {
   const setShortcutsOpen = useUI((s) => s.setShortcutsOpen);
   const immersive = isImmersive(pathname, layout === 'wide');
   // The mini player shows everywhere except where the full player is on screen.
-  const showMini = !immersive && !pathname.startsWith('/sonus/play/') && !pathname.startsWith('/visio/watch/');
+  const showMini = !immersive && !pathname.startsWith('/sonus/play/') && !pathname.startsWith('/sonus/station/') && !pathname.startsWith('/visio/watch/');
   const { language } = useApp();
   const fullMotion = useFullMotion();
 

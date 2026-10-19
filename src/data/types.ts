@@ -513,6 +513,8 @@ export interface Song extends Synced {
   previewAtMs?: number;
   savedAt?: number;
   lastPlayedAt?: number;
+  /** How many times the song has been opened (for "Most played by you"). */
+  plays?: number;
   /** The lyrics opened in Codex as a text. */
   textId?: string;
 }

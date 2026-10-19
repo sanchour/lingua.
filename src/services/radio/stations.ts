@@ -64,6 +64,26 @@ export interface RawStation {
   geo_long?: number | null;
 }
 
+let regions: Intl.DisplayNames | null | undefined;
+/** A country's everyday name ("Venezuela", where radio-browser says "Bolivarian Republic Of Venezuela"). */
+export function countryName(code: string | undefined, fallback?: string): string | undefined {
+  if (!code) return fallback;
+  if (regions === undefined) {
+    try {
+      regions = new Intl.DisplayNames(['en'], { type: 'region' });
+    } catch {
+      regions = null;
+    }
+  }
+  try {
+    const name = regions?.of(code);
+    if (name && name !== code) return name;
+  } catch {
+    // Not a region code.
+  }
+  return fallback;
+}
+
 const https = (u?: string) => (u && /^https:\/\//i.test(u.trim()) ? u.trim() : undefined);
 const place = (n: number | null | undefined, max: number) => (typeof n === 'number' && Number.isFinite(n) && Math.abs(n) <= max ? n : undefined);
 
@@ -81,7 +101,7 @@ export function toStation(raw: RawStation): RadioStation | null {
     url,
     homepage: https(raw.homepage),
     favicon: https(raw.favicon),
-    country: raw.country?.trim() || undefined,
+    country: countryName(raw.countrycode?.trim().toUpperCase(), raw.country?.trim() || undefined),
     countryCode: raw.countrycode?.trim().toUpperCase() || undefined,
     state: raw.state?.trim() || undefined,
     tags: (raw.tags ?? '')
@@ -235,7 +255,7 @@ export function countriesOf(stations: RadioStation[]): Array<{ code: string; nam
   const counts = new Map<string, { code: string; name: string; count: number }>();
   for (const s of stations) {
     if (!s.countryCode) continue;
-    const c = counts.get(s.countryCode) ?? { code: s.countryCode, name: s.country ?? s.countryCode, count: 0 };
+    const c = counts.get(s.countryCode) ?? { code: s.countryCode, name: countryName(s.countryCode, s.country) ?? s.countryCode, count: 0 };
     c.count++;
     counts.set(s.countryCode, c);
   }
@@ -305,4 +325,14 @@ export async function nowPlaying(streamUrl: string): Promise<string | null> {
     noStatus.add(status);
     return null;
   }
+}
+
+/** One station by its id: from the lists already fetched, or asked of the directory. */
+export async function stationById(id: string): Promise<RadioStation | null> {
+  for (const pending of memory.values()) {
+    const found = (await pending.catch(() => [] as RadioStation[])).find((s) => s.id === id);
+    if (found) return found;
+  }
+  const [raw] = await api<RawStation[]>(`stations/byuuid/${encodeURIComponent(id)}`);
+  return raw ? toStation(raw) : null;
 }

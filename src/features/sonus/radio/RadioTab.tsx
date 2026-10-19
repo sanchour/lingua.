@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { AudioLines, Heart, LoaderCircle, Pause, Play, Radio, RefreshCw, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router';
+import { AudioLines, ChevronRight, Heart, LoaderCircle, Pause, Play, Radio, RefreshCw, X } from 'lucide-react';
 import { useSavedStations, toggleFavorite } from '@/data/radio';
 import type { RadioStation } from '@/data/types';
 import { flagFor } from '@/design/flags';
@@ -10,11 +11,11 @@ import { playStation, stationMediaId } from '@/services/radio/play';
 import { countriesOf, placesOf, searchStations, stationPlace, stationsFor, stationsIn } from '@/services/radio/stations';
 import { getLanguage } from '@/core/lang/languages';
 import { Artwork } from '../library/Artwork';
-import { NightSky } from './NightSky';
+import { RadioMap } from './RadioMap';
 
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
 
-/** Sonus › Radio: live stations in the language, on a night-sky map, by country, searched, and your favourites. */
+/** Sonus › Radio: live stations in the language, on a map of the countries where it's on air, searched, and your favourites. */
 export default function RadioTab({ lang, flag }: { lang: string; flag?: string }) {
   const [stations, setStations] = useState<RadioStation[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -90,22 +91,42 @@ export default function RadioTab({ lang, flag }: { lang: string; flag?: string }
 
   const media = usePlayer((s) => s.media);
   const live = media?.kind === 'radio' ? media : null;
-  const playingPlace = live ? places.find((p) => p.stations.some((s) => stationMediaId(s.id) === live.id))?.key : null;
+  const playingStation = live ? ((stations ?? []).find((s) => stationMediaId(s.id) === live.id) ?? saved?.find((s) => stationMediaId(s.id) === live.id)) : undefined;
+  const playingAt = playingStation?.lat !== undefined && playingStation.lon !== undefined ? { lat: playingStation.lat, lon: playingStation.lon } : null;
 
   const name = getLanguage(lang)?.name ?? lang;
-  const list = query.trim() ? results : country ? countryList : stations;
-  const heading = query.trim() ? `Stations for “${query.trim()}”` : country ? `In ${countries.find((c) => c.code === country)?.name ?? country}` : 'Most listened';
+  const list = query.trim() ? results : stations;
+  const heading = query.trim() ? `Stations for “${query.trim()}”` : 'Most listened';
   const fav = (s: RadioStation) => void toggleFavorite(s, lang);
+  const chosenCountry = countries.find((c) => c.code === country);
+
+  // A country or place chosen on the map or in the chips: its stations under the map.
+  const panelRef = useRef<HTMLDivElement>(null);
+  const chooseCountry = (code: string | null, reveal = false) => {
+    setPlaceKey(null);
+    setCountry(code);
+    if (reveal && code) window.setTimeout(() => panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+  };
 
   return (
     <div className="space-y-8">
       {live && <OnAir lang={lang} saved={saved?.find((s) => stationMediaId(s.id) === live.id)} favorite={(id) => favorites.has(id)} onFavorite={fav} />}
 
       <section aria-label="Map of stations">
-        {stations && places.length > 0 ? (
-          <NightSky places={places} selected={placeKey} playing={playingPlace} onSelect={(p) => setPlaceKey(p?.key ?? null)} caption={`${stations.length} stations in ${name} · tap a light`} />
+        {stations && countries.length > 0 ? (
+          <RadioMap
+            stations={stations}
+            places={places}
+            countries={countries}
+            country={country}
+            place={placeKey}
+            playing={playingAt}
+            onCountry={(code) => chooseCountry(code)}
+            onPlace={(p) => setPlaceKey(p?.key ?? null)}
+            caption={`${stations.length} stations in ${name} · ${countries.length === 1 ? '1 country' : `${countries.length} countries`}`}
+          />
         ) : (
-          <div className="grid aspect-[4/3] w-full place-items-center rounded-3xl bg-[radial-gradient(ellipse_at_50%_35%,#1b2442,#0a0e1c_72%)] p-6 text-center text-white/70 sm:aspect-[2/1]">
+          <div className="grid aspect-[4/3] w-full place-items-center rounded-3xl border border-line/70 bg-sunken p-6 text-center text-ink-soft sm:aspect-[2/1]">
             {error ? (
               <div>
                 <p className="text-[15px]">{error}</p>
@@ -114,29 +135,40 @@ export default function RadioTab({ lang, flag }: { lang: string; flag?: string }
                 </Button>
               </div>
             ) : stations ? (
-              <p className="text-[15px]">No stations in {name} have a place on the map yet. They’re listed below.</p>
+              <p className="text-[15px]">No stations in {name} say where they are yet. They’re listed below.</p>
             ) : (
-              <LoaderCircle size={24} className="animate-spin" aria-label="Finding stations" />
+              <LoaderCircle size={24} className="animate-spin text-ink-faint" aria-label="Finding stations" />
             )}
           </div>
         )}
-        {place && (
-          <Card className="mt-3 p-3 sm:p-4">
-            <div className="mb-1 flex items-center gap-2 px-2">
-              <p className="min-w-0 flex-1 truncate font-semibold">
-                {place.label} <span className="font-normal text-ink-faint">· {place.stations.length === 1 ? '1 station' : `${place.stations.length} stations`}</span>
-              </p>
-              <button type="button" aria-label="Close" onClick={() => setPlaceKey(null)} className="grid size-9 place-items-center rounded-full text-ink-faint hover:bg-sunken hover:text-ink">
-                <X size={17} aria-hidden />
-              </button>
-            </div>
-            <ul className="max-h-80 overflow-y-auto">
+        {countries.length > 1 && (
+          <div className="mt-3 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]" role="group" aria-label="Countries">
+            {countries.slice(0, 14).map((c) => (
+              <Chip key={c.code} active={country === c.code} onClick={() => chooseCountry(country === c.code ? null : c.code, true)}>
+                {c.name} <span className="font-normal opacity-70">{c.count}</span>
+              </Chip>
+            ))}
+          </div>
+        )}
+        <div ref={panelRef} className="scroll-mt-24">
+          {place ? (
+            <Panel title={place.label} count={place.stations.length} onClose={() => setPlaceKey(null)}>
               {place.stations.map((s) => (
                 <StationRow key={s.id} station={s} lang={lang} favorite={favorites.has(s.id)} onFavorite={fav} />
               ))}
-            </ul>
-          </Card>
-        )}
+            </Panel>
+          ) : (
+            chosenCountry && (
+              <Panel title={chosenCountry.name} count={Math.max(chosenCountry.count, countryList?.length ?? 0)} onClose={() => chooseCountry(null)}>
+                {countryList ? (
+                  countryList.map((s) => <StationRow key={s.id} station={s} lang={lang} favorite={favorites.has(s.id)} onFavorite={fav} />)
+                ) : (
+                  <LoaderCircle size={20} className="mx-auto my-6 animate-spin text-ink-faint" aria-label="Loading" />
+                )}
+              </Panel>
+            )
+          )}
+        </div>
       </section>
 
       <SearchInput value={query} onChange={setQuery} placeholder="Search stations or styles (jazz, news…)" onClose={query ? () => setQuery('') : undefined} />
@@ -150,19 +182,6 @@ export default function RadioTab({ lang, flag }: { lang: string; flag?: string }
             ))}
           </ul>
         </section>
-      )}
-
-      {!query.trim() && countries.length > 1 && (
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Countries">
-          <Chip active={!country} onClick={() => setCountry(null)}>
-            All
-          </Chip>
-          {countries.slice(0, 11).map((c) => (
-            <Chip key={c.code} active={country === c.code} onClick={() => setCountry(country === c.code ? null : c.code)}>
-              {c.name}
-            </Chip>
-          ))}
-        </div>
       )}
 
       <section aria-label={heading}>
@@ -193,6 +212,22 @@ export default function RadioTab({ lang, flag }: { lang: string; flag?: string }
   );
 }
 
+function Panel({ title, count, onClose, children }: { title: string; count: number; onClose: () => void; children: React.ReactNode }) {
+  return (
+    <Card className="mt-3 p-3 sm:p-4">
+      <div className="mb-1 flex items-center gap-2 px-2">
+        <p className="min-w-0 flex-1 truncate font-semibold">
+          {title} <span className="font-normal text-ink-faint">· {count === 1 ? '1 station' : `${count} stations`}</span>
+        </p>
+        <button type="button" aria-label="Close" onClick={onClose} className="grid size-9 place-items-center rounded-full text-ink-faint hover:bg-sunken hover:text-ink">
+          <X size={17} aria-hidden />
+        </button>
+      </div>
+      <ul className="max-h-80 overflow-y-auto overscroll-contain">{children}</ul>
+    </Card>
+  );
+}
+
 function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button
@@ -200,7 +235,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
       aria-pressed={active}
       onClick={onClick}
       className={cx(
-        'inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-[13.5px] font-semibold transition-colors',
+        'inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[13.5px] font-semibold whitespace-nowrap transition-colors',
         active ? 'border-transparent bg-inverse text-on-inverse' : 'border-line bg-raised text-ink-soft hover:border-line-strong hover:text-ink',
       )}
     >
@@ -258,8 +293,10 @@ function OnAir({ lang, saved, favorite, onFavorite }: { lang: string; saved?: Ra
   const playing = status === 'playing';
   return (
     <Card className="flex items-center gap-4 p-4 sm:p-5">
-      <Artwork title={media.title} coverUrl={media.coverUrl} className="w-16 sm:w-20" rounded="rounded-2xl" />
-      <div className="min-w-0 flex-1">
+      <Link to={`/sonus/station/${media.id.replace(/^radio:/, '')}`} aria-label={`Open ${media.title}`} className="shrink-0">
+        <Artwork title={media.title} coverUrl={media.coverUrl} className="w-16 sm:w-20" rounded="rounded-2xl" />
+      </Link>
+      <Link to={`/sonus/station/${media.id.replace(/^radio:/, '')}`} className="min-w-0 flex-1">
         <p className="flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
           <Radio size={13} aria-hidden /> {status === 'error' ? 'Off air' : playing ? 'Live now' : status === 'loading' ? 'Tuning in…' : 'Paused'}
         </p>
@@ -267,7 +304,7 @@ function OnAir({ lang, saved, favorite, onFavorite }: { lang: string; saved?: Ra
         <p lang={nowPlaying ? lang : undefined} className={cx('truncate text-sm', status === 'error' ? 'text-accent-text' : 'text-ink-soft')}>
           {status === 'error' ? error : (nowPlaying ?? media.artist)}
         </p>
-      </div>
+      </Link>
       {saved && <FavoriteButton station={saved} favorite={favorite(saved.id)} onFavorite={onFavorite} />}
       <button
         type="button"
@@ -277,6 +314,9 @@ function OnAir({ lang, saved, favorite, onFavorite }: { lang: string; saved?: Ra
       >
         {status === 'loading' ? <LoaderCircle size={22} className="animate-spin" aria-hidden /> : playing ? <Pause size={22} className="fill-current" aria-hidden /> : <Play size={22} className="translate-x-0.5 fill-current" aria-hidden />}
       </button>
+      <Link to={`/sonus/station/${media.id.replace(/^radio:/, '')}`} className="hidden sm:block" aria-label="Open the station">
+        <ChevronRight size={18} className="text-ink-faint" aria-hidden />
+      </Link>
     </Card>
   );
 }

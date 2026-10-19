@@ -153,3 +153,32 @@ async function withGroq(media: Media, key: string | undefined, model: string, on
   onProgress?.(1);
   return cues;
 }
+
+/** What Whisper tends to invent over music or silence (credits, "thanks for watching"). */
+const INVENTED = /amara\.org|subt[ií]tul|untertitel|sous-titr|sottotitol|ondertitel|legendas|thanks for watching|gracias por ver|merci d.avoir regard|suscr[ií]b|abonnez|abonniert|^[\s.♪♫…-]*$/i;
+
+/**
+ * A short stretch of a live stream (a station's last few seconds), with the transcriber chosen in
+ * Ordo › Listening. MP3 goes to Groq as it is; anything else is decoded here and sent as WAV.
+ */
+const NO_CLIP_KEY = 'Add a free Groq key in Ordo › AI, or choose Whisper on this device in Ordo › Listening.';
+
+/** Why live text can't start (no Groq key, and Whisper isn't set to run on this device), or null. */
+export async function clipBlocker(): Promise<string | null> {
+  const { apiKeys, audio } = await getSettings();
+  return audio.transcriber === 'device' || apiKeys.groq ? null : NO_CLIP_KEY;
+}
+
+export async function transcribeClip(bytes: Uint8Array, lang: string): Promise<Cue[]> {
+  const { apiKeys, audio } = await getSettings();
+  const device = audio.transcriber === 'device';
+  if (!device && !apiKeys.groq) throw new TranscribeError(NO_CLIP_KEY, 'no-key');
+  let result: WhisperResult;
+  if (!device && isMp3(bytes)) {
+    result = await request(apiKeys.groq!, form(audio.whisperModel, lang, { file: new Blob([bytes as BlobPart], { type: 'audio/mpeg' }), name: 'live.mp3' }));
+  } else {
+    const samples = await decode(new Blob([bytes as BlobPart]));
+    result = device ? await whisperOnDevice(samples, lang, audio.deviceModel) : await request(apiKeys.groq!, form(audio.whisperModel, lang, { file: wav(samples), name: 'live.wav' }));
+  }
+  return cuesFromWhisper(result, lang).filter((c) => !INVENTED.test(c.text.trim()));
+}

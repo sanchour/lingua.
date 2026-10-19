@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { BookDetailsPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusFeedPage, SongGamesPage, SongPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StudyPage, ThesaurusPage, VisioPage, WatchPage } from './pages';
+import { BookDetailsPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusFeedPage, SongGamesPage, SongPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage } from './pages';
 import { Root } from './Root';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -30,6 +30,7 @@ export const router = createBrowserRouter(
         { path: 'sonus/play/:mediaId', element: <SonusPlayerPage /> },
         { path: 'sonus/podcast/:feedId', element: <SonusFeedPage /> },
         { path: 'sonus/commute', element: <CommutePage /> },
+        { path: 'sonus/station/:stationId', element: <StationPage /> },
         { path: 'sonus/song/:songId', element: <SongPage /> },
         { path: 'sonus/song/:songId/games', element: <SongGamesPage /> },
         // Music lived in a section of its own (Cantus) until 2.0-4b: its links still open.

@@ -162,15 +162,18 @@ Practise writing in the target language; get corrected, explained and graded.
 ## Music in Sonus — learning through music (2.0-4, in Sonus since 2.0-4b)
 
 Sonus is "listen and sing". Since 3.0-3 it opens on **Library** (what you listen to: recently
-played songs and episodes together, your songs, the podcasts you follow, new episodes, your own
+played songs, episodes and stations together, your songs, the podcasts you follow, new episodes, your own
 files), then **Music** and **Podcasts** for finding more. The music room still goes by Cantus
 inside (its deck is "From Cantus").
 
 
 - **Find any song** in the language you're learning (Apple's catalogue; tap the artwork for a
-  30-second preview), or start from Discover: this week's most played songs sung in the language,
-  artists picked for learners (clear, medium or fast), and about ten styles a language, at the
-  top of Music.
+  30-second preview), or explore (3.0-6): Music is shelves of songs to tap. Recently opened,
+  **Explore today** (songs from three of the language's artists, new each day, shuffled on
+  request, with a round button on each for the 30-second preview and "Surprise me" for a random
+  one), this week's most played songs sung in the language, your songs, **Most played by you**,
+  a **style of the day**, then about ten styles a language, your Spotify likes and artists picked
+  for learners (clear, medium or fast).
 - **The song page** fills the window and stays put; only the lyrics scroll (on a phone the
   header, the song and the player stay, the lyrics scroll between). "Playing from …" picks the
   source: Apple's 30-second **preview** (always plays; the first tap on the line you hear places
@@ -187,8 +190,8 @@ inside (its deck is "From Cantus").
   the page tries again by itself. When nothing sure was found, the likely lyrics are shown to pick
   from ("Are these the lyrics?"), with "Search another name", "On Genius" (Genius's search, to
   copy the words) and "Paste them yourself". Under the lyrics: where they came from.
-- **Your songs:** save with the heart. Recently opened songs sit below; with your own Spotify app
-  (Ordo › Music explains it), your liked songs sung in the language too.
+- **Your songs:** save with the heart; they have a shelf in Music and in Library. With your own
+  Spotify app (Ordo › Music explains it), your liked songs sung in the language too.
 - **Learn it (song lessons):** the language first, the song as the bonus. Words from the song
   worth learning at your level (what does it mean?), each word back in its line, a form and the
   word it comes from, the line in English, then the verse's lines in order. At the end the words
@@ -202,11 +205,23 @@ inside (its deck is "From Cantus").
 - **Live stations in the language** from radio-browser.info, an open directory kept by listeners:
   the most listened first, a search by name or style ("jazz", "news", a city), and the countries
   where the language is on air (the flag's country first). Only secure streams this device plays.
-- **A night-sky map:** the world drawn faintly by radio stations everywhere, the language's
-  stations as warm lights where they are. Tap a light for that place's stations; "World" shows the
-  whole map. The station playing pulses.
+- **A real map** (3.0-6): the world's countries in the app's colours, light and dark. Where the
+  language is on air the countries are tinted, each with a node and its number of stations, sending
+  out rings like a signal; nodes close together join (tap to fly in until they part). Tap a
+  country, its node or its chip and the map flies there and lists its stations; closer in, the
+  towns with stations glow, and a tap lists theirs. Drag, pinch, scroll or double-tap to zoom, the
+  +/− buttons, "Where it's on air" and "The whole world". The station playing pulses.
+- **A full-screen station** (3.0-6): tap the mini player or the station on air. Artwork, name,
+  place, what's on, the heart, your stations before and after, the station's site, and **commute
+  mode** (big buttons: your stations one after another, play and pause, save, live text, and the
+  latest line in large type).
+- **Live text** (3.0-6): turn it on and what's said is written out as it airs, about fifteen
+  seconds behind, every word to tap, hover and save as in Codex. Whisper does it (Groq with your
+  free key, or on this device); the station is streamed a second time for it, and only stations
+  whose servers allow it can be written out (the page says when one can't).
 - **Your stations:** a heart keeps a station; favourites and stations played lately are at the top
-  of Radio, favourites also in Library. Synced between your devices.
+  of Radio, favourites in Library, and stations played lately in Library's "Recently played".
+  Synced between your devices.
 - **Plays like everything else in Sonus:** the mini player says "Live" (or the song, when the
   station shares it), the lock screen plays and pauses, and the time counts as listening.
 

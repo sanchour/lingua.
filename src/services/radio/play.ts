@@ -2,11 +2,12 @@
 import { markStationPlayed } from '@/data/radio';
 import type { Media, RadioStation } from '@/data/types';
 import { loadMedia, setNowPlaying, toggle, unlockAudio, usePlayer } from '@/services/audio/engine';
+import './live';
 import { countClick, nowPlaying, stationPlace } from './stations';
 
 export const stationMediaId = (id: string) => `radio:${id}`;
 
-function stationMedia(s: RadioStation, lang: string): Media {
+export function stationMedia(s: RadioStation, lang: string): Media {
   const now = Date.now();
   return { id: stationMediaId(s.id), lang, kind: 'radio', title: s.name, artist: stationPlace(s) ?? 'Radio', coverUrl: s.favicon, remoteUrl: s.url, createdAt: now, updatedAt: now };
 }

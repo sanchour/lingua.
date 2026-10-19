@@ -583,6 +583,23 @@ Short records of choices that are not obvious from the code. Newest last.
   in Library) and Music (explore shelves instead of the "Songs you love" card); they are part of
   3.0-6. Older entries that say "3.0-6" for grammar or "3.0-8" for comics meant the old order.
 
+## 2026-10-19 — Lingua 3.0-6, part 1: Radio and Music
+
+- **A drawn map, not a map service.** The countries come from Natural Earth (public domain), made
+  small by `scripts/radio/world-map.ts` (about 60 KB gzipped, only in the Radio chunk) and drawn on
+  one canvas in the app's own colours. No tiles, no keys, works offline, and it follows the theme.
+  Nodes that would overlap join into one; names are placed biggest country first and never cover
+  each other or a node.
+- **Live text reads the stream a second time.** The audio element can't hand its sound to a page
+  across origins, so the stream is fetched again (where the station's server allows it, most do),
+  cut into parts of twelve seconds at a frame, and sent to Whisper. It's off until turned on, since
+  it doubles the data and uses the key; without a key it says so at once instead of after a part.
+- **Explore asks Apple a few times a day.** Today's songs (three artists of the language, or three
+  styles where none are picked by hand) and a style of the day are chosen by the date, kept in
+  localStorage for the day, and shuffled again only on request.
+- **"Most played by you" counts openings,** one per song page opened; a reopen within a minute (a
+  reload, React's double run in development) counts once.
+
 ## 2026-10-19 — Languages in tiers (planned for 4.0)
 
 - **Four tiers and an experimental shelf,** as the user listed them (planned in 4.0-1): six core

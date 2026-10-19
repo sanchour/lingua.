@@ -34,6 +34,18 @@ export function useRecentSongs(lang: string, limit = 12): Song[] | undefined {
   );
 }
 
+/** The songs you open most, from two plays up, the most first. */
+export function useMostPlayed(lang: string, limit = 12): Song[] | undefined {
+  return useLiveQuery(
+    async () =>
+      (await db.songs.where('lang').equals(lang).toArray())
+        .filter((s) => alive(s) && (s.plays ?? 0) >= 2)
+        .sort((a, b) => (b.plays ?? 0) - (a.plays ?? 0) || (b.lastPlayedAt ?? 0) - (a.lastPlayedAt ?? 0))
+        .slice(0, limit),
+    [lang, limit],
+  );
+}
+
 export function useSong(id: string | undefined): Song | null | undefined {
   return useLiveQuery(async () => (id ? ((await db.songs.get(id)) ?? null) : null), [id]);
 }
@@ -74,7 +86,12 @@ export async function setSongSaved(id: string, saved: boolean, database: LinguaD
 }
 
 export async function markSongPlayed(id: string, database: LinguaDB = db): Promise<void> {
-  await patchSong(id, { lastPlayedAt: Date.now() }, database);
+  const song = await database.songs.get(id);
+  if (!song) return;
+  const now = Date.now();
+  // Opened again within a minute (a reload, or React running the effect twice) counts once.
+  const again = song.lastPlayedAt !== undefined && now - song.lastPlayedAt < 60_000;
+  await patchSong(id, { lastPlayedAt: now, plays: (song.plays ?? 0) + (again ? 0 : 1) }, database);
 }
 
 /** Forgets a song (its saved lines and words stay in your decks). */
