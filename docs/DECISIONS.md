@@ -577,12 +577,12 @@ Short records of choices that are not obvious from the code. Newest last.
 
 ## 2026-10-19 — Lingua 4.0 planned
 
-- **After 3.0, in nine steps.** The user's 4.0 list is grouped by what it touches: smoothness and
-  the app's look first (4.0-1), then Codex, the word memory and cloze sentences, Cantus games,
-  speaking and writing, Visio, the new course room (Cursus), Lingua+, and the full check.
+- **After 3.0, in five steps,** as the user asked: smoothness, the app's look and Lingua+ (4.0-1);
+  Codex with one memory for every word and cloze sentences (4.0-2); songs and shows, Cantus games,
+  karaoke and Visio (4.0-3); Cursus with speaking and writing (4.0-4); the full check (4.0-5).
 - **Streaming services can't play inside Lingua.** Netflix, Prime Video, Max and Disney+ protect
   their video and allow no other app to play it; tools that add subtitles to them are browser
-  extensions. 4.0-6 brings YouTube in fully and follows the others' subtitles beside their own
+  extensions. 4.0-3 brings YouTube in fully and follows the others' subtitles beside their own
   apps instead, and looks at an extension for desktop.
 - **The course is called Cursus,** Latin for "a course" (Iter is already the journey in Ratio). Its
   units are named by what the learner can do after them, as the user asked. Feedback from other

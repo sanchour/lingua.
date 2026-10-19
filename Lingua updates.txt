@@ -114,7 +114,7 @@ A second tier of beta languages that only get what takes very little time, effor
 Hindi, Polish, Vietnamese, Tagalog, Thai, Farsi, Cantonese, Czech, Romanian, Serbo-Croatian, Malay, Tamil, Georgian, Uzbek, Mongolian
 
 ---
-Lingua 4.0 (added by the user on 2026-10-19; planned in docs/ROADMAP.md under "Lingua 4.0" as 4.0-1 … 4.0-9)
+Lingua 4.0 (added by the user on 2026-10-19; planned in docs/ROADMAP.md under "Lingua 4.0" in five steps, 4.0-1 … 4.0-5, as the user asked)
 
 | Section | Improvements |
 | --- | --- |
