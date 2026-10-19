@@ -621,6 +621,17 @@ Short records of choices that are not obvious from the code. Newest last.
 - **"Most played by you" counts openings,** one per song page opened; a reopen within a minute (a
   reload, React's double run in development) counts once.
 
+## 2026-10-19 — A full dictionary from open data (planned for 4.0)
+
+- **"As good as Oxford's," not Oxford's.** Oxford's dictionaries are licensed content, and their API
+  is paid and needs a server to keep its key, which a local-first app on GitHub Pages doesn't have.
+  The six core languages get a full dictionary built instead (planned in 4.0-2). It uses
+  Wiktionary's extracts (kaikki.org), each language's own Wiktionary, Tatoeba and Lingua's packs,
+  credited as their licences ask. The most common entries are tidied once, when the dictionary is
+  built.
+- **The word drawer stays short and the dictionary page holds the rest,** so the drawer fits one
+  desktop screen without scrolling (the user's note) while the full entry is one click away.
+
 ## 2026-10-19 — Languages in tiers (planned for 4.0)
 
 - **Four tiers and an experimental shelf,** as the user listed them (planned in 4.0-1): six core

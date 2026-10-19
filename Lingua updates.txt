@@ -212,3 +212,11 @@ Tier 4: extremely cheap
    * This tier is made for you to super quickly and in mass add some support for these languages, altough very minimal support, just the bare-minimum, basics
 
 Here is a possible extra addition experimental: Esperanto, Old Norse, Sanskrit, Haitian Creole, Quechua, Maya, Hawaiian, Maori, Irish, Basque
+
+---
+Lingua 4.0, third list (added by the user on 2026-10-19; planned in docs/ROADMAP.md as part of
+4.0-2)
+
+* Include for the 6 core languages, a dictionary which is as good as oxfords dictionary, integrate within the app.
+* Let the sidebar when right-clicking a word always fit on one desktop screen, without having to scroll. Phone can stay like that.
+* On pressing add at Codex, comic should be its own tab. So import a book / Import a comic

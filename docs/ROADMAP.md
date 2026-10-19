@@ -972,7 +972,42 @@ and makes 20 with them. The new languages are placeholders for now, as the user 
       but the purchase button charges nothing and nothing is locked yet. Ordo has a button to
       reset Lingua+, which removes it again.
 
-### 4.0-2 · Codex, and one memory for every word
+### 4.0-2 · Codex, a full dictionary, and one memory for every word
+- [ ] **A full dictionary for the six core languages, as good as Oxford's, inside Lingua** (the
+      user's third 4.0 list).
+  - **What can't be done as asked:** Oxford's own dictionaries can't go in the app. Their content
+    is licensed, and their API is paid and needs a server to keep its key.
+  - **What is done instead:** a dictionary built from open data for Spanish, Russian, Mandarin,
+    French, German and Arabic. It is downloaded once per language and kept on the device.
+  - **Each entry has:**
+    - the pronunciation (IPA, or pinyin with tones), with audio;
+    - every sense in order of how common it is, with labels (formal, slang, regional) and examples
+      from real sentences;
+    - the full inflection or conjugation table, with gender and aspect pairs;
+    - collocations and set phrases;
+    - synonyms, antonyms and words easily confused;
+    - the etymology.
+  - **Where the data comes from:**
+    - Wiktionary (the kaikki.org extracts, plus the language's own Wiktionary for definitions in
+      the language);
+    - Tatoeba's sentences;
+    - Lingua's packs and frequency lists.
+
+    Sources are credited as their licences ask. The most common few thousand entries are tidied
+    once when the dictionary is built, with AI where the open data is thin.
+  - **Where it opens:** as a full page from the word drawer ("Full entry"), and from a search box
+    in Codex and Thesaurus.
+- [ ] **The word drawer fits on one desktop screen** (the user's third 4.0 list). Right-click a word
+      on desktop and everything in the side panel shows at once, without scrolling:
+  - a tighter layout, with two columns where the panel is wide;
+  - sections that fold, and fewer lines per sense;
+  - "Full entry" for the rest.
+
+  Checked on a laptop screen (1366×768) and larger. On a phone the drawer stays as it is.
+- [ ] **Codex › Add: "Import a book" and "Import a comic" as tabs of their own** (the user's third
+      4.0 list). Today one "Import a file" tab holds both; the tabs become Write or paste · Import
+      a book · Import a comic · News & links · Goodreads. On a phone the labels stay short (Write ·
+      Book · Comic · News · Goodreads) and fit the width.
 - [ ] **An end page** after finishing a book or a text: minimal and beautiful, with the session's
       basic numbers (time, pages or words read, new words met, words looked up).
 - [ ] **Reading time and a goal** in Codex: today's reading against a daily goal you choose, and a
