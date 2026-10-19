@@ -751,3 +751,90 @@ Mandarin, `no` and `nb` for Norwegian) and run again.
 is out for the reason under 2.0-4b; lyrics.ovh and LRCLIB both allow browsers. Kaspersky on the
 first PC rewrote Chrome's traffic: a CORS failure seen only in the test Chrome may be the antivirus,
 so check in the app's built-in browser.
+
+## Lingua 4.0
+
+The user's list for Lingua 4.0 (2026-10-19) is under "Lingua 4.0" in "Lingua updates.txt". It
+comes after Lingua 3.0 is complete (3.0-9). The steps below group it; each is planned in detail
+when it starts. Where something can't be done as asked, the step says so and what is done instead.
+
+### 4.0-1 · Smooth, and in its place
+- [ ] **Every animation at 60 fps:** find the clicks and transitions that still stutter (the
+      Performance lab, a phone and a desktop) and fix them as PERFORMANCE.md says.
+- [ ] **The phone's tab bar in liquid glass,** like the glass slider, on the phone only. Fix the
+      bug where, after using the slider, a section needs two taps before it opens.
+- [ ] **Desktop sidebar:** Ratio and Ordo at the bottom left.
+- [ ] **A better Thesaurus icon** in the sidebar.
+- [ ] **A new app icon:** more minimal, in the spirit of Apple's own apps, fitting Lingua, with a
+      background that follows light and dark. iOS chooses a Home Screen web app's icon when it is
+      added; iOS 18 and later can also show any icon dark or tinted. The icon is drawn for both,
+      and the step checks how far an installed app can follow the switch by itself.
+
+### 4.0-2 · Codex: the end of a book, and a reading goal
+- [ ] **An end page** after finishing a book or a text: minimal and beautiful, with the session's
+      basic numbers (time, pages or words read, new words met, words looked up).
+- [ ] **Reading time and a goal** in Codex: today's reading against a daily goal you choose, and a
+      soft note when it's reached (never in the middle of a sentence).
+
+### 4.0-3 · One memory for every word, and sentences with a gap
+- [ ] **A personal memory of every word:** each word you meet anywhere (a book, a song, a podcast,
+      a film, a drill, your journal) is kept with where it was met, and everything connects: the
+      same word from different places is one word, with all its sentences. Decks stay clear and
+      tidy (by source, by theme, by how well you know them), made and kept in order by Lingua.
+- [ ] **Sentences with a gap, like Clozemaster,** in Ludus and as a card type: a real sentence with
+      one word missing ("Несмотря на дождь, мы решили _____ гулять."), choose or type it. Levels of
+      difficulty (choices, then typing, then a harder sentence), many sentences in a row, and the
+      words from your own memory first.
+
+### 4.0-4 · Cantus: games for every song, and karaoke
+- [ ] **Different games for each song:** one that teaches the lyrics themselves (fill in, order,
+      sing the next line), one that teaches the language (the song lessons of 3.0-3), and the
+      song's words as flashcards or in Ludus.
+- [ ] **Karaoke mode:** the lyrics large and in time, the line to sing lit up, the translation
+      under it when you want it.
+
+### 4.0-5 · Speaking and writing more
+- [ ] **Speak your journal:** in Diarium a microphone button; what you say is transcribed (Whisper on
+      the device, or Groq with a key) into the entry, to read back and correct.
+- [ ] **Talking with an AI elsewhere:** from Diarium, links and prompts to talk in the language with
+      ChatGPT, Claude, Gemini or Copilot in their own apps (with 3.0-8's conversation corner).
+- [ ] **More open questions and active production** across the app: answer in your own words,
+      describe a picture or a scene, retell what you read or heard, write the next line.
+
+### 4.0-6 · Visio: streaming services and YouTube
+- [ ] **What the user asked:** Netflix, Prime Video, Max, Disney+ and YouTube shows, transcribed and
+      watched inside Lingua with hover translations, as in Codex.
+- [ ] **What can be done:** the streaming services protect their video (DRM) and don't allow it to
+      be played inside other apps; doing this in the browser needs a browser extension, as
+      Language Reactor does. So: YouTube inside Lingua (its player with its subtitles, every word
+      tappable, the transcript alongside); for the other services, their subtitles brought in
+      (3.0-7's "Add its subtitles") and followed beside the show playing in its own app, with the
+      same taps and translations; and a look at whether a small Lingua browser extension is worth
+      it for desktop.
+
+### 4.0-7 · Cursus: a course with a clear path
+- [ ] **Cursus** (Latin for "a course"), a new room: a course like Duolingo, HelloChinese or Busuu,
+      organised by level, with a clear learning path, each lesson with a clear objective.
+- [ ] **Units named by what you can do after them,** not by how many lessons they hold: after the
+      first Russian unit you can introduce yourself, describe your family, order food and ask
+      simple questions. The path shows where you are and where you're going.
+- [ ] **Every skill:** reading, listening, speaking and writing exercises, grammar explained when
+      it's needed (3.0-6), sentences with a gap (4.0-3), and feedback on writing and speaking from
+      AI with a key. Feedback from other speakers needs a community and a server, which Lingua
+      doesn't have; the step looks at a light way to do it (sharing an exercise to a speaker).
+- [ ] **How possible:** quite possible, and the largest step of 4.0. Most parts exist: words and
+      themes per language (the packs and themes.ts), grammar topics and drills (3.0-6), sentences
+      with audio (packs and voices, 3.0-4), Ludus exercises, Diarium with AI corrections, Whisper.
+      The new work is one shared outline of can-do units (A1 to B1, from the CEFR's can-do lists)
+      filled per language with that language's words, grammar and sentences, and the room around
+      it. Tier 1 languages first; tier 2 gets the same outline filled automatically, in beta.
+
+### 4.0-8 · Lingua+
+- [ ] **A placeholder Lingua+:** a one-time purchase of 29.99 that unlocks everything; the free
+      edition has Codex and Thesaurus. Built into the app (where it is offered, what it includes),
+      but the purchase button doesn't charge anything and nothing is locked yet.
+- [ ] Ordo has a button to reset Lingua+, which removes it again (for testing).
+
+### 4.0-9 · Lingua 4.0 complete: the full check
+- [ ] Every point of the 4.0 list checked against the app, on a phone and on desktop, light and dark.
+- [ ] The app's version says 4.0. Docs, then commit, push and the live site checked.

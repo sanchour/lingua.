@@ -15,6 +15,8 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
   `lingua-3.0/languages-wip` is history. Known gaps are at the top of the handover.
 - 3.0-1b (tier-2 beta languages), 3.0-2 (phone and desktop, themes), 3.0-3 (Sonus and music) and 3.0-4 (voices, device sync) are done. The user swapped the next two: **3.0-5 is Radio**, then **3.0-6 Grammatica and alphabets**. Tier 2 stays cheap: only the
   features that cost little (automatic packs, decks, podcasts, music search). Keep it cheap.
+- **Lingua 4.0** is planned after 3.0 (4.0-1 … 4.0-9 under "## Lingua 4.0" in the roadmap); start it
+  only once 3.0-9 is done, or when the user asks.
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 

@@ -574,3 +574,21 @@ Short records of choices that are not obvious from the code. Newest last.
   mini player and tabs, fresh from 3.0-3), so it comes first as 3.0-5. Grammatica and alphabets,
   the largest step left, is 3.0-6 and next in line after it. Older entries that say "3.0-5" for
   grammar or "3.0-6" for radio meant the old order.
+
+## 2026-10-19 — Lingua 4.0 planned
+
+- **After 3.0, in nine steps.** The user's 4.0 list is grouped by what it touches: smoothness and
+  the app's look first (4.0-1), then Codex, the word memory and cloze sentences, Cantus games,
+  speaking and writing, Visio, the new course room (Cursus), Lingua+, and the full check.
+- **Streaming services can't play inside Lingua.** Netflix, Prime Video, Max and Disney+ protect
+  their video and allow no other app to play it; tools that add subtitles to them are browser
+  extensions. 4.0-6 brings YouTube in fully and follows the others' subtitles beside their own
+  apps instead, and looks at an extension for desktop.
+- **The course is called Cursus,** Latin for "a course" (Iter is already the journey in Ratio). Its
+  units are named by what the learner can do after them, as the user asked. Feedback from other
+  speakers needs a community and a server; AI feedback with a key comes first.
+- **Lingua+ is a placeholder.** The purchase charges nothing and locks nothing until the user
+  decides how it will be sold; a reset button in Ordo removes it for testing.
+- **A Home Screen icon that follows light and dark** is limited by iOS, which picks a web app's
+  icon when it is added (it can tint or darken any icon itself since iOS 18). 4.0-1 draws the
+  icon for both and finds out how far it can follow the switch.

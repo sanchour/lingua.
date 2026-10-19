@@ -112,3 +112,62 @@ Tier 2 (added by the user on 2026-10-18; planned in docs/ROADMAP.md as 3.0-1b)
 
 A second tier of beta languages that only get what takes very little time, effort and tokens. The twenty languages stay the main tier. Twenty in total (fifteen named so far):
 Hindi, Polish, Vietnamese, Tagalog, Thai, Farsi, Cantonese, Czech, Romanian, Serbo-Croatian, Malay, Tamil, Georgian, Uzbek, Mongolian
+
+---
+Lingua 4.0 (added by the user on 2026-10-19; planned in docs/ROADMAP.md under "Lingua 4.0" as 4.0-1 … 4.0-9)
+
+| Section | Improvements |
+| --- | --- |
+| Cantus | Different games to play for each song. A game that teaches you the lyrics, a game to learn the languages, both flashcards or ludus. And simply a: Karaoke mode! |
+| General | A more minimal icon that fits apple apps standards. An icon which on the phone home screen changes background color based on dark/light mode. An icon that fits this app. |
+| General | Some clicking or other animations are still a bit glithcy and not smooth 60 fps, fix. |
+| Visio | Add support for Netlfix, Prime, HBO Max, to have these shows transcribed and that you can watch your favourite show in the app with hover tranlsations like codex. Youtube too and disneyplus |
+| Codex | After you finished a book, or text on codex, give a minimal end page which is aesthetic with some basic stats of that session. |
+| General | Put ratio and ordo at the bottom left on the sidebar on desktop |
+| Codex | Add a time/goal section on codex and reading and give a soft reminder when you have reached your codex goal. |
+| General | Add a placeholder Lingua+, a one-time purchase of 29.99. It unlocks all features, only codex and thesaurus are free on the free edition. Implement into the app but just make the purchase button not actually blocking anything. Also add reset, remove Lingua+ button in settings |
+| General | Every word you encounter elsewhere in your application should become part of a personal memory system. Everything is connected intelligently and well managed into clear decks and systems. |
+| Thesuarus | Improve the thesaurus icon on the sidebar to be more fitting |
+| Phone | Give a more liquad glass, feeling and overhaul to the lower bar, only on phone. Just like the liquad glass slider. Also there is a glitch now that when you use the slider, you have to click twice on a section to have it finally clicked and go there. |
+| Diarium | Allow people to speak to journal, so you can write and have a button allowing you to speak which gets auto transcribed. Maybe also hear some ways to go to some AI to speak to that ai, not within my app but in another ai. |
+|  | More open ended-questions and ways of active production |
+
+Clozemaster idea (Anki/Ludus)
+
+Like clozemaster a way to learn new words. Like: see pictures (a picture was referenced, not included)
+
+Idea: Rather than asking you to memorize a word in isolation, it places vocabulary into a linguistic context.
+For example:
+  Несмотря на дождь, мы решили _____ гулять.
+You must identify the appropriate word or expression to complete the sentence.
+
+Ideas worth borrowing:
+- Sentence-based vocabulary practice.
+- Different difficulty levels.
+- High-volume practice.
+- Contextual learning.
+
+New section: Course (latin name needed)
+
+- How possible would a new section be: a course to take, clear, step progression, lessons, like duoling, hellochinese, busuu etc. A course. How possible.
+
+Ideas worth borrowing:
+- Structured courses organized by proficiency.
+- Clear lesson objectives.
+- Grammar explanations.
+- Exercises across multiple language skills.
+- Writing and speaking exercises.
+- Feedback from other speakers.
+- A clear learning path.
+
+One important design lesson is that learners should understand where they are going.
+A good curriculum doesn't merely ask, "What should you learn next?"
+It asks, "What should you be able to do after learning this?"
+For example, after a beginner Russian module, a learner might be able to introduce themselves, describe their family, order food and ask basic questions.
+That is a much more meaningful milestone than completing 20 lessons.
+
+Grammar notes (added the same day, planned into 3.0-6)
+
+Learners need to understand grammatical cases, verb aspect, motion verbs and other structures that cannot always be taught effectively through translation exercises alone.
+Ideas worth borrowing: concise grammar explanations; examples before and after explanations; structured lesson progression; audio-supported sentences; explicit comparisons between grammatical structures.
+Favourite idea: explain grammar at the moment the learner needs it. Rather than presenting an enormous grammar chapter, introduce a concept through examples, explain the underlying rule, and immediately let the learner apply it.
