@@ -8,7 +8,7 @@ import { db } from '@/data/db';
 import { audioBlob, getTranscript, markPlayed, savePlayback } from '@/data/media';
 import { getSettings } from '@/data/settings';
 import type { Cue, Media } from '@/data/types';
-import { setupMediaSession, updatePositionState } from './mediaSession';
+import { setupMediaSession, showNowPlaying, updatePositionState } from './mediaSession';
 
 export interface PlayerState {
   media: Media | null;
@@ -25,6 +25,8 @@ export interface PlayerState {
   skipBackSec: number;
   skipFwdSec: number;
   gapMs: number;
+  /** A live station's song or show, when it shares one. */
+  nowPlaying?: string;
 }
 
 export const usePlayer = create<PlayerState>(() => ({
@@ -50,6 +52,8 @@ let unlockUrl = '';
 let frame = 0;
 let lastSaved = 0;
 let lastPosition = 0;
+// When a live station was paused: after a while it resumes from what's on now.
+let pausedAt = 0;
 const listeners = new Set<(ms: number) => void>();
 
 // Sentence repeats
@@ -98,6 +102,7 @@ function element(): HTMLAudioElement {
   });
   a.addEventListener('pause', () => {
     if (pausingForGap || !get().media) return;
+    if (get().media?.kind === 'radio') pausedAt = Date.now();
     stopTicking();
     countListening();
     set({ status: 'paused' });
@@ -110,7 +115,7 @@ function element(): HTMLAudioElement {
     stopTicking();
     countListening();
     set({ status: 'paused' });
-    if (media) void savePlayback(media.id, 0, a.playbackRate, true);
+    if (media && media.kind !== 'radio') void savePlayback(media.id, 0, a.playbackRate, true);
     void flushListening();
   });
   a.addEventListener('durationchange', () => {
@@ -127,7 +132,7 @@ function element(): HTMLAudioElement {
   a.addEventListener('error', () => {
     if (!get().media || !a.getAttribute('src') || a.getAttribute('src') === unlockUrl) return;
     stopTicking();
-    set({ status: 'error', error: navigator.onLine ? 'This audio couldn’t be played.' : 'You’re offline and this episode isn’t downloaded.' });
+    set({ status: 'error', error: failure() });
   });
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
@@ -141,6 +146,12 @@ function element(): HTMLAudioElement {
   });
   audio = a;
   return a;
+}
+
+/** Why playback failed, in words for the item that failed. */
+function failure(): string {
+  if (get().media?.kind === 'radio') return navigator.onLine ? 'This station isn’t answering. Try another one.' : 'You’re offline.';
+  return navigator.onLine ? 'This audio couldn’t be played.' : 'You’re offline and this episode isn’t downloaded.';
 }
 
 /** Call first thing in a tap handler (before any await): iOS only allows playback that a tap started. */
@@ -262,7 +273,7 @@ function cancelGap() {
 async function persist() {
   const { media } = get();
   const a = audio;
-  if (!media || !a || !a.getAttribute('src')) return;
+  if (!media || media.kind === 'radio' || !a || !a.getAttribute('src')) return;
   const position = a.currentTime * 1000;
   if (Math.abs(position - lastPosition) < 500) return;
   lastPosition = position;
@@ -298,6 +309,7 @@ export async function loadMedia(media: Media, options: { autoplay?: boolean; sta
     return;
   }
   await closePlayer({ keepElement: true });
+  if (media.kind === 'radio') return loadStation(a, media, options.autoplay);
   set({ media, status: 'loading', error: undefined, cues: null, durationMs: media.durationMs ?? 0 });
 
   const [blob, progress, transcript, settings] = await Promise.all([audioBlob(media), db.playbackProgress.get(media.id), getTranscript(media.id), getSettings()]);
@@ -334,14 +346,45 @@ export async function loadMedia(media: Media, options: { autoplay?: boolean; sta
   if (options.autoplay) await play();
 }
 
+/** A live station: no position, speed or transcript; the stream plays as it comes. */
+async function loadStation(a: HTMLAudioElement, media: Media, autoplay?: boolean): Promise<void> {
+  set({ media, status: 'loading', error: undefined, cues: null, durationMs: 0, rate: 1, nowPlaying: undefined });
+  if (!media.remoteUrl) return set({ status: 'error', error: 'This station has no stream.' });
+  a.src = media.remoteUrl;
+  a.defaultPlaybackRate = 1;
+  a.playbackRate = 1;
+  lastPosition = 0;
+  cueIndex = -1;
+  pausedAt = 0;
+  sessionStartedAt = Date.now();
+  setupMediaSession(media, { play, pause, skip: () => undefined, seek: () => undefined, previous: () => undefined, next: () => undefined });
+  if (autoplay) await play();
+  else set({ status: 'paused' });
+}
+
+/** The song or show a live station says is on (or null when it stopped saying). */
+export function setNowPlaying(mediaId: string, text: string | null): void {
+  const { media, nowPlaying } = get();
+  if (media?.id !== mediaId || (text ?? undefined) === nowPlaying) return;
+  set({ nowPlaying: text ?? undefined });
+  showNowPlaying(media, text);
+}
+
 export async function play(): Promise<void> {
   const a = element();
-  if (!get().media) return;
+  const media = get().media;
+  if (!media) return;
+  // A station paused for more than a moment starts again from what's on now, not the old buffer.
+  if (media.kind === 'radio' && media.remoteUrl && (get().status === 'error' || (pausedAt && Date.now() - pausedAt > 4000))) {
+    set({ status: 'loading', error: undefined });
+    a.src = media.remoteUrl;
+  }
+  pausedAt = 0;
   try {
     await a.play();
   } catch (error) {
     if (error instanceof DOMException && error.name === 'NotAllowedError') set({ status: 'paused' });
-    else set({ status: 'error', error: navigator.onLine ? 'This audio couldn’t be played.' : 'You’re offline and this episode isn’t downloaded.' });
+    else if (!(error instanceof DOMException && error.name === 'AbortError')) set({ status: 'error', error: failure() });
   }
 }
 
@@ -443,5 +486,6 @@ export async function closePlayer(options: { keepElement?: boolean } = {}): Prom
     a.load();
   }
   setupMediaSession(null);
-  set({ media: null, status: 'idle', cues: null, error: undefined, durationMs: 0 });
+  pausedAt = 0;
+  set({ media: null, status: 'idle', cues: null, error: undefined, durationMs: 0, nowPlaying: undefined });
 }

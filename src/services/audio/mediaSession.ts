@@ -54,11 +54,24 @@ export function setupMediaSession(media: Media | null, controls?: Controls): voi
   handle('play', () => void controls.play());
   handle('pause', () => controls.pause());
   handle('stop', () => controls.pause());
+  // A live station can only play and pause.
+  if (media.kind === 'radio') {
+    for (const action of ACTIONS.slice(3)) handle(action, null);
+    return;
+  }
   handle('seekbackward', (d) => controls.skip(-(d.seekOffset ?? 10)));
   handle('seekforward', (d) => controls.skip(d.seekOffset ?? 30));
   handle('seekto', (d) => d.seekTime !== undefined && controls.seek(d.seekTime * 1000));
   handle('previoustrack', () => controls.previous());
   handle('nexttrack', () => controls.next());
+}
+
+/** A live station's song on the lock screen, the station under it. */
+export function showNowPlaying(media: Media, text: string | null): void {
+  const metadata = supported() ? navigator.mediaSession.metadata : null;
+  if (!metadata) return;
+  metadata.title = text ?? media.title;
+  metadata.artist = text ? media.title : (media.artist ?? 'Radio');
 }
 
 /** Keeps the lock screen's progress bar right (at most every half second). */

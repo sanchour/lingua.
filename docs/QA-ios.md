@@ -204,3 +204,16 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Mark a word on the iPhone, open the desktop app: it's there within a moment ("Sync now"
       too). Try once on Wi-Fi and once on mobile data.
 - [ ] Restoring a backup on a third device doesn't pair it: pairings never travel in backups.
+
+## Lingua 3.0-5: Radio
+
+- [ ] Sonus shows four tabs (Library · Music · Podcasts · Radio) on one line.
+- [ ] Radio: the map draws the world in faint dots and the language's stations as lights; a tap on
+      a light lists that place's stations; "World" and "Closer" switch the view.
+- [ ] A station plays on the first tap; the mini player says "Live"; the lock screen shows the
+      station (and the song, when it shares one) with play and pause.
+- [ ] With the screen locked, the station keeps playing; after a pause of a minute, play starts
+      from what's live now.
+- [ ] The heart keeps a station: it shows under "Your stations" and in Library, and on the other
+      paired device after a sync.
+- [ ] A country chip and a search ("jazz") list their stations.

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowRight, Pause, Play, Search, SearchX } from 'lucide-react';
@@ -23,8 +23,10 @@ import { LibraryHome } from './library/LibraryHome';
 import { MediaRow } from './library/MediaRow';
 import { PodcastGrid } from './library/PodcastGrid';
 
-/** Library first (music and podcasts together), then each kind on its own, with discovery. */
-type Tab = 'library' | 'music' | 'podcasts';
+const RadioTab = lazy(() => import('./radio/RadioTab'));
+
+/** Library first (music, podcasts and stations together), then each kind on its own, with discovery. */
+type Tab = 'library' | 'music' | 'podcasts' | 'radio';
 
 const SORTS: Array<{ value: MediaSort; label: string }> = [
   { value: 'recent', label: 'Recently played' },
@@ -65,7 +67,7 @@ export default function SonusPage() {
   const [params, setParams] = useSearchParams();
   // Old links: ?tab=discover was podcast discovery, now part of Podcasts; ?q= searches music.
   const requested = params.get('tab');
-  const tab: Tab = requested === 'music' || requested === 'podcasts' ? requested : requested === 'discover' ? 'podcasts' : params.get('q') ? 'music' : 'library';
+  const tab: Tab = requested === 'music' || requested === 'podcasts' || requested === 'radio' ? requested : requested === 'discover' ? 'podcasts' : params.get('q') ? 'music' : 'library';
   const setTab = (next: Tab) => {
     setParams(next === 'library' ? {} : { tab: next }, { replace: true });
     window.scrollTo({ top: 0 });
@@ -119,7 +121,8 @@ export default function SonusPage() {
                   options={[
                     { value: 'library', label: 'Library' },
                     { value: 'music', label: 'Music' },
-                    { value: 'podcasts', label: feeds?.length ? `Podcasts · ${feeds.length}` : 'Podcasts' },
+                    { value: 'podcasts', label: 'Podcasts' },
+                    { value: 'radio', label: 'Radio' },
                   ]}
                 />
               </motion.div>
@@ -137,6 +140,11 @@ export default function SonusPage() {
       <AnimatePresence mode="wait" initial={false}>
         <motion.section key={tab} aria-label={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.snappy}>
           {tab === 'music' && <MusicRoom initialQuery={params.get('q') ?? ''} />}
+          {tab === 'radio' && (
+            <Suspense fallback={null}>
+              <RadioTab lang={lang} flag={language.flag} />
+            </Suspense>
+          )}
           {tab === 'library' &&
             media &&
             feeds &&
@@ -154,7 +162,7 @@ export default function SonusPage() {
                 </div>
               )
             ) : (
-              <LibraryHome lang={lang} media={media} visible={visible} feeds={feeds} playback={playback} transcribed={transcribed} onMusic={() => setTab('music')} onPodcasts={findPodcasts} />
+              <LibraryHome lang={lang} media={media} visible={visible} feeds={feeds} playback={playback} transcribed={transcribed} onMusic={() => setTab('music')} onPodcasts={findPodcasts} onRadio={() => setTab('radio')} />
             ))}
           {tab === 'podcasts' && (
             <div className="space-y-10">
@@ -177,7 +185,8 @@ export default function SonusPage() {
 
 /** The item playing now, or the last one left unfinished. */
 function ContinueCard({ media, playback }: { media?: Media[]; playback?: Map<string, PlaybackProgress> }) {
-  const loaded = usePlayer((s) => s.media);
+  // A live station has its own card in Radio.
+  const loaded = usePlayer((s) => (s.media?.kind === 'radio' ? null : s.media));
   const playing = usePlayer((s) => s.status === 'playing');
   const item = loaded ?? media?.find((m) => m.kind !== 'spotify' && m.lastPlayedAt && !playback?.get(m.id)?.completed);
   if (!item) return null;

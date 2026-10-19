@@ -13,7 +13,7 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
   session" before starting.
 - 3.0-1 is done (merged into `main` on 2026-10-18). Work on `main` from here; the branch
   `lingua-3.0/languages-wip` is history. Known gaps are at the top of the handover.
-- 3.0-1b (tier-2 beta languages), 3.0-2 (phone and desktop, themes), 3.0-3 (Sonus and music) and 3.0-4 (voices, device sync) are done. The user swapped the next two: **3.0-5 is Radio**, then **3.0-6 Grammatica and alphabets**. Tier 2 stays cheap: only the
+- 3.0-1b (tier-2 beta languages), 3.0-2 (phone and desktop, themes), 3.0-3 (Sonus and music) and 3.0-4 (voices, device sync) are done. The user swapped two steps: 3.0-5 became Radio (done), and **3.0-6 Grammatica and alphabets is next**. Tier 2 stays cheap: only the
   features that cost little (automatic packs, decks, podcasts, music search). Keep it cheap.
 - **Lingua 4.0** is planned after 3.0 (4.0-1 … 4.0-9 under "## Lingua 4.0" in the roadmap); start it
   only once 3.0-9 is done, or when the user asks.

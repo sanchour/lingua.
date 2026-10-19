@@ -28,6 +28,7 @@ import type {
   ReadingProgress,
   ReviewLog,
   SettingRow,
+  SavedStation,
   SpeechRow,
   StarterList,
   StudyLog,
@@ -106,7 +107,12 @@ export const SCHEMA_V8 = {
   speech: 'id, createdAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8 };
+/** Version 9 (Lingua 3.0-5): radio stations you keep (favourites, played lately). */
+export const SCHEMA_V9 = {
+  stations: 'id, lang, updatedAt',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -146,6 +152,7 @@ export type LinguaDB = Dexie & {
   goals: EntityTable<Goal, 'id'>;
   songs: EntityTable<Song, 'id'>;
   speech: EntityTable<SpeechRow, 'id'>;
+  stations: EntityTable<SavedStation, 'id'>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -158,6 +165,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(6).stores(SCHEMA_V6);
   db.version(7).stores(SCHEMA_V7);
   db.version(8).stores(SCHEMA_V8);
+  db.version(9).stores(SCHEMA_V9);
   return db;
 }
 

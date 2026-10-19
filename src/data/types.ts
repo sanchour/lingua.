@@ -337,7 +337,8 @@ export interface ReviewLog {
 export interface Media extends Synced {
   id: string;
   lang: Lang;
-  kind: 'audio' | 'video' | 'spotify';
+  /** `radio` is a live station: played, never stored as media (see SavedStation). */
+  kind: 'audio' | 'video' | 'spotify' | 'radio';
   title: string;
   collection?: string;
   episode?: number;
@@ -414,6 +415,37 @@ export interface PlaybackProgress {
 
 /** Large binaries live apart so list queries never load them. */
 /** A word or line spoken by a natural voice, kept on this device (never backed up). */
+/** A radio station from radio-browser.info, an open directory kept by its community. */
+export interface RadioStation {
+  /** radio-browser's station id. */
+  id: string;
+  name: string;
+  /** The https stream. */
+  url: string;
+  homepage?: string;
+  favicon?: string;
+  country?: string;
+  /** ISO 3166, upper case (`ES`). */
+  countryCode?: string;
+  state?: string;
+  tags: string[];
+  codec?: string;
+  bitrate?: number;
+  hls: boolean;
+  lat?: number;
+  lon?: number;
+  /** Listens lately and votes on radio-browser, for the order. */
+  clicks: number;
+  votes: number;
+}
+
+/** A station kept on the device and synced: a favourite, or one played lately. */
+export interface SavedStation extends RadioStation, Synced {
+  lang: Lang;
+  favorite: 0 | 1;
+  playedAt?: number;
+}
+
 export interface SpeechRow {
   /** `${voice}|${text}` */
   id: string;

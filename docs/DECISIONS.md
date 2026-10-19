@@ -592,3 +592,32 @@ Short records of choices that are not obvious from the code. Newest last.
 - **A Home Screen icon that follows light and dark** is limited by iOS, which picks a web app's
   icon when it is added (it can tint or darken any icon itself since iOS 18). 4.0-1 draws the
   icon for both and finds out how far it can follow the switch.
+
+## 2026-10-19 — Lingua 3.0-5: Radio
+
+- **A fourth tab, not a shelf in Library.** Radio needs room for its map, countries and search;
+  Library only shows your favourite stations. With four tabs the Podcasts tab no longer shows how
+  many shows you follow, so the four fit a phone's width.
+- **radio-browser.info, matched by the language's own names there.** Its `language` field is a
+  list of English names; searching them exactly avoids "malay" finding Malayalam. Languages with
+  other names there are listed (`norsk`, `brazilian portuguese`, Croatian, Serbian, Bosnian and
+  Montenegrin for Serbo-Croatian); any other language uses its English name, so tier 2 gets radio
+  automatically. The servers tried are de1, de2 and the round-robin name.
+- **Only what plays here.** https streams only (an http stream can't play in an https app), HLS
+  only where the browser plays it, never video codecs; the same stream or the same name in the
+  same country once.
+- **The world is drawn by radio itself.** The faint dots behind the stations are where the
+  directory's stations of every language are (13,543 with a place, half-degree cells, 8 KB),
+  made once by a script rather than a map of coastlines: the map is only lights, like a night sky.
+- **A station is a live item in the one player.** It goes through the same engine (mini player,
+  lock screen, listening time) but saves no position, keeps speed at 1, and after a pause of more
+  than a few seconds starts from what's on now instead of the old buffer.
+- **Kept stations are synced; the directory is not.** Favourites and played-lately are a small
+  `stations` table (backed up, newest edit wins); the directory's lists are fetched again after
+  half a day and kept only in the browser's storage.
+- **Now playing, when the station lets a web page ask.** Browsers can't read the song titles inside
+  a stream, so Lingua asks AzuraCast's public file or Icecast's status page; most big
+  broadcasters allow neither, so there it shows the station's place instead. A server that
+  doesn't answer once isn't asked again that session.
+- **A click is reported** to radio-browser when a station is played (`/json/url/{id}`), as its
+  API asks, since it orders stations by listens.

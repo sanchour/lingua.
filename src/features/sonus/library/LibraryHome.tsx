@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { ChevronRight, FileAudio, Headphones, Music2, Search } from 'lucide-react';
+import { ChevronRight, FileAudio, Headphones, Music2, Radio, Search } from 'lucide-react';
+import { useSavedStations } from '@/data/radio';
 import { useRecentSongs, useSavedSongs } from '@/data/songs';
 import { episodeMedia } from '@/data/media';
 import type { Feed, FeedEpisode, Media, PlaybackProgress, Song } from '@/data/types';
@@ -10,6 +11,8 @@ import { buttonClasses, Card } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { pickFiles } from '@/services/files/files';
+import { playStation } from '@/services/radio/play';
+import { stationPlace } from '@/services/radio/stations';
 import { AUDIO_ACCEPT, importAudioFiles } from '@/services/sonus/files';
 import { SongArt } from '@/features/cantus/SongArt';
 import { EpisodeRow } from '../FeedPage';
@@ -30,6 +33,7 @@ interface LibraryHomeProps {
   transcribed?: Set<string>;
   onMusic: () => void;
   onPodcasts: () => void;
+  onRadio: () => void;
 }
 
 /**
@@ -37,9 +41,10 @@ interface LibraryHomeProps {
  * you played last first, then your songs, the podcasts you follow and their new episodes, then your
  * own audio. Music and Podcasts have their own tabs, with discovery.
  */
-export function LibraryHome({ lang, media, visible, feeds, playback, transcribed, onMusic, onPodcasts }: LibraryHomeProps) {
+export function LibraryHome({ lang, media, visible, feeds, playback, transcribed, onMusic, onPodcasts, onRadio }: LibraryHomeProps) {
   const saved = useSavedSongs(lang);
   const recentSongs = useRecentSongs(lang, 12);
+  const stations = useSavedStations(lang)?.filter((s) => s.favorite);
   const navigate = useNavigate();
 
   // Songs and episodes played lately, in one row.
@@ -116,6 +121,24 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
           <Invite icon={Headphones} tone="sage" title="Podcasts with a transcript that follows along" detail="Follow one and its new episodes show up here." action="Find a podcast" onClick={onPodcasts} />
         )}
       </Shelf>
+
+      {stations && stations.length > 0 && (
+        <Shelf title="Your stations" more={{ label: 'All radio', onClick: onRadio }}>
+          <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
+            {stations.map((s) => (
+              <li key={s.id} className="w-28 shrink-0 snap-start sm:w-32">
+                <button type="button" onClick={() => playStation(s, lang)} className="group block w-full text-left">
+                  <Artwork title={s.name} coverUrl={s.favicon} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
+                  <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{s.name}</span>
+                  <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
+                    <Radio size={12} className="shrink-0 text-sage-text" aria-hidden /> {stationPlace(s) ?? 'Radio'}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </Shelf>
+      )}
 
       {fresh.length > 0 && (
         <Shelf title="New episodes">

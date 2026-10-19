@@ -549,7 +549,24 @@ testing), the camera scan, and an iPhone on a mobile network.
       broker only introduces them, the data never sits on a server), using the backup's merge.
       "Sync now" in Ordo, with the last sync time. API keys only if chosen.
 
-### 3.0-5 · Radio (in Sonus)
+### 3.0-5 · Radio (in Sonus) ✅
+
+**Built (2026-10-19):** Sonus › Radio, a fourth tab, as planned below: the language's stations from
+radio-browser.info (about 400 a name, playable https streams only, kept for half a day); the night
+sky map (the world drawn by 3,305 half-degree cells where radio stations are, made by
+`scripts/radio/world-dots.ts`; the language's stations as warm lights, fitted to where they
+are, "World" to see it all; tap a light for that place's stations); a search by name or style;
+country chips (the flag's country first, each loading that country's own list); "Your stations"
+(favourites and played lately, a backed-up and synced `stations` table, Dexie v9) in Radio and
+favourites in Library. Stations play through Sonus's player as a live item (no position, fresh
+after a pause, "Live" in the mini player, play and pause on the lock screen); listening counts as
+listening. Now playing comes from AzuraCast's public file (common for community radio) or
+Icecast's status, where the server lets web pages ask; most big stations don't, so it shows
+less often than hoped. Checked in the browser at desktop and phone width: French stations on the
+map, a place's stations, playing, pausing and resuming live, favourites in Library, the Canada
+list, the jazz search, now playing from an AzuraCast station, and the listening time recorded.
+Not checked: an iPhone (the lock screen, playing with the screen off).
+
 
 **Plan (2026-10-19):** a fourth tab, **Radio**, in Sonus (Library · Music · Podcasts · Radio); your
 favourite stations also show in Library. Stations come from radio-browser.info (de1, then de2, then
@@ -564,11 +581,11 @@ through Sonus's one player as a live item: no position saved, the stream fresh a
 pause, "Live" in the mini player, listening time counted as listening. Now playing comes from
 the station's Icecast status where it shares one. A click is reported to radio-browser when a
 station is played, as its API asks.
-- [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
+- [x] Stations from radio-browser.info (an open, community-run directory): by language, by country,
       search, favourites; only secure (https) streams.
-- [ ] A minimal "night sky" map: every station a dot at its place, so the dots draw the world;
+- [x] A minimal "night sky" map: every station a dot at its place, so the dots draw the world;
       tap one to tune in, like Radio Garden.
-- [ ] Plays in Sonus's player and mini player, with now playing when the station shares it.
+- [x] Plays in Sonus's player and mini player, with now playing when the station shares it.
       Listening time counts. A fourth tab in Sonus (Library · Music · Podcasts · Radio), or
       inside Library: decide when planning.
 
@@ -659,12 +676,13 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 
 ### Handover for the Lingua 3.0 session
 
-**3.0-1 to 3.0-4 are done and on `main` (2026-10-19, third computer).** The user swapped the next
-two: **3.0-5 is now Radio** (being built on the third computer), and **Grammatica and alphabets
-are 3.0-6**, next in line after it. Japanese place names (日本) are now counted, so the reader keeps them whole. The first ten
+**3.0-1 to 3.0-5 are done and on `main` (2026-10-19, third computer).** The user swapped two
+steps: 3.0-5 became Radio (done), and **Grammatica and alphabets are 3.0-6, next**, with the user's
+notes on teaching grammar when it's needed. Lingua 4.0 is planned at the end of this file. Japanese place names (日本) are now counted, so the reader keeps them whole. The first ten
 packs were not rebuilt with this session's builder (see DECISIONS). Not checked on an iPhone yet:
 hold to translate on touch, the preview clock and the fixed song page (QA-ios.md, 3.0-3); voices
-with a real Gemini key, the camera scan and syncing over a mobile network (QA-ios.md, 3.0-4).
+with a real Gemini key, the camera scan and syncing over a mobile network (QA-ios.md, 3.0-4);
+radio on the lock screen and with the screen off (QA-ios.md, 3.0-5).
 
 The rest of this handover is the state before that session, kept for its notes.
 

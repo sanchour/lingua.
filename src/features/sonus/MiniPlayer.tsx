@@ -15,6 +15,7 @@ export function MiniPlayer() {
   const media = usePlayer((s) => s.media);
   const status = usePlayer((s) => s.status);
   const duration = usePlayer((s) => s.durationMs);
+  const nowPlaying = usePlayer((s) => s.nowPlaying);
   const { layout } = useLayout();
   const lineRef = useRef<HTMLSpanElement>(null);
   const durationRef = useRef(duration);
@@ -31,6 +32,7 @@ export function MiniPlayer() {
   );
 
   const playing = status === 'playing';
+  const live = media?.kind === 'radio';
   return (
     <AnimatePresence>
       {media && (
@@ -48,16 +50,16 @@ export function MiniPlayer() {
           style={wide ? undefined : { bottom: 'calc(max(10px, env(safe-area-inset-bottom) - 10px) + 76px)' }}
         >
           <div className="flex items-center gap-3 p-2 pr-2.5">
-            <Link to={`/sonus/play/${media.id}`} className="flex min-w-0 flex-1 items-center gap-3" aria-label={`Open ${media.title}`}>
+            <Link to={live ? '/sonus?tab=radio' : `/sonus/play/${media.id}`} className="flex min-w-0 flex-1 items-center gap-3" aria-label={`Open ${media.title}`}>
               <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="w-11" rounded="rounded-lg" />
               <span className="min-w-0">
                 <span lang={media.lang} className="block truncate text-[14px] font-semibold">
                   {media.title}
                 </span>
-                <span className="block truncate text-[12px] text-ink-faint">{status === 'error' ? 'Couldn’t play' : (media.collection ?? media.artist ?? 'Sonus')}</span>
+                <span className="block truncate text-[12px] text-ink-faint">{status === 'error' ? 'Couldn’t play' : live ? (nowPlaying ?? `Live · ${media.artist ?? 'Radio'}`) : (media.collection ?? media.artist ?? 'Sonus')}</span>
               </span>
             </Link>
-            {wide && (
+            {wide && !live && (
               <button type="button" aria-label="Back 10 seconds" onClick={() => skip(-usePlayer.getState().skipBackSec)} className="grid size-9 place-items-center rounded-full text-ink-soft hover:bg-surface">
                 <RotateCcw size={18} aria-hidden />
               </button>
@@ -74,7 +76,7 @@ export function MiniPlayer() {
               <X size={17} aria-hidden />
             </button>
           </div>
-          <span className="absolute inset-x-0 bottom-0 h-[2px] bg-line" aria-hidden>
+          <span className={live ? 'hidden' : 'absolute inset-x-0 bottom-0 h-[2px] bg-line'} aria-hidden>
             <span ref={lineRef} className="block h-full origin-left bg-accent" style={{ transform: 'scaleX(0)' }} />
           </span>
         </motion.div>

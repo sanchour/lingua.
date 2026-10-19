@@ -197,6 +197,19 @@ inside (its deck is "From Cantus").
   their cards play the line again (with a YouTube or Spotify link); lyrics open in Codex as a text;
   Ratio counts songs and time with music; Iter marks the first song and every 10, 25, 50 and 100.
 
+## Radio (3.0-5, Sonus › Radio)
+
+- **Live stations in the language** from radio-browser.info, an open directory kept by listeners:
+  the most listened first, a search by name or style ("jazz", "news", a city), and the countries
+  where the language is on air (the flag's country first). Only secure streams this device plays.
+- **A night-sky map:** the world drawn faintly by radio stations everywhere, the language's
+  stations as warm lights where they are. Tap a light for that place's stations; "World" shows the
+  whole map. The station playing pulses.
+- **Your stations:** a heart keeps a station; favourites and stations played lately are at the top
+  of Radio, favourites also in Library. Synced between your devices.
+- **Plays like everything else in Sonus:** the mini player says "Live" (or the song, when the
+  station shares it), the lock screen plays and pauses, and the time counts as listening.
+
 ## Voices and your devices (3.0-4)
 
 - **Natural voices:** a speaker button on words (the word drawer), on selected phrases and on
