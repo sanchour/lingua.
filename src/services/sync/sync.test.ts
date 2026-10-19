@@ -13,12 +13,17 @@ async function device(name: string) {
   return db;
 }
 
-/** Two ends of a channel; messages arrive a moment later, as over a network. */
+/** Two ends of a channel; messages arrive a moment later, as over a network, and wait for a listener (as the engine's channel does). */
 function channels(): [Channel, Channel] {
   const listeners: Array<Array<(m: SyncMessage) => void>> = [[], []];
+  const waiting: SyncMessage[][] = [[], []];
+  const deliver = (to: number, m: SyncMessage) => (listeners[to].length ? listeners[to].forEach((l) => l(m)) : waiting[to].push(m));
   const end = (me: number, other: number): Channel => ({
-    send: (m) => setTimeout(() => listeners[other].forEach((l) => l(structuredClone(m)))),
-    onMessage: (l) => listeners[me].push(l),
+    send: (m) => setTimeout(() => deliver(other, structuredClone(m))),
+    onMessage: (l) => {
+      listeners[me].push(l);
+      for (const m of waiting[me].splice(0)) l(m);
+    },
     close: () => undefined,
   });
   return [end(0, 1), end(1, 0)];
@@ -68,7 +73,8 @@ describe('syncing two devices', () => {
 
     const secret = newSecret();
     const [x, y] = channels();
-    const [one, two] = await Promise.all([runSession(x, await side(desk, secret, 'Mac')), runSession(y, await side(phone, secret, 'iPhone'))]);
+    const [mac, iphone] = [await side(desk, secret, 'Mac'), await side(phone, secret, 'iPhone')];
+    const [one, two] = await Promise.all([runSession(x, mac), runSession(y, iphone)]);
 
     expect(one.partner.name).toBe('iPhone');
     expect(two.partner.name).toBe('Mac');
@@ -85,7 +91,8 @@ describe('syncing two devices', () => {
     const [desk, stranger] = [await device('desk2'), await device('stranger')];
     await desk.words.put(word('secreto', 2, 100));
     const [x, y] = channels();
-    const results = await Promise.allSettled([runSession(x, await side(desk, newSecret(), 'Mac')), runSession(y, await side(stranger, newSecret(), 'Other'))]);
+    const [mac, other] = [await side(desk, newSecret(), 'Mac'), await side(stranger, newSecret(), 'Other')];
+    const results = await Promise.allSettled([runSession(x, mac), runSession(y, other)]);
     expect(results.every((r) => r.status === 'rejected')).toBe(true);
     expect(await stranger.words.count()).toBe(0);
   });
