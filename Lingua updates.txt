@@ -94,7 +94,7 @@ Lingua 3.0 (added by the user on 2026-10-17; planned in docs/ROADMAP.md as 3.0-2
 
 ---
 Lingua 3.0, second list (added by the user on 2026-10-17; planned in docs/ROADMAP.md: grammar and
-writing in 3.0-5, tips in 3.0-7, comics, audiobooks, courses and AI conversation in 3.0-8)
+writing in 3.0-6, tips in 3.0-7, comics, audiobooks, courses and AI conversation in 3.0-8)
 
 in roadmap: add full support for comics
 support for audio courses and audiobooks

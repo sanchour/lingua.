@@ -435,7 +435,7 @@ Short records of choices that are not obvious from the code. Newest last.
   what people use every day comes first: it is 3.0-2 … 3.0-4, straight after the languages
   (3.0-1, already under way on its branch). Grammatica, Radio and Mundus follow.
 - **A second list the same evening** went where it belongs instead of into one more step:
-  progressive grammar exercises and letter-writing practice into Grammatica (3.0-5, see
+  progressive grammar exercises and letter-writing practice into Grammatica (now 3.0-6, see
   GRAMMAR-PLAN.md), the "beyond the app" tips into Mundus (3.0-7), and comics, audiobooks,
   audio courses and AI conversation into a new 3.0-8. The full check is 3.0-9.
 - **Voices come back, differently.** 2.0-1 removed the device voice because it was robotic and
@@ -529,7 +529,7 @@ Short records of choices that are not obvious from the code. Newest last.
   lessons skip such lines already saved.
 - **Sonus opens on Library.** What you listen to (recent songs and episodes together, your songs,
   podcasts you follow, new episodes, your files) comes first; Music and Podcasts are for finding
-  more. Radio (3.0-6) gets a fourth tab.
+  more. Radio (now 3.0-5) gets a fourth tab.
 - **Song lessons teach the language, and the song is the bonus.** The words come from the song but
   are chosen by the learner: not known yet, within reach of their level (`LEVEL_REACH`, by how
   common the word is), one per meaning, the most useful first. Rounds go words → the word in its
@@ -567,3 +567,10 @@ Short records of choices that are not obvious from the code. Newest last.
 - **A code to type as well as a QR code.** iPhone home-screen apps don't share storage with
   Safari, so a QR code that opens a link couldn't pair the installed app; the app reads the QR
   code with its own camera view (jsQR), and the code can always be typed.
+
+## 2026-10-19 — Radio before Grammatica
+
+- **The user swapped 3.0-5 and 3.0-6.** Radio is small and builds on Sonus as it is now (its player,
+  mini player and tabs, fresh from 3.0-3), so it comes first as 3.0-5. Grammatica and alphabets,
+  the largest step left, is 3.0-6 and next in line after it. Older entries that say "3.0-5" for
+  grammar or "3.0-6" for radio meant the old order.

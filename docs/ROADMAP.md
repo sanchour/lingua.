@@ -345,7 +345,7 @@ Mongolian (mn). Suggestions for the open five: Ukrainian, Hebrew, Bengali, Finni
 - Podcasts: suggested searches made from the name ("learn Polish podcast", "{endonym} podcast").
 - Music: Apple search and LRCLIB lyrics, a store per language, charts where Deezer or Apple has a
   country chart; Discover shows three generic style searches, no hand-picked artists.
-- Radio (3.0-6) by language, automatically. A speech locale, language detection by script, a
+- Radio (3.0-5) by language, automatically. A speech locale, language detection by script, a
   flag (simple shapes in the existing style), one sample sentence.
 
 **Not for tier 2:** hand-picked artists, Mundus, Grammatica and alphabets, news feeds, Diarium
@@ -379,10 +379,11 @@ The app marks these languages "Beta" and says what they include.
 
 The user added the next three steps on 2026-10-17 (their list is under "Lingua 3.0" in
 "Lingua updates.txt"). They come straight after 3.0-1, before the new rooms, because they fix
-and polish what people use every day; Grammatica, Radio, Mundus, then comics, audiobooks and AI
-conversation, and the full check follow as 3.0-5 … 3.0-9. A second list the user added the same
+and polish what people use every day; Radio, Grammatica, Mundus, then comics, audiobooks and AI
+conversation, and the full check follow as 3.0-5 … 3.0-9 (Radio and Grammatica swapped places on
+2026-10-19, at the user's request). A second list the user added the same
 evening (better grammar exercises, writing practice for alphabets, a tips section, comics,
-audiobooks and audio courses, AI conversation) is planned into 3.0-5, 3.0-7 and 3.0-8.
+audiobooks and audio courses, AI conversation) is planned into 3.0-6, 3.0-7 and 3.0-8.
 
 ### 3.0-2 · A real app on phone and desktop, and a look of your own ✅
 
@@ -465,7 +466,7 @@ turning questions away while busy, not songs it lacks.
 5. **Sonus: Library · Music · Podcasts.** Library first: now playing or continue, recently
    played (songs and episodes together), your songs, the podcasts you follow, new episodes, your
    own files. Music: styles at the top under the search, then your songs, charts, Spotify and
-   artists. Podcasts: followed shows, then find podcasts. Radio (3.0-6) gets its own fourth tab.
+   artists. Podcasts: followed shows, then find podcasts. Radio (3.0-5) gets its own fourth tab.
    About ten styles per language (beta languages six, made from the name).
 6. **Song games that teach the language:** rounds in the order words → meaning → grammar → line →
    bonus: the song's words at the learner's level that aren't known yet (meaning, chosen from
@@ -477,7 +478,7 @@ turning questions away while busy, not songs it lacks.
 - [x] **Sonus opens on Library:** one well-laid-out library of your music and podcasts (now
       playing and recent first, then saved songs, followed podcasts and new episodes), then a
       **Music** tab and a **Podcasts** tab that show only that kind, each with its own discovery.
-      Radio (3.0-6) slots in as a fourth tab or inside Library; decide there.
+      Radio (3.0-5) slots in as a fourth tab or inside Library; decide there.
 - [x] **Song page without double scrolling:** a fixed page (art, title and controls fixed, only
       the lyric sheet scrolls), smooth on phone and desktop.
 - [x] **Playback in sync with the lyrics, without errors:** one player engine per source (preview,
@@ -548,7 +549,16 @@ testing), the camera scan, and an iPhone on a mobile network.
       broker only introduces them, the data never sits on a server), using the backup's merge.
       "Sync now" in Ordo, with the last sync time. API keys only if chosen.
 
-### 3.0-5 · Grammatica and alphabets
+### 3.0-5 · Radio (in Sonus)
+- [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
+      search, favourites; only secure (https) streams.
+- [ ] A minimal "night sky" map: every station a dot at its place, so the dots draw the world;
+      tap one to tune in, like Radio Garden.
+- [ ] Plays in Sonus's player and mini player, with now playing when the station shares it.
+      Listening time counts. A fourth tab in Sonus (Library · Music · Podcasts · Radio), or
+      inside Library: decide when planning.
+
+### 3.0-6 · Grammatica and alphabets
 Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] Grammar files, the topic browser, explanations and tables.
 - [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
@@ -570,15 +580,6 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
       (stroke data from KanjiVG for Japanese, Make Me a Hanzi for Mandarin, drawn by hand for the
       alphabets), then write it from memory. Strokes are checked for order, direction and shape,
       with a gentle hint on a miss. Arabic letters in their joined forms (start, middle, end).
-
-### 3.0-6 · Radio (in Sonus)
-- [ ] Stations from radio-browser.info (an open, community-run directory): by language, by country,
-      search, favourites; only secure (https) streams.
-- [ ] A minimal "night sky" map: every station a dot at its place, so the dots draw the world;
-      tap one to tune in, like Radio Garden.
-- [ ] Plays in Sonus's player and mini player, with now playing when the station shares it.
-      Listening time counts. A fourth tab in Sonus (Library · Music · Podcasts · Radio), or
-      inside Library: decide when planning.
 
 ### 3.0-7 · Mundus: recommendations, and streaming services in Visio
 - [ ] **Mundus**, a deep-dive page per language: video games, series, films, books, podcasts,
@@ -635,8 +636,9 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 
 ### Handover for the Lingua 3.0 session
 
-**3.0-1 to 3.0-4 are done and on `main` (2026-10-19, third computer).** Next is 3.0-5; the user
-asked to stop after 3.0-4, so it waits for them. Japanese place names (日本) are now counted, so the reader keeps them whole. The first ten
+**3.0-1 to 3.0-4 are done and on `main` (2026-10-19, third computer).** The user swapped the next
+two: **3.0-5 is now Radio** (being built on the third computer), and **Grammatica and alphabets
+are 3.0-6**, next in line after it. Japanese place names (日本) are now counted, so the reader keeps them whole. The first ten
 packs were not rebuilt with this session's builder (see DECISIONS). Not checked on an iPhone yet:
 hold to translate on touch, the preview clock and the fixed song page (QA-ios.md, 3.0-3); voices
 with a real Gemini key, the camera scan and syncing over a mobile network (QA-ios.md, 3.0-4).
