@@ -182,3 +182,33 @@ comics which will now be step 6. Also in this step do these improvements regardi
 * When a radio is playing, just like a song, you should be able to click on the little player to open it full screen, there you can try to maybe integrate auto transcription with hover if possible, or have a commute mode. Kind of same page as podcast
 * On library also recently played add recently played radios
 * Remove songs you love, ...  widget from music page in sonus, do have in sonus same style as recently opened, most listened, or some ideas, inspirations of songs to easily click on and listen to. Kind of an explore section within the music page to easily find random songs and explore new songs
+
+---
+Lingua 4.0, second list (added by the user on 2026-10-19; planned in docs/ROADMAP.md as part of
+4.0-1, with Cursus in 4.0-4 for the core languages only)
+
+What will you read? Onboarding page where you all the languages, now its quite a long list, so if you can reorder the layout of the languages, maybe something cool and unique like a map with a list and you choose your language like that while still have a seperation between tier 1 core languages and tier 2. Just so it looks a bit better
+
+These will be the languages (any language I add now will be placeholder so dont worry about them yet) (tier names are just temporary I leave it up to you how to approach this system and implement it)
+
+The System
+
+Tier 1 - core:
+* Languages: Spanish, Russian, Mandarin, French, German, Arabic
+   * only 6 languages, these will have full, dedicated support, courses, high-quality grammar, alphabet, big token use to develop them as much as possible.
+   * Full course support, detailed and beautiful. Reccomendations, sonus, cantus, everything of highest-quality, full dedicated courses.
+
+Tier 2 - semi-core
+* Languages: Italian, English, Portugues, Greek, Swedish, Hungarian, Dutch, Norwegian, Turkish, Indonesian, Swahili, Latin, Japanese, Korean
+   * 14 languages total; these languages have full support minus course support. They still have full reccomendations, all functions working on high-quality, and grammar and alphabet support. Just no course
+
+Tier 2: The ones already in place with new ones: Icelandic, Frisian, Ancient Greek, Bengali, Punjabi (20 in total)
+Tier 3: partial support
+* Languages: Hindi, Polish, Tagalog, Vietnamese, Thai, Persian, Cantonese, Czech, Romanian, Serbo-Croatian, Malay, Tamil, Georgian, Uzbek, Mongolian. With 5 new ones: Icelandic, Frisian, Ancient Greek, Bengali, Punjabi
+   * These are the languages that have partial support and are made to be implemented as quick and with as cheap as possible with little token use. I leave that up to you what that means bc you know best.
+
+Tier 4: extremely cheap
+* Languages: Hebrew, Ukrainian, Finnish, Danish, Catalan, Bulgarian, Kazakh, Afrikaans, Amharic, Yoruba, Armenian, Burmese, Urdu, Slovak, Estonian, Lithuanian, Latvian, Khmer, Albanian, Maltese
+   * This tier is made for you to super quickly and in mass add some support for these languages, altough very minimal support, just the bare-minimum, basics
+
+Here is a possible extra addition experimental: Esperanto, Old Norse, Sanskrit, Haitian Creole, Quechua, Maya, Hawaiian, Maori, Irish, Basque

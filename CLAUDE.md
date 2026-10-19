@@ -16,7 +16,8 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
 - 3.0-1b (tier-2 beta languages), 3.0-2 (phone and desktop, themes), 3.0-3 (Sonus and music) and 3.0-4 (voices, device sync) are done. The user swapped steps twice: 3.0-5 became Radio (done), **3.0-6 is now comics, audiobooks and courses, AI conversation, and the user's Radio and Music notes** (next), and Grammatica and alphabets moved to 3.0-8. Tier 2 stays cheap: only the
   features that cost little (automatic packs, decks, podcasts, music search). Keep it cheap.
 - **Lingua 4.0** is planned after 3.0 (five steps, 4.0-1 … 4.0-5, under "## Lingua 4.0" in the roadmap); start it
-  only once 3.0-9 is done, or when the user asks.
+  only once 3.0-9 is done, or when the user asks. 4.0 sorts the languages into four tiers and an
+  experimental shelf (the table at the top of "## Lingua 4.0"); only the six core languages get a course.
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 

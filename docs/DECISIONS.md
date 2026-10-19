@@ -583,6 +583,23 @@ Short records of choices that are not obvious from the code. Newest last.
   in Library) and Music (explore shelves instead of the "Songs you love" card); they are part of
   3.0-6. Older entries that say "3.0-6" for grammar or "3.0-8" for comics meant the old order.
 
+## 2026-10-19 — Languages in tiers (planned for 4.0)
+
+- **Four tiers and an experimental shelf,** as the user listed them (planned in 4.0-1): six core
+  languages with courses, fourteen with everything but a course, twenty partial (today's fifteen
+  beta languages and five new), twenty with the basics, and ten experimental. The names in the app
+  are Core, Full, Beta, Basics and Experimental: "Beta" stays because tier 3 is exactly today's beta.
+- **The user's extra "Tier 2 … (20 in total)" line is read as tier 3.** It names the same five new
+  languages as the tier 3 list, and fifteen plus five is twenty.
+- **Cheap means scripted.** Tier 3 is built by the scripts that already make the beta packs; tier 4
+  needs no data of its own, only the shared services (Wiktionary, machine translation, radio and
+  podcast search). No hand-written content below tier 2.
+- **The picker reuses Radio's map.** 3.0-6 draws countries from Natural Earth with its own camera and
+  gestures; the language picker puts a dot where each language is spoken on the same map, so the
+  long list gets a shape without a second map library.
+- **Maya means Yucatec Maya** for now (written in Latin letters, with radio and texts online); K'iche'
+  has more speakers and can replace it if the user prefers.
+
 ## 2026-10-19 — Lingua 4.0 planned
 
 - **After 3.0, in five steps,** as the user asked: smoothness, the app's look and Lingua+ (4.0-1);

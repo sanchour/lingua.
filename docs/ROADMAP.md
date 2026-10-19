@@ -824,7 +824,31 @@ comes after Lingua 3.0 is complete (3.0-9). The user asked for at most five step
 combines a lot; each is planned in detail when it starts. Where something can't be done as asked,
 the step says so and what is done instead.
 
-### 4.0-1 · Smooth, in its place, a new icon, and Lingua+
+**The languages in 4.0, by tier** (the user's second 4.0 list; names in the app in brackets). The
+user's list has a line "Tier 2: The ones already in place with new ones: Icelandic, Frisian, Ancient
+Greek, Bengali, Punjabi (20 in total)"; it is read as tier 3, whose list has the same five new ones
+and makes 20 with them. The new languages are placeholders for now, as the user said.
+
+| Tier | Languages | What they get |
+| --- | --- | --- |
+| 1 · Core (Core) | Spanish, Russian, Mandarin, French, German, Arabic | Everything at its best, and Cursus, the course (4.0-4). The most work goes here. |
+| 2 · Full (Full) | Italian, English, Portuguese, Greek, Swedish, Hungarian, Dutch, Norwegian, Turkish, Indonesian, Swahili, Latin, Japanese, Korean | Everything (packs, recommendations, Sonus, Cantus, Grammatica, alphabets) except a course. |
+| 3 · Partial (Beta) | Hindi, Polish, Tagalog, Vietnamese, Thai, Persian, Cantonese, Czech, Romanian, Serbo-Croatian, Malay, Tamil, Georgian, Uzbek, Mongolian, and new: Icelandic, Frisian, Ancient Greek, Bengali, Punjabi | What today's beta languages have, built by script: an automatic word pack, decks, Codex with lookups, podcasts, radio, music search, an alphabet page where the script is new. No hand-written grammar. |
+| 4 · Basics (Basics) | Hebrew, Ukrainian, Finnish, Danish, Catalan, Bulgarian, Kazakh, Afrikaans, Amharic, Yoruba, Armenian, Burmese, Urdu, Slovak, Estonian, Lithuanian, Latvian, Khmer, Albanian, Maltese | The bare minimum, added in one go: Codex with tap-to-translate (Wiktionary where it has the word, machine translation otherwise), your own words and decks, radio and podcast search. A small word pack only where the data comes free with the tier 3 script. |
+| Experimental | Esperanto, Old Norse, Sanskrit, Haitian Creole, Quechua, Maya (Yucatec), Hawaiian, Māori, Irish, Basque | Offered under "Experimental", as tier 4 where the services know the language, less where they don't; said plainly on the language. |
+
+### 4.0-1 · Languages in tiers, a new language picker, smooth, a new icon, and Lingua+
+- [ ] **Five kinds of language:** the tiers above become one field on each language (`tier: 1 | 2 |
+      3 | 4 | 'x'`, replacing today's `tier?: 1 | 2`), and what a language shows follows from it
+      (Cursus for tier 1, the beta notes for 3, the short list of rooms for 4 and experimental).
+      The 25 new languages are added as placeholders: name, endonym, script, flags, sample sentence,
+      fonts; tier 3's packs come from the existing pack script, tier 4 gets no pack of its own.
+- [ ] **"What will you read?" as a map with a list:** the onboarding page (and Ordo › Languages)
+      shows the world map from 3.0-6's Radio (same drawing, same gestures) with a dot where each
+      language is spoken, beside a list on desktop and above it on a phone. The six core languages
+      come first as large cards, then tier 2, then the rest in a compact list with a search box
+      and the tier shown. Tapping a language flies the map to where it's spoken; tapping a place on
+      the map shows its languages at the top of the list.
 - [ ] **Every animation at 60 fps:** find the clicks and transitions that still stutter (the
       Performance lab, a phone and a desktop) and fix them as PERFORMANCE.md says.
 - [ ] **The phone's tab bar in liquid glass,** like the glass slider, on the phone only. Fix the
@@ -890,7 +914,8 @@ the step says so and what is done instead.
       with audio (packs and voices, 3.0-4), Ludus exercises, Diarium with AI corrections, Whisper.
       The new work is one shared outline of can-do units (A1 to B1, from the CEFR's can-do lists)
       filled per language with that language's words, grammar and sentences, and the room around
-      it. Tier 1 languages first; tier 2 gets the same outline filled automatically, in beta.
+      it. Only the six core languages (tier 1) get a course, as the user decided: Cursus is
+      where most of the work goes, so each of the six is done well rather than twenty done thinly.
 
 ### 4.0-5 · Lingua 4.0 complete: the full check
 - [ ] Every point of the 4.0 list checked against the app, on a phone and on desktop, light and dark.
