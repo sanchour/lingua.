@@ -17,6 +17,7 @@ const SOURCE: Record<Transcript['source'], string> = {
   vtt: 'Subtitle file',
   text: 'Text file · approximate timing',
   machine: 'Machine transcript',
+  book: 'The book’s own text · timed by Whisper',
 };
 
 async function addFile(media: Media) {

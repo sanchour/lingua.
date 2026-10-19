@@ -3,9 +3,10 @@ import type { Cue } from '@/data/types';
 
 /**
  * The cue playing at `ms`: the last one that has started. Between two cues the earlier one stays
- * current (so a highlight doesn't flicker off during pauses). -1 before the first cue.
+ * current (so a highlight doesn't flicker off during pauses). -1 before the first cue. Works the
+ * same for an audiobook's chapters.
  */
-export function cueIndexAt(cues: readonly Cue[], ms: number): number {
+export function cueIndexAt(cues: ReadonlyArray<Pick<Cue, 'startMs'>>, ms: number): number {
   let lo = 0;
   let hi = cues.length - 1;
   let found = -1;

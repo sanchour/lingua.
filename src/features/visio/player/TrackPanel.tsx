@@ -18,6 +18,7 @@ const SOURCE: Record<Transcript['source'], string> = {
   vtt: 'Subtitle file',
   text: 'Text',
   machine: 'AI translation',
+  book: 'The book’s text',
 };
 
 async function addFile(media: Media, role: TrackRole) {

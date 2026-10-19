@@ -610,7 +610,17 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
    (its parts in order, M4B chapters read from the file), LibriVox's free audiobooks in the
    language (found through archive.org, which LibriVox uses for its files), a sleep timer, and
    the ebook in Codex matched to a part's Whisper transcript, so the book's own sentences light
-   up as they are read.
+   up as they are read. *How (planned 2026-10-19):* a book is its parts, ordinary Sonus items
+   that share a `bookId` (`episode` is the part's number), so downloads, transcripts, sync and
+   backups work unchanged. Chapters come from the file (MP4 `chpl` or the QuickTime chapter
+   track, an MP3's ID3 `CHAP` frames). LibriVox through archive.org (its search and files allow
+   apps; LibriVox's own API doesn't). A book page (/sonus/book/:id) with the parts, Continue and
+   "lesson done"; a shelf in Library; the player gets the part and chapter, chapters to jump to,
+   the next part on its own at a part's end (courses stop and mark the lesson done) and a sleep
+   timer (minutes, end of chapter, end of part). Read along: an alignment of Whisper's words with
+   the book's (unique word runs as anchors, times filled in between) gives each of the book's
+   sentences its time, shown in the player in place of Whisper's text. Free courses: Language
+   Transfer and the FSI courses, linked per language.
 4. **Conversation**: the corner with prompts and links, and the in-app text chat with a key.
 
 - [x] **Radio, a real map** (the user's note): the world's countries drawn as shapes (Natural Earth
@@ -736,6 +746,89 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] The app's version says 3.0. Docs, then commit, push and the live site checked.
 
 ### Handover for the Lingua 3.0 session
+
+**Where 3.0-6 stands (2026-10-19, end of the third computer's session; the user continues on
+another account).** Parts 1 and 2 of the 3.0-6 plan are done, on `main` and live: Radio and Music
+(commit 5eb12b2) and comics in Codex (6f8b525). **Part 3, audiobooks and courses, is started but
+not finished:** its plan is written (the "*How (planned 2026-10-19)*" paragraph under "### 3.0-6"
+above), and the first pieces are committed. They are not used by the app yet and have no tests yet.
+Typecheck and the 259 tests pass. Then part 4, conversation, then the step's full check.
+- **Part 3, already in the code (not wired up, not tested):**
+  - `Media` (src/data/types.ts) has `bookId`, `bookKind` ('audiobook' | 'course'), `chapters`
+    (`AudioChapter[]`), `doneAt` (a lesson done) and `readAlongTextId`. `episode` is the part's
+    number. `Transcript` has the source `'book'` and `original` (the Whisper cues it was timed from).
+  - `src/core/parsers/mp4.ts`: `readMp4(blobSource(file))` gives an M4A/M4B's title, artist, album,
+    track, duration, cover and chapters (Nero `chpl`, else the QuickTime chapter track). It reads
+    only `moov` and the chapter samples, by slices.
+  - `src/core/parsers/id3.ts`: now also `track` (TRCK) and `chapters` (CHAP frames).
+  - `src/core/audio/align.ts`: `alignToBook(cues, paragraphs, lang)` gives the book's sentences as
+    timed cues (with word times). It works by unique 4-word runs, or 6 characters for zh/ja/yue/th,
+    kept in order by a longest increasing run, with times filled in between. It returns null when
+    the part isn't found in the book.
+  - `cueIndexAt` (core/audio/cues.ts) now takes anything with `startMs`, so chapters can use it.
+- **Part 3, still to build** (in this order; then tests, docs, commit):
+  1. Tests for mp4.ts (build boxes by hand: ftyp, moov/udta/chpl, a QuickTime text track with
+     tref/chap, stts/stsz/stsc/stco), ID3 CHAP/TRCK, and align.ts (a book of three paragraphs, a
+     transcript of the second with a spoken intro and a few wrong words).
+  2. `src/data/books.ts`: group parts by `bookId` (title = parts' `collection`, author = `artist`),
+     `useBook`, `updateBook` (writes every part), `setLessonDone`, `deleteBook`, `nextPart`.
+  3. Import in `src/services/sonus/files.ts`: read MP4 tags and chapters (and the ID3 track number).
+     Order the parts by track number, else natural name order (`webkitRelativePath` for folders).
+     `addAudio` takes bookId/bookKind/episode/chapters. A single .m4b, or a file with chapters,
+     becomes a one-part audiobook.
+  4. LibriVox (`src/services/sonus/librivox.ts`), checked with curl on 2026-10-19. LibriVox's own
+     API has no CORS, but archive.org does:
+     `https://archive.org/advancedsearch.php?q=collection:librivoxaudio AND language:(spa)&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=downloads&fl[]=runtime&sort[]=downloads desc&rows=30&page=1&output=json`.
+     - Languages are MARC codes: spa 564, deu 847 (+ger), fre 275 (+fra), nld 210 (+dut), por 107,
+       ita 89, rus 76, grc 45, jpn 37, ell 34, pol 31, zho 25 (+chi), heb 24, lat 16, swe 13; almost
+       none for tur, swa, ind, kor, ara, hun.
+     - The parts: `https://archive.org/metadata/{identifier}` → `files`. Take the "64Kbps MP3" files
+       (else "VBR MP3"). Their `title` has HTML entities; the VBR file of the same name has it
+       clean. `track` is "1/30"; `length` is seconds or "mm:ss".
+     - Audio is `https://archive.org/download/{id}/{name}` (CORS open, so Save for offline and
+       Whisper work). The cover is `https://archive.org/services/img/{id}`.
+     - Use bookId `librivox-{identifier}`; the parts are remote items like podcast episodes.
+  5. Engine (`src/services/audio/engine.ts`):
+     - On 'ended', an audiobook plays the next part; a course marks the lesson done and stops.
+     - A sleep timer in `usePlayer` (minutes, end of chapter, end of part), checked in `tick()`
+       with a setTimeout as backup. It is cleared by `closePlayer`.
+  6. UI:
+     - A book page at /sonus/book/:bookId, built like FeedPage: Continue, the parts (or one part's
+       chapters), lesson done, options (rename, audiobook/course, read along, remove).
+     - An "Audiobooks and courses" shelf in LibraryHome. "Your audio" leaves out parts that have a
+       `bookId`.
+     - AddMenu gets "Audiobook or course" (files or a folder, then a title and the kind) and
+       "Free audiobooks".
+     - A /sonus/audiobooks page: LibriVox search, plus free courses.
+     - In the player: the part and chapter, a chapters list, next and previous part, a sleep (moon)
+       button in Transport's second row, and the back link to the book.
+     - Free courses, all checked live:
+       - Language Transfer: `https://www.languagetransfer.org/` + complete-spanish, french,
+         german, italian, greek, turkish, swahili, arabic.
+       - FSI: `https://fsi-languages.yojik.eu/languages/FSI/fsi-{name}.html` for french, german,
+         italian, portuguese, russian, greek, swedish, hungarian, norwegian, turkish, swahili,
+         arabic, chinese-mandarin, japanese, korean, polish, hindi, tagalog, thai, persian, czech,
+         romanian, serbo-croatian, vietnamese. Spanish is `fsi-spanish-index.html`.
+  7. Read along: on the book page, pick a Codex text. For each part with a transcript, run
+     `alignToBook` on the text's p/h blocks (`textChapters`). Save the result with source 'book'
+     and `original`, then call `setCues`. Also run it after `startTranscription` in
+     services/sonus/jobs.ts when the part has `readAlongTextId`.
+- **Part 4:** the conversation corner (prompts and links, nothing sent from Lingua) and the
+  in-app text chat with an AI key (`src/services/llm`).
+- **Not checked with real things yet:**
+  - Live text with a real Groq key (the no-key path is checked).
+  - Comics from a real CBZ (checked with drawn test pages, in dev and in the production build).
+  - The radio map, station page and comics on an iPhone (QA-ios.md, 3.0-6 parts 1 and 2).
+- **Testing tips from this session:**
+  - In the dev app, modules load by path, so a test comic can be drawn on a canvas and added with
+    `(await import('/src/services/import/comic.ts')).importComic('es', files)`. Bare package
+    names (like 'dexie') don't load that way.
+  - A synthetic `drop` event with a `DataTransfer` works in the production build.
+  - Tesseract's language data comes from jsDelivr the first time.
+  - Git Bash heredocs lose backslashes, and `cat > file` with no heredoc waits for input. Write
+    patch scripts with the Write tool, into the scratchpad.
+  - `gh` isn't installed. Check the deploy with
+    `curl https://api.github.com/repos/sanchour/lingua./actions/runs?per_page=1`.
 
 **3.0-1 to 3.0-5 are done and on `main` (2026-10-19, third computer).** The user swapped steps
 twice: 3.0-5 became Radio (done), then **comics, audiobooks, courses and AI conversation became

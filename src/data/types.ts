@@ -364,6 +364,20 @@ export interface Media extends Synced {
   coverUrl?: string;
   publishedAt?: number;
   description?: string;
+  /** Audiobooks and courses: the parts of one share `bookId`, and `episode` is the part's number. */
+  bookId?: string;
+  bookKind?: 'audiobook' | 'course';
+  /** Chapters inside the file (an M4B's, or an MP3's ID3 chapters). */
+  chapters?: AudioChapter[];
+  /** A course's lesson, marked done. */
+  doneAt?: number;
+  /** The Codex text an audiobook is read along with (its sentences light up in the player). */
+  readAlongTextId?: string;
+}
+
+export interface AudioChapter {
+  title: string;
+  startMs: number;
 }
 
 /** A podcast subscription. Episodes stay in the feed row until one is played or downloaded. */
@@ -404,10 +418,15 @@ export interface Transcript extends Synced {
   mediaId: string;
   lang: Lang;
   role: 'target' | 'native';
-  /** `text`: a plain transcript without timings, spread over the audio by length (approximate). */
-  source: 'srt' | 'vtt' | 'text' | 'whisper-groq' | 'whisper-local' | 'machine';
+  /**
+   * `text`: a plain transcript without timings, spread over the audio by length (approximate).
+   * `book`: an audiobook's own text from Codex, timed by matching it with Whisper's.
+   */
+  source: 'srt' | 'vtt' | 'text' | 'whisper-groq' | 'whisper-local' | 'machine' | 'book';
   offsetMs: number;
   cues: Cue[];
+  /** With `book`: the transcript it was timed from, to go back to. */
+  original?: { source: Transcript['source']; cues: Cue[] };
 }
 
 export interface PlaybackProgress {
