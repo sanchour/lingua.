@@ -78,7 +78,8 @@ export function updateCachedState(norm: string, state: WordState): void {
   }
 }
 
-export function useChapterModel(text: Text | null | undefined, index: number): ChapterModel | null | undefined {
+/** `version`: bumped when the open chapter changed underneath (a comic page's bubbles were read). */
+export function useChapterModel(text: Text | null | undefined, index: number, version = 0): ChapterModel | null | undefined {
   const [model, setModel] = useState<ChapterModel | null | undefined>(undefined);
   useEffect(() => {
     if (!text) return;
@@ -95,6 +96,6 @@ export function useChapterModel(text: Text | null | undefined, index: number): C
     return () => {
       cancelled = true;
     };
-  }, [text, index]);
+  }, [text, index, version]);
   return model;
 }

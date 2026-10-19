@@ -18,6 +18,7 @@ import { spring } from '@/design/motion';
 import { installPaperStyles } from '@/design/papers';
 import { cx } from '@/lib/cx';
 import { ChapterBody } from './ChapterBody';
+import { ComicView } from './ComicView';
 import { ContentsDrawer } from './ContentsDrawer';
 import { WordEngine } from './engine';
 import { CLICK_SLOP_PX, wordAt } from './hit';
@@ -47,7 +48,9 @@ export default function ReaderPage() {
   const systemDark = useMediaQuery('(prefers-color-scheme: dark)');
   const theme = resolveTheme(settings.theme, systemDark);
   const reader = settings.reader;
-  const paged = reader.mode === 'paged';
+  // A comic has a view of its own: the page, and its bubbles' words beside it.
+  const comic = text?.kind === 'comic';
+  const paged = reader.mode === 'paged' && !comic;
   const lang = text?.lang ?? 'en';
 
   // Reading papers: the chosen page colours apply while a book is open (see design/papers.ts).
@@ -76,7 +79,8 @@ export default function ReaderPage() {
     });
   }, [text, chapterIndex]);
 
-  const model = useChapterModel(text?.kind === 'shelfItem' ? null : text, chapterIndex ?? 0);
+  const [version, setVersion] = useState(0);
+  const model = useChapterModel(text?.kind === 'shelfItem' ? null : text, chapterIndex ?? 0, version);
   const ready = model && chapterIndex !== null && model.chapter.index === chapterIndex;
 
   // ── Word engine ─────────────────────────────────────────────────────────
@@ -158,6 +162,11 @@ export default function ReaderPage() {
     persist(Number(first?.dataset.b ?? 0), pager.page / pager.pageCount);
   }, [paged, ready, pager.page, pager.pageCount]);
 
+  // A comic page counts as read when it opens, bubbles or not.
+  useEffect(() => {
+    if (comic && ready) persist(0, 1);
+  }, [comic, ready, chapterIndex]);
+
   // ── Scroll mode: progress from the top-most visible paragraph ───────────
   useEffect(() => {
     if (paged || !ready || !flowRef.current) return;
@@ -174,7 +183,7 @@ export default function ReaderPage() {
             const tokens = model.blocks[b]?.tokens;
             session.addWords(tokens ? tokens.filter((t) => t.isWord).length : 0);
           }
-          persist(b, b / model.blocks.length);
+          persist(b, comic ? 1 : b / model.blocks.length);
           session.touch();
         }
       },
@@ -360,8 +369,8 @@ export default function ReaderPage() {
   };
   useHotkeys(
     {
-      arrowright: () => (paged ? pager.goTo(pager.page + 1) : undefined),
-      arrowleft: () => (paged ? pager.goTo(pager.page - 1) : undefined),
+      arrowright: () => (paged ? pager.goTo(pager.page + 1) : comic ? goChapter((chapterIndex ?? 0) + 1, 'first') : undefined),
+      arrowleft: () => (paged ? pager.goTo(pager.page - 1) : comic ? goChapter((chapterIndex ?? 0) - 1, 'first') : undefined),
       pagedown: () => paged && pager.goTo(pager.page + 1),
       pageup: () => paged && pager.goTo(pager.page - 1),
       ' ': () => (paged ? pager.goTo(pager.page + 1) : window.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' })),
@@ -388,6 +397,7 @@ export default function ReaderPage() {
   const flowClass = cx(
     'reader-flow',
     paged && 'is-paged',
+    comic && 'is-comic',
     reader.justify && 'is-justified',
     reader.highlightUnseen && 'hl-unseen',
     READING_LANGS.has(lang) && reader.readings !== 'off' && `readings-${reader.readings}`,
@@ -409,11 +419,11 @@ export default function ReaderPage() {
   }
   if (!text) return null;
 
-  const body = ready ? <ChapterBody model={model} lang={lang} /> : null;
+  const body = ready ? <ChapterBody model={model} lang={lang} images={!comic} /> : null;
 
   return (
     <motion.div
-      className={cx('bg-bg', paged ? 'fixed inset-0 overflow-hidden' : 'min-h-dvh')}
+      className={cx('bg-bg', paged || comic ? 'fixed inset-0 overflow-hidden' : 'min-h-dvh')}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.22 }}
@@ -438,7 +448,32 @@ export default function ReaderPage() {
         }}
       />
 
-      {paged ? (
+      {comic ? (
+        <ComicView
+          text={text}
+          model={model}
+          ready={Boolean(ready)}
+          index={chapterIndex ?? 0}
+          wide={wide}
+          onTurn={(step) => goChapter((chapterIndex ?? 0) + step, 'first')}
+          onPageRead={() => setVersion((v) => v + 1)}
+        >
+          <div
+            ref={flowRef}
+            key={model?.chapter.id}
+            className={flowClass}
+            lang={lang}
+            style={flowStyle}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerCancel}
+            onContextMenu={onContextMenu}
+          >
+            {body}
+          </div>
+        </ComicView>
+      ) : paged ? (
         <>
           <div
             ref={viewportRef}

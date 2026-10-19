@@ -8,12 +8,13 @@ import type { ChapterModel } from './model';
  * (data-o) and state (data-s). Rendered once per chapter; after that the word engine updates
  * spans directly, so word clicks never re-render this tree.
  */
-export const ChapterBody = memo(function ChapterBody({ model, lang }: { model: ChapterModel; lang: string }) {
+export const ChapterBody = memo(function ChapterBody({ model, lang, images = true }: { model: ChapterModel; lang: string; images?: boolean }) {
   const readings = READING_LANGS.has(lang);
   return (
     <>
       {model.blocks.map(({ block, tokens }, b) => {
-        if (block.t === 'img') return <ReaderImage key={b} index={b} blobId={block.blobId} alt={block.alt} />;
+        // A comic's page is drawn beside its words, not among them.
+        if (block.t === 'img') return images ? <ReaderImage key={b} index={b} blobId={block.blobId} alt={block.alt} /> : null;
         const children = tokens!.map((t, i) =>
           t.isWord ? (
             <span

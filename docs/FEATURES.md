@@ -149,6 +149,22 @@ Practise writing in the target language; get corrected, explained and graded.
   forms show what they mean themselves ("ellos" they, "estoy" am), and words the dictionary lacks
   are read through a likely base form before going online. The word's sheet says when it did that.
 
+## Comics in Codex (3.0-6)
+
+- **Add a comic** (Codex › Add › File): "Choose a comic" takes a CBZ (or a CBR made as zip), a PDF,
+  or the pages' pictures; on desktop "A folder of pages" takes a whole folder, and any of them can
+  be dropped. The first page becomes the cover; pages go in order of their names (2 before 10).
+- **Read it like a comic, learn it like a book:** the page fills its side of the screen (on a
+  phone the top, with its words underneath). Lingua reads the speech bubbles on this device
+  (Tesseract; the first time it downloads the language's reading data) and lists each bubble's
+  words, which work as everywhere in Codex: hover or tap for the meaning, a word's sheet, drag
+  across words to translate a phrase, save to cards. Tap a bubble on the page and its words light
+  up; point at words and their bubble lights up on the page.
+- **Turning and zooming:** the arrows, ← and →, or a swipe on the page (right to left for manga and
+  Arabic comics); double-tap or pinch to zoom into a panel, drag to look around, double-tap to go
+  back. "Read the bubbles again" (the scan button) when a page came out wrong.
+- Pages read count as reading in Ratio, and the comic remembers its page.
+
 ## Ordo in Lingua 2.0 — settings by group, with search (2.0-3)
 
 - **Eight groups**, learning first (Reading, Study and cards, Listening, Languages), then the app

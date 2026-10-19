@@ -183,6 +183,25 @@ export function getChapter(textId: string, index: number, database: LinguaDB = d
     .first();
 }
 
+/** A comic page's speech bubbles, once read, as its text: the page's picture first, then each bubble. */
+export async function setPageBubbles(textId: string, index: number, bubbles: Array<{ text: string; box: [number, number, number, number] }>, database: LinguaDB = db): Promise<Chapter | undefined> {
+  const text = await database.texts.get(textId);
+  const chapter = await getChapter(textId, index, database);
+  if (!text || !chapter) return undefined;
+  await ensureLexicon(text.lang);
+  const now = Date.now();
+  const blocks: Block[] = [...chapter.blocks.filter((b) => b.t === 'img'), ...bubbles.map((b) => ({ t: 'p' as const, text: b.text, box: b.box }))];
+  const wordCount = bubbles.reduce((n, b) => n + countWords(b.text, text.lang), 0);
+  const next: Chapter = { ...chapter, blocks, wordCount, readAt: now, updatedAt: now };
+  await database.transaction('rw', [database.texts, database.chapters, database.textVocab], async () => {
+    await database.chapters.put(next);
+    await database.texts.update(textId, { wordCount: Math.max(0, text.wordCount - chapter.wordCount) + wordCount, updatedAt: now });
+    // The comic's words are counted again from its pages when next needed.
+    await database.textVocab.delete(textId);
+  });
+  return next;
+}
+
 export function useProgress(textId: string | undefined): ReadingProgress | null | undefined {
   return useLiveQuery(async () => (textId ? ((await db.readingProgress.get(textId)) ?? null) : null), [textId]);
 }

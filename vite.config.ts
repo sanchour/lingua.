@@ -57,8 +57,8 @@ export default defineConfig({
           '**/inter-{cyrillic,greek}-wght-normal-*.woff2',
           '**/literata-{latin,latin-ext,cyrillic,greek}-wght-normal-*.woff2',
         ],
-        // Whisper on this device and the PDF reader are optional and large: they are cached when first used.
-        globIgnores: ['**/apple-splash-*', '**/whisper.worker-*.js', '**/pdf-*.js', '**/pdf.worker.min-*'],
+        // Whisper on this device, the PDF reader and the comics' OCR are optional and large: they are cached when first used.
+        globIgnores: ['**/apple-splash-*', '**/whisper.worker-*.js', '**/pdf-*.js', '**/pdf.worker.min-*', '**/tesseract-core-*', '**/worker.min-*.js'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -79,6 +79,12 @@ export default defineConfig({
             urlPattern: ({ url, sameOrigin }) => sameOrigin && /\/assets\/pdf(?:\.worker\.min)?-[\w-]+\.m?js$/.test(url.pathname),
             handler: 'CacheFirst',
             options: { cacheName: 'lingua-pdf', expiration: { maxEntries: 6 } },
+          },
+          {
+            // Tesseract's engine (about 4 MB) and worker, for reading comics' speech bubbles, load the first time a comic opens.
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && /\/assets\/(tesseract-core-|worker\.min-)[\w.-]+\.js$/.test(url.pathname),
+            handler: 'CacheFirst',
+            options: { cacheName: 'lingua-ocr', expiration: { maxEntries: 4 } },
           },
         ],
       },

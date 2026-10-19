@@ -3,7 +3,7 @@ import type { DragEvent, ReactNode } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
 import { AnimatePresence, motion } from 'motion/react';
-import { BookUp, ClipboardPaste, FileText, Library, Newspaper, Sparkles, UploadCloud } from 'lucide-react';
+import { BookUp, ClipboardPaste, FileText, FolderOpen, Library, Newspaper, PanelsTopLeft, Sparkles, UploadCloud } from 'lucide-react';
 import { useApp } from '@/app/context';
 import type { Cefr } from '@/core/lang/levels';
 import { countWords } from '@/core/text/tokenizer';
@@ -13,8 +13,9 @@ import { Button, Card, Segmented } from '@/design/primitives';
 import { fade } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { EpubError } from '@/services/import/epub';
+import { COMIC_FILE_ACCEPT, comicSource, importComic } from '@/services/import/comic';
 import { BOOK_FILE_ACCEPT, bookFileKind, importBookFile, importGoodreads, importPasted, importSample } from '@/services/import/importers';
-import { pickFile } from '@/services/files/files';
+import { pickFile, pickFiles, pickFolder } from '@/services/files/files';
 import { toast } from '@/state/ui';
 import { CLOTHS } from './library/covers';
 import { CoverDesigner } from './library/CoverDesigner';
@@ -60,7 +61,7 @@ export default function NewTextPage() {
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={way} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={fade}>
           {way === 'write' && <WriteOrPaste lang={lang} onDone={(id) => navigate(`/codex/read/${id}`)} />}
-          {way === 'file' && <ImportFile lang={lang} onDone={(id) => navigate(`/codex/book/${id}?new=1`)} />}
+          {way === 'file' && <ImportFile lang={lang} onDone={(id) => navigate(`/codex/book/${id}?new=1`)} onComic={(id) => navigate(`/codex/read/${id}`)} />}
           {way === 'news' && <NewsPanel lang={lang} onDone={(id) => navigate(`/codex/read/${id}`)} onPaste={() => setWay('write')} />}
           {way === 'goodreads' && <Goodreads lang={lang} onDone={() => navigate('/codex')} />}
         </motion.div>
@@ -140,11 +141,26 @@ function WriteOrPaste({ lang, onDone }: { lang: string; onDone: (id: string) => 
   );
 }
 
-function ImportFile({ lang, onDone }: { lang: string; onDone: (id: string) => void }) {
+function ImportFile({ lang, onDone, onComic }: { lang: string; onDone: (id: string) => void; onComic: (id: string) => void }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [over, setOver] = useState(false);
   const depth = useRef(0);
+  const { pointer } = useLayout();
+
+  // A comic: an archive, a PDF of pages, or the pages' pictures (several, or a folder of them).
+  const takeComic = async (files: File[]) => {
+    if (!files.length) return;
+    if (!comicSource(files)) return toast('Lingua opens comics as CBZ (or CBR made as zip) files, PDFs, or the pages’ pictures.', { tone: 'error' });
+    setBusy(files.length === 1 ? files[0].name : files[0].webkitRelativePath.split('/')[0] || `${files.length} pages`);
+    setProgress(0);
+    try {
+      onComic(await importComic(lang, files, setProgress));
+    } catch (error) {
+      toast(error instanceof Error ? error.message : 'That comic couldn’t be added.', { tone: 'error' });
+      setBusy(null);
+    }
+  };
 
   const take = async (file: File) => {
     if (!bookFileKind(file)) return toast('Lingua reads DRM-free EPUB books, PDFs with text, and plain text files.', { tone: 'error' });
@@ -162,8 +178,11 @@ function ImportFile({ lang, onDone }: { lang: string; onDone: (id: string) => vo
     e.preventDefault();
     depth.current = 0;
     setOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file) void take(file);
+    const files = [...e.dataTransfer.files];
+    // Comic archives and pictures go to comics; a PDF dropped here is read as a book.
+    const source = comicSource(files);
+    if (source === 'archive' || source === 'images') return void takeComic(files);
+    if (files[0]) void take(files[0]);
   };
 
   return (
@@ -186,9 +205,9 @@ function ImportFile({ lang, onDone }: { lang: string; onDone: (id: string) => vo
       <span className="mb-4 grid size-16 place-items-center rounded-2xl bg-sage-soft text-sage-text">
         <UploadCloud size={28} aria-hidden />
       </span>
-      <p className="font-serif text-2xl font-semibold">{busy ? `Shelving “${busy}”…${progress > 0 && progress < 1 ? ` ${Math.round(progress * 100)}%` : ''}` : 'Drop a book here'}</p>
+      <p className="font-serif text-2xl font-semibold">{busy ? `Shelving “${busy}”…${progress > 0 && progress < 1 ? ` ${Math.round(progress * 100)}%` : ''}` : 'Drop a book or a comic here'}</p>
       <p className="mt-2 max-w-md text-[14.5px] leading-relaxed text-ink-soft">
-        DRM-free EPUB books, PDFs with real text, and plain text files. On iPhone, choose a file from Files or iCloud Drive. Books bought in Apple Books are locked to that app.
+        DRM-free EPUB books, PDFs with real text, and plain text files. Comics as CBZ files, PDFs or the pages’ pictures: Lingua reads their speech bubbles on this device. On iPhone, choose a file from Files or iCloud Drive. Books bought in Apple Books are locked to that app.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
         <Button icon={BookUp} loading={busy !== null} onClick={() => void pickFile(BOOK_FILE_ACCEPT).then((f) => f && take(f))}>
@@ -197,6 +216,14 @@ function ImportFile({ lang, onDone }: { lang: string; onDone: (id: string) => vo
         <Button variant="secondary" icon={FileText} disabled={busy !== null} onClick={() => void pickFile('.pdf,application/pdf').then((f) => f && take(f))}>
           Choose a PDF
         </Button>
+        <Button variant="secondary" icon={PanelsTopLeft} disabled={busy !== null} onClick={() => void pickFiles(COMIC_FILE_ACCEPT).then(takeComic)}>
+          Choose a comic
+        </Button>
+        {pointer === 'fine' && (
+          <Button variant="ghost" icon={FolderOpen} disabled={busy !== null} onClick={() => void pickFolder().then(takeComic)}>
+            A folder of pages
+          </Button>
+        )}
       </div>
       <button
         type="button"

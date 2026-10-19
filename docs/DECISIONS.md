@@ -583,6 +583,27 @@ Short records of choices that are not obvious from the code. Newest last.
   in Library) and Music (explore shelves instead of the "Songs you love" card); they are part of
   3.0-6. Older entries that say "3.0-6" for grammar or "3.0-8" for comics meant the old order.
 
+## 2026-10-19 — Lingua 3.0-6, part 2: comics
+
+- **A comic is a text whose chapters are pages:** the page's picture, then its speech bubbles as
+  paragraphs, each with its place on the page (`box`). Everything that works on text (word
+  states, glosses, cards, word counts, Ratio, backups and sync) works on comics unchanged; only
+  the reader has a view of its own.
+- **Bubbles are read when a page opens,** and the next page ahead, not all at import: a long comic
+  is added in seconds, and reading the whole of it at once would keep a phone busy for minutes.
+  "Read the bubbles again" is there when a page comes out wrong.
+- **Tesseract in sparse-text mode, lines grouped by Lingua.** Its usual page mode joined bubbles
+  into one paragraph; finding each line alone and joining lines that sit under each other in the
+  same column gives one paragraph per bubble. Lettering in capitals is made into sentences so
+  words look up as usual; a word the dictionary on the device doesn't know keeps its capital
+  (likely a name). German keeps its capitals.
+- **The engine is Lingua's own file, the language data is not.** tesseract.js's worker and its
+  WebAssembly engine (about 4 MB, SIMD where the browser has it) are built into the app and cached
+  the first time a comic opens, never in the offline download. The reading data per language
+  (1–15 MB) comes from tesseract.js's data packages on jsDelivr and is kept on the device.
+- **No two-page spreads:** on desktop the page's words sit where the second page would; a comic in
+  Lingua is read to learn its words, so they stay in view.
+
 ## 2026-10-19 — Lingua 3.0-6, part 1: Radio and Music
 
 - **A drawn map, not a map service.** The countries come from Natural Earth (public domain), made

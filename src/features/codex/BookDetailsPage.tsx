@@ -63,7 +63,7 @@ function Details({ text, fresh }: { text: Text; fresh: boolean }) {
           {text.title}
         </h1>
         <p className="mt-1 text-[13.5px] text-ink-soft">
-          {text.wordCount.toLocaleString()} words · {text.chapterCount} {text.chapterCount === 1 ? 'part' : 'parts'} · about {formatDuration(minutes * 60_000)} of reading
+          {text.wordCount.toLocaleString()} words · {text.chapterCount} {text.kind === 'comic' ? (text.chapterCount === 1 ? 'page' : 'pages') : text.chapterCount === 1 ? 'part' : 'parts'} · about {formatDuration(minutes * 60_000)} of reading
           {text.stats && ` · ${Math.round(text.stats.knownShare * 100)}% of words known`}
           {text.sourceUrl && (
             <>

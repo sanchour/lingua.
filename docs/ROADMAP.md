@@ -641,11 +641,21 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
       *Done:* Recently opened, Explore today (with shuffle, and a round button on each song for
       Apple's 30-second preview), the charts, your songs, Most played by you (from three songs
       opened twice or more), Style of the day, then styles, Spotify and artists.
-- [ ] **Comics, fully supported in Codex:** open CBZ/CBR-style archives (zip), image folders and
+- [x] **Comics, fully supported in Codex:** open CBZ/CBR-style archives (zip), image folders and
       PDFs page by page, with a reader made for panels: fit to width or page, swipe on a phone,
       two pages on desktop, zoom into a panel. Speech bubbles become text by on-device OCR
       (Tesseract, loaded only for comics, per script), so every word works as in Codex: tap,
-      select to translate, save to cards. Reading time and pages count in Ratio.
+      select to translate, save to cards. Reading time and pages count in Ratio. *Done:* Codex ›
+      Add › File has "Choose a comic" (CBZ, CBR made as zip, a PDF, or the pages' pictures),
+      "A folder of pages" on desktop, and drop. Each page is a chapter: its picture, then its
+      bubbles as paragraphs. The reader shows the page whole beside its words (above them on a
+      phone); tap a bubble and its words light up, hover words and their bubble lights up;
+      double-tap or pinch to zoom, swipe to turn (right to left for manga and Arabic). Tesseract
+      reads the open page and the next one ahead, in sparse-text mode, lines grouped into
+      bubbles, capitals made into sentences (names the dictionary doesn't know keep theirs).
+      Checked with drawn test pages, in the dev app and in the production build. *Not done:* two
+      pages side by side on desktop (the page's words take that place); CBR files that are RAR
+      archives (a browser can't open them; the message says to make a CBZ).
 - [ ] **Audiobooks and audio courses in Sonus:** add audio files (MP3, M4A/M4B with chapters) or
       folders, or open free audiobooks from LibriVox in the language. Chapters, resume where you
       left off, speed, sleep timer, the mini player. A text alongside when there is one (the

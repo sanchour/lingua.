@@ -45,6 +45,24 @@ export function pickFile(accept: string): Promise<File | null> {
   });
 }
 
+/** Opens the folder picker (desktop browsers): every file in the chosen folder. Empty when cancelled. */
+export function pickFolder(): Promise<File[]> {
+  return new Promise((resolve) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.webkitdirectory = true;
+    input.style.display = 'none';
+    const done = (files: File[]) => {
+      input.remove();
+      resolve(files);
+    };
+    input.addEventListener('change', () => done([...(input.files ?? [])]), { once: true });
+    input.addEventListener('cancel', () => done([]), { once: true });
+    document.body.append(input);
+    input.click();
+  });
+}
+
 /** Opens the file picker for several files. Resolves an empty list when the user cancels. */
 export function pickFiles(accept: string): Promise<File[]> {
   return new Promise((resolve) => {

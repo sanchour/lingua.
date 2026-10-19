@@ -45,8 +45,9 @@ export interface SettingRow {
 export interface Text extends Synced {
   id: string;
   lang: Lang;
-  kind: 'book' | 'article' | 'transcript' | 'shelfItem';
-  source: 'epub' | 'pdf' | 'txt' | 'paste' | 'article' | 'goodreads' | 'sonus' | 'visio' | 'cantus';
+  /** 'comic': one chapter per page, the page's picture first and its speech bubbles after it. */
+  kind: 'book' | 'article' | 'transcript' | 'shelfItem' | 'comic';
+  source: 'epub' | 'pdf' | 'txt' | 'paste' | 'article' | 'goodreads' | 'sonus' | 'visio' | 'cantus' | 'comic';
   title: string;
   author?: string;
   coverBlobId?: string;
@@ -96,8 +97,10 @@ export interface TextVocab {
 }
 
 export type Block =
-  | { t: 'p' | 'h' | 'quote'; text: string; cue?: number }
-  | { t: 'img'; blobId: string; alt?: string };
+  /** `box`: a comic's speech bubble, where it sits on the page ([x, y, width, height], 0–1). */
+  | { t: 'p' | 'h' | 'quote'; text: string; cue?: number; box?: [number, number, number, number] }
+  /** `w`, `h`: a comic page's size in pixels, so the page keeps its shape while it loads. */
+  | { t: 'img'; blobId: string; alt?: string; w?: number; h?: number };
 
 /**
  * A chapter (or part of one). Edited chapters carry `updatedAt` and merge newest-wins; removed ones
@@ -113,6 +116,8 @@ export interface Chapter {
   part?: [number, number];
   wordCount: number;
   blocks: Block[];
+  /** Comics: when the page's bubbles were read (by OCR on the device). */
+  readAt?: number;
   updatedAt?: number;
   deletedAt?: number;
 }

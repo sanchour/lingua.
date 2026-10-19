@@ -57,7 +57,7 @@ export async function importEpubFile(lang: string, file: File, onProgress?: (fra
 
 export async function importPdfFile(lang: string, file: File, onProgress?: (fraction: number) => void, level?: Text['level']): Promise<string> {
   const pdf = await parsePdf(file, onProgress);
-  if (!pdf.chapters.length) throw new Error('No text was found in this PDF.');
+  if (!pdf.chapters.length) throw new Error('No text was found in this PDF. If it’s a comic or a scan, add it with “Choose a comic”: Lingua reads its pages.');
   return addText({ lang, title: pdf.title, author: pdf.author, kind: 'book', source: 'pdf', chapters: pdf.chapters, level });
 }
 

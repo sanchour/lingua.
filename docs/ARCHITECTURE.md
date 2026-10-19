@@ -45,7 +45,7 @@ features/   one folder per section; pages + use*Controller hooks;
             views/desktop + views/touch only where the interaction differs
 design/     tokens, motion presets, fonts, primitives, layout hooks
 state/      Zustand stores for ephemeral session state (never the source of truth)
-services/   side effects: storage, files, perf, packs, translate, llm, transcribe, audio
+services/   side effects: storage, files, perf, packs, translate, llm, transcribe, audio, comics (OCR)
 data/       Dexie schema, row types, settings, repositories, backup I/O, activity log
 core/       pure TypeScript: text, languages, parsers, backup merge, srs, ludus, diff, stats
 workers/    off-main-thread work: pack install, archive parsing

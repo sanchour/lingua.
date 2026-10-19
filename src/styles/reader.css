@@ -42,6 +42,18 @@
   font-style: italic;
 }
 
+/* Comics: each bubble's words, one after another; the bubble shown on the page lights up. */
+.reader-flow.is-comic p {
+  margin: 0 0 0.35em;
+  padding: 0.35em 0.6em;
+  border-radius: 10px;
+  transition: background-color 180ms ease-out;
+}
+
+.reader-flow.is-comic p.is-lit {
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+}
+
 .reader-figure {
   margin: 0.4em 0 1em;
   break-inside: avoid;

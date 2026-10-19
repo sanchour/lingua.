@@ -234,3 +234,15 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Music: no "Songs you love" card. Explore today shows songs; the round button plays 30 seconds
       (Sonus pauses); the shuffle button brings other songs; "Surprise me" opens one.
 - [ ] Open three songs twice each (a minute apart): "Most played by you" appears with the counts.
+
+## Lingua 3.0-6, part 2: comics
+
+- [ ] Codex › Add › File › Choose a comic: pick a CBZ from Files. It opens on page 1 with the page
+      on top and "Reading the bubbles…" below; the first time, the language's data downloads.
+- [ ] The bubbles' words appear under the page; tap a word for its meaning, hold and slide to
+      translate a phrase, save one to cards.
+- [ ] Tap a bubble on the page: its words light up below.
+- [ ] Swipe the page left: the next page, its bubbles already read. Double-tap to zoom, drag, double-
+      tap back. Pinch to zoom.
+- [ ] Pick several photos of pages instead (Choose a comic, select them): one comic in their order.
+- [ ] Close and reopen the comic: it opens on the page you were on; Codex shows its progress.
