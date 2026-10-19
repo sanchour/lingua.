@@ -424,27 +424,76 @@ screen, and no tap target is under 32 px. Not checked on a real iPhone yet (QA-i
 - [x] **Onboarding:** the "What do you enjoy most" step goes (Home's order keeps a sensible
       default; Ordo › Languages keeps the choice for those who want it).
 
-### 3.0-3 · Sonus and music, fully working
-- [ ] **Sonus opens on Library:** one well-laid-out library of your music and podcasts (now
+### 3.0-3 · Sonus and music, fully working ✅
+
+**Built (2026-10-19), in this order:** one phrase gesture (`usePhraseGesture`) for lyrics,
+podcast transcripts and Visio subtitles, with the reader's phrase bubble; the song page and an open
+podcast fixed to the window (only the lyrics or the transcript scroll; on phones the header, song
+card and docked player stay put); Apple's preview as a fifth source with its own clock, placed in
+the song by one tap on the line you hear; estimated times for untimed lyrics, put right by taps; an
+error boundary round the player and sheet; LRCLIB asked fewer, better questions with Retry-After
+backoff when it is busy, lyrics.ovh when it can't be reached, two automatic retries on the page,
+candidates to pick from at once when nothing sure was found, and lyrics with a translation mixed
+into every line passed over for a clean version; Sonus opens on Library (Music and Podcasts
+after it); about ten styles per language at the top of Music; song lessons that teach the
+language first (words at your level, the word in its line, a form and its dictionary word, the
+line in English, then the verse in order as the bonus), translating the song first when needed,
+with the words added as cards at the end. Lyrics measured on the charts (`lyrics-check.ts`, 8
+songs a language, 149 songs): **72% → 81% found, 66% → 78% timed**; most misses left are LRCLIB
+turning questions away while busy, not songs it lacks.
+
+**Plan (2026-10-18):**
+1. **Hold to translate, one gesture for all three:** the reader's phrase selection (mouse: press and
+   drag; touch: hold a word, then slide) becomes a shared hook (`usePhraseGesture`) that the lyric
+   sheet, the podcast and Visio transcripts and the subtitles over a video use, with the reader's
+   phrase bubble (translate, save as a card, copy). The video holds still while choosing.
+2. **Fixed pages:** the song page and an open podcast fill the screen; only the lyric sheet or the
+   transcript scrolls (its own scroll box, which the follow-along uses instead of the window).
+   Phones: header, song card and the docked player stay put, and the lyrics scroll between them.
+3. **One clock per source, and the preview always plays:** a fifth source, Apple's 30-second
+   preview, on an audio element with its own clock. The preview starts somewhere in the song, so
+   the first time "tap the line you hear" sets where (kept with the song). Untimed lyrics get
+   estimated times spread over the song's length (sung lines by their length), followed gently
+   with no word-by-word lighting, and a tap on a line puts them right. Player and sheet sit inside
+   an error boundary: a player that fails says so and offers another source.
+4. **Lyrics that load:** LRCLIB asked more ways (exact with and without the album, search by
+   cleaned title and first artist, by words, by title alone with the artist checked); lyrics.ovh
+   with the cleaned title; candidates shown straight away to pick from when the match is unsure
+   or nothing was found, with Genius and "paste them yourself" under them. A script
+   (`scripts/cantus/lyrics-check.ts`) measures how many chart songs per language get lyrics,
+   before and after.
+5. **Sonus: Library · Music · Podcasts.** Library first: now playing or continue, recently
+   played (songs and episodes together), your songs, the podcasts you follow, new episodes, your
+   own files. Music: styles at the top under the search, then your songs, charts, Spotify and
+   artists. Podcasts: followed shows, then find podcasts. Radio (3.0-6) gets its own fourth tab.
+   About ten styles per language (beta languages six, made from the name).
+6. **Song games that teach the language:** rounds in the order words → meaning → grammar → line →
+   bonus: the song's words at the learner's level that aren't known yet (meaning, chosen from
+   four), fill in the word with its English meaning as the hint, a form spotted in the line
+   ("cantaba is a form of cantar", from the pack's form notes), translate the line (chosen from
+   three), and the lines in order last, as the bonus. The words met can be added as cards at
+   the end. The page says so at the top.
+
+- [x] **Sonus opens on Library:** one well-laid-out library of your music and podcasts (now
       playing and recent first, then saved songs, followed podcasts and new episodes), then a
       **Music** tab and a **Podcasts** tab that show only that kind, each with its own discovery.
       Radio (3.0-6) slots in as a fourth tab or inside Library; decide there.
-- [ ] **Song page without double scrolling:** a fixed page (art, title and controls fixed, only
+- [x] **Song page without double scrolling:** a fixed page (art, title and controls fixed, only
       the lyric sheet scrolls), smooth on phone and desktop.
-- [ ] **Playback in sync with the lyrics, without errors:** one player engine per source (preview,
+- [x] **Playback in sync with the lyrics, without errors:** one player engine per source (preview,
       Spotify, Apple Music) with a single clock; the preview always plays; timed lyrics follow
       the music exactly; untimed lyrics get a gentle estimated scroll and "tap the line you hear".
       Errors are caught and explained, never a dead page.
-- [ ] **Lyrics that load:** search more widely (LRCLIB by exact track and by search with title and
+- [x] **Lyrics that load:** search more widely (LRCLIB by exact track and by search with title and
       artist cleaned up, featuring and remaster tags removed; lyrics.ovh; Genius as a link), let
       you pick between results, and pop them up easily, with "paste them yourself" as the last
       step. Measured on a list of songs per language.
-- [ ] **An open podcast fits one screen on desktop:** player, transport and transcript laid out
+- [x] **An open podcast fits one screen on desktop:** player, transport and transcript laid out
       so the page itself never scrolls (only the transcript does).
-- [ ] **Styles at the top** of the Music tab, and more styles for each language.
-- [ ] **Hold to translate** several words or a sentence works on song lyrics, podcast
+- [x] **Styles at the top** of the Music tab, and more styles for each language.
+- [x] **Hold to translate** several words or a sentence works on song lyrics, podcast
       transcripts and Visio subtitles, with mouse and touch, as in Codex.
-- [ ] **Song games teach the language first and the song as a bonus**, and say so: words from the
+- [x] **Song games teach the language first and the song as a bonus**, and say so: words from the
       song in the learner's level as cards, fill in the word with its meaning, grammar spotted in
       the line, translate the line, then put the lines in order.
 
@@ -547,10 +596,10 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 
 ### Handover for the Lingua 3.0 session
 
-**3.0-1, 3.0-1b and 3.0-2 are done and on `main` (2026-10-18, third computer).** Next is 3.0-3. Known gaps
-to pick up there: Japanese place names the dictionary keeps only as names (日本) are left out of
-the counting lexicon, so the reader splits them (日|本); count with names included and rebuild
-`ja`. The first ten packs were not rebuilt with this session's builder (see DECISIONS).
+**3.0-1, 3.0-1b, 3.0-2 and 3.0-3 are done and on `main` (2026-10-19, third computer).** Next is
+3.0-4. Japanese place names (日本) are now counted, so the reader keeps them whole. The first ten
+packs were not rebuilt with this session's builder (see DECISIONS). Not checked on an iPhone yet:
+hold to translate on touch, the preview clock and the fixed song page (QA-ios.md, 3.0-3).
 
 The rest of this handover is the state before that session, kept for its notes.
 

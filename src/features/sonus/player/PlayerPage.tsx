@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { ChevronDown, ChevronLeft, LoaderCircle, Play } from 'lucide-react';
 import { formatDuration } from '@/core/audio/cues';
@@ -60,6 +60,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
   const error = usePlayer((s) => s.error);
   const isLoaded = loadedId === media.id;
   const wide = layout === 'wide';
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Opening an item gets it ready (without starting it), unless something else is playing.
   useEffect(() => {
@@ -112,28 +113,47 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
     </button>
   );
 
+  // Desktop: one screen that stays put. The artwork takes the room that's left in its column, and
+  // only the transcript scrolls.
   if (wide) {
     return (
-      <>
-        <Link to={media.feedId ? `/sonus/podcast/${media.feedId}` : '/sonus'} className="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-ink-soft hover:text-ink">
+      <div className="flex h-[calc(100dvh-8rem)] min-h-[520px] flex-col">
+        <Link to={media.feedId ? `/sonus/podcast/${media.feedId}` : '/sonus?tab=podcasts'} className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
           <ChevronLeft size={16} aria-hidden /> {media.feedId ? media.collection : 'Sonus'}
         </Link>
-        <div className="grid grid-cols-[minmax(260px,320px)_minmax(0,1fr)] gap-12">
-          <aside className="sticky top-10 self-start">
-            <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="w-full shadow-elev-2" rounded="rounded-3xl" />
-            <div className="mt-5 flex items-start gap-2">
-              <div className="min-w-0 flex-1">
-                <Details media={media} large />
-              </div>
-              <MediaOptions media={media} hasTranscript={Boolean(cues?.length)} />
+        <div className="grid min-h-0 flex-1 grid-cols-[minmax(260px,320px)_minmax(0,1fr)] gap-12">
+          <aside className="flex min-h-0 flex-col">
+            <div className="min-h-[96px] flex-1 [container-type:size]">
+              <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="block w-[min(100cqw,100cqh)] shadow-elev-2" rounded="rounded-3xl" />
             </div>
-            <div className="mt-6">{controls}</div>
+            <div className="shrink-0">
+              <div className="mt-5 flex items-start gap-2">
+                <div className="min-w-0 flex-1">
+                  <Details media={media} large />
+                </div>
+                <MediaOptions media={media} hasTranscript={Boolean(cues?.length)} />
+              </div>
+              <div className="mt-6">{controls}</div>
+            </div>
           </aside>
-          <section aria-label="Transcript" className="min-w-0 pb-24">
-            {transcriptArea}
+          <section aria-label="Transcript" className="flex min-h-0 min-w-0 flex-col">
+            {cues?.length ? (
+              <>
+                <div className="shrink-0">
+                  <TranscriptBar media={media} transcript={transcript!} />
+                </div>
+                <div ref={scrollRef} className="lyric-scroll -mr-4 min-h-0 flex-1 overflow-y-auto overscroll-contain pt-1 pr-4 pb-16">
+                  <KaraokeTranscript media={media} cues={cues} live={isLoaded} scrollRef={scrollRef} />
+                </div>
+              </>
+            ) : (
+              <div className="min-h-0 flex-1 overflow-y-auto">
+                <NoTranscript media={media} />
+              </div>
+            )}
           </section>
         </div>
-      </>
+      </div>
     );
   }
 

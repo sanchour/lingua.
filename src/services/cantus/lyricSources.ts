@@ -2,8 +2,8 @@
 // can't be asked from a browser (its API refuses the check browsers make before sending a key), so
 // the song page links to Genius's own search, to copy the words and paste them.
 // They aren't timed to the music: the lyrics are shown whole, to read along.
-import { parsePlain } from '@/core/cantus/lyrics';
-import type { LyricLine } from '@/core/cantus/lyrics';
+import { parsePlain } from '../../core/cantus/lyrics.ts';
+import type { LyricLine } from '../../core/cantus/lyrics.ts';
 
 export interface OtherLyrics {
   lines: LyricLine[];

@@ -73,7 +73,7 @@ export async function finishSpotifySignIn(search: string): Promise<string> {
   await saveToken(token);
   const me = await spotifyGet<{ display_name?: string; id: string }>('/me').catch(() => null);
   if (me) await patchSetting('spotify', { user: me.display_name || me.id });
-  return pending.returnTo || '/sonus';
+  return pending.returnTo || '/sonus?tab=music';
 }
 
 async function saveToken(t: { access_token: string; refresh_token?: string; expires_in: number }, current?: Settings['spotify']) {

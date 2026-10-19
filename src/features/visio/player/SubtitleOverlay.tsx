@@ -5,10 +5,12 @@ import { useApp } from '@/app/context';
 import type { Chapter, Cue, Media, Text, WordState } from '@/data/types';
 import { useLayout } from '@/design/hooks/useLayout';
 import { cx } from '@/lib/cx';
-import { CLICK_SLOP_PX, wordAt } from '@/features/codex/reader/hit';
+import { wordAt } from '@/features/codex/reader/hit';
 import { HoverGloss } from '@/features/codex/reader/HoverGloss';
 import { modelFromChapter, updateCachedState } from '@/features/codex/reader/model';
 import type { ChapterModel } from '@/features/codex/reader/model';
+import { PhraseBubble } from '@/features/codex/reader/PhraseBubble';
+import { usePhraseGesture } from '@/features/codex/reader/usePhraseGesture';
 import { TapGloss } from '@/features/codex/reader/TapGloss';
 import { WordDrawer } from '@/features/codex/reader/WordDrawer';
 import type { DrawerWord } from '@/features/codex/reader/WordDrawer';
@@ -17,7 +19,6 @@ import { translateLine } from '@/services/translate/gloss';
 import type { VideoClock } from './clock';
 import { lineAt } from './lines';
 
-const LONG_PRESS_MS = 430;
 interface OverlayProps {
   media: Media;
   target: Cue[] | null;
@@ -109,33 +110,39 @@ export function SubtitleOverlay({ media, target, native, clock, onHold }: Overla
     [engine],
   );
 
-  const gesture = useRef<{ x: number; y: number; word: HTMLElement | null; timer: number; long: boolean; type: string } | null>(null);
-  const onPointerDown = (e: ReactPointerEvent) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    e.stopPropagation();
-    const word = wordAt(e.target, e.clientX, e.clientY, lineRef.current);
-    const g = { x: e.clientX, y: e.clientY, word, timer: 0, long: false, type: e.pointerType };
-    if (e.pointerType !== 'mouse' && word) {
-      g.timer = window.setTimeout(() => {
-        g.long = true;
-        openDrawer(word);
-      }, LONG_PRESS_MS);
-    }
-    gesture.current = g;
-  };
-  const onPointerUp = (e: ReactPointerEvent) => {
-    e.stopPropagation();
-    const g = gesture.current;
-    gesture.current = null;
-    if (!g) return;
-    window.clearTimeout(g.timer);
-    if (g.long || Math.hypot(e.clientX - g.x, e.clientY - g.y) > CLICK_SLOP_PX || !g.word || !engine) return;
-    if (g.type === 'mouse') engine.cycle(g.word);
-    else {
-      onHold(true);
-      setTapped((t) => (t === g.word ? null : g.word));
-    }
-  };
+  // As in the reader: click or tap a word, hold it for its drawer, drag across words (or hold and
+  // slide) to translate part of the line. The picture holds still while a word or phrase is open.
+  const hovering = useRef(false);
+  const { handlers, phrase, closePhrase } = usePhraseGesture(
+    rootRef,
+    engine,
+    {
+      onPress: () => onHold(true),
+      onHold: openDrawer,
+      onSelecting: (on) => {
+        if (on) {
+          setTapped(null);
+          onHold(true);
+        } else if (!hovering.current) onHold(false);
+      },
+      onTap: ({ word, type }) => {
+        if (!word || !engine) return;
+        if (type === 'mouse') engine.cycle(word);
+        else {
+          onHold(true);
+          setTapped((t) => (t === word ? null : word));
+        }
+      },
+    },
+    [model],
+  );
+  // The video's own taps (play, pause) stay off the subtitles.
+  const stop =
+    <E extends ReactPointerEvent>(fn: (e: E) => void) =>
+    (e: E) => {
+      e.stopPropagation();
+      fn(e);
+    };
   const onContextMenu = (e: ReactMouseEvent) => {
     const word = wordAt(e.target, e.clientX, e.clientY, lineRef.current);
     if (!word) return;
@@ -161,13 +168,22 @@ export function SubtitleOverlay({ media, target, native, clock, onHold }: Overla
             data-b={line}
             lang={lang}
             className="visio-line pointer-events-auto"
-            onPointerDown={onPointerDown}
-            onPointerUp={onPointerUp}
-            onPointerCancel={() => (gesture.current = null)}
+            onPointerDown={stop(handlers.onPointerDown)}
+            onPointerMove={handlers.onPointerMove}
+            onPointerUp={stop(handlers.onPointerUp)}
+            onPointerCancel={handlers.onPointerCancel}
             onContextMenu={onContextMenu}
             onClick={(e) => e.stopPropagation()}
-            onPointerEnter={(e) => e.pointerType === 'mouse' && onHold(true)}
-            onPointerLeave={(e) => e.pointerType === 'mouse' && !drawer && onHold(false)}
+            onPointerEnter={(e) => {
+              if (e.pointerType !== 'mouse') return;
+              hovering.current = true;
+              onHold(true);
+            }}
+            onPointerLeave={(e) => {
+              if (e.pointerType !== 'mouse') return;
+              hovering.current = false;
+              if (!drawer && !phrase && !(e.buttons & 1)) onHold(false);
+            }}
           >
             <span className="visio-line-box">
               {block.tokens.map((t, i) =>
@@ -208,6 +224,7 @@ export function SubtitleOverlay({ media, target, native, clock, onHold }: Overla
       </div>
 
       {pointer === 'fine' && <HoverGloss rootRef={rootRef} engine={engine} hoveredRef={hoveredRef} />}
+      {phrase && phrase.anchor.isConnected && <PhraseBubble phrase={phrase} lang={lang} onClose={closePhrase} />}
       {tapped && engine && tapped.isConnected && (
         <TapGloss
           el={tapped}

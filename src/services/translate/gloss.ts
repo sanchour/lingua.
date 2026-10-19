@@ -235,6 +235,9 @@ export function firstAnswer(asks: Array<() => Promise<string | null>>): Promise<
   });
 }
 
+/** A "translation" that only gives the line back (a provider that couldn't tell the language). */
+const echoes = (result: string, text: string, lang: string) => result.replace(/\s+/g, ' ').trim().toLocaleLowerCase(lang) === text.toLocaleLowerCase(lang);
+
 /** A whole line or sentence through the same online chain (subtitle lines); cached forever. */
 export function translateLine(lang: string, text: string): Promise<string | null> {
   const clean = text.replace(/\s+/g, ' ').trim();
@@ -244,12 +247,13 @@ export function translateLine(lang: string, text: string): Promise<string | null
   if (existing) return existing;
   const job = (async () => {
     const cached = await db.translationCache.get(key);
-    if (cached?.result) return cached.result;
+    if (cached?.result && !echoes(cached.result, clean, lang)) return cached.result;
     const { translation } = await getSettings();
     const asks = translation.chain.flatMap((provider) =>
       provider === 'mymemory' ? [() => myMemory(lang, clean)] : provider === 'lingva' ? [() => lingva(translation.lingvaHost, lang, clean)] : [],
     );
-    const result = await firstAnswer(asks);
+    // An echo isn't an answer: let the next provider try.
+    const result = await firstAnswer(asks.map((ask) => () => ask().then((r) => (r && !echoes(r, clean, lang) ? r : null))));
     if (result) await db.translationCache.put({ id: key, text: clean, result, provider: 'online', createdAt: Date.now() });
     return result;
   })().finally(() => inflight.delete(key));

@@ -466,6 +466,8 @@ export interface Song extends Synced {
   palette?: { base: string; deep: string; soft: string };
   /** Moves the lyrics' timing against the music (ms; positive = lyrics later). */
   offsetMs?: number;
+  /** Where in the song Apple's 30-second preview starts (ms), once a tap on a line has said. */
+  previewAtMs?: number;
   savedAt?: number;
   lastPlayedAt?: number;
   /** The lyrics opened in Codex as a text. */

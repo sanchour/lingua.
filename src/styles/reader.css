@@ -405,3 +405,7 @@
     height: 18px;
   }
 }
+.visio-line .w.is-selected {
+  background-color: rgb(255 255 255 / 0.3);
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 0.3);
+}

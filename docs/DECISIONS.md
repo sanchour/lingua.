@@ -502,3 +502,38 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Commute's light/dark button was the wake lock.** A sun icon for "keep the screen on" read as a
   theme switch that did nothing; the screen-on button is now a phone, and a real moon/sun button
   switches the theme.
+
+## 2026-10-19 — Lingua 3.0-3: Sonus and music, fully working
+
+- **One gesture to translate a phrase, everywhere.** The reader's press-and-drag (mouse) and
+  hold-then-slide (touch) became one hook, `usePhraseGesture`, used by the lyric sheet, podcast
+  and Visio transcripts and the subtitles over a video. A video holds still while a phrase is
+  chosen and goes on after. One gesture means one set of habits, and one place to fix it.
+- **The preview is a real source, with its own clock.** Apple's 30-second preview plays on an
+  audio element, so it always plays, even with nothing connected. Where the clip sits in the song
+  is unknown, so the first tap on the line you hear places it (`previewAtMs`, kept with the song).
+  On phones it is the default source, ahead of the Apple Music embed.
+- **Untimed lyrics get estimated times, not none.** Sung lines share the song's length by how long
+  they are (a short intro and outro kept free), so the sheet follows gently, without lighting word
+  by word. A tap on a line pins that line to the moment; the times between pins are stretched to
+  fit. It is a guide, and says so.
+- **LRCLIB is shared and often busy: ask less, wait as told.** It turns new questions away (503,
+  429) when loaded. Lookups now ask at most three questions, stop at the first sure timed match,
+  wait as long as Retry-After says (up to 10 s), then fall back to lyrics.ovh, and the page tries
+  again by itself twice. Measured on 149 chart songs: lyrics found 72% → 81%, timed 66% → 78%.
+- **A translation mixed into the lyrics is passed over.** Some uploads add the English after
+  every line in brackets; those lose to any clean version of the song (backing vocals in brackets
+  are short or a line of their own, so they don't count).
+- **A translation that repeats the line isn't one.** Free translators sometimes give a line back
+  unchanged; that is now treated as no answer (the next provider tries), and the sheet and the
+  lessons skip such lines already saved.
+- **Sonus opens on Library.** What you listen to (recent songs and episodes together, your songs,
+  podcasts you follow, new episodes, your files) comes first; Music and Podcasts are for finding
+  more. Radio (3.0-6) gets a fourth tab.
+- **Song lessons teach the language, and the song is the bonus.** The words come from the song but
+  are chosen by the learner: not known yet, within reach of their level (`LEVEL_REACH`, by how
+  common the word is), one per meaning, the most useful first. Rounds go words → the word in its
+  line (its meaning as the hint) → a form and its dictionary word (only forms of one word: "bois"
+  in "langues de bois" is wood) → the line in English → the verse in order. Wrong options are
+  real words of the song, never "pa-pala". The words can be added as cards with the line they're
+  sung in. Without a translation the lesson translates the song first (and can start without it).

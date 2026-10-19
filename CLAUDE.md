@@ -13,7 +13,7 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
   session" before starting.
 - 3.0-1 is done (merged into `main` on 2026-10-18). Work on `main` from here; the branch
   `lingua-3.0/languages-wip` is history. Known gaps are at the top of the handover.
-- 3.0-1b (tier-2 beta languages) and 3.0-2 (phone and desktop, themes) are done. Next is **3.0-3**. Tier 2 stays cheap: only the
+- 3.0-1b (tier-2 beta languages), 3.0-2 (phone and desktop, themes) and 3.0-3 (Sonus and music) are done. Next is **3.0-4**. Tier 2 stays cheap: only the
   features that cost little (automatic packs, decks, podcasts, music search). Keep it cheap.
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).

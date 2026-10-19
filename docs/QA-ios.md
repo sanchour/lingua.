@@ -171,3 +171,20 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Commute mode: the moon/sun button switches Paper and Nocturne; the phone button keeps the
       screen on.
 - [ ] Sonus and Thesaurus: the section bar fits the width, nothing scrolls sideways.
+
+## Lingua 3.0-3: Sonus and music
+
+- [ ] Sonus opens on Library: recently played, your songs, podcasts you follow, new episodes.
+- [ ] Music: the styles sit right under the search; one tap searches that style.
+- [ ] A song page: nothing moves but the lyrics; the header, song and player stay put, and the
+      lyrics scroll between them without the page bouncing.
+- [ ] "Playing Apple's preview" plays straight away; the first time, tap the line you hear and
+      the lyrics run on from there (and next time they start in the right place).
+- [ ] Hold a word in the lyrics, then slide across a few more: the phrase lights up and its
+      translation appears (save as a card, copy). The same in a podcast transcript and over a
+      video's subtitles (the video waits while you choose).
+- [ ] A song with plain (untimed) lyrics: they scroll gently with the music; a tap on a line
+      puts them right.
+- [ ] An open podcast: the player stays, only the transcript scrolls.
+- [ ] Learn it: words first, the song last; at the end, "Add N words to your cards", then the
+      cards show in Thesaurus with the sung line.

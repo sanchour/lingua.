@@ -1,11 +1,11 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent, RefObject } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { BookmarkCheck, BookmarkPlus, Copy, LocateFixed, Play } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { cueIndexAt, wordStarts } from '@/core/audio/cues';
 import { linesToCues } from '@/core/cantus/lyrics';
-import type { Chapter, Song, Text, WordState } from '@/data/types';
+import type { Chapter, LyricLine, Song, Text, WordState } from '@/data/types';
 import { getReaderFont, readerFontStack, useScriptFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
@@ -13,17 +13,18 @@ import { spring } from '@/design/motion';
 import { motionIsReduced } from '@/design/motionPref';
 import { cx } from '@/lib/cx';
 import { toast } from '@/state/ui';
-import { CLICK_SLOP_PX, wordAt } from '@/features/codex/reader/hit';
+import { wordAt } from '@/features/codex/reader/hit';
 import { HoverGloss } from '@/features/codex/reader/HoverGloss';
 import { modelFromChapter, updateCachedState } from '@/features/codex/reader/model';
 import type { ChapterModel } from '@/features/codex/reader/model';
+import { PhraseBubble } from '@/features/codex/reader/PhraseBubble';
+import { usePhraseGesture } from '@/features/codex/reader/usePhraseGesture';
 import { TapGloss } from '@/features/codex/reader/TapGloss';
 import { WordDrawer } from '@/features/codex/reader/WordDrawer';
 import type { DrawerWord } from '@/features/codex/reader/WordDrawer';
 import type { PlayheadClock } from '@/features/sonus/player/KaraokeTranscript';
 import { SongEngine } from './SongEngine';
 
-const LONG_PRESS_MS = 430;
 /** After the learner scrolls, the sheet stops following the song for this long. */
 const FOLLOW_PAUSE_MS = 4000;
 
@@ -37,11 +38,15 @@ interface LyricSheetProps {
   /** Phones: "Back to the song" sits above the docked controls. */
   dockedHeight?: number;
   /**
-   * Music playing elsewhere (the Music app, a speaker): the next tap on a line starts the lyrics
-   * from that line, then `onSynced`.
+   * Times for lyrics that have none, spread over the song (core/cantus/lyrics estimateTimes): the
+   * sheet follows them gently, a line at a time, without lighting up each word.
    */
+  estimated?: readonly LyricLine[];
+  /** The box the sheet scrolls in: the song page stays put and only the lyrics move. */
+  scrollRef?: RefObject<HTMLElement | null>;
+  /** Finding the place: the next tap on a line, word or not, is the line being heard. */
   syncByTap?: boolean;
-  onSynced?: () => void;
+  onSyncLine?: (index: number) => void;
 }
 
 /**
@@ -50,14 +55,15 @@ interface LyricSheetProps {
  * Codex; tapping between words picks the line (play from it, save it, copy it). Time-driven changes
  * go straight to the DOM, so following the song never re-renders the sheet.
  */
-export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLine, dockedHeight = 0, syncByTap = false, onSynced }: LyricSheetProps) {
+export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLine, dockedHeight = 0, estimated, scrollRef, syncByTap = false, onSyncLine }: LyricSheetProps) {
   const { settings } = useApp();
   const { pointer, layout } = useLayout();
   const lang = song.lang;
   useScriptFont(lang);
   const lines = song.lines;
-  const timed = clock !== null && lines.some((l) => l.startMs !== undefined);
-  const cues = useMemo(() => linesToCues(lines, song.durationMs), [lines, song.durationMs]);
+  const timing = estimated ?? lines;
+  const timed = clock !== null && timing.some((l) => l.startMs !== undefined);
+  const cues = useMemo(() => linesToCues(timing, song.durationMs), [timing, song.durationMs]);
 
   // ── Model: one block per line ───────────────────────────────────────────
   const [model, setModel] = useState<ChapterModel | null>(null);
@@ -103,18 +109,22 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
     let starts: number[] = [];
     let sung = 0;
 
+    const box = scrollRef?.current ?? null;
+    const view = () => (box ? box.getBoundingClientRect() : { top: 0, bottom: window.innerHeight - dockedHeight });
     const follow = (force = false) => {
       if (!row) return;
+      const r = row.getBoundingClientRect();
+      const v = view();
       if (!force && performance.now() - userScrolledAt.current < FOLLOW_PAUSE_MS) {
-        const r = row.getBoundingClientRect();
-        setLost(r.bottom < 80 || r.top > window.innerHeight - 120 - dockedHeight);
+        setLost(r.bottom < v.top + 60 || r.top > v.bottom - 100);
         return;
       }
       setLost(false);
       // The current line sits a little above the middle, with what comes next in view below.
-      const r = row.getBoundingClientRect();
-      const target = window.scrollY + r.top - (window.innerHeight - dockedHeight) * 0.36;
-      window.scrollTo({ top: Math.max(0, target), behavior: motionIsReduced() ? 'auto' : 'smooth' });
+      const behavior = motionIsReduced() ? 'auto' : 'smooth';
+      const top = r.top - v.top - (v.bottom - v.top) * 0.36;
+      if (box) box.scrollTo({ top: Math.max(0, box.scrollTop + top), behavior });
+      else window.scrollTo({ top: Math.max(0, window.scrollY + top), behavior });
     };
     followRef.current = () => {
       userScrolledAt.current = -Infinity;
@@ -138,6 +148,8 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
         flow.classList.toggle('has-current', i >= 0);
         follow();
       }
+      // Estimated times are only near: the line lights up, not each word.
+      if (estimated) return;
       let n = 0;
       while (n < starts.length && starts[n] <= ms + 80) n++;
       if (n !== sung) {
@@ -151,15 +163,17 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
     const markScroll = () => (userScrolledAt.current = performance.now());
     window.addEventListener('wheel', markScroll, { passive: true });
     window.addEventListener('touchmove', markScroll, { passive: true });
+    box?.addEventListener('keydown', markScroll);
     return () => {
       unsubscribe();
+      box?.removeEventListener('keydown', markScroll);
       flow.classList.remove('has-current');
       row?.classList.remove('is-current');
       for (const w of words) delete w.dataset.k;
       window.removeEventListener('wheel', markScroll);
       window.removeEventListener('touchmove', markScroll);
     };
-  }, [timed, clock, model, cues, dockedHeight]);
+  }, [timed, clock, model, cues, dockedHeight, estimated, scrollRef]);
 
   // ── Words and lines ─────────────────────────────────────────────────────
   const [drawer, setDrawer] = useState<DrawerWord | null>(null);
@@ -178,52 +192,45 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
     [engine],
   );
 
-  const gesture = useRef<{ x: number; y: number; word: HTMLElement | null; line: number; tr: boolean; timer: number; long: boolean; type: string } | null>(null);
-  const onPointerDown = (e: ReactPointerEvent) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    const target = e.target as Element;
-    if (target.closest('[data-line-actions]')) return;
-    const word = wordAt(target, e.clientX, e.clientY, flowRef.current);
-    const row = target.closest<HTMLElement>('[data-line]');
-    const g = { x: e.clientX, y: e.clientY, word, line: row ? Number(row.dataset.line) : -1, tr: Boolean(target.closest('.lyric-tr')), timer: 0, long: false, type: e.pointerType };
-    if (e.pointerType !== 'mouse' && word) {
-      g.timer = window.setTimeout(() => {
-        g.long = true;
-        openDrawer(word);
-      }, LONG_PRESS_MS);
-    }
-    gesture.current = g;
-  };
-  const onPointerMove = (e: ReactPointerEvent) => {
-    const g = gesture.current;
-    if (g && Math.hypot(e.clientX - g.x, e.clientY - g.y) > 10) window.clearTimeout(g.timer);
-  };
-  const onPointerUp = (e: ReactPointerEvent) => {
-    const g = gesture.current;
-    gesture.current = null;
-    if (!g) return;
-    window.clearTimeout(g.timer);
-    if (g.long || Math.hypot(e.clientX - g.x, e.clientY - g.y) > CLICK_SLOP_PX) return;
-    // Finding the place: any tap on a line, word or not, starts the lyrics there.
-    if (syncByTap && g.line >= 0 && lines[g.line]?.startMs !== undefined) {
-      playFrom(g.line);
-      onSynced?.();
-      return;
-    }
-    if (g.word && engine) {
-      setPicked(null);
-      if (g.type === 'mouse') engine.cycle(g.word);
-      else setTapped((t) => (t === g.word ? null : g.word));
-      return;
-    }
-    if (tapped) return setTapped(null);
-    if (g.tr && translationMode === 'blur' && g.line >= 0 && !revealed.has(g.line)) {
-      setRevealed((r) => new Set(r).add(g.line));
-      return;
-    }
-    if (g.line >= 0 && lines[g.line]?.text) setPicked((p) => (p === g.line ? null : g.line));
-    else setPicked(null);
-  };
+  // Tap a word for its gloss, hold it for its drawer, drag across words (or hold and slide) to
+  // translate a phrase; a tap beside the words picks the line.
+  const { handlers, phrase, closePhrase } = usePhraseGesture(
+    flowRef,
+    engine,
+    {
+      ignore: (target) => Boolean(target.closest('[data-line-actions]')),
+      onHold: openDrawer,
+      onSelecting: (on) => {
+        if (!on) return;
+        setTapped(null);
+        setPicked(null);
+      },
+      onTap: ({ word, target, type }) => {
+        const row = target.closest<HTMLElement>('[data-line]');
+        const line = row ? Number(row.dataset.line) : -1;
+        if (syncByTap && line >= 0 && timing[line]?.startMs !== undefined) {
+          setPicked(null);
+          userScrolledAt.current = -Infinity;
+          onSyncLine?.(line);
+          return;
+        }
+        if (word && engine) {
+          setPicked(null);
+          if (type === 'mouse') engine.cycle(word);
+          else setTapped((t) => (t === word ? null : word));
+          return;
+        }
+        if (tapped) return setTapped(null);
+        if (target.closest('.lyric-tr') && translationMode === 'blur' && line >= 0 && !revealed.has(line)) {
+          setRevealed((r) => new Set(r).add(line));
+          return;
+        }
+        if (line >= 0 && lines[line]?.text) setPicked((p) => (p === line ? null : line));
+        else setPicked(null);
+      },
+    },
+    [model],
+  );
   const onContextMenu = (e: ReactMouseEvent) => {
     const word = wordAt(e.target, e.clientX, e.clientY, flowRef.current);
     if (!word) return;
@@ -247,7 +254,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
   );
 
   const playFrom = (i: number) => {
-    const start = lines[i]?.startMs;
+    const start = timing[i]?.startMs;
     if (!clock || start === undefined) return;
     clock.seek(start);
     clock.play();
@@ -273,7 +280,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
 
   return (
     <>
-      <div onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={() => (gesture.current = null)} onContextMenu={onContextMenu}>
+      <div {...handlers} onContextMenu={onContextMenu}>
         {syncByTap && timed && (
           <p role="status" className="pointer-events-none fixed top-[calc(env(safe-area-inset-top)+3.75rem)] left-1/2 z-30 -translate-x-1/2 rounded-full bg-[var(--song-ink)] px-4 py-2 text-[13.5px] font-semibold whitespace-nowrap text-bg shadow-elev-3 lg:top-6">
             Tap the line you’re hearing
@@ -297,7 +304,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
         <LineActions
           key={picked}
           anchor={() => flowRef.current?.querySelector<HTMLElement>(`[data-line="${picked}"]`) ?? null}
-          canPlay={timed && lines[picked].startMs !== undefined}
+          canPlay={timed && !estimated && lines[picked].startMs !== undefined}
           saved={savedLines.has(picked)}
           onPlay={() => playFrom(picked)}
           onSave={() => {
@@ -327,6 +334,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
       </AnimatePresence>
 
       {pointer === 'fine' && <HoverGloss rootRef={flowRef} engine={engine} hoveredRef={hoveredRef} />}
+      {phrase && phrase.anchor.isConnected && <PhraseBubble phrase={phrase} lang={lang} onClose={closePhrase} />}
       {tapped && engine && tapped.isConnected && <TapGloss el={tapped} engine={engine} onClose={() => setTapped(null)} onOpen={openDrawer} />}
       <WordDrawer
         lang={lang}
@@ -376,7 +384,9 @@ const LyricBody = memo(function LyricBody({
             <div key={b} className="lyric-break" aria-hidden />
           );
         }
-        const tr = translation?.[b];
+        // A "translation" that only repeats the line (a translator that gave up) isn't shown.
+        const given = translation?.[b];
+        const tr = given && given.trim().toLocaleLowerCase(lang) !== block.text.trim().toLocaleLowerCase(lang) ? given : undefined;
         return (
           <div key={b} data-line={b} className={cx('lyric-line', saved.has(b) && 'is-saved')}>
             <p data-b={b} className="lyric-text" lang={lang}>
@@ -429,10 +439,10 @@ function LineActions({
       setPos({ top: r.bottom + 6, left: Math.min(Math.max(12, r.left), window.innerWidth - 300) });
     };
     place();
-    window.addEventListener('scroll', place, { passive: true });
+    document.addEventListener('scroll', place, { passive: true, capture: true });
     window.addEventListener('resize', place);
     return () => {
-      window.removeEventListener('scroll', place);
+      document.removeEventListener('scroll', place, { capture: true });
       window.removeEventListener('resize', place);
     };
   }, [anchor, onClose]);

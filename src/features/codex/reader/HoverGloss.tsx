@@ -156,7 +156,8 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
     document.addEventListener('pointerout', onLeaveWindow, { passive: true });
     document.addEventListener('reader:hide-tip', hide);
     document.addEventListener('reader:refresh-tip', resync);
-    window.addEventListener('scroll', resync, { passive: true });
+    // Any scroll, the page's or a box's (the song page scrolls only its lyrics).
+    document.addEventListener('scroll', resync, { passive: true, capture: true });
     return () => {
       hide();
       cancelHide();
@@ -167,7 +168,7 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
       document.removeEventListener('pointerout', onLeaveWindow);
       document.removeEventListener('reader:hide-tip', hide);
       document.removeEventListener('reader:refresh-tip', resync);
-      window.removeEventListener('scroll', resync);
+      document.removeEventListener('scroll', resync, { capture: true });
     };
   }, [rootRef, hoveredRef]);
 

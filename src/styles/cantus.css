@@ -163,3 +163,9 @@
 .music-room h2 {
   color: var(--cantus-text);
 }
+
+/* The song page's lyrics scroll in their own box; they fade out at its edges. */
+.lyric-scroll {
+  scrollbar-width: thin;
+  mask-image: linear-gradient(180deg, transparent 0, #000 18px, #000 calc(100% - 40px), transparent 100%);
+}

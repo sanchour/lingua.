@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, FileAudio, Headphones, Pause, Play, Search, SearchX } from 'lucide-react';
+import { ArrowRight, Pause, Play, Search, SearchX } from 'lucide-react';
 import { MusicRoom } from '@/features/cantus/MusicRoom';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
@@ -12,20 +12,19 @@ import type { MediaSort } from '@/data/settings';
 import type { Media, PlaybackProgress } from '@/data/types';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
-import { buttonClasses, Card, IconButton, SearchInput, searchKey, Segmented, SortMenu } from '@/design/primitives';
+import { Card, IconButton, SearchInput, searchKey, Segmented, SortMenu } from '@/design/primitives';
 import { getLanguage } from '@/core/lang/languages';
 import { fade, spring } from '@/design/motion';
 import { loadMedia, toggle, unlockAudio, usePlayer } from '@/services/audio/engine';
-import { pickFiles } from '@/services/files/files';
-import { AUDIO_ACCEPT, importAudioFiles } from '@/services/sonus/files';
 import { AddMenu } from './library/AddMenu';
 import { Artwork } from './library/Artwork';
 import { Discover } from './library/Discover';
+import { LibraryHome } from './library/LibraryHome';
 import { MediaRow } from './library/MediaRow';
 import { PodcastGrid } from './library/PodcastGrid';
 
-/** Music first: songs to sing along with; then your own audio and the podcasts you follow (and find). */
-type Tab = 'music' | 'library' | 'podcasts';
+/** Library first (music and podcasts together), then each kind on its own, with discovery. */
+type Tab = 'library' | 'music' | 'podcasts';
 
 const SORTS: Array<{ value: MediaSort; label: string }> = [
   { value: 'recent', label: 'Recently played' },
@@ -64,10 +63,13 @@ export default function SonusPage() {
   const sort = settings.ui.mediaSort;
 
   const [params, setParams] = useSearchParams();
-  // Old links: ?tab=discover was podcast discovery, now part of Podcasts.
+  // Old links: ?tab=discover was podcast discovery, now part of Podcasts; ?q= searches music.
   const requested = params.get('tab');
-  const tab: Tab = requested === 'library' || requested === 'podcasts' ? requested : requested === 'discover' ? 'podcasts' : 'music';
-  const setTab = (next: Tab) => setParams(next === 'music' ? {} : { tab: next }, { replace: true });
+  const tab: Tab = requested === 'music' || requested === 'podcasts' ? requested : requested === 'discover' ? 'podcasts' : params.get('q') ? 'music' : 'library';
+  const setTab = (next: Tab) => {
+    setParams(next === 'library' ? {} : { tab: next }, { replace: true });
+    window.scrollTo({ top: 0 });
+  };
   const discoverRef = useRef<HTMLElement>(null);
   const findPodcasts = () => {
     setTab('podcasts');
@@ -77,7 +79,7 @@ export default function SonusPage() {
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
-  useHotkeys({ '/': () => (setTab('library'), searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && tab !== 'music');
+  useHotkeys({ '/': () => (setTab('library'), searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && tab === 'library');
 
   const visible = useMemo(() => {
     const q = searchKey(query.trim());
@@ -93,8 +95,8 @@ export default function SonusPage() {
     <>
       <PageHeader title="Sonus" eyebrow={`Listen and sing in ${getLanguage(lang)?.name ?? lang}`} actions={<AddMenu lang={lang} onDiscover={findPodcasts} />} />
 
-      {tab !== 'music' && (
-        <motion.div {...enter(0)} className="mb-9">
+      {tab === 'library' && (
+        <motion.div {...enter(0)} className="mb-9 empty:hidden">
           <ContinueCard media={media} playback={playback} />
         </motion.div>
       )}
@@ -104,7 +106,7 @@ export default function SonusPage() {
           <AnimatePresence mode="popLayout" initial={false}>
             {searching ? (
               <motion.div key="search" className="absolute inset-0" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={fade}>
-                <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search episodes and files" onClose={closeSearch} autoFocus />
+                <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search your audio and episodes" onClose={closeSearch} autoFocus />
               </motion.div>
             ) : (
               <motion.div key="tabs" className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
@@ -115,8 +117,8 @@ export default function SonusPage() {
                   value={tab}
                   onChange={setTab}
                   options={[
+                    { value: 'library', label: 'Library' },
                     { value: 'music', label: 'Music' },
-                    { value: 'library', label: media?.length ? `Library · ${media.length}` : 'Library' },
                     { value: 'podcasts', label: feeds?.length ? `Podcasts · ${feeds.length}` : 'Podcasts' },
                   ]}
                 />
@@ -136,7 +138,9 @@ export default function SonusPage() {
         <motion.section key={tab} aria-label={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.snappy}>
           {tab === 'music' && <MusicRoom initialQuery={params.get('q') ?? ''} />}
           {tab === 'library' &&
-            (media?.length ? (
+            media &&
+            feeds &&
+            (query.trim() ? (
               visible.length ? (
                 <div className="-mx-2 flex flex-col">
                   {visible.map((m) => (
@@ -150,7 +154,7 @@ export default function SonusPage() {
                 </div>
               )
             ) : (
-              media && <EmptyLibrary lang={lang} onDiscover={findPodcasts} />
+              <LibraryHome lang={lang} media={media} visible={visible} feeds={feeds} playback={playback} transcribed={transcribed} onMusic={() => setTab('music')} onPodcasts={findPodcasts} />
             ))}
           {tab === 'podcasts' && (
             <div className="space-y-10">
@@ -216,35 +220,6 @@ function ContinueCard({ media, playback }: { media?: Media[]; playback?: Map<str
       <Link to={`/sonus/play/${item.id}`} className="hidden sm:block" aria-label="Open the player">
         <ArrowRight size={18} className="text-ink-faint" aria-hidden />
       </Link>
-    </Card>
-  );
-}
-
-function EmptyLibrary({ lang, onDiscover }: { lang: string; onDiscover: () => void }) {
-  return (
-    <Card className="flex flex-col items-center px-6 py-12 text-center">
-      <div className="mb-5 grid size-16 place-items-center rounded-2xl bg-sage-soft text-sage-text">
-        <Headphones size={28} aria-hidden />
-      </div>
-      <h2 className="font-serif text-2xl font-semibold">Your listening room is quiet</h2>
-      <p className="mt-2 max-w-sm text-[15px] leading-relaxed text-ink-soft">
-        Follow a podcast, or add audio files: lessons, audiobooks, recordings. Transcripts light up as they play.
-      </p>
-      <div className="mt-6 flex flex-wrap justify-center gap-2">
-        <button type="button" onClick={onDiscover} className={buttonClasses('primary', 'md')}>
-          <Search size={17} aria-hidden /> Find a podcast
-        </button>
-        <button
-          type="button"
-          onClick={async () => {
-            const files = await pickFiles(AUDIO_ACCEPT);
-            if (files.length) await importAudioFiles(lang, files);
-          }}
-          className={buttonClasses('secondary', 'md')}
-        >
-          <FileAudio size={17} aria-hidden /> Add audio files
-        </button>
-      </div>
     </Card>
   );
 }

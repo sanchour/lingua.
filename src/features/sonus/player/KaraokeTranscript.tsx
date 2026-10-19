@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent, RefObject } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { LocateFixed } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -14,16 +14,17 @@ import { cx } from '@/lib/cx';
 import { onTime, play, seek, usePlayer } from '@/services/audio/engine';
 import { ChapterBody } from '@/features/codex/reader/ChapterBody';
 import type { WordEngine } from '@/features/codex/reader/engine';
-import { CLICK_SLOP_PX, wordAt } from '@/features/codex/reader/hit';
+import { wordAt } from '@/features/codex/reader/hit';
 import { HoverGloss } from '@/features/codex/reader/HoverGloss';
 import { modelFromChapter, updateCachedState } from '@/features/codex/reader/model';
 import type { ChapterModel } from '@/features/codex/reader/model';
+import { PhraseBubble } from '@/features/codex/reader/PhraseBubble';
+import { usePhraseGesture } from '@/features/codex/reader/usePhraseGesture';
 import { TapGloss } from '@/features/codex/reader/TapGloss';
 import { WordDrawer } from '@/features/codex/reader/WordDrawer';
 import type { DrawerWord } from '@/features/codex/reader/WordDrawer';
 import { ClipEngine } from './ClipEngine';
 
-const LONG_PRESS_MS = 430;
 /** After the learner scrolls, the transcript stops following the audio for this long. */
 const FOLLOW_PAUSE_MS = 4000;
 
@@ -53,6 +54,8 @@ interface KaraokeProps {
   gutter?: boolean;
   /** Phones: the player's controls are docked at the bottom (Sonus), so "Back to now" sits above them. */
   docked?: boolean;
+  /** The box the transcript scrolls in, when the page itself stays put (an open podcast on desktop). */
+  scrollRef?: RefObject<HTMLElement | null>;
 }
 
 /**
@@ -60,7 +63,7 @@ interface KaraokeProps {
  * current sentence lit, and its words brightening as they're spoken. Time-driven changes are
  * written to the DOM directly (no React renders while playing).
  */
-export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutter = true, docked = true }: KaraokeProps) {
+export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutter = true, docked = true, scrollRef }: KaraokeProps) {
   const { settings } = useApp();
   const { pointer, layout } = useLayout();
   const lang = media.lang;
@@ -121,7 +124,8 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
       if (!block) return;
       if (!force && performance.now() - userScrolledAt.current < FOLLOW_PAUSE_MS) {
         const r = block.getBoundingClientRect();
-        setLost(r.bottom < 80 || r.top > window.innerHeight - 160);
+        const v = scrollRef?.current?.getBoundingClientRect() ?? { top: 0, bottom: window.innerHeight };
+        setLost(r.bottom < v.top + 80 || r.top > v.bottom - 160);
         return;
       }
       setLost(false);
@@ -166,7 +170,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
       window.removeEventListener('wheel', markScroll);
       window.removeEventListener('touchmove', markScroll);
     };
-  }, [live, model, cues, clock]);
+  }, [live, model, cues, clock, scrollRef]);
 
   // ── Words: the reader's gestures; a tap between words jumps to that sentence ──
   const [drawer, setDrawer] = useState<DrawerWord | null>(null);
@@ -181,7 +185,6 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
     [engine],
   );
 
-  const gesture = useRef<{ x: number; y: number; word: HTMLElement | null; block: HTMLElement | null; timer: number; long: boolean; type: string } | null>(null);
   const jumpTo = (block: HTMLElement) => {
     const cue = cues[Number(block.dataset.b)];
     if (!cue || !live) return;
@@ -189,38 +192,27 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
     clock.play();
   };
 
-  const onPointerDown = (e: ReactPointerEvent) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    const target = e.target as Element;
-    const word = wordAt(target, e.clientX, e.clientY, flowRef.current);
-    const g = { x: e.clientX, y: e.clientY, word, block: target.closest<HTMLElement>('[data-b]'), timer: 0, long: false, type: e.pointerType };
-    if (e.pointerType !== 'mouse' && word) {
-      g.timer = window.setTimeout(() => {
-        g.long = true;
-        openDrawer(word);
-      }, LONG_PRESS_MS);
-    }
-    gesture.current = g;
-  };
-  const onPointerMove = (e: ReactPointerEvent) => {
-    const g = gesture.current;
-    if (g && Math.hypot(e.clientX - g.x, e.clientY - g.y) > 10) window.clearTimeout(g.timer);
-  };
-  const onPointerUp = (e: ReactPointerEvent) => {
-    const g = gesture.current;
-    gesture.current = null;
-    if (!g) return;
-    window.clearTimeout(g.timer);
-    if (g.long || Math.hypot(e.clientX - g.x, e.clientY - g.y) > CLICK_SLOP_PX) return;
-    if (g.word && engine) {
-      if (g.type === 'mouse') engine.cycle(g.word);
-      else setTapped((t) => (t === g.word ? null : g.word));
-    } else if (tapped) {
-      setTapped(null);
-    } else if (g.block) {
-      jumpTo(g.block);
-    }
-  };
+  // As in the reader: tap a word, hold it for its drawer, drag across words (or hold and slide) to
+  // translate a phrase. A tap between words jumps to that sentence.
+  const { handlers, phrase, closePhrase } = usePhraseGesture(
+    flowRef,
+    engine,
+    {
+      onHold: openDrawer,
+      onSelecting: (on) => on && setTapped(null),
+      onTap: ({ word, target, type }) => {
+        if (word && engine) {
+          if (type === 'mouse') engine.cycle(word);
+          else setTapped((t) => (t === word ? null : word));
+          return;
+        }
+        if (tapped) return setTapped(null);
+        const block = target.closest<HTMLElement>('[data-b]');
+        if (block) jumpTo(block);
+      },
+    },
+    [model],
+  );
   const onContextMenu = (e: ReactMouseEvent) => {
     const word = wordAt(e.target, e.clientX, e.clientY, flowRef.current);
     if (!word) return;
@@ -251,7 +243,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
 
   return (
     <>
-      <div onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={() => (gesture.current = null)} onContextMenu={onContextMenu}>
+      <div {...handlers} onContextMenu={onContextMenu}>
         <div ref={flowRef} lang={lang} style={style} className={cx('reader-flow karaoke', reader.highlightUnseen && 'hl-unseen', layout === 'wide' && gutter && 'has-gutter', !live && 'is-still')}>
           {model && <ChapterBody model={model} lang={lang} />}
         </div>
@@ -275,6 +267,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
       </AnimatePresence>
 
       {pointer === 'fine' && <HoverGloss rootRef={flowRef} engine={engine} hoveredRef={hoveredRef} />}
+      {phrase && phrase.anchor.isConnected && <PhraseBubble phrase={phrase} lang={lang} onClose={closePhrase} />}
       {tapped && engine && tapped.isConnected && <TapGloss el={tapped} engine={engine} onClose={() => setTapped(null)} onOpen={openDrawer} />}
       <WordDrawer
         lang={lang}

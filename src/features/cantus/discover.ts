@@ -16,12 +16,12 @@ export interface Discover {
   styles: Array<[string, string]>;
 }
 
-/** A language's picks; a beta language gets three style searches made from its name, no artists. */
+/** A language's picks; a beta language gets six style searches made from its name, no artists. */
 export function discoverFor(lang: string): Discover | undefined {
   const own = DISCOVER[lang];
   const info = getLanguage(lang);
   if (own || !info) return own;
-  const styles: Array<[string, string]> = [`${info.name} pop`, `${info.name} hip hop`, `${info.name} folk`].map((s) => [s, s]);
+  const styles: Array<[string, string]> = ['pop', 'love songs', 'folk', 'classic songs', 'rock', 'hip hop'].map((style) => [`${info.name} ${style}`, `${info.name} ${style}`]);
   return { artists: [], styles };
 }
 
@@ -40,7 +40,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Rosalía', why: 'Flamenco meets pop; slang and Andalusian sounds', ease: 'fast' },
       { name: 'Bad Bunny', why: 'Puerto Rican reggaeton: fast, full of slang', ease: 'fast' },
     ],
-    styles: [['Bachata', 'bachata'], ['Bolero', 'bolero'], ['Flamenco', 'flamenco'], ['Cumbia', 'cumbia'], ['Rock en español', 'rock en español'], ['Reggaeton', 'reggaeton']],
+    styles: [['Pop en español', 'pop en español'], ['Bachata', 'bachata'], ['Bolero', 'bolero'], ['Flamenco', 'flamenco'], ['Cumbia', 'cumbia'], ['Salsa', 'salsa'], ['Rancheras', 'rancheras'], ['Tango', 'tango'], ['Rock en español', 'rock en español'], ['Cantautores', 'cantautor español'], ['Reggaeton', 'reggaeton'], ['Merengue', 'merengue']],
   },
   pt: {
     artists: [
@@ -54,7 +54,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Mariza', why: 'Fado in European Portuguese, slow and dramatic', ease: 'medium' },
       { name: 'Anitta', why: 'Brazil’s biggest pop star; fast funk and slang', ease: 'fast' },
     ],
-    styles: [['Bossa nova', 'bossa nova'], ['Samba', 'samba'], ['MPB', 'mpb'], ['Sertanejo', 'sertanejo'], ['Fado', 'fado'], ['Forró', 'forró']],
+    styles: [['MPB', 'mpb'], ['Bossa nova', 'bossa nova'], ['Samba', 'samba'], ['Fado', 'fado'], ['Sertanejo', 'sertanejo'], ['Forró', 'forró'], ['Pagode', 'pagode'], ['Axé', 'axé'], ['Rock brasileiro', 'rock brasileiro'], ['Kizomba', 'kizomba'], ['Funk carioca', 'funk carioca']],
   },
   fr: {
     artists: [
@@ -69,7 +69,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Jacques Brel', why: 'The great Belgian chansonnier; rich and fast', ease: 'fast' },
       { name: 'Stromae', why: 'Clever wordplay over dance beats', ease: 'fast' },
     ],
-    styles: [['Chanson', 'chanson française'], ['Variété', 'variété française'], ['Rap français', 'rap français'], ['Québec', 'pop québécoise']],
+    styles: [['Chanson', 'chanson française'], ['Pop française', 'pop française'], ['Variété', 'variété française'], ['Yé-yé', 'yé-yé'], ['Rap français', 'rap français'], ['Rock français', 'rock français'], ['Québec', 'pop québécoise'], ['Zouk', 'zouk'], ['Comédies musicales', 'comédie musicale'], ['Électro française', 'french touch']],
   },
   de: {
     artists: [
@@ -84,7 +84,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Herbert Grönemeyer', why: 'A German classic; poetic and dense', ease: 'fast' },
       { name: 'Clueso', why: 'Relaxed pop and rap from Erfurt', ease: 'medium' },
     ],
-    styles: [['Deutschpop', 'deutschpop'], ['Schlager', 'schlager'], ['Liedermacher', 'liedermacher'], ['Deutschrap', 'deutschrap']],
+    styles: [['Deutschpop', 'deutschpop'], ['Liedermacher', 'liedermacher'], ['Schlager', 'schlager'], ['Neue Deutsche Welle', 'neue deutsche welle'], ['Deutschrock', 'deutschrock'], ['Deutschrap', 'deutschrap'], ['Austropop', 'austropop'], ['Indie', 'deutsch indie'], ['Volksmusik', 'volksmusik'], ['Kinderlieder', 'kinderlieder']],
   },
   it: {
     artists: [
@@ -99,7 +99,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Mahmood', why: 'Modern pop with urban slang', ease: 'fast' },
       { name: 'Måneskin', why: 'Rock with attitude (some songs in English)', ease: 'medium' },
     ],
-    styles: [['Cantautori', 'cantautori'], ['Pop italiano', 'pop italiano'], ['Sanremo', 'sanremo'], ['Canzone napoletana', 'canzone napoletana']],
+    styles: [['Cantautori', 'cantautori'], ['Pop italiano', 'pop italiano'], ['Sanremo', 'sanremo'], ['Canzone napoletana', 'canzone napoletana'], ['Musica leggera', 'musica leggera italiana'], ['Rock italiano', 'rock italiano'], ['Indie italiano', 'indie italiano'], ['Rap italiano', 'rap italiano'], ['Italo disco', 'italo disco'], ['Opera', 'opera italiana']],
   },
   ru: {
     artists: [
@@ -114,7 +114,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Звери', why: 'Simple, catchy pop-rock', ease: 'clear' },
       { name: 'Баста', why: 'Rap and ballads; fast in places', ease: 'fast' },
     ],
-    styles: [['Русский рок', 'русский рок'], ['Поп', 'русская поп музыка'], ['Бардовская песня', 'бардовская песня'], ['Романс', 'романс']],
+    styles: [['Поп', 'русская поп музыка'], ['Русский рок', 'русский рок'], ['Бардовская песня', 'бардовская песня'], ['Романс', 'романс'], ['Советская эстрада', 'советская эстрада'], ['Песни из мультфильмов', 'песни из мультфильмов'], ['Народные песни', 'русские народные песни'], ['Шансон', 'русский шансон'], ['Инди', 'русский инди'], ['Русский рэп', 'русский рэп']],
   },
   el: {
     artists: [
@@ -128,7 +128,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Μίκης Θεοδωράκης', why: 'Timeless songs to great poems', ease: 'medium' },
       { name: 'Παντελής Παντελίδης', why: 'Modern laiko, everyday words', ease: 'medium' },
     ],
-    styles: [['Λαϊκά', 'λαϊκά'], ['Έντεχνο', 'έντεχνο'], ['Ρεμπέτικο', 'ρεμπέτικο'], ['Ελληνική ποπ', 'ελληνική ποπ']],
+    styles: [['Λαϊκά', 'λαϊκά'], ['Έντεχνο', 'έντεχνο'], ['Ελληνική ποπ', 'ελληνική ποπ'], ['Ρεμπέτικο', 'ρεμπέτικο'], ['Νησιώτικα', 'νησιώτικα'], ['Ζεϊμπέκικο', 'ζεϊμπέκικο'], ['Ελληνικό ροκ', 'ελληνικό ροκ'], ['Παραδοσιακά', 'παραδοσιακά τραγούδια'], ['Παιδικά τραγούδια', 'παιδικά τραγούδια'], ['Ελληνικό ραπ', 'ελληνικό ραπ']],
   },
   sv: {
     artists: [
@@ -143,7 +143,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Ted Gärdestad', why: '70s classics, simple and sunny', ease: 'clear' },
       { name: 'Petter', why: 'Swedish hip-hop; fast', ease: 'fast' },
     ],
-    styles: [['Svensk pop', 'svensk pop'], ['Visor', 'visa'], ['Dansband', 'dansband'], ['Svensk hiphop', 'svensk hiphop']],
+    styles: [['Svensk pop', 'svensk pop'], ['Visor', 'visa'], ['Svensk rock', 'svensk rock'], ['Dansband', 'dansband'], ['Melodifestivalen', 'melodifestivalen'], ['Svensk indie', 'svensk indie'], ['Folkmusik', 'svensk folkmusik'], ['Barnvisor', 'barnvisor'], ['Svensk hiphop', 'svensk hiphop'], ['Julsånger', 'svenska julsånger']],
   },
   hu: {
     artists: [
@@ -158,7 +158,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Azahriah', why: 'Today’s biggest Hungarian pop star', ease: 'fast' },
       { name: 'Follow The Flow', why: 'Pop with rap parts; fast in places', ease: 'fast' },
     ],
-    styles: [['Magyar pop', 'magyar pop'], ['Magyar rock', 'magyar rock'], ['Népzene', 'népzene'], ['Magyar rap', 'magyar rap']],
+    styles: [['Magyar pop', 'magyar pop'], ['Magyar rock', 'magyar rock'], ['Táncdal', 'táncdal'], ['Népzene', 'népzene'], ['Megzenésített versek', 'megzenésített versek'], ['Magyar indie', 'magyar indie'], ['Gyerekdalok', 'gyerekdalok'], ['Operett', 'operett'], ['Mulatós', 'mulatós'], ['Magyar rap', 'magyar rap']],
   },
   en: {
     artists: [
@@ -169,7 +169,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Coldplay', why: 'Big, singable choruses', ease: 'clear' },
       { name: 'Billie Eilish', why: 'Soft, close voice; modern words', ease: 'medium' },
     ],
-    styles: [['Pop', 'pop'], ['Folk', 'folk'], ['Soul', 'soul'], ['Rock', 'rock']],
+    styles: [['Pop', 'pop'], ['Folk', 'folk'], ['Singer-songwriter', 'singer songwriter'], ['Soul', 'soul'], ['Motown', 'motown'], ['Rock', 'rock'], ['Britpop', 'britpop'], ['Country', 'country'], ['Musicals', 'broadway musical'], ['Disney songs', 'disney songs'], ['Indie folk', 'indie folk']],
   },
   nl: {
     artists: [
@@ -184,7 +184,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Doe Maar', why: 'The Nederpop classics everyone knows', ease: 'medium' },
       { name: 'Snelle', why: 'Dutch rap-pop: fast, with slang', ease: 'fast' },
     ],
-    styles: [['Nederpop', 'nederpop'], ['Levenslied', 'levenslied'], ['Kleinkunst', 'kleinkunst'], ['Vlaamse pop', 'vlaamse pop'], ['Nederlandstalige rock', 'nederlandstalige rock'], ['Nederhop', 'nederhop'], ['Kinderliedjes', 'kinderliedjes'], ['Carnaval', 'carnavalskraker']],
+    styles: [['Nederpop', 'nederpop'], ['Kleinkunst', 'kleinkunst'], ['Levenslied', 'levenslied'], ['Vlaamse pop', 'vlaamse pop'], ['Nederlandstalige rock', 'nederlandstalige rock'], ['Smartlappen', 'smartlappen'], ['Nederhop', 'nederhop'], ['Kinderliedjes', 'kinderliedjes'], ['Sinterklaasliedjes', 'sinterklaasliedjes'], ['Carnaval', 'carnavalskraker']],
   },
   nb: {
     artists: [
@@ -199,7 +199,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Kaizers Orchestra', why: 'Theatrical rock in a western dialect', ease: 'fast' },
       { name: 'Karpe', why: 'Oslo rap: fast and full of slang', ease: 'fast' },
     ],
-    styles: [['Visesang', 'visesang'], ['Norsk pop', 'norsk pop'], ['Norsk rock', 'norsk rock'], ['Folkemusikk', 'norsk folkemusikk'], ['Norsk rap', 'norsk rap'], ['Julesanger', 'julesanger'], ['Barnesanger', 'barnesanger']],
+    styles: [['Norsk pop', 'norsk pop'], ['Visesang', 'visesang'], ['Norsk rock', 'norsk rock'], ['Folkemusikk', 'norsk folkemusikk'], ['Norsk indie', 'norsk indie'], ['Melodi Grand Prix', 'melodi grand prix'], ['Joik', 'joik'], ['Barnesanger', 'barnesanger'], ['Norsk rap', 'norsk rap'], ['Julesanger', 'julesanger']],
   },
   tr: {
     artists: [
@@ -214,7 +214,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Mabel Matiz', why: 'Modern pop, poetic', ease: 'medium' },
       { name: 'Ezhel', why: 'Turkish rap: fast, with street slang', ease: 'fast' },
     ],
-    styles: [['Türkçe pop', 'türkçe pop'], ['Anadolu rock', 'anadolu rock'], ['Arabesk', 'arabesk'], ['Türk sanat müziği', 'türk sanat müziği'], ['Türk halk müziği', 'türk halk müziği'], ['Türkçe rap', 'türkçe rap'], ['Akustik', 'türkçe akustik']],
+    styles: [['Türkçe pop', 'türkçe pop'], ['Anadolu rock', 'anadolu rock'], ['Türk sanat müziği', 'türk sanat müziği'], ['Türk halk müziği', 'türk halk müziği'], ['Akustik', 'türkçe akustik'], ['Arabesk', 'arabesk'], ['Türk rock', 'türk rock'], ['Fantezi', 'fantezi müzik'], ['Çocuk şarkıları', 'çocuk şarkıları'], ['Türkçe rap', 'türkçe rap']],
   },
   id: {
     artists: [
@@ -229,7 +229,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Iwan Fals', why: 'The folk storyteller of Indonesia', ease: 'medium' },
       { name: 'Dewa 19', why: 'Classic rock, poetic lyrics', ease: 'medium' },
     ],
-    styles: [['Pop Indonesia', 'pop indonesia'], ['Dangdut', 'dangdut'], ['Keroncong', 'keroncong'], ['Indie Indonesia', 'indie indonesia'], ['Rock Indonesia', 'rock indonesia'], ['Lagu anak', 'lagu anak anak'], ['Dangdut koplo', 'dangdut koplo']],
+    styles: [['Pop Indonesia', 'pop indonesia'], ['Indie Indonesia', 'indie indonesia'], ['Keroncong', 'keroncong'], ['Dangdut', 'dangdut'], ['Pop Melayu', 'pop melayu'], ['Rock Indonesia', 'rock indonesia'], ['Campursari', 'campursari'], ['Lagu nasional', 'lagu nasional'], ['Lagu anak', 'lagu anak anak'], ['Dangdut koplo', 'dangdut koplo']],
   },
   sw: {
     artists: [
@@ -244,7 +244,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Nandy', why: 'Pop and R&B from Tanzania', ease: 'medium' },
       { name: 'Remmy Ongala', why: 'Classic dance music with stories', ease: 'medium' },
     ],
-    styles: [['Bongo Flava', 'bongo flava'], ['Taarab', 'taarab'], ['Rumba ya Kiswahili', 'swahili rumba'], ['Benga', 'benga'], ['Gengetone', 'gengetone'], ['Singeli', 'singeli'], ['Nyimbo za injili', 'nyimbo za injili']],
+    styles: [['Bongo Flava', 'bongo flava'], ['Taarab', 'taarab'], ['Rumba ya Kiswahili', 'swahili rumba'], ['Muziki wa dansi', 'muziki wa dansi'], ['Benga', 'benga'], ['Kenyan pop', 'kenyan pop'], ['Nyimbo za injili', 'nyimbo za injili'], ['Nyimbo za watoto', 'nyimbo za watoto'], ['Gengetone', 'gengetone'], ['Singeli', 'singeli']],
   },
   la: {
     artists: [
@@ -258,7 +258,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Wolfgang Amadeus Mozart', why: 'The Requiem and Masses: the Latin of the Mass', ease: 'medium' },
       { name: 'Corvus Corax', why: 'Medieval-style songs, some in Latin', ease: 'fast' },
     ],
-    styles: [['Gregorian chant', 'gregorian chant'], ['Requiem', 'requiem'], ['Carmina Burana', 'carmina burana'], ['Medieval songs', 'medieval latin songs'], ['Hymns', 'latin hymns'], ['Renaissance polyphony', 'renaissance polyphony'], ['Christmas in Latin', 'latin christmas carols']],
+    styles: [['Gregorian chant', 'gregorian chant'], ['Hymns', 'latin hymns'], ['Christmas in Latin', 'latin christmas carols'], ['Medieval songs', 'medieval latin songs'], ['Motets', 'motet'], ['Renaissance polyphony', 'renaissance polyphony'], ['Masses', 'missa'], ['Requiem', 'requiem'], ['Carmina Burana', 'carmina burana'], ['Latin choral', 'latin choral music']],
   },
   ar: {
     artists: [
@@ -273,7 +273,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Hussain Al Jassmi', why: 'Emirati pop and Gulf ballads', ease: 'medium' },
       { name: 'Cairokee', why: 'Egyptian rock with lyrics worth reading', ease: 'fast' },
     ],
-    styles: [['Tarab', 'tarab'], ['Arabic pop', 'arabic pop'], ['Khaleeji', 'khaleeji'], ['Raï', 'rai'], ['Dabke', 'dabke'], ['Qasida', 'qasida'], ['Mahraganat', 'mahraganat'], ['Arabic rap', 'arabic rap']],
+    styles: [['Tarab', 'tarab'], ['Arabic pop', 'arabic pop'], ['Khaleeji', 'khaleeji'], ['Andalusian', 'andalusian music'], ['Shaabi', 'shaabi'], ['Raï', 'rai'], ['Dabke', 'dabke'], ['Qasida', 'qasida'], ['Nasheed', 'nasheed'], ['Mahraganat', 'mahraganat'], ['Arabic rap', 'arabic rap']],
   },
   zh: {
     artists: [
@@ -288,7 +288,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Eason Chan', why: 'Ballads (his Mandarin songs)', ease: 'medium' },
       { name: 'Jay Chou', why: 'Mandopop’s king; famously fast and mumbled', ease: 'fast' },
     ],
-    styles: [['Mandopop', 'mandopop'], ['Chinese folk', '民谣'], ['Ancient style', '古风'], ['Chinese rock', '中国摇滚'], ['Classic songs', '经典老歌'], ['Chinese rap', '中文说唱'], ['Drama songs', '电视剧 主题曲']],
+    styles: [['Mandopop', 'mandopop'], ['Classic songs', '经典老歌'], ['Campus folk', '校园民谣'], ['Chinese folk', '民谣'], ['Ancient style', '古风'], ['Drama songs', '电视剧 主题曲'], ['Children’s songs', '儿歌'], ['Chinese rock', '中国摇滚'], ['Chinese R&B', '华语 R&B'], ['Chinese rap', '中文说唱']],
   },
   ja: {
     artists: [
@@ -303,7 +303,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'Mrs. GREEN APPLE', why: 'Bright band pop', ease: 'medium' },
       { name: 'YOASOBI', why: 'Story songs, sung very fast', ease: 'fast' },
     ],
-    styles: [['J-pop', 'j-pop'], ['City pop', 'city pop'], ['Anime songs', 'anime'], ['Ghibli', 'ghibli'], ['Enka', 'enka'], ['J-rock', 'j-rock'], ['Japanese folk', 'japanese folk'], ['Vocaloid', 'vocaloid']],
+    styles: [['J-pop', 'j-pop'], ['City pop', 'city pop'], ['Ghibli', 'ghibli'], ['Anime songs', 'anime'], ['Japanese folk', 'japanese folk'], ['Children’s songs', '童謡'], ['Shibuya-kei', 'shibuya-kei'], ['Enka', 'enka'], ['J-rock', 'j-rock'], ['Idol pop', 'アイドル'], ['Vocaloid', 'vocaloid']],
   },
   ko: {
     artists: [
@@ -318,7 +318,7 @@ export const DISCOVER: Record<string, Discover> = {
       { name: 'BTS', why: 'K-pop with fast rap verses', ease: 'medium' },
       { name: 'Epik High', why: 'Korean hip hop: fast and wordy', ease: 'fast' },
     ],
-    styles: [['K-pop', 'k-pop'], ['K-ballad', 'korean ballad'], ['K-indie', 'korean indie'], ['Drama OST', 'korean drama ost'], ['Trot', 'trot'], ['K-hip hop', 'korean hip hop'], ['K-R&B', 'korean r&b']],
+    styles: [['K-pop', 'k-pop'], ['K-ballad', 'korean ballad'], ['Drama OST', 'korean drama ost'], ['K-indie', 'korean indie'], ['Korean folk', 'korean folk'], ['K-rock', 'korean rock'], ['K-R&B', 'korean r&b'], ['Children’s songs', '동요'], ['Trot', 'trot'], ['K-hip hop', 'korean hip hop']],
   },
 };
 

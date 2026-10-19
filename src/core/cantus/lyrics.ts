@@ -69,3 +69,43 @@ export function linesToCues(lines: readonly LyricLine[], durationMs?: number): C
 
 /** Lines with words in them (for exercises and counting). */
 export const sungLines = (lines: readonly LyricLine[]) => lines.filter((l) => /\p{L}/u.test(l.text));
+
+/** A line the learner placed by tapping it while it was sung: [line index, time in the song]. */
+export type LyricAnchor = [line: number, ms: number];
+
+/**
+ * Times for lyrics that have none, so they can follow the music gently: the sung lines spread over
+ * the song by their length (a break counts as a short pause), after an intro and before an outro.
+ * Lines the learner tapped while they were sung (`anchors`) are fixed points; the lines between
+ * are spread between them.
+ */
+export function estimateTimes(lines: readonly LyricLine[], durationMs: number, anchors: readonly LyricAnchor[] = []): LyricLine[] {
+  const weights = lines.map((l) => (l.text ? Math.max(12, l.text.length) : 20));
+  const before: number[] = [];
+  let total = 0;
+  for (const w of weights) {
+    before.push(total);
+    total += w;
+  }
+  const intro = Math.min(15_000, durationMs * 0.08);
+  const outro = Math.min(12_000, durationMs * 0.06);
+  // Fixed points in order of the lines; a tap that contradicts a later line's is dropped.
+  const points: Array<[weight: number, ms: number]> = [[0, intro]];
+  for (const [line, ms] of [...anchors].sort((a, b) => a[0] - b[0])) {
+    if (line < 0 || line >= lines.length) continue;
+    const last = points[points.length - 1];
+    if (before[line] > last[0] && ms > last[1]) points.push([before[line], ms]);
+    else if (before[line] === last[0] && points.length > 1) points[points.length - 1] = [before[line], ms];
+  }
+  const end = Math.max(points[points.length - 1][1] + 1000, durationMs - outro);
+  if (total > points[points.length - 1][0]) points.push([total, end]);
+  let k = 0;
+  return lines.map((l, i) => {
+    const w = before[i];
+    while (k < points.length - 2 && points[k + 1][0] <= w) k++;
+    const [w0, t0] = points[k];
+    const [w1, t1] = points[Math.min(k + 1, points.length - 1)];
+    const at = w1 > w0 ? t0 + ((w - w0) / (w1 - w0)) * (t1 - t0) : t0;
+    return { ...l, startMs: Math.round(at) };
+  });
+}

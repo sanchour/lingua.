@@ -161,26 +161,38 @@ Practise writing in the target language; get corrected, explained and graded.
 
 ## Music in Sonus — learning through music (2.0-4, in Sonus since 2.0-4b)
 
-Sonus is "listen and sing": **Music** first, then Library and Podcasts (where podcast discovery
-now lives). The music room still goes by Cantus inside (its deck is "From Cantus").
+Sonus is "listen and sing". Since 3.0-3 it opens on **Library** (what you listen to: recently
+played songs and episodes together, your songs, the podcasts you follow, new episodes, your own
+files), then **Music** and **Podcasts** for finding more. The music room still goes by Cantus
+inside (its deck is "From Cantus").
 
 
 - **Find any song** in the language you're learning (Apple's catalogue; tap the artwork for a
   30-second preview), or start from Discover: this week's most played songs sung in the language,
-  artists picked for learners (clear, medium or fast), and styles.
-- **The song page:** the lyrics follow the music from **Apple Music** (its player on the page:
+  artists picked for learners (clear, medium or fast), and about ten styles a language, at the
+  top of Music.
+- **The song page** fills the window and stays put; only the lyrics scroll (on a phone the
+  header, the song and the player stay, the lyrics scroll between). "Playing from …" picks the
+  source: Apple's 30-second **preview** (always plays; the first tap on the line you hear places
+  it in the song), **Apple Music** (its player on the page:
   pressing it starts and pauses the lyrics; on a phone, "Play in Apple Music" opens the Music app,
   then you tap the line you're hearing), YouTube (paste the song's link), Spotify, or music
   playing anywhere (start the timer, or tap the line you're hearing). The current line is large
   and in the song's colour, its words lighting up as they're sung; the English sits under each
   line, shown, blurred or hidden. Every word works as in Codex. Tap a line's English or the space
-  around it to play from it, save it as a card, or copy it. The album art colours the page.
-- **Lyrics** come from LRCLIB (often timed to the music), then lyrics.ovh; for a song neither
-  has, "On Genius" opens Genius's search to copy the words, and "Paste them yourself" takes them.
-  Under the lyrics: where they came from.
+  around it to play from it, save it as a card, or copy it. Press and drag (or hold and slide on
+  a phone) across several words to translate the phrase. Lyrics without times get estimated ones
+  that follow gently; a tap on the line you hear puts them right. The album art colours the page.
+- **Lyrics** come from LRCLIB (often timed to the music), then lyrics.ovh; when LRCLIB is busy
+  the page tries again by itself. When nothing sure was found, the likely lyrics are shown to pick
+  from ("Are these the lyrics?"), with "Search another name", "On Genius" (Genius's search, to
+  copy the words) and "Paste them yourself". Under the lyrics: where they came from.
 - **Your songs:** save with the heart. Recently opened songs sit below; with your own Spotify app
   (Ordo › Music explains it), your liked songs sung in the language too.
-- **Song games:** fill in the lyric, and put a verse's lines back in order. They count as Ludus.
+- **Learn it (song lessons):** the language first, the song as the bonus. Words from the song
+  worth learning at your level (what does it mean?), each word back in its line, a form and the
+  word it comes from, the line in English, then the verse's lines in order. At the end the words
+  can be added to your cards with the line they're sung in. The lesson counts as Ludus.
 - **Everywhere else:** Home suggests a song for today; saved lines go to the "From Cantus" deck and
   their cards play the line again (with a YouTube or Spotify link); lyrics open in Codex as a text;
   Ratio counts songs and time with music; Iter marks the first song and every 10, 25, 50 and 100.

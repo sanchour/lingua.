@@ -56,7 +56,7 @@ function SpotifySetup({ spotify }: { spotify: Settings['spotify'] }) {
   const connect = async () => {
     setBusy(true);
     try {
-      await startSpotifySignIn(clientId, '/sonus');
+      await startSpotifySignIn(clientId, '/sonus?tab=music');
     } catch (e) {
       setBusy(false);
       toast(e instanceof Error ? e.message : 'Spotify couldn’t connect.', { tone: 'error' });

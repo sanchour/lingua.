@@ -55,6 +55,7 @@ export function MusicRoom({ initialQuery = '' }: { initialQuery?: string }) {
         <SearchResults lang={lang} query={query.trim()} byArtist={byArtist} />
       ) : (
         <div className="space-y-10">
+          <Styles lang={lang} onSearch={searchFor} />
           <YourSongs lang={lang} saved={saved} recent={recent} />
           <DiscoverTab lang={lang} onSearch={searchFor} between={connected ? <SpotifyLikes lang={lang} /> : <SpotifyInvite />} />
         </div>
@@ -363,19 +364,32 @@ function DiscoverTab({ lang, onSearch, between }: { lang: string; onSearch: (ter
             </ul>
           </section>
           )}
-          <section aria-label="Styles">
-            <h2 className={cx(label, 'mb-3')}>Styles to explore</h2>
-            <div className="flex flex-wrap gap-2">
-              {picks.styles.map(([name, term]) => (
-                <button key={term} type="button" onClick={() => onSearch(term)} className="rounded-full border border-line bg-surface px-4 py-2 text-[14px] font-semibold transition-colors hover:bg-raised active:scale-[0.97]">
-                  {name}
-                </button>
-              ))}
-            </div>
-          </section>
         </>
       )}
     </div>
+  );
+}
+
+/** Styles to explore, at the top of the room: one tap searches Apple's catalogue for that style. */
+function Styles({ lang, onSearch }: { lang: string; onSearch: (term: string) => void }) {
+  const picks = discoverFor(lang);
+  if (!picks?.styles.length) return null;
+  return (
+    <section aria-label="Styles">
+      <h2 className={cx(label, 'mb-3')}>Styles to explore</h2>
+      <div className="flex flex-wrap gap-2">
+        {picks.styles.map(([name, term]) => (
+          <button
+            key={term}
+            type="button"
+            onClick={() => onSearch(term)}
+            className="h-10 rounded-full border border-line bg-surface px-4 text-[14px] font-semibold transition-colors hover:border-[var(--cantus)] hover:bg-[var(--cantus-soft)] hover:text-[var(--cantus-text)] active:scale-[0.97]"
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+    </section>
   );
 }
 

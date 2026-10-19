@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { paletteFromPixels } from '@/services/cantus/palette';
 import { spotifyTrackId } from '@/services/cantus/spotify';
 import { youtubeId } from '@/services/cantus/youtube';
-import { planSongRounds, seeded } from './games';
+import { planLesson, planSongRounds, seeded, songWords } from './games';
+import type { SongWord } from './games';
 import { parsePlain } from './lyrics';
 
 const SONG = parsePlain(`Sigo cruzando ríos
@@ -42,6 +43,63 @@ describe('song games', () => {
 
   it('plans the same rounds for the same seed', () => {
     expect(planSongRounds(SONG, 'es', seeded(7))).toEqual(rounds);
+  });
+});
+
+describe('song lessons', () => {
+  // What the dictionary would say about the song's words (ranks: how common; state 1: known).
+  const INFO: Record<string, Partial<SongWord>> = {
+    sigo: { gloss: 'I follow; I keep on', lemma: 'seguir', desc: 'first-person singular present indicative of seguir', rank: 600 },
+    cruzando: { gloss: 'crossing', lemma: 'cruzar', desc: 'gerund of cruzar', rank: 5200 },
+    ríos: { gloss: 'rivers', lemma: 'río', desc: 'plural of río', rank: 2900 },
+    andando: { gloss: 'walking', lemma: 'andar', desc: 'gerund of andar', rank: 3100 },
+    amando: { gloss: 'loving', lemma: 'amar', desc: 'gerund of amar', rank: 4000 },
+    sol: { gloss: 'sun', lemma: 'sol', rank: 900 },
+    cada: { gloss: 'each, every', lemma: 'cada', rank: 300, state: 1 },
+    día: { gloss: 'day', lemma: 'día', rank: 120, state: 1 },
+    noche: { gloss: 'night', lemma: 'noche', rank: 400 },
+    sueños: { gloss: 'dreams', lemma: 'sueño', desc: 'plural of sueño', rank: 1400 },
+    corazón: { gloss: 'heart', lemma: 'corazón', rank: 700 },
+    recuerdo: { gloss: 'memory', lemma: 'recuerdo', rank: 1800 },
+  };
+  const words = songWords(SONG, 'es').map((w) => ({ state: 0 as const, ...w, ...INFO[w.norm] }));
+  const translation = SONG.map((l) => (l.text ? `[${l.text}]` : ''));
+  const { rounds, focus } = planLesson({ lines: SONG, lang: 'es', words, translation, reach: 3200, random: seeded(3) });
+
+  it('teaches the common words the learner doesn’t know yet, the most useful first', () => {
+    expect(focus.slice(0, 4).map((w) => w.norm)).toEqual(['noche', 'sigo', 'corazón', 'sol']);
+    expect(focus.some((w) => w.state === 1)).toBe(false);
+  });
+
+  it('goes from words to meaning, grammar and the line, with the song last', () => {
+    const kinds = rounds.map((r) => r.kind);
+    expect(kinds.slice(0, 3)).toEqual(['meaning', 'meaning', 'meaning']);
+    expect(kinds).toContain('fill');
+    expect(kinds).toContain('form');
+    expect(kinds).toContain('translate');
+    expect(kinds.at(-1)).toBe('order');
+    expect(kinds.indexOf('form')).toBeGreaterThan(kinds.lastIndexOf('fill'));
+  });
+
+  it('asks a form’s dictionary word, with other words of the song as the wrong options', () => {
+    const form = rounds.find((r) => r.kind === 'form');
+    if (form?.kind !== 'form') throw new Error('no form round');
+    expect(form.options[form.answer]).toBe(form.word.lemma);
+    expect(form.word.desc).toBeTruthy();
+    expect(new Set(form.options).size).toBe(form.options.length);
+  });
+
+  it('keeps to one word per meaning, and asks no form that could be two words', () => {
+    const same = words.map((w) => (w.norm === 'sol' ? { ...w, gloss: 'night' } : w));
+    expect(planLesson({ lines: SONG, lang: 'es', words: same, reach: 3200, random: seeded(3) }).focus.filter((w) => w.gloss === 'night')).toHaveLength(1);
+    const ambiguous = words.map((w) => (w.desc ? { ...w, lemmas: [w.lemma!, w.norm] } : w));
+    expect(planLesson({ lines: SONG, lang: 'es', words: ambiguous, reach: 3200, random: seeded(3) }).rounds.some((r) => r.kind === 'form')).toBe(false);
+  });
+
+  it('still makes a lesson without a dictionary', () => {
+    const bare = planLesson({ lines: SONG, lang: 'es', words: songWords(SONG, 'es').map((w) => ({ ...w, state: 0 as const })), reach: 3200, random: seeded(3) });
+    expect(bare.rounds.length).toBeGreaterThanOrEqual(3);
+    expect(bare.rounds.some((r) => r.kind === 'fill')).toBe(true);
   });
 });
 

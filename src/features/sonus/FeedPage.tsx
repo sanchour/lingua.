@@ -139,7 +139,7 @@ export default function FeedPage() {
 }
 
 /** An episode not yet in the library: playing or opening it adds it. */
-function EpisodeRow({ feed, episode, onOpen }: { feed: Feed; episode: FeedEpisode; onOpen: () => void }) {
+export function EpisodeRow({ feed, episode, onOpen }: { feed: Feed; episode: FeedEpisode; onOpen: () => void }) {
   const playing = usePlayer((s) => s.media?.guid === episode.guid && s.status === 'playing');
   const details = [episode.publishedAt && dateFmt.format(episode.publishedAt), episode.durationMs && formatDuration(episode.durationMs)].filter(Boolean);
   return (

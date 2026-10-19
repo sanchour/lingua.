@@ -33,7 +33,7 @@ export const router = createBrowserRouter(
         { path: 'sonus/song/:songId', element: <SongPage /> },
         { path: 'sonus/song/:songId/games', element: <SongGamesPage /> },
         // Music lived in a section of its own (Cantus) until 2.0-4b: its links still open.
-        { path: 'cantus', element: <Navigate to="/sonus" replace /> },
+        { path: 'cantus', element: <Navigate to="/sonus?tab=music" replace /> },
         { path: 'cantus/song/:songId', element: <SongMoved /> },
         { path: 'cantus/song/:songId/games', element: <SongMoved games /> },
         // Kept as it is: learners entered this address in their own Spotify app.

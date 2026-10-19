@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { detectLanguage } from '@/core/lang/detect';
-import { isTimed, linesToCues, parseLrc, parsePlain } from './lyrics';
+import { estimateTimes, isTimed, linesToCues, parseLrc, parsePlain } from './lyrics';
 
 describe('lyrics', () => {
   it('reads timed LRC, repeated lines and an offset', () => {
@@ -57,5 +57,23 @@ describe('detectLanguage', () => {
 
   it('says nothing about a line too short to tell', () => {
     expect(detectLanguage('Oh')).toBeNull();
+  });
+});
+
+describe('estimated timings', () => {
+  it('spreads untimed lines over the song, and keeps the lines the learner placed', () => {
+    const lines = parsePlain('Uno dos tres cuatro\nCinco seis siete ocho\n\nNueve diez once doce\nTrece catorce quince');
+    const spread = estimateTimes(lines, 100_000);
+    const starts = spread.map((l) => l.startMs!);
+    expect(starts[0]).toBe(8000);
+    expect(starts.every((t, i) => i === 0 || t > starts[i - 1])).toBe(true);
+    expect(starts.at(-1)!).toBeLessThan(94_000);
+    // The fourth line was heard at 60 s: it starts there, and the lines before it fit in before.
+    const placed = estimateTimes(lines, 100_000, [[3, 60_000]]).map((l) => l.startMs!);
+    expect(placed[3]).toBe(60_000);
+    expect(placed[2]).toBeLessThan(60_000);
+    expect(placed[4]).toBeGreaterThan(60_000);
+    // A tap that contradicts an earlier one is left out.
+    expect(estimateTimes(lines, 100_000, [[3, 60_000], [4, 50_000]]).map((l) => l.startMs!)[3]).toBe(60_000);
   });
 });

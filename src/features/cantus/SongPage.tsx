@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
+import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import {
   BookOpen,
+  Check,
   ChevronDown,
   ChevronLeft,
   Crosshair,
@@ -10,6 +11,7 @@ import {
   ExternalLink,
   Gamepad2,
   Heart,
+  Headphones,
   Languages,
   Link2,
   LoaderCircle,
@@ -20,13 +22,15 @@ import {
   Plus,
   RotateCcw,
   Search,
+  Speaker,
   Timer,
   Trash2,
-  Volume2,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { formatClock } from '@/core/audio/cues';
-import { isTimed, parsePlain, sungLines } from '@/core/cantus/lyrics';
+import { estimateTimes, isTimed, parsePlain, sungLines } from '@/core/cantus/lyrics';
+import type { LyricAnchor } from '@/core/cantus/lyrics';
 import { recordSession } from '@/data/activity';
 import { patchSetting } from '@/data/settings';
 import { markSongPlayed, openLyricsInCodex, patchSong, removeSong, saveSongLine, setSongSaved, useSavedLines, useSong } from '@/data/songs';
@@ -37,7 +41,7 @@ import { Button, Dialog, IconButton, MenuItem, Popover, SearchInput, Segmented }
 import { cx } from '@/lib/cx';
 import { pause as pauseSonus, usePlayer } from '@/services/audio/engine';
 import { appleSongUrl } from '@/services/cantus/catalog';
-import { findLyrics, searchLyrics } from '@/services/cantus/lrclib';
+import { findLyrics, lyricCandidates, searchLyrics } from '@/services/cantus/lrclib';
 import { geniusSearchUrl, lyricsOvh } from '@/services/cantus/lyricSources';
 import type { FoundLyrics } from '@/services/cantus/lrclib';
 import { paletteOf } from '@/services/cantus/palette';
@@ -45,8 +49,8 @@ import { findSpotifyTrack, spotifyTrackId } from '@/services/cantus/spotify';
 import { translateLyrics } from '@/services/cantus/translate';
 import { youtubeId } from '@/services/cantus/youtube';
 import { toast } from '@/state/ui';
-import { createSpotifyClock, createTimerClock, createYouTubeClock, shifted } from './player/clocks';
-import type { ClockKind, SongClock, TimerClock } from './player/clocks';
+import { createPreviewClock, createSpotifyClock, createTimerClock, createYouTubeClock, shifted } from './player/clocks';
+import type { ClockKind, PreviewClock, SongClock, TimerClock } from './player/clocks';
 import { LyricSheet } from './player/LyricSheet';
 import { AppleMusicPlayer, SpotifyPlayer, YouTubePlayer } from './player/Players';
 import { SongArt } from './SongArt';
@@ -59,7 +63,7 @@ export default function SongPage() {
       <div className="grid min-h-[60dvh] place-items-center text-center">
         <div>
           <p className="font-serif text-xl">This song isn’t in your music any more.</p>
-          <Link to="/sonus" className="mt-4 inline-block font-semibold text-accent-text">
+          <Link to="/sonus?tab=music" className="mt-4 inline-block font-semibold text-accent-text">
             Back to Music
           </Link>
         </div>
@@ -74,6 +78,7 @@ export default function SongPage() {
 function useSongSetup(song: Song) {
   const { settings } = useApp();
   const [lyrics, setLyrics] = useState<'idle' | 'loading' | 'failed'>('idle');
+  const [attempt, setAttempt] = useState(0);
   const connected = Boolean(settings.spotify.refreshToken);
 
   useEffect(() => {
@@ -85,13 +90,16 @@ function useSongSetup(song: Song) {
     let alive = true;
     setLyrics('loading');
     (async () => {
-      const found = await findLyrics({ title: song.title, artist: song.artist, album: song.album, durationMs: song.durationMs });
+      // LRCLIB first (often timed). Busy or unreachable: lyrics.ovh still may have them.
+      const found = await findLyrics({ title: song.title, artist: song.artist, album: song.album, durationMs: song.durationMs }).catch(() => undefined);
       if (found && (found.lines.length || found.instrumental)) {
         return { lines: found.lines, lrclibId: found.id, lyricsFrom: 'lrclib' as const, instrumental: found.instrumental ? (1 as const) : undefined, lyricsMissing: found.lines.length ? undefined : (1 as const) };
       }
       // Not in LRCLIB: lyrics.ovh (plain text, not timed).
       const other = await lyricsOvh(song.title, song.artist);
-      return other ? { lines: other.lines, lyricsFrom: other.from } : { lyricsMissing: 1 as const };
+      if (other) return { lines: other.lines, lyricsFrom: other.from };
+      if (found === undefined) throw new Error('LRCLIB could not be asked');
+      return { lyricsMissing: 1 as const };
     })()
       .then((patch) => {
         if (!alive) return;
@@ -102,7 +110,14 @@ function useSongSetup(song: Song) {
     return () => {
       alive = false;
     };
-  }, [song.id, song.lines.length, song.lyricsMissing, song.title, song.artist, song.album, song.durationMs]);
+  }, [song.id, song.lines.length, song.lyricsMissing, song.title, song.artist, song.album, song.durationMs, attempt]);
+
+  // Couldn't be asked (busy, offline): try again by itself, twice, a little later each time.
+  useEffect(() => {
+    if (lyrics !== 'failed' || attempt >= 2) return;
+    const timer = window.setTimeout(() => setAttempt((n) => n + 1), (attempt + 1) * 15_000);
+    return () => window.clearTimeout(timer);
+  }, [lyrics, attempt]);
 
   useEffect(() => {
     if (song.palette || !song.artworkUrl) return;
@@ -118,15 +133,63 @@ function useSongSetup(song: Song) {
       .catch(() => undefined);
   }, [connected, song.id, song.spotifyId, song.title, song.artist]);
 
-  return lyrics;
+  return { state: lyrics, retry: () => setAttempt((n) => n + 1) };
 }
 
-function defaultSource(song: Song): ClockKind | null {
-  if (song.youtubeId) return 'youtube';
-  if (song.spotifyId) return 'spotify';
-  if (song.itunesId) return 'apple';
-  if (isTimed(song.lines)) return 'timer';
-  return null;
+// ── Where the music comes from ────────────────────────────────────────────────────────────────
+
+/** The ways this song can play here: its video, Spotify, Apple Music, Apple's preview, or music anywhere. */
+function sourcesOf(song: Song, followable: boolean): ClockKind[] {
+  const kinds: ClockKind[] = [];
+  if (song.youtubeId) kinds.push('youtube');
+  if (song.spotifyId) kinds.push('spotify');
+  if (song.itunesId && appleSongUrl(song)) kinds.push('apple');
+  if (song.previewUrl) kinds.push('preview');
+  if (followable) kinds.push('timer');
+  return kinds;
+}
+
+/**
+ * The whole song where it can play on the page (a video, Spotify); else Apple Music on desktop and
+ * the preview on a phone, where Apple Music is a separate app.
+ */
+function defaultSource(song: Song, followable: boolean, wide: boolean): ClockKind | null {
+  const kinds = sourcesOf(song, followable);
+  const order: ClockKind[] = wide ? ['youtube', 'spotify', 'apple', 'preview', 'timer'] : ['youtube', 'spotify', 'preview', 'apple', 'timer'];
+  return order.find((k) => kinds.includes(k)) ?? null;
+}
+
+const SOURCE_LABEL: Record<ClockKind, string> = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Music', preview: 'Preview (30 seconds)', timer: 'Music playing anywhere' };
+const SOURCE_NOTE: Record<ClockKind, string> = {
+  youtube: 'Playing from YouTube',
+  spotify: 'Playing from Spotify',
+  apple: 'Playing in Apple Music',
+  preview: 'Playing Apple’s preview',
+  timer: 'Along with music playing anywhere',
+};
+const SOURCE_DETAIL: Record<ClockKind, string> = {
+  youtube: 'The whole song, for everyone',
+  spotify: 'The whole song when signed in to Spotify',
+  apple: 'The whole song when signed in to Apple Music',
+  preview: 'Plays here, always',
+  timer: 'A speaker, the Music app: start it with the song',
+};
+const SOURCE_ICON: Record<ClockKind, LucideIcon> = { youtube: Play, spotify: Music2, apple: Music2, preview: Headphones, timer: Speaker };
+
+type Clocks = { spotify: ReturnType<typeof createSpotifyClock>; youtube: ReturnType<typeof createYouTubeClock>; apple: TimerClock; preview: PreviewClock; timer: TimerClock };
+
+/** A height that follows an element (the phone's docked player, which "Back to the song" sits above). */
+function useHeight() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setHeight(el.offsetHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return [ref, height] as const;
 }
 
 function SongView({ song }: { song: Song }) {
@@ -134,25 +197,82 @@ function SongView({ song }: { song: Song }) {
   const { layout } = useLayout();
   const wide = layout === 'wide';
   const navigate = useNavigate();
-  const lyricsState = useSongSetup(song);
+  const lyricsSetup = useSongSetup(song);
   const savedLines = useSavedLines(song.id) ?? new Set<number>();
   const timed = isTimed(song.lines);
 
-  // ── Where the music comes from ──────────────────────────────────────────
-  const clocks = useMemo(() => ({ spotify: createSpotifyClock(), youtube: createYouTubeClock(), apple: createTimerClock('apple'), timer: createTimerClock() }), []);
-  const [source, setSource] = useState<ClockKind | null>(() => defaultSource(song));
+  // Lyrics without timings follow the song on estimated times, put right by tapping the line heard.
+  const [anchors, setAnchors] = useState<LyricAnchor[]>([]);
+  const estimated = useMemo(
+    () => (!timed && sungLines(song.lines).length && song.durationMs ? estimateTimes(song.lines, song.durationMs, anchors) : undefined),
+    [timed, song.lines, song.durationMs, anchors],
+  );
+  const followable = timed || Boolean(estimated);
+
+  const clocks: Clocks = useMemo(() => ({ spotify: createSpotifyClock(), youtube: createYouTubeClock(), apple: createTimerClock('apple'), preview: createPreviewClock(), timer: createTimerClock() }), []);
+  const kinds = sourcesOf(song, followable);
+  const [source, setSource] = useState<ClockKind | null>(() => defaultSource(song, followable, wide));
   // A source appears later (lyrics found, a link added, Spotify finds the track): use it.
   useEffect(() => {
-    if (source === null) setSource(defaultSource(song));
-  }, [source, song]);
+    if (source === null || !kinds.includes(source)) setSource(defaultSource(song, followable, wide));
+  }, [source, kinds, song, followable, wide]);
   const clock: SongClock | null = source ? clocks[source] : null;
   const offsetRef = useRef(song.offsetMs ?? 0);
   offsetRef.current = song.offsetMs ?? 0;
-  // Timers are set by the learner, so the song's timing nudge is for the players only.
-  const lyricClock = useMemo(() => (clock && timed ? (clock.kind === 'timer' || clock.kind === 'apple' ? clock : shifted(clock, () => offsetRef.current)) : null), [clock, timed]);
-  // Music playing in the Music app or on a speaker: the next tap on a line starts the lyrics there.
+  // The song's timing nudge is for the players that report their place; the others are put right by taps.
+  const lyricClock = useMemo(
+    () => (clock && followable ? (estimated || clock.kind === 'timer' || clock.kind === 'apple' || clock.kind === 'preview' ? clock : shifted(clock, () => offsetRef.current)) : null),
+    [clock, followable, estimated],
+  );
+
+  // The preview: loaded while it's the source, starting where the song's preview starts.
+  const [previewFailed, setPreviewFailed] = useState(false);
+  useEffect(() => {
+    if (source !== 'preview' || !song.previewUrl) return;
+    setPreviewFailed(false);
+    clocks.preview.load(song.previewUrl);
+    const off = clocks.preview.onError(() => setPreviewFailed(true));
+    return () => {
+      off();
+      clocks.preview.release();
+    };
+  }, [source, song.previewUrl, clocks]);
+  useEffect(() => clocks.preview.setStart(song.previewAtMs ?? 0), [clocks, song.previewAtMs]);
+
+  // Finding the place: the next tap on a line is the line being heard.
   const [syncing, setSyncing] = useState(false);
   useEffect(() => setSyncing(false), [source]);
+  // The preview is a piece from somewhere in the song: the first time, ask which line it is at.
+  const placed = song.previewAtMs !== undefined;
+  useEffect(
+    () =>
+      clocks.preview.onPlaying((playing) => {
+        if (playing && followable && (estimated ? !anchors.length : !placed)) setSyncing(true);
+      }),
+    [clocks, followable, estimated, anchors.length, placed],
+  );
+
+  const onSyncLine = (i: number) => {
+    setSyncing(false);
+    if (!clock) return;
+    if (estimated) {
+      const now = clock.now();
+      setAnchors((list) => [...list.filter(([line]) => line !== i), [i, now]]);
+      if (!clock.isPlaying()) clock.play();
+      return;
+    }
+    const start = song.lines[i]?.startMs;
+    if (start === undefined) return;
+    if (clock.kind === 'preview') {
+      const at = Math.round(start - clocks.preview.previewMs());
+      clocks.preview.setStart(at);
+      void patchSong(song.id, { previewAtMs: at });
+      if (!clock.isPlaying()) clock.play();
+      return;
+    }
+    clock.seek(start);
+    clock.play();
+  };
 
   // Only one thing plays at a time: a song starting pauses Sonus, and leaving the page records the time.
   useEffect(() => {
@@ -166,6 +286,7 @@ function SongView({ song }: { song: Song }) {
       offs.forEach((off) => off());
       clocks.timer.pause();
       clocks.apple.pause();
+      clocks.preview.release();
       const heard = Object.values(clocks).reduce((n, c) => n + c.heardMs(), 0);
       void recordSession({ lang: song.lang, type: 'sing', refId: song.id, startedAt, endedAt: Date.now(), activeMs: Math.round(heard) });
     };
@@ -200,8 +321,10 @@ function SongView({ song }: { song: Song }) {
 
   useHotkeys({ ' ': () => clock?.toggle() }, Boolean(clock));
 
-  const [dialog, setDialog] = useState<'link' | 'lyrics' | null>(null);
+  const [dialog, setDialog] = useState<'link' | 'lyrics' | 'paste' | null>(null);
   const tint = song.palette ? ({ '--song': song.palette.base, '--song-deep': song.palette.deep, '--song-soft': song.palette.soft } as CSSProperties) : undefined;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [dockRef, dockHeight] = useHeight();
 
   const actions = (
     <div className="flex items-center gap-1.5">
@@ -209,174 +332,287 @@ function SongView({ song }: { song: Song }) {
         {song.savedAt ? 'In your songs' : 'Save'}
       </Button>
       {sungLines(song.lines).length >= 4 && (
-        <IconButton icon={Gamepad2} label="Song games" variant="soft" onClick={() => navigate(`/sonus/song/${encodeURIComponent(song.id)}/games`)} />
+        <Button variant="secondary" icon={Gamepad2} onClick={() => navigate(`/sonus/song/${encodeURIComponent(song.id)}/games`)}>
+          Learn it
+        </Button>
       )}
-      <SongMenu song={song} onLink={() => setDialog('link')} onLyrics={() => setDialog('lyrics')} />
+      {wide && <SongMenu song={song} onLink={() => setDialog('link')} onLyrics={() => setDialog('lyrics')} />}
     </div>
   );
 
-  const player = <PlayerArea song={song} source={source} setSource={setSource} clocks={clocks} wide={wide} onLink={() => setDialog('link')} syncing={syncing} onSync={setSyncing} />;
-  const translationBar = song.lines.length > 0 && (
-    <TranslationBar song={song} mode={mode} translating={translating} onTranslate={() => void translate()} />
+  const player = (
+    <PlayerArea
+      song={song}
+      source={source}
+      kinds={kinds}
+      setSource={setSource}
+      clocks={clocks}
+      wide={wide}
+      timed={timed}
+      estimated={Boolean(estimated)}
+      previewFailed={previewFailed}
+      onLink={() => setDialog('link')}
+      syncing={syncing}
+      onSync={setSyncing}
+    />
   );
+  const translationBar = song.lines.length > 0 && <TranslationBar song={song} mode={mode} translating={translating} onTranslate={() => void translate()} />;
 
   const sheet = song.lines.length ? (
-    <>
+    <Boundary what="The lyrics">
       <LyricSheet
         song={song}
         clock={lyricClock}
         translationMode={song.translation ? mode : 'hide'}
         savedLines={savedLines}
         onSaveLine={(i) => void saveLine(i)}
-        dockedHeight={wide ? 0 : 150}
+        dockedHeight={wide ? 0 : dockHeight}
+        estimated={estimated}
+        scrollRef={scrollRef}
         syncByTap={syncing}
-        onSynced={() => setSyncing(false)}
+        onSyncLine={onSyncLine}
       />
-      <LyricsCredit song={song} />
-    </>
+      <LyricsCredit song={song} estimated={Boolean(estimated)} />
+    </Boundary>
   ) : (
-    <NoLyrics song={song} state={lyricsState} onFind={() => setDialog('lyrics')} />
+    <NoLyrics song={song} state={lyricsSetup.state} onRetry={lyricsSetup.retry} onFind={() => setDialog('lyrics')} onPaste={() => setDialog('paste')} />
   );
 
   const dialogs = (
     <>
       <LinkDialog song={song} open={dialog === 'link'} onClose={() => setDialog(null)} onAdded={(kind) => setSource(kind)} />
-      <LyricsDialog song={song} open={dialog === 'lyrics'} onClose={() => setDialog(null)} />
+      <LyricsDialog key={dialog === 'paste' ? 'paste' : 'find'} song={song} open={dialog === 'lyrics' || dialog === 'paste'} pasting={dialog === 'paste'} onClose={() => setDialog(null)} />
     </>
   );
 
+  // Desktop: the page fills the window and stays put; only the lyrics scroll.
   if (wide) {
     return (
-      <div className="song-page relative" style={tint}>
-        <div className="song-backdrop -mx-10 -mt-10" aria-hidden />
-        <div className="relative">
-          <Link to="/sonus" className="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-ink-soft hover:text-ink">
-            <ChevronLeft size={16} aria-hidden /> Music
-          </Link>
-          <div className="grid grid-cols-[minmax(260px,330px)_minmax(0,1fr)] gap-12">
-            <aside className="sticky top-10 max-h-[calc(100dvh-5rem)] self-start overflow-y-auto [scrollbar-width:none]">
-              <SongArt url={song.artworkUrl} title={song.title} className="song-art w-full" rounded="rounded-[22px]" />
+      <div className="song-page relative flex h-[calc(100dvh-8rem)] min-h-[520px] flex-col" style={tint}>
+        <div className="song-backdrop -mx-10 -mt-12" aria-hidden />
+        <Link to="/sonus?tab=music" className="relative mb-5 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
+          <ChevronLeft size={16} aria-hidden /> Music
+        </Link>
+        <div className="relative grid min-h-0 flex-1 grid-cols-[minmax(250px,330px)_minmax(0,1fr)] gap-12">
+          <aside className="flex min-h-0 flex-col overflow-y-auto [scrollbar-width:none]">
+            {/* The artwork takes the room that's left, so the column needn't scroll; never less than a thumbnail. */}
+            <div className="min-h-[88px] flex-1 [container-type:size]">
+              <SongArt url={song.artworkUrl} title={song.title} className="song-art w-[max(88px,min(100cqw,100cqh))]" rounded="rounded-[22px]" />
+            </div>
+            <div className="shrink-0">
               <SongTitle song={song} large />
               <div className="mt-4">{actions}</div>
-              <div className="mt-6">{player}</div>
-            </aside>
-            <section aria-label="Lyrics" className="min-w-0 pt-2 pb-32">
-              {translationBar}
+              <div className="mt-5">{player}</div>
+            </div>
+          </aside>
+          <section aria-label="Lyrics" className="flex min-h-0 min-w-0 flex-col">
+            <div className="shrink-0">{translationBar}</div>
+            <div ref={scrollRef} className="lyric-scroll -mr-4 min-h-0 flex-1 overflow-y-auto overscroll-contain pt-2 pr-4 pb-24">
               {sheet}
-            </section>
-          </div>
+            </div>
+          </section>
         </div>
         {dialogs}
       </div>
     );
   }
 
-  // Phones: the whole screen, the player docked at the bottom.
+  // Phones: the whole screen; the header, the song and the player stay put, the lyrics scroll between.
+  const video = source === 'youtube' && song.youtubeId;
   return (
-    <div className="song-page relative min-h-dvh overflow-x-clip bg-bg" style={tint}>
+    <div className="song-page fixed inset-0 flex flex-col overflow-hidden bg-bg" style={tint}>
       <div className="song-backdrop" aria-hidden />
-      <header className="no-callout sticky top-0 z-20 flex items-center gap-1 bg-[color-mix(in_oklab,var(--song-wash)_70%,transparent)] px-2 pt-safe backdrop-blur-xl">
-        <button type="button" aria-label="Close" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
+      <header className="no-callout relative z-20 flex shrink-0 items-center gap-1 px-2 pt-safe">
+        <button type="button" aria-label="Close" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus?tab=music'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronDown size={24} aria-hidden />
         </button>
         <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{song.artist}</p>
         <SongMenu song={song} onLink={() => setDialog('link')} onLyrics={() => setDialog('lyrics')} className="grid size-11 place-items-center rounded-xl text-ink-soft" />
       </header>
-      <div className="relative px-5 pb-[calc(env(safe-area-inset-bottom)+180px)]">
-        <div className="mt-2 flex items-center gap-4">
-          <SongArt url={song.artworkUrl} title={song.title} className="song-art w-28" rounded="rounded-2xl" size={300} />
+      <div className="relative shrink-0 px-5 pb-3">
+        <div className="flex items-center gap-4">
+          <SongArt url={song.artworkUrl} title={song.title} className="song-art w-20" rounded="rounded-2xl" size={300} />
           <div className="min-w-0 flex-1">
             <SongTitle song={song} />
           </div>
         </div>
-        <div className="mt-4">{actions}</div>
-        {source === 'youtube' && song.youtubeId && <div className="mt-5">{player}</div>}
-        <div className="mt-6">
-          {translationBar}
-          {sheet}
-        </div>
+        <div className="mt-3">{actions}</div>
       </div>
-      {source !== 'youtube' && (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line/70 bg-bg/92 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur-xl">{player}</div>
-      )}
-      {source === 'youtube' && (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line/70 bg-bg/92 px-4 pt-2.5 pb-[calc(env(safe-area-inset-bottom)+10px)] backdrop-blur-xl">
-          <SourceSwitch song={song} source={source} setSource={setSource} onLink={() => setDialog('link')} compact />
+      {video && (
+        <div className="relative shrink-0 px-5 pb-3">
+          <Boundary what="The video">
+            <YouTubePlayer videoId={song.youtubeId!} clock={clocks.youtube} />
+          </Boundary>
         </div>
       )}
+      <div ref={scrollRef} className="lyric-scroll relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-2 pb-10">
+        {translationBar}
+        {sheet}
+      </div>
+      <div ref={dockRef} className="relative z-20 shrink-0 border-t border-line/70 bg-bg/92 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur-xl">
+        {player}
+      </div>
       {dialogs}
     </div>
   );
+}
+
+/** A player or the lyrics failing shows a note and a way back, never a dead page. */
+class Boundary extends Component<{ what: string; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch(error: unknown) {
+    console.warn(`${this.props.what} stopped:`, error);
+  }
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <div className="rounded-2xl bg-surface/80 p-4 text-[14px] text-ink-soft">
+        {this.props.what} stopped working. Try again, or choose another way to play the song.
+        <button type="button" onClick={() => this.setState({ failed: false })} className="ml-2 font-semibold text-accent-text hover:underline">
+          Try again
+        </button>
+      </div>
+    );
+  }
 }
 
 function SongTitle({ song, large }: { song: Song; large?: boolean }) {
   const meta = [song.album, song.year].filter(Boolean).join(' · ');
   return (
     <div className={cx('min-w-0', large && 'mt-5')}>
-      <h1 lang={song.lang} className={cx('font-serif leading-tight font-semibold tracking-tight', large ? 'text-[27px]' : 'text-[22px]')}>
+      <h1 lang={song.lang} className={cx('font-serif leading-tight font-semibold tracking-tight', large ? 'line-clamp-2 text-[26px]' : 'line-clamp-2 text-[21px]')}>
         {song.title}
       </h1>
-      <p className="mt-1 text-[15px] font-semibold text-[var(--song-ink)]">{song.artist}</p>
+      <p className="mt-1 truncate text-[15px] font-semibold text-[var(--song-ink)]">{song.artist}</p>
       {meta && <p className="mt-0.5 truncate text-[13px] text-ink-soft">{meta}</p>}
     </div>
   );
 }
 
-// ── The player area: a choice of source, then that source's player or timer ──────────────────
+// ── The player area: how it plays, then that source's player and controls ─────────────────────
 
-const SOURCE_LABEL: Record<ClockKind, string> = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Music', timer: 'Anywhere' };
-const SOURCE_NOTE: Record<ClockKind, string> = { youtube: 'Playing from YouTube', spotify: 'Playing from Spotify', apple: 'Playing in Apple Music', timer: 'Along with music playing anywhere' };
-
-function SourceSwitch({ song, source, setSource, onLink, compact }: { song: Song; source: ClockKind | null; setSource: (s: ClockKind) => void; onLink: () => void; compact?: boolean }) {
-  const kinds = (['youtube', 'spotify', 'apple', 'timer'] as ClockKind[]).filter((k) => (k === 'youtube' ? song.youtubeId : k === 'spotify' ? song.spotifyId : k === 'apple' ? song.itunesId : isTimed(song.lines)));
-  // Phones keep the dock small: a choice only when there is one (links are in the ⋯ menu).
-  if (!kinds.length || (compact && kinds.length < 2)) return null;
+/** "Playing from …": every way this song can play, and adding a link. */
+function SourceMenu({ kinds, source, setSource, onLink }: { kinds: ClockKind[]; source: ClockKind | null; setSource: (s: ClockKind) => void; onLink: () => void }) {
+  const Icon = source ? SOURCE_ICON[source] : Link2;
   return (
-    <div className="flex items-center gap-2">
-      {kinds.length > 1 && source ? (
-        <div className="min-w-0 flex-1">
-          <Segmented<ClockKind> label="Play from" value={source} onChange={setSource} block options={kinds.map((k) => ({ value: k, label: SOURCE_LABEL[k] }))} />
-        </div>
-      ) : (
-        <p className="min-w-0 flex-1 truncate text-[13px] text-ink-soft">{source ? SOURCE_NOTE[source] : ''}</p>
+    <Popover
+      label="Play from"
+      placement="bottom-start"
+      className="w-72 p-1.5"
+      trigger={(props) => (
+        <button
+          type="button"
+          {...props}
+          className="flex h-10 max-w-full min-w-0 items-center gap-2 rounded-full border border-line/70 bg-surface/80 px-3.5 text-[13.5px] font-semibold text-ink-soft transition-colors hover:bg-surface hover:text-ink"
+        >
+          <Icon size={15} className="shrink-0" aria-hidden />
+          <span className="truncate">{source ? SOURCE_NOTE[source] : 'Choose how to play it'}</span>
+          <ChevronDown size={15} className="shrink-0" aria-hidden />
+        </button>
       )}
-      <IconButton icon={Link2} label="Add a YouTube or Spotify link" variant="soft" onClick={onLink} />
-    </div>
+    >
+      {(close) => (
+        <>
+          {kinds.map((k) => (
+            <MenuItem
+              key={k}
+              icon={k === source ? Check : SOURCE_ICON[k]}
+              label={SOURCE_LABEL[k]}
+              detail={SOURCE_DETAIL[k]}
+              onClick={() => {
+                close();
+                setSource(k);
+              }}
+            />
+          ))}
+          <MenuItem
+            icon={Link2}
+            label="Add a YouTube or Spotify link"
+            onClick={() => {
+              close();
+              onLink();
+            }}
+          />
+        </>
+      )}
+    </Popover>
   );
 }
 
 function PlayerArea({
   song,
   source,
+  kinds,
   setSource,
   clocks,
   wide,
+  timed,
+  estimated,
+  previewFailed,
   onLink,
   syncing,
   onSync,
 }: {
   song: Song;
   source: ClockKind | null;
+  kinds: ClockKind[];
   setSource: (s: ClockKind) => void;
-  clocks: { spotify: ReturnType<typeof createSpotifyClock>; youtube: ReturnType<typeof createYouTubeClock>; apple: TimerClock; timer: TimerClock };
+  clocks: Clocks;
   wide: boolean;
+  timed: boolean;
+  estimated: boolean;
+  previewFailed: boolean;
   onLink: () => void;
   syncing: boolean;
   onSync: (on: boolean) => void;
 }) {
-  const timed = isTimed(song.lines);
+  const followable = timed || estimated;
+  if (source === null) return <NoPlayer song={song} onLink={onLink} />;
   return (
     <div className="space-y-3">
-      {wide && <SourceSwitch song={song} source={source} setSource={setSource} onLink={onLink} />}
-      {source === 'youtube' && song.youtubeId && <YouTubePlayer videoId={song.youtubeId} clock={clocks.youtube} />}
-      {source === 'spotify' && song.spotifyId && <SpotifyPlayer trackId={song.spotifyId} clock={clocks.spotify} compact={!wide} />}
-      {source === 'apple' && wide && <AppleMusicPlayer song={song} clock={clocks.apple} />}
-      {source === 'apple' && !wide && <AppleMusicLink song={song} onOpened={() => timed && onSync(true)} />}
-      {source === 'apple' && timed && <TimerControls clock={clocks.apple} apple syncing={syncing} onSync={onSync} compact={!wide} />}
-      {source === 'timer' && <TimerControls clock={clocks.timer} syncing={syncing} onSync={onSync} />}
-      {source === null && <NoPlayer song={song} onLink={onLink} />}
+      {(kinds.length > 1 || wide) && <SourceMenu kinds={kinds} source={source} setSource={setSource} onLink={onLink} />}
+      <Boundary key={source} what={SOURCE_LABEL[source]}>
+        {source === 'youtube' && song.youtubeId && wide && <YouTubePlayer videoId={song.youtubeId} clock={clocks.youtube} />}
+        {source === 'spotify' && song.spotifyId && <SpotifyPlayer trackId={song.spotifyId} clock={clocks.spotify} compact={!wide} />}
+        {source === 'apple' && wide && <AppleMusicPlayer song={song} clock={clocks.apple} />}
+        {source === 'apple' && !wide && <AppleMusicLink song={song} onOpened={() => followable && onSync(true)} />}
+        {source === 'apple' && followable && <TimerControls clock={clocks.apple} apple syncing={syncing} onSync={onSync} compact={!wide} />}
+        {source === 'preview' && <PreviewControls clock={clocks.preview} failed={previewFailed} followable={followable} placed={song.previewAtMs !== undefined} syncing={syncing} onSync={onSync} compact={!wide} />}
+        {source === 'timer' && <TimerControls clock={clocks.timer} syncing={syncing} onSync={onSync} compact={!wide} />}
+      </Boundary>
       {(source === 'youtube' || source === 'spotify') && timed && <TimingNudge song={song} />}
-      {!wide && source !== 'youtube' && <SourceSwitch song={song} source={source} setSource={setSource} onLink={onLink} compact />}
+      {(source === 'youtube' || source === 'spotify') && estimated && <PlaceButton syncing={syncing} onSync={onSync} />}
+    </div>
+  );
+}
+
+const ROUND = 'grid size-11 shrink-0 place-items-center rounded-full text-ink-soft transition-[transform,background-color] hover:bg-sunken active:scale-90';
+
+/** The target: the next tap on a line says that line is being sung now. */
+function TargetButton({ syncing, onSync }: { syncing: boolean; onSync: (on: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      aria-label="Tap the line you’re hearing"
+      aria-pressed={syncing}
+      title="Tap the line you’re hearing"
+      onClick={() => onSync(!syncing)}
+      className={syncing ? 'grid size-11 shrink-0 place-items-center rounded-full bg-[var(--song-ink)] text-bg shadow-elev-1 transition-transform active:scale-90' : ROUND}
+    >
+      <Crosshair size={18} aria-hidden />
+    </button>
+  );
+}
+
+/** Lyrics without timings, with a player that knows its place: tapping a line puts the estimate right. */
+function PlaceButton({ syncing, onSync }: { syncing: boolean; onSync: (on: boolean) => void }) {
+  return (
+    <div className="flex items-center gap-2 text-[13px] text-ink-soft">
+      <span className="min-w-0 flex-1 leading-snug">These lyrics have no timings: they follow an estimate. Out of step? Press the target, then tap the line being sung.</span>
+      <TargetButton syncing={syncing} onSync={onSync} />
     </div>
   );
 }
@@ -399,7 +635,6 @@ function TimerControls({ clock, apple, syncing, onSync, compact }: { clock: Time
       }
     });
   }, [clock]);
-  const round = 'grid size-11 shrink-0 place-items-center rounded-full text-ink-soft transition-[transform,background-color] hover:bg-sunken active:scale-90';
   return (
     <div>
       <div className="flex items-center gap-2">
@@ -407,23 +642,14 @@ function TimerControls({ clock, apple, syncing, onSync, compact }: { clock: Time
           {playing ? <Pause size={19} className="fill-current" aria-hidden /> : <Play size={19} className="fill-current" aria-hidden />}
           {playing ? 'Pause' : now > 0 ? 'Go on' : 'Start'}
         </button>
-        <button type="button" aria-label="A second back" onClick={() => clock.nudge(-1000)} className={round}>
+        <button type="button" aria-label="A second back" onClick={() => clock.nudge(-1000)} className={ROUND}>
           <Minus size={18} aria-hidden />
         </button>
         <span className="w-12 text-center text-[13px] font-semibold text-ink-soft tabular-nums">{formatClock(now)}</span>
-        <button type="button" aria-label="A second ahead" onClick={() => clock.nudge(1000)} className={round}>
+        <button type="button" aria-label="A second ahead" onClick={() => clock.nudge(1000)} className={ROUND}>
           <Plus size={18} aria-hidden />
         </button>
-        <button
-          type="button"
-          aria-label="Tap the line you’re hearing"
-          aria-pressed={syncing}
-          title="Tap the line you’re hearing"
-          onClick={() => onSync(!syncing)}
-          className={syncing ? 'grid size-11 shrink-0 place-items-center rounded-full bg-[var(--song-ink)] text-bg shadow-elev-1 transition-transform active:scale-90' : round}
-        >
-          <Crosshair size={18} aria-hidden />
-        </button>
+        <TargetButton syncing={syncing} onSync={onSync} />
       </div>
       {!playing && now === 0 && !syncing && !compact && (
         <p className="mt-2 text-[12.5px] leading-snug text-ink-faint">
@@ -431,6 +657,67 @@ function TimerControls({ clock, apple, syncing, onSync, compact }: { clock: Time
             ? 'Press play on Apple Music and the lyrics start with it. Hearing a preview, or out of step? Press the target, then tap the line being sung.'
             : 'Playing it on a speaker or anywhere else? Start when the song starts, or press the target and tap the line you’re hearing. Ahead or behind? Use − and +.'}
         </p>
+      )}
+    </div>
+  );
+}
+
+/** Apple's preview, playing here: play and pause, how far into its 30 seconds, and the target. */
+function PreviewControls({
+  clock,
+  failed,
+  followable,
+  placed,
+  syncing,
+  onSync,
+  compact,
+}: {
+  clock: PreviewClock;
+  failed: boolean;
+  followable: boolean;
+  placed: boolean;
+  syncing: boolean;
+  onSync: (on: boolean) => void;
+  compact?: boolean;
+}) {
+  const [playing, setPlaying] = useState(clock.isPlaying());
+  const bar = useRef<HTMLDivElement>(null);
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => clock.onPlaying(setPlaying), [clock]);
+  useEffect(() => {
+    let last = -1;
+    return clock.onTime(() => {
+      const ms = clock.previewMs();
+      if (bar.current) bar.current.style.transform = `scaleX(${Math.min(1, ms / 30_000)})`;
+      const s = Math.floor(ms / 1000);
+      if (s !== last) {
+        last = s;
+        setSeconds(s);
+      }
+    });
+  }, [clock]);
+  return (
+    <div>
+      <div className="flex items-center gap-2">
+        <button type="button" onClick={() => clock.toggle()} className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-[var(--song-ink)] font-semibold text-bg shadow-elev-1 transition-transform active:scale-[0.98]">
+          {playing ? <Pause size={19} className="fill-current" aria-hidden /> : <Play size={19} className="fill-current" aria-hidden />}
+          {playing ? 'Pause' : seconds > 0 ? 'Go on' : 'Play the preview'}
+        </button>
+        <span className="w-12 text-center text-[13px] font-semibold text-ink-soft tabular-nums">0:{String(Math.min(30, seconds)).padStart(2, '0')}</span>
+        {followable && <TargetButton syncing={syncing} onSync={onSync} />}
+      </div>
+      <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-sunken" aria-hidden>
+        <div ref={bar} className="h-full origin-left rounded-full bg-[var(--song-ink)]" style={{ transform: 'scaleX(0)' }} />
+      </div>
+      {failed ? (
+        <p className="mt-2 text-[13px] font-semibold text-accent-text">The preview couldn’t play. Check the connection, or choose another way above.</p>
+      ) : (
+        !compact &&
+        followable && (
+          <p className="mt-2 text-[12.5px] leading-snug text-ink-faint">
+            {placed ? '30 seconds of the song, from Apple. The lyrics follow it.' : 'A 30-second piece from the middle of the song. Play it, then tap the line being sung, and the lyrics follow from there.'}
+          </p>
+        )
       )}
     </div>
   );
@@ -454,7 +741,7 @@ function AppleMusicLink({ song, onOpened }: { song: Song; onOpened: () => void }
 }
 
 /** Where the words come from. */
-function LyricsCredit({ song }: { song: Song }) {
+function LyricsCredit({ song, estimated }: { song: Song; estimated: boolean }) {
   const from = song.lyricsFrom ?? (song.lrclibId ? 'lrclib' : undefined);
   if (!from || from === 'pasted') return null;
   const label = from === 'lyrics.ovh' ? 'lyrics.ovh' : 'LRCLIB';
@@ -465,7 +752,7 @@ function LyricsCredit({ song }: { song: Song }) {
       <a href={href} target="_blank" rel="noopener noreferrer" className="font-semibold hover:text-ink-soft hover:underline">
         {label}
       </a>
-      {!isTimed(song.lines) && ' · not timed to the music'}
+      {!isTimed(song.lines) && (estimated ? ' · not timed: following an estimate' : ' · not timed to the music')}
     </p>
   );
 }
@@ -490,41 +777,15 @@ function NoPlayer({ song, onLink }: { song: Song; onLink: () => void }) {
     <div className="rounded-2xl bg-surface/80 p-4">
       <p className="text-[14px] leading-snug text-ink-soft">
         {song.lines.length && !isTimed(song.lines)
-          ? 'These lyrics have no timings, so they won’t follow the music; scroll along as you listen.'
+          ? 'These lyrics have no timings, and the song’s length isn’t known, so they won’t follow the music: scroll along as you listen.'
           : 'Add the song’s YouTube or Spotify link to play it here with the lyrics following.'}
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         <Button size="sm" variant="secondary" icon={Link2} onClick={onLink}>
           Add a link
         </Button>
-        <PreviewButton song={song} />
       </div>
     </div>
-  );
-}
-
-/** Apple's 30-second preview: a taste of the song. */
-function PreviewButton({ song }: { song: Song }) {
-  const audio = useRef<HTMLAudioElement | null>(null);
-  const [playing, setPlaying] = useState(false);
-  useEffect(() => () => audio.current?.pause(), []);
-  if (!song.previewUrl) return null;
-  const toggle = () => {
-    audio.current ??= new Audio(song.previewUrl);
-    const a = audio.current;
-    a.onended = () => setPlaying(false);
-    if (playing) {
-      a.pause();
-      setPlaying(false);
-    } else {
-      if (usePlayer.getState().status === 'playing') pauseSonus();
-      void a.play().then(() => setPlaying(true)).catch(() => toast('The preview couldn’t play.'));
-    }
-  };
-  return (
-    <Button size="sm" variant="ghost" icon={playing ? Pause : Volume2} onClick={toggle}>
-      {playing ? 'Stop preview' : 'Hear 30 seconds'}
-    </Button>
   );
 }
 
@@ -566,7 +827,39 @@ function TranslationBar({ song, mode, translating, onTranslate }: { song: Song; 
 
 // ── No lyrics yet ───────────────────────────────────────────────────────────────────────────────
 
-function NoLyrics({ song, state, onFind }: { song: Song; state: 'idle' | 'loading' | 'failed'; onFind: () => void }) {
+/** New lyrics for a song: the old translation, timing and preview place belonged to the old ones. */
+const replaceLyrics = (song: Song, patch: Partial<Song>) => patchSong(song.id, { translation: undefined, lyricsMissing: undefined, offsetMs: undefined, previewAtMs: undefined, ...patch });
+
+/** One set of lyrics to choose: its name, whether it's timed, its length and first line. */
+function LyricChoice({ found, onUse }: { found: FoundLyrics; onUse: () => void }) {
+  return (
+    <button type="button" onClick={onUse} className="w-full rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-sunken">
+      <span className="block truncate text-[14.5px] font-semibold">
+        {found.title} <span className="font-normal text-ink-soft">· {found.artist}</span>
+      </span>
+      <span className="block truncate text-[12.5px] text-ink-faint">
+        {found.timed ? 'Timed to the music' : 'Not timed'}
+        {found.durationMs ? ` · ${formatClock(found.durationMs)}` : ''} · {found.lines.find((l) => l.text)?.text}
+      </span>
+    </button>
+  );
+}
+
+function NoLyrics({ song, state, onFind, onPaste, onRetry }: { song: Song; state: 'idle' | 'loading' | 'failed'; onFind: () => void; onPaste: () => void; onRetry: () => void }) {
+  const missing = Boolean(song.lyricsMissing) && !song.instrumental && state === 'idle';
+  // Nothing sure turned up: what LRCLIB has under a similar name, to pick from.
+  const [picks, setPicks] = useState<FoundLyrics[] | null>(null);
+  useEffect(() => {
+    if (!missing) return;
+    let alive = true;
+    void lyricCandidates({ title: song.title, artist: song.artist, album: song.album, durationMs: song.durationMs })
+      .then((list) => alive && setPicks(list))
+      .catch(() => alive && setPicks([]));
+    return () => {
+      alive = false;
+    };
+  }, [missing, song.title, song.artist, song.album, song.durationMs]);
+
   if (state === 'loading' || (!song.lyricsMissing && state === 'idle')) {
     return (
       <div className="space-y-4" aria-label="Finding the lyrics">
@@ -577,39 +870,72 @@ function NoLyrics({ song, state, onFind }: { song: Song; state: 'idle' | 'loadin
     );
   }
   return (
-    <div className="rounded-3xl border border-line/70 bg-surface p-6 text-center">
-      <Music2 size={26} className="mx-auto text-[var(--song-ink)]" aria-hidden />
-      <p className="mt-3 font-serif text-lg font-semibold">{song.instrumental ? 'This song has no words.' : state === 'failed' ? 'The lyrics couldn’t be fetched.' : 'No lyrics found yet.'}</p>
-      {!song.instrumental && (
-        <>
+    <div className="rounded-3xl border border-line/70 bg-surface p-5 sm:p-6">
+      <div className="text-center">
+        <Music2 size={26} className="mx-auto text-[var(--song-ink)]" aria-hidden />
+        <p className="mt-3 font-serif text-lg font-semibold">{song.instrumental ? 'This song has no words.' : state === 'failed' ? 'The lyrics couldn’t be fetched.' : picks?.length ? 'Are these the lyrics?' : 'No lyrics found yet.'}</p>
+        {!song.instrumental && (
           <p className="mx-auto mt-1 max-w-sm text-[14px] text-ink-soft">
-            {state === 'failed' ? 'Check the connection, then try again.' : 'Search under another name, or find them on Genius and paste them here.'}
+            {state === 'failed'
+              ? 'The lyrics library is busy or out of reach. It tries again by itself in a moment; or try now.'
+              : picks?.length
+                ? 'Nothing matched this song for sure. Pick the right one, or find them another way.'
+                : picks
+                  ? 'Search under another name, or find them on Genius and paste them here.'
+                  : 'Looking for lyrics under similar names…'}
           </p>
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {state === 'failed' ? (
-              <Button variant="secondary" icon={RotateCcw} onClick={() => void patchSong(song.id, { lyricsMissing: undefined })}>
-                Try again
-              </Button>
-            ) : (
-              <Button variant="secondary" icon={Search} onClick={onFind}>
-                Find the lyrics
-              </Button>
-            )}
-            <a href={geniusSearchUrl(song.title, song.artist)} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-1.5 rounded-2xl px-4 font-semibold text-ink-soft transition-colors hover:bg-sunken">
-              On Genius <ExternalLink size={14} aria-hidden />
-            </a>
-          </div>
-        </>
+        )}
+      </div>
+      {missing && picks && picks.length > 0 && (
+        <ul className="mt-4 space-y-0.5 border-t border-line/70 pt-3">
+          {picks.map((p) => (
+            <li key={p.id}>
+              <LyricChoice found={p} onUse={() => void replaceLyrics(song, { lines: p.lines, lrclibId: p.id, lyricsFrom: 'lrclib' })} />
+            </li>
+          ))}
+        </ul>
+      )}
+      {!song.instrumental && (
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          {state === 'failed' ? (
+            <Button variant="secondary" icon={RotateCcw} onClick={onRetry}>
+              Try again
+            </Button>
+          ) : (
+            <Button variant="secondary" icon={Search} onClick={onFind}>
+              Search another name
+            </Button>
+          )}
+          <a href={geniusSearchUrl(song.title, song.artist)} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-1.5 rounded-2xl px-4 font-semibold text-ink-soft transition-colors hover:bg-sunken">
+            On Genius <ExternalLink size={14} aria-hidden />
+          </a>
+          <Button variant="ghost" onClick={onPaste}>
+            Paste them yourself
+          </Button>
+        </div>
       )}
     </div>
   );
 }
 
-function LyricsDialog({ song, open, onClose }: { song: Song; open: boolean; onClose: () => void }) {
+function LyricsDialog({ song, open, pasting, onClose }: { song: Song; open: boolean; pasting: boolean; onClose: () => void }) {
   const [query, setQuery] = useState(`${song.title} ${song.artist}`);
   const [results, setResults] = useState<FoundLyrics[] | null>(null);
   const [busy, setBusy] = useState(false);
-  const [paste, setPaste] = useState(false);
+  const [paste, setPaste] = useState(pasting);
+  // Opening it shows what LRCLIB has for the song straight away; a search replaces it.
+  useEffect(() => {
+    if (!open || results || paste) return;
+    let alive = true;
+    setBusy(true);
+    void lyricCandidates({ title: song.title, artist: song.artist, album: song.album, durationMs: song.durationMs }, 12)
+      .then((list) => alive && setResults(list))
+      .catch(() => alive && setResults([]))
+      .finally(() => alive && setBusy(false));
+    return () => {
+      alive = false;
+    };
+  }, [open, results, paste, song.title, song.artist, song.album, song.durationMs]);
   const [pasted, setPasted] = useState('');
   const run = async () => {
     setBusy(true);
@@ -622,7 +948,7 @@ function LyricsDialog({ song, open, onClose }: { song: Song; open: boolean; onCl
     }
   };
   const use = async (patch: Partial<Song>) => {
-    await patchSong(song.id, { translation: undefined, lyricsMissing: undefined, offsetMs: undefined, ...patch });
+    await replaceLyrics(song, patch);
     onClose();
   };
   const [elsewhere, setElsewhere] = useState(false);
@@ -671,19 +997,7 @@ function LyricsDialog({ song, open, onClose }: { song: Song; open: boolean; onCl
           <ul className="mt-3 max-h-[46dvh] space-y-1 overflow-y-auto">
             {results?.map((r) => (
               <li key={r.id}>
-                <button
-                  type="button"
-                  onClick={() => void use({ lines: r.lines, lrclibId: r.id, lyricsFrom: 'lrclib' })}
-                  className="w-full rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-sunken"
-                >
-                  <span className="block text-[14.5px] font-semibold">
-                    {r.title} <span className="font-normal text-ink-soft">· {r.artist}</span>
-                  </span>
-                  <span className="block truncate text-[12.5px] text-ink-faint">
-                    {r.timed ? 'Timed to the music' : 'Not timed'}
-                    {r.durationMs ? ` · ${formatClock(r.durationMs)}` : ''} · {r.lines.find((l) => l.text)?.text}
-                  </span>
-                </button>
+                <LyricChoice found={r} onUse={() => void use({ lines: r.lines, lrclibId: r.id, lyricsFrom: 'lrclib' })} />
               </li>
             ))}
             {results?.length === 0 && <li className="px-3 py-4 text-center text-[14px] text-ink-soft">Nothing found under that name.</li>}
@@ -824,7 +1138,7 @@ function SongMenu({ song, onLink, onLyrics, className }: { song: Song; onLink: (
             danger
             onClick={() => {
               close();
-              void removeSong(song.id).then(() => navigate('/sonus'));
+              void removeSong(song.id).then(() => navigate('/sonus?tab=music'));
             }}
           />
         </>
@@ -832,4 +1146,3 @@ function SongMenu({ song, onLink, onLyrics, className }: { song: Song; onLink: (
     </Popover>
   );
 }
-
