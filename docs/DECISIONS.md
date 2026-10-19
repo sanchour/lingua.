@@ -575,6 +575,14 @@ Short records of choices that are not obvious from the code. Newest last.
   the largest step left, is 3.0-6 and next in line after it. Older entries that say "3.0-5" for
   grammar or "3.0-6" for radio meant the old order.
 
+## 2026-10-19 — Comics before Grammatica
+
+- **The user swapped 3.0-6 and 3.0-8.** Comics, audiobooks and courses, and AI conversation are
+  3.0-6 and next; Grammatica and alphabets are 3.0-8, after Mundus. With the swap the user added
+  notes on Radio (a real map, a full-screen player with transcription or commute mode, stations
+  in Library) and Music (explore shelves instead of the "Songs you love" card); they are part of
+  3.0-6. Older entries that say "3.0-6" for grammar or "3.0-8" for comics meant the old order.
+
 ## 2026-10-19 — Lingua 4.0 planned
 
 - **After 3.0, in five steps,** as the user asked: smoothness, the app's look and Lingua+ (4.0-1);

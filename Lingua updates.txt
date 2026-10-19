@@ -93,8 +93,9 @@ Lingua 3.0 (added by the user on 2026-10-17; planned in docs/ROADMAP.md as 3.0-2
 * Remove what do you enjoy most from onboarding process
 
 ---
-Lingua 3.0, second list (added by the user on 2026-10-17; planned in docs/ROADMAP.md: grammar and
-writing in 3.0-6, tips in 3.0-7, comics, audiobooks, courses and AI conversation in 3.0-8)
+Lingua 3.0, second list (added by the user on 2026-10-17; planned in docs/ROADMAP.md: comics,
+audiobooks, courses and AI conversation in 3.0-6, tips in 3.0-7, grammar and writing in 3.0-8;
+the user swapped 3.0-6 and 3.0-8 on 2026-10-19)
 
 in roadmap: add full support for comics
 support for audio courses and audiobooks
@@ -166,8 +167,18 @@ It asks, "What should you be able to do after learning this?"
 For example, after a beginner Russian module, a learner might be able to introduce themselves, describe their family, order food and ask basic questions.
 That is a much more meaningful milestone than completing 20 lessons.
 
-Grammar notes (added the same day, planned into 3.0-6)
+Grammar notes (added the same day, planned into Grammatica, now 3.0-8)
 
 Learners need to understand grammatical cases, verb aspect, motion verbs and other structures that cannot always be taught effectively through translation exercises alone.
 Ideas worth borrowing: concise grammar explanations; examples before and after explanations; structured lesson progression; audio-supported sentences; explicit comparisons between grammatical structures.
 Favourite idea: explain grammar at the moment the learner needs it. Rather than presenting an enormous grammar chapter, introduce a concept through examples, explain the underlying rule, and immediately let the learner apply it.
+
+---
+Lingua 3.0, third list (added by the user on 2026-10-19; planned in docs/ROADMAP.md as part of
+3.0-6, which the user swapped with 3.0-8 the same day: "Swap step 8 with 6 and continue with
+comics which will now be step 6. Also in this step do these improvements regarding radio:")
+
+* The map on Radio, I want to be able to see the map, I want to see the countries, regions where the radio stations are per language, also smoothly scroll and zoom/in/out. So its basically a clear fitting map with same aesthetics as app where you can see the nodes per country and click on theme like that too. The map can still have some radio aesthetics
+* When a radio is playing, just like a song, you should be able to click on the little player to open it full screen, there you can try to maybe integrate auto transcription with hover if possible, or have a commute mode. Kind of same page as podcast
+* On library also recently played add recently played radios
+* Remove songs you love, ...  widget from music page in sonus, do have in sonus same style as recently opened, most listened, or some ideas, inspirations of songs to easily click on and listen to. Kind of an explore section within the music page to easily find random songs and explore new songs

@@ -380,10 +380,11 @@ The app marks these languages "Beta" and says what they include.
 The user added the next three steps on 2026-10-17 (their list is under "Lingua 3.0" in
 "Lingua updates.txt"). They come straight after 3.0-1, before the new rooms, because they fix
 and polish what people use every day; Radio, Grammatica, Mundus, then comics, audiobooks and AI
-conversation, and the full check follow as 3.0-5 … 3.0-9 (Radio and Grammatica swapped places on
-2026-10-19, at the user's request). A second list the user added the same
-evening (better grammar exercises, writing practice for alphabets, a tips section, comics,
-audiobooks and audio courses, AI conversation) is planned into 3.0-6, 3.0-7 and 3.0-8.
+conversation, and the full check follow as 3.0-5 … 3.0-9 (on 2026-10-19 the user swapped Radio
+and Grammatica, then comics and Grammatica: the order is now Radio, comics, Mundus, Grammatica).
+A second list the user added the same evening (better grammar exercises, writing practice for
+alphabets, a tips section, comics, audiobooks and audio courses, AI conversation) is planned into
+3.0-6 (comics, audiobooks, AI), 3.0-7 (tips) and 3.0-8 (grammar and writing).
 
 ### 3.0-2 · A real app on phone and desktop, and a look of your own ✅
 
@@ -589,7 +590,96 @@ station is played, as its API asks.
       Listening time counts. A fourth tab in Sonus (Library · Music · Podcasts · Radio), or
       inside Library: decide when planning.
 
-### 3.0-6 · Grammatica and alphabets
+### 3.0-6 · Comics, audiobooks and courses, talking with AI, and radio and music to explore
+
+The user swapped 3.0-6 and 3.0-8 on 2026-10-19: comics, audiobooks, courses and AI conversation
+come next, and Grammatica and alphabets move to 3.0-8. The user added notes on Radio and Music
+for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
+
+**Plan:** built in four parts, each committed and pushed when it works:
+1. **Radio and Music** (the user's notes): the real map, the full-screen station player with a live
+   transcript and commute mode, stations in Library's "Recently played", and Music's explore
+   shelves in place of the "Songs you love" card.
+2. **Comics** in Codex: a comic is a text of pages (images kept on the device like a book's
+   pictures); CBZ and zip-based CBR through jszip, image files or a folder, PDFs drawn page by
+   page with pdf.js. Speech bubbles are read by Tesseract (tesseract.js, loaded only for comics;
+   its language data per language, fetched once and kept), grouped into bubbles, kept with the
+   page, and shown as reader text (the Codex engine: tap, hold, drag to translate, save to cards).
+   Reading time and pages go to Ratio as reading.
+3. **Audiobooks and courses** in Sonus: several files or a folder become one audiobook or course
+   (its parts in order, M4B chapters read from the file), LibriVox's free audiobooks in the
+   language (found through archive.org, which LibriVox uses for its files), a sleep timer, and
+   the ebook in Codex matched to a part's Whisper transcript, so the book's own sentences light
+   up as they are read.
+4. **Conversation**: the corner with prompts and links, and the in-app text chat with a key.
+
+- [ ] **Radio, a real map** (the user's note): the world's countries drawn as shapes (Natural Earth
+      data, made small by a script), in the app's own colours, light and dark, with a touch of
+      radio (stations send out rings, like a signal). The countries where the language is on air
+      are tinted, each with a node showing how many stations it has; tap a country or its node and
+      the map flies to it and lists its stations. Zoomed in, the places with stations show as
+      lights. Drag to move, pinch, scroll or double-tap to zoom, +/− and "World" buttons;
+      smooth on a phone (one canvas, drawn once per frame).
+- [ ] **A full-screen player for a station** (the user's note), like a podcast's: tap the mini
+      player or the station on air. Artwork, name, place, what's on, live, the heart, play and
+      pause, the station's site, and **commute mode** (the big-button page: play and pause, your
+      stations one after another, what's on in large type).
+- [ ] **A live transcript, where the station allows it:** Lingua listens along in parts of about
+      fifteen seconds and Whisper writes them out (Groq with a key, or on the device), a few
+      seconds behind the sound. Every word works as in Codex (hover, tap, hold, drag to translate,
+      save to cards). Off until you turn it on, since it streams the station a second time; only
+      stations whose servers let web pages read the stream (many Icecast servers do) can be
+      transcribed, and the player says so when one can't.
+- [ ] **Library › Recently played** has the stations you played lately, with songs and episodes.
+- [ ] **Music, made to explore** (the user's note): the "Songs you love" card goes. Shelves in the
+      style of "Recently opened": your most played songs, songs from the artists to learn with
+      (a different few each day), a style of the day, and "Surprise me" (a random song in the
+      language). Apple's search is asked a few times a day at most; results are kept for the day.
+- [ ] **Comics, fully supported in Codex:** open CBZ/CBR-style archives (zip), image folders and
+      PDFs page by page, with a reader made for panels: fit to width or page, swipe on a phone,
+      two pages on desktop, zoom into a panel. Speech bubbles become text by on-device OCR
+      (Tesseract, loaded only for comics, per script), so every word works as in Codex: tap,
+      select to translate, save to cards. Reading time and pages count in Ratio.
+- [ ] **Audiobooks and audio courses in Sonus:** add audio files (MP3, M4A/M4B with chapters) or
+      folders, or open free audiobooks from LibriVox in the language. Chapters, resume where you
+      left off, speed, sleep timer, the mini player. A text alongside when there is one (the
+      ebook in Codex, matched by Whisper's timings, so the sentence being read lights up). Audio
+      courses (lesson by lesson, with their own order and "lesson done"), and links to good free
+      courses per language.
+- [ ] **Talk or text with an AI:** a "Conversation" corner with ready links and prompts to start a
+      voice chat or a text chat in ChatGPT, Claude, Gemini or Copilot (each opens the app or site;
+      nothing is sent from Lingua). Prompts per level and theme: a café role-play, a job interview,
+      a debate, "correct my mistakes after each answer", "speak slowly and simply". The prompt is
+      written in the language, with the learner's level, words due for review and current
+      grammar topic woven in, and a copy button. With an AI key, a text chat inside Lingua too,
+      corrections shown inline and new words saved as cards.
+- [ ] Checked on a phone and on desktop, light and dark; docs.
+
+### 3.0-7 · Mundus: recommendations, and streaming services in Visio
+- [ ] **Mundus**, a deep-dive page per language: video games, series, films, books, podcasts,
+      music, YouTube channels and dictionaries. Picked by hand for all twenty languages, with level
+      hints and why each is good for learners.
+  - Buttons open them on the web, Spotify, YouTube, Goodreads, Amazon, Netflix, Max, Disney+ and others.
+  - "Add to Codex/Sonus/Visio" where it fits.
+  - Reached from Home and the sidebar.
+  - Its music links to the artists in Sonus › Music (opening their songs there).
+- [ ] **Visio › Services:** choose the services you have (Netflix, Max, Disney+, Prime Video,
+      Apple TV+, SkyShowtime, Viaplay, and free public ones such as RTVE Play, ARD, arte, NRK).
+  - The picks show which of your services carry them.
+  - With a free TMDB key, live lists of series and films originally in the language, on your
+    services in your country, with posters.
+  - Each opens in its app. "Add its subtitles" uses the Subtitles-only flow.
+- [ ] Every language's picks checked: links open, the services match the country, level hints
+      make sense.
+- [ ] **Beyond the app: tips that make learning fun,** a short section in Mundus (also offered on
+      Home now and then): small, playful challenges with a tap to mark them done, such as
+      switching your phone or a game to the language (with how to do it on iPhone, Windows and in
+      popular apps), labelling things at home, cooking a recipe in it, thinking aloud on a walk,
+      a song on repeat for a week, changing your Spotify region of discovery, writing your
+      shopping list in it. Per language where it matters (a local radio app, a café phrase to try).
+      Interactive cards that flip, with a streak of challenges done.
+
+### 3.0-8 · Grammatica and alphabets
 Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [ ] Grammar files, the topic browser, explanations and tables.
 - [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
@@ -621,51 +711,6 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
       alphabets), then write it from memory. Strokes are checked for order, direction and shape,
       with a gentle hint on a miss. Arabic letters in their joined forms (start, middle, end).
 
-### 3.0-7 · Mundus: recommendations, and streaming services in Visio
-- [ ] **Mundus**, a deep-dive page per language: video games, series, films, books, podcasts,
-      music, YouTube channels and dictionaries. Picked by hand for all twenty languages, with level
-      hints and why each is good for learners.
-  - Buttons open them on the web, Spotify, YouTube, Goodreads, Amazon, Netflix, Max, Disney+ and others.
-  - "Add to Codex/Sonus/Visio" where it fits.
-  - Reached from Home and the sidebar.
-  - Its music links to the artists in Sonus › Music (opening their songs there).
-- [ ] **Visio › Services:** choose the services you have (Netflix, Max, Disney+, Prime Video,
-      Apple TV+, SkyShowtime, Viaplay, and free public ones such as RTVE Play, ARD, arte, NRK).
-  - The picks show which of your services carry them.
-  - With a free TMDB key, live lists of series and films originally in the language, on your
-    services in your country, with posters.
-  - Each opens in its app. "Add its subtitles" uses the Subtitles-only flow.
-- [ ] Every language's picks checked: links open, the services match the country, level hints
-      make sense.
-- [ ] **Beyond the app: tips that make learning fun,** a short section in Mundus (also offered on
-      Home now and then): small, playful challenges with a tap to mark them done, such as
-      switching your phone or a game to the language (with how to do it on iPhone, Windows and in
-      popular apps), labelling things at home, cooking a recipe in it, thinking aloud on a walk,
-      a song on repeat for a week, changing your Spotify region of discovery, writing your
-      shopping list in it. Per language where it matters (a local radio app, a café phrase to try).
-      Interactive cards that flip, with a streak of challenges done.
-
-### 3.0-8 · Comics, audiobooks and courses, and talking with AI
-- [ ] **Comics, fully supported in Codex:** open CBZ/CBR-style archives (zip), image folders and
-      PDFs page by page, with a reader made for panels: fit to width or page, swipe on a phone,
-      two pages on desktop, zoom into a panel. Speech bubbles become text by on-device OCR
-      (Tesseract, loaded only for comics, per script), so every word works as in Codex: tap,
-      select to translate, save to cards. Reading time and pages count in Ratio.
-- [ ] **Audiobooks and audio courses in Sonus:** add audio files (MP3, M4A/M4B with chapters) or
-      folders, or open free audiobooks from LibriVox in the language. Chapters, resume where you
-      left off, speed, sleep timer, the mini player. A text alongside when there is one (the
-      ebook in Codex, matched by Whisper's timings, so the sentence being read lights up). Audio
-      courses (lesson by lesson, with their own order and "lesson done"), and links to good free
-      courses per language.
-- [ ] **Talk or text with an AI:** a "Conversation" corner with ready links and prompts to start a
-      voice chat or a text chat in ChatGPT, Claude, Gemini or Copilot (each opens the app or site;
-      nothing is sent from Lingua). Prompts per level and theme: a café role-play, a job interview,
-      a debate, "correct my mistakes after each answer", "speak slowly and simply". The prompt is
-      written in the language, with the learner's level, words due for review and current
-      grammar topic woven in, and a copy button. With an AI key, a text chat inside Lingua too,
-      corrections shown inline and new words saved as cards.
-- [ ] Checked on a phone and on desktop, light and dark; docs.
-
 ### 3.0-9 · Lingua 3.0 complete: the full check
 - [ ] Every point of "Lingua updates.txt" checked against the app, one by one.
 - [ ] Every room on a phone and on desktop, light and dark: layout, taps, scrolling, the
@@ -676,9 +721,11 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 
 ### Handover for the Lingua 3.0 session
 
-**3.0-1 to 3.0-5 are done and on `main` (2026-10-19, third computer).** The user swapped two
-steps: 3.0-5 became Radio (done), and **Grammatica and alphabets are 3.0-6, next**, with the user's
-notes on teaching grammar when it's needed. Lingua 4.0 is planned at the end of this file. Japanese place names (日本) are now counted, so the reader keeps them whole. The first ten
+**3.0-1 to 3.0-5 are done and on `main` (2026-10-19, third computer).** The user swapped steps
+twice: 3.0-5 became Radio (done), then **comics, audiobooks, courses and AI conversation became
+3.0-6** (being built on the third computer, with the user's notes on Radio and Music), and
+**Grammatica and alphabets moved to 3.0-8**, with the user's notes on teaching grammar when it's
+needed. Lingua 4.0 is planned at the end of this file. Japanese place names (日本) are now counted, so the reader keeps them whole. The first ten
 packs were not rebuilt with this session's builder (see DECISIONS). Not checked on an iPhone yet:
 hold to translate on touch, the preview clock and the fixed song page (QA-ios.md, 3.0-3); voices
 with a real Gemini key, the camera scan and syncing over a mobile network (QA-ios.md, 3.0-4);
@@ -829,7 +876,7 @@ the step says so and what is done instead.
       first Russian unit you can introduce yourself, describe your family, order food and ask
       simple questions. The path shows where you are and where you're going.
 - [ ] **Every skill:** reading, listening, speaking and writing exercises, grammar explained when
-      it's needed (3.0-6), sentences with a gap (4.0-2), and feedback on writing and speaking from
+      it's needed (3.0-8), sentences with a gap (4.0-2), and feedback on writing and speaking from
       AI with a key. Feedback from other speakers needs a community and a server, which Lingua
       doesn't have; the step looks at a light way to do it (sharing an exercise to a speaker).
 - [ ] **More open questions and active production,** in Cursus and across the app: answer in your
@@ -837,9 +884,9 @@ the step says so and what is done instead.
 - [ ] **Speak your journal:** in Diarium a microphone button; what you say is transcribed (Whisper on
       the device, or Groq with a key) into the entry, to read back and correct. Links and prompts
       to talk in the language with ChatGPT, Claude, Gemini or Copilot in their own apps (with
-      3.0-8's conversation corner).
+      3.0-6's conversation corner).
 - [ ] **How possible:** quite possible, and the largest step of 4.0. Most parts exist: words and
-      themes per language (the packs and themes.ts), grammar topics and drills (3.0-6), sentences
+      themes per language (the packs and themes.ts), grammar topics and drills (3.0-8), sentences
       with audio (packs and voices, 3.0-4), Ludus exercises, Diarium with AI corrections, Whisper.
       The new work is one shared outline of can-do units (A1 to B1, from the CEFR's can-do lists)
       filled per language with that language's words, grammar and sentences, and the room around
