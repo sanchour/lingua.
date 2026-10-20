@@ -1,8 +1,8 @@
-import { BookA, BookOpen, ChartNoAxesColumn, Clapperboard, Earth, Headphones, Gem, House, MessagesSquare, Settings2 } from 'lucide-react';
+import { BookA, BookOpen, ChartNoAxesColumn, Clapperboard, Earth, Headphones, House, MessagesSquare, Settings2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { DeckIcon } from './DeckIcon';
 
-export type SectionId = 'home' | 'codex' | 'thesaurus' | 'sonus' | 'visio' | 'mundus' | 'grammatica' | 'colloquium' | 'ratio' | 'ordo' | 'plus';
+export type SectionId = 'home' | 'codex' | 'thesaurus' | 'sonus' | 'visio' | 'mundus' | 'grammatica' | 'colloquium' | 'ratio' | 'ordo';
 
 export interface Section {
   id: SectionId;
@@ -28,8 +28,6 @@ export const SECTIONS: Section[] = [
   { id: 'colloquium', path: '/colloquium', name: 'Colloquium', role: 'Conversation', icon: MessagesSquare, placement: 'side' },
   { id: 'ratio', path: '/ratio', name: 'Ratio', role: 'Stats', icon: ChartNoAxesColumn, placement: 'header' },
   { id: 'ordo', path: '/ordo', name: 'Ordo', role: 'Settings', icon: Settings2, placement: 'header' },
-  // After the ten with an Alt key: Lingua+ has no shortcut.
-  { id: 'plus', path: '/plus', name: 'Lingua+', role: 'Every room', icon: Gem, placement: 'side' },
 ];
 
 export const TAB_SECTIONS = SECTIONS.filter((s) => s.placement === 'tab');

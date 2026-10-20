@@ -43,7 +43,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           hidden={collapsed}
         >
           Lingua
-          {plus && <span className="ml-1.5 rounded-md bg-accent-soft px-1.5 py-0.5 align-middle font-sans text-[11px] font-bold tracking-wide text-accent-text">+</span>}
+          {plus && <sup className="ml-0.5 text-[17px] font-medium text-accent-text" aria-label="Plus">+</sup>}
         </motion.span>
         <IconButton
           icon={collapsed ? PanelLeftOpen : PanelLeftClose}
@@ -81,7 +81,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 function SidebarLink({ section, collapsed, index }: { section: Section; collapsed: boolean; index: number }) {
   const Icon = section.icon;
   return (
-    <Tooltip label={section.name} shortcut={SECTIONS.indexOf(section) < 10 ? `Alt ${index}` : undefined} placement="right" disabled={!collapsed}>
+    <Tooltip label={section.name} shortcut={`Alt ${index}`} placement="right" disabled={!collapsed}>
       <NavLink
         to={section.path}
         end={section.path === '/'}

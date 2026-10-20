@@ -1465,9 +1465,10 @@ and makes 20 with them. The new languages are placeholders for now, as the user 
       adds, "Get Lingua+" and, once had, "Reset Lingua+"), and a quiet card on Home until it is had.
       One number on the device (`meta.plusAt`, `data/plus.ts`); nothing checks it yet. The price shows
       as 29.99 without a currency, to be set with real purchases.
-      *Reworked the same day at the user's request:* Lingua+ is a room of its own (`/plus`, `features/plus`) in the
-      sidebar, with a "+" beside the Lingua name once it is had; the sidebar now fits a laptop screen
-      (rooms scroll, Ratio and Ordo stay at the bottom); Thesaurus has a hand-drawn deck icon.
+      *Reworked the same day at the user's request:* Lingua+ stays in settings (a room of its own was
+      tried and removed), as a full page in Ordo › Lingua+ with every room linked, and a small raised
+      "+" beside the Lingua name once it is had; the sidebar now fits a laptop screen (rooms scroll,
+      Ratio and Ordo stay at the bottom); Thesaurus has a hand-drawn deck icon.
 
 ### 4.0-2 · Codex, a full dictionary, and one memory for every word
 - [ ] **A full dictionary for the six core languages, as good as Oxford's, inside Lingua** (the
