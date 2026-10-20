@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Loader2, Volume2 } from 'lucide-react';
 import { bare, joinTiles } from '@/core/grammar/drills';
 import type { Drill } from '@/core/grammar/drills';
 import { splitFocus } from '@/core/grammar/types';
@@ -10,10 +9,8 @@ import { isRtl } from '@/core/lang/languages';
 import { useLayout } from '@/design/hooks/useLayout';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
-import { speak, stopSpeaking } from '@/services/speech/voice';
 import { LETTERS } from '@/features/thesaurus/study/exercises';
-import { useSpeaker } from '@/features/speech/SpeakButton';
-import { Choices, useLessonFeel } from '@/features/lesson/kit';
+import { Choices, PlayBig, useLessonFeel } from '@/features/lesson/kit';
 import type { Phase } from '@/features/lesson/kit';
 
 type Of<K extends Drill['kind']> = Extract<Drill, { kind: K }>;
@@ -66,49 +63,17 @@ export function RecogniseView({ d, lang, value, onChange, phase }: { d: Of<'reco
 
 /** Plays the sentence (once on its own, then on a tap); the forms to choose from below. */
 export function HearView({ d, lang, value, onChange, phase }: { d: Of<'hear'>; lang: string; value: number | null; onChange: (v: number) => void; phase: Phase }) {
-  const { flag } = useSpeaker(lang);
-  const [state, setState] = useState<'idle' | 'loading' | 'playing'>('idle');
-  const text = d.item.s.replace(/[[\]]/g, '');
-  const say = (slow = false) => {
-    stopSpeaking();
-    setState('loading');
-    void speak(lang, slow ? text.replace(/\s+/g, ', ') : text, { flag, onStart: () => setState('playing') })
-      .catch(() => {})
-      .finally(() => setState('idle'));
-  };
-  useEffect(() => {
-    const t = window.setTimeout(() => say(), 250);
-    return () => {
-      window.clearTimeout(t);
-      stopSpeaking();
-    };
-    // Once per exercise.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [d.key]);
   const { before, focus, after } = splitFocus(d.item.s);
   return (
     <div className="space-y-7">
-      <div className="flex flex-col items-center gap-3">
-        <motion.button
-          type="button"
-          onClick={() => say()}
-          whileTap={{ scale: 0.94 }}
-          className="grid size-24 place-items-center rounded-full bg-sage text-bg shadow-elev-2 transition-transform"
-          aria-label="Play the sentence"
-        >
-          {state === 'loading' ? <Loader2 size={34} className="animate-spin" aria-hidden /> : <Volume2 size={38} className={cx(state === 'playing' && 'animate-pulse')} aria-hidden />}
-        </motion.button>
-        <button type="button" onClick={() => say(true)} className="text-[13px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
-          Slower
-        </button>
-      </div>
+      <PlayBig lang={lang} text={d.item.s.replace(/[[\]]/g, '')} playKey={d.key} />
       {phase === 'answer' ? (
         <English>{d.item.en}</English>
       ) : (
         <div>
           <Sentence lang={lang}>
             {before}
-            <Gap shown={null} phase={phase === 'wrong' ? 'wrong' : 'right'} answer={bare(focus, lang)} lang={lang} />
+            <Gap shown={null} phase={phase} answer={bare(focus, lang)} lang={lang} />
             {after}
           </Sentence>
           <English>{d.item.en}</English>

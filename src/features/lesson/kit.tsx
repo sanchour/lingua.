@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Check, Flame, Leaf, Timer, Trophy, Zap } from 'lucide-react';
+import { Check, Flame, Leaf, Loader2, Timer, Trophy, Volume2, Zap } from 'lucide-react';
+import { speak, stopSpeaking } from '@/services/speech/voice';
+import { useSpeaker } from '@/features/speech/SpeakButton';
 import { useApp } from '@/app/context';
 import { DEFAULT_SETTINGS, patchSetting } from '@/data/settings';
 import type { LessonMode, LessonSettings } from '@/data/settings';
@@ -346,7 +348,7 @@ export function LessonSetup({ open, onClose, kinds, offKey }: { open: boolean; o
   const mode = MODES.find((m) => m.value === s.mode) ?? MODES[0];
   return (
     <Drawer open={open} onClose={onClose} title="Your lessons" description="Saved for every lesson from now on.">
-      <div className="space-y-6 px-6 pb-8">
+      <div className="space-y-6 pb-2">
         <section>
           <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Mode</h3>
           <Segmented label="Mode" block value={s.mode} onChange={(v) => set({ mode: v })} options={MODES.map((m) => ({ value: m.value, label: m.label }))} />
@@ -442,6 +444,48 @@ export function Choices({ options, value, onChange, phase, answer, lang, dir, wi
           </motion.button>
         );
       })}
+    </div>
+  );
+}
+
+// ── Listening ───────────────────────────────────────────────────────────────
+
+/**
+ * A big play button that says `text` once on its own when the exercise opens, then on a tap, with a
+ * "Slower" link that reads it word by word.
+ */
+export function PlayBig({ lang, text, playKey, slower = true }: { lang: string; text: string; playKey: string; slower?: boolean }) {
+  const { flag } = useSpeaker(lang);
+  const [state, setState] = useState<'idle' | 'loading' | 'playing'>('idle');
+  const say = useCallback(
+    (slow = false) => {
+      stopSpeaking();
+      setState('loading');
+      void speak(lang, slow ? text.split(/\s+/).join(', ') : text, { flag, onStart: () => setState('playing') })
+        .catch(() => {})
+        .finally(() => setState('idle'));
+    },
+    [lang, text, flag],
+  );
+  useEffect(() => {
+    const t = window.setTimeout(() => say(), 250);
+    return () => {
+      window.clearTimeout(t);
+      stopSpeaking();
+    };
+    // Once per exercise.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playKey]);
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <motion.button type="button" onClick={() => say()} whileTap={{ scale: 0.94 }} className="grid size-24 place-items-center rounded-full bg-sage text-bg shadow-elev-2" aria-label="Play it again">
+        {state === 'loading' ? <Loader2 size={34} className="animate-spin" aria-hidden /> : <Volume2 size={38} className={cx(state === 'playing' && 'animate-pulse')} aria-hidden />}
+      </motion.button>
+      {slower && (
+        <button type="button" onClick={() => say(true)} className="text-[13px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
+          Slower
+        </button>
+      )}
     </div>
   );
 }

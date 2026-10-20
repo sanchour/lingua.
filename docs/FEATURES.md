@@ -15,6 +15,12 @@ Things the original brief asked for that the plan now covers explicitly:
   **say it out loud**. A Ludus session mixes them, Duolingo-style, with gentle progress and no
   hearts/penalties. (The device-voice listening exercises were removed in Lingua 2.0: the voices
   sounded poor and often didn't work. Cards found in Sonus or Visio replay their real clip instead.)
+  Since 3.0-8 Ludus also has **right or wrong**, **spell the word** from letter tiles, and, only
+  where a natural voice speaks the language (a Gemini voice or a good device voice, never a robotic
+  one), **listen and pick the word** and **dictation**. Right answers in a row light a combo; a
+  perfect lesson gets confetti. A gear opens the setup sheet (length, Classic or Zen, which
+  exercises, typing, sounds, vibration), and **Lightning** (on a deck and at the end of a lesson)
+  is a minute of quick choices with a best score, which never moves a card's schedule.
 - **More ready-made categories (Phase 3):** Top 100 → 10,000 · Basics · Verbs · Connectors ·
   Animals · Food & drink · Family & people · Home & everyday objects · Numbers, time & dates ·
   Colours & adjectives · Body & health · Travel & places · Weather & nature · Feelings.

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
 import { Coffee } from 'lucide-react';
 import { useApp } from '@/app/context';
-import { shuffle } from '@/core/srs/ludus';
+import { EXERCISE_KINDS, EXERCISE_NAME, shuffle } from '@/core/srs/ludus';
 import type { LudusItem } from '@/core/srs/ludus';
 import { recordSession } from '@/data/activity';
 import { db } from '@/data/db';
@@ -12,13 +12,17 @@ import type { StudySession } from '@/data/study';
 import type { Card, Deck, Note } from '@/data/types';
 import { buttonClasses } from '@/design/primitives';
 import { spring } from '@/design/motion';
+import { LessonEnd, LessonSetup, recordBest } from '@/features/lesson/kit';
+import type { LessonResult } from '@/features/lesson/kit';
 import { Ludus } from './Ludus';
 import type { LudusEntry } from './Ludus';
 import { Recall } from './Recall';
 import { Summary } from './Summary';
 import type { SummaryAction, SummaryStats } from './Summary';
 
-const LESSON_CARDS = 10;
+/** Cards in a Lightning round: it goes round them as long as the minute lasts. */
+const LIGHTNING_CARDS = 30;
+const LUDUS_KINDS = EXERCISE_KINDS.map((id) => ({ id, label: EXERCISE_NAME[id] }));
 const POOL = 300;
 
 /** A note as a Ludus item; reading-mined notes lend their sentence (with the word located) as an example. */
@@ -31,20 +35,20 @@ function toItem(card: Card, note: Note, lang: string): LudusItem {
   return { id: card.id, term: note.term, meaning: note.meaning, pos: note.pos, gender: note.gender, example, isNew: card.state === 0 };
 }
 
-async function loadLudus(lang: string, deckId: string | null, affectSchedule: boolean): Promise<{ entries: LudusEntry[]; pool: LudusItem[] }> {
+async function loadLudus(lang: string, deckId: string | null, affectSchedule: boolean, size: number): Promise<{ entries: LudusEntry[]; pool: LudusItem[] }> {
   const session = await loadStudySession(lang, deckId);
   const entries: LudusEntry[] = [];
   const seen = new Set<string>();
   const add = (card: Card, note: Note | undefined, schedule: boolean) => {
-    if (!note?.meaning || seen.has(note.id) || entries.length >= LESSON_CARDS) return;
+    if (!note?.meaning || seen.has(note.id) || entries.length >= size) return;
     seen.add(note.id);
     entries.push({ card, item: toItem(card, note, lang), schedule });
   };
   for (const card of session.queue) add(card, session.notes.get(card.noteId), affectSchedule);
   // Not enough due? Practise cards seen longest ago, without moving their schedule.
   for (const deck of session.decks.values()) {
-    if (entries.length >= LESSON_CARDS) break;
-    const practice = await loadPracticeCards(deck.id, LESSON_CARDS);
+    if (entries.length >= size) break;
+    const practice = await loadPracticeCards(deck.id, size);
     for (const card of practice.cards) add(card, practice.notes.get(card.noteId), false);
   }
   const deckIds = [...session.decks.keys()];
@@ -68,6 +72,7 @@ export default function StudyPage() {
   const { deckId: param } = useParams();
   const [search] = useSearchParams();
   const mode = search.get('mode') === 'ludus' ? 'ludus' : 'recall';
+  const lightning = mode === 'ludus' && search.get('lightning') === '1';
   const { language, settings } = useApp();
   const lang = language.id;
   const deckId = param && param !== 'all' ? param : null;
@@ -76,6 +81,9 @@ export default function StudyPage() {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState<SummaryStats | null>(null);
+  const [ludusEnd, setLudusEnd] = useState<LessonResult | null>(null);
+  const [setupOpen, setSetupOpen] = useState(false);
+  const size = lightning ? LIGHTNING_CARDS : settings.lessons.length;
   const [round, setRound] = useState(0);
   const [pass, setPass] = useState(0);
   const active = useRef({ ms: 0, startedAt: Date.now(), cards: 0 });
@@ -84,6 +92,7 @@ export default function StudyPage() {
     let alive = true;
     setLoaded(null);
     setSummary(null);
+    setLudusEnd(null);
     void (async () => {
       const deck = deckId ? await db.decks.get(deckId) : null;
       if (!alive) return;
@@ -92,14 +101,16 @@ export default function StudyPage() {
         const session = await loadStudySession(lang, deckId);
         if (alive) setLoaded({ kind: 'recall', session });
       } else {
-        const lesson = await loadLudus(lang, deckId, settings.study.ludusAffectsSchedule);
+        const lesson = await loadLudus(lang, deckId, settings.study.ludusAffectsSchedule, size);
         if (alive) setLoaded({ kind: 'ludus', ...lesson });
       }
     })();
     return () => {
       alive = false;
     };
-  }, [lang, deckId, mode, round, settings.study.ludusAffectsSchedule]);
+    // The lesson length is read when a lesson is made; changing it applies to the next one.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang, deckId, mode, round, lightning, settings.study.ludusAffectsSchedule]);
 
   // The session counts towards today's study time and Ratio's history when the screen closes.
   useEffect(() => {
@@ -118,6 +129,35 @@ export default function StudyPage() {
     active.current.cards += stats.cards;
     setSummary(stats);
   }, []);
+
+  const finishLudus = useCallback(
+    async (result: LessonResult) => {
+      active.current.cards += result.answered;
+      const previousBest = lightning ? await recordBest(settings.lessons.best, `${lang}:ludus`, result.score ?? 0) : undefined;
+      setLudusEnd({ ...result, previousBest });
+    },
+    [lightning, lang, settings.lessons.best],
+  );
+
+  if (ludusEnd) {
+    const actions = lightning
+      ? [{ label: 'Play again', onClick: () => setRound((r) => r + 1) }]
+      : [
+          { label: 'Another lesson', onClick: () => setRound((r) => r + 1) },
+          { label: 'Lightning round', onClick: () => navigate(`/thesaurus/study/${param}?mode=ludus&lightning=1`, { replace: true }) },
+        ];
+    return (
+      <div className="grid min-h-dvh place-items-center py-10">
+        <LessonEnd
+          title={lightning ? 'Time!' : 'Lesson complete'}
+          note={lightning ? (ludusEnd.score ? `${ludusEnd.score} right in a minute.` : 'The clock won this time. Another go?') : undefined}
+          result={ludusEnd}
+          actions={actions}
+          onDone={back}
+        />
+      </div>
+    );
+  }
 
   if (summary) {
     const ids = summary.cardIds ?? [];
@@ -179,6 +219,20 @@ export default function StudyPage() {
   return loaded.kind === 'recall' ? (
     <Recall key={`${round}:${pass}`} lang={lang} title={loaded.practice ? `Practice · ${title}` : title} session={loaded.session} practice={loaded.practice} onFinish={finish} onClose={back} onActive={onActive} />
   ) : (
-    <Ludus key={round} lang={lang} title={`Ludus · ${title}`} entries={loaded.entries} pool={loaded.pool} onFinish={finish} onClose={back} onActive={onActive} />
+    <>
+      <Ludus
+        key={`${round}:${lightning}`}
+        lang={lang}
+        title={`${lightning ? 'Lightning' : 'Ludus'} · ${title}`}
+        entries={loaded.entries}
+        pool={loaded.pool}
+        onFinish={(r) => void finishLudus(r)}
+        onClose={back}
+        onActive={onActive}
+        onSetup={() => setSetupOpen(true)}
+        lightning={lightning}
+      />
+      <LessonSetup open={setupOpen} onClose={() => setSetupOpen(false)} kinds={LUDUS_KINDS} offKey="ludusOff" />
+    </>
   );
 }

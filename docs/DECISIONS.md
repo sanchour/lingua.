@@ -957,3 +957,17 @@ Short records of choices that are not obvious from the code. Newest last.
   files to bundle or cache. Vibration uses `navigator.vibrate` where it exists; iOS has
   none, and the setting simply does nothing there.
 
+## 2026-10-20 — Lingua 3.0-8, part 2b: Ludus expanded
+
+- **Listening is back, but only with a good voice.** Lingua 2.0 removed the listening exercises
+  because device voices sounded poor. Listen and dictation now appear only when `speakerFor`
+  finds a natural voice (Gemini, or a device voice it rates as good), and never with a robotic one.
+- **Spelling only where letters are letters.** Not for Mandarin, Japanese, Korean or Arabic: their
+  characters, syllable blocks or joined letters make poor loose tiles. Only single words of three
+  to twelve letters are spelled.
+- **Lightning logs every answer as practice.** It goes round the same cards many times in a
+  minute, so each answer is logged on its own with `affectedSchedule: 0`, rather than settled into
+  one grade per card.
+- **Turned-off kinds fall back, never empty a lesson.** If every kind is off, a lesson still uses
+  the gentlest one (meanings), and the sheet always keeps at least one kind on.
+

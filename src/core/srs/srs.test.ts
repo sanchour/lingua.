@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { createEmptyCard } from 'ts-fsrs';
 import type { Card } from '@/data/types';
 import { checkAnswer, normalizeAnswer } from './answer';
-import { gradeFor, planLesson, retryOf, seededRandom, sentenceTiles } from './ludus';
+import { gradeFor, planLesson, planLightning, retryOf, seededRandom, sentenceTiles } from './ludus';
+import type { ExerciseKind } from './ludus';
 import type { LudusItem } from './ludus';
 import { buildQueue, requeue } from './queue';
 import { dayEnd, formatInterval, maturityOf, previewIntervals, rate } from './scheduler';
@@ -193,5 +194,60 @@ describe('ludus', () => {
     expect(gradeFor(0, false)).toBe(3);
     expect(gradeFor(1, false)).toBe(2);
     expect(gradeFor(2, true)).toBe(1);
+  });
+});
+
+describe('ludus, expanded (3.0-8)', () => {
+  const items: LudusItem[] = [
+    { id: '1', term: 'perro', meaning: 'dog', pos: 'noun', isNew: false, example: { text: 'El perro duerme en casa.', translation: 'The dog sleeps at home.', cloze: [3, 8] } },
+    { id: '2', term: 'gato', meaning: 'cat', pos: 'noun', isNew: false },
+    { id: '3', term: 'comer', meaning: 'to eat', pos: 'verb', isNew: false },
+    { id: '4', term: 'rojo', meaning: 'red', pos: 'adj', isNew: false },
+    { id: '5', term: 'buenos días', meaning: 'good morning', isNew: false },
+  ];
+  const kindsOver = (opts: Parameters<typeof planLesson>[2] extends infer O ? Omit<O & object, 'random'> : never, list = items) => {
+    const kinds = new Set<ExerciseKind>();
+    for (let seed = 1; seed < 160; seed++) for (const ex of planLesson(list, items, { random: seededRandom(seed), ...opts })) kinds.add(ex.kind);
+    return kinds;
+  };
+
+  it('listens and takes dictation only with a voice, and spells only words written with letters', () => {
+    const without = kindsOver({});
+    for (const k of ['listen', 'dictation', 'spell'] as const) expect(without).not.toContain(k);
+    const withAll = kindsOver({ canHear: true, canSpell: true });
+    for (const k of ['listen', 'dictation', 'spell', 'truefalse'] as const) expect(withAll).toContain(k);
+  });
+
+  it('makes each new kind correctly', () => {
+    for (let seed = 1; seed < 80; seed++) {
+      for (const ex of planLesson(items, items, { random: seededRandom(seed), canHear: true, canSpell: true })) {
+        if (ex.kind === 'spell') {
+          expect(ex.item.term).not.toMatch(/\s/);
+          expect([...ex.tiles].sort()).toEqual([...ex.answer].sort());
+          expect(ex.answer.join('')).toBe(ex.item.term);
+        }
+        if (ex.kind === 'dictation') expect(ex.answer).toEqual(['El', 'perro', 'duerme', 'en', 'casa']);
+        if (ex.kind === 'listen') expect(ex.options[ex.answer]).toBe(ex.item.term);
+        if (ex.kind === 'truefalse') expect(ex.answer === 0).toBe(ex.shown === ex.item.meaning);
+      }
+    }
+  });
+
+  it('leaves out the kinds turned off, and typing when typing is off', () => {
+    const off = new Set<ExerciseKind>(['truefalse', 'choose-term', 'match']);
+    const kinds = kindsOver({ off, typing: false });
+    for (const k of [...off, 'type'] as const) expect(kinds).not.toContain(k);
+    // Everything off still leaves a lesson.
+    const all = new Set<ExerciseKind>(['choose-meaning', 'choose-term', 'truefalse', 'match', 'listen', 'cloze', 'type', 'spell', 'build', 'dictation', 'translate', 'article', 'speak']);
+    expect(planLesson(items, items, { random: seededRandom(2), off: all }).length).toBeGreaterThan(0);
+  });
+
+  it('plans a Lightning round of quick choices', () => {
+    const round = planLightning(items, items, seededRandom(4), 30);
+    expect(round).toHaveLength(30);
+    for (const ex of round) {
+      expect(['choose-meaning', 'choose-term', 'truefalse']).toContain(ex.kind);
+      if ('options' in ex) expect(ex.options[ex.answer]).toBeDefined();
+    }
   });
 });

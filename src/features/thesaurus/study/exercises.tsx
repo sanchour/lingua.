@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Mic, MicOff } from 'lucide-react';
+import { Check, Mic, MicOff, X } from 'lucide-react';
+import { PlayBig } from '@/features/lesson/kit';
 import { normalizeAnswer } from '@/core/srs/answer';
 import type { Exercise, LudusItem } from '@/core/srs/ludus';
 import { useLayout } from '@/design/hooks/useLayout';
@@ -418,6 +419,150 @@ export function SpeakExercise({ ex, lang, heard, onHeard, phase, onSkip }: { ex:
             Can’t speak now
           </button>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ── Listen, dictation, spelling, right or wrong (3.0-8) ─────────────────────
+
+/** Hear the word; pick it from four written ones. */
+export function ListenExercise({ ex, lang, value, onChange, phase }: { ex: Of<'listen'>; lang: string; value: number | null; onChange: (v: number) => void; phase: Phase }) {
+  return (
+    <div className="space-y-8">
+      <PlayBig lang={lang} text={ex.item.term} playKey={ex.key} slower={false} />
+      {phase !== 'answer' && <p className="text-center text-[15px] text-ink-soft">{ex.item.meaning}</p>}
+      <Options options={ex.options} value={value} onChange={onChange} phase={phase} answer={ex.answer} lang={lang} />
+    </div>
+  );
+}
+
+/** Tap tiles into a line and back; shared by dictation and spelling. */
+function TileLine({ tiles, value, onChange, phase, lang, joined }: { tiles: string[]; value: number[]; onChange: (v: number[]) => void; phase: Phase; lang: string; joined?: boolean }) {
+  const locked = phase !== 'answer';
+  return (
+    <>
+      <div
+        className={cx(
+          'flex min-h-[6rem] flex-wrap content-start rounded-2xl border-2 border-dashed p-3 transition-colors',
+          joined ? 'justify-center gap-1' : 'gap-2',
+          phase === 'right' ? 'border-sage bg-sage-soft' : phase === 'wrong' ? 'border-accent bg-accent-soft' : 'border-line',
+        )}
+      >
+        <AnimatePresence initial={false}>
+          {value.map((i) => (
+            <motion.button
+              layout
+              key={i}
+              type="button"
+              disabled={locked}
+              onClick={() => onChange(value.filter((v) => v !== i))}
+              initial={{ opacity: 0, scale: 0.85, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.1 } }}
+              transition={spring.snappy}
+              lang={lang}
+              className={cx('no-callout rounded-xl border border-line bg-raised py-2 [font-family:var(--card-font,var(--font-serif))] shadow-elev-1', joined ? 'min-w-10 px-2 text-[22px]' : 'px-3 text-[17px]')}
+            >
+              {tiles[i]}
+            </motion.button>
+          ))}
+        </AnimatePresence>
+      </div>
+      <div className="flex flex-wrap justify-center gap-2">
+        {tiles.map((t, i) => {
+          const used = value.includes(i);
+          return (
+            <button
+              key={i}
+              type="button"
+              disabled={locked || used}
+              onClick={() => onChange([...value, i])}
+              lang={lang}
+              className={cx(
+                'no-callout rounded-xl border py-2 [font-family:var(--card-font,var(--font-serif))] transition-[opacity,transform] duration-150 active:scale-95',
+                joined ? 'min-w-11 px-2 text-[22px]' : 'px-3 text-[17px]',
+                used ? 'border-transparent bg-sunken text-transparent' : 'border-line bg-raised shadow-elev-1 hover:border-line-strong',
+              )}
+            >
+              {t}
+            </button>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+/** Hear the sentence; build it from tiles. */
+export function DictationExercise({ ex, lang, value, onChange, phase }: { ex: Of<'dictation'>; lang: string; value: number[]; onChange: (v: number[]) => void; phase: Phase }) {
+  return (
+    <div className="space-y-7">
+      <PlayBig lang={lang} text={ex.item.example?.text ?? ex.item.term} playKey={ex.key} />
+      <TileLine tiles={ex.tiles} value={value} onChange={onChange} phase={phase} lang={lang} />
+      {phase === 'wrong' && (
+        <p lang={lang} className="text-center [font-family:var(--card-font,var(--font-serif))] text-lg">
+          {ex.item.example?.text}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** The meaning; the word's letters to put in order. */
+export function SpellExercise({ ex, lang, value, onChange, phase }: { ex: Of<'spell'>; lang: string; value: number[]; onChange: (v: number[]) => void; phase: Phase }) {
+  return (
+    <div className="space-y-7">
+      <div className="text-center">
+        <p className="font-serif text-[clamp(1.4rem,4.5vw,1.9rem)] leading-snug">{ex.item.meaning}</p>
+        <p className="mt-2 text-sm text-ink-faint">{ex.answer.length} letters</p>
+      </div>
+      <TileLine tiles={ex.tiles} value={value} onChange={onChange} phase={phase} lang={lang} joined />
+    </div>
+  );
+}
+
+export const spellIsRight = (ex: Of<'spell'>, picked: number[]) => picked.map((i) => ex.tiles[i]).join('').toLocaleLowerCase() === ex.answer.join('').toLocaleLowerCase();
+export const dictationIsRight = (ex: Of<'dictation'>, picked: number[], lang: string) => normalizeAnswer(picked.map((i) => ex.tiles[i]).join(' '), lang) === normalizeAnswer(ex.answer.join(' '), lang);
+
+/** Does this word mean that? Two big buttons. */
+export function TrueFalseExercise({ ex, lang, value, onChange, phase }: { ex: Of<'truefalse'>; lang: string; value: number | null; onChange: (v: number) => void; phase: Phase }) {
+  const { pointer } = useLayout();
+  return (
+    <div className="space-y-8">
+      <div className="text-center">
+        <Prompt lang={lang}>
+          <TermText item={ex.item} lang={lang} />
+        </Prompt>
+        <p className="mt-4 text-[13px] font-bold tracking-[0.12em] text-ink-faint uppercase">means</p>
+        <p className="mt-1 font-serif text-[clamp(1.4rem,4.5vw,1.9rem)] leading-snug">{ex.shown}</p>
+        {phase !== 'answer' && ex.answer === 1 && <p className="mt-2 text-[15px] text-ink-soft">It means “{ex.item.meaning}”.</p>}
+      </div>
+      <div role="radiogroup" className="grid grid-cols-2 gap-3">
+        {ex.options.map((o, i) => {
+          const chosen = value === i;
+          const reveal = phase !== 'answer';
+          const tone = reveal && i === ex.answer ? 'border-sage bg-sage-soft' : reveal && chosen ? 'border-accent bg-accent-soft' : chosen ? 'border-ink bg-raised' : 'border-line bg-raised hover:border-line-strong';
+          return (
+            <motion.button
+              key={o}
+              type="button"
+              role="radio"
+              aria-checked={chosen}
+              disabled={reveal}
+              onClick={() => onChange(i)}
+              animate={reveal && chosen && i !== ex.answer ? { x: [0, -6, 6, -4, 4, 0] } : { x: 0 }}
+              transition={{ duration: 0.32 }}
+              className={cx('no-callout flex min-h-20 flex-col items-center justify-center gap-1 rounded-2xl border-2 text-[18px] font-bold transition-colors active:scale-[0.98]', tone)}
+            >
+              {i === 0 ? <Check size={26} strokeWidth={3} className="text-sage-text" aria-hidden /> : <X size={26} strokeWidth={3} className="text-accent-text" aria-hidden />}
+              <span className="flex items-center gap-2">
+                {o}
+                {pointer === 'fine' && <Kbd>{i + 1}</Kbd>}
+              </span>
+            </motion.button>
+          );
+        })}
       </div>
     </div>
   );

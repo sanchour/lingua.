@@ -144,6 +144,8 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
 
   const check = (picked = choice) => {
     if (!d || phase !== 'answer') return;
+    // Enter with nothing given yet is not an answer.
+    if ((d.kind === 'build' && !typed.trim()) || ((d.kind === 'order' || d.kind === 'say') && !tiles.length) || (d.kind === 'spot' && picked === null)) return;
     let right = false;
     let close: FormCheck | null = null;
     switch (d.kind) {

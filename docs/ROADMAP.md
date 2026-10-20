@@ -988,6 +988,10 @@ when the form is one word; for word order the form is split into its words.
 - Lightning mode: quick choices against the clock. It is logged as practice and doesn't move
   any schedule.
 
+*2b, as built (2026-10-20).* As planned. Listening and dictation appear only where a natural voice
+speaks the language (Lingua 2.0 removed the robotic ones). Spelling skips Mandarin, Japanese,
+Korean and Arabic. Lightning is a button on a deck and at the end of a lesson.
+
 **Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an
    icon in the phone's top bar beside Mundus. Each language's topics are a typed module,

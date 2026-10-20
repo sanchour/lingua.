@@ -359,3 +359,11 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Sounds: a chime on a right answer, a low note on a miss, a run at 3 in a row (after the first tap; iOS needs a tap before audio).
 - [ ] Lightning: the clock counts down, the last ten seconds turn red, the end screen shows the score and the best.
 - [ ] Setup sheet: opens as a bottom sheet; switching Zen silences the sounds and hides the combo.
+
+## Lingua 3.0-8, part 2b: Ludus expanded
+
+- [ ] Ludus on a deck: the gear opens the setup sheet as a bottom sheet; switching off Typing removes typing exercises next lesson.
+- [ ] Spell the word: letter tiles fit two rows at most, and tapping puts them in the line.
+- [ ] Right or wrong: the Yes and No buttons are big enough to tap with a thumb.
+- [ ] With a natural voice (a Gemini key): Listening plays the word on its own, and the replay button works.
+- [ ] Lightning from the deck page: the clock runs, choices check themselves on a tap, the end shows the score and best.
