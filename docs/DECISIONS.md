@@ -627,7 +627,7 @@ Short records of choices that are not obvious from the code. Newest last.
   Grammatica, Mundus, Ratio and Ordo, so Colloquium is a new `placement: 'side'`: in the desktop
   sidebar under the divider, and reached on a phone from Home (a card every day, a step every
   third day without a chat), with a back arrow to Home. It sits after Grammatica, so the sidebar
-  reads learning rooms first; Alt 7 opens it and Mundus, Ratio and Ordo move to Alt 8, 9 and 0
+  reads learning rooms first. Since 3.0-7 put Mundus before Grammatica: Mundus Alt 6, Grammatica 7, Colloquium 8, Ratio 9, Ordo 0
   (`sectionKey`: Alt 0 is the tenth).
 - **The prompt is in the language** (hand-written for the core twenty, English naming the
   language for beta languages): an AI answers in the language it's addressed in, and the learner
@@ -643,6 +643,25 @@ Short records of choices that are not obvious from the code. Newest last.
   never run a v11 upgrade, so 11 stays unused.
 - **The chat is full screen on a phone** (like the players), the box docked at the bottom above
   the home indicator; on desktop it stays in the page, the box sticky under the last line.
+
+## 2026-10-20 — Lingua 3.0-9: the full check, and 3.0 is done
+
+- **3.0-8 skipped, as the user asked.** Grammatica's topics and its first lessons are live; the
+  drills beyond them and alphabets and writing are left out of 3.0, and the check leaves them out.
+- **The twenty languages were checked against their real services**, not just the screens: a
+  script in the dev app asked each language's music, radio, podcast, LibriVox, Mundus and voice
+  sources, and the packs were measured offline. It is how two silent failures showed up that no
+  screen made obvious.
+- **Apple's Korean and Croatian stores answer nothing** to the public search (checked with
+  "love", "IU" and "k-pop"). Korean now searches the US store, which has the K-pop catalogue, and
+  Serbo-Croatian the Serbian store; Cantus's own search already added the US store, so only the
+  rails and artist pages were empty.
+- **A first suggestion must find something.** German podcast discovery opened on "langsam
+  gesprochene nachrichten" (one podcast); "deutsch lernen" (25) leads now and the slow news stays
+  a chip.
+- **No voice beats a robotic one**, unchanged: the app's own test browser has only old Microsoft
+  voices, so Listen buttons hide there. That is the rule from 3.0-4 working, not a bug.
+- **Version 3.0.0.** Ordo › About reads it from `package.json`.
 
 ## 2026-10-19 — Lingua 3.0-6, part 2: comics
 

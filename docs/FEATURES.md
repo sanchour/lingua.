@@ -348,7 +348,7 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 
 ## Colloquium: talking with AI (3.0-6)
 
-- **Where:** in the desktop sidebar (Alt 7); on a phone from Home's "Talk today" card or the
+- **Where:** in the desktop sidebar (Alt 8); on a phone from Home's "Talk today" card or the
   occasional "Talk for ten minutes" step.
 - **A scene and how it goes:** ten scenes from the café to a friendly debate (those above your
   level say from when they work), voice or text, correct my mistakes, slowly and simply, your

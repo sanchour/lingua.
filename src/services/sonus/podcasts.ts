@@ -22,7 +22,7 @@ export const SUGGESTED_SEARCHES: Record<string, string[]> = {
   pt: ['learn portuguese', 'portuguese podcast', 'brazilian portuguese learning'],
   fr: ['learn french podcast', 'français facile', 'innerfrench'],
   el: ['learn greek', 'greek podcast', 'easy greek'],
-  de: ['langsam gesprochene nachrichten', 'easy german', 'learn german podcast'],
+  de: ['deutsch lernen', 'langsam gesprochene nachrichten', 'easy german'],
   it: ['learn italian podcast', 'podcast italiano', 'italiano lento'],
   sv: ['learn swedish', 'klartext', 'swedish podcast'],
   hu: ['learn hungarian', 'hungarian podcast', 'magyar podcast'],

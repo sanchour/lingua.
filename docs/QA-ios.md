@@ -303,6 +303,16 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Make a book a course (⋯): a part's end ticks the lesson and stops; ticks on the page work.
 - [ ] With a Groq key: transcribe a part, then ⋯ › Read along with the ebook (added to Codex
       first): the book's sentences light up as they're read.
+## Lingua 3.0-9: the full check on a phone
+
+- [ ] Ordo › About says Lingua 3.0 once the app has updated.
+- [ ] Voices: tap Listen in three languages (Spanish, Japanese, Arabic): a natural voice speaks,
+      or the button isn't there (no robotic voice). With a Gemini key, a library voice.
+- [ ] Sync: change something on the desktop app; it shows up on the phone.
+- [ ] Offline: airplane mode, reopen the app: Home, Codex and a downloaded book still work.
+- [ ] The keyboard: Colloquium's chat box and Codex › Add stay above the keyboard.
+- [ ] Sonus+ in Korean: Today's artists and styles find songs.
+
 ## Lingua 3.0-6, part 4: Colloquium
 
 - [ ] Home shows "Talk today" with a scene; tap it: Colloquium opens on that scene, with a back

@@ -645,8 +645,8 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
    key, "Start chatting": the AI opens the scene, its lines gloss on tap, read aloud, show their
    English and offer up to three words to learn; each of the learner's lines gets its
    corrections under it (only ones that quote the line). Past chats are listed to carry on or
-   delete. Desktop: in the sidebar under the divider (Alt 7; Mundus, Ratio and Ordo moved to
-   Alt 8, 9 and 0). Phone: a "Talk today" card on Home (the scene of the day, or a chat from the
+   delete. Desktop: in the sidebar under the divider (Alt 8, after Mundus and Grammatica; Ratio and Ordo moved to
+   Alt 9 and 0). Phone: a "Talk today" card on Home (the scene of the day, or a chat from the
    last two days to carry on), a "Talk for ten minutes" step every third day without a chat,
    a back arrow to Home, and the chat full screen with the box docked at the bottom.
 
@@ -870,6 +870,10 @@ language stopped at a usage limit, so the other picks rest on one careful pass.
   - The picks, tips and shelves keep their code in `core/mundus` and `features/mundus`.
 
 ### 3.0-8 · Grammatica and alphabets
+
+*Skipped by the user on 2026-10-20 ("do -9 just skip -8") after parts 1 and 2a: what is ticked
+below is live; the rest is not part of Lingua 3.0.*
+
 Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [x] Grammar files, the topic browser, explanations and tables (2026-10-20: Spanish 28 topics,
       German 23, French 21, Russian 17, Arabic 16, Mandarin 15).
@@ -1038,13 +1042,77 @@ when the form is one word; for word order the form is split into its words.
    - Grammar in Ratio and Tabula.
    - Then the docs and a handover.
 
-### 3.0-9 · Lingua 3.0 complete: the full check
-- [ ] Every point of "Lingua updates.txt" checked against the app, one by one.
-- [ ] Every room on a phone and on desktop, light and dark: layout, taps, scrolling, the
-      keyboard, offline.
-- [ ] All twenty languages end to end: dictionary and taps, news, music, radio, recommendations,
-      grammar, alphabets and writing, comics, audiobooks, AI conversation prompts, voices.
-- [ ] The app's version says 3.0. Docs, then commit, push and the live site checked.
+### 3.0-9 · Lingua 3.0 complete: the full check ✅
+
+Done 2026-10-20. The user asked to do 3.0-9 and skip 3.0-8 ("do -9 just skip -8"): Grammatica's
+parts 1 and 2a are live, the rest of 3.0-8 (drills beyond 2a, alphabets and writing) is left out
+of Lingua 3.0, so the check leaves grammar, alphabets and writing out too.
+
+- [x] Every point of "Lingua updates.txt" checked against the app, one by one (the Lingua 2.0
+      list, the three Lingua 3.0 lists and Tier 2; the 4.0 lists are planned for 4.0). The table
+      below gives each point and how it was checked.
+- [x] Every room on a phone and on desktop, light and dark: 29 rooms and tabs (Home; Codex,
+      Diarium, Add; Thesaurus and Discover; Sonus, Audiobooks, Radio; Sonus+ Today, Explore,
+      Search, Podcasts, Library; Visio and Services; Grammatica; Colloquium; Mundus and its three
+      pages; Ratio and Iter; Ordo and four groups) at 1280 px and 375 px, each in Paper and
+      Nocturne: nothing wider than the screen, no errors. Taps and the keyboard were checked in
+      the reader (hover, drag across words, right-click) and in a Colloquium chat; scrolling in
+      the sweep. Offline: the build precaches the app (Workbox); not tried with the network off.
+- [x] All twenty languages end to end (a script in the dev app, each language's real services):
+      every one has its dictionary pack (92–99.7% of its 1,000 most common words explained on a
+      tap; what's missing is mostly names, English and contractions, which the online lookup
+      covers), Mundus picks (14–37), radio stations (11–638), music picks (9–11 artists, 10–12
+      styles) with songs found, podcasts (13–24 for the first suggestion), LibriVox where it has
+      books, and Colloquium prompts in the language. Found and fixed: **Korean found no songs**
+      (Apple's Korean store answers nothing; it now searches the US store, and Serbo-Croatian the
+      Serbian one instead of the silent Croatian one), and **German podcasts opened on a search
+      with one result** ("deutsch lernen" first now, 25). News: every language has a source but
+      Latin. Voices: none in the app's own test browser, by design (only natural device voices, or
+      Gemini's with a key; this browser has only the old robotic ones); see QA-ios.md for a
+      phone. Comics work the same in every language (checked in 3.0-6).
+- [x] The app's version says 3.0 (3.0.0 in `package.json`; Ordo › About shows "Lingua 3.0").
+      Docs, then commit, push and the live site checked.
+
+**The brief, point by point.** ✓ checked in the app on 2026-10-20 · T by tests or data · P on a
+real phone (QA-ios.md) · S skipped with 3.0-8.
+
+| Point (Lingua updates.txt) | Where it is | Check |
+| --- | --- | --- |
+| Ten new languages (Arabic … Bahasa) and their flags | the language list, packs | ✓ all twenty |
+| Music: find songs, lyrics that follow, saved and discover | Sonus+ (Cantus) | ✓ songs in all twenty |
+| Foreign radio stations, like Radio Garden | Sonus › Radio, the map | ✓ |
+| Recommendations with buttons out (Spotify, Netflix …) | Mundus | ✓ picks in all twenty |
+| Visio: choose your streaming services | Visio › Services | ✓ |
+| Codex: reading level when adding; PDFs; edit a text | Codex › Add, ⋯ › Edit | ✓ (level), T |
+| Codex: translations that fit the sentence | the reader | ✓ "cada tarde" → afternoon; evening |
+| Codex: hold and swipe to translate words or a sentence | the reader | ✓ "paseo con mi perro" → walk with my dog |
+| Codex: news articles | Codex › Add › Article | T |
+| Codex: the word panel (forms on their own tab, level) | right-click a word | ✓ Meaning/Forms, "#622 · A1" |
+| Codex: no learning/known on hover | the reader | ✓ |
+| Codex: every language well supported | the packs | T 92–99.7% |
+| Thesaurus: Discover designed; no flash between cards; right-click panel; buttons; Ludus icon; no word voice-over | Thesaurus | ✓ (Discover), T |
+| Onboarding: two more steps, then "what you enjoy" removed | onboarding | ✓ four steps |
+| Good voices per language, not American, cheap | voices (device or Gemini) | P |
+| Liquid Glass tab bar (phone only) | the phone shell | ✓ in the sweep, P |
+| Sync between desktop and iPhone | Ordo › Your data | P |
+| Home laid out for desktop and phone | Home | ✓ |
+| At least six themes for Paper and for Nocturne | Ordo › Look and feel | ✓ 6 + 6 |
+| Phone: discover pages fit; no sideways scrolling bars | everywhere | ✓ 29 rooms at 375 px |
+| Commute mode's light/dark button | Sonus › Commute | T (3.0-2) |
+| Podcasts on one page on desktop | a podcast's page | ✓ (3.0-3) |
+| Cantus: playing in sync with lyrics; lyrics that load | Sonus+ player | ✓ (Cantus C, live) |
+| Styles to explore at the top, more per language | Sonus+ Today | ✓ 10–12 styles each |
+| Hold to translate on songs, podcasts and videos | the players | ✓ (3.0-3) |
+| Song games that teach the language too | Song games | ✓ (3.0-3) |
+| Sonus: Library first, then music and podcasts | Sonus and Sonus+ | ✓ (now split, as the user asked) |
+| A song page without double scrolling | the player | ✓ (Cantus A) |
+| Comics | Codex | ✓ (3.0-6) |
+| Audiobooks and audio courses | Sonus › Audiobooks | ✓ |
+| Prompts and links for voice or text chats with AIs | Colloquium | ✓ |
+| Grammar exercises; writing letters and characters | Grammatica | S (topics and lessons 2a live) |
+| Tips for learning outside the app | Mundus › Try | ✓ |
+| Tier 2: fifteen beta languages | the language list | ✓ all have packs |
+| Radio map; full-screen station; recently played radios; music page explore | Radio, Library, Sonus+ | ✓ (3.0-6 part 1) |
 
 ### Cantus overhaul (design handoff)
 
@@ -1127,27 +1195,18 @@ with one now-playing bar for whatever plays. (The user moved Radio, then Audiobo
 
 ### Handover for the Lingua 3.0 session
 
-**Where 3.0-6 stands (2026-10-20): done and live.** Radio and Music (5eb12b2), comics in Codex
-(6f8b525), audiobooks and courses (with their own Sonus tab, 706b507) and Colloquium, the
-conversation corner (part 4), then the step's full check. 3.0-7 (Mundus) is done; 3.0-8
-(Grammatica) is being built from another account, and a Cantus redesign from the user's design
-handoff ("### Cantus overhaul (design handoff)"); all push to `main`, so rebase onto
-`origin/main` before every push. **Next: 3.0-9, the full check, once 3.0-8 has landed.**
-Dexie versions: v10 audiobooks (`media.bookId`), v12 Mundus's challenges, v13 Grammatica, v14
+**Where Lingua 3.0 stands (2026-10-20): complete and live, version 3.0.0.** 3.0-6 (Radio and
+Music, comics, audiobooks and courses, Colloquium), 3.0-7 (Mundus) and the full check, 3.0-9, are
+done; the user skipped the rest of 3.0-8 (Grammatica's topics and lessons 2a are live). The
+Cantus redesign became Sonus+ ("### Sonus and Sonus+"). **Next: Lingua 4.0, when the user asks**
+("## Lingua 4.0"). Other sessions may still push to `main`: rebase onto `origin/main` before
+every push. Dexie versions: v10 audiobooks (`media.bookId`), v12 Mundus's challenges, v13 Grammatica, v14
 Colloquium's chats; v11 stays unused (a device already past it would never run it). The next
 free one is v15.
 **Desktop first (the user, 2026-10-20).** Every session designs and builds for the desktop app
 first: layout, design and functions. The phone must keep working, but desktop is the priority.
 See CLAUDE.md.
 
-**Where 3.0-6 stands (2026-10-20).** Parts 1, 2 and 3 are done and live: Radio and Music
-(5eb12b2), comics in Codex (6f8b525), and audiobooks and courses (see the ticked item under
-"### 3.0-6" for what it does). **Next: part 4, the conversation corner** (its plan is the
-"*How (planned 2026-10-19)*" paragraph under item 4 of the 3.0-6 plan), then the step's full check.
-Two other sessions work on `main` at the same time: 3.0-7 and 3.0-8 in a worktree of their own,
-and a Cantus redesign from the user's design handoff ("### Cantus overhaul (design handoff)").
-Rebase onto `origin/main` before every push. Dexie versions: v10 is audiobooks (`media.bookId`),
-v11 is kept for part 4's chats, the 3.0-7/3.0-8 session starts at v12.
 - **Audiobooks, where things are:** `src/data/books.ts` (a book is its parts), import in
   `services/sonus/files.ts` (`importBook`, `readAudioTags`), LibriVox and the free courses in
   `services/sonus/librivox.ts` and `courses.ts`, the sleep timer's rules in `core/audio/sleep.ts`

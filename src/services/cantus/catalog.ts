@@ -17,9 +17,11 @@ export interface SongHit {
 }
 
 /** Apple store per language: its songs come first in that store's results. */
-export const STORE: Record<string, string> = { en: 'us', es: 'es', pt: 'br', fr: 'fr', de: 'de', it: 'it', ru: 'ru', el: 'gr', sv: 'se', hu: 'hu', nl: 'nl', nb: 'no', tr: 'tr', id: 'id', sw: 'ke', la: 'it', ar: 'eg', zh: 'tw', ja: 'jp', ko: 'kr',
+// Apple's search answers nothing from the Korean and Croatian stores (checked 2026-10-20), so Korean
+// searches the US store (K-pop is all there) and Serbo-Croatian the Serbian one.
+export const STORE: Record<string, string> = { en: 'us', es: 'es', pt: 'br', fr: 'fr', de: 'de', it: 'it', ru: 'ru', el: 'gr', sv: 'se', hu: 'hu', nl: 'nl', nb: 'no', tr: 'tr', id: 'id', sw: 'ke', la: 'it', ar: 'eg', zh: 'tw', ja: 'jp', ko: 'us',
   // Beta languages (3.0-1b).
-  hi: 'in', pl: 'pl', vi: 'vn', tl: 'ph', th: 'th', fa: 'us', yue: 'hk', cs: 'cz', ro: 'ro', sh: 'hr', ms: 'my', ta: 'in', ka: 'ge', uz: 'uz', mn: 'mn' };
+  hi: 'in', pl: 'pl', vi: 'vn', tl: 'ph', th: 'th', fa: 'us', yue: 'hk', cs: 'cz', ro: 'ro', sh: 'rs', ms: 'my', ta: 'in', ka: 'ge', uz: 'uz', mn: 'mn' };
 
 /** Apple's artwork URLs carry their size; ask for a large square. */
 export const bigArtwork = (url: string | undefined, px = 600) => url?.replace(/\/\d+x\d+(bb|cc)?\.(jpg|png|webp)$/, `/${px}x${px}bb.jpg`);
