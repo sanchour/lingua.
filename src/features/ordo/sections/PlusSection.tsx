@@ -1,4 +1,5 @@
-import { Check, Gem, RotateCcw } from 'lucide-react';
+import { Link } from 'react-router';
+import { ArrowRight, Check, Gem, RotateCcw } from 'lucide-react';
 import { FREE_ROOMS, getPlus, hasPlus, PLUS_PRICE, PLUS_ROOMS, resetPlus } from '@/data/plus';
 import type { Settings } from '@/data/settings';
 import { Button } from '@/design/primitives';
@@ -73,6 +74,9 @@ export function PlusSection({ meta }: { meta: Settings['meta'] }) {
           </Button>
         )}
       </div>
+      <Link to="/plus" className="mt-4 inline-flex items-center gap-1 text-[14px] font-semibold text-accent-text hover:underline">
+        Open the Lingua+ page <ArrowRight size={15} aria-hidden />
+      </Link>
     </SettingsSection>
   );
 }

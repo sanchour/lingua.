@@ -10,7 +10,7 @@ export function PlusHomeCard() {
   if (hasPlus(settings.meta)) return null;
   return (
     <Card className="p-5 sm:p-6">
-      <Link to="/ordo/plus" className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
+      <Link to="/plus" className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-accent-soft text-accent-text">
           <Gem size={20} aria-hidden />
         </span>

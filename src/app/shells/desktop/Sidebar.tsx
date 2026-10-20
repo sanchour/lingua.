@@ -6,6 +6,8 @@ import type { Section } from '@/app/sections';
 import { IconButton, Tooltip } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
+import { useApp } from '@/app/context';
+import { hasPlus } from '@/data/plus';
 import { LanguageChip } from '../LanguageChip';
 import { LogoMark } from '../Wordmark';
 
@@ -17,6 +19,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+  const { settings } = useApp();
+  const plus = hasPlus(settings.meta);
   const main = SECTIONS.filter((s) => s.placement === 'tab');
   // Ratio and Ordo (your numbers and your settings) sit at the bottom, apart from the rooms.
   const bottom = SECTIONS.filter((s) => s.id === 'ratio' || s.id === 'ordo');
@@ -28,7 +32,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       initial={false}
       animate={{ width: collapsed ? SIDEBAR_WIDTH.collapsed : SIDEBAR_WIDTH.expanded }}
       transition={spring.soft}
-      className="no-callout fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden border-r border-line bg-surface px-4 pt-5 pb-4 [contain:layout_paint]"
+      className="no-callout fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden border-r border-line bg-surface px-3.5 pt-4 pb-3 [contain:layout_paint]"
     >
       <div className={cx('flex items-center', collapsed ? 'flex-col gap-3' : 'gap-2 pr-0.5 pl-1')}>
         <LogoMark size={30} className="shrink-0" />
@@ -39,6 +43,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           hidden={collapsed}
         >
           Lingua
+          {plus && <span className="ml-1.5 rounded-md bg-accent-soft px-1.5 py-0.5 align-middle font-sans text-[11px] font-bold tracking-wide text-accent-text">+</span>}
         </motion.span>
         <IconButton
           icon={collapsed ? PanelLeftOpen : PanelLeftClose}
@@ -50,21 +55,21 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         />
       </div>
 
-      <div className="mt-5">
+      <div className="mt-3.5">
         <LanguageChip compact={collapsed} />
       </div>
 
-      <nav aria-label="Sections" className="mt-5 flex flex-col gap-1">
+      <nav aria-label="Sections" className="mt-3 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain [scrollbar-width:none]">
         {main.map((section) => (
           <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
         ))}
-        <div className="mx-2 my-3 h-px bg-line" />
+        <div className="mx-2 my-2 h-px shrink-0 bg-line" />
         {extra.map((section) => (
           <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
         ))}
       </nav>
 
-      <nav aria-label="Statistics and settings" className="mt-auto flex flex-col gap-1 border-t border-line pt-3">
+      <nav aria-label="Statistics and settings" className="mt-2 flex shrink-0 flex-col gap-0.5 border-t border-line pt-2">
         {bottom.map((section) => (
           <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
         ))}
@@ -76,13 +81,13 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 function SidebarLink({ section, collapsed, index }: { section: Section; collapsed: boolean; index: number }) {
   const Icon = section.icon;
   return (
-    <Tooltip label={section.name} shortcut={`Alt ${index}`} placement="right" disabled={!collapsed}>
+    <Tooltip label={section.name} shortcut={SECTIONS.indexOf(section) < 10 ? `Alt ${index}` : undefined} placement="right" disabled={!collapsed}>
       <NavLink
         to={section.path}
         end={section.path === '/'}
         className={({ isActive }) =>
           cx(
-            'group relative flex h-11 items-center gap-3 rounded-xl px-3 transition-colors duration-150',
+            'group relative flex h-10 shrink-0 items-center gap-3 rounded-xl px-3 transition-colors duration-150',
             isActive ? 'text-ink' : 'text-ink-soft hover:bg-raised/70 hover:text-ink',
           )
         }
