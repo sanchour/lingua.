@@ -311,6 +311,11 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] With a real Groq key: Start chatting; the AI's first line comes; answer with a mistake
       ("yo es"); it comes back corrected under your line. The keyboard doesn't hide the box.
 - [ ] Tap a word in the AI's line for its meaning; tap a suggested word: it's in Thesaurus.
+## Lingua 3.0-7: Mundus as a guide
+
+- [ ] The compass icon in the top bar opens Mundus. The note and compass fit, and the needle turns once, smoothly.
+- [ ] Next for you: the pick opens its sheet; "I did it" ticks the challenge; the grammar step opens Grammatica.
+- [ ] Your path and Things to try fit at phone width.
 
 ## Lingua 3.0-7: Mundus and Visio › Services
 

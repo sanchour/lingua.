@@ -819,6 +819,35 @@ Short records of choices that are not obvious from the code. Newest last.
 - **A click is reported** to radio-browser when a station is played (`/json/url/{id}`), as its
   API asks, since it orders stations by listens.
 
+## 2026-10-20 — Desktop first (the user)
+
+- **Lingua is designed for the desktop app first.** That covers layout, design and functions.
+  Wide windows are used fully, with columns, side panels and sticky rails. Tabs and toolbars
+  look like a desktop app's, with hover states and keyboard shortcuts. The phone must keep
+  working, but each feature is shaped and checked on desktop first. CLAUDE.md says so for every
+  session.
+
+## 2026-10-20 — Mundus becomes a guide (the user's notes)
+
+- **A guide that steers, not a catalogue.** The user wanted a friend that steers you toward the
+  right next thing at your level. So Mundus leads with advice built from your own signals: the
+  last seven days of activity sessions by lane, your level, the interests you gave at onboarding,
+  which rooms you have used, and Grammatica's next topic. Every suggestion says why. The
+  catalogue moved below, as "Explore everything".
+- **A simple, testable rule.** It steers to the quietest lane, with a small pull toward what you
+  enjoy, and never toward the lane you used most. Writing is suggested only to those who like
+  writing. It is a pure function (`core/mundus/guide.ts`), so it is tested without a database.
+- **Different from Home.** Home is today's study plan: reviews due, continue reading, the daily
+  goal. Mundus is about direction: balance, new rooms, the next stage, and things to try.
+- **The name stays Mundus.** Iter (already a tab in Ratio) and Mundus were tried, and the user
+  chose to keep Mundus.
+- **Pictures from open sources, no keys:** Open Library covers, TVmaze posters, Apple's podcast
+  artwork, and Wikipedia's free images. Only titles are sent, and answers are cached on the
+  device. Wikipedia serves no copyrighted posters, so film posters still need TMDB.
+- **No new data.** Tips done still go in the `challenges` table, and everything else is read from
+  tables that already exist. The code for picks and tips keeps its `mundus` folders, since
+  Mundus shows them.
+
 ## 2026-10-20 — Mundus as a place to explore (the user's notes)
 
 - **Shelves by room, not by kind.** The user wanted Mundus to recommend something for every part of

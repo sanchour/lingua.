@@ -360,6 +360,24 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   to carry on or delete.
 
 ## Mundus (3.0-7)
+## Mundus, the guide (3.0-7)
+
+- **A friend who points the way.** Mundus looks at your last seven days (reading, listening,
+  watching, words, writing), your level and what you enjoy. It writes a short note on your week,
+  and a compass shows the week's mix, with the needle pointing where to go next.
+- **Next for you:** three steps, each with its reason:
+  - something to enjoy in the part of your week that's been quiet, at your level;
+  - something to try away from the screen;
+  - a way to grow: your next Grammatica topic, a room you haven't tried, or a stretch one level up.
+  Each opens inside Lingua.
+- **Your path:** four stages, from Starting out (A1) to Going deep (B2+). It shows where you are,
+  what this stage opens up, and a taste of what comes further along.
+- **Things to try:** small challenges suited to your stage, with a tap to mark one done. More open
+  up as your level rises. The full list, with the streak, is at Mundus › Things to try.
+- **Explore everything:** the shelves below, for every room.
+- **Elsewhere:** Home shows Mundus's first suggestion.
+
+### What Mundus explores
 
 - **Explore** (Mundus's first tab): a pick of the day and a challenge to try today, then a shelf for
   every room, scrolling sideways. Each item opens inside Lingua:

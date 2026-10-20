@@ -1,9 +1,7 @@
 import { Children, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import { motion } from 'motion/react';
 import {
-  ArrowRight,
   BookA,
   BookHeadphones,
   BookOpen,
@@ -28,16 +26,14 @@ import { getLanguage } from '@/core/lang/languages';
 import type { Level } from '@/core/lang/levels';
 import { newsSources } from '@/core/lang/news';
 import { STARTER_THEMES } from '@/core/lang/starter';
-import { tipOfTheDay, tipsFor } from '@/core/mundus/tips';
-import { GROUP_KIND, pickOfTheDay, withinReach } from '@/core/mundus/types';
+import { tipsFor } from '@/core/mundus/tips';
+import { GROUP_KIND, withinReach } from '@/core/mundus/types';
 import type { Pick, PickGroup, PickKind, Picks } from '@/core/mundus/types';
 import { useChallenges } from '@/data/challenges';
 import { starterKey, useStarterList } from '@/data/starter';
 import { Drawer, Segmented } from '@/design/primitives';
-import { spring } from '@/design/motion';
 import { useLayout } from '@/design/hooks/useLayout';
 import { cx } from '@/lib/cx';
-import { localDateKey } from '@/lib/format';
 import { discoverFor } from '@/features/cantus/discover';
 import { Artwork } from '@/features/sonus/library/Artwork';
 import { TitleSheet } from '@/features/visio/services/TitleSheet';
@@ -45,7 +41,9 @@ import type { SheetTitle } from '@/features/visio/services/TitleSheet';
 import { countryName as radioCountry } from '@/services/radio/stations';
 import { freeCourses } from '@/services/sonus/courses';
 import { openLibrivoxBook } from '@/services/sonus/librivox';
+import { pickImageQuery, THEME_ARTICLE } from '@/services/mundus/images';
 import { posterUrl } from '@/services/mundus/tmdb';
+import { Art } from './Art';
 import { toast } from '@/state/ui';
 import { pickKey, useAudiobookPicks, usePickLookups, useRadioPicks, useStreaming } from './hooks';
 import type { PickLookup } from './hooks';
@@ -70,7 +68,6 @@ const HUE: Record<string, string> = {
 };
 const ICON: Record<PickGroup, LucideIcon> = { series: Tv, films: Film, books: BookOpen, podcasts: Podcast, youtube: MonitorPlay, games: Gamepad2, dictionaries: BookA };
 
-const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
 const tint = (hue: string): CSSProperties => ({
   background: `linear-gradient(160deg, color-mix(in oklab, ${hue} 26%, var(--color-surface)), color-mix(in oklab, ${hue} 12%, var(--color-surface)))`,
   color: `color-mix(in oklab, ${hue} 80%, var(--color-ink))`,
@@ -131,10 +128,9 @@ export function ExploreView({ lang, picks, level }: { lang: string; picks: Picks
         />
       </div>
 
-      <Today lang={lang} picks={picks} level={level} onOpen={open} lookups={lookups} />
 
       <div className="mt-10 space-y-10">
-        <Shelf id="watch" title="Watch" room="Visio" icon={Clapperboard} more={picks ? '/mundus?tab=picks&kind=series' : undefined}>
+        <Shelf id="watch" title="Watch" room="Visio" icon={Clapperboard} more={picks ? '/mundus/picks?kind=series' : undefined}>
           {list('series').map(pickTile('series'))}
           {list('films').map(pickTile('films'))}
           {list('youtube').map(pickTile('youtube'))}
@@ -148,7 +144,7 @@ export function ExploreView({ lang, picks, level }: { lang: string; picks: Picks
 
         <WordsShelf lang={lang} />
 
-        <Shelf id="play" title="Play and look up" icon={Gamepad2} more={picks ? '/mundus?tab=picks&kind=games' : undefined}>
+        <Shelf id="play" title="Play and look up" icon={Gamepad2} more={picks ? '/mundus/picks?kind=games' : undefined}>
           {list('games').map(pickTile('games'))}
           {(picks?.dictionaries ?? []).map(pickTile('dictionaries'))}
         </Shelf>
@@ -166,75 +162,6 @@ export function ExploreView({ lang, picks, level }: { lang: string; picks: Picks
         {opened && <PickCard pick={opened.pick} kind={GROUP_KIND[opened.group]} lang={lang} level={level} hue={HUE[opened.group]} icon={ICON[opened.group]} />}
       </Drawer>
       <TitleSheet lang={lang} title={sheet} onClose={() => setSheet(null)} />
-    </div>
-  );
-}
-
-// ── Today ──────────────────────────────────────────────────────────────────
-
-function Today({ lang, picks, level, lookups, onOpen }: { lang: string; picks: Picks | null; level: Level; lookups: Map<string, PickLookup>; onOpen: (pick: Pick, group: PickGroup) => void }) {
-  const done = useChallenges(lang);
-  const day = Math.floor(Date.now() / 86_400_000);
-  const today = localDateKey();
-  const tips = useMemo(() => tipsFor(lang), [lang]);
-  const pick = useMemo(() => (picks ? pickOfTheDay(picks, level, day) : undefined), [picks, level, day]);
-  const doneIds = new Set((done ?? []).filter((r) => r.date !== today).map((r) => r.tipId));
-  const tip = tipOfTheDay(tips, doneIds, day);
-  const TipIcon = tip ? TIP_ICONS[tip.icon] : Sparkles;
-  const poster = pick ? posterUrl(lookups.get(pickKey(pick.pick))?.title.posterPath, 'w342') : undefined;
-  const PickIcon = pick ? ICON[pick.group] : Sparkles;
-
-  return (
-    <div className="grid gap-4 md:grid-cols-[1.35fr_1fr]">
-      {pick && (
-        <motion.button
-          type="button"
-          onClick={() => onOpen(pick.pick, pick.group)}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={spring.soft}
-          className="no-callout group flex gap-4 rounded-3xl p-5 text-left transition-transform active:scale-[0.99] sm:p-6"
-          style={tint(HUE[pick.group])}
-        >
-          <span className="w-20 shrink-0 sm:w-24">
-            {poster ? (
-              <img src={poster} alt="" className="aspect-[2/3] w-full rounded-xl object-cover shadow-elev-2" />
-            ) : (
-              <span className="grid aspect-[2/3] w-full place-items-center rounded-xl bg-surface/70 shadow-elev-1" aria-hidden>
-                <PickIcon size={26} strokeWidth={1.7} />
-              </span>
-            )}
-          </span>
-          <span className="flex min-w-0 flex-1 flex-col">
-            <span className="text-[12px] font-bold tracking-[0.14em] uppercase opacity-80">Pick of the day</span>
-            <span lang={lang} className="mt-1 font-serif text-[22px] leading-tight font-semibold text-ink sm:text-[26px]">
-              {pick.pick.title}
-            </span>
-            <span className="mt-0.5 text-[13px] text-ink-faint">{[pick.pick.en, pick.pick.by, pick.pick.year].filter(Boolean).join(' · ')}</span>
-            <span className="mt-2 line-clamp-3 text-[14px] leading-snug text-ink-soft">{pick.pick.why}</span>
-            <span className="mt-auto inline-flex items-center gap-1 pt-3 text-[13px] font-semibold text-ink">
-              {pick.group === 'books' ? 'Open · add to Codex' : 'Where to watch · subtitles in Visio'} <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
-            </span>
-          </span>
-        </motion.button>
-      )}
-      {tip && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.05 }}>
-          <Link to="/mundus?tab=beyond" className="no-callout group flex h-full flex-col rounded-3xl border border-line/70 bg-surface p-5 transition-colors hover:border-line-strong sm:p-6">
-            <span className="flex items-center gap-3">
-              <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sage-soft text-sage-text" aria-hidden>
-                <TipIcon size={20} />
-              </span>
-              <span className={label}>Try today</span>
-            </span>
-            <span className="mt-3 font-serif text-[19px] leading-snug font-semibold">{tip.title}</span>
-            <span className="mt-1 text-[14px] leading-snug text-ink-soft">{tip.teaser}</span>
-            <span className="mt-auto inline-flex items-center gap-1 pt-3 text-[13px] font-semibold text-accent-text">
-              Beyond the app <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
-            </span>
-          </Link>
-        </motion.div>
-      )}
     </div>
   );
 }
@@ -325,10 +252,9 @@ function PickTile({ pick, group, lang, lookup, onOpen }: { pick: Pick; group: Pi
       title={pick.title}
       sub={sub}
       tall={tall}
-      titled={tall && !poster}
       lang={group === 'dictionaries' ? undefined : lang}
       onClick={onOpen}
-      art={poster ? <img src={poster} alt="" loading="lazy" decoding="async" className="size-full object-cover" /> : <Cover hue={HUE[group]} icon={ICON[group]} title={tall ? pick.title : undefined} lang={lang} />}
+      art={poster ? <img src={poster} alt="" loading="lazy" decoding="async" className="size-full object-cover" /> : <Art query={pickImageQuery(pick, group, lang)} fit={group === 'dictionaries' ? 'contain' : 'cover'} fallback={<Cover hue={HUE[group]} icon={ICON[group]} />} />}
     />
   );
 }
@@ -337,10 +263,10 @@ function ReadShelf({ lang, books, tile }: { lang: string; books: Pick[]; tile: (
   const navigate = useNavigate();
   const news = newsSources(lang);
   return (
-    <Shelf id="read" title="Read" room="Codex" icon={BookOpen} more={books.length ? '/mundus?tab=picks&kind=books' : undefined}>
+    <Shelf id="read" title="Read" room="Codex" icon={BookOpen} more={books.length ? '/mundus/picks?kind=books' : undefined}>
       {books.map(tile)}
       {news.map((s) => (
-        <Tile key={s.id} title={s.name} sub="News · today’s articles" onClick={() => navigate('/codex/new?way=news')} art={<Cover hue={HUE.news} icon={Newspaper} />} />
+        <Tile key={s.id} title={s.name} sub="News · today’s articles" onClick={() => navigate('/codex/new?way=news')} art={<Art query={{ kind: 'wiki', q: `${s.name} newspaper`, must: s.name }} fit="contain" fallback={<Cover hue={HUE.news} icon={Newspaper} />} />} />
       ))}
     </Shelf>
   );
@@ -362,7 +288,7 @@ function ListenShelf({ lang, podcasts, tile }: { lang: string; podcasts: Pick[];
     }
   };
   return (
-    <Shelf id="listen" title="Listen" room="Sonus" icon={Headphones} more={podcasts.length ? '/mundus?tab=picks&kind=podcasts' : undefined}>
+    <Shelf id="listen" title="Listen" room="Sonus" icon={Headphones} more={podcasts.length ? '/mundus/picks?kind=podcasts' : undefined}>
       {podcasts.map(tile)}
       {books.map((b) => (
         <Tile
@@ -397,7 +323,7 @@ function RadioShelf({ lang, level, reach }: { lang: string; level: Level; reach:
         />
       ))}
       {artists.map((a) => (
-        <Tile key={a.name} title={a.name} sub="Artist · songs in Sonus" onClick={() => navigate(`/sonus?tab=music&q=${encodeURIComponent(a.name)}`)} art={<Cover hue={HUE.music} icon={Music2} />} />
+        <Tile key={a.name} title={a.name} sub="Artist · songs in Sonus" onClick={() => navigate(`/sonus?tab=music&q=${encodeURIComponent(a.name)}`)} art={<Art query={{ kind: 'wiki', q: `${a.name} singer band`, must: a.name, lang }} fallback={<Cover hue={HUE.music} icon={Music2} />} />} />
       ))}
     </Shelf>
   );
@@ -411,10 +337,10 @@ function WordsShelf({ lang }: { lang: string }) {
   return (
     <Shelf id="words" title="Words" room="Thesaurus" icon={Library} more="/thesaurus?tab=discover">
       {list.lemmaFreq.length >= 100 && (
-        <Tile title="Top 100 words" sub="The words you meet most" onClick={() => navigate('/thesaurus/ready/' + starterKey({ kind: 'frequency', milestone: 100 }))} art={<Cover hue={HUE.words} icon={Library} />} />
+        <Tile title="Top 100 words" sub="The words you meet most" onClick={() => navigate('/thesaurus/ready/' + starterKey({ kind: 'frequency', milestone: 100 }))} art={<Art query={{ kind: 'article', title: 'Dictionary' }} fallback={<Cover hue={HUE.words} icon={Library} />} />} />
       )}
       {themes.map((t) => (
-        <Tile key={t.id} title={t.name} sub={`${list.themes[t.id].length} words`} onClick={() => navigate('/thesaurus/ready/' + starterKey({ kind: 'theme', id: t.id }))} art={<Cover hue={HUE.words} icon={BookHeadphones} />} />
+        <Tile key={t.id} title={t.name} sub={`${list.themes[t.id].length} words`} onClick={() => navigate('/thesaurus/ready/' + starterKey({ kind: 'theme', id: t.id }))} art={<Art query={THEME_ARTICLE[t.id] ? { kind: 'article', title: THEME_ARTICLE[t.id] } : null} fallback={<Cover hue={HUE.words} icon={BookHeadphones} />} />} />
       ))}
     </Shelf>
   );
@@ -427,9 +353,9 @@ function BeyondShelf({ lang }: { lang: string }) {
   const doneIds = new Set((done ?? []).map((r) => r.tipId));
   const open = tips.filter((t) => !doneIds.has(t.id)).slice(0, 10);
   return (
-    <Shelf id="beyond" title="Beyond the app" icon={Sparkles} more="/mundus?tab=beyond">
+    <Shelf id="beyond" title="Beyond the app" icon={Sparkles} more="/mundus/try">
       {open.map((t) => (
-        <Tile key={t.id} title={t.title} sub="A small challenge" onClick={() => navigate('/mundus?tab=beyond')} art={<Cover hue="#6b8e78" icon={TIP_ICONS[t.icon]} />} />
+        <Tile key={t.id} title={t.title} sub="A small challenge" onClick={() => navigate('/mundus/try')} art={<Cover hue="#6b8e78" icon={TIP_ICONS[t.icon]} />} />
       ))}
     </Shelf>
   );

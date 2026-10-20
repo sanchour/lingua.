@@ -17,7 +17,10 @@ import { useLayout } from '@/design/hooks/useLayout';
 import { cx } from '@/lib/cx';
 import { discoverFor } from '@/features/cantus/discover';
 import type { PickedArtist } from '@/features/cantus/discover';
+import { pickImageQuery } from '@/services/mundus/images';
+import type { ImageQuery } from '@/services/mundus/images';
 import { posterUrl } from '@/services/mundus/tmdb';
+import { Art } from './Art';
 import { toast } from '@/state/ui';
 import { addBookToCodex, addSubtitlesFor, followPodcast } from './actions';
 import { pickKey, usePickLookups, useStreaming } from './hooks';
@@ -76,33 +79,45 @@ export function PicksView({ lang, picks, level }: { lang: string; picks: Picks; 
 
   const visible = SECTIONS.filter((s) => filter === 'all' || s.id === filter);
 
+  const wide = layout === 'wide';
   return (
-    <div>
-      <div className="mb-6 space-y-3">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Kinds">
-          <Chip active={filter === 'all'} onClick={() => setFilter('all')}>
+    <div className={wide ? 'grid grid-cols-[200px_minmax(0,1fr)] gap-10' : ''}>
+      <div className={wide ? 'sticky top-24 space-y-6 self-start' : 'mb-6 space-y-3'}>
+        <div className={wide ? 'flex flex-col gap-0.5' : 'flex flex-wrap gap-2'} role="group" aria-label="Kinds">
+          <Chip row={wide} active={filter === 'all'} onClick={() => setFilter('all')}>
             All
           </Chip>
           {SECTIONS.map((s) => (
-            <Chip key={s.id} active={filter === s.id} onClick={() => setFilter(s.id)} icon={s.icon}>
-              {layout === 'wide' ? s.label : s.short}
+            <Chip key={s.id} row={wide} active={filter === s.id} onClick={() => setFilter(s.id)} icon={s.icon}>
+              {wide ? s.label : s.short}
             </Chip>
           ))}
         </div>
-        <Segmented<LevelBand>
+        {wide ? (
+          <div role="group" aria-label="Level" className="flex flex-col gap-0.5 border-t border-line pt-5">
+            {LEVEL_ROWS.map(([value, name]) => (
+              <Chip key={value} row active={band === value} onClick={() => setBand(value)}>
+                {name}
+              </Chip>
+            ))}
+          </div>
+        ) : (
+          <Segmented<LevelBand>
           block
           label="Level"
           value={band}
           onChange={setBand}
           options={[
             { value: 'all', label: 'Any level' },
-            { value: 'beginner', label: layout === 'wide' ? 'Beginner · A1–A2' : 'A1–A2' },
-            { value: 'intermediate', label: layout === 'wide' ? 'Intermediate · B1–B2' : 'B1–B2' },
-            { value: 'advanced', label: layout === 'wide' ? 'Advanced · C1' : 'C1' },
+            { value: 'beginner', label: 'A1–A2' },
+            { value: 'intermediate', label: 'B1–B2' },
+            { value: 'advanced', label: 'C1' },
           ]}
         />
+        )}
       </div>
 
+      <div className="min-w-0">
       <ServicesLine services={streaming.services} country={streaming.country} hasToken={Boolean(streaming.token)} />
 
       <div className="space-y-10">
@@ -135,11 +150,28 @@ export function PicksView({ lang, picks, level }: { lang: string; picks: Picks; 
           );
         })}
       </div>
+      </div>
     </div>
   );
 }
 
-function Chip({ active, onClick, icon: Icon, children }: { active: boolean; onClick: () => void; icon?: LucideIcon; children: string }) {
+const LEVEL_ROWS: Array<[LevelBand, string]> = [
+  ['all', 'Any level'],
+  ['beginner', 'Beginner · A1–A2'],
+  ['intermediate', 'Intermediate · B1–B2'],
+  ['advanced', 'Advanced · C1'],
+];
+
+/** A filter: a pill, or on desktop a row in the side list. */
+function Chip({ active, onClick, icon: Icon, row, children }: { active: boolean; onClick: () => void; icon?: LucideIcon; row?: boolean; children: string }) {
+  if (row) {
+    return (
+      <button type="button" aria-pressed={active} onClick={onClick} className={cx('flex h-9 items-center gap-2.5 rounded-lg px-3 text-left text-[14px] font-semibold transition-colors', active ? 'bg-inverse text-on-inverse' : 'text-ink-soft hover:bg-sunken hover:text-ink')}>
+        {Icon && <Icon size={16} aria-hidden />}
+        {children}
+      </button>
+    );
+  }
   return (
     <button
       type="button"
@@ -226,6 +258,9 @@ function LinkPill({ link }: { link: PickLink }) {
     </a>
   );
 }
+
+const KIND_GROUP: Record<PickKind, keyof Omit<Picks, 'notes'>> = { series: 'series', film: 'films', book: 'books', game: 'games', podcast: 'podcasts', youtube: 'youtube', dictionary: 'dictionaries' };
+const imageFor = (pick: Pick, kind: PickKind, lang: string): ImageQuery => pickImageQuery(pick, KIND_GROUP[kind], lang);
 
 export const PickCard = memo(function PickCard({
   pick,
@@ -323,8 +358,16 @@ export const PickCard = memo(function PickCard({
         {poster ? (
           <img src={poster} alt="" loading="lazy" decoding="async" className="aspect-[2/3] w-full rounded-xl object-cover shadow-elev-1" />
         ) : (
-          <div className={cx('grid w-full place-items-center rounded-xl', tall ? 'aspect-[2/3]' : 'aspect-square')} style={tint(hue)} aria-hidden>
-            <Icon size={tall ? 22 : 20} strokeWidth={1.8} />
+          <div className={cx('w-full overflow-hidden rounded-xl shadow-elev-1', tall ? 'aspect-[2/3]' : 'aspect-square')} aria-hidden>
+            <Art
+              query={imageFor(pick, kind, lang)}
+              fit={kind === 'dictionary' ? 'contain' : 'cover'}
+              fallback={
+                <span className="grid size-full place-items-center" style={tint(hue)}>
+                  <Icon size={tall ? 22 : 20} strokeWidth={1.8} />
+                </span>
+              }
+            />
           </div>
         )}
       </div>

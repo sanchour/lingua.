@@ -840,6 +840,35 @@ language stopped at a usage limit, so the other picks rest on one careful pass.
     - Tapping an audiobook adds it to Sonus and opens it, as Sonus's own audiobook list does.
     - Not verified: an iPhone, and a real TMDB token with posters on the shelves.
 
+- [x] **Mundus becomes a guide** (the user's notes, 2026-10-20). The user asked for "an
+      exploration friend" that guides you to things to consume and do at your level, steers you
+      in the right direction, and is full of recommendations and tips to take on as you go. They
+      wanted a different name, design, layout, function and direction.
+  - *Plan and build (2026-10-20):* the name stays Mundus, at `/mundus` (Iter and Mundus were tried
+    and dropped). Tabs: Your guide, Explore, Every pick, Things to try. On desktop they are a tab
+    strip with 1–4 as shortcuts, and the guide has a side panel.
+  - **Real pictures, not template icons:** book covers come from Open Library, series posters from
+    TVmaze, podcast artwork from Apple, and logos, portraits and photos from Wikipedia. Lookups are
+    cached on the device. Film posters still need the free TMDB key.
+  - **The engine** is `src/core/mundus/guide.ts`, pure and tested. It reads the last seven days of
+    activity, split into reading, listening, watching, words and writing. It steers toward the
+    quietest of these, leaning toward what the learner said they enjoy (writing only for those
+    who like it). It then picks three next steps, each with its reason:
+    - something to enjoy in that lane, at the learner's level;
+    - a thing to try away from the screen, at their stage;
+    - a way to grow: the next Grammatica topic, a room not tried yet, or a stretch pick one level up.
+  - **The page:**
+    - a note on the week, with a compass (one spoke per lane, the needle pointing where to go);
+    - "Next for you";
+    - "Your path": four stages from Starting out to Going deep, with a taste of what comes
+      further along;
+    - "Things to try": tips by stage, which open up as you go;
+    - "Explore everything": the room shelves.
+    - `/mundus/picks` and `/mundus/try` hold the full lists.
+  - **Elsewhere:** Home's card shows Mundus's first step, and the rooms' "Ideas from Mundus" lines
+    open its shelves. No new tables.
+  - The picks, tips and shelves keep their code in `core/mundus` and `features/mundus`.
+
 ### 3.0-8 · Grammatica and alphabets
 Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [x] Grammar files, the topic browser, explanations and tables (2026-10-20: Spanish 28 topics,
@@ -1100,6 +1129,18 @@ handoff ("### Cantus overhaul (design handoff)"); all push to `main`, so rebase 
 Dexie versions: v10 audiobooks (`media.bookId`), v12 Mundus's challenges, v13 Grammatica, v14
 Colloquium's chats; v11 stays unused (a device already past it would never run it). The next
 free one is v15.
+**Desktop first (the user, 2026-10-20).** Every session designs and builds for the desktop app
+first: layout, design and functions. The phone must keep working, but desktop is the priority.
+See CLAUDE.md.
+
+**Where 3.0-6 stands (2026-10-20).** Parts 1, 2 and 3 are done and live: Radio and Music
+(5eb12b2), comics in Codex (6f8b525), and audiobooks and courses (see the ticked item under
+"### 3.0-6" for what it does). **Next: part 4, the conversation corner** (its plan is the
+"*How (planned 2026-10-19)*" paragraph under item 4 of the 3.0-6 plan), then the step's full check.
+Two other sessions work on `main` at the same time: 3.0-7 and 3.0-8 in a worktree of their own,
+and a Cantus redesign from the user's design handoff ("### Cantus overhaul (design handoff)").
+Rebase onto `origin/main` before every push. Dexie versions: v10 is audiobooks (`media.bookId`),
+v11 is kept for part 4's chats, the 3.0-7/3.0-8 session starts at v12.
 - **Audiobooks, where things are:** `src/data/books.ts` (a book is its parts), import in
   `services/sonus/files.ts` (`importBook`, `readAudioTags`), LibriVox and the free courses in
   `services/sonus/librivox.ts` and `courses.ts`, the sleep timer's rules in `core/audio/sleep.ts`

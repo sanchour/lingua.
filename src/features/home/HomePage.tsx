@@ -88,7 +88,7 @@ export default function HomePage() {
             <MilestoneCard lang={language.id} />
           </motion.div>
           <motion.div {...enter(5)} className="empty:hidden">
-            <MundusHomeCard lang={language.id} level={language.level} />
+            <MundusHomeCard />
           </motion.div>
           <motion.div {...enter(6)} className="empty:hidden">
             <ColloquiumHomeCard lang={language.id} level={language.level} />

@@ -29,7 +29,7 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
 
 1. Write a plan first (in the roadmap), then build it without waiting for confirmation.
 2. Check it: `npm run typecheck`, `npm test`, `npm run build`, and look at it in a browser at
-   desktop and phone width (the app must work fully on a phone).
+   desktop and phone width, desktop first (the phone must keep working).
 3. Update the docs it touches (ROADMAP, DECISIONS, FEATURES, QA-ios).
 4. After every finished prompt, commit and push to `main`, then check the Pages deploy went live
    (the installed phone and desktop apps update from it).
@@ -42,6 +42,11 @@ Commit as `sanchour <255895307+sanchour@users.noreply.github.com>`
 (`git -c user.name=sanchour -c user.email=255895307+sanchour@users.noreply.github.com commit …`).
 
 ## Rules that always hold
+
+- **Desktop first (the user, 2026-10-20).** Design, layout and functions are made for the desktop
+  app first. Use wide windows fully: columns, side panels, sticky rails, desktop-style tabs and
+  toolbars, hover states, keyboard shortcuts, and right-click or drag where it helps. The phone
+  must keep working, but desktop is the priority, and every check starts there.
 
 - Work only inside this repository's folder. Never open or change anything to do with the user's
   internship, or other folders on the computer. Temporary files go in the session's scratchpad.

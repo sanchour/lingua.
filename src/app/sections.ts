@@ -1,7 +1,7 @@
 import { BookA, BookOpen, ChartNoAxesColumn, Clapperboard, Earth, Headphones, House, Library, MessagesSquare, Settings2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-export type SectionId = 'home' | 'codex' | 'thesaurus' | 'sonus' | 'visio' | 'grammatica' | 'colloquium' | 'mundus' | 'ratio' | 'ordo';
+export type SectionId = 'home' | 'codex' | 'thesaurus' | 'sonus' | 'visio' | 'mundus' | 'grammatica' | 'colloquium' | 'ratio' | 'ordo';
 
 export interface Section {
   id: SectionId;
@@ -22,9 +22,9 @@ export const SECTIONS: Section[] = [
   { id: 'thesaurus', path: '/thesaurus', name: 'Thesaurus', role: 'Vocabulary', icon: Library, placement: 'tab' },
   { id: 'sonus', path: '/sonus', name: 'Sonus', role: 'Listen & sing', icon: Headphones, placement: 'tab' },
   { id: 'visio', path: '/visio', name: 'Visio', role: 'Watch', icon: Clapperboard, placement: 'tab' },
+  { id: 'mundus', path: '/mundus', name: 'Mundus', role: 'Your guide', icon: Earth, placement: 'header' },
   { id: 'grammatica', path: '/grammatica', name: 'Grammatica', role: 'Grammar', icon: BookA, placement: 'header' },
   { id: 'colloquium', path: '/colloquium', name: 'Colloquium', role: 'Conversation', icon: MessagesSquare, placement: 'side' },
-  { id: 'mundus', path: '/mundus', name: 'Mundus', role: 'The world', icon: Earth, placement: 'header' },
   { id: 'ratio', path: '/ratio', name: 'Ratio', role: 'Stats', icon: ChartNoAxesColumn, placement: 'header' },
   { id: 'ordo', path: '/ordo', name: 'Ordo', role: 'Settings', icon: Settings2, placement: 'header' },
 ];

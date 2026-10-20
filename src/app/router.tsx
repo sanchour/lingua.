@@ -45,7 +45,7 @@ export const router = createBrowserRouter(
         { path: 'grammatica/review', element: <GrammarLessonPage review /> },
         { path: 'grammatica/:topicId', element: <GrammarTopicPage /> },
         { path: 'grammatica/:topicId/lesson', element: <GrammarLessonPage /> },
-        { path: 'mundus', element: <MundusPage /> },
+        { path: 'mundus/*', element: <MundusPage /> },
         { path: 'colloquium', element: <ColloquiumPage /> },
         { path: 'colloquium/chat/:chatId', element: <ChatPage /> },
         { path: 'ratio', element: <RatioPage /> },
