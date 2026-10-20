@@ -711,23 +711,75 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
       corrections shown inline and new words saved as cards.
 - [ ] Checked on a phone and on desktop, light and dark; docs.
 
-### 3.0-7 · Mundus: recommendations, and streaming services in Visio
-- [ ] **Mundus**, a deep-dive page per language: video games, series, films, books, podcasts,
+### 3.0-7 · Mundus: recommendations, and streaming services in Visio ✅
+
+**Built (2026-10-20):** as planned below. Mundus at /mundus (desktop sidebar under Visio, a globe in
+the phone's top bar, a card on Home that alternates a challenge with a pick at your level). Picks
+for all twenty languages in `src/core/mundus/picks/<lang>.ts` (series, films, books, games,
+podcasts, YouTube, dictionaries; music is Sonus's own artist list), filtered by kind and level, each
+opening by search where it lives; Add to Codex (wishlist), Follow in Sonus (Apple's directory), Add
+its subtitles (Visio's Subtitles-only flow, now with the title given), Find subtitles
+(OpenSubtitles). Visio › Library · Services: the services you have and your country, the free TMDB
+"API Read Access Token" (header only; the short v3 key is turned down), live lists of series and
+films made in the language on your services, a title sheet with where it streams. Beyond the app:
+19–21 general challenges plus a few per language, flip cards, done per day in a synced
+`challenges` table (Dexie v12), a streak. `scripts/mundus/links-check.ts` opens the 75 written
+addresses: none dead (big sites that turn scripts away are listed as blocked). Checked in the browser
+at desktop and phone width, light and dark. **Not checked:** a real TMDB token (the client is tested
+with a fake one), an iPhone (QA-ios.md, 3.0-7). Hungarian, Dutch, Turkish and Indonesian picks were
+written and checked against the web by helper agents; the planned second fact-check of every
+language stopped at a usage limit, so the other picks rest on one careful pass.
+
+**Plan (2026-10-19, built alongside 3.0-6's last parts in a session of its own):**
+1. **A room of its own, /mundus.** In the desktop sidebar after Visio, a globe in the phone's top
+   bar, and a card on Home. Two parts as a segmented control: **Picks** and **Beyond the app**.
+   Tier-2 languages get the tips and Visio's live lists (both automatic), no hand-picked list.
+2. **Picks, by hand, for the twenty languages** (one data file per language, loaded with the page):
+   series, films, books, video games, podcasts, YouTube channels and dictionaries, each with its
+   original title, the English one, creator and year, the level it suits (A1 … C1) and a line on
+   why it helps a learner. Music is Sonus's own "artists to learn with", so the two never differ.
+   Filters by kind and by level. Buttons open things where they live, by search, so a link never
+   goes stale: Netflix, Prime Video, Apple TV, YouTube, Spotify, Apple Podcasts, Goodreads, Amazon
+   (your country's store), Steam, and the dictionary's own site. "Add to Codex" puts a book on the
+   wishlist shelf, "Follow in Sonus" finds the podcast in Apple's directory and follows it, "Songs
+   in Sonus" opens the artist's songs in Sonus › Music, and "Add its subtitles" for a series or film
+   runs Visio's Subtitles-only flow with the title filled in.
+3. **Visio › Services** (Visio gets Library · Services): choose the services you have (Netflix,
+   Max, Disney+, Prime Video, Apple TV+, SkyShowtime, Viaplay, and the free public ones that fit the
+   language: RTVE Play, ARD, ZDF, arte, france.tv, RaiPlay, NRK TV, SVT Play, NPO, and more) and your
+   country (from the device, changeable). Picks known to live on a service (its originals) say so;
+   with a **free TMDB key** (the "API Read Access Token", sent in the Authorization header, never in
+   a web address, kept on the device like the other keys) each pick is looked up in your country
+   (where to watch, a poster), and Services shows **live lists of series and films originally in
+   the language, on your services in your country**, with posters, kept for a day. A title opens
+   a sheet: what it is, which of your services has it (each opens the service), the TMDB watch page,
+   and "Add its subtitles". Checked with curl: TMDB allows web pages to call it with that header.
+4. **Beyond the app:** about twenty playful challenges (switch your phone to the language, with how
+   on iPhone, Android, Windows and in Netflix, YouTube and Steam; label things at home; cook a
+   recipe; think aloud on a walk; one song on repeat for a week; your shopping list; and more),
+   plus a few per language (a café phrase to try, a local radio app, a keyboard to add). Cards that
+   flip to show how, a tap marks one done, a streak of days with a challenge done. Done challenges
+   are a new table, `challenges` (Dexie v12), backed up and synced. Home offers one now and then.
+5. **Check:** a script that opens every explicit link in the picks (dictionaries, channels) and
+   fails on a dead one; tests for links, the TMDB client (fake key) and the streak; typecheck,
+   tests, build; the browser at desktop and phone width, light and dark.
+
+- [x] **Mundus**, a deep-dive page per language: video games, series, films, books, podcasts,
       music, YouTube channels and dictionaries. Picked by hand for all twenty languages, with level
       hints and why each is good for learners.
   - Buttons open them on the web, Spotify, YouTube, Goodreads, Amazon, Netflix, Max, Disney+ and others.
   - "Add to Codex/Sonus/Visio" where it fits.
   - Reached from Home and the sidebar.
   - Its music links to the artists in Sonus › Music (opening their songs there).
-- [ ] **Visio › Services:** choose the services you have (Netflix, Max, Disney+, Prime Video,
+- [x] **Visio › Services:** choose the services you have (Netflix, Max, Disney+, Prime Video,
       Apple TV+, SkyShowtime, Viaplay, and free public ones such as RTVE Play, ARD, arte, NRK).
   - The picks show which of your services carry them.
   - With a free TMDB key, live lists of series and films originally in the language, on your
     services in your country, with posters.
   - Each opens in its app. "Add its subtitles" uses the Subtitles-only flow.
-- [ ] Every language's picks checked: links open, the services match the country, level hints
+- [x] Every language's picks checked: links open, the services match the country, level hints
       make sense.
-- [ ] **Beyond the app: tips that make learning fun,** a short section in Mundus (also offered on
+- [x] **Beyond the app: tips that make learning fun,** a short section in Mundus (also offered on
       Home now and then): small, playful challenges with a tap to mark them done, such as
       switching your phone or a game to the language (with how to do it on iPhone, Windows and in
       popular apps), labelling things at home, cooking a recipe in it, thinking aloud on a walk,

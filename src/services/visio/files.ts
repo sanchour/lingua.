@@ -187,9 +187,10 @@ export async function addVideoLink(lang: string, url: string, title: string): Pr
 
 /**
  * Subtitles without a video (for a show watched elsewhere): read them, mine lines and words.
- * Files with the same name (Spanish + English) become one item.
+ * Files with the same name (Spanish + English) become one item. With a title (Mundus's "Add its
+ * subtitles"), every file belongs to that one title.
  */
-export async function importSubtitlesOnly(lang: string, files: File[]): Promise<{ ids: string[]; skipped: string[] }> {
+export async function importSubtitlesOnly(lang: string, files: File[], title?: string): Promise<{ ids: string[]; skipped: string[] }> {
   const groups = new Map<string, File[]>();
   const skipped: string[] = [];
   for (const f of files) {
@@ -197,7 +198,7 @@ export async function importSubtitlesOnly(lang: string, files: File[]): Promise<
       skipped.push(f.name);
       continue;
     }
-    const { base } = subtitleName(f.name);
+    const base = title ?? subtitleName(f.name).base;
     groups.set(base, [...(groups.get(base) ?? []), f]);
   }
   const ids: string[] = [];
@@ -218,7 +219,7 @@ export async function importSubtitlesOnly(lang: string, files: File[]): Promise<
     const main = tracks.find((t) => t.role === 'target');
     if (!main) continue;
     const name = group[0].name.replace(SUB_EXT, '').replace(/\.[a-z]{2,3}(-[a-z]{2,4})?$/i, '');
-    const id = await addVideo({ lang, title: prettyTitle(name), durationMs: main.cues.at(-1)?.endMs });
+    const id = await addVideo({ lang, title: title ?? prettyTitle(name), durationMs: main.cues.at(-1)?.endMs });
     for (const t of tracks) await saveTrack(id, t.role === 'target' ? lang : GLOSS_LANG, t.role, t.cues, t.source);
     ids.push(id);
   }

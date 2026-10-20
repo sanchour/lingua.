@@ -707,3 +707,15 @@ export interface DailyStat {
   goalMet: Bit;
   updatedAt: number;
 }
+
+// ── Mundus ──────────────────────────────────────────────────────────────────
+
+/** A "beyond the app" challenge done on a day (Lingua 3.0-7). Undoing it soft-deletes the row. */
+export interface ChallengeDone extends Synced {
+  /** `${lang}:${tipId}:${YYYY-MM-DD}` */
+  id: string;
+  lang: Lang;
+  tipId: string;
+  /** YYYY-MM-DD, local time. */
+  date: string;
+}

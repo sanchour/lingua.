@@ -300,3 +300,30 @@ inside (its deck is "From Cantus").
 - **Commute mode:** a light/dark button, and a separate button that keeps the screen on.
 - **Onboarding:** language, level, goal and look (four steps); what you enjoy is set in Ordo ›
   Languages, and Home starts from your reasons.
+
+## Mundus (3.0-7)
+
+- **Picks:** for each of the twenty main languages, series, films, books, music, podcasts, YouTube
+  channels, video games and dictionaries, chosen by hand, each with the level it suits (A1 … C1, in
+  green when it's at your level) and why it helps. Filter by kind and by level.
+- **Every pick opens where it lives:** Netflix, Prime Video, Apple TV, HBO Max, public broadcasters,
+  YouTube, Spotify, Apple Podcasts, Goodreads, Amazon (your country's store), Steam, or the
+  dictionary's site. Books: **Add to Codex** (wishlist). Podcasts: **Follow in Sonus**. Series and
+  films: **Add its subtitles** (Visio's Subtitles-only, named after the pick) and **Find
+  subtitles**. Music: **Songs in Sonus** opens the artist in Sonus › Music.
+- **Beyond the app:** playful challenges (your phone in the language, one app at a time, a game,
+  a keyboard, Siri, labels at home, a recipe, a walk thinking aloud, one song all week, Spotify,
+  the radio while cooking, a café order, table words, counting, voice notes, a language partner…),
+  plus a few per language (a tongue twister, a custom, the Roman date). Cards flip to show how, per
+  device where it matters; mark one done, and a streak counts the days in a row.
+- **On Home:** a card that offers a challenge one day and a pick at your level the next.
+- Beta languages get Beyond the app and Visio's live lists; picks by hand are for the main twenty.
+
+## Visio › Services (3.0-7)
+
+- **Your services and country:** tap the services you have (the big ones, and the free and local
+  ones that suit the language); the country comes from the device and can be changed.
+- **Live lists, with a free TMDB key:** series and films made in the language that stream on your
+  services in your country, with posters; a title shows its story (in the language when TMDB has
+  it), which of your services has it (each opens the service), other ways to watch, and Add its
+  subtitles. Mundus's picks show where they stream for you too. The key stays on the device.

@@ -60,8 +60,13 @@ export interface Settings {
   };
   translation: { chain: Array<'local' | 'mymemory' | 'lingva'>; lingvaHost: string };
   llm: { provider: 'groq' | 'gemini'; model: string };
-  /** Device-only: never leaves this device unless explicitly included in a backup. */
-  apiKeys: { groq: string; gemini: string };
+  /**
+   * Device-only: never leaves this device unless explicitly included in a backup. `tmdb` is TMDB's
+   * "API Read Access Token" (Lingua 3.0-7), sent in the Authorization header.
+   */
+  apiKeys: { groq: string; gemini: string; tmdb: string };
+  /** Visio › Services and Mundus (Lingua 3.0-7): the streaming services you have, and your country ('' = from the device). */
+  streaming: { services: string[]; country: string };
   audio: {
     rate: number;
     skipBackSec: number;
@@ -147,7 +152,8 @@ export const DEFAULT_SETTINGS: Settings = {
   study: { newPerDay: 15, maxReviews: 200, desiredRetention: 0.9, ludusAffectsSchedule: true, autoPromoteMature: true },
   translation: { chain: ['local', 'mymemory', 'lingva'], lingvaHost: 'https://lingva.ml' },
   llm: { provider: 'groq', model: 'llama-3.3-70b-versatile' },
-  apiKeys: { groq: '', gemini: '' },
+  apiKeys: { groq: '', gemini: '', tmdb: '' },
+  streaming: { services: [], country: '' },
   audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 2, repeatGapMs: 1200, whisperModel: 'whisper-large-v3-turbo', downloadProxy: '', transcriber: 'groq', deviceModel: 'base' },
   visio: { native: 'blur', autoPause: false, subtitleScale: 1 },
   voice: { off: false, chosen: {} },

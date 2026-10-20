@@ -52,6 +52,7 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   // Spoken audio is a cache: made again on the other device when needed.
   speech: { policy: 'skip', key: 'id' },
   stations: { policy: 'lww', key: 'id' },
+  challenges: { policy: 'lww', key: 'id' },
 };
 
 const BACKED_UP = (Object.keys(BACKUP_POLICIES) as TableName[]).filter((t) => BACKUP_POLICIES[t].policy !== 'skip');

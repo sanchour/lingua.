@@ -719,3 +719,26 @@ Short records of choices that are not obvious from the code. Newest last.
   doesn't answer once isn't asked again that session.
 - **A click is reported** to radio-browser when a station is played (`/json/url/{id}`), as its
   API asks, since it orders stations by listens.
+
+## 2026-10-20 — Lingua 3.0-7: Mundus and Visio › Services
+
+- **Picks open by search, not by stored links.** A title opens Netflix's, Goodreads', Amazon's,
+  Steam's, Spotify's or YouTube's search for it; only dictionaries and a few sites keep an address
+  (checked by `scripts/mundus/links-check.ts`). Searches can't go stale; deep links do.
+- **A service is named on a pick only when it's the title's home** (its own original, or a public
+  broadcaster's own show). Licences change by country and month, so anything else comes from TMDB
+  for the learner's country, when they add a key.
+- **TMDB with the Read Access Token only.** TMDB's short v3 key works only in a web address, which
+  breaks the rule that keys never travel in one; the long token goes in the Authorization header.
+  It is kept with the other keys (device-only). Answers are cached in localStorage (lists a day,
+  titles a week): a cache, never data the learner owns.
+- **Music in Mundus is Sonus's "artists to learn with"**, imported from `features/cantus/discover.ts`
+  and linked by route (`/sonus?tab=music&q=…`), so the two never disagree.
+- **Challenges are one row per challenge and day** (`challenges`, Dexie v12, synced and backed up,
+  newest edit wins; undoing soft-deletes). Habits count every day they're done, one-offs once.
+- **Dexie v12 before v10 and v11.** 3.0-6's v10 (books) and v11 (chats) may reach `main` after
+  this. Dexie 4.4 patches tables and indexes that a lower, later version declares ("schema patch
+  mode"), so devices already on v12 still get them; only an `upgrade()` callback in v10 or v11
+  would be skipped on such a device, so those versions should add tables and indexes only.
+- **Mundus is a header section** (desktop sidebar under the divider, phone top bar), so the shells
+  needed no changes; Visio got a Library · Services segmented control like Sonus's.

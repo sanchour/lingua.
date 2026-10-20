@@ -1,5 +1,5 @@
 import { memo, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
 import { Captions, Clapperboard, Film, Pickaxe, Play, Subtitles } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -9,7 +9,7 @@ import { useMediaList, usePlaybackMap } from '@/data/media';
 import type { Media, PlaybackProgress } from '@/data/types';
 import { useTrackIndex } from '@/data/video';
 import type { TrackRole } from '@/data/video';
-import { Button, Card, SearchInput, searchKey } from '@/design/primitives';
+import { Button, Card, SearchInput, searchKey, Segmented } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { useJobs } from '@/services/sonus/jobs';
@@ -17,6 +17,7 @@ import { toast } from '@/state/ui';
 import { addVideoFiles, AddVideoMenu } from './library/AddVideoMenu';
 import { Poster } from './library/Poster';
 import { VideoOptions } from './library/VideoOptions';
+import { ServicesTab } from './services/ServicesTab';
 
 const enter = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { ...spring.soft, delay: 0.05 * i } });
 
@@ -27,6 +28,8 @@ export default function VisioPage() {
   const playback = usePlaybackMap();
   const tracks = useTrackIndex();
   const [query, setQuery] = useState('');
+  const [params, setParams] = useSearchParams();
+  const tab = params.get('tab') === 'services' ? 'services' : 'library';
 
   const visible = useMemo(() => {
     const q = searchKey(query.trim());
@@ -38,7 +41,22 @@ export default function VisioPage() {
   return (
     <>
       <PageHeader title="Visio" actions={<AddVideoMenu lang={lang} />} />
-      {videos && !videos.length ? (
+      {/* Your own videos, or the streaming services you have (Lingua 3.0-7). */}
+      <div className="mb-7">
+        <Segmented<'library' | 'services'>
+          block
+          label="Visio sections"
+          value={tab}
+          onChange={(next) => setParams(next === 'library' ? {} : { tab: next }, { replace: true })}
+          options={[
+            { value: 'library', label: 'Library' },
+            { value: 'services', label: 'Services' },
+          ]}
+        />
+      </div>
+      {tab === 'services' ? (
+        <ServicesTab lang={lang} />
+      ) : videos && !videos.length ? (
         <EmptyVisio lang={lang} />
       ) : (
         <>

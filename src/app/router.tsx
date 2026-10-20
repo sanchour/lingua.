@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { AudiobooksPage, BookDetailsPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SongGamesPage, SongPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage } from './pages';
+import { AudiobooksPage, BookDetailsPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SongGamesPage, SongPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage, MundusPage } from './pages';
 import { Root } from './Root';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -43,6 +43,7 @@ export const router = createBrowserRouter(
         { path: 'cantus/spotify', element: <SpotifyCallbackPage /> },
         { path: 'visio', element: <VisioPage /> },
         { path: 'visio/watch/:mediaId', element: <WatchPage /> },
+        { path: 'mundus', element: <MundusPage /> },
         { path: 'ratio', element: <RatioPage /> },
         { path: 'ordo', element: <OrdoPage /> },
         { path: 'ordo/lab', element: <LabPage /> },

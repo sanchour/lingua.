@@ -28,6 +28,7 @@ import { BookCover } from '@/features/codex/library/BookCover';
 import { SongArt } from '@/features/cantus/SongArt';
 import { Artwork } from '@/features/sonus/library/Artwork';
 import { Poster } from '@/features/visio/library/Poster';
+import { MundusHomeCard } from '@/features/mundus/HomeCard';
 import { studyMinutes, useHomeFacts } from './facts';
 import type { HomeFacts } from './facts';
 import { GoalRing } from './GoalRing';
@@ -83,6 +84,9 @@ export default function HomePage() {
           </motion.div>
           <motion.div {...enter(4)}>
             <MilestoneCard lang={language.id} />
+          </motion.div>
+          <motion.div {...enter(5)} className="empty:hidden">
+            <MundusHomeCard lang={language.id} level={language.level} />
           </motion.div>
         </div>
       </div>

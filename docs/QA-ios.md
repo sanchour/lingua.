@@ -260,3 +260,12 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Make a book a course (⋯): a part's end ticks the lesson and stops; ticks on the page work.
 - [ ] With a Groq key: transcribe a part, then ⋯ › Read along with the ebook (added to Codex
       first): the book's sentences light up as they're read.
+## Lingua 3.0-7: Mundus and Visio › Services
+
+- [ ] The globe in the top bar opens Mundus; the kind chips wrap, nothing scrolls sideways.
+- [ ] A pick's Netflix button opens the Netflix app (or its site) on a search for the title.
+- [ ] Add its subtitles: pick a .srt from Files; it opens in Visio under the pick's title.
+- [ ] Follow in Sonus on a podcast: it appears in Sonus › Podcasts.
+- [ ] Beyond the app: tap a card, it flips; the platform tabs and steps fit; Mark done; the streak shows 1.
+- [ ] Visio › Services: choose services; with a TMDB token, the lists and posters load; a title's
+      "Open in Netflix" opens the app.
