@@ -8,7 +8,7 @@ import { tipOfTheDay, tipsFor } from './tips';
 import { GROUP_KIND, inBand, pickOfTheDay, withinReach } from './types';
 import type { PickGroup } from './types';
 
-const MAIN = LANGUAGES.filter((l) => l.tier !== 2).map((l) => l.code);
+const MAIN = LANGUAGES.filter((l) => (l.tier === 1 || l.tier === 2) && !l.soon).map((l) => l.code);
 const LEVELS = new Set(['A1', 'A2', 'B1', 'B2', 'C1']);
 
 describe('picks', () => {

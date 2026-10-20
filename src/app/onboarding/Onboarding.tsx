@@ -87,7 +87,7 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
 
   return (
     <div className="flex min-h-dvh flex-col pt-safe pb-safe">
-      <header className="mx-auto flex w-full max-w-2xl items-center justify-between gap-4 px-6 pt-6">
+      <header className={cx("mx-auto flex w-full items-center justify-between gap-4 px-6 pt-6", step === 0 ? "max-w-5xl" : "max-w-2xl")}>
         <Wordmark />
         {canCancel && (
           <Button variant="ghost" size="sm" onClick={cancel} className="mr-auto">
@@ -108,7 +108,7 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
       </header>
 
       <main className="flex flex-1 justify-center px-5 py-8 sm:items-center">
-        <div className="w-full max-w-2xl">
+        <div className={cx("w-full", step === 0 ? "max-w-5xl" : "max-w-2xl")}>
           <AnimatePresence mode="popLayout" custom={dir} initial={false}>
             <motion.section key={step} custom={dir} variants={slide} initial="enter" animate="center" exit="exit" transition={spring.gentle}>
               {step === 0 && <LanguageStep target={target} native={native} onTarget={setTarget} onNative={setNative} />}
@@ -128,7 +128,7 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
       </main>
 
       <footer className="sticky bottom-0 bg-gradient-to-t from-bg via-bg/95 to-bg/0 px-5 pt-6 pb-5">
-        <div className="mx-auto flex max-w-2xl gap-3">
+        <div className={cx("mx-auto flex gap-3", step === 0 ? "max-w-5xl" : "max-w-2xl")}>
           {step > 0 && (
             <Button variant="secondary" size="lg" onClick={() => go(step - 1)} disabled={busy}>
               Back

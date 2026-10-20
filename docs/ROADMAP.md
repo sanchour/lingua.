@@ -1406,17 +1406,30 @@ and makes 20 with them. The new languages are placeholders for now, as the user 
 | Experimental | Esperanto, Old Norse, Sanskrit, Haitian Creole, Quechua, Maya (Yucatec), Hawaiian, Māori, Irish, Basque | Offered under "Experimental", as tier 4 where the services know the language, less where they don't; said plainly on the language. |
 
 ### 4.0-1 · Languages in tiers, a new language picker, smooth, a new icon, and Lingua+
-- [ ] **Five kinds of language:** the tiers above become one field on each language (`tier: 1 | 2 |
+- [x] **Five kinds of language:** the tiers above become one field on each language (`tier: 1 | 2 |
       3 | 4 | 'x'`, replacing today's `tier?: 1 | 2`), and what a language shows follows from it
       (Cursus for tier 1, the beta notes for 3, the short list of rooms for 4 and experimental).
       The 25 new languages are added as placeholders: name, endonym, script, flags, sample sentence,
       fonts; tier 3's packs come from the existing pack script, tier 4 gets no pack of its own.
-- [ ] **"What will you read?" as a map with a list:** the onboarding page (and Ordo › Languages)
+      *Done (2026-10-20):* `tier: 1 | 2 | 3 | 4 | 'x'` on every language (`core/lang/languages.ts`,
+      with `TIERS` for names and what each comes with); today's fifteen beta languages are tier 3.
+      35 placeholders (5 + 20 + 10, not the 25 the plan said: tier 3's five, tier 4's twenty and
+      the ten experimental) are marked `soon`: they show on the map and in the list, and tapping
+      one says it is on the way instead of choosing it. `AVAILABLE_LANGUAGES` is what can be
+      chosen (35). Flags are drawn for all their countries. *Not done:* the placeholders have no
+      sample sentence, pack or fonts for their scripts yet (they come with their tier).
+- [x] **"What will you read?" as a map with a list:** the onboarding page (and Ordo › Languages)
       shows the world map from 3.0-6's Radio (same drawing, same gestures) with a dot where each
       language is spoken, beside a list on desktop and above it on a phone. The six core languages
       come first as large cards, then tier 2, then the rest in a compact list with a search box
       and the tier shown. Tapping a language flies the map to where it's spoken; tapping a place on
-      the map shows its languages at the top of the list.
+      the map shows its languages at the top of the list. *Done (2026-10-20), in the onboarding
+      page:* `app/onboarding/LanguageMap.tsx` draws Radio's countries with a dot where each
+      language is spoken (its flags' countries; a number where several languages meet), drag to
+      move, ctrl and the wheel or two fingers to zoom, +/−/world buttons; picking a language flies
+      the map to it, tapping a dot or country lists its languages first. The list has Core as
+      large cards, Full as cards, then the rest as compact rows with their tier and a search box.
+      Ordo › Languages still adds another language through the same page.
 - [ ] **Every animation at 60 fps:** find the clicks and transitions that still stutter (the
       Performance lab, a phone and a desktop) and fix them as PERFORMANCE.md says.
 - [ ] **The phone's tab bar in liquid glass,** like the glass slider, on the phone only. Fix the

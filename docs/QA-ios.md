@@ -382,3 +382,12 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] In a language with no grammar progress, Grammatica shows "Know some already?"; the check runs full screen and ends with "Check done"; the topics marked learned show a check.
 - [ ] Ratio › Overview with one language chosen shows the Grammar panel; Tabula's "In Lingua" mentions grammar.
 - [ ] The end of a Ludus lesson offers "Grammar: <topic>".
+
+## Lingua 4.0-1: the language map
+
+- [ ] Onboarding › What will you read?: the map sits above the list; dragging it moves the world,
+      two fingers zoom, the buttons zoom and reset. Scrolling the page by touching the list works.
+- [ ] Tap a language: the map flies to where it is spoken. Tap a dot: "Spoken in …" appears above
+      the list; the cross closes it.
+- [ ] A language marked "Soon" shows a note and Continue stays off.
+- [ ] The search box filters the list; the keyboard doesn't cover the map or the list.

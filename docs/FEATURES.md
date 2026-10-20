@@ -155,6 +155,16 @@ Practise writing in the target language; get corrected, explained and graded.
   forms show what they mean themselves ("ellos" they, "estoy" am), and words the dictionary lacks
   are read through a likely base form before going online. The word's sheet says when it did that.
 
+## Languages in tiers, and the language map (4.0-1)
+
+- **Five kinds of language:** Core (6 languages, with everything), Full (14: everything but a
+  course), Beta (15 today), Basics (20) and Experimental (10). What each comes with is said in the
+  language picker. Beta, Basics and Experimental languages that aren't built yet are shown with
+  "Soon" and can't be chosen.
+- **"What will you read?" is a map with a list:** the world with a dot where each language is
+  spoken. Choose a language and the map flies there; tap a place and its languages come first. The
+  list shows Core as large cards, then Full, then the others in a compact list you can search.
+
 ## Comics in Codex (3.0-6)
 
 - **Add a comic** (Codex › Add › File): "Choose a comic" takes a CBZ (or a CBR made as zip), a PDF,

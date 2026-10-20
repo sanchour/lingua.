@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BookCheck, Download, Languages, Plus, Trash2 } from 'lucide-react';
 import { ENJOYMENTS } from '@/app/onboarding/EnjoyStep';
-import { BETA_INCLUDES, getLanguage, LANGUAGES } from '@/core/lang/languages';
+import { AVAILABLE_LANGUAGES, BETA_INCLUDES, getLanguage } from '@/core/lang/languages';
 import { LEVELS } from '@/core/lang/levels';
 import type { Level } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
@@ -63,7 +63,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
           label="I already speak"
           value={active.native}
           onChange={(native) => void updateLanguage(active.id, { native })}
-          options={LANGUAGES.filter((l) => l.code !== active.id).map((l) => ({ value: l.code, label: `${l.name} · ${l.endonym}` }))}
+          options={AVAILABLE_LANGUAGES.filter((l) => l.code !== active.id).map((l) => ({ value: l.code, label: `${l.name} · ${l.endonym}` }))}
         />
       </div>
 
@@ -78,7 +78,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2 font-semibold">
                   {info?.endonym ?? l.id}
-                  {info?.tier === 2 && (
+                  {info?.tier === 3 && (
                     <span title={BETA_INCLUDES}>
                       <Badge>Beta</Badge>
                     </span>
@@ -127,7 +127,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
           );
         })}
       </ul>
-      {languages.some((l) => getLanguage(l.id)?.tier === 2) && <p className="mt-2 px-1 text-[13px] leading-snug text-ink-soft">{BETA_INCLUDES}</p>}
+      {languages.some((l) => getLanguage(l.id)?.tier === 3) && <p className="mt-2 px-1 text-[13px] leading-snug text-ink-soft">{BETA_INCLUDES}</p>}
       <Button variant="ghost" icon={Plus} className="mt-3" onClick={() => void startAnotherLanguage()}>
         Learn another language
       </Button>

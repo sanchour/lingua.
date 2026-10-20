@@ -13,7 +13,7 @@ const everything = () => true;
 
 describe('radio stations', () => {
   it('finds stations for every language by its names in the directory', () => {
-    for (const l of LANGUAGES) expect(radioNames(l.code).length, l.code).toBeGreaterThan(0);
+    for (const l of LANGUAGES.filter((x) => !x.soon)) expect(radioNames(l.code).length, l.code).toBeGreaterThan(0);
     expect(radioNames('es')).toEqual(['spanish']);
     expect(radioNames('sh')).toEqual(['croatian', 'serbian', 'bosnian', 'montenegrin']);
     expect(radioNames('nb')).toContain('norsk');

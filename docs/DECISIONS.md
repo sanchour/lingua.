@@ -763,6 +763,20 @@ Short records of choices that are not obvious from the code. Newest last.
 - **"Most played by you" counts openings,** one per song page opened; a reopen within a minute (a
   reload, React's double run in development) counts once.
 
+## 2026-10-20 — Lingua 4.0-1: tiers and the language map
+
+- **35 placeholders, not 25.** Tier 3's five new languages, tier 4's twenty and the ten
+  experimental ones make 35; the plan's "25" was a miscount. All are shown and marked `soon`;
+  none can be chosen until its tier's data exists, so no one lands in a language that has no
+  words. `AVAILABLE_LANGUAGES` is the list for everything that needs a real language (the
+  "I already speak" menus, tests).
+- **A language's dots are its flags' countries.** No second table: the countries in `flags`
+  (already there for the flag picker) are where the map puts a dot. Esperanto has none; Latin's
+  laurel isn't a country; both appear in the list only.
+- **The picker has its own map, on Radio's drawing.** It shares the countries and the camera
+  arithmetic (`radio/sky.ts`, `worldMap.ts`), not Radio's component, which is built around
+  stations. The wheel zooms only with ctrl, so scrolling the page never gets caught by the map.
+
 ## 2026-10-19 — A full dictionary from open data (planned for 4.0)
 
 - **"As good as Oxford's," not Oxford's.** Oxford's dictionaries are licensed content, and their API

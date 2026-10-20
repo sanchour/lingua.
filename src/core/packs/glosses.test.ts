@@ -126,7 +126,7 @@ describe.each(Object.keys(READINGS))('the %s readings', (lang) => {
 // Beta languages (3.0-1b) are built without review: their sample sentence must mostly get glosses.
 // Uzbek's Wiktionary is thin (about 2,000 entries) and beta languages get no suffix rules: a third.
 const SAMPLE_SHARE: Record<string, number> = { uz: 0.3 };
-describe.each(LANGUAGES.filter((l) => l.tier === 2).map((l) => l.code))('the beta %s dictionary', (lang) => {
+describe.each(LANGUAGES.filter((l) => l.tier === 3 && !l.soon).map((l) => l.code))('the beta %s dictionary', (lang) => {
   const file = packFile(lang);
   it.skipIf(!existsSync(file))('knows most words of its sample sentence', () => {
     const pack = JSON.parse(gunzipSync(readFileSync(file)).toString('utf8')) as { forms: Array<[string, number[], string]> };

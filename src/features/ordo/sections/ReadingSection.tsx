@@ -17,7 +17,7 @@ import { useDraft } from '../useDraft';
 
 const SCRIPT_NAMES: Record<Script, string> = {
   Latn: 'Latin', Cyrl: 'Cyrillic', Grek: 'Greek', Arab: 'Arabic', Hans: 'Chinese', Hant: 'Traditional Chinese', Jpan: 'Japanese', Kore: 'Hangul',
-  Deva: 'Devanagari', Thai: 'Thai', Taml: 'Tamil', Geor: 'Georgian',
+  Deva: 'Devanagari', Thai: 'Thai', Taml: 'Tamil', Geor: 'Georgian', Beng: 'Bengali', Guru: 'Gurmukhi', Hebr: 'Hebrew', Armn: 'Armenian', Mymr: 'Burmese', Khmr: 'Khmer', Ethi: 'Ethiopic',
 };
 const PREVIEW_SCRIPTS: Script[] = ['Latn', 'Cyrl', 'Grek'];
 
