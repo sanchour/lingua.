@@ -25,6 +25,9 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
   dictionary for the six core languages, the one-screen word drawer, Import a book / Import a comic
   as separate tabs, one memory for every word). 4.0 sorts the languages into four tiers and an
   experimental shelf (the table at the top of "## Lingua 4.0"); only the six core languages get a course.
+- **Lingua 5.1 is planned, not started (2026-10-20):** [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md),
+  steps 5.1-1 … 5.1-10, with the user's decisions at its top. Its Codex step is built together with
+  4.0-2, and 5.1-1 (the new room order: Cursus, Sonus et Visio, Mentis) goes first.
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 

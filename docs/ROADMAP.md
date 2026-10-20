@@ -1562,3 +1562,22 @@ and makes 20 with them. The new languages are placeholders for now, as the user 
 ### 4.0-5 · Lingua 4.0 complete: the full check
 - [ ] Every point of the 4.0 list checked against the app, on a phone and on desktop, light and dark.
 - [ ] The app's version says 4.0. Docs, then commit, push and the live site checked.
+
+## Lingua 5
+
+The user is pasting the Lingua 5 list in halves. **5.1** (the first half, 2026-10-20) is planned in
+detail in [LINGUA-5.1-PLAN.md](LINGUA-5.1-PLAN.md): the user's points, the design of each step, the
+files, the tests, what "done" means, and six decisions for the user at its top (payments, what Max
+is, Max's price, the free/Lingua+ split, the order against Lingua 4.0, the phone's tab bar). Nothing
+is built yet. The steps, ticked here as they finish:
+
+- [ ] 5.1-1 · Rooms in the new order: Cursus, Sonus et Visio, Mentis; the device's light; no more "Ideas from Mundus"
+- [ ] 5.1-2 · Lingua+ (€24.99 once) and Lingua+ Max
+- [ ] 5.1-3 · Onboarding: intro pages, a map without dots, accurate language data, twelve new flags, the new screens
+- [ ] 5.1-4 · Home: Today, Next up, the week, Cursus, Mundus, numbers (the old Home one setting away)
+- [ ] 5.1-5 · Codex (built together with 4.0-2, which changes the same screens)
+- [ ] 5.1-6 · Thesaurus and Ludus: deck list and cards, a much larger Discover, even and varied Ludus
+- [ ] 5.1-7 · Sound: human recordings and a natural on-device voice without a key
+- [ ] 5.1-8 · Keyboard practice in Cursus (tier 1)
+- [ ] 5.1-9 · A touch of the language in the design
+- [ ] 5.1-10 · Lingua 5.1 complete: the full check
