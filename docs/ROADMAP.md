@@ -1388,7 +1388,7 @@ so check in the app's built-in browser.
 ## Lingua 4.0
 
 The user's list for Lingua 4.0 (2026-10-19) is under "Lingua 4.0" in "Lingua updates.txt". It
-comes after Lingua 3.0 is complete (3.0-9). The user asked for at most five steps, so each step
+comes after Lingua 3.0 is complete (3.0-9). On 2026-10-20 the user removed 4.0-3 (the karaoke and song games); its Visio part is Lingua 5.2-4. The user asked for at most five steps, so each step
 combines a lot; each is planned in detail when it starts. Where something can't be done as asked,
 the step says so and what is done instead.
 
@@ -1545,11 +1545,6 @@ free version is v16.
       with their translation, or the sentence you met the word in. **As a card type:** a deck's
       settings have "Card front: The word / A sentence with a gap"; with the second, a word →
       meaning card that has a sentence shows it with the word missing.
-
-### 4.0-3 · Removed (2026-10-20)
-The user removed this step: the karaoke and the song games are dropped. Its Visio part (YouTube,
-the streaming services, the browser extension) moved to Lingua 5.2-4. The number stays so the
-other steps keep theirs.
 
 ### 4.0-4 · Cursus: a course with a clear path, and speaking and writing
 *Cursus becomes a room with tabs in Lingua 5.1-1 (step 2 of [HANDOVER.md](HANDOVER.md)); the
