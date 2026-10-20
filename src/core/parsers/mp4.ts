@@ -142,6 +142,9 @@ function readIlst(b: Uint8Array, root: Box, tags: Mp4Tags) {
   }
 }
 
+/** Untitled chapters are numbered by where they fall, once sorted. */
+const named = (chapters: AudioChapter[]): AudioChapter[] => chapters.map((c, n) => (c.title ? c : { ...c, title: `Chapter ${n + 1}` }));
+
 /** Nero chapters: a list of start times (in 100 ns) and titles. */
 function readChpl(b: Uint8Array, root: Box): AudioChapter[] | null {
   const chpl = path(b, root, 'udta', 'chpl');
@@ -154,9 +157,9 @@ function readChpl(b: Uint8Array, root: Box): AudioChapter[] | null {
     const length = b[i + 8];
     const title = utf8.decode(b.subarray(i + 9, Math.min(chpl.end, i + 9 + length))).trim();
     i += 9 + length;
-    chapters.push({ title: title || `Chapter ${n + 1}`, startMs: Math.round(start / 10_000) });
+    chapters.push({ title, startMs: Math.round(start / 10_000) });
   }
-  return chapters.length > 1 ? chapters.sort((x, y) => x.startMs - y.startMs) : null;
+  return chapters.length > 1 ? named(chapters.sort((x, y) => x.startMs - y.startMs)) : null;
 }
 
 const fullBoxInts = (b: Uint8Array, box: Box | undefined, skip: number): number[] => {
@@ -228,9 +231,11 @@ async function readChapterTrack(b: Uint8Array, root: Box, src: ByteSource): Prom
       const sample = await src.read(sampleOffsets[n], Math.min(size, 2 + 1024));
       const length = Math.min(u16(sample, 0), sample.length - 2);
       const raw = sample.subarray(2, 2 + length);
-      title = (raw[0] === 0xfe && raw[1] === 0xff ? new TextDecoder('utf-16be').decode(raw.subarray(2)) : utf8.decode(raw)).trim();
+      // UTF-8, or UTF-16 told by its byte order mark (either way round, as ffmpeg reads them).
+      const wide = raw[0] === 0xfe && raw[1] === 0xff ? 'utf-16be' : raw[0] === 0xff && raw[1] === 0xfe ? 'utf-16le' : '';
+      title = (wide ? new TextDecoder(wide).decode(raw.subarray(2)) : utf8.decode(raw)).trim();
     }
-    chapters.push({ title: title || `Chapter ${n + 1}`, startMs: Math.round((starts[n] / scale) * 1000) });
+    chapters.push({ title, startMs: Math.round((starts[n] / scale) * 1000) });
   }
-  return chapters.length > 1 ? chapters : null;
+  return chapters.length > 1 ? named(chapters) : null;
 }

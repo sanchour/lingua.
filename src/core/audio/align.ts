@@ -126,6 +126,8 @@ export function alignToBook(cues: readonly Cue[], paragraphs: readonly string[],
   const from = book.findIndex((w) => w.sentence === firstSentence);
   let to = last;
   while (to + 1 < book.length && book[to + 1].sentence === lastSentence) to++;
+  // Words after the last anchor go no later than the end of what was heard (a part may stop mid-sentence).
+  const endOf = said[said.length - 1].ms + Math.max(400, pace);
 
   const at: number[] = [];
   let k = 0;
@@ -135,16 +137,16 @@ export function alignToBook(cues: readonly Cue[], paragraphs: readonly string[],
     const b = known[k + 1];
     if (j < first) at.push(Math.max(0, time.get(first)! - (first - j) * pace));
     else if (time.has(j)) at.push(time.get(j)!);
-    else if (b === undefined) at.push(time.get(a)! + (j - a) * pace);
+    else if (b === undefined) at.push(Math.min(endOf, time.get(a)! + (j - a) * pace));
     else at.push(time.get(a)! + ((time.get(b)! - time.get(a)!) * (j - a)) / (b - a));
   }
-  const endOf = said[said.length - 1].ms + Math.max(400, pace);
 
+  // A sentence's words sit together, so one pass gathers them (a whole audiobook in one file is long).
   const out: Cue[] = [];
-  for (let s = firstSentence; s <= lastSentence; s++) {
+  for (let j = from; j <= to; ) {
+    const s = book[j].sentence;
     const idx: number[] = [];
-    for (let j = from; j <= to; j++) if (book[j].sentence === s) idx.push(j);
-    if (!idx.length) continue;
+    for (; j <= to && book[j].sentence === s; j++) idx.push(j);
     const next = to + 1 > idx[idx.length - 1] + 1 ? at[idx[idx.length - 1] + 1 - from] : endOf;
     const startMs = Math.round(at[idx[0] - from]);
     const endMs = Math.round(Math.max(startMs + 200, next ?? endOf));

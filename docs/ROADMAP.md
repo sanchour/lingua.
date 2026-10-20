@@ -622,6 +622,21 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
    sentences its time, shown in the player in place of Whisper's text. Free courses: Language
    Transfer and the FSI courses, linked per language.
 4. **Conversation**: the corner with prompts and links, and the in-app text chat with a key.
+   *How (planned 2026-10-19):* a room of its own, **Colloquium** (Latin for a conversation), at
+   /colloquium: in the desktop sidebar under the divider, and on a phone from Home (a card, and
+   now and then a "talk for ten minutes" step) rather than one more icon in the top bar. A
+   scenario (café, market, the way, doctor, hotel, job interview, introduce yourself, a meeting,
+   a friendly debate, the news, tell a story, your day, review my words) and how it should go
+   (correct my mistakes after each answer, speak slowly and simply, voice or text) make a prompt
+   written in the language, for the learner's level, with up to ten words due for review and the
+   current grammar topic when Grammatica has one. "Copy and open" puts it on the clipboard and
+   opens ChatGPT, Claude, Gemini or Copilot (their app on a phone), with a line on starting
+   voice there; nothing is sent from Lingua. The core twenty languages get prompts written in
+   the language; beta languages get English prompts that ask for the language. With a Groq or
+   Gemini key, "Chat here": the AI answers in the language (every word taps and holds as in
+   Codex, read aloud with the 3.0-4 voices), each of the learner's messages comes back with its
+   corrections inline, and new words can be saved as cards. Chats are kept (a `chats` table,
+   schema v11, backed up and synced like journal entries) and can be continued or removed.
 
 - [x] **Radio, a real map** (the user's note): the world's countries drawn as shapes (Natural Earth
       data, made small by a script), in the app's own colours, light and dark, with a touch of
@@ -666,12 +681,27 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
       Checked with drawn test pages, in the dev app and in the production build. *Not done:* two
       pages side by side on desktop (the page's words take that place); CBR files that are RAR
       archives (a browser can't open them; the message says to make a CBZ).
-- [ ] **Audiobooks and audio courses in Sonus:** add audio files (MP3, M4A/M4B with chapters) or
+- [x] **Audiobooks and audio courses in Sonus:** add audio files (MP3, M4A/M4B with chapters) or
       folders, or open free audiobooks from LibriVox in the language. Chapters, resume where you
       left off, speed, sleep timer, the mini player. A text alongside when there is one (the
       ebook in Codex, matched by Whisper's timings, so the sentence being read lights up). Audio
       courses (lesson by lesson, with their own order and "lesson done"), and links to good free
-      courses per language.
+      courses per language. *Done (2026-10-20):* Add › "Audiobook or course" (files, or a folder
+      on desktop; parts by track number, else by name; an .m4b or any file with chapters is a
+      one-part audiobook) and "Free audiobooks" (/sonus/audiobooks: LibriVox through archive.org,
+      searchable, plus Language Transfer and FSI per language, and "Add a course"). A book page
+      (/sonus/book/:id) with Continue, the parts (or one file's chapters), lessons to tick,
+      rename, audiobook/course, read along, remove; a shelf in Library, one entry per book in
+      Recently played. In the player: the book in the back link, "Part 3 of 12", the chapter
+      playing, chapters to jump to, part arrows, "Lesson done", and a moon for the sleep timer
+      (5–60 minutes with a fade, end of chapter, end of part; the minutes left on the moon and
+      the mini player). At a part's end an audiobook plays on and a course marks the lesson done
+      and stops; the lock screen's previous and next go by chapter, then part. Read along: pick
+      the ebook in Codex and every part with a transcript gets the book's sentences, timed;
+      new transcripts get them at once; Stop puts Whisper's text back. Checked in the dev app
+      at desktop and phone width with a real LibriVox book streaming from archive.org. *Not
+      checked:* a real M4B or a whole folder of files, read along with a real Whisper
+      transcript (only in tests), playing on into the next part with an iPhone locked.
 - [ ] **Talk or text with an AI:** a "Conversation" corner with ready links and prompts to start a
       voice chat or a text chat in ChatGPT, Claude, Gemini or Copilot (each opens the app or site;
       nothing is sent from Lingua). Prompts per level and theme: a café role-play, a job interview,
@@ -747,76 +777,27 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 
 ### Handover for the Lingua 3.0 session
 
-**Where 3.0-6 stands (2026-10-19, end of the third computer's session; the user continues on
-another account).** Parts 1 and 2 of the 3.0-6 plan are done, on `main` and live: Radio and Music
-(commit 5eb12b2) and comics in Codex (6f8b525). **Part 3, audiobooks and courses, is started but
-not finished:** its plan is written (the "*How (planned 2026-10-19)*" paragraph under "### 3.0-6"
-above), and the first pieces are committed. They are not used by the app yet and have no tests yet.
-Typecheck and the 259 tests pass. Then part 4, conversation, then the step's full check.
-- **Part 3, already in the code (not wired up, not tested):**
-  - `Media` (src/data/types.ts) has `bookId`, `bookKind` ('audiobook' | 'course'), `chapters`
-    (`AudioChapter[]`), `doneAt` (a lesson done) and `readAlongTextId`. `episode` is the part's
-    number. `Transcript` has the source `'book'` and `original` (the Whisper cues it was timed from).
-  - `src/core/parsers/mp4.ts`: `readMp4(blobSource(file))` gives an M4A/M4B's title, artist, album,
-    track, duration, cover and chapters (Nero `chpl`, else the QuickTime chapter track). It reads
-    only `moov` and the chapter samples, by slices.
-  - `src/core/parsers/id3.ts`: now also `track` (TRCK) and `chapters` (CHAP frames).
-  - `src/core/audio/align.ts`: `alignToBook(cues, paragraphs, lang)` gives the book's sentences as
-    timed cues (with word times). It works by unique 4-word runs, or 6 characters for zh/ja/yue/th,
-    kept in order by a longest increasing run, with times filled in between. It returns null when
-    the part isn't found in the book.
-  - `cueIndexAt` (core/audio/cues.ts) now takes anything with `startMs`, so chapters can use it.
-- **Part 3, still to build** (in this order; then tests, docs, commit):
-  1. Tests for mp4.ts (build boxes by hand: ftyp, moov/udta/chpl, a QuickTime text track with
-     tref/chap, stts/stsz/stsc/stco), ID3 CHAP/TRCK, and align.ts (a book of three paragraphs, a
-     transcript of the second with a spoken intro and a few wrong words).
-  2. `src/data/books.ts`: group parts by `bookId` (title = parts' `collection`, author = `artist`),
-     `useBook`, `updateBook` (writes every part), `setLessonDone`, `deleteBook`, `nextPart`.
-  3. Import in `src/services/sonus/files.ts`: read MP4 tags and chapters (and the ID3 track number).
-     Order the parts by track number, else natural name order (`webkitRelativePath` for folders).
-     `addAudio` takes bookId/bookKind/episode/chapters. A single .m4b, or a file with chapters,
-     becomes a one-part audiobook.
-  4. LibriVox (`src/services/sonus/librivox.ts`), checked with curl on 2026-10-19. LibriVox's own
-     API has no CORS, but archive.org does:
-     `https://archive.org/advancedsearch.php?q=collection:librivoxaudio AND language:(spa)&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=downloads&fl[]=runtime&sort[]=downloads desc&rows=30&page=1&output=json`.
-     - Languages are MARC codes: spa 564, deu 847 (+ger), fre 275 (+fra), nld 210 (+dut), por 107,
-       ita 89, rus 76, grc 45, jpn 37, ell 34, pol 31, zho 25 (+chi), heb 24, lat 16, swe 13; almost
-       none for tur, swa, ind, kor, ara, hun.
-     - The parts: `https://archive.org/metadata/{identifier}` → `files`. Take the "64Kbps MP3" files
-       (else "VBR MP3"). Their `title` has HTML entities; the VBR file of the same name has it
-       clean. `track` is "1/30"; `length` is seconds or "mm:ss".
-     - Audio is `https://archive.org/download/{id}/{name}` (CORS open, so Save for offline and
-       Whisper work). The cover is `https://archive.org/services/img/{id}`.
-     - Use bookId `librivox-{identifier}`; the parts are remote items like podcast episodes.
-  5. Engine (`src/services/audio/engine.ts`):
-     - On 'ended', an audiobook plays the next part; a course marks the lesson done and stops.
-     - A sleep timer in `usePlayer` (minutes, end of chapter, end of part), checked in `tick()`
-       with a setTimeout as backup. It is cleared by `closePlayer`.
-  6. UI:
-     - A book page at /sonus/book/:bookId, built like FeedPage: Continue, the parts (or one part's
-       chapters), lesson done, options (rename, audiobook/course, read along, remove).
-     - An "Audiobooks and courses" shelf in LibraryHome. "Your audio" leaves out parts that have a
-       `bookId`.
-     - AddMenu gets "Audiobook or course" (files or a folder, then a title and the kind) and
-       "Free audiobooks".
-     - A /sonus/audiobooks page: LibriVox search, plus free courses.
-     - In the player: the part and chapter, a chapters list, next and previous part, a sleep (moon)
-       button in Transport's second row, and the back link to the book.
-     - Free courses, all checked live:
-       - Language Transfer: `https://www.languagetransfer.org/` + complete-spanish, french,
-         german, italian, greek, turkish, swahili, arabic.
-       - FSI: `https://fsi-languages.yojik.eu/languages/FSI/fsi-{name}.html` for french, german,
-         italian, portuguese, russian, greek, swedish, hungarian, norwegian, turkish, swahili,
-         arabic, chinese-mandarin, japanese, korean, polish, hindi, tagalog, thai, persian, czech,
-         romanian, serbo-croatian, vietnamese. Spanish is `fsi-spanish-index.html`.
-  7. Read along: on the book page, pick a Codex text. For each part with a transcript, run
-     `alignToBook` on the text's p/h blocks (`textChapters`). Save the result with source 'book'
-     and `original`, then call `setCues`. Also run it after `startTranscription` in
-     services/sonus/jobs.ts when the part has `readAlongTextId`.
+**Where 3.0-6 stands (2026-10-20).** Parts 1, 2 and 3 are done and live: Radio and Music
+(5eb12b2), comics in Codex (6f8b525), and audiobooks and courses (see the ticked item under
+"### 3.0-6" for what it does). **Next: part 4, the conversation corner** (its plan is the
+"*How (planned 2026-10-19)*" paragraph under item 4 of the 3.0-6 plan), then the step's full check.
+Two other sessions work on `main` at the same time: 3.0-7 and 3.0-8 in a worktree of their own,
+and a Cantus redesign from the user's design handoff ("### Cantus overhaul (design handoff)").
+Rebase onto `origin/main` before every push. Dexie versions: v10 is audiobooks (`media.bookId`),
+v11 is kept for part 4's chats, the 3.0-7/3.0-8 session starts at v12.
+- **Audiobooks, where things are:** `src/data/books.ts` (a book is its parts), import in
+  `services/sonus/files.ts` (`importBook`, `readAudioTags`), LibriVox and the free courses in
+  `services/sonus/librivox.ts` and `courses.ts`, the sleep timer's rules in `core/audio/sleep.ts`
+  with the engine's part and chapter handling in `services/audio/engine.ts`, read along in
+  `services/sonus/readAlong.ts`; the pages are `features/sonus/BookPage.tsx`,
+  `AudiobooksPage.tsx`, `library/AddBookDrawer.tsx`, and `player/BookBar.tsx`, `Chapters.tsx`,
+  `SleepTimer.tsx`.
 - **Part 4:** the conversation corner (prompts and links, nothing sent from Lingua) and the
   in-app text chat with an AI key (`src/services/llm`).
 - **Not checked with real things yet:**
   - Live text with a real Groq key (the no-key path is checked).
+  - Audiobooks: a real M4B with chapters, a folder of MP3s, read along with a real transcript,
+    and playing on into the next part with an iPhone locked (QA-ios.md, 3.0-6 part 3).
   - Comics from a real CBZ (checked with drawn test pages, in dev and in the production build).
   - The radio map, station page and comics on an iPhone (QA-ios.md, 3.0-6 parts 1 and 2).
 - **Testing tips from this session:**

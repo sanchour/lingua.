@@ -4,6 +4,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { nextSentence, previousSentence, setRate, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
+import { SleepButton } from './SleepTimer';
 
 export const RATES = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5];
 export const rateLabel = (r: number) => `${r}×`;
@@ -24,7 +25,7 @@ function Round({ icon: Icon, label, onClick, disabled, children }: { icon: Lucid
   );
 }
 
-/** Play/pause with skips, sentence steps, speed, sentence repeat and the way into commute mode. */
+/** Play/pause with skips, sentence steps, speed, sentence repeat, the sleep timer and the way into commute mode. */
 export function Transport({ className }: { className?: string }) {
   const status = usePlayer((s) => s.status);
   const hasCues = usePlayer((s) => Boolean(s.cues?.length));
@@ -61,7 +62,8 @@ export function Transport({ className }: { className?: string }) {
         <Round icon={SkipForward} label="Next sentence" onClick={nextSentence} disabled={!hasCues} />
       </div>
 
-      <div className="mt-3 flex items-center justify-center gap-2">
+      {/* A very narrow phone wraps these rather than overflowing. */}
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
         <Popover
           label="Speed"
           placement="top"
@@ -107,6 +109,7 @@ export function Transport({ className }: { className?: string }) {
           <Repeat size={14} aria-hidden />
           {repeat > 1 ? `${repeat}×` : 'Repeat'}
         </button>
+        <SleepButton />
         <Link to="/sonus/commute" className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold transition-colors hover:border-line-strong">
           <Bike size={15} aria-hidden /> Commute
         </Link>

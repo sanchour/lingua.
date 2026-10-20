@@ -3,7 +3,10 @@
 // the playhead with `onTime` (called every frame while visible, on `timeupdate` while hidden).
 import { create } from 'zustand';
 import { cueIndexAt } from '@/core/audio/cues';
+import { fadeVolume, sleepAfterSeek, sleepDue, startSleep } from '@/core/audio/sleep';
+import type { SleepChoice, SleepTimer } from '@/core/audio/sleep';
 import { recordSession } from '@/data/activity';
+import { nextPart, setLessonDone } from '@/data/books';
 import { db } from '@/data/db';
 import { audioBlob, getTranscript, markPlayed, savePlayback } from '@/data/media';
 import { getSettings } from '@/data/settings';
@@ -27,6 +30,8 @@ export interface PlayerState {
   gapMs: number;
   /** A live station's song or show, when it shares one. */
   nowPlaying?: string;
+  /** The sleep timer, while one is set. */
+  sleep: SleepTimer | null;
 }
 
 export const usePlayer = create<PlayerState>(() => ({
@@ -40,6 +45,7 @@ export const usePlayer = create<PlayerState>(() => ({
   skipBackSec: 10,
   skipFwdSec: 30,
   gapMs: 1200,
+  sleep: null,
 }));
 
 const get = usePlayer.getState;
@@ -61,6 +67,11 @@ let cueIndex = -1;
 let repeatsDone = 0;
 let gapTimer = 0;
 let pausingForGap = false;
+
+// Sleep timer
+let sleepTimeout = 0;
+// The volume before a timer in minutes began to fade it, put back once it stops.
+let volumeBeforeFade: number | null = null;
 
 // Listening time (for statistics and the daily goal)
 let playingSince = 0;
@@ -101,22 +112,21 @@ function element(): HTMLAudioElement {
     updatePositionState(a);
   });
   a.addEventListener('pause', () => {
-    if (pausingForGap || !get().media) return;
-    if (get().media?.kind === 'radio') pausedAt = Date.now();
-    stopTicking();
-    countListening();
-    set({ status: 'paused' });
-    void persist();
-    void flushListening();
-    updatePositionState(a);
+    if (!pausingForGap) paused();
   });
   a.addEventListener('ended', () => {
     const media = get().media;
+    // A timer for the end of this chapter or part stops here, before a book's next part starts.
+    const sleepNow = sleepDue(get().sleep, { now: Date.now(), positionMs: a.currentTime * 1000, chapters: media?.chapters, ended: true });
+    if (sleepNow) setSleep(null);
     stopTicking();
     countListening();
     set({ status: 'paused' });
+    // So moving on to the next part doesn't save the end as a place to resume.
+    lastPosition = a.currentTime * 1000;
     if (media && media.kind !== 'radio') void savePlayback(media.id, 0, a.playbackRate, true);
     void flushListening();
+    if (media?.bookId) void partEnded(media, !sleepNow);
   });
   a.addEventListener('durationchange', () => {
     if (Number.isFinite(a.duration)) set({ durationMs: Math.round(a.duration * 1000) });
@@ -146,6 +156,19 @@ function element(): HTMLAudioElement {
   });
   audio = a;
   return a;
+}
+
+/** Playback stopped (a real pause, not the gap between two repeats): save it and say so. */
+function paused() {
+  const a = audio;
+  if (!a || !get().media) return;
+  if (get().media?.kind === 'radio') pausedAt = Date.now();
+  stopTicking();
+  countListening();
+  set({ status: 'paused' });
+  void persist();
+  void flushListening();
+  updatePositionState(a);
 }
 
 /** Why playback failed, in words for the item that failed. */
@@ -183,6 +206,7 @@ function tick() {
   if (!a) return;
   const ms = a.currentTime * 1000;
   handleRepeat(ms);
+  checkSleep(ms);
   for (const fn of listeners) fn(ms);
   const now = performance.now();
   if (!a.paused && now - lastSaved > 5000) {
@@ -268,6 +292,49 @@ function cancelGap() {
   pausingForGap = false;
 }
 
+// ── Sleep timer ──────────────────────────────────────────────────────────────
+
+/** Pauses when the sleep timer is due; a timer in minutes fades the volume out over its last seconds. */
+function checkSleep(ms: number) {
+  const a = audio;
+  const { sleep, media } = get();
+  if (!a || !sleep) return;
+  const now = Date.now();
+  if (sleepDue(sleep, { now, positionMs: ms, chapters: media?.chapters })) {
+    pause();
+    setSleep(null);
+  } else if (sleep.mode === 'minutes' && !a.paused) {
+    // iOS ignores the volume, so there it simply stops.
+    const level = fadeVolume(sleep.endsAt, now);
+    if (level < 1) {
+      volumeBeforeFade ??= a.volume;
+      a.volume = volumeBeforeFade * level;
+    }
+  }
+}
+
+function setSleep(sleep: SleepTimer | null) {
+  window.clearTimeout(sleepTimeout);
+  sleepTimeout = 0;
+  if (audio && volumeBeforeFade !== null) audio.volume = volumeBeforeFade;
+  volumeBeforeFade = null;
+  // Frames stop and timeupdate slows down with the screen locked; this stops it on time anyway
+  // (a moment late, so it is surely due by the clock).
+  if (sleep?.mode === 'minutes') sleepTimeout = window.setTimeout(() => checkSleep(currentMs()), Math.max(0, sleep.endsAt - Date.now()) + 250);
+  set({ sleep });
+}
+
+/** Stops playback after some minutes, at the end of this chapter, or at the end of this part. */
+export function setSleepTimer(choice: SleepChoice): void {
+  const { media } = get();
+  if (!media) return;
+  setSleep(startSleep(choice, { now: Date.now(), positionMs: currentMs(), chapters: media.chapters }));
+}
+
+export function cancelSleepTimer(): void {
+  setSleep(null);
+}
+
 // ── Saving ───────────────────────────────────────────────────────────────────
 
 async function persist() {
@@ -341,7 +408,9 @@ export async function loadMedia(media: Media, options: { autoplay?: boolean; sta
     gapMs: settings.audio.repeatGapMs,
     repeatTimes: Math.max(2, settings.audio.sentenceRepeat),
   });
-  setupMediaSession(media, { play, pause, skip, seek, previous: previousSentence, next: nextSentence });
+  // In a book, previous and next on the lock screen go by chapter and part instead of by sentence.
+  const steps = media.bookId ? { previous: () => bookStep(-1), next: () => bookStep(1) } : { previous: previousSentence, next: nextSentence };
+  setupMediaSession(media, { play, pause, skip, seek, ...steps });
   void markPlayed(media.id);
   if (options.autoplay) await play();
 }
@@ -389,8 +458,11 @@ export async function play(): Promise<void> {
 }
 
 export function pause(): void {
+  // Between two repeats the element is paused already, so no 'pause' event will come.
+  const betweenRepeats = Boolean(gapTimer);
   cancelGap();
   audio?.pause();
+  if (betweenRepeats) paused();
 }
 
 export function toggle(): void {
@@ -406,9 +478,11 @@ export function seek(ms: number): void {
   cancelGap();
   const max = Number.isFinite(a.duration) ? a.duration * 1000 : Infinity;
   a.currentTime = Math.max(0, Math.min(ms, max)) / 1000;
-  const cues = get().cues;
+  const { cues, sleep, media } = get();
   cueIndex = cues ? cueIndexAt(cues, ms) : -1;
   repeatsDone = 0;
+  const moved = sleepAfterSeek(sleep, a.currentTime * 1000, media?.chapters);
+  if (moved !== sleep) set({ sleep: moved });
   for (const fn of listeners) fn(a.currentTime * 1000);
   updatePositionState(a);
 }
@@ -478,6 +552,8 @@ export async function closePlayer(options: { keepElement?: boolean } = {}): Prom
     await flushListening();
     a.pause();
   }
+  // Opening another item (keepElement) keeps a timer in minutes; a chapter's or a part's ends here.
+  if (!options.keepElement || get().sleep?.mode !== 'minutes') setSleep(null);
   stopTicking();
   if (sourceUrl) URL.revokeObjectURL(sourceUrl);
   sourceUrl = null;
@@ -488,4 +564,47 @@ export async function closePlayer(options: { keepElement?: boolean } = {}): Prom
   setupMediaSession(null);
   pausedAt = 0;
   set({ media: null, status: 'idle', cues: null, error: undefined, durationMs: 0, nowPlaying: undefined });
+}
+
+// ── Books ────────────────────────────────────────────────────────────────────
+
+/** A book's part played to its end: a course's lesson is done; an audiobook goes on to the next part. */
+async function partEnded(media: Media, goOn: boolean): Promise<void> {
+  // Read again: the book may have become a course (or an audiobook) while it played.
+  const part = (await db.media.get(media.id)) ?? media;
+  if (part.bookKind === 'course') return setLessonDone(part.id, true);
+  const next = goOn ? await nextPart(part) : null;
+  if (next && get().media?.id === media.id) await loadMedia(next, { autoplay: true, startMs: 0 });
+}
+
+/** Opens the next (or previous) part of the book that's open, from its start; it plays on if it was playing. */
+export async function playPart(step: 1 | -1): Promise<void> {
+  const { media, status } = get();
+  if (!media?.bookId) return;
+  unlockAudio();
+  const part = await nextPart(media, step);
+  if (part && get().media?.id === media.id) await loadMedia(part, { autoplay: status === 'playing', startMs: 0 });
+}
+
+/** Jumps to one of the item's chapters (its index in `media.chapters`). */
+export function seekChapter(index: number): void {
+  const chapter = get().media?.chapters?.[index];
+  if (chapter) seek(chapter.startMs);
+}
+
+/** Previous and next in a book (lock screen, headphones): by chapter inside the file, else by part. */
+function bookStep(step: 1 | -1) {
+  const chapters = get().media?.chapters ?? [];
+  const ms = currentMs();
+  const i = cueIndexAt(chapters, ms);
+  if (step === 1) {
+    if (chapters[i + 1]) seekChapter(i + 1);
+    else void playPart(1);
+    return;
+  }
+  // Back to the start of this chapter (or part), or to the one before when it only just began.
+  const start = i >= 0 ? chapters[i].startMs : 0;
+  if (ms - start > 3000) seek(start);
+  else if (i > 0) seekChapter(i - 1);
+  else void playPart(-1);
 }

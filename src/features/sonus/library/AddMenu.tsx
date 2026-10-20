@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { FileAudio, Plus, Rss, Search } from 'lucide-react';
+import { BookHeadphones, FileAudio, LibraryBig, Plus, Rss, Search } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { addSpotify } from '@/data/media';
 import { useLayout } from '@/design/hooks/useLayout';
@@ -10,8 +10,9 @@ import { AUDIO_ACCEPT, importAudioFiles } from '@/services/sonus/files';
 import { subscribe } from '@/services/sonus/podcasts';
 import { parseSpotifyLink, spotifyInfo } from '@/services/sonus/spotify';
 import { toast } from '@/state/ui';
+import { AddBookDrawer } from './AddBookDrawer';
 
-type Choice = 'files' | 'feed' | 'spotify' | 'discover';
+type Choice = 'files' | 'book' | 'free' | 'feed' | 'spotify' | 'discover';
 
 const SpotifyGlyph: LucideIcon = (({ size = 18, className }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" className={className} aria-hidden>
@@ -22,7 +23,9 @@ const SpotifyGlyph: LucideIcon = (({ size = 18, className }: { size?: number; cl
 
 const OPTIONS: Array<{ id: Choice; icon: LucideIcon; title: string; detail: string }> = [
   { id: 'discover', icon: Search, title: 'Find a podcast', detail: 'Search shows for learners and natives' },
-  { id: 'files', icon: FileAudio, title: 'Audio files', detail: 'MP3, M4A and more: lessons, audiobooks' },
+  { id: 'files', icon: FileAudio, title: 'Audio files', detail: 'MP3, M4A and more, one item each' },
+  { id: 'book', icon: BookHeadphones, title: 'Audiobook or course', detail: 'Files or a folder: parts in order, chapters kept' },
+  { id: 'free', icon: LibraryBig, title: 'Free audiobooks', detail: 'LibriVox, read by volunteers' },
   { id: 'feed', icon: Rss, title: 'Podcast address', detail: 'Follow any show by its RSS link' },
   { id: 'spotify', icon: SpotifyGlyph, title: 'Spotify link', detail: 'Episodes, shows and playlists' },
 ];
@@ -33,6 +36,7 @@ export function AddMenu({ lang, onDiscover }: { lang: string; onDiscover: () => 
   const navigate = useNavigate();
   const [sheet, setSheet] = useState(false);
   const [link, setLink] = useState<'feed' | 'spotify' | null>(null);
+  const [book, setBook] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const addFiles = async () => {
@@ -53,6 +57,8 @@ export function AddMenu({ lang, onDiscover }: { lang: string; onDiscover: () => 
     close();
     if (choice === 'files') void addFiles();
     else if (choice === 'discover') onDiscover();
+    else if (choice === 'book') setBook(true);
+    else if (choice === 'free') navigate('/sonus/audiobooks');
     else setLink(choice);
   };
 
@@ -100,6 +106,7 @@ export function AddMenu({ lang, onDiscover }: { lang: string; onDiscover: () => 
         </>
       )}
       <LinkDrawer lang={lang} kind={link} onClose={() => setLink(null)} />
+      <AddBookDrawer lang={lang} open={book} onClose={() => setBook(false)} />
     </>
   );
 }

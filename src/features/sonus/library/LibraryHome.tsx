@@ -2,7 +2,9 @@ import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { ChevronRight, FileAudio, Headphones, Music2, Radio, Search } from 'lucide-react';
+import { BookHeadphones, ChevronRight, FileAudio, Headphones, Music2, Radio, Search } from 'lucide-react';
+import { useBooks } from '@/data/books';
+import type { Book } from '@/data/books';
 import { useSavedStations } from '@/data/radio';
 import { useRecentSongs, useSavedSongs } from '@/data/songs';
 import { episodeMedia } from '@/data/media';
@@ -46,6 +48,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
   const saved = useSavedSongs(lang);
   const recentSongs = useRecentSongs(lang, 12);
   const savedStations = useSavedStations(lang);
+  const books = useBooks(lang);
   const stations = savedStations?.filter((s) => s.favorite);
   const onAir = usePlayer((p) => (p.media?.kind === 'radio' ? p.media.id : null));
   const navigate = useNavigate();
@@ -53,7 +56,12 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
   // Songs, episodes and stations played lately, in one row.
   const recent = useMemo(() => {
     const songs = (recentSongs ?? []).map((s) => ({ at: s.lastPlayedAt ?? 0, song: s }) as const);
-    const items = media.filter((m) => m.lastPlayedAt && m.kind !== 'video').map((m) => ({ at: m.lastPlayedAt!, media: m }) as const);
+    const seenBooks = new Set<string>();
+    const items = media
+      .filter((m) => m.lastPlayedAt && m.kind !== 'video')
+      .sort((a, b) => b.lastPlayedAt! - a.lastPlayedAt!)
+      .filter((m) => !m.bookId || (!seenBooks.has(m.bookId) && Boolean(seenBooks.add(m.bookId))))
+      .map((m) => ({ at: m.lastPlayedAt!, media: m }) as const);
     const radios = (savedStations ?? []).filter((s) => s.playedAt).map((s) => ({ at: s.playedAt!, station: s }) as const);
     return [...songs, ...items, ...radios].sort((a, b) => b.at - a.at).slice(0, 14);
   }, [recentSongs, media, savedStations]);
@@ -68,6 +76,9 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
         .slice(0, 5),
     [feeds],
   );
+
+  // A book's parts live on its own shelf.
+  const own = visible.filter((m) => !m.bookId);
 
   if (!saved || !recentSongs) return null;
   if (!saved.length && !recent.length && !feeds.length && !media.length) return <EmptyLibrary lang={lang} onMusic={onMusic} onPodcasts={onPodcasts} />;
@@ -108,6 +119,16 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
                       <Music2 size={12} className="shrink-0 text-[var(--cantus-text)]" aria-hidden /> {r.song.artist}
                     </span>
                   </Link>
+                ) : r.media.bookId ? (
+                  <Link to={`/sonus/book/${r.media.bookId}`} className="group block">
+                    <Artwork title={r.media.collection ?? r.media.title} coverBlobId={r.media.coverBlobId} coverUrl={r.media.coverUrl} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
+                    <span lang={r.media.lang} className="mt-1.5 block truncate text-[13.5px] font-semibold">
+                      {r.media.collection ?? r.media.title}
+                    </span>
+                    <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
+                      <BookHeadphones size={12} className="shrink-0 text-sage-text" aria-hidden /> {r.media.title}
+                    </span>
+                  </Link>
                 ) : (
                   <Link to={`/sonus/play/${r.media.id}`} className="group block">
                     <Artwork title={r.media.title} coverBlobId={r.media.coverBlobId} coverUrl={r.media.coverUrl} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
@@ -145,6 +166,18 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
         )}
       </Shelf>
 
+      {books && books.length > 0 && (
+        <Shelf title="Audiobooks and courses" more={{ label: 'Find more', onClick: () => navigate('/sonus/audiobooks') }}>
+          <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
+            {books.map((b) => (
+              <li key={b.id} className="w-32 shrink-0 snap-start sm:w-36">
+                <BookTile book={b} progress={playback} />
+              </li>
+            ))}
+          </ul>
+        </Shelf>
+      )}
+
       {stations && stations.length > 0 && (
         <Shelf title="Your stations" more={{ label: 'All radio', onClick: onRadio }}>
           <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
@@ -173,16 +206,38 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
         </Shelf>
       )}
 
-      {media.length > 0 && (
+      {own.length > 0 && (
         <Shelf title="Your audio">
           <div className="-mx-2 flex flex-col">
-            {visible.map((m) => (
+            {own.map((m) => (
               <MediaRow key={m.id} media={m} progress={playback?.get(m.id)} hasTranscript={Boolean(transcribed?.has(m.id))} />
             ))}
           </div>
         </Shelf>
       )}
     </div>
+  );
+}
+
+function BookTile({ book, progress }: { book: Book; progress?: Map<string, PlaybackProgress> }) {
+  const where =
+    book.kind === 'course'
+      ? `${book.done} of ${book.parts.length} lessons done`
+      : book.parts.length > 1
+        ? `Part ${Math.max(1, book.parts.findIndex((p) => p.lastPlayedAt === book.lastPlayedAt) + 1)} of ${book.parts.length}`
+        : progress?.get(book.parts[0].id)?.completed
+          ? 'Finished'
+          : (book.author ?? 'Audiobook');
+  return (
+    <Link to={`/sonus/book/${book.id}`} className="group block">
+      <Artwork title={book.title} coverBlobId={book.coverBlobId} coverUrl={book.coverUrl} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
+      <span lang={book.lang} className="mt-1.5 block truncate text-[13.5px] font-semibold">
+        {book.title}
+      </span>
+      <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
+        <BookHeadphones size={12} className="shrink-0 text-sage-text" aria-hidden /> {where}
+      </span>
+    </Link>
   );
 }
 
@@ -239,7 +294,7 @@ function EmptyLibrary({ lang, onMusic, onPodcasts }: { lang: string; onMusic: ()
       </div>
       <h2 className="font-serif text-2xl font-semibold">Your listening room is quiet</h2>
       <p className="mt-2 max-w-sm text-[15px] leading-relaxed text-ink-soft">
-        Songs to sing along with, podcasts to follow, or your own audio: lessons, audiobooks, recordings. Lyrics and transcripts light up as they play.
+        Songs to sing along with, podcasts to follow, free audiobooks, or your own audio: courses, recordings. Lyrics and transcripts light up as they play.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
         <button type="button" onClick={onMusic} className={buttonClasses('primary', 'md')}>

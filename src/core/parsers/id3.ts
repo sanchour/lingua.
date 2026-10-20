@@ -16,7 +16,9 @@ const uint32 = (b: Uint8Array, i: number) => ((b[i] << 24) | (b[i + 1] << 16) | 
 const uint24 = (b: Uint8Array, i: number) => (b[i] << 16) | (b[i + 1] << 8) | b[i + 2];
 
 function decode(bytes: Uint8Array, encoding: number): string {
-  const label = encoding === 1 ? 'utf-16' : encoding === 2 ? 'utf-16be' : encoding === 3 ? 'utf-8' : 'latin1';
+  // Encoding 1 is UTF-16 with a byte order mark, which may be big-endian ('utf-16' alone means little).
+  const bigEndian = encoding === 2 || (encoding === 1 && bytes[0] === 0xfe && bytes[1] === 0xff);
+  const label = bigEndian ? 'utf-16be' : encoding === 1 ? 'utf-16le' : encoding === 3 ? 'utf-8' : 'latin1';
   return new TextDecoder(label).decode(bytes).replace(/\0+$/, '').replace(/\0/g, ' / ').trim();
 }
 
@@ -69,7 +71,7 @@ export function readId3(bytes: Uint8Array): AudioTags {
           if (!subSize) break;
           j += 10 + subSize;
         }
-        chapters.push({ title: title || `Chapter ${chapters.length + 1}`, startMs });
+        chapters.push({ title, startMs });
         break;
       }
       case 'TIT2':
@@ -101,6 +103,7 @@ export function readId3(bytes: Uint8Array): AudioTags {
       }
     }
   }
-  if (chapters.length > 1) tags.chapters = chapters.sort((a, b) => a.startMs - b.startMs);
+  // Untitled chapters are numbered by where they fall, once sorted.
+  if (chapters.length > 1) tags.chapters = chapters.sort((a, b) => a.startMs - b.startMs).map((c, n) => (c.title ? c : { ...c, title: `Chapter ${n + 1}` }));
   return tags;
 }

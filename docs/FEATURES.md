@@ -165,6 +165,25 @@ Practise writing in the target language; get corrected, explained and graded.
   back. "Read the bubbles again" (the scan button) when a page came out wrong.
 - Pages read count as reading in Ratio, and the comic remembers its page.
 
+## Audiobooks and courses in Sonus (3.0-6)
+
+- **Add one** (Sonus › Add): "Audiobook or course" takes several files or, on desktop, a folder;
+  parts play in track order (else by name), chapters inside the files are kept, and the title
+  comes from the files. An .m4b added as plain audio becomes an audiobook too. "Free
+  audiobooks" opens LibriVox's books in the language (search by title or author) and links to
+  good free courses (Language Transfer, the FSI courses), with "Add a course" for your own.
+- **A book's page:** Continue (the part you were on, or a course's first lesson not done), the
+  parts with their progress, or one file's chapters; tick a course's lessons done. The ⋯ menu
+  renames it, makes it a course or an audiobook, reads it along with an ebook, or removes it.
+  Library has a shelf of them.
+- **Listening:** the player shows the part and the chapter playing, a chapters list to jump to,
+  the previous and next part, and "Lesson done" in a course. At a part's end an audiobook plays
+  the next one; a course stops and ticks the lesson. The moon sets a sleep timer: 5–60 minutes
+  (it fades out), the end of the chapter or the end of the part; the minutes left show on it.
+- **Read along:** pick the book's ebook in Codex and every part with a transcript shows the
+  book's own sentences instead of Whisper's, lighting up as they're read, each word working as
+  in Codex. Parts transcribed later get them at once; Stop goes back to Whisper's text.
+
 ## Ordo in Lingua 2.0 — settings by group, with search (2.0-3)
 
 - **Eight groups**, learning first (Reading, Study and cards, Listening, Languages), then the app

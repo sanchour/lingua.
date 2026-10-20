@@ -1,6 +1,7 @@
 // Downloads, transcriptions and subtitle translations run in the background with their progress in a small store, so a
 // row, the player and the mini player can all show them and leaving the page doesn't stop them.
 import { create } from 'zustand';
+import { db } from '@/data/db';
 import { attachDownload, saveTranscript } from '@/data/media';
 import type { Cue, Media } from '@/data/types';
 import { setCues } from '@/services/audio/engine';
@@ -8,6 +9,7 @@ import { transcribe, TranscribeError } from '@/services/transcribe/groq';
 import { makeNativeTrack, subtitleSized } from '@/services/visio/subtitles';
 import { toast } from '@/state/ui';
 import { downloadBlob, NetError } from './net';
+import { readAlongPart } from './readAlong';
 
 interface JobsState {
   downloads: Record<string, number>;
@@ -82,7 +84,19 @@ export async function startTranscription(media: Media): Promise<boolean> {
     const video = media.kind === 'video';
     await saveTranscript(media.id, media.lang, video ? subtitleSized(cues) : cues, source);
     if (!video) setCues(media.id, cues);
-    toast(video ? `Subtitles for “${media.title}” are ready.` : `The transcript for “${media.title}” is ready.`, { tone: 'success' });
+    // A part of a book read along with its ebook gets the book's sentences at once.
+    const textId = (await db.media.get(media.id))?.readAlongTextId;
+    const timed = textId ? await readAlongPart(media, textId) : null;
+    toast(
+      video
+        ? `Subtitles for “${media.title}” are ready.`
+        : timed === 'timed'
+          ? `“${media.title}” now reads along with the book.`
+          : timed
+            ? `The transcript for “${media.title}” is ready, but the book’s text wasn’t found in it.`
+            : `The transcript for “${media.title}” is ready.`,
+      { tone: 'success' },
+    );
     return true;
   } catch (error) {
     toast(error instanceof Error ? error.message : 'The transcript couldn’t be made.', { tone: 'error', duration: 8000 });

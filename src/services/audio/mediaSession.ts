@@ -1,5 +1,5 @@
 // Lock-screen and headphone controls (Media Session API): title and artwork, play/pause, skips,
-// and previous/next sentence when the item has a transcript.
+// and previous/next: a sentence when the item has a transcript, a chapter or part in a book.
 import { blobUrl } from '@/data/library';
 import type { Media } from '@/data/types';
 

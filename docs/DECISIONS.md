@@ -583,6 +583,30 @@ Short records of choices that are not obvious from the code. Newest last.
   in Library) and Music (explore shelves instead of the "Songs you love" card); they are part of
   3.0-6. Older entries that say "3.0-6" for grammar or "3.0-8" for comics meant the old order.
 
+## 2026-10-20 — Lingua 3.0-6, part 3: audiobooks and courses
+
+- **A book is its parts.** Each part is an ordinary Sonus item with a shared `bookId` and its
+  number in `episode`, so downloads, transcripts, Whisper, sync and backups needed no change.
+  The book's title and author are its parts' `collection` and `artist`; renaming writes every
+  part. A Dexie index on `bookId` (schema v10) finds a book's parts.
+- **LibriVox through archive.org.** LibriVox's own API doesn't let web pages read it; archive.org
+  holds its recordings and its search, file lists and downloads all allow apps. A book's parts
+  stream like podcast episodes (the 64 kbps copies, plenty for speech) and can be saved for
+  offline or transcribed. Their titles lose the leading track number, which the list shows.
+- **Order from the files.** Track numbers order a book when every part has its own; otherwise
+  natural name order, folder by folder ("CD 2" before "CD 10"). An .m4b, or any file with
+  chapters inside, is a one-part audiobook whose chapters stand in for parts.
+- **Courses stop, audiobooks play on.** At a part's end an audiobook opens the next part on the
+  same audio element (so a locked phone can carry on); a course marks the lesson done and
+  stops, since a lesson is meant to be repeated or practised before the next.
+- **The sleep timer lives in the engine,** checked every frame and on `timeupdate`, with a timer
+  as backup so it fires with the screen locked. Minutes fade out over eight seconds (an iPhone
+  can't change an audio element's volume, so there it just stops); end of chapter follows seeks;
+  end of part stops instead of playing on.
+- **Read along keeps Whisper's transcript.** The book's sentences are saved as the part's
+  transcript with Whisper's kept in `original`, so matching can run again from it and Stop
+  puts it back. A part transcribed later is matched at once.
+
 ## 2026-10-19 — Lingua 3.0-6, part 2: comics
 
 - **A comic is a text whose chapters are pages:** the page's picture, then its speech bubbles as

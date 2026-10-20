@@ -112,7 +112,12 @@ export const SCHEMA_V9 = {
   stations: 'id, lang, updatedAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9 };
+/** Version 10 (Lingua 3.0-6): audiobooks and courses, their parts findable by book. */
+export const SCHEMA_V10 = {
+  media: 'id, lang, kind, collection, feedId, bookId, lastPlayedAt, updatedAt',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -166,6 +171,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(7).stores(SCHEMA_V7);
   db.version(8).stores(SCHEMA_V8);
   db.version(9).stores(SCHEMA_V9);
+  db.version(10).stores(SCHEMA_V10);
   return db;
 }
 

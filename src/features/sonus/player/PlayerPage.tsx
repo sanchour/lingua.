@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { ChevronDown, ChevronLeft, LoaderCircle, Play } from 'lucide-react';
 import { formatDuration } from '@/core/audio/cues';
+import { useBook } from '@/data/books';
+import type { Book } from '@/data/books';
 import { useMedia, useTranscript } from '@/data/media';
 import type { Media, Transcript } from '@/data/types';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
@@ -10,7 +12,10 @@ import { cx } from '@/lib/cx';
 import { loadMedia, nextSentence, previousSentence, setCues, toggleRepeat, skip, toggle, unlockAudio, usePlayer } from '@/services/audio/engine';
 import { Artwork } from '../library/Artwork';
 import { MediaOptions } from '../library/MediaOptions';
+import { BookBar } from './BookBar';
+import { ChapterNow } from './Chapters';
 import { KaraokeTranscript } from './KaraokeTranscript';
+import { hasBookBar, partLabel } from './labels';
 import { Scrubber } from './Scrubber';
 import { createSpotifyClock, SpotifyEmbed } from './SpotifyEmbed';
 import { NoTranscript, TranscriptBar } from './TranscriptTools';
@@ -39,14 +44,18 @@ export default function PlayerPage() {
   return media.kind === 'spotify' ? <SpotifyPlayer media={media} transcript={transcript} /> : <AudioPlayer media={media} transcript={transcript} />;
 }
 
-function Details({ media, large = false }: { media: Media; large?: boolean }) {
-  const meta = [media.collection ?? media.artist, media.publishedAt && dateFmt.format(media.publishedAt), media.durationMs && formatDuration(media.durationMs)].filter(Boolean);
+function Details({ media, large = false, book, live = false }: { media: Media; large?: boolean; book?: Book | null; live?: boolean }) {
+  // A book's part says which part it is (the book's title is in the back link above).
+  const part = partLabel(media, book);
+  const first = media.bookId ? (part ?? book?.author ?? media.artist) : (media.collection ?? media.artist);
+  const meta = [first, media.publishedAt && dateFmt.format(media.publishedAt), media.durationMs && formatDuration(media.durationMs)].filter(Boolean);
   return (
     <div className="min-w-0">
       <h1 lang={media.lang} className={cx('font-serif leading-tight font-semibold tracking-tight', large ? 'text-[26px]' : 'text-[20px]')}>
         {media.title}
       </h1>
       {meta.length > 0 && <p className="mt-1 text-[13.5px] text-ink-soft">{meta.join(' · ')}</p>}
+      {(media.chapters?.length ?? 0) > 1 && <ChapterNow media={media} live={live} className="mt-1" />}
     </div>
   );
 }
@@ -56,8 +65,10 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
   const { layout } = useLayout();
   const navigate = useNavigate();
   const loadedId = usePlayer((s) => s.media?.id);
+  const loadedBookId = usePlayer((s) => s.media?.bookId);
   const status = usePlayer((s) => s.status);
   const error = usePlayer((s) => s.error);
+  const book = useBook(media.bookId);
   const isLoaded = loadedId === media.id;
   const wide = layout === 'wide';
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -68,6 +79,15 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
     if (current?.id === media.id || s === 'playing' || s === 'loading') return;
     void loadMedia(media);
   }, [media.id]);
+
+  // A book that was playing here moves on to another part (at a part's end, or with the part
+  // buttons): the page follows it, and its controls stay up meanwhile.
+  const [playedHere, setPlayedHere] = useState<string | null>(null);
+  if (isLoaded && playedHere !== media.id) setPlayedHere(media.id);
+  const following = !isLoaded && playedHere === media.id && Boolean(media.bookId) && loadedBookId === media.bookId;
+  useEffect(() => {
+    if (following && loadedId) navigate(`/sonus/play/${loadedId}`, { replace: true });
+  }, [following, loadedId]);
 
   // A new, edited or removed transcript is used straight away.
   useEffect(() => {
@@ -100,7 +120,10 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
     <NoTranscript media={media} />
   );
 
-  const controls = isLoaded ? (
+  const bookTitle = book?.title ?? media.collection ?? 'Book';
+  const bar = hasBookBar(media, book) ? <BookBar media={media} book={book} live={isLoaded} /> : null;
+
+  const controls = isLoaded || following ? (
     <>
       {status === 'error' && <p className="mb-3 rounded-xl bg-accent-soft px-3 py-2 text-center text-[13px] font-semibold text-accent-text">{error}</p>}
       <Scrubber />
@@ -118,9 +141,15 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
   if (wide) {
     return (
       <div className="flex h-[calc(100dvh-8rem)] min-h-[520px] flex-col">
-        <Link to={media.feedId ? `/sonus/podcast/${media.feedId}` : '/sonus?tab=podcasts'} className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
-          <ChevronLeft size={16} aria-hidden /> {media.feedId ? media.collection : 'Sonus'}
-        </Link>
+        {media.bookId ? (
+          <Link to={`/sonus/book/${media.bookId}`} className="mb-6 inline-flex max-w-full shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
+            <ChevronLeft size={16} className="shrink-0" aria-hidden /> <span className="truncate">{bookTitle}</span>
+          </Link>
+        ) : (
+          <Link to={media.feedId ? `/sonus/podcast/${media.feedId}` : '/sonus?tab=podcasts'} className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
+            <ChevronLeft size={16} aria-hidden /> {media.feedId ? media.collection : 'Sonus'}
+          </Link>
+        )}
         <div className="grid min-h-0 flex-1 grid-cols-[minmax(260px,320px)_minmax(0,1fr)] gap-12">
           <aside className="flex min-h-0 flex-col">
             <div className="min-h-[96px] flex-1 [container-type:size]">
@@ -129,10 +158,11 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
             <div className="shrink-0">
               <div className="mt-5 flex items-start gap-2">
                 <div className="min-w-0 flex-1">
-                  <Details media={media} large />
+                  <Details media={media} book={book} live={isLoaded} large />
                 </div>
                 <MediaOptions media={media} hasTranscript={Boolean(cues?.length)} />
               </div>
+              {bar && <div className="mt-4">{bar}</div>}
               <div className="mt-6">{controls}</div>
             </div>
           </aside>
@@ -164,13 +194,22 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
         <button type="button" aria-label="Close player" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronDown size={24} aria-hidden />
         </button>
-        <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{media.collection ?? 'Sonus'}</p>
+        {media.bookId ? (
+          <Link to={`/sonus/book/${media.bookId}`} className="block min-w-0 flex-1 truncate py-3 text-center text-[13px] font-semibold text-ink-soft">
+            {bookTitle}
+          </Link>
+        ) : (
+          <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{media.collection ?? 'Sonus'}</p>
+        )}
         <MediaOptions media={media} hasTranscript={Boolean(cues?.length)} className="grid size-11 place-items-center rounded-xl text-ink-soft" />
       </header>
       <div className="px-5 pb-[calc(env(safe-area-inset-bottom)+230px)]">
-        <div className="mt-3 mb-7 flex items-center gap-4">
-          <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="w-24" rounded="rounded-2xl" />
-          <Details media={media} />
+        <div className="mt-3 mb-7">
+          <div className="flex items-center gap-4">
+            <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="w-24" rounded="rounded-2xl" />
+            <Details media={media} book={book} live={isLoaded} />
+          </div>
+          {bar && <div className="mt-4">{bar}</div>}
         </div>
         {transcriptArea}
       </div>

@@ -246,3 +246,17 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
       tap back. Pinch to zoom.
 - [ ] Pick several photos of pages instead (Choose a comic, select them): one comic in their order.
 - [ ] Close and reopen the comic: it opens on the page you were on; Codex shows its progress.
+
+## Lingua 3.0-6, part 3: audiobooks and courses
+
+- [ ] Sonus › Add › Free audiobooks: Spanish books show with covers; search "esopo"; open one.
+- [ ] Its page: Start plays part 1 (it streams); the player says "Part 1 of 30"; the arrow moves
+      to part 2 and keeps playing.
+- [ ] The moon: pick 5 minutes; the 5 shows on the moon; lock the phone: it stops after five
+      minutes (no fade on an iPhone).
+- [ ] Let a short part end with the phone locked: the next part starts by itself.
+- [ ] Add › Audiobook or course › Choose files: pick several MP3s from Files; they come in order.
+- [ ] An .m4b with chapters: the chapters show in the player and on its page; tap one to jump.
+- [ ] Make a book a course (⋯): a part's end ticks the lesson and stops; ticks on the page work.
+- [ ] With a Groq key: transcribe a part, then ⋯ › Read along with the ebook (added to Codex
+      first): the book's sentences light up as they're read.

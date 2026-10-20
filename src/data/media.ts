@@ -77,6 +77,11 @@ export interface NewAudio {
   blob: Blob;
   mime: string;
   cover?: { blob: Blob; mime: string };
+  /** A part of an audiobook or course (see data/books.ts). */
+  bookId?: string;
+  bookKind?: Media['bookKind'];
+  episode?: number;
+  chapters?: Media['chapters'];
 }
 
 /** Stores an audio file (and its cover art) for offline listening. */
@@ -100,6 +105,10 @@ export async function addAudio(input: NewAudio, database: LinguaDB = db): Promis
       mime: input.mime,
       sizeBytes: input.blob.size,
       coverBlobId,
+      bookId: input.bookId,
+      bookKind: input.bookKind,
+      episode: input.episode,
+      chapters: input.chapters?.length ? input.chapters : undefined,
       createdAt: now,
       updatedAt: now,
     });
@@ -224,13 +233,13 @@ export async function markPlayed(mediaId: string, database: LinguaDB = db): Prom
   await database.media.update(mediaId, { lastPlayedAt: Date.now() });
 }
 
-/** Saves the transcript; a Codex copy made earlier is rebuilt the next time it's opened. */
-export async function saveTranscript(mediaId: string, lang: string, cues: Cue[], source: Transcript['source'], database: LinguaDB = db): Promise<void> {
+/** Saves the transcript; a Codex copy made earlier is rebuilt the next time it’s opened. `original`: the transcript a book’s text was timed from. */
+export async function saveTranscript(mediaId: string, lang: string, cues: Cue[], source: Transcript['source'], original?: Transcript['original'], database: LinguaDB = db): Promise<void> {
   const now = Date.now();
   await database.transaction('rw', database.transcripts, database.media, async () => {
     const id = transcriptId(mediaId);
     const existing = await database.transcripts.get(id);
-    await database.transcripts.put({ id, mediaId, lang, role: 'target', source, offsetMs: 0, cues, createdAt: existing?.createdAt ?? now, updatedAt: now });
+    await database.transcripts.put({ id, mediaId, lang, role: 'target', source, offsetMs: 0, cues, ...(original ? { original } : {}), createdAt: existing?.createdAt ?? now, updatedAt: now });
     await database.media.update(mediaId, { textId: undefined, updatedAt: now });
   });
 }

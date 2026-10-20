@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { LoaderCircle, Pause, Play, RotateCcw, X } from 'lucide-react';
+import { LoaderCircle, Moon, Pause, Play, RotateCcw, X } from 'lucide-react';
 import { useLayout } from '@/design/hooks/useLayout';
 import { spring } from '@/design/motion';
 import { closePlayer, onTime, skip, toggle, usePlayer } from '@/services/audio/engine';
@@ -16,6 +16,7 @@ export function MiniPlayer() {
   const status = usePlayer((s) => s.status);
   const duration = usePlayer((s) => s.durationMs);
   const nowPlaying = usePlayer((s) => s.nowPlaying);
+  const sleeping = usePlayer((s) => s.sleep !== null);
   const { layout } = useLayout();
   const lineRef = useRef<HTMLSpanElement>(null);
   const durationRef = useRef(duration);
@@ -56,7 +57,10 @@ export function MiniPlayer() {
                 <span lang={media.lang} className="block truncate text-[14px] font-semibold">
                   {media.title}
                 </span>
-                <span className="block truncate text-[12px] text-ink-faint">{status === 'error' ? 'Couldn’t play' : live ? (nowPlaying ?? `Live · ${media.artist ?? 'Radio'}`) : (media.collection ?? media.artist ?? 'Sonus')}</span>
+                <span className="block truncate text-[12px] text-ink-faint">
+                  {sleeping && <Moon size={11} className="mr-1 inline-block -translate-y-px fill-current text-accent-text" aria-label="Sleep timer on" />}
+                  {status === 'error' ? 'Couldn’t play' : live ? (nowPlaying ?? `Live · ${media.artist ?? 'Radio'}`) : (media.collection ?? media.artist ?? 'Sonus')}
+                </span>
               </span>
             </Link>
             {wide && !live && (
