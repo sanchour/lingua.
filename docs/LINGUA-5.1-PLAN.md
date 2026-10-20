@@ -21,6 +21,10 @@ Read first: [CLAUDE.md](../CLAUDE.md) (desktop first, the check, commit as sanch
 | D4 | Free or Lingua+ for the rooms the list doesn't name | **As proposed** (the table in 5.1-2, adjusted for D2: AI with your own key is Max, not Lingua+). |
 | D5 | 5.1 and Lingua 4.0 | **Plan only; don't build Lingua 5 yet.** When it is built, section 2's order holds: 5.1-1 first. (4.0-2 has since been finished, so the Codex step builds on it.) |
 | D6 | The phone | **"Phone is not needed anymore."** Desktop only: no phone tab bar, no phone layouts, no phone checks. What exists for the phone today stays as it is. |
+| D7 | The phone code that exists | **Leave it as it is**: nothing is removed, it is just no longer designed for or checked. |
+| D8 | A key without Max | **AI only with Max**: a key alone unlocks no AI feature anymore. |
+| D9 | A browser extension for the streaming services | **Yes**, built with 5.2-4 (inside 4.0-3); the user creates the Chrome Web Store account. |
+| D10 | How strict Grammatica's path is | **It leads, everything stays open**: the next step is always shown, any topic can be opened. |
 
 Not a question: Lingua+ drops from the placeholder's 29.99 to **€24.99, once, with every update**, as
 the user said.
