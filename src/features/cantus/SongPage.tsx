@@ -1,11 +1,10 @@
 import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import {
   BookOpen,
   Check,
   ChevronDown,
-  ChevronLeft,
   Crosshair,
   Ellipsis,
   ExternalLink,
@@ -24,7 +23,10 @@ import {
   Search,
   Speaker,
   Timer,
+  SkipBack,
+  SkipForward,
   Trash2,
+  X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -54,24 +56,34 @@ import type { ClockKind, PreviewClock, SongClock, TimerClock } from './player/cl
 import { LyricSheet } from './player/LyricSheet';
 import { AppleMusicPlayer, SpotifyPlayer, YouTubePlayer } from './player/Players';
 import { SongArt } from './SongArt';
+import { gamesPath, lastRoomPath, useLeaveCantus } from './room/nav';
+import { keepPlace, keptPlace, useCantusNow } from './room/now';
 
-export default function SongPage() {
-  const { songId } = useParams();
+/**
+ * The room's player: full screen, or folded away (still playing) while the learner browses, with
+ * the now-playing bar standing in for it.
+ */
+export function SongPlayer({ songId, collapsed, onGone }: { songId: string; collapsed: boolean; onGone: () => void }) {
   const song = useSong(songId);
-  if (song === null || song?.deletedAt) {
+  const gone = song === null || Boolean(song?.deletedAt);
+  useEffect(() => {
+    if (gone && collapsed) onGone();
+  }, [gone, collapsed, onGone]);
+  if (gone) {
+    if (collapsed) return null;
     return (
-      <div className="grid min-h-[60dvh] place-items-center text-center">
+      <div className="song-page fixed inset-0 z-40 grid place-items-center bg-bg text-center">
         <div>
-          <p className="font-serif text-xl">This song isn’t in your music any more.</p>
-          <Link to="/sonus?tab=music" className="mt-4 inline-block font-semibold text-accent-text">
-            Back to Music
+          <p className="text-xl font-bold">This song isn’t in your music any more.</p>
+          <Link to={lastRoomPath()} className="mt-4 inline-block font-semibold text-accent-text">
+            Back to Cantus
           </Link>
         </div>
       </div>
     );
   }
   if (!song) return null;
-  return <SongView key={song.id} song={song} />;
+  return <SongView key={song.id} song={song} collapsed={collapsed} />;
 }
 
 /** Fetches what a newly opened song still lacks: lyrics, colours, its Spotify track. */
@@ -192,7 +204,7 @@ function useHeight() {
   return [ref, height] as const;
 }
 
-function SongView({ song }: { song: Song }) {
+function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
   const { settings } = useApp();
   const { layout } = useLayout();
   const wide = layout === 'wide';
@@ -217,6 +229,37 @@ function SongView({ song }: { song: Song }) {
     if (source === null || !kinds.includes(source)) setSource(defaultSource(song, followable, wide));
   }, [source, kinds, song, followable, wide]);
   const clock: SongClock | null = source ? clocks[source] : null;
+
+  // The now-playing bar follows this song while the player is folded away.
+  const setNow = useCantusNow((s) => s.set);
+  useEffect(() => {
+    setNow(song, clock);
+  }, [song, clock, setNow]);
+  useEffect(() => () => setNow(null, null), [setNow]);
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    if (!clock) return setPlaying(false);
+    setPlaying(clock.isPlaying());
+    return clock.onPlaying(setPlaying);
+  }, [clock]);
+  // The song keeps its place: closing Cantus (or the app) and coming back carries on from there.
+  const clockRef = useRef(clock);
+  clockRef.current = clock;
+  useEffect(() => {
+    const kept = keptPlace();
+    const c = clockRef.current;
+    if (kept?.songId === song.id && kept.ms > 1000 && c && c.kind !== 'preview') c.seek(kept.ms);
+    const keep = () => {
+      // A preview's place is inside its 30 seconds: it starts again from the top.
+      const now = clockRef.current;
+      keepPlace(song.id, now && now.kind !== 'preview' ? now.now() : 0);
+    };
+    window.addEventListener('pagehide', keep);
+    return () => {
+      window.removeEventListener('pagehide', keep);
+      keep();
+    };
+  }, [song.id]);
   const offsetRef = useRef(song.offsetMs ?? 0);
   offsetRef.current = song.offsetMs ?? 0;
   // The song's timing nudge is for the players that report their place; the others are put right by taps.
@@ -319,7 +362,7 @@ function SongView({ song }: { song: Song }) {
     toast(added ? (replays ? 'Line saved to “From Cantus”. Its card plays the line again.' : 'Line saved to “From Cantus”.') : 'That line is already a card.', { tone: added ? 'success' : 'default' });
   };
 
-  useHotkeys({ ' ': () => clock?.toggle() }, Boolean(clock));
+  useHotkeys({ ' ': () => clock?.toggle() }, Boolean(clock) && !collapsed);
 
   const [dialog, setDialog] = useState<'link' | 'lyrics' | 'paste' | null>(null);
   const tint = song.palette ? ({ '--song': song.palette.base, '--song-deep': song.palette.deep, '--song-soft': song.palette.soft } as CSSProperties) : undefined;
@@ -332,7 +375,7 @@ function SongView({ song }: { song: Song }) {
         {song.savedAt ? 'In your songs' : 'Save'}
       </Button>
       {sungLines(song.lines).length >= 4 && (
-        <Button variant="secondary" icon={Gamepad2} onClick={() => navigate(`/sonus/song/${encodeURIComponent(song.id)}/games`)}>
+        <Button variant="secondary" icon={Gamepad2} onClick={() => navigate(gamesPath(song.id))}>
           Learn it
         </Button>
       )}
@@ -356,6 +399,8 @@ function SongView({ song }: { song: Song }) {
       onSync={setSyncing}
     />
   );
+  const fold = () => navigate(lastRoomPath());
+  const shell = cx('song-page fixed inset-0 z-40 flex flex-col overflow-hidden bg-bg', collapsed && 'song-collapsed', playing && 'is-playing');
   const translationBar = song.lines.length > 0 && <TranslationBar song={song} mode={mode} translating={translating} onTranslate={() => void translate()} />;
 
   const sheet = song.lines.length ? (
@@ -388,12 +433,16 @@ function SongView({ song }: { song: Song }) {
   // Desktop: the page fills the window and stays put; only the lyrics scroll.
   if (wide) {
     return (
-      <div className="song-page relative flex h-[calc(100dvh-8rem)] min-h-[520px] flex-col" style={tint}>
-        <div className="song-backdrop -mx-10 -mt-12" aria-hidden />
-        <Link to="/sonus?tab=music" className="relative mb-5 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
-          <ChevronLeft size={16} aria-hidden /> Music
-        </Link>
-        <div className="relative grid min-h-0 flex-1 grid-cols-[minmax(250px,330px)_minmax(0,1fr)] gap-12">
+      <div className={cx(shell, 'px-10 pb-8')} style={tint} aria-hidden={collapsed} inert={collapsed}>
+        <div className="song-backdrop" aria-hidden />
+        <header className="relative mx-auto flex h-16 w-full max-w-[1280px] shrink-0 items-center gap-2">
+          <button type="button" onClick={fold} aria-label="Fold the player away" title="Back to browsing" className="grid size-10 place-items-center rounded-full bg-[var(--room-fill)] text-ink-soft transition-colors hover:text-ink">
+            <ChevronDown size={22} aria-hidden />
+          </button>
+          <span className="ml-1 text-[12px] font-extrabold tracking-[0.14em] text-ink-faint uppercase">Playing in Cantus</span>
+          <LeaveButton className="ml-auto" />
+        </header>
+        <div className="relative mx-auto mt-2 grid min-h-0 w-full max-w-[1280px] flex-1 grid-cols-[minmax(250px,360px)_minmax(0,1fr)] gap-14">
           <aside className="flex min-h-0 flex-col overflow-y-auto [scrollbar-width:none]">
             {/* The artwork takes the room that's left, so the column needn't scroll; never less than a thumbnail. */}
             <div className="min-h-[88px] flex-1 [container-type:size]">
@@ -420,10 +469,10 @@ function SongView({ song }: { song: Song }) {
   // Phones: the whole screen; the header, the song and the player stay put, the lyrics scroll between.
   const video = source === 'youtube' && song.youtubeId;
   return (
-    <div className="song-page fixed inset-0 flex flex-col overflow-hidden bg-bg" style={tint}>
+    <div className={shell} style={tint} aria-hidden={collapsed} inert={collapsed}>
       <div className="song-backdrop" aria-hidden />
       <header className="no-callout relative z-20 flex shrink-0 items-center gap-1 px-2 pt-safe">
-        <button type="button" aria-label="Close" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus?tab=music'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
+        <button type="button" aria-label="Fold the player away" onClick={fold} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronDown size={24} aria-hidden />
         </button>
         <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{song.artist}</p>
@@ -439,7 +488,7 @@ function SongView({ song }: { song: Song }) {
         <div className="mt-3">{actions}</div>
       </div>
       {video && (
-        <div className="relative shrink-0 px-5 pb-3">
+        <div className="song-embed relative shrink-0 px-5 pb-3">
           <Boundary what="The video">
             <YouTubePlayer videoId={song.youtubeId!} clock={clocks.youtube} />
           </Boundary>
@@ -449,7 +498,7 @@ function SongView({ song }: { song: Song }) {
         {translationBar}
         {sheet}
       </div>
-      <div ref={dockRef} className="relative z-20 shrink-0 border-t border-line/70 bg-bg/92 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur-xl">
+      <div ref={dockRef} className="song-dock relative z-20 shrink-0 border-t border-line/70 bg-bg/92 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur-xl">
         {player}
       </div>
       {dialogs}
@@ -575,9 +624,22 @@ function PlayerArea({
     <div className="space-y-3">
       {(kinds.length > 1 || wide) && <SourceMenu kinds={kinds} source={source} setSource={setSource} onLink={onLink} />}
       <Boundary key={source} what={SOURCE_LABEL[source]}>
-        {source === 'youtube' && song.youtubeId && wide && <YouTubePlayer videoId={song.youtubeId} clock={clocks.youtube} />}
-        {source === 'spotify' && song.spotifyId && <SpotifyPlayer trackId={song.spotifyId} clock={clocks.spotify} compact={!wide} />}
-        {source === 'apple' && wide && <AppleMusicPlayer song={song} clock={clocks.apple} />}
+        {source === 'youtube' && song.youtubeId && wide && (
+          <div className="song-embed">
+            <YouTubePlayer videoId={song.youtubeId} clock={clocks.youtube} />
+          </div>
+        )}
+        {source === 'spotify' && song.spotifyId && (
+          <div className="song-embed">
+            <SpotifyPlayer trackId={song.spotifyId} clock={clocks.spotify} compact={!wide} />
+          </div>
+        )}
+        {source === 'apple' && wide && (
+          <div className="song-embed">
+            <AppleMusicPlayer song={song} clock={clocks.apple} />
+          </div>
+        )}
+        {(source === 'youtube' || source === 'spotify') && <Transport song={song} clock={clocks[source]} />}
         {source === 'apple' && !wide && <AppleMusicLink song={song} onOpened={() => followable && onSync(true)} />}
         {source === 'apple' && followable && <TimerControls clock={clocks.apple} apple syncing={syncing} onSync={onSync} compact={!wide} />}
         {source === 'preview' && <PreviewControls clock={clocks.preview} failed={previewFailed} followable={followable} placed={song.previewAtMs !== undefined} syncing={syncing} onSync={onSync} compact={!wide} />}
@@ -585,6 +647,70 @@ function PlayerArea({
       </Boundary>
       {(source === 'youtube' || source === 'spotify') && timed && <TimingNudge song={song} />}
       {(source === 'youtube' || source === 'spotify') && estimated && <PlaceButton syncing={syncing} onSync={onSync} />}
+    </div>
+  );
+}
+
+/** Leaves Cantus for Sonus › Music; the song keeps its place. */
+function LeaveButton({ className }: { className?: string }) {
+  const leave = useLeaveCantus();
+  return (
+    <button type="button" onClick={leave} aria-label="Leave Cantus" title="Back to Lingua" className={cx('grid size-10 place-items-center rounded-full bg-[var(--room-fill)] text-ink-soft transition-colors hover:text-ink', className)}>
+      <X size={19} aria-hidden />
+    </button>
+  );
+}
+
+/**
+ * For the players with their own controls inside (YouTube, Spotify): the song's progress, and a line
+ * back, play or pause, and a line on. Written straight to the page as it plays, never a render a frame.
+ */
+function Transport({ song, clock }: { song: Song; clock: SongClock }) {
+  const [playing, setPlaying] = useState(clock.isPlaying());
+  const bar = useRef<HTMLDivElement>(null);
+  const at = useRef<HTMLSpanElement>(null);
+  useEffect(() => clock.onPlaying(setPlaying), [clock]);
+  useEffect(() => {
+    let last = -1;
+    return clock.onTime((ms) => {
+      const total = clock.durationMs() || song.durationMs || 0;
+      if (bar.current) bar.current.style.transform = `scaleX(${total ? Math.min(1, Math.max(0, ms / total)) : 0})`;
+      const s = Math.floor(ms / 1000);
+      if (s !== last && at.current) {
+        last = s;
+        at.current.textContent = formatClock(Math.max(0, ms));
+      }
+    });
+  }, [clock, song.durationMs]);
+  const starts = song.lines.filter((l) => l.text && l.startMs !== undefined).map((l) => l.startMs! + (song.offsetMs ?? 0));
+  const step = (dir: 1 | -1) => {
+    const now = clock.now();
+    // Back: the start of this line, or the one before when it has only just begun.
+    const target = dir === 1 ? starts.find((t) => t > now + 250) : [...starts].reverse().find((t) => t < now - 1500);
+    if (target !== undefined) clock.seek(Math.max(0, target - 150));
+    else if (dir === -1) clock.seek(0);
+  };
+  const lineless = starts.length < 2;
+  return (
+    <div className="song-transport">
+      <div className="h-[5px] overflow-hidden rounded-full bg-[var(--room-fill-strong,var(--color-sunken))]" aria-hidden>
+        <div ref={bar} className="h-full origin-left rounded-full bg-[var(--song-ink)]" style={{ transform: 'scaleX(0)' }} />
+      </div>
+      <div className="mt-1.5 flex justify-between text-[11.5px] font-semibold text-ink-faint tabular-nums">
+        <span ref={at}>0:00</span>
+        <span>{song.durationMs ? formatClock(song.durationMs) : ''}</span>
+      </div>
+      <div className="mt-1 flex items-center justify-center gap-6">
+        <button type="button" aria-label="The line before" disabled={lineless} onClick={() => step(-1)} className={cx(ROUND, 'disabled:opacity-35')}>
+          <SkipBack size={22} className="fill-current" aria-hidden />
+        </button>
+        <button type="button" aria-label={playing ? 'Pause' : 'Play'} onClick={() => clock.toggle()} className="grid size-16 place-items-center rounded-full bg-[var(--room-pill,var(--color-inverse))] text-[var(--room-pill-ink,var(--color-on-inverse))] shadow-elev-1 transition-transform active:scale-90">
+          {playing ? <Pause size={26} className="fill-current" aria-hidden /> : <Play size={26} className="translate-x-0.5 fill-current" aria-hidden />}
+        </button>
+        <button type="button" aria-label="The next line" disabled={lineless} onClick={() => step(1)} className={cx(ROUND, 'disabled:opacity-35')}>
+          <SkipForward size={22} className="fill-current" aria-hidden />
+        </button>
+      </div>
     </div>
   );
 }
@@ -1138,7 +1264,7 @@ function SongMenu({ song, onLink, onLyrics, className }: { song: Song; onLink: (
             danger
             onClick={() => {
               close();
-              void removeSong(song.id).then(() => navigate('/sonus?tab=music'));
+              void removeSong(song.id).then(() => navigate(lastRoomPath()));
             }}
           />
         </>

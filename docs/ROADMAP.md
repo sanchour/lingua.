@@ -827,6 +827,53 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
       grammar, alphabets and writing, comics, audiobooks, AI conversation prompts, voices.
 - [ ] The app's version says 3.0. Docs, then commit, push and the live site checked.
 
+### Cantus overhaul (design handoff)
+
+The user's design handoff (2026-10-19; a mock-up, frames 2a desktop and 2b phone, and a written
+brief kept outside the repository) asks for three workstreams, built beside 3.0-6 in a session of
+their own and pushed to `main` one by one. Its design comes first; its search and full-song
+playback make the room really work.
+
+**Plan:**
+- **A. Cantus, a room of its own.** `/cantus` is an app inside the app: no sidebar, tab bar or
+  mini player; an X leaves it for Sonus › Music, which says "Back in Lingua · The song keeps its
+  place" with an Open Cantus button. Always dark and immersive (the mock-up's ground, the song's
+  artwork colours as its glow, Cantus rose for the rest), Plus Jakarta Sans throughout. Today
+  (a song for today with how many of its words you know, then rails: most played now, artists to
+  learn with, styles to explore), Explore and Library (today's Music shelves, moved), and Search;
+  a pill nav on desktop, a bottom bar on a phone. A glass now-playing bar while you browse, and a
+  full-screen player (`/cantus/song/:id`): artwork, actions, progress and transport beside the
+  lyrics on desktop, the lyrics above the controls on a phone. Every feature of the song page
+  stays (save, Learn it, the target, translations shown, blurred or hidden, line actions, word
+  glosses, the source menu, the timing nudge, the credit). Playback lives in the room, not the
+  page: the song plays on while you browse, and keeps its place when you leave. Old
+  `/sonus/song/…` links open the new player.
+- **B. Search that finds songs.** Apple's search index leaves out some artists' own recordings
+  (Bad Bunny's "BAILE INoLVIDABLE" and "Diles" are missing from every store's results, though
+  Apple's catalogue has them by artist). Search asks several places at once and merges them:
+  Apple in the language's store and a few more (us, mx, …), the artists the query names (their
+  whole catalogue by Apple's artist lookup), LRCLIB's song list (which knows the songs people
+  sing), Spotify when connected; typos are put right from what comes back ("inolvidabel" →
+  "inolvidable"). Results: a top result, songs, artists and albums, filter chips, recent searches
+  and style tiles, live as you type, with the keyboard.
+- **C. One clock, whole songs.** One source plays at a time (Sonus pauses, the others stop); the
+  lyrics follow only it, corrected on seeks, buffering and returning to the tab. A song with no
+  whole-song source gets one found by itself: YouTube (with the learner's own free key, kept on
+  the device and sent in a header; or, without a key, the public Piped and Invidious directories
+  the brief names, tried in turn), Dailymotion's open search, and SoundCloud or Bandcamp links
+  pasted by hand; ranked by title, artist and length (within about 3 s), official audio first,
+  never live, cover, sped-up or lyric videos. "Playing from YouTube · Official audio", with "Not
+  this one". One field takes a link from any of them. Apple and Spotify are labelled
+  "30-second preview" where that is what they play.
+- [x] A: the room, its pages, the now-playing bar and the full-screen player, on phone and desktop.
+  Built 2026-10-20: `src/features/cantus/room/` (the room, its four pages, nav, the now-playing
+  store), the song page turned into the room's player (`SongPlayer`, kept mounted and folded while
+  browsing), Song games over the room, Sonus › Music's closed state, `/sonus/song/…` redirected.
+  Not built: the Song for today's "words you know" count (it needs the song's lyrics before it is
+  ever opened; left for later). The old Music room (`MusicRoom.tsx`) is gone; every shelf moved.
+- [ ] B: search, with tests for the brief's six queries (mocked), merging, ranking and typos.
+- [ ] C: the master clock, finding whole songs, any link, the source menu; checked with real songs.
+
 ### Handover for the Lingua 3.0 session
 
 **Where 3.0-6 stands (2026-10-20).** Parts 1, 2 and 3 are done and live: Radio and Music

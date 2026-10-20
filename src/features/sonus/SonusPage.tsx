@@ -1,8 +1,8 @@
-import { lazy, Suspense, useMemo, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, Pause, Play, Search, SearchX } from 'lucide-react';
-import { MusicRoom } from '@/features/cantus/MusicRoom';
+import { ArrowRight, Music2, Pause, Play, Search, SearchX } from 'lucide-react';
+import type { LeftCantusState } from '@/features/cantus/room/nav';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatDuration } from '@/core/audio/cues';
@@ -68,7 +68,15 @@ export default function SonusPage() {
   // Old links: ?tab=discover was podcast discovery, now part of Podcasts; ?q= searches music.
   const requested = params.get('tab');
   const tab: Tab = requested === 'music' || requested === 'podcasts' || requested === 'radio' ? requested : requested === 'discover' ? 'podcasts' : params.get('q') ? 'music' : 'library';
+  const navigate = useNavigate();
+  // Music is Cantus, a room of its own: the tab opens it. Back from it (its X), the tab says so.
+  const leftCantus = Boolean((useLocation().state as LeftCantusState | null)?.leftCantus);
+  const musicQuery = params.get('q');
+  useEffect(() => {
+    if (tab === 'music' && !leftCantus) navigate(musicQuery ? `/cantus/search?q=${encodeURIComponent(musicQuery)}` : '/cantus', { replace: true });
+  }, [tab, leftCantus, musicQuery, navigate]);
   const setTab = (next: Tab) => {
+    if (next === 'music') return navigate('/cantus');
     setParams(next === 'library' ? {} : { tab: next }, { replace: true });
     window.scrollTo({ top: 0 });
   };
@@ -139,7 +147,7 @@ export default function SonusPage() {
 
       <AnimatePresence mode="wait" initial={false}>
         <motion.section key={tab} aria-label={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.snappy}>
-          {tab === 'music' && <MusicRoom initialQuery={params.get('q') ?? ''} />}
+          {tab === 'music' && <CantusClosed />}
           {tab === 'radio' && (
             <Suspense fallback={null}>
               <RadioTab lang={lang} flag={language.flag} />
@@ -230,5 +238,22 @@ function ContinueCard({ media, playback }: { media?: Media[]; playback?: Map<str
         <ArrowRight size={18} className="text-ink-faint" aria-hidden />
       </Link>
     </Card>
+  );
+}
+
+/** Sonus › Music after leaving Cantus: the room is closed, the song keeps its place. */
+function CantusClosed() {
+  return (
+    <div className="rounded-3xl border border-line bg-surface p-6 text-center sm:p-10">
+      <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-[linear-gradient(135deg,#e8a0bf,#b4587e)] text-[#1a1215]">
+        <Music2 size={26} aria-hidden />
+      </span>
+      <p className="mt-4 text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase">Sonus · Music</p>
+      <h2 className="mt-1 font-serif text-[26px] leading-tight">Back in Lingua</h2>
+      <p className="mx-auto mt-2 max-w-sm text-[15px] text-ink-soft">Cantus closed. The song keeps its place.</p>
+      <Link to="/cantus" className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-inverse px-6 font-semibold text-on-inverse transition-transform active:scale-[0.97]">
+        Open Cantus <ArrowRight size={17} aria-hidden />
+      </Link>
+    </div>
   );
 }

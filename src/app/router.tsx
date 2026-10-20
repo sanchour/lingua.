@@ -1,13 +1,13 @@
 import { createBrowserRouter, Navigate, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { AudiobooksPage, BookDetailsPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SongGamesPage, SongPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage, MundusPage } from './pages';
+import { AudiobooksPage, BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage, MundusPage } from './pages';
 import { Root } from './Root';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
 
 function SongMoved({ games = false }: { games?: boolean }) {
   const { songId = '' } = useParams();
-  return <Navigate to={`/sonus/song/${encodeURIComponent(songId)}${games ? '/games' : ''}`} replace />;
+  return <Navigate to={`/cantus/song/${encodeURIComponent(songId)}${games ? '/games' : ''}`} replace />;
 }
 
 export const router = createBrowserRouter(
@@ -33,12 +33,10 @@ export const router = createBrowserRouter(
         { path: 'sonus/audiobooks', element: <AudiobooksPage /> },
         { path: 'sonus/commute', element: <CommutePage /> },
         { path: 'sonus/station/:stationId', element: <StationPage /> },
-        { path: 'sonus/song/:songId', element: <SongPage /> },
-        { path: 'sonus/song/:songId/games', element: <SongGamesPage /> },
-        // Music lived in a section of its own (Cantus) until 2.0-4b: its links still open.
-        { path: 'cantus', element: <Navigate to="/sonus?tab=music" replace /> },
-        { path: 'cantus/song/:songId', element: <SongMoved /> },
-        { path: 'cantus/song/:songId/games', element: <SongMoved games /> },
+        { path: 'sonus/song/:songId', element: <SongMoved /> },
+        { path: 'sonus/song/:songId/games', element: <SongMoved games /> },
+        // Cantus, the music room: one page that shows its tabs, player and games by the address.
+        { path: 'cantus/*', element: <CantusPage /> },
         // Kept as it is: learners entered this address in their own Spotify app.
         { path: 'cantus/spotify', element: <SpotifyCallbackPage /> },
         { path: 'visio', element: <VisioPage /> },

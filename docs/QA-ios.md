@@ -235,6 +235,20 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
       (Sonus pauses); the shuffle button brings other songs; "Surprise me" opens one.
 - [ ] Open three songs twice each (a minute apart): "Most played by you" appears with the counts.
 
+## Cantus, a room of its own (design handoff A)
+
+- [ ] Sonus › Music: Cantus opens full screen and dark (also with Paper), no Lingua tab bar; the
+      four tabs at the bottom, above the home indicator.
+- [ ] Today: the song for today; Sing along opens the player full screen.
+- [ ] Play the preview, then the chevron: the room again, the song playing on in the bar above
+      the tabs, the line being sung changing with it. Pause and play from the bar.
+- [ ] A song with a YouTube link playing, folded: the video stays small above the bar; pause it
+      and it hides.
+- [ ] The X: Sonus › Music says "Back in Lingua"; the app is light again (with Paper). Open Cantus:
+      the song is in the bar, where it was.
+- [ ] Learn it (or Song games): the games over the room; back to the song.
+- [ ] An old link (`/sonus/song/…`) opens the song in Cantus.
+
 ## Lingua 3.0-6, part 2: comics
 
 - [ ] Codex › Add › File › Choose a comic: pick a CBZ from Files. It opens on page 1 with the page

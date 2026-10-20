@@ -628,6 +628,22 @@ Short records of choices that are not obvious from the code. Newest last.
 - **No two-page spreads:** on desktop the page's words sit where the second page would; a comic in
   Lingua is read to learn its words, so they stay in view.
 
+## 2026-10-20 — Cantus, a room of its own (design handoff, workstream A)
+
+- **One route for the whole room.** `/cantus/*` is one lazy page that reads the address itself
+  (tab, song, games), so the player can stay mounted while the pages change under it. A song
+  playing on while the learner browses needs that: React Router would otherwise unmount the song
+  page, and its YouTube or Spotify player with it.
+- **Folded, not moved.** The folded player is hidden with `visibility`, never moved in the page
+  or remounted, so the embedded players never reload. Their own wrapper stays visible (small,
+  above the now-playing bar) while they play, as YouTube's and Spotify's terms want a visible
+  player; paused, it hides.
+- **Dark by the room, not by the setting.** While the room is open `<html data-room="cantus">`
+  and `data-theme="nocturne"` give the whole document its colours (so dialogs and menus portalled
+  out of it match); leaving puts back what the learner's theme setting says.
+- **Leaving keeps the place** in localStorage (the song and the millisecond; a preview starts
+  again), not in the database: it is a convenience of this device.
+
 ## 2026-10-19 — Lingua 3.0-6, part 1: Radio and Music
 
 - **A drawn map, not a map service.** The countries come from Natural Earth (public domain), made

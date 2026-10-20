@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link } from 'react-router';
 import { BackLink } from '@/app/BackLink';
+import { songPath } from './room/nav';
 import { useApp } from '@/app/context';
 import { AnimatePresence, motion } from 'motion/react';
 import { Check, Plus, RotateCcw, X } from 'lucide-react';
@@ -32,8 +33,7 @@ const KIND_LABEL: Record<LessonRound['kind'], string> = {
 };
 
 /** Ludus for a song: its words first (the ones worth learning at your level), the song itself last. */
-export default function SongGames() {
-  const { songId } = useParams();
+export default function SongGames({ songId }: { songId: string }) {
   const song = useSong(songId);
   if (song === null) {
     return (
@@ -110,7 +110,7 @@ function Lesson({ song }: { song: Song }) {
 
   return (
     <div className="song-page relative mx-auto max-w-2xl" style={tint}>
-      <BackLink to={`/sonus/song/${encodeURIComponent(song.id)}`}>{song.title}</BackLink>
+      <BackLink to={songPath(song.id)}>{song.title}</BackLink>
       <div className="mb-5 flex items-center gap-3">
         <SongArt url={song.artworkUrl} title={song.title} className="song-art w-14" rounded="rounded-xl" size={200} />
         <div className="min-w-0 flex-1">
@@ -251,7 +251,7 @@ function Finished({ song, right, total, focus, onAgain }: { song: Song; right: n
         <Button variant="secondary" icon={RotateCcw} onClick={onAgain}>
           Play again
         </Button>
-        <Link to={`/sonus/song/${encodeURIComponent(song.id)}`} className="inline-flex h-11 items-center rounded-2xl bg-inverse px-5 font-semibold text-on-inverse">
+        <Link to={songPath(song.id)} className="inline-flex h-11 items-center rounded-2xl bg-inverse px-5 font-semibold text-on-inverse">
           Back to the song
         </Link>
       </div>

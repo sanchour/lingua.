@@ -201,6 +201,20 @@ played songs, episodes and stations together, your songs, the podcasts you follo
 files), then **Music** and **Podcasts** for finding more. The music room still goes by Cantus
 inside (its deck is "From Cantus").
 
+**Cantus, a room of its own (design handoff, 2026-10-20).** Music opens Cantus full screen:
+no Lingua sidebar, tab bar or mini player; always dark, whatever the theme; the open song's
+artwork colours its glow. Four pages: **Today** (a song for today, most played now, recently
+opened, artists, styles), **Explore** (Explore today with Surprise me and shuffle, the style of the
+day, styles, artists, your Spotify), **Library** (your songs, recently opened, most played by you)
+and **Search**. On desktop they are pills along the top with a search field; on a phone, a tab
+bar at the bottom. The **player** fills the screen (`/cantus/song/…`); the chevron folds it away
+and the song plays on: a glass **now-playing bar** shows it with the line being sung, play and
+pause, and its progress; tap it to open the player again. A YouTube, Spotify or Apple Music player
+stays on screen, small above the bar, while it plays (their terms ask for a visible player). For
+YouTube and Spotify the player adds the song's progress and a line back / play / a line on. The
+**X** leaves Cantus for Sonus › Music: "Back in Lingua · Cantus closed. The song keeps its place."
+Open Cantus brings the song back in the bar, where it was. Song games open over the room.
+
 
 - **Find any song** in the language you're learning (Apple's catalogue; tap the artwork for a
   30-second preview), or explore (3.0-6): Music is shelves of songs to tap. Recently opened,

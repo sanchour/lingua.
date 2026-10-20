@@ -3,6 +3,7 @@
 @import './reader.css';
 @import './cards.css';
 @import './cantus.css';
+@import './cantus-room.css';
 
 @custom-variant dark (&:where([data-theme='nocturne'], [data-theme='nocturne'] *));
 

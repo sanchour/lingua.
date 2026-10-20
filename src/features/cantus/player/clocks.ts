@@ -18,6 +18,9 @@ export interface SongClock extends PlayheadClock {
   onPlaying(fn: (playing: boolean) => void): () => void;
   /** Real time the music has been playing, for Ratio. */
   heardMs(): number;
+  /** The song's length as its player tells it (0 until it does, and for timers and the preview). */
+  durationMs(): number;
+  onDuration(fn: (ms: number) => void): () => void;
 }
 
 interface Controls {
@@ -32,8 +35,14 @@ function createCore(kind: ClockKind, controls: () => Controls | null) {
   let paused = true;
   let frame = 0;
   let heard = 0;
+  let duration = 0;
+  // Asked for while the player isn't there yet (still loading, or being made again after the
+  // room was left): handed to it once it is.
+  let wantedMs: number | null = null;
+  let wantedPlay = false;
   const times = new Set<(ms: number) => void>();
   const states = new Set<(playing: boolean) => void>();
+  const durations = new Set<(ms: number) => void>();
   const now = () => (paused ? position : position + (performance.now() - at));
   const loop = () => {
     const t = now();
@@ -51,6 +60,11 @@ function createCore(kind: ClockKind, controls: () => Controls | null) {
     if (!paused && !frame) frame = requestAnimationFrame(loop);
     if (paused) for (const fn of times) fn(position);
   };
+  const setDuration = (ms: number) => {
+    if (!(ms > 0) || Math.abs(ms - duration) < 500) return;
+    duration = ms;
+    for (const fn of durations) fn(ms);
+  };
   const clock: SongClock = {
     kind,
     onTime(fn) {
@@ -62,19 +76,41 @@ function createCore(kind: ClockKind, controls: () => Controls | null) {
       states.add(fn);
       return () => states.delete(fn);
     },
-    seek: (ms) => controls()?.seek(Math.max(0, ms)),
+    seek: (ms) => {
+      const to = Math.max(0, ms);
+      const c = controls();
+      if (c) return c.seek(to);
+      wantedMs = to;
+      update(to, paused);
+    },
     play: () => {
-      if (paused) controls()?.play();
+      if (!paused) return;
+      const c = controls();
+      if (c) c.play();
+      else wantedPlay = true;
     },
     pause: () => {
+      wantedPlay = false;
       if (!paused) controls()?.pause();
     },
-    toggle: () => (paused ? controls()?.play() : controls()?.pause()),
+    toggle: () => (paused && !wantedPlay ? clock.play() : clock.pause()),
     isPlaying: () => !paused,
     now,
     heardMs: () => heard + (paused ? 0 : performance.now() - at),
+    durationMs: () => duration,
+    onDuration(fn) {
+      durations.add(fn);
+      return () => durations.delete(fn);
+    },
   };
-  return { clock, update, now, isPaused: () => paused };
+  /** What was asked for while there was no player, cleared as the new player takes it. */
+  const takeWanted = () => {
+    const wanted = { ms: wantedMs, play: wantedPlay };
+    wantedMs = null;
+    wantedPlay = false;
+    return wanted;
+  };
+  return { clock, update, now, isPaused: () => paused, setDuration, takeWanted, wantedMs: () => wantedMs };
 }
 
 export type TimerClock = SongClock & { nudge(ms: number): void };
@@ -93,41 +129,114 @@ export function createTimerClock(kind: 'timer' | 'apple' = 'timer'): TimerClock 
   return { ...core.clock, nudge: (ms) => core.update(core.now() + ms, core.isPaused()) };
 }
 
+export type SpotifyClock = SongClock & {
+  attach(c: SpotifyController | null): void;
+  /** The embed has loaded: a Play asked for meanwhile starts it. */
+  ready(): void;
+  update(positionMs: number, paused: boolean, durationMs?: number): void;
+};
+
 /** Spotify's embed reports its position a few times a second (`playback_update`). */
-export function createSpotifyClock(): SongClock & { attach(c: SpotifyController | null): void; update(positionMs: number, paused: boolean): void } {
+export function createSpotifyClock(): SpotifyClock {
   let controller: SpotifyController | null = null;
+  // A new embed seeks only once it plays: until then, the place to go to when it starts.
+  let started = false;
+  let from: number | null = null;
+  let playWhenReady = false;
   const core = createCore('spotify', () =>
     controller
       ? {
           play: () => controller!.togglePlay(),
           pause: () => controller!.togglePlay(),
-          seek: (ms) => controller!.seek(ms / 1000),
+          seek: (ms) => {
+            if (started) return controller!.seek(ms / 1000);
+            from = ms;
+            core.update(ms, core.isPaused());
+          },
         }
       : null,
   );
-  return { ...core.clock, attach: (c) => (controller = c), update: core.update };
+  return {
+    ...core.clock,
+    attach(c) {
+      controller = c;
+      started = false;
+      if (!c) return core.update(core.now(), true);
+      const wanted = core.takeWanted();
+      // A new embed (the room left and come back to, a new link) goes on where the song was.
+      from = wanted.ms ?? (core.now() > 1000 ? core.now() : null);
+      playWhenReady = wanted.play;
+    },
+    ready() {
+      if (controller && playWhenReady) controller.togglePlay();
+      playWhenReady = false;
+    },
+    update(positionMs, paused, durationMs) {
+      if (durationMs) core.setDuration(durationMs);
+      if (!started && !paused) {
+        started = true;
+        if (from !== null) {
+          controller?.seek(from / 1000);
+          positionMs = from;
+        }
+        from = null;
+      }
+      // Until it plays, the lyrics stay where the song was left, not at the embed's 0:00.
+      core.update(!started && from !== null ? from : positionMs, paused);
+    },
+  };
 }
 
+export type YouTubeClock = SongClock & {
+  attach(p: YTPlayer | null): void;
+  /** Asks the player where it is now (on its state changes), not at the next poll. */
+  refresh(): void;
+  /** Where a new player should start (s), so a song left and come back to goes on from there. */
+  startSeconds(): number;
+};
+
+/** YT.PlayerState: not started yet, and cued (loaded, waiting for Play). */
+const YT_UNSTARTED = -1;
+const YT_CUED = 5;
+
 /** YouTube's player is asked where it is four times a second. */
-export function createYouTubeClock(): SongClock & { attach(p: YTPlayer | null): void } {
-  let player: YTPlayer | null = null;
+export function createYouTubeClock(): YouTubeClock {
+  let player: (YTPlayer & { getDuration?(): number }) | null = null;
   let timer = 0;
+  // Where the current player was made to start (ms).
+  let madeAt = 0;
+  // Just after a seek the player can still say the old place for a moment: not a jump back.
+  let seekingTo: number | null = null;
+  let seekAt = 0;
+  const seekTo = (p: YTPlayer, ms: number) => {
+    p.seekTo(ms / 1000, true);
+    seekingTo = ms;
+    seekAt = performance.now();
+    core.update(ms, core.isPaused());
+  };
   const core = createCore('youtube', () =>
     player
       ? {
           play: () => player!.playVideo(),
           pause: () => player!.pauseVideo(),
-          seek: (ms) => {
-            player!.seekTo(ms / 1000, true);
-            core.update(ms, core.isPaused());
-          },
+          seek: (ms) => seekTo(player!, ms),
         }
       : null,
   );
   const poll = () => {
     if (!player) return;
     try {
-      core.update(player.getCurrentTime() * 1000, player.getPlayerState() !== YT_PLAYING);
+      const state = player.getPlayerState();
+      const paused = state !== YT_PLAYING;
+      core.setDuration((player.getDuration?.() ?? 0) * 1000);
+      // Not started yet, the player says 0:00 even when it was given a place to start from.
+      if (state === YT_UNSTARTED || state === YT_CUED) return core.update(core.now(), true);
+      const ms = player.getCurrentTime() * 1000;
+      if (seekingTo !== null) {
+        if (Math.abs(ms - seekingTo) > 1500 && performance.now() - seekAt < 1500) return core.update(core.now(), paused);
+        seekingTo = null;
+      }
+      core.update(ms, paused);
     } catch {
       /* the player is gone */
     }
@@ -137,8 +246,18 @@ export function createYouTubeClock(): SongClock & { attach(p: YTPlayer | null): 
     attach(p) {
       player = p;
       window.clearInterval(timer);
-      if (p) timer = window.setInterval(poll, 250);
-      else core.update(core.now(), true);
+      if (!p) return core.update(core.now(), true);
+      const wanted = core.takeWanted();
+      // The player was made at startSeconds(); a place asked for since then is sought.
+      if (wanted.ms !== null && Math.abs(wanted.ms - madeAt) > 1500) seekTo(p, wanted.ms);
+      if (wanted.play) p.playVideo();
+      timer = window.setInterval(poll, 250);
+    },
+    refresh: poll,
+    startSeconds() {
+      const s = Math.floor((core.wantedMs() ?? (core.now() > 1000 ? core.now() : 0)) / 1000);
+      madeAt = s * 1000;
+      return s;
     },
   };
 }
@@ -162,20 +281,18 @@ export function createPreviewClock(): PreviewClock {
   let start = 0;
   const errors = new Set<() => void>();
   const report = () => audio && core.update(start + audio.currentTime * 1000, audio.paused || audio.ended);
-  const core = createCore('preview', () =>
-    audio
-      ? {
-          play: () => void audio!.play().catch(() => errors.forEach((fn) => fn())),
-          pause: () => audio!.pause(),
-          seek: (ms) => {
-            const a = audio!;
-            const to = (ms - start) / 1000;
-            a.currentTime = Math.max(0, Math.min(Number.isFinite(a.duration) ? a.duration - 0.25 : 29.5, to));
-            report();
-          },
-        }
-      : null,
-  );
+  const controls: Controls = {
+    play: () => void audio?.play().catch(() => errors.forEach((fn) => fn())),
+    pause: () => audio?.pause(),
+    seek: (ms) => {
+      const a = audio;
+      if (!a) return;
+      const to = (ms - start) / 1000;
+      a.currentTime = Math.max(0, Math.min(Number.isFinite(a.duration) ? a.duration - 0.25 : 29.5, to));
+      report();
+    },
+  };
+  const core = createCore('preview', () => (audio ? controls : null));
   const EVENTS = ['play', 'playing', 'pause', 'ended', 'seeked', 'timeupdate', 'waiting'] as const;
   const fail = () => errors.forEach((fn) => fn());
   const release = () => {
@@ -207,6 +324,9 @@ export function createPreviewClock(): PreviewClock {
       for (const e of EVENTS) audio.addEventListener(e, report);
       audio.addEventListener('error', fail);
       audio.src = url;
+      const wanted = core.takeWanted();
+      if (wanted.ms !== null) controls.seek(wanted.ms);
+      if (wanted.play) controls.play();
     },
     release,
   };
