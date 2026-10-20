@@ -126,7 +126,7 @@ function Lesson({ song }: { song: Song }) {
           {progress !== null && (
             <>
               <div className="mx-auto mt-4 h-1.5 max-w-xs overflow-hidden rounded-full bg-sunken">
-                <div className="h-full rounded-full bg-[var(--song-ink)] transition-[width] duration-300" style={{ width: `${Math.round(progress * 100)}%` }} />
+                <div className="h-full w-full rounded-full bg-[var(--song-ink)] transition-transform duration-300" style={{ transform: `translateX(-${100 - Math.round(progress * 100)}%)` }} />
               </div>
               <button type="button" onClick={() => skip.current?.()} className="mt-4 text-[14px] font-semibold text-ink-soft underline-offset-2 hover:underline">
                 Start without the translation
@@ -177,7 +177,7 @@ function Rounds({ song, ready, reach }: { song: Song; ready: Ready; reach: numbe
       <div className="mb-5 flex items-center gap-3">
         <span className="shrink-0 rounded-full bg-[var(--song-soft,var(--color-sunken))] px-3 py-1 text-[12px] font-bold text-[var(--song-ink)]">{KIND_LABEL[current.kind]}</span>
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-sunken" role="progressbar" aria-valuemin={0} aria-valuemax={rounds.length} aria-valuenow={round}>
-          <div className="h-full rounded-full bg-[var(--song-ink)] transition-[width] duration-500" style={{ width: `${(round / rounds.length) * 100}%` }} />
+          <div className="h-full w-full rounded-full bg-[var(--song-ink)] transition-transform duration-500" style={{ transform: `translateX(-${100 - (round / rounds.length) * 100}%)` }} />
         </div>
         <span className="shrink-0 text-[12px] text-ink-faint tabular-nums">
           {round + 1}/{rounds.length}

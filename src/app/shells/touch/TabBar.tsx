@@ -25,6 +25,8 @@ export function TabBar() {
   const navigate = useNavigate();
   const barRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
+  /** A finger is down on the bar: the lens swells under it, as in iOS 26. */
+  const [pressed, setPressed] = useState(false);
   const index = activeIndex(pathname);
   const count = TAB_SECTIONS.length;
   const tab = width ? (width - PAD * 2) / count : 0;
@@ -36,6 +38,7 @@ export function TabBar() {
   const scaleY = useTransform(velocity, [-2400, 0, 2400], [0.9, 1, 0.9], { clamp: true });
   const drag = useRef<{ startX: number; startLens: number; moved: boolean } | null>(null);
   const suppressClick = useRef(false);
+  const suppressTimer = useRef(0);
 
   useLayoutEffect(() => {
     const el = barRef.current;
@@ -60,7 +63,11 @@ export function TabBar() {
   }, [index, tab, x]);
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    // A tap always starts clean: a leftover from a drag must never swallow it (the two-tap bug).
+    suppressClick.current = false;
+    window.clearTimeout(suppressTimer.current);
     if (!tab || e.pointerType === 'mouse' || index < 0) return;
+    setPressed(true);
     drag.current = { startX: e.clientX, startLens: x.get(), moved: false };
   };
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
@@ -77,8 +84,13 @@ export function TabBar() {
   const onPointerUp = () => {
     const d = drag.current;
     drag.current = null;
+    setPressed(false);
     if (!d?.moved) return;
+    // The click that follows a drag is not a tap on the tab below. Browsers send none after a long
+    // drag, so the flag clears itself rather than waiting for one.
     suppressClick.current = true;
+    window.clearTimeout(suppressTimer.current);
+    suppressTimer.current = window.setTimeout(() => (suppressClick.current = false), 350);
     const nearest = Math.round((x.get() - PAD) / tab);
     const target = PAD + nearest * tab;
     if (motionIsReduced()) x.set(target);
@@ -100,7 +112,10 @@ export function TabBar() {
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        onPointerCancel={() => (drag.current = null)}
+        onPointerCancel={() => {
+          drag.current = null;
+          setPressed(false);
+        }}
         onClickCapture={(e) => {
           // A drag ends where the finger lifts: that is not also a tap on the tab below it.
           if (suppressClick.current) {
@@ -114,6 +129,8 @@ export function TabBar() {
           <motion.span
             aria-hidden
             className={cx('glass-lens pointer-events-none absolute rounded-full', TAB_SECTIONS[index]?.tint && 'glass-lens-cantus')}
+            animate={{ scale: pressed ? 1.12 : 1 }}
+            transition={{ type: 'spring', stiffness: 520, damping: 30 }}
             style={{ x, scaleX, scaleY, width: tab, top: PAD, bottom: PAD, left: 0, opacity: index < 0 && !drag.current ? 0 : 1 }}
           />
         )}

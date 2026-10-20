@@ -18,7 +18,9 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const main = SECTIONS.filter((s) => s.placement === 'tab');
-  const extra = SECTIONS.filter((s) => s.placement !== 'tab');
+  // Ratio and Ordo (your numbers and your settings) sit at the bottom, apart from the rooms.
+  const bottom = SECTIONS.filter((s) => s.id === 'ratio' || s.id === 'ordo');
+  const extra = SECTIONS.filter((s) => s.placement !== 'tab' && !bottom.includes(s));
 
   return (
     // Only the (contained, fixed) sidebar reflows while it resizes; the page content moves with a transform.
@@ -58,6 +60,12 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         ))}
         <div className="mx-2 my-3 h-px bg-line" />
         {extra.map((section) => (
+          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
+        ))}
+      </nav>
+
+      <nav aria-label="Statistics and settings" className="mt-auto flex flex-col gap-1 border-t border-line pt-3">
+        {bottom.map((section) => (
           <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
         ))}
       </nav>

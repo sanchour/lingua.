@@ -155,6 +155,16 @@ Practise writing in the target language; get corrected, explained and graded.
   forms show what they mean themselves ("ellos" they, "estoy" am), and words the dictionary lacks
   are read through a likely base form before going online. The word's sheet says when it did that.
 
+## Lingua+, a new icon and a calmer shell (4.0-1)
+
+- **Lingua+ (a preview):** Ordo › Lingua+ shows what is free (Codex, Thesaurus) and what Lingua+
+  adds (every other room) for 29.99. "Get Lingua+" charges nothing and nothing is locked; "Reset
+  Lingua+" takes it away. Home has a small card for it until it is had.
+- **New app icon:** two solid pages and a ribbon, on warm paper (light) or warm charcoal (dark).
+- **The desktop sidebar** has Ratio and Ordo at the bottom left; Thesaurus has a new icon.
+- **The phone's tab bar** is glass with a lens that swells under your finger; dragging along it and
+  then tapping a section opens it at the first tap.
+
 ## Languages in tiers, and the language map (4.0-1)
 
 - **Five kinds of language:** Core (6 languages, with everything), Full (14: everything but a

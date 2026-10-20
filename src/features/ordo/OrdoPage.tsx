@@ -27,6 +27,7 @@ import { LanguageSection } from './sections/LanguageSection';
 import { ListeningSection } from './sections/ListeningSection';
 import { MusicSection } from './sections/MusicSection';
 import { PerformanceSection } from './sections/PerformanceSection';
+import { PlusSection } from './sections/PlusSection';
 import { ReadingSection } from './sections/ReadingSection';
 import { ResetSection } from './sections/ResetSection';
 import { StorageSection } from './sections/StorageSection';
@@ -217,6 +218,8 @@ function SectionView({ id }: { id: SectionId }) {
       return <LanguageSection active={language} />;
     case 'ai':
       return <AiSection llm={settings.llm} apiKeys={settings.apiKeys} translation={settings.translation} />;
+    case 'plus':
+      return <PlusSection meta={settings.meta} />;
     case 'sync':
       return <SyncSection sync={settings.sync} />;
     case 'storage':

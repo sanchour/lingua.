@@ -1,4 +1,4 @@
-import { BookA, BookOpen, ChartNoAxesColumn, Clapperboard, Earth, Headphones, House, Library, MessagesSquare, Settings2 } from 'lucide-react';
+import { BookA, BookOpen, ChartNoAxesColumn, Clapperboard, Earth, Headphones, GalleryVerticalEnd, House, MessagesSquare, Settings2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export type SectionId = 'home' | 'codex' | 'thesaurus' | 'sonus' | 'visio' | 'mundus' | 'grammatica' | 'colloquium' | 'ratio' | 'ordo';
@@ -19,7 +19,7 @@ export interface Section {
 export const SECTIONS: Section[] = [
   { id: 'home', path: '/', name: 'Home', role: 'Your hearth', icon: House, placement: 'tab' },
   { id: 'codex', path: '/codex', name: 'Codex', role: 'Read', icon: BookOpen, placement: 'tab' },
-  { id: 'thesaurus', path: '/thesaurus', name: 'Thesaurus', role: 'Vocabulary', icon: Library, placement: 'tab' },
+  { id: 'thesaurus', path: '/thesaurus', name: 'Thesaurus', role: 'Vocabulary', icon: GalleryVerticalEnd, placement: 'tab' },
   { id: 'sonus', path: '/sonus', name: 'Sonus', role: 'Listen & sing', icon: Headphones, placement: 'tab' },
   { id: 'visio', path: '/visio', name: 'Visio', role: 'Watch', icon: Clapperboard, placement: 'tab' },
   { id: 'mundus', path: '/mundus', name: 'Mundus', role: 'Your guide', icon: Earth, placement: 'header' },

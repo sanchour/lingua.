@@ -114,7 +114,7 @@ export interface Settings {
     firstStepsHidden: boolean;
   };
   /** Device-only. */
-  meta: { deviceId: string; onboardedAt: number | null; lastBackupAt: number | null };
+  meta: { deviceId: string; onboardedAt: number | null; lastBackupAt: number | null; plusAt: number | null };
   /**
    * Device-only: the devices this one is paired with (each pairing's secret, which side of it this
    * device is, and when they last synced), and whether API keys go along. Never in backups.
@@ -180,7 +180,7 @@ export const DEFAULT_SETTINGS: Settings = {
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
   ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false },
-  meta: { deviceId: '', onboardedAt: null, lastBackupAt: null },
+  meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null },
   sync: { devices: [], includeApiKeys: false },
 };
 

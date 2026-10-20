@@ -763,6 +763,21 @@ Short records of choices that are not obvious from the code. Newest last.
 - **"Most played by you" counts openings,** one per song page opened; a reopen within a minute (a
   reload, React's double run in development) counts once.
 
+## 2026-10-20 — Lingua 4.0-1, the rest: glass, icon, Lingua+
+
+- **The two-tap bug was a flag that never cleared.** The tab bar swallows the click that follows a
+  drag (it would otherwise open the tab under the finger). Browsers send no click after a longer
+  drag, so the flag stayed and ate the next tap. It is reset when a press starts, and by a timer.
+- **Lingua+ lives in the device's `meta`, not in a purchase.** It is a placeholder: one timestamp,
+  device-only like the other `meta` fields, so it isn't backed up or synced. When real purchases
+  come it will need to follow the Apple ID instead; nothing reads it yet, so nothing can be locked
+  by mistake.
+- **One icon mark, drawn without an outline.** Solid shapes read at 180 px and stay legible when
+  iOS tints them; the old line drawing didn't. The Home Screen icon can't follow the phone's
+  appearance after Lingua is added, only at that moment.
+- **60 fps by reading, not by measuring.** The audit found three animated sizes; frame times need
+  a device, so they stay on QA-ios.
+
 ## 2026-10-20 — Lingua 4.0-1: tiers and the language map
 
 - **35 placeholders, not 25.** Tier 3's five new languages, tier 4's twenty and the ten

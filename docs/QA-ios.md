@@ -391,3 +391,14 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
       the list; the cross closes it.
 - [ ] A language marked "Soon" shows a note and Continue stays off.
 - [ ] The search box filters the list; the keyboard doesn't cover the map or the list.
+
+## Lingua 4.0-1, the rest
+
+- [ ] Drag along the tab bar and let go, then tap another section once: it opens at the first tap
+      (this was the two-tap bug). Press and hold on the bar: the lens swells under the finger.
+- [ ] Remove Lingua from the Home Screen and add it again: the new icon shows, and a phone set to
+      dark gets the dark icon (the system reads it only when it is added).
+- [ ] Ordo › Lingua+: "Get Lingua+" turns into "Reset Lingua+" and the Home card disappears; reset
+      brings it back.
+- [ ] Ordo › Performance › Device lab: average fps and p95 on the iPhone, and the song games'
+      progress bars and Home's week chart look smooth.

@@ -1430,19 +1430,41 @@ and makes 20 with them. The new languages are placeholders for now, as the user 
       the map to it, tapping a dot or country lists its languages first. The list has Core as
       large cards, Full as cards, then the rest as compact rows with their tier and a search box.
       Ordo › Languages still adds another language through the same page.
-- [ ] **Every animation at 60 fps:** find the clicks and transitions that still stutter (the
-      Performance lab, a phone and a desktop) and fix them as PERFORMANCE.md says.
-- [ ] **The phone's tab bar in liquid glass,** like the glass slider, on the phone only. Fix the
-      bug where, after using the slider, a section needs two taps before it opens.
-- [ ] **Desktop sidebar:** Ratio and Ordo at the bottom left. **A better Thesaurus icon.**
-- [ ] **A new app icon:** more minimal, in the spirit of Apple's own apps, fitting Lingua, with a
+- [x] **Every animation at 60 fps:** find the clicks and transitions that still stutter (the
+      Performance lab, a phone and a desktop) and fix them as PERFORMANCE.md says. *Done as far as
+      reading the code can say (2026-10-20):* the app was checked against PERFORMANCE.md's rules and
+      the three places that animated `width` or `height` (the song games' two progress bars, Home's
+      week chart) now move with transforms. Left as they are, on purpose: the sidebar's width (a
+      contained, fixed box, noted in its code) and the video clip's reveal, which can't be a
+      transform. *Not measured:* no frame times on a phone or in the Performance lab (they need a
+      real device): run Ordo › Performance on the iPhone and a laptop.
+- [x] **The phone's tab bar in liquid glass,** like the glass slider, on the phone only. Fix the
+      bug where, after using the slider, a section needs two taps before it opens. *Done:* the bar
+      was already glass from 3.0-2; it now has a sheen from above, more blur and light, and the lens
+      swells under a finger as in iOS 26. **The bug:** after a drag the browser often sends no click,
+      so the flag that swallows "the click that ends a drag" stayed set and ate the next tap; it now
+      clears when a new press starts and 350 ms after a drag.
+- [x] **Desktop sidebar:** Ratio and Ordo at the bottom left. **A better Thesaurus icon.** *Done:*
+      Ratio and Ordo are a group of their own at the bottom of the sidebar; Thesaurus is a stack of
+      cards (`GalleryVerticalEnd`), no longer the library shelves.
+- [x] **A new app icon:** more minimal, in the spirit of Apple's own apps, fitting Lingua, with a
       background that follows light and dark. iOS chooses a Home Screen web app's icon when it is
       added; iOS 18 and later can also show any icon dark or tinted. The icon is drawn for both,
-      and the step checks how far an installed app can follow the switch by itself.
-- [ ] **A placeholder Lingua+:** a one-time purchase of 29.99 that unlocks everything; the free
+      and the step checks how far an installed app can follow the switch by itself. *Done:* two
+      solid pages with a ribbon cut out of one, no outline, on a soft gradient; terracotta on warm
+      paper for light, a lighter terracotta on warm charcoal for dark. `public/icons/*.svg` feed
+      `scripts/icons.mjs` (the two Home Screen PNGs) and `public/logo.svg` (favicon and the rest, which
+      follows the browser's light or dark). The in-app logo is the same mark. *What an installed app
+      can do:* iOS reads the Home Screen icon once, when Lingua is added, which is why index.html picks
+      the light or dark PNG then; it can't switch afterwards, and iOS 18's own dark and tinted looks
+      are made by the system from the icon, not chosen by the app. *Not checked:* on a real iPhone.
+- [x] **A placeholder Lingua+:** a one-time purchase of 29.99 that unlocks everything; the free
       edition has Codex and Thesaurus. Built into the app (where it is offered, what it includes),
       but the purchase button charges nothing and nothing is locked yet. Ordo has a button to
-      reset Lingua+, which removes it again.
+      reset Lingua+, which removes it again. *Done:* Ordo › Lingua+ (what is free, what Lingua+
+      adds, "Get Lingua+" and, once had, "Reset Lingua+"), and a quiet card on Home until it is had.
+      One number on the device (`meta.plusAt`, `data/plus.ts`); nothing checks it yet. The price shows
+      as 29.99 without a currency, to be set with real purchases.
 
 ### 4.0-2 · Codex, a full dictionary, and one memory for every word
 - [ ] **A full dictionary for the six core languages, as good as Oxford's, inside Lingua** (the

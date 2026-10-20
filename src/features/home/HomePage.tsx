@@ -28,6 +28,7 @@ import { BookCover } from '@/features/codex/library/BookCover';
 import { SongArt } from '@/features/cantus/SongArt';
 import { Artwork } from '@/features/sonus/library/Artwork';
 import { Poster } from '@/features/visio/library/Poster';
+import { PlusHomeCard } from './PlusHomeCard';
 import { MundusHomeCard } from '@/features/mundus/HomeCard';
 import { ColloquiumHomeCard } from '@/features/colloquium/HomeCard';
 import { GrammarHomeCard } from '@/features/grammatica/links';
@@ -93,6 +94,9 @@ export default function HomePage() {
           </motion.div>
           <motion.div {...enter(5)} className="empty:hidden">
             <MundusHomeCard />
+          </motion.div>
+          <motion.div {...enter(6)} className="empty:hidden">
+            <PlusHomeCard />
           </motion.div>
           <motion.div {...enter(6)} className="empty:hidden">
             <ColloquiumHomeCard lang={language.id} level={language.level} />
@@ -372,7 +376,7 @@ function WeekCard({ facts, goal }: { facts?: HomeFacts; goal: number }) {
           return (
             <div key={d.date} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
               <div className="relative flex w-full max-w-9 flex-1 items-end overflow-hidden rounded-lg bg-sunken">
-                <div className={cx('w-full rounded-lg transition-[height] duration-700', d.met ? 'bg-accent' : 'bg-accent/45')} style={{ height: `${h}%` }} />
+                <div className={cx('h-full w-full rounded-lg transition-transform duration-700', d.met ? 'bg-accent' : 'bg-accent/45')} style={{ transform: `translateY(${100 - h}%)` }} />
               </div>
               <span className={cx('text-[11px] font-bold', today ? 'text-accent-text' : 'text-ink-faint')}>{WEEKDAY.format(new Date(`${d.date}T12:00:00`))}</span>
             </div>

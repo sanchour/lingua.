@@ -1,10 +1,10 @@
 // How Ordo is arranged: a few groups, each a page of one or more sections, and an index of every
 // setting so the search can take you straight to it.
 import type { LucideIcon } from 'lucide-react';
-import { BookOpenText, Database, GraduationCap, Headphones, Info, Languages, Music2, Palette, Sparkles } from 'lucide-react';
+import { BookOpenText, Database, Gem, GraduationCap, Headphones, Info, Languages, Music2, Palette, Sparkles } from 'lucide-react';
 import { searchKey } from '@/design/primitives';
 
-export type SectionId = 'appearance' | 'reading' | 'study' | 'cards' | 'listening' | 'music' | 'language' | 'ai' | 'sync' | 'storage' | 'backup' | 'reset' | 'keyboard' | 'performance' | 'about';
+export type SectionId = 'appearance' | 'reading' | 'study' | 'cards' | 'listening' | 'music' | 'language' | 'ai' | 'plus' | 'sync' | 'storage' | 'backup' | 'reset' | 'keyboard' | 'performance' | 'about';
 
 export interface SettingsGroup {
   id: string;
@@ -24,6 +24,7 @@ export const GROUPS: SettingsGroup[] = [
   { id: 'languages', title: 'Languages', icon: Languages, color: '#9d8fcb', sections: ['language'] },
   { id: 'look', title: 'Look and feel', icon: Palette, color: '#c9a650', sections: ['appearance'] },
   { id: 'ai', title: 'AI and translation', icon: Sparkles, color: '#cf8299', sections: ['ai'] },
+  { id: 'plus', title: 'Lingua+', icon: Gem, color: '#c08a4a', sections: ['plus'] },
   { id: 'data', title: 'Your data', icon: Database, color: '#5f9e96', sections: ['sync', 'storage', 'backup', 'reset'] },
   { id: 'about', title: 'About and more', icon: Info, color: '#948d82', sections: ['keyboard', 'performance', 'about'] },
 ];
@@ -111,6 +112,8 @@ export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Sync now', section: 'sync', also: 'sync devices iphone phone desktop' },
   { label: 'Reset a language', find: 'Reset ', section: 'reset', also: 'start over progress' },
   { label: 'Erase everything', section: 'reset', also: 'delete wipe clear all data' },
+  { label: 'Get Lingua+', section: 'plus', also: 'purchase buy upgrade premium pro unlock free edition price' },
+  { label: 'Reset Lingua+', section: 'plus', also: 'remove undo refund' },
 
   { label: 'Keyboard shortcuts', section: 'keyboard', also: 'keys hotkeys' },
   { label: 'FPS monitor', section: 'performance', also: 'frame rate speed performance' },
@@ -126,6 +129,7 @@ const SECTION_TITLES: Record<SectionId, string> = {
   music: 'Music',
   language: 'Languages',
   ai: 'AI & translation',
+  plus: 'Lingua+',
   sync: 'Your devices',
   storage: 'Storage',
   backup: 'Backup & move devices',
