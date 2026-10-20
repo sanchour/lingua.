@@ -1,0 +1,110 @@
+// Builds the alphabet lessons' words (src/core/script/words/<lang>.ts) from the hand-picked list in
+// picks.ts, checking every word is in the language's pack (Wiktionary via kaikki.org):
+//   byLetter  up to two words with each letter, starting with it where one does
+//   byGroup   up to eight words to read after each group, made only of letters learned by then
+// The pack's own glosses aren't used: its first sense is often an old or rare one (はず "nock",
+// 法 "dharma"), so picks.ts gives each word its everyday meaning.
+//
+//   node scripts/script/words.ts <lang>      (ru, el, ar, ja, ko, zh)
+import { readFileSync, writeFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+import { ROMANIZE } from '../../src/core/script/romanize.ts';
+import { lettersInWord, pinyinParts, pinyinSyllables } from '../../src/core/script/letters.ts';
+import type { Script, ScriptWord, ScriptWords } from '../../src/core/script/types.ts';
+import { PICKS } from './picks.ts';
+
+type Lemma = [string, string, string, string, unknown];
+type Pack = {
+  lemmas: Lemma[];
+  forms: Array<[string, number[], string, string]>;
+};
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const lang = process.argv[2];
+if (!lang || !PICKS[lang]) {
+  console.log('usage: words.ts <lang>   (one of ' + Object.keys(PICKS).join(', ') + ')');
+  process.exit(1);
+}
+const script = (
+  (await import(`../../src/core/script/alphabets/${lang}.ts`)) as {
+    default: Script;
+  }
+).default;
+const pack = JSON.parse(gunzipSync(readFileSync(join(root, 'public', 'packs', `${lang}.v7.json.gz`))).toString('utf8')) as Pack;
+
+/** How the pack spells a word: without Arabic vowel marks, Russian stress or case. */
+const key = (w: string) =>
+  w
+    .normalize('NFD')
+    .replace(lang === 'ar' ? /[ً-ْٰ]/g : lang === 'ru' ? /[̀́]/g : /$^/g, '')
+    .normalize('NFC')
+    .replace(/ٱ/g, 'ا')
+    .toLowerCase();
+const inPack = new Map<string, Lemma | null>();
+for (const l of pack.lemmas) if (!inPack.get(key(l[0]))) inPack.set(key(l[0]), l);
+// Japanese words written in kanji keep their kana reading in the third field (猫 ねこ).
+if (lang === 'ja') for (const l of pack.lemmas) if (/^[ぁ-ヿ]+$/.test(l[2]) && !inPack.get(l[2])) inPack.set(l[2], l);
+for (const f of pack.forms) if (!inPack.has(key(f[0]))) inPack.set(key(f[0]), null);
+
+const problems: string[] = [];
+const pool: ScriptWord[] = [];
+const seen = new Set<string>();
+for (const line of PICKS[lang].split('\n')) {
+  const m = line.match(/^(.+?)\s*=\s*(.+)$/);
+  if (!m) continue;
+  const [, w, en] = m;
+  if (seen.has(w)) continue;
+  seen.add(w);
+  if (!inPack.has(key(w))) {
+    problems.push(`${w} isn't in the pack`);
+    continue;
+  }
+  const lemma = inPack.get(key(w));
+  const latin = lang === 'zh' ? (lemma?.[2] ?? '') : ROMANIZE[lang](w);
+  if (!latin || (lang === 'zh' && !pinyinSyllables(latin).every((s) => pinyinParts(s)))) {
+    problems.push(`${w} can't be romanized (${latin || 'nothing'})`);
+    continue;
+  }
+  pool.push({ w, latin, en });
+}
+const letters = new Map(pool.map((c) => [c.w, new Set(lettersInWord(lang, c.w, c.latin))]));
+
+const out: ScriptWords = { byLetter: {}, byGroup: {} };
+const used = new Map<string, number>();
+const learned = new Set<string>();
+for (const g of script.groups) {
+  const kana = g.set === 'Katakana' ? /[ァ-ヺ]/ : g.set === 'Hiragana' ? /[ぁ-ゖ]/ : null;
+  for (const letter of g.letters) {
+    const has = pool.filter((c) => letters.get(c.w)!.has(letter.id) && (!kana || kana.test(c.w)));
+    const first = (c: ScriptWord) => lettersInWord(lang, [...c.w][0] ?? '', lang === 'zh' ? (pinyinSyllables(c.latin)[0] ?? '') : '').includes(letter.id);
+    const picks = [...has].sort((a, b) => (used.get(a.w) ?? 0) - (used.get(b.w) ?? 0) || Number(first(b)) - Number(first(a))).slice(0, 2);
+    for (const p of picks) used.set(p.w, (used.get(p.w) ?? 0) + 1);
+    out.byLetter[letter.id] = picks;
+    learned.add(letter.id);
+  }
+  if (lang === 'zh') {
+    // Pinyin's units can't spell a word alone: the group's own example words are its reading.
+    out.byGroup[g.id] = [...new Map(g.letters.flatMap((l) => out.byLetter[l.id]).map((x) => [x.w, x])).values()].slice(0, 8);
+    continue;
+  }
+  const mine = new Set(g.letters.map((l) => l.id));
+  out.byGroup[g.id] = pool
+    .filter((c) => {
+      const ls = [...letters.get(c.w)!];
+      return (!kana || kana.test(c.w)) && ls.every((x) => learned.has(x)) && ls.some((x) => mine.has(x));
+    })
+    .slice(0, 8);
+}
+
+const missing = script.groups.flatMap((g) => g.letters.filter((l) => !out.byLetter[l.id].length).map((l) => l.id));
+const thin = script.groups.filter((g) => (out.byGroup[g.id]?.length ?? 0) < 3).map((g) => g.id);
+const json = (v: unknown) => JSON.stringify(v, null, 2).replace(/"(\w+)":/g, '$1:');
+writeFileSync(
+  join(root, 'src', 'core', 'script', 'words', `${lang}.ts`),
+  `// Generated by scripts/script/words.ts from scripts/script/picks.ts, every word checked against the ${lang} pack\n// (Wiktionary via kaikki.org, CC BY-SA). Re-run it rather than editing.\nimport type { ScriptWords } from '../types.ts';\n\nconst words: ScriptWords = ${json(out)};\n\nexport default words;\n`,
+);
+console.log(
+  `${lang}: ${pool.length} words. ${problems.length ? 'Problems: ' + problems.join('; ') + '. ' : ''}Letters without a word: ${missing.join(' ') || 'none'}. Groups with under 3 to read: ${thin.join(' ') || 'none'}.`,
+);

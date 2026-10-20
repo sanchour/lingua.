@@ -383,6 +383,15 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Ratio › Overview with one language chosen shows the Grammar panel; Tabula's "In Lingua" mentions grammar.
 - [ ] The end of a Ludus lesson offers "Grammar: <topic>".
 
+## Lingua 3.0-8, part 5: alphabets and writing
+
+- [ ] Russian at A0: Home shows the alphabet card; Grammatica › Alphabet shows the chart; tapping a letter opens its sheet, and the speaker plays.
+- [ ] A group lesson: trace a letter with a finger; the page doesn't scroll while drawing, and Check passes a careful trace.
+- [ ] Write from memory: a scribble fails and shows the letter; Clear empties the square. The square and Clear sit above the Check bar.
+- [ ] Arabic: the chart reads right to left; the letter sheet shows the start, middle and end forms joined.
+- [ ] Japanese and Mandarin: kana and characters show in the right font (not Chinese forms for Japanese).
+- [ ] Finish a lesson at 80 % or more: the group's ring fills on the alphabet page.
+
 ## Lingua 4.0-1: the language map
 
 - [ ] Onboarding › What will you read?: the map sits above the list; dragging it moves the world,

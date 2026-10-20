@@ -11,6 +11,7 @@ import { useGrammarItems, useGrammarProgress } from '@/data/grammar';
 import { Badge, buttonClasses, Card, EmptyState } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { eyebrow, TopicRing, useGrammar } from './parts';
+import { LettersCard } from './letters/LettersCard';
 
 /**
  * Grammatica (Lingua 3.0-8): the language's grammar as short topics, A1 first. Each topic opens
@@ -42,13 +43,17 @@ export default function GrammaticaPage() {
       {grammar === undefined ? (
         <div className="h-64" />
       ) : grammar === null ? (
-        <Card>
-          <EmptyState icon={BookA} title={`No grammar for ${info?.name ?? lang} yet`}>
-            Grammatica has topics for the main languages first. Your words, decks and the reader work as always.
-          </EmptyState>
-        </Card>
+        <>
+          <LettersCard lang={lang} />
+          <Card>
+            <EmptyState icon={BookA} title={`No grammar for ${info?.name ?? lang} yet`}>
+              Grammatica has topics for the main languages first. Your words, decks and the reader work as always.
+            </EmptyState>
+          </Card>
+        </>
       ) : (
         <>
+          <LettersCard lang={lang} />
           {next && <NextUp topic={next} state={states.get(next.id)} />}
           {progress && progress.size === 0 && <Placement />}
           <Practice due={dueCount} placed={!!progress && progress.size > 0} />

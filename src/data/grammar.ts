@@ -15,13 +15,16 @@ import type { LinguaDB } from './db';
 import { getSettings } from './settings';
 import type { GrammarItemRow, GrammarProgressRow, ReviewLog } from './types';
 
+/** Alphabet rows share these tables (topic `script` for letters, `script:<group>` for groups). */
+export const isScriptTopic = (topic: string) => topic === 'script' || topic.startsWith('script:');
+
 export async function grammarProgress(lang: string, database: LinguaDB = db): Promise<Map<string, GrammarProgressRow>> {
   const rows = await database.grammarProgress.where('lang').equals(lang).toArray();
-  return new Map(rows.filter((r) => !r.deletedAt).map((r) => [r.topic, r]));
+  return new Map(rows.filter((r) => !r.deletedAt && !isScriptTopic(r.topic)).map((r) => [r.topic, r]));
 }
 
 export async function grammarItems(lang: string, database: LinguaDB = db): Promise<GrammarItemRow[]> {
-  return (await database.grammarItems.where('[lang+topic]').between([lang, ''], [lang, '￿']).toArray()).filter((r) => !r.deletedAt);
+  return (await database.grammarItems.where('[lang+topic]').between([lang, ''], [lang, '￿']).toArray()).filter((r) => !r.deletedAt && !isScriptTopic(r.topic));
 }
 
 /** Each topic's progress row in a language, live; `undefined` while loading. */
@@ -69,7 +72,9 @@ function newItemRow(lang: string, topic: string, key: string, now: number): Gram
 export interface GrammarAnswer {
   lang: string;
   topic: string;
-  item: Item;
+  /** A drill item, keyed by its sentence; or `key` for an item without one (a letter). */
+  item?: Item;
+  key?: string;
   grade: Grade4;
   durationMs: number;
   /** Practice (Lightning) is logged but leaves the schedule alone. */
@@ -83,7 +88,7 @@ export interface GrammarAnswer {
  */
 export async function answerGrammarItem(a: GrammarAnswer, database: LinguaDB = db): Promise<GrammarItemRow> {
   const now = a.now ?? Date.now();
-  const key = itemKey(a.item);
+  const key = a.key ?? itemKey(a.item!);
   const id = itemId(a.lang, a.topic, key);
   const settings = await getSettings(database);
   const before = (await database.grammarItems.get(id)) ?? newItemRow(a.lang, a.topic, key, now);

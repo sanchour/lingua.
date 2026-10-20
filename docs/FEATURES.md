@@ -497,6 +497,19 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **In the numbers:** Ratio's Overview has a Grammar panel (learned, mastered, level, topics a month,
   the topics that need work); Tabula adds your grammar level to "In Lingua".
 
+## Alphabets and writing (3.0-8)
+
+- **The alphabet** for Russian, Greek, Arabic, Japanese (hiragana and katakana), Korean and
+  Mandarin (pinyin, tones and the first characters), in Grammatica › Alphabet: a chart by group,
+  each letter with its sound, name and real words to hear. Arabic shows each letter at the start,
+  middle and end of a word.
+- **Short lessons per group:** meet the letters, match sound and letter both ways, match pairs,
+  read real words built only from letters you know, find Arabic shapes in a word, then trace each
+  letter and write it from memory with a finger, pen or mouse. 80 % right first time and the
+  group's ring fills.
+- **Letters come back for review** like cards, and practice mixes the letters you've learned.
+- **Offered first to beginners:** the alphabet card sits on Grammatica, and on Home at A0 and A1.
+
 ## Visio › Services (3.0-7)
 
 - **Your services and country:** tap the services you have (the big ones, and the free and local

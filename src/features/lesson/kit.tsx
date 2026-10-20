@@ -127,9 +127,11 @@ export interface FeedbackBarProps {
   hint?: ReactNode;
   /** A quieter way out of this exercise (skip). */
   aside?: ReactNode;
+  /** The button while answering, when it isn't a check ("Got it" on a new letter). */
+  checkLabel?: string;
 }
 
-export function FeedbackBar({ phase, ready, onCheck, onNext, praise, rightNote, wrong, hint, aside }: FeedbackBarProps) {
+export function FeedbackBar({ phase, ready, onCheck, onNext, praise, rightNote, wrong, hint, aside, checkLabel = 'Check' }: FeedbackBarProps) {
   const { pointer } = useLayout();
   return (
     <div
@@ -164,7 +166,7 @@ export function FeedbackBar({ phase, ready, onCheck, onNext, praise, rightNote, 
             <p className="text-sm text-ink-soft">{hint}</p>
           ) : (
             <Button size="lg" className="min-w-40 flex-1 sm:flex-none" variant={phase === 'answer' ? 'primary' : 'accent'} disabled={phase === 'answer' && !ready} onClick={() => (phase === 'answer' ? onCheck() : onNext())}>
-              {phase === 'answer' ? 'Check' : 'Continue'}
+              {phase === 'answer' ? checkLabel : 'Continue'}
               {pointer === 'fine' && <Kbd tone="inverse">Enter</Kbd>}
             </Button>
           )}

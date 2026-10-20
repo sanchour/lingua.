@@ -1094,3 +1094,26 @@ Short records of choices that are not obvious from the code. Newest last.
 - **AI tidying is on request, per word, with the user's key.** Tidying the common entries in
   advance would need a key at build time, which Lingua never uses. One request per word, cached.
 
+
+## 2026-10-20 — Lingua 3.0-8, part 5: alphabets and writing
+
+- **Words picked by hand, then checked against the pack.** Mining words from the packs gave
+  junk: wrong glosses, rare homographs, even slurs. A short hand-picked list per letter, kept only
+  when the pack has the word with that meaning, gives clean words. A word the pack lacks is
+  dropped rather than invented. Japanese words are matched by their kana reading.
+- **Letters share Grammatica's tables.** A letter is a `grammarItems` row with topic `script`, and
+  a group a `grammarProgress` row `script:<group>`. They are logged in the same hidden deck
+  `grammar:<lang>`, so vocabulary statistics leave them out, and resetting a language clears them.
+  Grammar's own lists skip these rows (`isScriptTopic`). There's no new Dexie version and no
+  backup change.
+- **The shape is checked, not the strokes.** Stroke order needs stroke data for every letter in six
+  scripts, and only Japanese and Chinese have open data for it. Comparing ink with the font's own
+  letter works for every script today: a trace is compared in place, and writing from memory
+  is scaled to the letter's box first, so a smaller letter in a corner still counts. A scribble
+  covers the letter but puts most of its ink off it, so it fails on precision. The thresholds
+  (trace 70 % covered and 75 % on the letter; memory 60 % and 65 %) were set on test shapes and
+  synthetic strokes, not on real handwriting yet.
+- **Romanization by named schemes:** Russian BGN/PCGN, Greek ELOT 743, Arabic in the scholarly
+  transliteration read from the vowel marks, Japanese modified Hepburn, Korean Revised
+  Romanization. Where a scheme can't be applied letter by letter (Korean sound changes, unvowelled
+  Arabic), the word isn't used.

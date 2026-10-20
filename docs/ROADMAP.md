@@ -895,16 +895,17 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
       chapters: a lesson is offered at the moment it's needed. When a form in the reader, a song,
       a card or a drill uses the structure, "Why this form?" opens just that lesson, and a
       mistake in a drill links to it too.
-- [ ] **Alphabets** for the languages with a script of their own (Russian, Greek, Arabic, Japanese
+- [x] **Alphabets** for the languages with a script of their own (Russian, Greek, Arabic, Japanese
       kana, Korean Hangul; Mandarin: pinyin and tones, then the first characters): the full
       alphabet as a chart with sound, and short lessons in the spirit of Duolingo. See the letters,
       hear them, match sound to letter, read real words, then write them. Letters are FSRS cards
       with mastery rings, like grammar topics. Offered first to beginners in these languages.
-- [ ] **Writing practice for letters and characters:** trace each letter, kana, Hangul block or
+- [x] **Writing practice for letters and characters:** trace each letter, kana, Hangul block or
       character with a finger or the mouse, guided by its strokes in order and direction
       (stroke data from KanjiVG for Japanese, Make Me a Hanzi for Mandarin, drawn by hand for the
       alphabets), then write it from memory. Strokes are checked for order, direction and shape,
       with a gentle hint on a miss. Arabic letters in their joined forms (start, middle, end).
+      *As built, the shape is checked, not stroke order or direction: see part 5 below.*
 
 **Order set by the user (2026-10-20).** Six parts, each committed and pushed on its own, starting
 with the six core languages (Spanish, Russian, German, Arabic, Mandarin, French):
@@ -912,7 +913,7 @@ with the six core languages (Spanish, Russian, German, Arabic, Mandarin, French)
 2. [x] The drills (conjugate, decline, pick the form, word order) as FSRS cards, with mastery rings.
 3. [x] Progressive exercises, and lessons that show examples first.
 4. [x] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
-5. [ ] Alphabets and writing practice for the languages with their own script.
+5. [x] Alphabets and writing practice for the languages with their own script.
 6. [ ] The other languages, tier by tier, keeping tier 2 and below cheap.
 
 Content rules: every rule is checked against a named source (listed in each module's `sources`),
@@ -1038,6 +1039,48 @@ schedule. Once some progress exists, the check stays available as a quiet "Check
 button beside Review and Lightning. The Ratio panel shows only when one language is chosen, and its
 "Needs work" list opens each topic's practice. Tabula shows "grammar A1" once every A1 topic is
 learned, and "N grammar topics" before that.
+
+**Part 5, plan (2026-10-20).** Alphabets and writing for the six languages with a script of their
+own: Russian, Greek, Arabic, Japanese kana, Korean Hangul, and for Mandarin pinyin with its tones,
+then the first characters.
+- **An alphabet module per language** in `src/core/script/alphabets/`, loaded only when needed.
+  Letters come in groups of four to eight, in teaching order (Cyrillic's old friends, then false
+  friends; Arabic by shared shape), each with its sound, name, romanization and real words.
+- **Real words, checked.** The words are picked by hand (`scripts/script/picks.ts`) and kept only
+  if the language's pack has them with that meaning; `scripts/script/words.ts` writes them out
+  with their reading. A test checks that each word contains its letter and that the romanization
+  scheme reads it as shown.
+- **`/grammatica/letters`:** the chart by group with a ring per group, a side panel per letter
+  (its shapes, Arabic's joined forms, words with a speaker), "Next up", and Review.
+- **A group lesson** in the lesson kit: meet each letter; sound to letter and letter to sound;
+  match the pairs; read real words made only of letters learned so far; for Arabic, pick the
+  letter's shape in a word; then trace each letter and write it from memory. A miss comes back
+  once. 80 % right first time marks the group learned.
+- **Progress without a new Dexie version.** Letters are FSRS items in Grammatica's tables (topic
+  `script`), and a group is a progress row `script:<group>`. Due letters come back as a review.
+- **Offered first to beginners:** an alphabet card on Grammatica, and on Home for A0 and A1, or
+  once begun.
+
+*Part 5, as built (2026-10-20).* As planned. Russian has 33 letters in 6 groups; Greek 34 (24
+letters and 10 letter pairs) in 5; Arabic 36 in 8, with the short vowel marks and ء ة ى; kana
+142 in 24 (the hiragana rows, then katakana, with the voiced and small kana); Hangul 40 jamo in 8;
+Mandarin the tones, initials and finals, then ten characters. About 620 words. Writing is
+checked by shape: the font draws the letter into a small grid, and the ink is compared with it
+(how much of the letter is covered, how much ink is on the letter, with some slack). A trace
+must sit on the letter; a letter written from memory may be any size, anywhere in the square.
+Left out, and why:
+- **Stroke order and direction.** These need stroke data (KanjiVG, Make Me a Hanzi, paths drawn by
+  hand for the alphabets). The shape check works without it, so this is a later step.
+- **Kanji.** Kana come first, and kanji are a course of their own.
+- **Combined kana (きゃ, しゅ) and Mandarin tone changes (nǐ hǎo said ní hǎo)** are explained in the
+  notes, not drilled.
+- **Korean words with a final consonant before another syllable** are left out of the word lists:
+  sound changes alter their romanization (김치 is gimchi), and a letter-by-letter reading would
+  teach it wrong.
+- **No pad where there's nothing to write alone:** Greek's letter pairs, Arabic's vowel marks and
+  extras, and Mandarin's pinyin groups. Mandarin's characters have one.
+- On a short window the writing square shrinks so the Check bar never covers it; on a phone the
+  "Next up" card shows one sample letter instead of three.
 
 **Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an
