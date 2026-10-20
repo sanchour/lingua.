@@ -235,6 +235,13 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
       (Sonus pauses); the shuffle button brings other songs; "Surprise me" opens one.
 - [ ] Open three songs twice each (a minute apart): "Most played by you" appears with the counts.
 
+## Languages: add and remove (2026-10-20)
+
+- [ ] Ordo › Languages with two languages: each has a bin. Remove the one not being studied:
+      "Remove …?", Keep it / Remove. It goes from the list; Ordo › Storage shows less used.
+- [ ] Remove the one being studied: the other becomes the one studied, and Home shows it.
+- [ ] With one language left, no bin. "Learn another language" adds one again, afresh.
+
 ## Cantus, a room of its own (design handoff A)
 
 - [ ] Sonus › Music: Cantus opens full screen and dark (also with Paper), no Lingua tab bar; the

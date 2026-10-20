@@ -193,6 +193,11 @@ Practise writing in the target language; get corrected, explained and graded.
   **Desktop:** the groups in a column, the open one beside it.
 - **Search settings** by name or everyday words ("dark", "font size", "key", "backup"); a result
   opens its page and the setting glows for a moment. On desktop, / focuses the search.
+- **Languages (2026-10-20):** add another language ("Learn another language"), or remove one with
+  its bin: after "Remove Spanish?", the language and everything learnt in it (texts, words, decks
+  and cards, audio and audiobooks, songs, journal, progress, its offline dictionary) are deleted
+  from the device and their room freed. The last language can't be removed; adding a removed
+  language again starts it afresh.
 
 ## Music in Sonus — learning through music (2.0-4, in Sonus since 2.0-4b)
 

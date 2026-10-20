@@ -628,6 +628,15 @@ Short records of choices that are not obvious from the code. Newest last.
 - **No two-page spreads:** on desktop the page's words sit where the second page would; a comic in
   Lingua is read to learn its words, so they stay in view.
 
+## 2026-10-20 — Removing a language
+
+- **Each kind of data leaves the way it already does** (`data/removeLanguage.ts`): texts, decks,
+  folders, audio, audiobooks, songs, journal and journey through their own delete functions, so
+  their files, chapters, cards and transcripts go too and synced kinds leave tombstones. Words,
+  sessions, daily counts, feeds, stations and challenges are deleted outright; the offline
+  dictionary through `removePack`. The language's profile keeps a tombstone (`deletedAt`) so
+  other devices hear of it; onboarding puts a fresh profile over it if it's added again.
+
 ## 2026-10-20 — Cantus search (design handoff, workstream B)
 
 - **Several sources, one list.** Apple's search index leaves out some artists' own recordings

@@ -1,14 +1,16 @@
-import { BookCheck, Download, Languages, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { BookCheck, Download, Languages, Plus, Trash2 } from 'lucide-react';
 import { ENJOYMENTS } from '@/app/onboarding/EnjoyStep';
 import { BETA_INCLUDES, getLanguage, LANGUAGES } from '@/core/lang/languages';
 import { LEVELS } from '@/core/lang/levels';
 import type { Level } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
 import { startAnotherLanguage, switchLanguage, updateLanguage, useLanguages } from '@/data/languages';
+import { removeLanguage } from '@/data/removeLanguage';
 import { setSetting, useSettings } from '@/data/settings';
 import type { LanguageProfile } from '@/data/types';
 import { Flag, flagFor, flagName, LanguageFlag } from '@/design/flags';
-import { Badge, Button, Select } from '@/design/primitives';
+import { Badge, Button, Dialog, IconButton, Select } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { formatBytes } from '@/lib/format';
 import { installPack, useInstalledPacks, usePackJobs } from '@/services/packs/packs';
@@ -27,6 +29,20 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
   const toggleEnjoy = (id: (typeof ENJOYMENTS)[number]['id']) =>
     void setSetting('learner', { ...learner, enjoys: learner.enjoys.includes(id) ? learner.enjoys.filter((e) => e !== id) : [...learner.enjoys, id] });
   const target = getLanguage(active.id);
+  const [removing, setRemoving] = useState<LanguageProfile | null>(null);
+  const [busy, setBusy] = useState(false);
+  const remove = async (l: LanguageProfile) => {
+    setBusy(true);
+    try {
+      await removeLanguage(l.id);
+      toast(`${getLanguage(l.id)?.name ?? l.id} removed, with everything learnt in it.`);
+      setRemoving(null);
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'The language couldn’t be removed.', { tone: 'error' });
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
     <SettingsSection id="language" icon={Languages} title="Languages" description="Each language keeps its own words, decks and progress.">
@@ -106,6 +122,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
                   Switch
                 </Button>
               )}
+              {languages.length > 1 && <IconButton icon={Trash2} label={`Remove ${info?.name ?? l.id}`} onClick={() => setRemoving(l)} />}
             </li>
           );
         })}
@@ -114,6 +131,25 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
       <Button variant="ghost" icon={Plus} className="mt-3" onClick={() => void startAnotherLanguage()}>
         Learn another language
       </Button>
+      <Dialog
+        open={removing !== null}
+        onClose={() => !busy && setRemoving(null)}
+        title={`Remove ${getLanguage(removing?.id ?? '')?.name ?? ''}?`}
+        actions={
+          <>
+            <Button variant="secondary" disabled={busy} onClick={() => setRemoving(null)}>
+              Keep it
+            </Button>
+            <Button variant="danger" icon={Trash2} disabled={busy} onClick={() => removing && void remove(removing)}>
+              {busy ? 'Removing…' : 'Remove'}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-[15px] text-ink-soft">
+          Its texts, words, decks and cards, audio and audiobooks, songs, journal, progress and offline dictionary are deleted from this device, and the room they took is freed. Your other languages stay. This can’t be undone; add the language again any time to start afresh.
+        </p>
+      </Dialog>
 
       {(target?.flags.length ?? 0) > 1 && (
         <div className="mt-6">
