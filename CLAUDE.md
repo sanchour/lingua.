@@ -26,9 +26,10 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
   the end page and reading goal, the word memory, sentences with a gap; Dexie v15). **Next is 4.0-3**
   (Cantus games, karaoke, streaming services in Visio). 4.0 sorts the languages into four tiers and an
   experimental shelf (the table at the top of "## Lingua 4.0"); only the six core languages get a course.
-- **Lingua 5.1 is planned, not started (2026-10-20):** [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md),
-  steps 5.1-1 … 5.1-10, with the user's decisions at its top. Its Codex step is built together with
-  4.0-2, and 5.1-1 (the new room order: Cursus, Sonus et Visio, Mentis) goes first.
+- **Lingua 5 is planned and must not be built yet (2026-10-20, the user: plan only):**
+  [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md) and [docs/LINGUA-5.2-PLAN.md](docs/LINGUA-5.2-PLAN.md),
+  with the user's decisions at the top of 5.1 (Stripe; Max is AI with your own key; desktop only).
+  When it is built: 5.1-1 with 5.2-1 first, 5.1's Codex step inside 4.0-2, 5.2's Visio inside 4.0-3.
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 
@@ -36,7 +37,7 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
 
 1. Write a plan first (in the roadmap), then build it without waiting for confirmation.
 2. Check it: `npm run typecheck`, `npm test`, `npm run build`, and look at it in a browser at
-   desktop and phone width, desktop first (the phone must keep working).
+   desktop sizes (1280, 1440, and a 1366×768 laptop), light and dark.
 3. Update the docs it touches (ROADMAP, DECISIONS, FEATURES, QA-ios).
 4. After every finished prompt, commit and push to `main`, then check the Pages deploy went live
    (the installed phone and desktop apps update from it).
@@ -50,10 +51,11 @@ Commit as `sanchour <255895307+sanchour@users.noreply.github.com>`
 
 ## Rules that always hold
 
-- **Desktop first (the user, 2026-10-20).** Design, layout and functions are made for the desktop
-  app first. Use wide windows fully: columns, side panels, sticky rails, desktop-style tabs and
-  toolbars, hover states, keyboard shortcuts, and right-click or drag where it helps. The phone
-  must keep working, but desktop is the priority, and every check starts there.
+- **Desktop only (the user, 2026-10-20).** Design, layout and functions are made for the desktop
+  app. Use wide windows fully: columns, side panels, sticky rails, desktop-style tabs and
+  toolbars, hover states, keyboard shortcuts, and right-click or drag where it helps. **The phone
+  isn't needed anymore** (the user: "Phone is not needed anymore"): don't design, build or check
+  for it; what exists for it stays as it is.
 
 - Work only inside this repository's folder. Never open or change anything to do with the user's
   internship, or other folders on the computer. Temporary files go in the session's scratchpad.

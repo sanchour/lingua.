@@ -1,26 +1,26 @@
 # Lingua 5.1 · the plan
 
-**Status (2026-10-20): planned, nothing built.** The user pasted the first half of the Lingua 5 list
-("Lingua 5.1") and asked for a very careful plan before any building. This file is that plan. The
-roadmap has a short entry under "## Lingua 5" that points here and ticks the steps as they finish.
+**Status (2026-10-20): planned, not to be built yet** (the user: plan only). The user pasted the first
+half of the Lingua 5 list ("Lingua 5.1") and asked for a very careful plan; the second half is
+[LINGUA-5.2-PLAN.md](LINGUA-5.2-PLAN.md). The roadmap's "## Lingua 5" ticks the steps.
+**Desktop only** (D6): nothing here is designed or checked for a phone. **Ordo is called Settings**
+from 5.2-1 on; where this plan says Ordo, it means the same place.
 
 Read first: [CLAUDE.md](../CLAUDE.md) (desktop first, the check, commit as sanchour) and the
 "## Lingua 4.0" part of [ROADMAP.md](ROADMAP.md), which 5.1 overlaps.
 
 ---
 
-## 0. Decisions the user makes before the build
+## 0. The user's decisions (answered 2026-10-20)
 
-Each has a recommendation, which the build follows unless the user says otherwise.
-
-| # | Question | Recommendation |
+| # | Question | The user's answer, and what follows from it |
 | --- | --- | --- |
-| D1 | **Who takes the payments?** The app has no server. | A *merchant of record* (Paddle or Lemon Squeezy): it sells in the user's name, handles EU VAT and receipts, and gives licence keys the app can check without a server of its own. Stripe needs our own VAT handling and a server. The user creates the account (sessions never create accounts). |
-| D2 | **What is Max?** | **AI without a key.** Lingua runs a small server (a Cloudflare Worker) that holds Lingua's own AI keys, checks the Max licence and keeps a fair-use limit. Your own key keeps working for Lingua+ members, so nothing is taken away. The other reading, "AI features with your own key, monthly", is hard to justify to a buyer. |
-| D3 | **Max price.** The user said 6.99/month or a price I propose. | **€5.99 a month or €49.99 a year** (about 30% off). Well below the big apps' AI tiers, and the fair-use limit keeps the AI cost a small part of it. The real cost per user is measured in the test phase before launch. |
-| D4 | **Free or Lingua+ for the rooms the list doesn't name** (Visio, Mundus, Sermo, Diarium, Grammatica, Alphabets, Typing). | The table in 5.1-2. In short: reading, words, listening and your own guide stay free; practice games, the course, music, streaming and AI with your key are Lingua+. |
-| D5 | **5.1 and Lingua 4.0.** 4.0-2 … 4.0-5 are still open in another session. | Build 5.1 now, beside 4.0. 5.1-1 (the new room order) goes first and is pushed quickly, because every session builds on it. **5.1's Codex step is done together with 4.0-2** (they change the same files). Cursus's course tab is filled by 4.0-4. |
-| D6 | **The phone's tab bar** fits five rooms; the new order has six before Ratio and Ordo. | Home, Cursus, Codex, Thesaurus, Sonus et Visio on the bar; Mentis, Ratio and Ordo in the top bar's menu. The desktop sidebar has all eight. |
+| D1 | Who takes the payments? | **Stripe.** Stripe Checkout through Payment Links (one for Lingua+, one each for Max monthly and yearly), Stripe Tax for VAT (the user registers for the EU's VAT one-stop shop; Stripe calculates, it doesn't file), and Stripe's customer portal to manage a subscription. Stripe's secret key can't be in the app, so one tiny server is needed to hand out licences (5.1-2). The user creates the Stripe account. |
+| D2 | What is Max? | **AI features that use the learner's own key** (Groq, Gemini), as the app's AI works today. No AI server; the learner pays their AI provider directly (both have free tiers). Max unlocks the AI features; a key alone no longer does. |
+| D3 | Prices | **Lingua+ €24.99 once; Max €5.99 a month or €49.99 a year**, as proposed. |
+| D4 | Free or Lingua+ for the rooms the list doesn't name | **As proposed** (the table in 5.1-2, adjusted for D2: AI with your own key is Max, not Lingua+). |
+| D5 | 5.1 and Lingua 4.0 | **Plan only; don't build Lingua 5 yet.** When it is built, section 2's order holds: 5.1-1 first, the Codex step inside 4.0-2. |
+| D6 | The phone | **"Phone is not needed anymore."** Desktop only: no phone tab bar, no phone layouts, no phone checks. What exists for the phone today stays as it is. |
 
 Not a question: Lingua+ drops from the placeholder's 29.99 to **€24.99, once, with every update**, as
 the user said.
@@ -71,7 +71,7 @@ design work, since it touches every room lightly.
 ## 3. The steps
 
 Every step ends with the usual check (CLAUDE.md): typecheck, tests, build, the browser at desktop
-width first (1280 and 1440) and then a phone (375), light and dark; the docs it touches; commit,
+sizes (1280, 1440, and 1366×768 for laptops), light and dark; the docs it touches; commit,
 rebase onto `origin/main`, push, the Pages deploy. Each "Done when" is checked in the browser, not
 assumed.
 
@@ -91,8 +91,6 @@ assumed.
 - Icons: Cursus a path or graduation mark (`Route` or `GraduationCap`), Sonus et Visio a combined
   mark (headphones over a frame; drawn like the deck icon if lucide has nothing fitting), Mentis a
   thought or lantern (`Lamp`/`Sparkle`, chosen when drawn).
-- Phone bar (D6): Home, Cursus, Codex, Thesaurus, Sonus et Visio. The label "Sonus et Visio" is
-  checked at 375 px; if it doesn't fit, the bar says "Sonus · Visio" in two lines.
 - **Every old address keeps working** with a redirect: `/grammatica/*` → `/cursus/grammatica/*`,
   `/visio` → `/sonus?show=watch`, `/visio?tab=services` → `/sonus?tab=streaming`, `/mundus/*` →
   `/mentis/*`, `/colloquium/*` → `/mentis/sermo/*`, `/codex?tab=diarium` → `/mentis/diarium`,
@@ -101,7 +99,7 @@ assumed.
 - Code folders keep their names (`features/colloquium`, `features/visio`…) to avoid clashing with
   the sessions working in them; ARCHITECTURE.md lists which folder is which room.
 
-**Cursus** (`/cursus`): desktop tab strip like Mundus's (with 1–4 key hints), Segmented on a phone.
+**Cursus** (`/cursus`): a desktop tab strip like Mundus's, with 1–4 key hints.
 - Tabs: **Course** (4.0-4; until then a short "coming to the six core languages" page, and hidden
   for other tiers), **Grammatica** (today's room, unchanged inside), **Alphabets** (3.0-8 part 5;
   shown where the language has a script to learn), **Typing** (5.1-8, tier 1).
@@ -121,12 +119,12 @@ assumed.
   4. Shelves: Recently played, Recently added (a grid of every kind), New episodes, To watch.
   Every tile uses the real artwork (covers, posters, artwork; `Art` and `Poster` as today).
 - On desktop the filter and the categories sit in a sticky rail on the left of the library
-  (Apple Music's layout), the shelves on the right; on a phone they stack.
+  (Apple Music's layout), the shelves on the right.
 - Empty state: one calm card with the two add buttons and a line on what each brings.
 
 **Mentis** (`/mentis`): the room for thinking in the language: the guide, talking and writing.
-- Tabs: **Mundus** (the guide, as built in 3.0-7, with its Explore, Picks and Try views as
-  sub-tabs) · **Sermo** (Colloquium, renamed everywhere the user sees it) · **Diarium** (moved out of
+- Tabs: **Mundus** (the guide, as built in 3.0-7, with Explore and Try as sub-tabs; 5.2-7 merges
+  Picks into Explore) · **Sermo** (Colloquium, renamed everywhere the user sees it) · **Diarium** (moved out of
   Codex; Codex becomes reading only).
 - **Combined smartly**, so the three help each other:
   - The guide's steps can now lead into Sermo ("Talk about *Lupin* for five minutes") and Diarium
@@ -134,8 +132,9 @@ assumed.
     listen, watch, words and write (`core/mundus/guide.ts`, with tests).
   - On desktop a right rail on every Mentis tab holds **Today's prompt**: one writing prompt and one
     conversation starter at your level, chosen by the guide from what you read and watched this week.
-  - A Sermo conversation can be **kept as a Diarium entry** (the learner's lines, corrected), and a
-    Diarium entry has **"Talk about this"**, which opens Sermo with it.
+  - A Diarium entry has **"Talk about this"**, which opens Sermo with the entry as its topic, and
+    Sermo can start from what you read or watched this week. (5.2-6 removes the chat inside Lingua:
+    Sermo becomes a guided path into the AI app the learner uses.)
 - Mundus's Home card stays on Home (5.1-4).
 
 **System light**
@@ -174,9 +173,11 @@ all three tabs with the prompt rail on desktop; a fresh profile follows the devi
 | Thesaurus | **Unlimited decks, flashcards, Discover, add anything** | **Ludus** | — |
 | Sonus et Visio | **Library, audiobooks, radio**; your own audio and video | **Sonus+** (music, podcasts, song games); Visio's streaming services and subtitles | Automatic dictation: transcripts for audio and video without subtitles |
 | Cursus | Alphabets | **The course**, Grammatica, Typing | Feedback on writing and speaking |
-| Mentis | Mundus, Diarium (writing) | Sermo and AI features with your own key | **Diary checking**, Sermo without a key, natural AI voices |
+| Mentis | Mundus, Diarium (writing) | Sermo (a guided path into your AI app, 5.2-6) | **Diary checking**, natural AI voices |
 | Ratio, Ordo | Everything | — | — |
 
+- **Max's AI runs on the learner's own key** (D2). With Max but no key, each AI feature says where
+  to get a free one (Settings › AI); a key without Max no longer unlocks them.
 - Max includes all of Lingua+ while it runs. Anyone who bought Lingua+ keeps it forever; Max on top
   costs the same.
 - **Never pushy:** free rooms are never interrupted. A locked feature shows a small "+" chip; tapping
@@ -188,20 +189,28 @@ all three tabs with the prompt rail on desktop; a fresh profile follows the devi
   `meta.plan = { kind, since, until?, licence? }` (today's `meta.plusAt` is migrated to `plus`).
   One table `can(feature, plan)` and a `usePlan()` hook decide every lock, so the split above lives
   in one place and is easy to change.
-- **Purchases (D1):** the provider's checkout opens in a browser window; it returns a licence key,
-  which the app checks with the provider's licence endpoint (to be checked: that it allows calls
-  from a browser; otherwise the Max server of D2 checks it). Lingua+ is checked once and kept.
-  Max is checked on start, with 14 days' grace offline.
-- **Max's server (D2):** `server/ai/` in this repo, a Cloudflare Worker: it receives the request
-  and the licence, checks it, calls the AI with Lingua's key, counts usage against a fair limit.
-  The app's AI calls (`services/translate`, Diarium review, Whisper/Groq, Gemini voices) get a third
-  way besides "your key" and "none": "Max". Keys never travel in a URL (as now).
-- **Until the user has set up the provider and the Worker**, everything ships in test mode:
+- **Paying with Stripe (D1):** "Get Lingua+" and "Get Max" open Stripe Checkout (a Payment Link;
+  no payment code of ours) in the browser. After paying, Stripe sends the learner back to Lingua with
+  the checkout's id.
+- **The licence server:** `server/licence/` in this repo, a Cloudflare Worker on the free tier, the
+  only place Stripe's secret key lives. *Claim:* given the checkout id, it asks Stripe whether it was
+  paid and returns a **signed licence** (the plan, the email, and for Max the paid-until date).
+  *Refresh:* for Max, the same with the newest paid-until date. The app checks the signature with a
+  public key built into it, so it works offline: Lingua+ never needs checking again; Max refreshes
+  on start when online, with 14 days' grace. The licence travels with device sync (3.0-4) and can be
+  copied from Settings › Lingua+. No AI goes through this server (D2).
+- **Honest limit:** an app that runs entirely on the device can be unlocked by someone determined to
+  edit it; the licence stops casual sharing, not that.
+- **Max's AI with your key (D2):** the existing AI calls (`services/translate`, Diarium's review,
+  Whisper with Groq, Gemini's voices, Explain in context) check `can('ai', plan)` before using the
+  key. Keys stay on the device and never travel in a URL (as now).
+- **Until the user has set up Stripe and the Worker**, everything ships in test mode (Stripe's test
+  mode, its test cards, on a local address as CLAUDE.md allows), and:
   Ordo › Lab has "Pretend: Free / Lingua+ / Max" (replacing "Reset Lingua+"), and the buy buttons
   say they charge nothing.
 - **Plans screen** (`features/plans/PlansPage.tsx`, used by onboarding and Ordo › Lingua+): three
   columns on desktop (Free, Lingua+ marked "Best value", Max), each a short list of what it adds,
-  the price, one button. On a phone, three cards to swipe.
+  the price, one button.
 - **Ordo › Lingua+:** your plan, since when, the next renewal for Max; "Manage subscription" (the
   provider's customer page: change, cancel, invoices); "Restore with a licence key"; and for the
   free plan, the plans screen itself.
@@ -213,7 +222,7 @@ all three tabs with the prompt rail on desktop; a fresh profile follows the devi
 
 **Tests:** `can()` over the whole table; the plan migration; licence states (valid, expired, offline
 grace). **Done when:** each pretend plan locks and unlocks exactly the table; the plans screen and
-Ordo › Lingua+ look right on desktop and phone, light and dark; the MAX badge fades in every palette.
+Ordo › Lingua+ look right on desktop, light and dark; the MAX badge fades in every palette.
 
 ---
 
@@ -275,7 +284,6 @@ speak · Goal · Study light · Plans. Back works everywhere; nothing is lost go
   Core: six cards in one row (flag, name, endonym, a sample line). Under it the other tiers as rows
   of small chips (emblem and name), each row headed by its tier and one line on what it includes.
   A search box filters everything. "Coming" languages are dimmed and say so on hover.
-- Phone: the same rows, Core as a 2×3 grid, the map folded above (tap to open).
 - **What each tier includes** (replacing "Everything at its best"; checked against what is really
   built at the time):
   - Core: "The full course, grammar lessons, alphabet and typing practice, a complete dictionary,
@@ -339,7 +347,7 @@ calmly beside real flags.
 
 **Tests:** territories facts; `completeOnboarding` with the new fields (`known`, `plan`); the level
 sentences exist for every available language. **Done when:** a fresh profile goes through every page
-on desktop and phone, light and dark, without scrolling on desktop's language page; hovering Spain
+on desktop, light and dark, without scrolling on the language page; hovering Spain
 lists Spanish, Catalan, Basque, Galician; the twelve emblems look right next to real flags.
 
 ---
@@ -367,7 +375,6 @@ lists Spanish, Catalan, Basque, Galician; the twelve emblems look right next to 
 3. **This week** (4 columns): today's WeekCard as it is; clicking opens Ratio.
 4. **Cursus** (6) and **Mundus** (6): the next lesson with the unit's progress; Mundus's card as now.
 5. **Numbers**: one quiet row: streak, words known, minutes this week, cards due.
-- Phone: the same order in one column.
 - FirstSteps stays for a new learner, inside Today, until done.
 
 **Easy to revert:** the current Home stays as `HomeClassic`; Ordo › Appearance gets "Home layout:
@@ -398,7 +405,7 @@ Classic brings back today's Home exactly.
 - On the end page (4.0-2), "Check yourself" (optional, folded): four or five items made from the
   text itself: a sentence from the text with a word missing (the word from your learning words
   first), "which word means…" from the dictionary, and putting a short sentence back in order.
-  This checks words and sentences, not deep understanding; with Max or a key, real questions about
+  This checks words and sentences, not deep understanding; with Max, real questions about
   the story are added. Answers count in Ratio like Ludus.
 
 **Add to your library:** 4.0-2's five tabs. "A folder of pages" takes a folder of page photos or
@@ -424,7 +431,7 @@ by ISBN. Each book: "Add the EPUB", and "Find a free edition" when it is in the 
   it if it arrives.
 - Sentences: the page's sentences are translated **ahead of time** in the background while you read
   (a few at a time, idle time only, cached in a `translations` table by language and text), so a
-  click shows the answer immediately. Requests start on pointer-down, not click. With a key, the
+  click shows the answer immediately. Requests start on pointer-down, not click. With Max, the
   fastest model streams its answer.
 - The "Machine translation. Add an AI key…" line under the bubble is removed.
 
@@ -434,13 +441,11 @@ by ISBN. Each book: "Add the EPUB", and "Find a free edition" when it is in the 
   on a known word makes it unseen again; a double click on a learning word makes it unseen. Right
   click still opens the word panel. The double click must not select text or start a phrase
   selection (`usePhraseGesture`).
-- On a phone, a tap keeps opening the gloss (with Known and Learning in it): a double tap is too easy
-  to hit by accident there.
 
 **The word panel** (one-screen drawer of 4.0-2)
 - One header row: 🔊 the word · the pronunciation (IPA or pinyin) · "#1,234 most common · B1" ·
   and **+ Deck** on the right. Example sentences get their own small sound buttons.
-- "In context" and "Explain in context" show only when a key (or Max) is there.
+- "In context" and "Explain in context" show only with Max (and its key).
 
 **Codex "T"** (`TypographyPanel.tsx`): a "Words" section with three rows, Known, Learning, Unseen,
 each with a style (none, underline, dotted, highlight; known also "faint") and a colour from six that
@@ -468,7 +473,7 @@ in pages and scroll mode; the word panel fits a 1366×768 screen; Discover impor
 
 **Layout**
 - Desktop: My decks and Discover become header tabs (as in Mundus, with 1/2 key hints); search,
-  sort and New sit at the right of the same row. Phone: the Segmented stays under the title.
+  sort and New sit at the right of the same row.
 - **My decks** as a list made for a desktop: each deck a row with its picture (the theme photo or
   the deck's colour), name, folder, cards, due today (new · learning · review in small pills), last
   studied, and on hover Study, Ludus and ⋯. Folders fold with counts. A toggle shows the decks as
@@ -509,7 +514,7 @@ in pages and scroll mode; the word panel fits a 1366×768 screen; Discover impor
   repeats back to back.
 
 **Done when:** the list and grid of decks, the journey, the settings panel and the cards look right
-at 1280 and on a phone; adding to an existing deck skips duplicates; Ludus answers line up in German
+at 1280 and 1440; adding to an existing deck skips duplicates; Ludus answers line up in German
 and Russian with long words.
 
 ---
@@ -537,7 +542,7 @@ weak point is the device: on Windows without natural voices it is the old roboti
    is there, Ordo › Voices says how to get a better one (Windows' natural voices, or Edge).
 4. No voice: no button, as now. Never another language's voice.
 
-**With a key or Max:** Gemini's voices (as now); Max gets them without a key.
+**With Max (and a Gemini key):** Gemini's voices, as today (D2).
 **Ordo › Voices:** each available kind with a sample to hear and choose.
 
 **To check while building (and say if it fails):** Piper's size and speed on a laptop (a short
@@ -545,7 +550,7 @@ sentence in under 300 ms), each chosen voice's licence, how many of the 10,000 m
 have a recording in each tier 1 language (French is rich; Arabic and Mandarin thinner).
 
 **Done when:** in French, Spanish, German, Russian, Mandarin and Arabic, without a key, a common
-word plays a human recording and a sentence a natural voice, on Windows and on the iPhone.
+word plays a human recording and a sentence a natural voice, on Windows (Chrome and Edge) and on a Mac.
 
 ---
 
@@ -574,7 +579,6 @@ word plays a human recording and a sentence a natural voice, on Windows and on t
 - **French, German, Spanish:** the letters English keyboards lack (é è ç à, ä ö ü ß, ñ ¿ ¡) get
   their own lessons, with both the layout and the dead-key way to type them.
 - Progress is kept per language (`db.typing`), time counts as practice in Ratio and Home.
-- On a phone (no keyboard) the tab explains it is for a computer keyboard.
 
 **Tests:** the letter order per language, the word generator only uses unlocked letters, the unlock
 rule, the key maps. **Done when:** a Russian learner on an English keyboard types the first lesson
@@ -614,7 +618,7 @@ nothing else; light and dark both pass contrast.
 
 ### 5.1-10 · Lingua 5.1 complete: the full check
 
-- [ ] Every point above checked in the app: desktop first (1280, 1440, 1366×768), then a phone;
+- [ ] Every point above checked in the app: on desktop (1280, 1440, 1366×768);
   light and dark; each pretend plan.
 - [ ] The second half of Lingua 5 (when the user pastes it) is planned as 5.2.
 - [ ] Docs (ROADMAP, DECISIONS, FEATURES, QA-ios, ARCHITECTURE for the room/folder map), the version
@@ -624,12 +628,11 @@ nothing else; light and dark both pass contrast.
 
 ## 4. Things that can't be done exactly as asked
 
-- **Payments and Max's server** need accounts only the user can create (D1, D2). Until then they run
-  in test mode.
+- **Payments** need a Stripe account and a small licence server (a Cloudflare account), which only the
+  user can create (D1). Until then they run in test mode.
 - **Comprehension questions without AI** test words and sentences from the text, not understanding
-  of the story; real questions come with Max or a key.
+  of the story; real questions come with Max.
 - **Discover's books** are the free and legal ones (public domain and open licences).
 - **Human recordings** exist for common words, not for every word or for sentences; sentences use
   the on-device natural voice.
-- **Typing on a phone** isn't offered: it needs a physical keyboard.
 - **Larger Discover** needs the packs rebuilt, a long job done one pack at a time.

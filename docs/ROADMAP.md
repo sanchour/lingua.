@@ -1592,11 +1592,12 @@ free version is v16.
 
 ## Lingua 5
 
-The user is pasting the Lingua 5 list in halves. **5.1** (the first half, 2026-10-20) is planned in
-detail in [LINGUA-5.1-PLAN.md](LINGUA-5.1-PLAN.md): the user's points, the design of each step, the
-files, the tests, what "done" means, and six decisions for the user at its top (payments, what Max
-is, Max's price, the free/Lingua+ split, the order against Lingua 4.0, the phone's tab bar). Nothing
-is built yet. The steps, ticked here as they finish:
+The user pasted the Lingua 5 list in two halves (2026-10-20), each planned in detail: **5.1** in
+[LINGUA-5.1-PLAN.md](LINGUA-5.1-PLAN.md) and **5.2** in [LINGUA-5.2-PLAN.md](LINGUA-5.2-PLAN.md) (the
+user's points, the design of each step, the files, the tests, what "done" means). The user's
+decisions are at the top of the 5.1 plan: Stripe; Max is AI with your own key; Lingua+ €24.99 once,
+Max €5.99 a month or €49.99 a year; desktop only. **The user said: plan only. Nothing is built until
+they say so.** The steps, ticked here as they finish:
 
 - [ ] 5.1-1 · Rooms in the new order: Cursus, Sonus et Visio, Mentis; the device's light; no more "Ideas from Mundus"
 - [ ] 5.1-2 · Lingua+ (€24.99 once) and Lingua+ Max
@@ -1607,4 +1608,14 @@ is built yet. The steps, ticked here as they finish:
 - [ ] 5.1-7 · Sound: human recordings and a natural on-device voice without a key
 - [ ] 5.1-8 · Keyboard practice in Cursus (tier 1)
 - [ ] 5.1-9 · A touch of the language in the design
-- [ ] 5.1-10 · Lingua 5.1 complete: the full check
+- [ ] 5.1-10 · Lingua 5.1 complete: the full check (one check with 5.2-10)
+- [ ] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
+- [ ] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries
+- [ ] 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings
+- [ ] 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks (built inside 4.0-3)
+- [ ] 5.2-5 · Diarium: writing tools, a calendar, search, in the language
+- [ ] 5.2-6 · Sermo: a guided path into your AI app, many more scenes
+- [ ] 5.2-7 · Mundus: an interactive guide, one Explore, Things to try
+- [ ] 5.2-8 · Grammatica: a guided path at your level, lessons at desktop size
+- [ ] 5.2-9 · Ratio: one language, compact, goals in Tabula instead of Iter, more numbers
+- [ ] 5.2-10 · Lingua 5 complete: the full check
