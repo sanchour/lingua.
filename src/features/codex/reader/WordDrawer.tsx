@@ -18,6 +18,7 @@ import type { WordExplanation } from '@/services/llm/explain';
 import { LlmError } from '@/services/llm/client';
 import { AddToDeck } from './AddToDeck';
 import { WordForms } from './WordForms';
+import { WhyThisForm } from '@/features/grammatica/links';
 import { SpeakButton } from '@/features/speech/SpeakButton';
 
 export interface DrawerWord {
@@ -124,6 +125,8 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
           ]}
         />
       )}
+
+      {dict?.form?.d && <WhyThisForm lang={lang} description={dict.form.d} />}
 
       {tab === 'forms' && dict?.hasParadigm && main ? (
         <>

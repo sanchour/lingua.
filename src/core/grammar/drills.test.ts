@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { bare, checkForm, DRILL_KINDS, drillableTables, fits, itemDrill, joinTiles, planLightning, planReview, planTopicLesson, resolveKind, retryDrill, seededRandom, sentenceTiles, tilesMatch } from './drills';
 import type { Drill } from './drills';
+import { topicForTags } from './progress';
 import { plain, splitFocus, topicsOf } from './types';
 import type { Grammar, Item } from './types';
 
@@ -142,5 +143,18 @@ describe('grammar lessons, part 3', () => {
     expect(has('mix', true)).toBe(true);
     expect(has(5, false)).toBe(false);
     expect(has(1, true)).toBe(false);
+  });
+});
+
+describe('why this form', () => {
+  const find = (lang: string) => GRAMMARS.find((x) => x.lang === lang)!;
+  const why = (lang: string, d: string) => topicForTags(find(lang), d.toLowerCase().replace(/[,;()]/g, ' '))?.id;
+
+  it('finds the topic from a form’s description in the pack', () => {
+    expect(why('es', 'third-person singular present indicative of ser')).toBeDefined();
+    expect(why('es', 'first-person singular preterite indicative of comer')).toBe(topicForTags(find('es'), 'preterite indicative')?.id);
+    expect(why('es', 'masculine singular past participle of hablar')).toBe(topicForTags(find('es'), 'participle past')?.id);
+    expect(why('es', 'third-person singular imperfect subjunctive of ser')).toBe(topicForTags(find('es'), 'imperfect subjunctive')?.id);
+    expect(why('es', 'accusative of ella, ello, and usted; her, it, you')).toBeUndefined();
   });
 });

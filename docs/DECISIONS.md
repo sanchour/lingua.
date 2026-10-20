@@ -987,3 +987,20 @@ Short records of choices that are not obvious from the code. Newest last.
 - **No transform drills.** Real sentences don't come in present and past pairs, and a generated
   pair could be wrong, which the content rules forbid.
 
+
+## 2026-10-20 — Lingua 3.0-8, part 4: grammar where it's needed, and in the numbers
+
+- **"Why this form?" reads the pack's own description.** The dictionary already describes each
+  inflected form ("first-person plural preterite indicative of comer"); `topicForTags` matches its
+  words to a topic's tags. Nothing new is stored, and a form with no clear topic shows no link
+  rather than a guess. Arabic and Mandarin packs don't describe forms, so they show none.
+- **Placement asks about a dozen topics, not until three misses.** A miss streak would stop the
+  check at the learner's first weak spot and leave later topics they know unmarked. Twelve topics
+  with two gaps each is about two minutes. Only both right counts, so a lucky guess on one gap
+  isn't enough. A placed topic's items stay unscheduled: they first meet the learner in practice
+  or as a due item, never as a pile of reviews on day one.
+- **The grammar level is strict.** Tabula's level is the highest CEFR level at which every topic,
+  and every topic below it, is learned. One unlearned A1 topic keeps it at none, which matches
+  how Tabula's other levels are meant: what you can rely on, not what you've touched.
+- **`learnedAt` without a Dexie version.** It's a plain field on the progress row with no index,
+  and Ratio reads all rows for one language anyway, so the schema doesn't change.

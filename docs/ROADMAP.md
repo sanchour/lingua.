@@ -871,22 +871,22 @@ language stopped at a usage limit, so the other picks rest on one careful pass.
 
 ### 3.0-8 · Grammatica and alphabets
 
-*Skipped by the user on 2026-10-20 ("do -9 just skip -8") after parts 1 and 2a: what is ticked
-below is live; the rest is not part of Lingua 3.0.*
+*Skipped by the user on 2026-10-20 ("do -9 just skip -8") after parts 1 and 2a, then resumed the
+same day ("everything has been done from Lingua 3.0 except grammar and alphabet, so finish it").*
 
 Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [x] Grammar files, the topic browser, explanations and tables (2026-10-20: Spanish 28 topics,
       German 23, French 21, Russian 17, Arabic 16, Mandarin 15).
-- [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
+- [x] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
 - [ ] Topic maps for every language (Spanish and German first).
-- [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
-- [ ] **Progressive, high-quality exercises:** each topic's drills climb in steps (recognise the
+- [x] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
+- [x] **Progressive, high-quality exercises:** each topic's drills climb in steps (recognise the
       form, pick it, build it, use it in a sentence, translate into the language), in real
       sentences from the language's examples, with a short explanation of every mistake. A lesson
       mixes new items with due ones, ends with a short review, and unlocks the next topic only
       when it is mastered. Transform, spot-the-mistake and, with an AI key, free sentences that are
       corrected and explained.
-- [ ] **Grammar when it's needed, examples first** (the user's notes, 2026-10-19). Cases, verb
+- [x] **Grammar when it's needed, examples first** (the user's notes, 2026-10-19). Cases, verb
       aspect, verbs of motion and the other structures that translation drills alone can't teach
       get short lessons of their own, in a set order: a few example sentences first (with audio),
       then a concise explanation of the rule, then the learner uses it straight away, then more
@@ -909,9 +909,9 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 **Order set by the user (2026-10-20).** Six parts, each committed and pushed on its own, starting
 with the six core languages (Spanish, Russian, German, Arabic, Mandarin, French):
 1. [x] Grammar files, the topic browser, explanations and tables.
-2. [ ] The drills (conjugate, decline, pick the form, word order) as FSRS cards, with mastery rings.
-3. [ ] Progressive exercises, and lessons that show examples first.
-4. [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
+2. [x] The drills (conjugate, decline, pick the form, word order) as FSRS cards, with mastery rings.
+3. [x] Progressive exercises, and lessons that show examples first.
+4. [x] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
 5. [ ] Alphabets and writing practice for the languages with their own script.
 6. [ ] The other languages, tier by tier, keeping tier 2 and below cheap.
 
@@ -1014,6 +1014,30 @@ Korean and Arabic. Lightning is a button on a deck and at the end of a lesson.
 rule for step 1 and a topic's first lesson, and one example with its reason for later steps. On a
 desktop the rule sits beside the examples. A step is passed on the topic's own exercises only, so
 items mixed in from other topics don't count for or against it.
+
+**Part 4, plan (2026-10-20).** Grammar where it's needed, and in the numbers:
+- **"Why this form?" in the word drawer.** The pack's description of the form tapped ("first-person
+  singular preterite indicative of comer") is matched to a topic by `topicForTags`. A chip under
+  it opens that topic. Arabic and Mandarin have no tagged forms, so they show none.
+- **Home.** A Grammatica card shows the next topic with its ring, or the items due for review,
+  and opens the lesson.
+- **Ludus.** The end of a lesson offers "Grammar: <next topic>" when the language has a grammar.
+- **Placement.** For a learner who has done no lessons yet, Grammatica offers a short check: two
+  quick gaps per topic up to one level above theirs. It stops after three topics missed in a
+  row. A topic with both right is marked learned (`placed`), and its items are left for review.
+- **Ratio, Overview.** A Grammar panel: topics learned and mastered, accuracy and time per topic,
+  the three weakest, and topics learned per month (a new `learnedAt` on the progress row; no
+  index, so no new Dexie version).
+- **Ratio, Tabula.** The "In Lingua" column adds the grammar level reached: the highest level
+  whose topics, and every topic below it, are all learned.
+
+*Part 4, as built (2026-10-20).* As planned, except placement: instead of stopping after three
+topics missed in a row, it asks about at most twelve topics. That is about two minutes, and a miss
+streak would end the check at the learner's first weak spot. It has no retries and moves no
+schedule. Once some progress exists, the check stays available as a quiet "Check what I know"
+button beside Review and Lightning. The Ratio panel shows only when one language is chosen, and its
+"Needs work" list opens each topic's practice. Tabula shows "grammar A1" once every A1 topic is
+learned, and "N grammar topics" before that.
 
 **Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an

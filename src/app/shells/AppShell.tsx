@@ -20,6 +20,7 @@ const isImmersive = (pathname: string, wide: boolean) =>
   pathname.startsWith('/codex/read/') ||
   pathname.startsWith('/thesaurus/study/') ||
   pathname === '/grammatica/review' ||
+  pathname === '/grammatica/placement' ||
   /^\/grammatica\/[^/]+\/lesson\/?$/.test(pathname) ||
   pathname === '/sonus/commute' ||
   (pathname.startsWith('/cantus') && !pathname.startsWith('/cantus/spotify')) ||

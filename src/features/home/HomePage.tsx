@@ -30,6 +30,7 @@ import { Artwork } from '@/features/sonus/library/Artwork';
 import { Poster } from '@/features/visio/library/Poster';
 import { MundusHomeCard } from '@/features/mundus/HomeCard';
 import { ColloquiumHomeCard } from '@/features/colloquium/HomeCard';
+import { GrammarHomeCard } from '@/features/grammatica/links';
 import { useChats } from '@/data/chats';
 import { studyMinutes, useHomeFacts } from './facts';
 import type { HomeFacts } from './facts';
@@ -80,6 +81,9 @@ export default function HomePage() {
         <div className="grid min-w-0 grid-cols-1 gap-5">
           <motion.div {...enter(2)}>
             <WeekCard facts={facts} goal={language.dailyGoal.readMinutes} />
+          </motion.div>
+          <motion.div {...enter(3)} className="empty:hidden">
+            <GrammarHomeCard lang={language.id} level={language.level} />
           </motion.div>
           <motion.div {...enter(3)}>
             <NumbersCard lang={language.id} />

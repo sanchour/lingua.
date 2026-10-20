@@ -43,6 +43,7 @@ export const router = createBrowserRouter(
         { path: 'visio/watch/:mediaId', element: <WatchPage /> },
         { path: 'grammatica', element: <GrammaticaPage /> },
         { path: 'grammatica/review', element: <GrammarLessonPage review /> },
+        { path: 'grammatica/placement', element: <GrammarLessonPage placement /> },
         { path: 'grammatica/:topicId', element: <GrammarTopicPage /> },
         { path: 'grammatica/:topicId/lesson', element: <GrammarLessonPage /> },
         { path: 'mundus/*', element: <MundusPage /> },

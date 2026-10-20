@@ -4,14 +4,14 @@ import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
 import { Coffee } from 'lucide-react';
 import { useApp } from '@/app/context';
-import { DRILL_KINDS, DRILL_NAME, planLightning, planReview, planTopicLesson, seededRandom } from '@/core/grammar/drills';
+import { DRILL_KINDS, DRILL_NAME, planLightning, planPlacement, planReview, planTopicLesson, seededRandom } from '@/core/grammar/drills';
 import type { Drill, DrillKind } from '@/core/grammar/drills';
 import { STEPS } from '@/core/grammar/progress';
 import type { Step } from '@/core/grammar/progress';
 import { findTopic, topicsOf } from '@/core/grammar/types';
 import type { Grammar, Topic } from '@/core/grammar/types';
 import { recordSession } from '@/data/activity';
-import { dueGrammarItems, finishGrammarLesson, grammarProgress } from '@/data/grammar';
+import { dueGrammarItems, finishGrammarLesson, grammarProgress, placeTopics } from '@/data/grammar';
 import { buttonClasses } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { useSpeaker } from '@/features/speech/SpeakButton';
@@ -21,7 +21,7 @@ import { GrammarLesson } from './GrammarLesson';
 import type { GrammarLessonOutcome, Missed } from './GrammarLesson';
 import { Rich, SentenceLine, useGrammar } from './parts';
 
-type Kind = 'step' | 'practice' | 'lightning' | 'review';
+type Kind = 'step' | 'practice' | 'lightning' | 'review' | 'placement';
 
 interface Plan {
   drills: Drill[];
@@ -41,10 +41,10 @@ const SETUP_KINDS = DRILL_KINDS.map((id) => ({ id, label: DRILL_NAME[id] }));
  * practice once learned (`?mode=practice`), a Lightning round (`?mode=lightning`), or the items due
  * across topics (`/grammatica/review`).
  */
-export default function GrammarLessonPage({ review = false }: { review?: boolean }) {
+export default function GrammarLessonPage({ review = false, placement = false }: { review?: boolean; placement?: boolean }) {
   const { topicId = '' } = useParams();
   const [search] = useSearchParams();
-  const kind: Kind = search.get('mode') === 'lightning' ? 'lightning' : review ? 'review' : search.get('mode') === 'practice' ? 'practice' : 'step';
+  const kind: Kind = placement ? 'placement' : search.get('mode') === 'lightning' ? 'lightning' : review ? 'review' : search.get('mode') === 'practice' ? 'practice' : 'step';
   const { language, settings } = useApp();
   const lang = language.id;
   const canWrite = Boolean(settings.apiKeys[settings.llm.provider]?.trim() && settings.llm.model);
@@ -61,7 +61,7 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
   const [endsAt, setEndsAt] = useState<number | undefined>();
   const active = useRef({ ms: 0, startedAt: Date.now(), n: 0 });
 
-  const back = useCallback(() => navigate(review || !topicId ? '/grammatica' : `/grammatica/${topicId}`, { replace: true }), [navigate, review, topicId]);
+  const back = useCallback(() => navigate(review || placement || !topicId ? '/grammatica' : `/grammatica/${topicId}`, { replace: true }), [navigate, review, placement, topicId]);
 
   // Settings are read when the lesson is made; changing them mid-lesson applies to the next one.
   const settingsAtStart = useRef(lessons);
@@ -73,7 +73,7 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
     setPlan(null);
     setEnd(null);
     void (async () => {
-      const made = await makePlan(grammar, kind, topicId, lang, canHear, canWrite, settingsAtStart.current);
+      const made = await makePlan(grammar, kind, topicId, lang, canHear, canWrite, settingsAtStart.current, language.level);
       if (!alive) return;
       setPlan(made ?? 'empty');
       setEndsAt(kind === 'lightning' && made ? Date.now() + LIGHTNING_MS : undefined);
@@ -106,6 +106,18 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
         const key = `${lang}:grammar${review ? '' : `:${topicId}`}`;
         const previousBest = await recordBest(lessons.best, key, result.score ?? 0);
         setEnd({ missed: [], result: { ...result, previousBest }, title: 'Time!', note: result.score ? `${result.score} right in a minute.` : 'The clock won this time. Another go?', actions: [again] });
+        return;
+      }
+      if (kind === 'placement') {
+        const known = [...byTopic].filter(([, s]) => s.n >= 2 && s.right === s.n).map(([t]) => t);
+        await placeTopics(lang, known);
+        setEnd({
+          missed,
+          result,
+          title: 'Check done',
+          note: known.length ? `${known.length === 1 ? 'One topic' : `${known.length} topics`} you already know ${known.length === 1 ? 'is' : 'are'} marked learned. The rest wait for you in order.` : 'Nothing marked yet: start from the first topic. You’ll move fast through what you know.',
+          actions: [],
+        });
         return;
       }
       if (kind === 'review') {
@@ -163,7 +175,8 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
         topics={plan.topics}
         random={plan.random}
         endsAt={endsAt}
-        practice={kind === 'lightning'}
+        practice={kind === 'lightning' || kind === 'placement'}
+        retries={kind !== 'placement'}
         intro={plan.intro}
         onFinish={(o) => void onFinish(o)}
         onClose={back}
@@ -175,11 +188,17 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
   );
 }
 
-async function makePlan(grammar: Grammar, kind: Kind, topicId: string, lang: string, canHear: boolean, canWrite: boolean, s: ReturnType<typeof useLessonSettings>): Promise<Plan | null> {
+async function makePlan(grammar: Grammar, kind: Kind, topicId: string, lang: string, canHear: boolean, canWrite: boolean, s: ReturnType<typeof useLessonSettings>, learnerLevel = 'A1'): Promise<Plan | null> {
   const random = seededRandom(Date.now() % 2 ** 31);
   const opts = { random, canHear, canWrite, typing: s.typing, off: new Set(s.grammarOff as DrillKind[]), size: s.length };
   const progress = await grammarProgress(lang);
   const stepOf = (t: Topic) => Math.min(6, Math.max(1, progress.get(t.id)?.step ?? 1));
+
+  if (kind === 'placement') {
+    const drills = planPlacement(grammar, lang, progress, learnerLevel, random);
+    if (!drills.length) return null;
+    return { drills, topics: new Map(topicsOf(grammar).map((t) => [t.id, t])), title: 'What do you know already?', step: null, random };
+  }
 
   if (kind === 'review') {
     const due = (await dueGrammarItems(grammar)).slice(0, Math.max(s.length, 10) + 5);

@@ -52,6 +52,8 @@ interface Props {
   endsAt?: number;
   /** Logged without moving any schedule. */
   practice?: boolean;
+  /** A missed exercise comes back once at the end (not in the placement check). */
+  retries?: boolean;
   /** Examples first: the whole "See it" (a topic's first lesson), a short one, or none. */
   intro?: { topic: Topic; full: boolean };
   onFinish: (o: GrammarLessonOutcome) => void;
@@ -66,7 +68,7 @@ interface Props {
  * item graded into its FSRS card when it is done with (no mistake Good, right on the retry Hard,
  * missed twice Again).
  */
-export function GrammarLesson({ lang, title, drills, topics, random, endsAt, practice, intro, onFinish, onClose, onActive, onSetup }: Props) {
+export function GrammarLesson({ lang, title, drills, topics, random, endsAt, practice, retries: allowRetries = true, intro, onFinish, onClose, onActive, onSetup }: Props) {
   const lightning = endsAt !== undefined;
   const feel = useLessonFeel();
   const tracks = useRef<Map<string, Track> | null>(null);
@@ -145,14 +147,14 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
       if (t) {
         t.ms += ms;
         if (!right) t.mistakes++;
-        if (right || retry || lightning) {
+        if (right || retry || lightning || !allowRetries) {
           if (!right && retry) t.failed = true;
           t.pending--;
           if (t.pending === 0) settle(t);
         }
       }
     }
-    if (!right && !retry && !lightning && drill.kind !== 'pairs' && drill.kind !== 'own') {
+    if (!right && !retry && !lightning && allowRetries && drill.kind !== 'pairs' && drill.kind !== 'own') {
       retries.current++;
       setQueue((q) => [...q, retryDrill(drill, random, retries.current)]);
     }

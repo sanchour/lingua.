@@ -3,6 +3,7 @@ import { Reorder, useDragControls } from 'motion/react';
 import { FileUp, GripVertical, ImageDown, Plus } from 'lucide-react';
 import { codeForLanguage, LANGUAGE_NAMES, parseNotionLanguages } from '@/core/parsers/notion';
 import { addCapability, importCapabilities, reorderCapabilities, seedCapabilities, useCapabilities } from '@/data/journey';
+import { grammarLevels } from '@/data/grammar';
 import { useLanguages } from '@/data/languages';
 import { hoursSince, languageSummaries } from '@/data/ratio';
 import type { LanguageSummary } from '@/data/ratio';
@@ -51,6 +52,7 @@ export function Tabula() {
   const [open, setOpen] = useState<Capability | null>(null);
   const [summaries, setSummaries] = useState<Map<string, LanguageSummary>>(new Map());
   const [yearHours, setYearHours] = useState(0);
+  const [grammar, setGrammar] = useState<Map<string, { level: string | null; learned: number }>>(new Map());
   const [newName, setNewName] = useState('');
 
   useEffect(() => void seedCapabilities(), []);
@@ -59,6 +61,7 @@ export function Tabula() {
     const ids = (studied ?? []).map((l) => l.id);
     void languageSummaries(ids).then((list) => setSummaries(new Map(list.map((s) => [s.lang, s]))));
     void hoursSince(new Date(new Date().getFullYear(), 0, 1).getTime()).then(setYearHours);
+    void grammarLevels(ids).then(setGrammar);
   }, [studied]);
 
   const byId = useMemo(() => new Map((rows ?? []).map((r) => [r.id, r])), [rows]);
@@ -67,8 +70,10 @@ export function Tabula() {
   const live = (c: Capability) => {
     const s = summaries.get(c.id);
     const extra = c.extraHours ?? 0;
+    const g = grammar.get(c.id);
     if (!s && !extra) return null;
-    return [s ? `${s.known.toLocaleString()} words` : null, hours(((s?.hours ?? 0) + extra) * 60)].filter(Boolean).join(' · ');
+    const grammarNote = g?.level ? `grammar ${g.level}` : g?.learned ? `${g.learned} grammar ${g.learned === 1 ? 'topic' : 'topics'}` : null;
+    return [s ? `${s.known.toLocaleString()} words` : null, grammarNote, hours(((s?.hours ?? 0) + extra) * 60)].filter(Boolean).join(' · ');
   };
 
   const importNotion = async () => {

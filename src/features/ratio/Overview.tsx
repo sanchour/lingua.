@@ -11,6 +11,7 @@ import { LineChart } from '@/design/charts/LineChart';
 import { gradeColor, Ring } from '@/design/charts/Ring';
 import { compact } from '@/design/charts/useWidth';
 import { cx } from '@/lib/cx';
+import { GrammarPanel } from './GrammarPanel';
 import { ACTIVITY_COLOR, ACTIVITY_LABEL, hours, langName, Legend, Panel, pct, shortDate, Stat } from './common';
 
 const MODE_LABEL: Record<string, string> = { mcq: 'Choose', match: 'Match pairs', cloze: 'Fill the gap', build: 'Build sentences', type: 'Typing', listen: 'Listening', speak: 'Speaking' };
@@ -59,12 +60,12 @@ export function Overview() {
           ))}
         </div>
       )}
-      {!data ? <div className="h-96 animate-pulse rounded-3xl bg-surface" /> : <Dashboard data={data} summaries={summaries} single={scope !== 'all'} />}
+      {!data ? <div className="h-96 animate-pulse rounded-3xl bg-surface" /> : <Dashboard data={data} summaries={summaries} single={scope !== 'all'} lang={scope} />}
     </div>
   );
 }
 
-function Dashboard({ data, summaries, single }: { data: OverviewData; summaries: LanguageSummary[] | null; single: boolean }) {
+function Dashboard({ data, summaries, single, lang }: { data: OverviewData; summaries: LanguageSummary[] | null; single: boolean; lang: string }) {
   const { vocabulary: v, reading: r, listening: l, flashcards: f, writing: w, habit: h } = data;
   const totalMinutes = ACTIVITIES.reduce((n, a) => n + h.totals[a], 0);
   const heat = useMemo(() => new Map(h.days.map((d) => [d.date, d.total])), [h.days]);
@@ -304,6 +305,8 @@ function Dashboard({ data, summaries, single }: { data: OverviewData; summaries:
           </Panel>
         </div>
       </div>
+
+      {single && <GrammarPanel lang={lang} />}
 
       {/* Polyglot */}
       {summaries && (summaries.length > 1 || !single) && (

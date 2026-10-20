@@ -3,7 +3,7 @@ import { itemId, itemKey } from '@/core/grammar/progress';
 import type { Grammar, Item } from '@/core/grammar/types';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
-import { answerGrammarItem, dueGrammarItems, finishGrammarLesson, grammarProgress } from './grammar';
+import { answerGrammarItem, dueGrammarItems, finishGrammarLesson, grammarProgress, placeTopics } from './grammar';
 
 const open: LinguaDB[] = [];
 function freshDb(): LinguaDB {
@@ -68,5 +68,19 @@ describe('grammar progress', () => {
     expect(await dueGrammarItems(grammar, row.due - 1, db)).toHaveLength(0);
     const due = await dueGrammarItems(grammar, row.due + 1, db);
     expect(due.map((d) => d.item.s)).toEqual([item.s]);
+  });
+});
+
+describe('placement and stats', () => {
+  it('marks placed topics learned without touching ones already learned', async () => {
+    const db = freshDb();
+    for (const s of [1, 2, 3, 4, 5]) await finishGrammarLesson('es', 'preterite', s, 0.9, db);
+    const learned = (await grammarProgress('es', db)).get('preterite')!;
+    expect(learned.learnedAt).toBeDefined();
+    await placeTopics('es', ['preterite', 'ser-estar'], db, learned.learnedAt! + DAY);
+    const rows = await grammarProgress('es', db);
+    expect(rows.get('preterite')).toMatchObject({ step: 6, learnedAt: learned.learnedAt });
+    expect(rows.get('preterite')?.placed).toBeUndefined();
+    expect(rows.get('ser-estar')).toMatchObject({ step: 6, placed: 1, lessons: 0 });
   });
 });

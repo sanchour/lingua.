@@ -449,6 +449,13 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   and ends with "What went wrong", each missed sentence with its reason.
 - **Your own sentence (with an AI key):** at step 5 and in practice, write a sentence using the
   topic; the AI corrects it and explains in a line. It's practice and moves no schedule.
+- **Grammar from everywhere:** a form in the word drawer shows "Why this form?" with its topic
+  (where the dictionary describes the form); Home shows the next topic or what's due; the end of a
+  Ludus lesson offers the next grammar topic.
+- **Check what I know:** a two-minute placement, two quick gaps per topic (up to a dozen topics, up
+  to one level above yours). Topics with both right are marked learned.
+- **In the numbers:** Ratio's Overview has a Grammar panel (learned, mastered, level, topics a month,
+  the topics that need work); Tabula adds your grammar level to "In Lingua".
 
 ## Visio › Services (3.0-7)
 

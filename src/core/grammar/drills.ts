@@ -2,8 +2,8 @@
 // Pure and deterministic for a given random source (like core/srs/ludus.ts), so lessons can be
 // tested. The lesson screen renders them; data/grammar.ts turns each item's results into a grade.
 import { seededRandom, shuffle } from '@/core/srs/ludus';
-import { plain, splitFocus } from './types';
-import type { GrammarTable, Item, Topic } from './types';
+import { GRAMMAR_LEVELS, plain, splitFocus, topicsOf } from './types';
+import type { Grammar, GrammarLevel, GrammarTable, Item, Topic } from './types';
 import type { Step } from './progress';
 
 export { seededRandom, shuffle };
@@ -421,4 +421,21 @@ export function solutionOf(d: Drill, lang: string): string {
     default:
       return plain(d.item.s) || joinTiles(sentenceTiles(d.item, lang)?.tokens ?? [], lang);
   }
+}
+
+/** How many topics the placement check asks about, at most (two quick gaps each). */
+export const PLACEMENT_TOPICS = 12;
+
+/**
+ * The placement check: two quick gaps for each topic not yet learned, in teaching order, up to one
+ * level above the learner's (A0 counts as A1). Both right marks a topic as known.
+ */
+export function planPlacement(grammar: Grammar, lang: string, progress: Map<string, { step: number }>, learnerLevel: string, random: () => number): Drill[] {
+  const rank = (l: string) => Math.max(0, GRAMMAR_LEVELS.indexOf((l === 'A0' ? 'A1' : l) as GrammarLevel));
+  const reach = rank(learnerLevel) + 1;
+  const topics = topicsOf(grammar)
+    .filter((t) => rank(t.level) <= reach && (progress.get(t.id)?.step ?? 1) < 6 && t.items.length >= 2)
+    .slice(0, PLACEMENT_TOPICS);
+  let n = 0;
+  return topics.flatMap((t) => shuffle(t.items, random).slice(0, 2).map((item) => itemDrill('pick', item, t.id, lang, random, `pl-${n++}`)));
 }

@@ -786,6 +786,8 @@ export interface GrammarProgressRow extends Synced {
   /** First-try accuracy on the current step in the last lesson (0–1). */
   lastScore?: number;
   lastStudied?: number;
+  /** When the topic was learned (passed step 5, or placed): Ratio counts topics per month. */
+  learnedAt?: number;
   /** Marked as known by the placement check. */
   placed?: 1;
 }

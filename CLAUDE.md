@@ -15,8 +15,9 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
   `lingua-3.0/languages-wip` is history. Known gaps are at the top of the handover.
 - 3.0-1b (tier-2 beta languages), 3.0-2 (phone and desktop, themes), 3.0-3 (Sonus and music) and 3.0-4 (voices, device sync) are done. The user swapped steps twice: 3.0-5 became Radio (done), **3.0-6 is now comics, audiobooks and courses, AI conversation, and the user's Radio and Music notes**, and Grammatica and alphabets moved to 3.0-8.
 - **Lingua 3.0 is complete and live (version 3.0.0, 2026-10-20):** 3.0-6, 3.0-7 and the full
-  check 3.0-9 are done; the user skipped the rest of 3.0-8 (Grammatica's topics and lessons 2a are
-  live). Other sessions may still push to `main`, so rebase onto `origin/main` before pushing. Tier 2 stays cheap: only the
+  check 3.0-9 are done. The user first skipped the rest of 3.0-8, then resumed it on 2026-10-20:
+  parts 1–4 (topics, drills, lessons, links, placement, Ratio) are live; part 5 (alphabets and
+  writing) and part 6 (the other languages) are next. Other sessions may still push to `main`, so rebase onto `origin/main` before pushing. Tier 2 stays cheap: only the
   features that cost little (automatic packs, decks, podcasts, music search). Keep it cheap.
 - **Lingua 4.0** is next (five steps, 4.0-1 … 4.0-5, under "## Lingua 4.0" in the roadmap); start it
   when the user asks. 4.0 sorts the languages into four tiers and an

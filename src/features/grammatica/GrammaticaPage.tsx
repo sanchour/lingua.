@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, BookA, RotateCcw, Zap } from 'lucide-react';
+import { ArrowRight, BookA, Compass, RotateCcw, Zap } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { getLanguage } from '@/core/lang/languages';
@@ -50,7 +50,8 @@ export default function GrammaticaPage() {
       ) : (
         <>
           {next && <NextUp topic={next} state={states.get(next.id)} />}
-          <Practice due={dueCount} />
+          {progress && progress.size === 0 && <Placement />}
+          <Practice due={dueCount} placed={!!progress && progress.size > 0} />
           {grammar.units.map((unit) => (
             <section key={unit.title} className="mt-10 first:mt-0">
               <div className="mb-3.5 flex items-baseline justify-between gap-3">
@@ -132,8 +133,24 @@ function TopicRow({ topic, state, next }: { topic: Topic; state?: TopicState; ne
   );
 }
 
+/** Before anything is begun: a quick check that marks the topics already known. */
+function Placement() {
+  return (
+    <div className="mb-2 flex flex-col gap-3 rounded-3xl border border-dashed border-line-strong/70 p-5 sm:flex-row sm:items-center sm:p-6">
+      <Compass size={26} className="shrink-0 text-accent-text" aria-hidden />
+      <span className="min-w-0 flex-1">
+        <span className="block font-serif text-[18px] leading-snug font-semibold">Know some already?</span>
+        <span className="mt-0.5 block text-[14px] leading-snug text-ink-soft">A two-minute check, two quick questions per topic. What you get right is marked learned, so you start where you are.</span>
+      </span>
+      <Link to="/grammatica/placement" className={cx(buttonClasses('secondary', 'md'), 'shrink-0')}>
+        Check what I know
+      </Link>
+    </div>
+  );
+}
+
 /** Review what's due across topics, or a Lightning round over the topics begun. */
-function Practice({ due }: { due: number }) {
+function Practice({ due, placed }: { due: number; placed: boolean }) {
   return (
     <div className="mb-2 flex flex-wrap gap-2">
       <Link to="/grammatica/review" className={cx(buttonClasses(due ? 'primary' : 'secondary', 'md'), 'flex-1 sm:flex-none', !due && 'pointer-events-none opacity-60')} aria-disabled={!due}>
@@ -144,6 +161,12 @@ function Practice({ due }: { due: number }) {
         <Zap size={17} aria-hidden />
         Lightning round
       </Link>
+      {placed && (
+        <Link to="/grammatica/placement" className={cx(buttonClasses('ghost', 'md'), 'flex-1 sm:ml-auto sm:flex-none')}>
+          <Compass size={17} aria-hidden />
+          Check what I know
+        </Link>
+      )}
     </div>
   );
 }

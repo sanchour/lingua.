@@ -374,3 +374,11 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] After a mistake, "See the rule" opens a bottom sheet with the rule and tables; closing it returns to the same exercise.
 - [ ] The end of a lesson with mistakes lists "What went wrong" with each sentence and its reason.
 - [ ] With an AI key, step 5 ends with "Your own sentence": the keyboard doesn't cover the text box; the AI's answer shows in the bar.
+
+## Lingua 3.0-8, part 4: grammar everywhere
+
+- [ ] In the reader, tap an inflected Spanish verb: the word drawer shows "Why this form?" with its topic, and tapping it opens the topic.
+- [ ] Home shows the Grammatica card (next topic or items due) and it opens the lesson or review.
+- [ ] In a language with no grammar progress, Grammatica shows "Know some already?"; the check runs full screen and ends with "Check done"; the topics marked learned show a check.
+- [ ] Ratio › Overview with one language chosen shows the Grammar panel; Tabula's "In Lingua" mentions grammar.
+- [ ] The end of a Ludus lesson offers "Grammar: <topic>".

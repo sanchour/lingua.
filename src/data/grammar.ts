@@ -3,6 +3,8 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { createEmptyCard } from 'ts-fsrs';
 import { loadGrammar } from '@/core/grammar/load';
 import { itemId, itemKey, nextTopic, PASS, progressId } from '@/core/grammar/progress';
+import { grammarLevel, grammarStats } from '@/core/grammar/stats';
+import type { GrammarStats } from '@/core/grammar/stats';
 import { topicsOf } from '@/core/grammar/types';
 import type { Grammar, Item, Topic } from '@/core/grammar/types';
 import { rate } from '@/core/srs/scheduler';
@@ -130,6 +132,7 @@ export async function finishGrammarLesson(lang: string, topic: string, step: num
     lastScore: step !== null ? score : before?.lastScore,
     lastStudied: now,
     placed: before?.placed,
+    learnedAt: before?.learnedAt ?? (next >= 6 ? now : undefined),
     createdAt: before?.createdAt ?? now,
     updatedAt: now,
   });
@@ -145,4 +148,55 @@ export async function dueGrammarItems(grammar: Grammar, now = Date.now(), databa
     const hit = byKey.get(row.id);
     return hit ? [{ ...hit, row }] : [];
   });
+}
+
+/**
+ * The placement check found these topics known: they count as learned (step 6, `placed`), and
+ * their items are left unscheduled until a review or practice meets them.
+ */
+export async function placeTopics(lang: string, topics: string[], database: LinguaDB = db, now = Date.now()): Promise<void> {
+  await database.transaction('rw', database.grammarProgress, async () => {
+    for (const topic of topics) {
+      const id = progressId(lang, topic);
+      const before = await database.grammarProgress.get(id);
+      if (before && !before.deletedAt && before.step >= 6) continue;
+      await database.grammarProgress.put({
+        id,
+        lang,
+        topic,
+        step: 6,
+        lessons: before && !before.deletedAt ? before.lessons : 0,
+        lastStudied: now,
+        learnedAt: now,
+        placed: 1,
+        createdAt: before?.createdAt ?? now,
+        updatedAt: now,
+      });
+    }
+  });
+}
+
+/** Everything Ratio shows about grammar in a language, or null when it has no grammar. */
+export async function loadGrammarStats(lang: string, database: LinguaDB = db, now = Date.now()): Promise<GrammarStats | null> {
+  const grammar = await loadGrammar(lang);
+  if (!grammar) return null;
+  const deck = `grammar:${lang}`;
+  const [progress, items, logs] = await Promise.all([
+    grammarProgress(lang, database),
+    grammarItems(lang, database),
+    database.reviewLogs.where('[deckId+reviewedAt]').between([deck, 0], [deck, Infinity]).toArray(),
+  ]);
+  return grammarStats(grammar, progress, items, logs, now);
+}
+
+/** Each language's grammar level reached (Tabula), only for languages that have a grammar. */
+export async function grammarLevels(langs: string[], database: LinguaDB = db): Promise<Map<string, { level: string | null; learned: number }>> {
+  const out = new Map<string, { level: string | null; learned: number }>();
+  for (const lang of langs) {
+    const grammar = await loadGrammar(lang);
+    if (!grammar) continue;
+    const progress = await grammarProgress(lang, database);
+    out.set(lang, { level: grammarLevel(grammar, progress), learned: [...progress.values()].filter((p) => p.step >= 6).length });
+  }
+  return out;
 }

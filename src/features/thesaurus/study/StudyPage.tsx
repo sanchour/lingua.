@@ -8,6 +8,7 @@ import type { LudusItem } from '@/core/srs/ludus';
 import { recordSession } from '@/data/activity';
 import { db } from '@/data/db';
 import { loadPracticeCards, loadStudySession } from '@/data/study';
+import { currentGrammarTopic } from '@/data/grammar';
 import type { StudySession } from '@/data/study';
 import type { Card, Deck, Note } from '@/data/types';
 import { buttonClasses } from '@/design/primitives';
@@ -82,6 +83,7 @@ export default function StudyPage() {
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState<SummaryStats | null>(null);
   const [ludusEnd, setLudusEnd] = useState<LessonResult | null>(null);
+  const [grammarNext, setGrammarNext] = useState<{ id: string; title: string } | null>(null);
   const [setupOpen, setSetupOpen] = useState(false);
   const size = lightning ? LIGHTNING_CARDS : settings.lessons.length;
   const [round, setRound] = useState(0);
@@ -134,9 +136,12 @@ export default function StudyPage() {
     async (result: LessonResult) => {
       active.current.cards += result.answered;
       const previousBest = lightning ? await recordBest(settings.lessons.best, `${lang}:ludus`, result.score ?? 0) : undefined;
+      // The language's next grammar topic, offered at the end (3.0-8).
+      const next = await currentGrammarTopic(lang, language.level).catch(() => null);
+      setGrammarNext(next ? { id: next.topic.id, title: next.topic.title } : null);
       setLudusEnd({ ...result, previousBest });
     },
-    [lightning, lang, settings.lessons.best],
+    [lightning, lang, language.level, settings.lessons.best],
   );
 
   if (ludusEnd) {
@@ -145,6 +150,7 @@ export default function StudyPage() {
       : [
           { label: 'Another lesson', onClick: () => setRound((r) => r + 1) },
           { label: 'Lightning round', onClick: () => navigate(`/thesaurus/study/${param}?mode=ludus&lightning=1`, { replace: true }) },
+          ...(grammarNext ? [{ label: `Grammar: ${grammarNext.title}`, onClick: () => navigate(`/grammatica/${grammarNext.id}`) }] : []),
         ];
     return (
       <div className="grid min-h-dvh place-items-center py-10">
