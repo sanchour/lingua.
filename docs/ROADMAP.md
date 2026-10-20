@@ -876,6 +876,68 @@ first, then the rule, comparisons, tables, a "watch out" line and more sentences
 right to left. `scripts/grammar/mine.ts` finds candidate sentences in a pack. The phone's top
 bar title is now a flex item, so a long topic title no longer runs under the four header icons.
 
+**Part 2, plan (2026-10-20).** The drills as FSRS cards, with mastery rings, and (the user's
+note of the same day) "heavily expand Ludus and the grammar lessons with more interactivity,
+fun and engaging exercises, and customizable lessons". Two commits:
+
+*2a: grammar drills.*
+- `src/core/grammar/drills.ts`, pure and seeded, makes the exercises from a topic's items. Each
+  step has its own kinds:
+  1. Recognise: which of two sentences is right? Or hear the sentence and pick the form you
+     heard.
+  2. Pick: fill the gap from four forms, or complete the topic's table.
+  3. Build: type the form, with its base word and cue. Or match the table's pairs.
+  4. Use: put the words in order, or tap the wrong word.
+  5. Say it: build the sentence from its English, with a wrong form among the tiles.
+- Tiles split on spaces; Mandarin splits by `Intl.Segmenter`. The form stays one tile.
+- Russian stress marks are taken off the form and the wrong forms, so they don't give the
+  answer away.
+- A typed form missing only its accents still counts, unless a wrong form is spelled the same
+  way without them (hablo, habló). Arabic is compared without its vowel marks on the same terms.
+- A lesson screen, `/grammatica/:topicId/lesson`, full screen like Ludus.
+  - About ten exercises of the topic's current step. A missed one comes back once at the end.
+  - A mistake shows the correct sentence, with the topic's one-line reason.
+  - "Can't type this now" turns a typing exercise into a choice.
+- **Progress.**
+  - Each item is an FSRS card in `grammarItems`, made the first time it is answered: no mistake
+    is Good, right after a retry Hard, missed twice Again.
+  - Answers are logged in `reviewLogs` with mode `grammar` and deck `grammar:<lang>`, and counted
+    in the day's reviews. Items not due are logged without moving their schedule, as in Ludus.
+  - 80 % right on the first try passes a step; after step 5 the topic is learned.
+  - The ring fills a fifth per step, and turns gold with a crown once half the topic's items are
+    mature.
+- `/grammatica/review` drills the items due across topics, each as an exercise from a step its
+  topic has passed.
+- The topic page gets a lesson card: step dots, Start, and Practise once the topic is learned.
+  The room gets a Review button when items are due.
+
+*Shared by both kinds of lesson* (`src/features/lesson/`):
+- **A combo streak** for answers right in a row, with a small burst at 3, 5 and 10.
+- **Short sounds** made in the browser (no audio files) and a vibration on phones. Both can be
+  turned off.
+- **An end screen** with the best combo, accuracy and time, and confetti for a perfect lesson.
+- **A setup sheet** (a gear on the lesson screen and before starting), kept in settings
+  (`lessons`):
+  - the length: 5, 10, 15 or 20;
+  - which exercise kinds to include;
+  - typing on or off;
+  - the mode: Classic, Lightning or Zen. Lightning is a 60-second round of quick choices with a
+    personal best. Zen has no combo, timer or sounds.
+
+*2a, as built (2026-10-20).* As planned. Lightning became a button beside Start rather than a
+mode in the setup sheet, so the sheet's modes are Classic and Zen. Spot the mistake is used only
+when the form is one word; for word order the form is split into its words.
+
+*2b: Ludus expanded.*
+- New kinds of exercise:
+  - Listen: hear the word and pick it.
+  - Dictation: hear the sentence and build it from tiles.
+  - Spell: put the word's letters in order, for languages written with letters.
+  - True or false: does this word mean that?
+- The combo, sounds, end screen and setup sheet above.
+- Lightning mode: quick choices against the clock. It is logged as practice and doesn't move
+  any schedule.
+
 **Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an
    icon in the phone's top bar beside Mundus. Each language's topics are a typed module,

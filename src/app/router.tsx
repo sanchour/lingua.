@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage, MundusPage, GrammaticaPage, GrammarTopicPage } from './pages';
+import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage, MundusPage, GrammaticaPage, GrammarTopicPage, GrammarLessonPage } from './pages';
 import { Root } from './Root';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -42,7 +42,9 @@ export const router = createBrowserRouter(
         { path: 'visio', element: <VisioPage /> },
         { path: 'visio/watch/:mediaId', element: <WatchPage /> },
         { path: 'grammatica', element: <GrammaticaPage /> },
+        { path: 'grammatica/review', element: <GrammarLessonPage review /> },
         { path: 'grammatica/:topicId', element: <GrammarTopicPage /> },
+        { path: 'grammatica/:topicId/lesson', element: <GrammarLessonPage /> },
         { path: 'mundus', element: <MundusPage /> },
         { path: 'ratio', element: <RatioPage /> },
         { path: 'ordo', element: <OrdoPage /> },

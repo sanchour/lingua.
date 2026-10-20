@@ -19,6 +19,8 @@ import { TouchShell } from './touch/TouchShell';
 const isImmersive = (pathname: string, wide: boolean) =>
   pathname.startsWith('/codex/read/') ||
   pathname.startsWith('/thesaurus/study/') ||
+  pathname === '/grammatica/review' ||
+  /^\/grammatica\/[^/]+\/lesson\/?$/.test(pathname) ||
   pathname === '/sonus/commute' ||
   (pathname.startsWith('/cantus') && !pathname.startsWith('/cantus/spotify')) ||
   (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/sonus/station/') || pathname.startsWith('/visio/watch/')));

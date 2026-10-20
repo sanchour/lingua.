@@ -1,9 +1,13 @@
+import { useMemo } from 'react';
 import { Link, Navigate, useParams } from 'react-router';
 import { useApp } from '@/app/context';
 import { BackLink } from '@/app/BackLink';
 import { PageHeader } from '@/app/PageHeader';
+import { topicState } from '@/core/grammar/progress';
 import { findTopic, openingExamples } from '@/core/grammar/types';
+import { useGrammarItems, useGrammarProgress } from '@/data/grammar';
 import { Card } from '@/design/primitives';
+import { LessonCard } from './LessonCard';
 import { CompareView, Rich, Section, SentenceLine, TableView, useGrammar, WatchOut } from './parts';
 
 /**
@@ -16,6 +20,10 @@ export default function TopicPage() {
   const { language } = useApp();
   const lang = language.id;
   const grammar = useGrammar(lang);
+  const progress = useGrammarProgress(lang);
+  const items = useGrammarItems(lang);
+  const found = grammar ? findTopic(grammar, topicId) : undefined;
+  const state = useMemo(() => (found && progress && items ? topicState(found, progress.get(found.id), items, Date.now()) : undefined), [found, progress, items]);
 
   if (grammar === undefined) return <div className="h-64" />;
   const topic = grammar ? findTopic(grammar, topicId) : undefined;
@@ -33,6 +41,7 @@ export default function TopicPage() {
       <BackLink to="/grammatica">Grammatica</BackLink>
       <PageHeader title={topic.title} eyebrow={`${topic.level} · ${unit?.title ?? 'Grammar'}`} />
       <p className="-mt-3 text-[17px] leading-snug text-ink-soft">{topic.summary}</p>
+      <LessonCard topic={topic} state={state} />
 
       <Section title="See it first">
         <Card className="divide-y divide-line/60 p-0">

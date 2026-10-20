@@ -310,3 +310,12 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Tables fit the screen width (or scroll inside their frame only).
 - [ ] With Arabic as the language: sentences read right to left, the vowel marks are clear, the highlighted word is in the right place.
 - [ ] With Mandarin: characters are crisp, and the highlighted measure word sits in the sentence.
+
+## Lingua 3.0-8, part 2a: grammar lessons
+
+- [ ] A topic's lesson card: Start opens the lesson full screen (no tab bar); the close button returns to the topic.
+- [ ] Step 3 (type the form): the keyboard opens without covering the input or the Check bar; "Can't type this now" swaps to choices.
+- [ ] Word tiles: tapping moves them up and back; in Arabic they run right to left.
+- [ ] Sounds: a chime on a right answer, a low note on a miss, a run at 3 in a row (after the first tap; iOS needs a tap before audio).
+- [ ] Lightning: the clock counts down, the last ten seconds turn red, the end screen shows the score and the best.
+- [ ] Setup sheet: opens as a bottom sheet; switching Zen silences the sounds and hides the combo.

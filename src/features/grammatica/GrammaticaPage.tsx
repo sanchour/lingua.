@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, BookA, Check, Crown } from 'lucide-react';
+import { ArrowRight, BookA, RotateCcw, Zap } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { getLanguage } from '@/core/lang/languages';
@@ -8,10 +8,9 @@ import { nextTopic, topicState } from '@/core/grammar/progress';
 import type { TopicState } from '@/core/grammar/progress';
 import type { Topic } from '@/core/grammar/types';
 import { useGrammarItems, useGrammarProgress } from '@/data/grammar';
-import { Ring } from '@/design/charts/Ring';
-import { Badge, Card, EmptyState } from '@/design/primitives';
+import { Badge, buttonClasses, Card, EmptyState } from '@/design/primitives';
 import { cx } from '@/lib/cx';
-import { eyebrow, useGrammar } from './parts';
+import { eyebrow, TopicRing, useGrammar } from './parts';
 
 /**
  * Grammatica (Lingua 3.0-8): the language's grammar as short topics, A1 first. Each topic opens
@@ -34,6 +33,7 @@ export default function GrammaticaPage() {
     return out;
   }, [grammar, progress, items]);
 
+  const dueCount = [...states.values()].reduce((n, s) => n + s.due, 0);
   const next = grammar && progress ? nextTopic(grammar, progress, language.level) : undefined;
 
   return (
@@ -50,6 +50,7 @@ export default function GrammaticaPage() {
       ) : (
         <>
           {next && <NextUp topic={next} state={states.get(next.id)} />}
+          <Practice due={dueCount} />
           {grammar.units.map((unit) => (
             <section key={unit.title} className="mt-10 first:mt-0">
               <div className="mb-3.5 flex items-baseline justify-between gap-3">
@@ -92,25 +93,6 @@ function levelSpan(topics: Topic[]): string {
   return levels.length > 1 ? `${levels[0]}–${levels[levels.length - 1]}` : (levels[0] ?? '');
 }
 
-function TopicRing({ state, size = 46 }: { state?: TopicState; size?: number }) {
-  const value = state?.ring ?? 0;
-  return (
-    <Ring value={value} size={size} stroke={5} color={state?.mastered ? 'var(--accent)' : 'var(--sage)'} label={state ? ringLabel(state) : undefined}>
-      {state?.mastered ? (
-        <Crown size={17} className="text-accent-text" aria-hidden />
-      ) : state?.learned ? (
-        <Check size={18} strokeWidth={2.6} className="text-sage-text" aria-hidden />
-      ) : (
-        <span className="text-[13px] font-bold text-ink-soft tabular-nums">{state && state.step > 1 ? `${state.step - 1}/5` : ''}</span>
-      )}
-    </Ring>
-  );
-}
-
-const ringLabel = (s: TopicState) => (s.mastered ? 'Mastered' : s.learned ? 'Learned' : s.step > 1 ? `${s.step - 1} of 5 steps done` : 'Not started');
-
-export { TopicRing };
-
 function NextUp({ topic, state }: { topic: Topic; state?: TopicState }) {
   return (
     <Link
@@ -147,5 +129,21 @@ function TopicRow({ topic, state, next }: { topic: Topic; state?: TopicState; ne
       </span>
       <Badge>{topic.level}</Badge>
     </Link>
+  );
+}
+
+/** Review what's due across topics, or a Lightning round over the topics begun. */
+function Practice({ due }: { due: number }) {
+  return (
+    <div className="mb-2 flex flex-wrap gap-2">
+      <Link to="/grammatica/review" className={cx(buttonClasses(due ? 'primary' : 'secondary', 'md'), 'flex-1 sm:flex-none', !due && 'pointer-events-none opacity-60')} aria-disabled={!due}>
+        <RotateCcw size={17} aria-hidden />
+        {due ? `Review ${due} due` : 'Nothing due to review'}
+      </Link>
+      <Link to="/grammatica/review?mode=lightning" className={cx(buttonClasses('secondary', 'md'), 'flex-1 sm:flex-none')}>
+        <Zap size={17} aria-hidden />
+        Lightning round
+      </Link>
+    </div>
   );
 }

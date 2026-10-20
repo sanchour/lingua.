@@ -379,6 +379,19 @@ kind, Enter to open the top result; with the field empty, recent searches and st
 - Every sentence is a real one from the language's data, and every rule is checked against a named
   source, listed at the foot of the page.
 - Arabic is shown fully vowelled and right to left; Mandarin in Simplified characters.
+- **Lessons in five steps** for every topic: recognise the right sentence (or the form you hear),
+  fill the gap (or complete the table), type the form, put the words in order (or tap the wrong
+  word), then build the sentence from its English. 80 % right first time moves you on; after step
+  5 the topic is learned. A mistake shows the right sentence and the rule in one line, and comes
+  back at the end of the lesson.
+- **Rings:** each topic's ring fills a fifth per step; it gets a check once learned and a gold
+  crown once most of its items are well remembered.
+- **Review and Lightning:** grammar items come back for review like cards (Review in Grammatica);
+  Lightning is a 60-second round of quick gaps with your best score kept.
+- **Lessons your way:** a gear opens the setup sheet (length 5–20, Classic or Zen, which
+  exercises, typing, sounds, vibration). Right answers in a row light a combo, with a burst at 3,
+  5 and 10; a perfect lesson or a new best gets confetti. "Can't type this now" swaps typing for
+  choices.
 
 ## Visio › Services (3.0-7)
 

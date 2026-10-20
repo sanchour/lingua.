@@ -550,7 +550,7 @@ export interface ActivitySession {
   id: string;
   lang: Lang;
   /** 'sing': time with a song in Cantus (counted as listening too). */
-  type: 'read' | 'listen' | 'watch' | 'review' | 'ludus' | 'write' | 'sing';
+  type: 'read' | 'listen' | 'watch' | 'review' | 'ludus' | 'write' | 'sing' | 'grammar';
   refId?: string;
   startedAt: number;
   endedAt: number;

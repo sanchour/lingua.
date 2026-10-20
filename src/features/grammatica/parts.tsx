@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { TriangleAlert } from 'lucide-react';
+import { Check, Crown, TriangleAlert } from 'lucide-react';
+import type { TopicState } from '@/core/grammar/progress';
+import { Ring } from '@/design/charts/Ring';
 import { loadGrammar } from '@/core/grammar/load';
 import { plain, splitFocus } from '@/core/grammar/types';
 import type { Comparison, Example, Grammar, GrammarTable } from '@/core/grammar/types';
@@ -156,3 +158,21 @@ export function Section({ title, children, action }: { title: string; children: 
     </section>
   );
 }
+
+/** A topic's ring: a fifth per step passed, a check once learned, a crown once mastered. */
+export function TopicRing({ state, size = 46 }: { state?: TopicState; size?: number }) {
+  const value = state?.ring ?? 0;
+  return (
+    <Ring value={value} size={size} stroke={5} color={state?.mastered ? 'var(--accent)' : 'var(--sage)'} label={state ? ringLabel(state) : undefined}>
+      {state?.mastered ? (
+        <Crown size={17} className="text-accent-text" aria-hidden />
+      ) : state?.learned ? (
+        <Check size={18} strokeWidth={2.6} className="text-sage-text" aria-hidden />
+      ) : (
+        <span className="text-[13px] font-bold text-ink-soft tabular-nums">{state && state.step > 1 ? `${state.step - 1}/5` : ''}</span>
+      )}
+    </Ring>
+  );
+}
+
+const ringLabel = (s: TopicState) => (s.mastered ? 'Mastered' : s.learned ? 'Learned' : s.step > 1 ? `${s.step - 1} of 5 steps done` : 'Not started');

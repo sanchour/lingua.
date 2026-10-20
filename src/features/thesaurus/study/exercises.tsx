@@ -187,7 +187,7 @@ export function BuildExercise({ ex, lang, value, onChange, phase }: { ex: Builda
 
 // ── Type the word ───────────────────────────────────────────────────────────
 
-const LETTERS: Record<string, string[]> = {
+export const LETTERS: Record<string, string[]> = {
   es: ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', '¿', '¡'],
   pt: ['á', 'â', 'ã', 'à', 'ç', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú'],
   fr: ['à', 'â', 'æ', 'ç', 'é', 'è', 'ê', 'ë', 'î', 'ï', 'ô', 'œ', 'ù', 'û', 'ü'],

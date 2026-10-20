@@ -836,3 +836,31 @@ Short records of choices that are not obvious from the code. Newest last.
   "Why this form?" in part 4.
 - **The phone's compact title is a flex item** between the back button and the header icons, so
   with Grammatica's fourth icon it truncates instead of running under them.
+## 2026-10-20 — Lingua 3.0-8, part 2a: grammar drills and the lesson kit
+
+- **Every drill is made from the same compact items** (a pack sentence with the form in
+  brackets and three wrong forms) and from the topic's own tables. So the five steps need no
+  extra content, and nothing in a drill can be wrong that the topic file doesn't already say.
+  The table drills (complete the table, match the pairs) only use short cells without
+  alternatives ("el / la") or notes.
+- **Forgiving typing, without letting a wrong form through.** A typed form missing only its
+  accents counts as right, with a note, unless a wrong form is spelled the same without
+  accents (hablo, habló). Arabic is compared without its vowel marks on the same terms, so a
+  learner can type without harakat. A test runs every wrong form of every item through the
+  checker to make sure none is accepted.
+- **Russian stress marks come off the forms.** The pack's sentences are stressed but the wrong
+  forms aren't, so a stressed option would give the answer away.
+- **Spot the mistake only for one-word forms.** When the form is a phrase (Mandarin word order,
+  "he comido"), the swapped chunk stands out, so those items get word order instead. For word
+  order the form is split into its words too, since the order of all of them is the point.
+- **Grading and scheduling as in Ludus.** No mistake is Good, right on the retry Hard, missed
+  twice Again. An item is scheduled when it is new or due, otherwise only logged. Lightning is
+  practice and never moves a schedule. Logs go to `grammar:<lang>`, so vocabulary statistics
+  leave them out. Ratio counts the time as review until part 4 gives grammar its own place.
+- **Lightning is a button, not a mode.** The setup sheet has Classic and Zen (how a lesson
+  feels), plus length, exercise kinds, typing, sounds and vibration. Lightning sits beside
+  Start, so choosing it never stops a step from being passed.
+- **Sounds are synthesised** with the Web Audio API (a few sine notes), so there are no audio
+  files to bundle or cache. Vibration uses `navigator.vibrate` where it exists; iOS has
+  none, and the setting simply does nothing there.
+

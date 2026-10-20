@@ -58,6 +58,12 @@ export interface Settings {
     ludusAffectsSchedule: boolean;
     autoPromoteMature: boolean;
   };
+  /**
+   * How Ludus and grammar lessons run (the setup sheet): length, mode, typing, sounds and
+   * vibration, the exercise kinds turned off for each, and Lightning's best scores by
+   * `<lang>:<ludus|grammar>`.
+   */
+  lessons: LessonSettings;
   translation: { chain: Array<'local' | 'mymemory' | 'lingva'>; lingvaHost: string };
   llm: { provider: 'groq' | 'gemini'; model: string };
   /**
@@ -116,6 +122,19 @@ export interface Settings {
   sync: { devices: PairedDevice[]; includeApiKeys: boolean };
 }
 
+export type LessonMode = 'classic' | 'zen';
+
+export interface LessonSettings {
+  length: 5 | 10 | 15 | 20;
+  mode: LessonMode;
+  typing: boolean;
+  sounds: boolean;
+  haptics: boolean;
+  ludusOff: string[];
+  grammarOff: string[];
+  best: Record<string, number>;
+}
+
 export interface PairedDevice {
   /** The other device's id (its settings.meta.deviceId). */
   id: string;
@@ -150,6 +169,7 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   cards: { font: 'literata', style: 'plain', tint: 'paper', size: 'md' },
   study: { newPerDay: 15, maxReviews: 200, desiredRetention: 0.9, ludusAffectsSchedule: true, autoPromoteMature: true },
+  lessons: { length: 10, mode: 'classic', typing: true, sounds: true, haptics: true, ludusOff: [], grammarOff: [], best: {} },
   translation: { chain: ['local', 'mymemory', 'lingva'], lingvaHost: 'https://lingva.ml' },
   llm: { provider: 'groq', model: 'llama-3.3-70b-versatile' },
   apiKeys: { groq: '', gemini: '', tmdb: '' },
