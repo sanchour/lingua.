@@ -248,6 +248,11 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
       the song is in the bar, where it was.
 - [ ] Learn it (or Song games): the games over the room; back to the song.
 - [ ] An old link (`/sonus/song/…`) opens the song in Cantus.
+- [ ] Search "baile inolvidable bad bunny", "Diles Bad Bunny", "diles": Bad Bunny's song on top.
+- [ ] Search "bad bunni": Bad Bunny on top as the artist; "baile inolvidabel": "Showing results
+      for baile inolvidable", Bad Bunny's song first.
+- [ ] Songs, Artists, Albums chips; a song's play button plays 30 seconds; the field empty shows
+      recent searches (Clear works) and styles.
 
 ## Lingua 3.0-6, part 2: comics
 

@@ -1,15 +1,13 @@
 // The room's tabs: Today (a song for today, then rails), Explore (new songs every day), Library
 // (your songs) and Search. Everything the music room in Sonus had, moved here.
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
-import { Gamepad2, LoaderCircle, Music2, Play, SearchX, Shuffle, Sparkles } from 'lucide-react';
+import { useMemo } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { Gamepad2, LoaderCircle, Music2, Play, Shuffle, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { formatClock } from '@/core/audio/cues';
 import { getLanguage } from '@/core/lang/languages';
 import { songIdOf, useMostPlayed, useRecentSongs, useSavedSongs, useSong } from '@/data/songs';
-import { SearchInput } from '@/design/primitives';
 import { cx } from '@/lib/cx';
-import { searchSongs } from '@/services/cantus/catalog';
 import type { SongHit } from '@/services/cantus/catalog';
 import { discoverFor } from '../discover';
 import { hashOf, useExplore } from '../explore';
@@ -19,8 +17,7 @@ import { gamesPath } from './nav';
 import { useOpenSong } from './open';
 import { ArtistTile, ChartTile, HitTile, Rail, RoomTitle, SkeletonTiles, smallPill, SongTile, StyleGrid } from './rails';
 
-// An artist's tile asks for their own songs, not songs that mention them.
-const searchFor = (term: string, byArtist = false) => `/cantus/search?q=${encodeURIComponent(term)}${byArtist ? '&by=artist' : ''}`;
+const searchFor = (term: string) => `/cantus/search?q=${encodeURIComponent(term)}`;
 
 // ── Today ────────────────────────────────────────────────────────────────────────────────────────
 
@@ -51,7 +48,7 @@ export function TodayPage() {
       {picks && picks.artists.length > 0 && (
         <Rail title="Artists to learn with" label="Artists to learn with" round>
           {picks.artists.map((a, i) => (
-            <ArtistTile key={a.name} artist={a} i={i} onPick={() => navigate(searchFor(a.name, true))} />
+            <ArtistTile key={a.name} artist={a} i={i} onPick={() => navigate(searchFor(a.name))} />
           ))}
         </Rail>
       )}
@@ -158,7 +155,7 @@ export function ExplorePage() {
       {picks && picks.artists.length > 0 && (
         <Rail title="Artists to learn with" label="Artists to learn with" round>
           {picks.artists.map((a, i) => (
-            <ArtistTile key={a.name} artist={a} i={i} onPick={() => navigate(searchFor(a.name, true))} />
+            <ArtistTile key={a.name} artist={a} i={i} onPick={() => navigate(searchFor(a.name))} />
           ))}
         </Rail>
       )}
@@ -255,68 +252,5 @@ export function LibraryPage() {
         </Rail>
       )}
     </>
-  );
-}
-
-// ── Search ───────────────────────────────────────────────────────────────────────────────────────
-
-export function SearchPage() {
-  const lang = useApp().language.id;
-  const [params, setParams] = useSearchParams();
-  const [query, setQuery] = useState(params.get('q') ?? '');
-  const q = query.trim();
-  // The address follows the field, so Back and a style's tile land on the same results.
-  const byArtist = params.get('by') === 'artist';
-  // Only while Search is the page: under an open song the address is the song's.
-  const shown = useLocation().pathname.replace(/\/+$/, '') === '/cantus/search';
-  useEffect(() => {
-    if (shown && (params.get('q') ?? '') !== q) setParams(q ? { q } : {}, { replace: true });
-  }, [shown, q, params, setParams]);
-  const picks = discoverFor(lang);
-  const navigate = useNavigate();
-
-  return (
-    <>
-      <RoomTitle>Search</RoomTitle>
-      <SearchInput value={query} onChange={setQuery} placeholder={`Songs or artists in ${getLanguage(lang)?.name ?? lang}`} className="mb-7" autoFocus={!q} />
-      {q ? <Results lang={lang} query={q} byArtist={byArtist} /> : picks && picks.styles.length > 0 && <StyleGrid styles={picks.styles} onPick={(term) => navigate(searchFor(term), { replace: true })} />}
-    </>
-  );
-}
-
-function Results({ lang, query, byArtist }: { lang: string; query: string; byArtist: boolean }) {
-  const [hits, setHits] = useState<SongHit[] | null>(null);
-  const [error, setError] = useState(false);
-  const { opening, openHit } = useOpenSong(lang);
-  useEffect(() => {
-    let alive = true;
-    setError(false);
-    const timer = window.setTimeout(() => {
-      setHits(null);
-      searchSongs(lang, query, { byArtist })
-        .then((h) => alive && setHits(h))
-        .catch(() => alive && setError(true));
-    }, 250);
-    return () => {
-      alive = false;
-      window.clearTimeout(timer);
-    };
-  }, [lang, query, byArtist]);
-  if (error) return <p className="py-10 text-center text-[15px] text-ink-soft">Apple’s music search didn’t answer. Check the connection and try again.</p>;
-  if (!hits) return <SkeletonTiles />;
-  if (!hits.length) {
-    return (
-      <div className="py-12 text-center text-ink-soft">
-        <SearchX size={26} className="mx-auto mb-2 text-ink-faint" aria-hidden />
-        Nothing for “{query}”.
-      </div>
-    );
-  }
-  return (
-    <ul className="room-grid">
-      {hits.map((hit, i) => (
-        <HitTile key={hit.itunesId} hit={hit} i={i} lang={lang} busy={opening === String(hit.itunesId)} onOpen={() => void openHit(hit)} />
-      ))}
-    </ul>
   );
 }

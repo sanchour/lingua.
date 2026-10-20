@@ -14,7 +14,8 @@ import { SongPlayer } from '../SongPage';
 import { roomSongOf, roomTabOf, ROOM_TABS, songPath, useLeaveCantus, useRoomNav } from './nav';
 import type { RoomTab } from './nav';
 import { keptPlace, useCantusNow } from './now';
-import { ExplorePage, LibraryPage, SearchPage, TodayPage } from './pages';
+import { ExplorePage, LibraryPage, TodayPage } from './pages';
+import { SearchPage } from './search';
 import { useRoomTheme } from './useRoomTheme';
 
 const TAB_ICON: Record<RoomTab, LucideIcon> = { today: Sun, explore: Compass, library: Library, search: Search };

@@ -215,6 +215,14 @@ YouTube and Spotify the player adds the song's progress and a line back / play /
 **X** leaves Cantus for Sonus › Music: "Back in Lingua · Cantus closed. The song keeps its place."
 Open Cantus brings the song back in the bar, where it was. Song games open over the room.
 
+**Search in Cantus** asks Apple (the language's store and two more), LRCLIB and your Spotify at
+once, live as you type, and opens the whole catalogue of the artist you name or who sings the song
+you name, since Apple's search leaves some artists' own recordings out. A typo is put right from
+what comes back ("Showing results for baile inolvidable", with "Search for … instead"); the
+original comes before covers, karaoke and other versions. A top result (the song, or the artist
+for their name), songs (each with its 30-second preview), artists and albums, chips to keep one
+kind, Enter to open the top result; with the field empty, recent searches and styles to browse.
+
 
 - **Find any song** in the language you're learning (Apple's catalogue; tap the artwork for a
   30-second preview), or explore (3.0-6): Music is shelves of songs to tap. Recently opened,

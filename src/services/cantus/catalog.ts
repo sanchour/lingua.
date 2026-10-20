@@ -5,6 +5,8 @@ export interface SongHit {
   itunesId: number;
   title: string;
   artist: string;
+  /** Apple's id for the (first) artist, for their whole catalogue. */
+  artistId?: number;
   album?: string;
   year?: number;
   genre?: string;
@@ -22,8 +24,12 @@ export const STORE: Record<string, string> = { en: 'us', es: 'es', pt: 'br', fr:
 /** Apple's artwork URLs carry their size; ask for a large square. */
 export const bigArtwork = (url: string | undefined, px = 600) => url?.replace(/\/\d+x\d+(bb|cc)?\.(jpg|png|webp)$/, `/${px}x${px}bb.jpg`);
 
-interface ItunesTrack {
+export interface ItunesTrack {
+  wrapperType?: string;
   trackId?: number;
+  artistId?: number;
+  collectionId?: number;
+  collectionViewUrl?: string;
   kind?: string;
   trackName?: string;
   artistName?: string;
@@ -38,13 +44,14 @@ interface ItunesTrack {
 
 const clean = (s: string) => s.toLocaleLowerCase().replace(/\s*[([].*?[)\]]/g, '').replace(/\s+-\s+.*$/, '').trim();
 
-function toHit(t: ItunesTrack): SongHit | null {
+export function toHit(t: ItunesTrack): SongHit | null {
   if (!t.trackId || !t.trackName || !t.artistName || (t.kind && t.kind !== 'song')) return null;
   const year = t.releaseDate ? Number(t.releaseDate.slice(0, 4)) : undefined;
   return {
     itunesId: t.trackId,
     title: t.trackName,
     artist: t.artistName,
+    artistId: t.artistId,
     album: t.collectionName,
     year: year && year > 1900 ? year : undefined,
     genre: t.primaryGenreName,

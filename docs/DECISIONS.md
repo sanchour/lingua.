@@ -628,6 +628,21 @@ Short records of choices that are not obvious from the code. Newest last.
 - **No two-page spreads:** on desktop the page's words sit where the second page would; a comic in
   Lingua is read to learn its words, so they stay in view.
 
+## 2026-10-20 — Cantus search (design handoff, workstream B)
+
+- **Several sources, one list.** Apple's search index leaves out some artists' own recordings
+  (none of Bad Bunny's "BAILE INoLVIDABLE" or "Diles" in any store), but Apple's artist lookup
+  has them. So search asks Apple (three stores), LRCLIB (which knows who sings what) and Spotify
+  when connected, then opens at most two artists' catalogues: the artist the query names, or the
+  one most known for the title it names. Every source is optional; only Apple failing entirely
+  is an error. All free and keyless.
+- **Typos are put right from the results, not a dictionary:** a typed word the results never use,
+  a typo or two from one they use three times or more ("inolvidabel" → "inolvidable"). The
+  learner sees the correction and can search as typed.
+- **The original first:** titles are compared without "(feat. …)" or labels; covers, karaoke,
+  tributes and instrumentals sink, remixes and live versions sink a little unless typed; the
+  artist LRCLIB knows the title by most rises.
+
 ## 2026-10-20 — Cantus, a room of its own (design handoff, workstream A)
 
 - **One route for the whole room.** `/cantus/*` is one lazy page that reads the address itself

@@ -871,7 +871,10 @@ playback make the room really work.
   browsing), Song games over the room, Sonus › Music's closed state, `/sonus/song/…` redirected.
   Not built: the Song for today's "words you know" count (it needs the song's lyrics before it is
   ever opened; left for later). The old Music room (`MusicRoom.tsx`) is gone; every shelf moved.
-- [ ] B: search, with tests for the brief's six queries (mocked), merging, ranking and typos.
+- [x] B: search, with tests for the brief's six queries (mocked), merging, ranking and typos.
+  Built 2026-10-20: `services/cantus/search.ts` (+ `fuzzy.ts`) and `room/search.tsx`; 12 tests.
+  Checked live the same day: all six queries put the right song (or Bad Bunny) on top. Spotify
+  only tells search who sings a song (a Spotify track with no Apple match can't be opened yet).
 - [ ] C: the master clock, finding whole songs, any link, the source menu; checked with real songs.
 
 ### Handover for the Lingua 3.0 session
