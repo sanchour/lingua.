@@ -42,6 +42,9 @@ export async function removeLanguage(lang: string, database: LinguaDB = db): Pro
   await database.feeds.where('lang').equals(lang).delete();
   await database.stations.where('lang').equals(lang).delete();
   await database.challenges.where('lang').equals(lang).delete();
+  await database.grammarItems.where('[lang+topic]').between([lang, Dexie.minKey], [lang, Dexie.maxKey]).delete();
+  await database.grammarProgress.where('lang').equals(lang).delete();
+  await database.reviewLogs.where('[deckId+reviewedAt]').between([`grammar:${lang}`, Dexie.minKey], [`grammar:${lang}`, Dexie.maxKey]).delete();
   await removePack(lang);
 
   const now = Date.now();

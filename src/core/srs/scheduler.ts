@@ -24,7 +24,10 @@ function scheduler(retention: number): FSRS {
   return f;
 }
 
-export function toFsrs(card: Card): FsrsCard {
+/** The scheduling fields of a card, or of any row scheduled like one (a grammar item). */
+export type Schedulable = Pick<Card, 'due' | 'stability' | 'difficulty' | 'elapsedDays' | 'scheduledDays' | 'learningSteps' | 'reps' | 'lapses' | 'state' | 'lastReview'>;
+
+export function toFsrs(card: Schedulable): FsrsCard {
   return {
     due: new Date(card.due),
     stability: card.stability,
@@ -39,7 +42,7 @@ export function toFsrs(card: Card): FsrsCard {
   };
 }
 
-type Scheduled = Pick<Card, 'due' | 'stability' | 'difficulty' | 'elapsedDays' | 'scheduledDays' | 'learningSteps' | 'reps' | 'lapses' | 'state' | 'lastReview'>;
+type Scheduled = Schedulable;
 
 function fromFsrs(c: FsrsCard): Scheduled {
   return {
@@ -63,13 +66,13 @@ export interface ReviewOutcome {
 }
 
 /** Schedules a card after an answer. */
-export function rate(card: Card, grade: Grade4, now: number, retention = 0.9): ReviewOutcome {
+export function rate(card: Schedulable, grade: Grade4, now: number, retention = 0.9): ReviewOutcome {
   const { card: next, log } = scheduler(retention).next(toFsrs(card), new Date(now), grade as Grade);
   return { next: fromFsrs(next), elapsedDays: log.elapsed_days };
 }
 
 /** When each answer would bring the card back, in ms from now. */
-export function previewIntervals(card: Card, now: number, retention = 0.9): Record<Grade4, number> {
+export function previewIntervals(card: Schedulable, now: number, retention = 0.9): Record<Grade4, number> {
   const preview = scheduler(retention).repeat(toFsrs(card), new Date(now));
   const out = {} as Record<Grade4, number>;
   for (const g of GRADES) out[g] = Math.max(0, preview[g as Grade].card.due.getTime() - now);
@@ -100,7 +103,7 @@ export function maturityOf(card: Pick<Card, 'state' | 'scheduledDays'>): Maturit
 }
 
 /** Probability of recalling the card right now (0–1), or null for new cards. */
-export function retrievability(card: Card, now: number, retention = 0.9): number | null {
+export function retrievability(card: Schedulable, now: number, retention = 0.9): number | null {
   if (card.state === State.New) return null;
   return scheduler(retention).get_retrievability(toFsrs(card), new Date(now), false);
 }

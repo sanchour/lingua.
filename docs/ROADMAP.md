@@ -825,7 +825,8 @@ language stopped at a usage limit, so the other picks rest on one careful pass.
 
 ### 3.0-8 · Grammatica and alphabets
 Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
-- [ ] Grammar files, the topic browser, explanations and tables.
+- [x] Grammar files, the topic browser, explanations and tables (2026-10-20: Spanish 28 topics,
+      German 23, French 21, Russian 17, Arabic 16, Mandarin 15).
 - [ ] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
 - [ ] Topic maps for every language (Spanish and German first).
 - [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
@@ -855,7 +856,27 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
       alphabets), then write it from memory. Strokes are checked for order, direction and shape,
       with a gentle hint on a miss. Arabic letters in their joined forms (start, middle, end).
 
-**Plan (2026-10-20).** Four parts, each pushed once it works:
+**Order set by the user (2026-10-20).** Six parts, each committed and pushed on its own, starting
+with the six core languages (Spanish, Russian, German, Arabic, Mandarin, French):
+1. [x] Grammar files, the topic browser, explanations and tables.
+2. [ ] The drills (conjugate, decline, pick the form, word order) as FSRS cards, with mastery rings.
+3. [ ] Progressive exercises, and lessons that show examples first.
+4. [ ] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
+5. [ ] Alphabets and writing practice for the languages with their own script.
+6. [ ] The other languages, tier by tier, keeping tier 2 and below cheap.
+
+Content rules: every rule is checked against a named source (listed in each module's `sources`),
+every sentence is a real sentence from the language's pack (a test enforces it), and a topic
+without clean sentences or a checkable rule is left out and named in the module's `notes`. The
+tables below (Dexie v13 and so on) are unchanged; the parts above replace the old part numbering.
+
+**Part 1, as built (2026-10-20).** Six modules in `src/core/grammar/topics/` (es, ru, de, ar, zh,
+fr); `/grammatica` lists them by unit with a "Next up" card, and a topic page shows examples
+first, then the rule, comparisons, tables, a "watch out" line and more sentences. Arabic is set
+right to left. `scripts/grammar/mine.ts` finds candidate sentences in a pack. The phone's top
+bar title is now a flex item, so a long topic title no longer runs under the four header icons.
+
+**Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an
    icon in the phone's top bar beside Mundus. Each language's topics are a typed module,
    `src/core/grammar/topics/<lang>.ts`, loaded only when needed, like Mundus's picks. This

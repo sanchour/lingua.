@@ -808,3 +808,31 @@ Short records of choices that are not obvious from the code. Newest last.
   would be skipped on such a device, so those versions should add tables and indexes only.
 - **Mundus is a header section** (desktop sidebar under the divider, phone top bar), so the shells
   needed no changes; Visio got a Library · Services segmented control like Sonus's.
+
+## 2026-10-20 — Lingua 3.0-8, part 1: Grammatica's topics and browser
+
+- **Topics are typed modules, not `.json.gz`** (`src/core/grammar/topics/<lang>.ts`, loaded with
+  `import.meta.glob` like Mundus's picks). TypeScript checks their shape, a test checks their
+  content, and Vite splits them per language, so nothing loads until Grammatica opens.
+- **Every sentence is a real pack sentence.** `grammar.test.ts` reads each pack's examples and
+  fails if an example or drill item (brackets removed) isn't one of them, letter for letter. So
+  no sentence is invented, and a typo or a stray diacritic shows up at once.
+  `scripts/grammar/mine.ts` finds candidates by tags, words or a pattern.
+- **Every rule names its source.** Each module lists the pages it was checked against (Wikipedia's
+  grammar articles, Wiktionary entries, SpanishDict for por and para). A topic without clean
+  sentences or a rule we could check is left out and named in the module's `notes`, rather than
+  guessed.
+- **Wrong forms are chosen to be wrong with the English.** A drill always shows the translation,
+  so a distractor may be grammatical on its own (*Ich soll* vs *Ich will*) as long as the English
+  rules it out. Forms that would be right in a different but equally valid reading are avoided.
+- **Mandarin keeps to Simplified characters**, though many short pack sentences exist only in
+  Traditional (and some are Cantonese or Wu); those are skipped, so the topic list is a little
+  shorter. Pinyin is not shown yet.
+- **Arabic is fully vowelled and set right to left.** `SentenceLine` uses `dir="rtl"` and a larger
+  size for Arabic, table cells and inline forms use `dir="auto"`. Pack sentences with vowelling
+  slips were skipped.
+- **Tags link topics to word forms using the pack's own tag names** (`preterite indicative`,
+  `past subjunctive`, `imperfect indicative` …); `topicForTags` picks the most specific match, for
+  "Why this form?" in part 4.
+- **The phone's compact title is a flex item** between the back button and the header icons, so
+  with Grammatica's fourth icon it truncates instead of running under them.

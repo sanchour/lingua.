@@ -301,3 +301,12 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Beyond the app: tap a card, it flips; the platform tabs and steps fit; Mark done; the streak shows 1.
 - [ ] Visio › Services: choose services; with a TMDB token, the lists and posters load; a title's
       "Open in Netflix" opens the app.
+
+## Lingua 3.0-8, part 1: Grammatica
+
+- [ ] The new book icon in the top bar opens Grammatica; "Next up" and the units fit, nothing scrolls sideways.
+- [ ] Open a topic with a long title: the title in the top bar shortens with "…" and does not run under the icons.
+- [ ] The speaker on an example sentence reads it aloud in the language's voice.
+- [ ] Tables fit the screen width (or scroll inside their frame only).
+- [ ] With Arabic as the language: sentences read right to left, the vowel marks are clear, the highlighted word is in the right place.
+- [ ] With Mandarin: characters are crisp, and the highlighted measure word sits in the sentence.

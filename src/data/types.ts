@@ -318,7 +318,8 @@ export interface Card extends Synced {
   suspended: Bit;
 }
 
-export type ReviewMode = 'classic' | 'mcq' | 'match' | 'cloze' | 'build' | 'type' | 'listen' | 'speak';
+/** `grammar` is a Grammatica drill (its log's deckId is `grammar:<lang>`, so vocabulary statistics leave it out). */
+export type ReviewMode = 'classic' | 'mcq' | 'match' | 'cloze' | 'build' | 'type' | 'listen' | 'speak' | 'grammar';
 
 /** Append-only; unioned on merge. */
 export interface ReviewLog {
@@ -718,4 +719,41 @@ export interface ChallengeDone extends Synced {
   tipId: string;
   /** YYYY-MM-DD, local time. */
   date: string;
+}
+
+// ── Grammatica (Lingua 3.0-8) ───────────────────────────────────────────────
+
+/** A grammar drill item's schedule: one FSRS card per item, made the first time it is answered. */
+export interface GrammarItemRow extends Synced {
+  /** `${lang}:${topic}:${key}`, the key being a hash of the item's sentence. */
+  id: string;
+  lang: Lang;
+  topic: string;
+  key: string;
+  due: number;
+  stability: number;
+  difficulty: number;
+  elapsedDays: number;
+  scheduledDays: number;
+  learningSteps: number;
+  reps: number;
+  lapses: number;
+  /** 0 New · 1 Learning · 2 Review · 3 Relearning */
+  state: 0 | 1 | 2 | 3;
+  lastReview?: number;
+}
+
+/** Where a learner stands in a topic: the step being worked on (1–5), 6 once it is learned. */
+export interface GrammarProgressRow extends Synced {
+  /** `${lang}:${topic}` */
+  id: string;
+  lang: Lang;
+  topic: string;
+  step: number;
+  lessons: number;
+  /** First-try accuracy on the current step in the last lesson (0–1). */
+  lastScore?: number;
+  lastStudied?: number;
+  /** Marked as known by the placement check. */
+  placed?: 1;
 }

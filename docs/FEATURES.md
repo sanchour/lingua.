@@ -368,6 +368,18 @@ kind, Enter to open the top result; with the field empty, recent searches and st
 - **On Home:** a card that offers a challenge one day and a pick at your level the next.
 - Beta languages get Beyond the app and Visio's live lists; picks by hand are for the main twenty.
 
+## Grammatica (3.0-8)
+
+- **Grammar topics** for Spanish (28), German (23), French (21), Russian (17), Arabic (16) and
+  Mandarin (15), A1 to B2, in units (First steps, then the cases, the past, going further).
+- **Next up:** the first topic you haven't learned at or below your level, at the top.
+- **A topic page shows examples first** (each one can be played aloud), then the rule in a few
+  lines, side-by-side comparisons of things that are easily confused (ser and estar, wo and wohin,
+  了 and 过, imparfait and passé composé), tables, a "watch out" line and more sentences.
+- Every sentence is a real one from the language's data, and every rule is checked against a named
+  source, listed at the foot of the page.
+- Arabic is shown fully vowelled and right to left; Mandarin in Simplified characters.
+
 ## Visio › Services (3.0-7)
 
 - **Your services and country:** tap the services you have (the big ones, and the free and local

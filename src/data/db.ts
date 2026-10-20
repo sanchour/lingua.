@@ -14,6 +14,8 @@ import type {
   DictForm,
   DictPack,
   DictParadigm,
+  GrammarItemRow,
+  GrammarProgressRow,
   Feed,
   Folder,
   FrequencyRow,
@@ -123,7 +125,13 @@ export const SCHEMA_V12 = {
   challenges: 'id, lang, date, updatedAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12 };
+/** Version 13 (Lingua 3.0-8): Grammatica, a schedule per drill item and each topic's step. (v11 is kept for 3.0-6's chats.) */
+export const SCHEMA_V13 = {
+  grammarItems: 'id, [lang+topic], [lang+due], updatedAt',
+  grammarProgress: 'id, lang, updatedAt',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -165,6 +173,8 @@ export type LinguaDB = Dexie & {
   speech: EntityTable<SpeechRow, 'id'>;
   stations: EntityTable<SavedStation, 'id'>;
   challenges: EntityTable<ChallengeDone, 'id'>;
+  grammarItems: EntityTable<GrammarItemRow, 'id'>;
+  grammarProgress: EntityTable<GrammarProgressRow, 'id'>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -180,6 +190,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(9).stores(SCHEMA_V9);
   db.version(10).stores(SCHEMA_V10);
   db.version(12).stores(SCHEMA_V12);
+  db.version(13).stores(SCHEMA_V13);
   return db;
 }
 
