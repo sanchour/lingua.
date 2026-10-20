@@ -1,4 +1,4 @@
-import { SECTIONS } from '@/app/sections';
+import { sectionKey, SECTIONS } from '@/app/sections';
 import { Button, Dialog, Kbd } from '@/design/primitives';
 import { useUI } from '@/state/ui';
 
@@ -50,7 +50,7 @@ export const WATCHING_SHORTCUTS: Array<[string[], string]> = [
 export function ShortcutList() {
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      <Group title="Navigate" rows={[...SECTIONS.map((s, i): [string[], string] => [['Alt', String(i + 1)], s.name]), ...GENERAL]} />
+      <Group title="Navigate" rows={[...SECTIONS.slice(0, 10).map((s, i): [string[], string] => [['Alt', String(sectionKey(i))], s.name]), ...GENERAL]} />
       <Group title="Reading" rows={READER_SHORTCUTS} />
       <Group title="Studying" rows={STUDY_SHORTCUTS} />
       <Group title="Listening" rows={LISTENING_SHORTCUTS} />

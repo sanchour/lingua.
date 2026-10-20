@@ -55,6 +55,7 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   challenges: { policy: 'lww', key: 'id' },
   grammarItems: { policy: 'lww', key: 'id' },
   grammarProgress: { policy: 'lww', key: 'id' },
+  chats: { policy: 'lww', key: 'id' },
 };
 
 const BACKED_UP = (Object.keys(BACKUP_POLICIES) as TableName[]).filter((t) => BACKUP_POLICIES[t].policy !== 'skip');

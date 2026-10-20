@@ -621,6 +621,29 @@ Short records of choices that are not obvious from the code. Newest last.
 - **LibriVox's catalogue link** moved from the course cards to under the LibriVox search, since
   it is books, not a course.
 
+## 2026-10-20 — Lingua 3.0-6, part 4: Colloquium, talking with AI
+
+- **A room of its own, but not another header icon.** The phone's header already holds
+  Grammatica, Mundus, Ratio and Ordo, so Colloquium is a new `placement: 'side'`: in the desktop
+  sidebar under the divider, and reached on a phone from Home (a card every day, a step every
+  third day without a chat), with a back arrow to Home. It sits after Grammatica, so the sidebar
+  reads learning rooms first; Alt 7 opens it and Mundus, Ratio and Ordo move to Alt 8, 9 and 0
+  (`sectionKey`: Alt 0 is the tenth).
+- **The prompt is in the language** (hand-written for the core twenty, English naming the
+  language for beta languages): an AI answers in the language it's addressed in, and the learner
+  can read what they're asking for. Grammatica's topic title stays in English inside it; the AI
+  understands it either way.
+- **Open, then copy.** `window.open` runs first, inside the tap, so a browser doesn't block it as
+  a pop-up; the clipboard write follows. Nothing is sent from Lingua on that path.
+- **The in-app chat answers in JSON** (reply, English, corrections, up to three words), uncached,
+  at temperature 0.7. A correction is kept only when its "original" is found in the learner's
+  last line and the suggestion differs: models otherwise "correct" words the learner never wrote.
+- **Chats are a table, synced like journal entries** (last write wins, deleted with a mark).
+  Dexie v14: v12 and v13 went to Mundus and Grammatica first, and a device already at 13 would
+  never run a v11 upgrade, so 11 stays unused.
+- **The chat is full screen on a phone** (like the players), the box docked at the bottom above
+  the home indicator; on desktop it stays in the page, the box sticky under the last line.
+
 ## 2026-10-19 — Lingua 3.0-6, part 2: comics
 
 - **A comic is a text whose chapters are pages:** the page's picture, then its speech bubbles as

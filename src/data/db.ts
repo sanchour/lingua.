@@ -7,6 +7,7 @@ import type {
   Card,
   ChallengeDone,
   Chapter,
+  Chat,
   DailyStat,
   Deck,
   DictEntry,
@@ -125,13 +126,19 @@ export const SCHEMA_V12 = {
   challenges: 'id, lang, date, updatedAt',
 } as const;
 
-/** Version 13 (Lingua 3.0-8): Grammatica, a schedule per drill item and each topic's step. (v11 is kept for 3.0-6's chats.) */
+/** Version 13 (Lingua 3.0-8): Grammatica, a schedule per drill item and each topic's step. */
 export const SCHEMA_V13 = {
   grammarItems: 'id, [lang+topic], [lang+due], updatedAt',
   grammarProgress: 'id, lang, updatedAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13 };
+/** Version 14 (Lingua 3.0-6): Colloquium's chats with the learner's own AI. They came after Mundus (12) and
+ *  Grammatica (13): a device already at 13 never runs a lower version's upgrade, so 11 stays unused. */
+export const SCHEMA_V14 = {
+  chats: 'id, lang, updatedAt',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -175,6 +182,7 @@ export type LinguaDB = Dexie & {
   challenges: EntityTable<ChallengeDone, 'id'>;
   grammarItems: EntityTable<GrammarItemRow, 'id'>;
   grammarProgress: EntityTable<GrammarProgressRow, 'id'>;
+  chats: EntityTable<Chat, 'id'>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -191,6 +199,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(10).stores(SCHEMA_V10);
   db.version(12).stores(SCHEMA_V12);
   db.version(13).stores(SCHEMA_V13);
+  db.version(14).stores(SCHEMA_V14);
   return db;
 }
 

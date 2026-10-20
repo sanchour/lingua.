@@ -333,6 +333,21 @@ kind, Enter to open the top result; with the field empty, recent searches and st
 - **Onboarding:** language, level, goal and look (four steps); what you enjoy is set in Ordo ›
   Languages, and Home starts from your reasons.
 
+## Colloquium: talking with AI (3.0-6)
+
+- **Where:** in the desktop sidebar (Alt 7); on a phone from Home's "Talk today" card or the
+  occasional "Talk for ten minutes" step.
+- **A scene and how it goes:** ten scenes from the café to a friendly debate (those above your
+  level say from when they work), voice or text, correct my mistakes, slowly and simply, your
+  words due for review, and Grammatica's next topic. The prompt is written in the language (the
+  core twenty; English naming the language for the rest) and shown with Copy.
+- **Open it in your AI:** ChatGPT, Claude, Gemini or Copilot opens as the prompt is copied; paste
+  it, send it, and switch to voice there. Nothing is sent from Lingua.
+- **Chat here** (with a Groq or Gemini key in Ordo › AI): the AI starts the scene; tap any word
+  of its lines for the meaning, hear them, show the English, and add the words it suggests to
+  learn. Your lines come back with corrections under them. Chats are kept, backed up and synced,
+  to carry on or delete.
+
 ## Mundus (3.0-7)
 
 - **Explore** (Mundus's first tab): a pick of the day and a challenge to try today, then a shelf for

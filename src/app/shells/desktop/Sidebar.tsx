@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router';
 import { motion } from 'motion/react';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { SECTIONS } from '@/app/sections';
+import { sectionKey, SECTIONS } from '@/app/sections';
 import type { Section } from '@/app/sections';
 import { IconButton, Tooltip } from '@/design/primitives';
 import { spring } from '@/design/motion';
@@ -18,7 +18,7 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const main = SECTIONS.filter((s) => s.placement === 'tab');
-  const extra = SECTIONS.filter((s) => s.placement === 'header');
+  const extra = SECTIONS.filter((s) => s.placement !== 'tab');
 
   return (
     // Only the (contained, fixed) sidebar reflows while it resizes; the page content moves with a transform.
@@ -54,11 +54,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       <nav aria-label="Sections" className="mt-5 flex flex-col gap-1">
         {main.map((section) => (
-          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={SECTIONS.indexOf(section) + 1} />
+          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
         ))}
         <div className="mx-2 my-3 h-px bg-line" />
         {extra.map((section) => (
-          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={SECTIONS.indexOf(section) + 1} />
+          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
         ))}
       </nav>
     </motion.aside>

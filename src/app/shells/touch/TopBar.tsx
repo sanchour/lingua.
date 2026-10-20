@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import { ChevronLeft } from 'lucide-react';
-import { HEADER_SECTIONS } from '@/app/sections';
+import { HEADER_SECTIONS, SECTIONS } from '@/app/sections';
 import { IconButton } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
@@ -40,7 +40,9 @@ export function TopBar() {
   // Sub-pages go back to their section (e.g. /codex/book/:id → /codex), or to the tab they came from.
   // A song's games go back to the song.
   const songPage = segments[0] === 'sonus' && segments[1] === 'song' && segments.length > 3 ? `/${segments.slice(0, 3).join('/')}` : null;
-  const parent = segments.length > 1 ? (songPage ?? BACK_TO[`${segments[0]}/${segments[1]}`] ?? `/${segments[0]}`) : null;
+  // A room opened from Home (not in the tab bar or the header) goes back there.
+  const fromHome = SECTIONS.some((s) => s.placement === 'side' && s.path === pathname);
+  const parent = segments.length > 1 ? (songPage ?? BACK_TO[`${segments[0]}/${segments[1]}`] ?? `/${segments[0]}`) : fromHome ? '/' : null;
 
   return (
     <header ref={ref} className="no-callout sticky top-0 z-30 pt-safe">

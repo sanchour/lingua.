@@ -65,6 +65,47 @@ export async function listModels(provider: Provider, key: string): Promise<strin
   return ids.sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
 }
 
+export interface Turn {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+/** One answer, as JSON text, from the learner's provider and model. */
+async function complete(provider: Provider, key: string, model: string, system: string, turns: Turn[], temperature: number): Promise<string | undefined> {
+  if (provider === 'groq') {
+    const data = (await request('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, temperature, response_format: { type: 'json_object' }, messages: [{ role: 'system', content: system }, ...turns] }),
+    })) as { choices?: { message?: { content?: string } }[] };
+    return data.choices?.[0]?.message?.content;
+  }
+  const data = (await request(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+    method: 'POST',
+    headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: system }] },
+      contents: turns.map((t) => ({ role: t.role === 'assistant' ? 'model' : 'user', parts: [{ text: t.content }] })),
+      generationConfig: { temperature, responseMimeType: 'application/json' },
+    }),
+  })) as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
+  return data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('');
+}
+
+/** A conversation's next answer as JSON (never cached: the same words can deserve a new reply). */
+export async function chatJson<T>(system: string, turns: Turn[]): Promise<T> {
+  const { llm, apiKeys } = await getSettings();
+  const key = apiKeys[llm.provider];
+  if (!key) throw new LlmError('Add a free API key in Ordo → AI to chat here.', 'no-key');
+  if (!llm.model) throw new LlmError('Choose a model in Ordo → AI.', 'no-key');
+  const text = await complete(llm.provider, key, llm.model, system, turns, 0.7);
+  try {
+    return JSON.parse(text ?? '') as T;
+  } catch {
+    throw new LlmError('The AI answer could not be read. Try again.', 'bad-response');
+  }
+}
+
 interface JsonRequest {
   system: string;
   user: string;
@@ -83,34 +124,7 @@ export async function askJson<T>({ system, user, kind }: JsonRequest): Promise<T
   const cached = await db.llmCache.get(id);
   if (cached) return cached.response as T;
 
-  let text: string | undefined;
-  if (llm.provider === 'groq') {
-    const data = (await request('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: llm.model,
-        temperature: 0.2,
-        response_format: { type: 'json_object' },
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: user },
-        ],
-      }),
-    })) as { choices?: { message?: { content?: string } }[] };
-    text = data.choices?.[0]?.message?.content;
-  } else {
-    const data = (await request(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(llm.model)}:generateContent`, {
-      method: 'POST',
-      headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: system }] },
-        contents: [{ role: 'user', parts: [{ text: user }] }],
-        generationConfig: { temperature: 0.2, responseMimeType: 'application/json' },
-      }),
-    })) as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
-    text = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('');
-  }
+  const text = await complete(llm.provider, key, llm.model, system, [{ role: 'user', content: user }], 0.2);
 
   let parsed: T;
   try {

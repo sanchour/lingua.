@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { motion } from 'motion/react';
-import { ArrowRight, BookOpen, Check, ChevronRight, Clapperboard, Flame, Headphones, Layers, Music2, PenLine, Sparkles, Sprout, Trophy, X } from 'lucide-react';
+import { ArrowRight, BookOpen, Check, ChevronRight, Clapperboard, Flame, Headphones, Layers, MessagesSquare, Music2, PenLine, Sparkles, Sprout, Trophy, X } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
@@ -29,6 +29,8 @@ import { SongArt } from '@/features/cantus/SongArt';
 import { Artwork } from '@/features/sonus/library/Artwork';
 import { Poster } from '@/features/visio/library/Poster';
 import { MundusHomeCard } from '@/features/mundus/HomeCard';
+import { ColloquiumHomeCard } from '@/features/colloquium/HomeCard';
+import { useChats } from '@/data/chats';
 import { studyMinutes, useHomeFacts } from './facts';
 import type { HomeFacts } from './facts';
 import { GoalRing } from './GoalRing';
@@ -88,6 +90,9 @@ export default function HomePage() {
           <motion.div {...enter(5)} className="empty:hidden">
             <MundusHomeCard lang={language.id} level={language.level} />
           </motion.div>
+          <motion.div {...enter(6)} className="empty:hidden">
+            <ColloquiumHomeCard lang={language.id} level={language.level} />
+          </motion.div>
         </div>
       </div>
     </>
@@ -115,7 +120,8 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], 
   const playback = usePlaybackMap();
   const journal = useJournal(lang);
   const songs = useSavedSongs(lang);
-  if (!due || !texts || !listening || !videos || !journal || !songs) return undefined;
+  const chats = useChats(lang);
+  if (!due || !texts || !listening || !videos || !journal || !songs || !chats) return undefined;
 
   const steps: Step[] = [];
   const cards = due.due + due.fresh;
@@ -200,6 +206,12 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], 
   if (!wroteToday) {
     const prompt = curatedPrompt(lang, level);
     steps.push({ key: 'write', to: '/codex?tab=diarium', icon: PenLine, tone: 'sage', title: 'Write today’s entry', detail: prompt.en || prompt.text });
+  }
+
+  // Now and then (every third day, when no chat here this week) ten minutes of talking.
+  const day = Math.floor(Date.now() / 86_400_000);
+  if (day % 3 === 0 && !chats.some((c) => Date.now() - c.updatedAt < 7 * 86_400_000)) {
+    steps.push({ key: 'talk', to: '/colloquium', icon: MessagesSquare, tone: 'accent', title: 'Talk for ten minutes', detail: 'A scene in Colloquium, by voice or text with an AI' });
   }
 
   if (!book) steps.push({ key: 'find', to: '/codex', icon: Sparkles, tone: 'ink', title: 'Find something to read', detail: 'Graded stories, articles, or your own books' });

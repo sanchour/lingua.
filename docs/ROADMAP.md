@@ -590,7 +590,7 @@ station is played, as its API asks.
       Listening time counts. A fourth tab in Sonus (Library · Music · Podcasts · Radio), or
       inside Library: decide when planning.
 
-### 3.0-6 · Comics, audiobooks and courses, talking with AI, and radio and music to explore
+### 3.0-6 · Comics, audiobooks and courses, talking with AI, and radio and music to explore ✅
 
 The user swapped 3.0-6 and 3.0-8 on 2026-10-19: comics, audiobooks, courses and AI conversation
 come next, and Grammatica and alphabets move to 3.0-8. The user added notes on Radio and Music
@@ -636,7 +636,19 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
    Gemini key, "Chat here": the AI answers in the language (every word taps and holds as in
    Codex, read aloud with the 3.0-4 voices), each of the learner's messages comes back with its
    corrections inline, and new words can be saved as cards. Chats are kept (a `chats` table,
-   schema v11, backed up and synced like journal entries) and can be continued or removed.
+   schema v14, backed up and synced like journal entries) and can be continued or removed.
+   *Done (2026-10-20):* /colloquium with ten scenes (café, market, the way, meeting someone, your
+   day from A1; doctor and hotel from A2; job interview, a story together, a debate from B1),
+   voice or text, "correct my mistakes", "slowly and simply" (on up to A2), "use my N words due"
+   and "practise <Grammatica's next topic>"; the prompt is shown in the language with Copy, and
+   ChatGPT, Claude, Gemini and Copilot open in a new tab as it's copied. With a Groq or Gemini
+   key, "Start chatting": the AI opens the scene, its lines gloss on tap, read aloud, show their
+   English and offer up to three words to learn; each of the learner's lines gets its
+   corrections under it (only ones that quote the line). Past chats are listed to carry on or
+   delete. Desktop: in the sidebar under the divider (Alt 7; Mundus, Ratio and Ordo moved to
+   Alt 8, 9 and 0). Phone: a "Talk today" card on Home (the scene of the day, or a chat from the
+   last two days to carry on), a "Talk for ten minutes" step every third day without a chat,
+   a back arrow to Home, and the chat full screen with the box docked at the bottom.
 
 - [x] **Radio, a real map** (the user's note): the world's countries drawn as shapes (Natural Earth
       data, made small by a script), in the app's own colours, light and dark, with a touch of
@@ -705,14 +717,19 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
       at desktop and phone width with a real LibriVox book streaming from archive.org. *Not
       checked:* a real M4B or a whole folder of files, read along with a real Whisper
       transcript (only in tests), playing on into the next part with an iPhone locked.
-- [ ] **Talk or text with an AI:** a "Conversation" corner with ready links and prompts to start a
+- [x] **Talk or text with an AI:** a "Conversation" corner with ready links and prompts to start a
       voice chat or a text chat in ChatGPT, Claude, Gemini or Copilot (each opens the app or site;
       nothing is sent from Lingua). Prompts per level and theme: a café role-play, a job interview,
       a debate, "correct my mistakes after each answer", "speak slowly and simply". The prompt is
       written in the language, with the learner's level, words due for review and current
       grammar topic woven in, and a copy button. With an AI key, a text chat inside Lingua too,
-      corrections shown inline and new words saved as cards.
-- [ ] Checked on a phone and on desktop, light and dark; docs.
+      corrections shown inline and new words saved as cards. *Done:* see part 4 above.
+- [x] Checked on a phone and on desktop, light and dark; docs. *Done (2026-10-20):* every 3.0-6
+      screen (Home, Sonus's five tabs, a LibriVox book and its player, Codex, Colloquium and a
+      chat, with Mundus and Grammatica alongside) at 375 px in Nocturne and 1280 px in Paper:
+      nothing wider than the screen, no errors. The chat was driven end to end with the test key
+      and the network stubbed in the page. Comics were checked in part 2; what needs a real
+      device or a real key is listed in QA-ios.md.
 
 ### 3.0-7 · Mundus: recommendations, and streaming services in Visio ✅
 
@@ -1052,14 +1069,15 @@ playback make the room really work.
 
 ### Handover for the Lingua 3.0 session
 
-**Where 3.0-6 stands (2026-10-20).** Parts 1, 2 and 3 are done and live: Radio and Music
-(5eb12b2), comics in Codex (6f8b525), and audiobooks and courses (see the ticked item under
-"### 3.0-6" for what it does). **Next: part 4, the conversation corner** (its plan is the
-"*How (planned 2026-10-19)*" paragraph under item 4 of the 3.0-6 plan), then the step's full check.
-Two other sessions work on `main` at the same time: 3.0-7 and 3.0-8 in a worktree of their own,
-and a Cantus redesign from the user's design handoff ("### Cantus overhaul (design handoff)").
-Rebase onto `origin/main` before every push. Dexie versions: v10 is audiobooks (`media.bookId`),
-v11 is kept for part 4's chats, the 3.0-7/3.0-8 session starts at v12.
+**Where 3.0-6 stands (2026-10-20): done and live.** Radio and Music (5eb12b2), comics in Codex
+(6f8b525), audiobooks and courses (with their own Sonus tab, 706b507) and Colloquium, the
+conversation corner (part 4), then the step's full check. 3.0-7 (Mundus) is done; 3.0-8
+(Grammatica) is being built from another account, and a Cantus redesign from the user's design
+handoff ("### Cantus overhaul (design handoff)"); all push to `main`, so rebase onto
+`origin/main` before every push. **Next: 3.0-9, the full check, once 3.0-8 has landed.**
+Dexie versions: v10 audiobooks (`media.bookId`), v12 Mundus's challenges, v13 Grammatica, v14
+Colloquium's chats; v11 stays unused (a device already past it would never run it). The next
+free one is v15.
 - **Audiobooks, where things are:** `src/data/books.ts` (a book is its parts), import in
   `services/sonus/files.ts` (`importBook`, `readAudioTags`), LibriVox and the free courses in
   `services/sonus/librivox.ts` and `courses.ts`, the sleep timer's rules in `core/audio/sleep.ts`
@@ -1067,10 +1085,15 @@ v11 is kept for part 4's chats, the 3.0-7/3.0-8 session starts at v12.
   `services/sonus/readAlong.ts`; the pages are `features/sonus/BookPage.tsx`,
   `library/BooksTab.tsx` (the Audiobooks tab), `library/BookGrid.tsx`, `library/AddBookDrawer.tsx`, and `player/BookBar.tsx`, `Chapters.tsx`,
   `SleepTimer.tsx`.
-- **Part 4:** the conversation corner (prompts and links, nothing sent from Lingua) and the
-  in-app text chat with an AI key (`src/services/llm`).
+- **Colloquium, where things are:** the scenes and the prompts in 20 languages in
+  `src/core/colloquium/prompts.ts`, chats in `src/data/chats.ts`, the AI's turn (JSON, and the
+  rule that a correction must quote the learner) in `src/services/llm/colloquium.ts` on
+  `chatJson` in `client.ts`; the pages are `features/colloquium/ColloquiumPage.tsx`,
+  `ChatPage.tsx` and `HomeCard.tsx`. A section can now be `placement: 'side'` (desktop sidebar
+  only); `sectionKey` gives Alt 1 … 9 and 0.
 - **Not checked with real things yet:**
-  - Live text with a real Groq key (the no-key path is checked).
+  - Live text with a real Groq key (the no-key path is checked), and a Colloquium chat with a
+    real Groq or Gemini key (checked with the test key and a stubbed network).
   - Audiobooks: a real M4B with chapters, a folder of MP3s, read along with a real transcript,
     and playing on into the next part with an iPhone locked (QA-ios.md, 3.0-6 part 3).
   - Comics from a real CBZ (checked with drawn test pages, in dev and in the production build).

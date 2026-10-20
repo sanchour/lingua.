@@ -288,6 +288,16 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Make a book a course (⋯): a part's end ticks the lesson and stops; ticks on the page work.
 - [ ] With a Groq key: transcribe a part, then ⋯ › Read along with the ebook (added to Codex
       first): the book's sentences light up as they're read.
+## Lingua 3.0-6, part 4: Colloquium
+
+- [ ] Home shows "Talk today" with a scene; tap it: Colloquium opens on that scene, with a back
+      arrow to Home.
+- [ ] Voice on, tap ChatGPT (or Claude, Gemini): the app opens, the prompt is on the clipboard;
+      paste it, send it, start voice there; the AI talks in the language about the scene.
+- [ ] With a real Groq key: Start chatting; the AI's first line comes; answer with a mistake
+      ("yo es"); it comes back corrected under your line. The keyboard doesn't hide the box.
+- [ ] Tap a word in the AI's line for its meaning; tap a suggested word: it's in Thesaurus.
+
 ## Lingua 3.0-7: Mundus and Visio › Services
 
 - [ ] Mundus › Explore: the shelves swipe sideways with the finger, and the page itself doesn't move sideways.

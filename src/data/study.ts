@@ -167,6 +167,14 @@ export async function dueSummary(lang: string, now = Date.now(), database: Lingu
   return { due, fresh, decks: decks.length };
 }
 
+/** The words of cards due for review today (not new ones), for a conversation to use them. */
+export async function dueTerms(lang: string, limit = 10, now = Date.now(), database: LinguaDB = db): Promise<string[]> {
+  const decks = await studyDecks(lang, null, database);
+  const due = (await Promise.all(decks.map((d) => dueCards(d, now, database)))).flat().filter((c) => c.state !== 0);
+  const notes = await database.notes.bulkGet([...new Set(due.map((c) => c.noteId))]);
+  return [...new Set(notes.flatMap((n) => (n && !n.deletedAt ? [n.term] : [])))].slice(0, limit);
+}
+
 export function useDueSummary(lang: string): DueSummary | undefined {
   return useLiveQuery(() => dueSummary(lang), [lang]);
 }

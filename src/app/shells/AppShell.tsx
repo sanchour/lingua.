@@ -3,7 +3,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import { useApp } from '@/app/context';
 import { useFullMotion } from '@/app/motion';
-import { SECTIONS } from '@/app/sections';
+import { sectionKey, SECTIONS } from '@/app/sections';
 import { ShortcutsDialog } from '@/app/ShortcutsDialog';
 import { MiniPlayer } from '@/features/sonus/MiniPlayer';
 import { loadScriptFont } from '@/design/fonts';
@@ -23,7 +23,7 @@ const isImmersive = (pathname: string, wide: boolean) =>
   /^\/grammatica\/[^/]+\/lesson\/?$/.test(pathname) ||
   pathname === '/sonus/commute' ||
   (pathname.startsWith('/cantus') && !pathname.startsWith('/cantus/spotify')) ||
-  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/sonus/station/') || pathname.startsWith('/visio/watch/')));
+  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/sonus/station/') || pathname.startsWith('/visio/watch/') || pathname.startsWith('/colloquium/chat/')));
 
 /** On wide screens Ordo's groups open beside their list, so moving between them isn't a new page. */
 const pageKey = (pathname: string, wide: boolean) => (wide && /^\/ordo(?:\/(?!lab)[\w-]+)?\/?$/.test(pathname) ? '/ordo' : pathname);
@@ -55,7 +55,7 @@ export function AppShell() {
   }, [pathname, hash]);
 
   useHotkeys({
-    ...Object.fromEntries(SECTIONS.map((s, i) => [`alt+${i + 1}`, () => navigate(s.path)])),
+    ...Object.fromEntries(SECTIONS.slice(0, 10).map((s, i) => [`alt+${sectionKey(i)}`, () => navigate(s.path)])),
     '?': () => setShortcutsOpen(true),
   });
 

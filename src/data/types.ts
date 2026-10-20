@@ -376,6 +376,29 @@ export interface Media extends Synced {
   readAlongTextId?: string;
 }
 
+/** Colloquium: a conversation with the learner's own AI, in the language. */
+export interface Chat extends Synced {
+  id: string;
+  lang: Lang;
+  /** The scene it started from (core/colloquium/prompts.ts). */
+  scene: string;
+  title: string;
+  /** The opening prompt, in the language: sent first, not shown as a message. */
+  prompt?: string;
+  messages: ChatMessage[];
+}
+export interface ChatMessage {
+  role: 'me' | 'ai';
+  text: string;
+  at: number;
+  /** The AI's line in English. */
+  en?: string;
+  /** For the learner's lines: what to fix, quoted from the line. */
+  corrections?: Array<{ original: string; suggestion: string; explanation: string }>;
+  /** For the AI's lines: words worth keeping, with their meaning. */
+  words?: Array<{ word: string; meaning: string }>;
+}
+
 export interface AudioChapter {
   title: string;
   startMs: number;
