@@ -5,16 +5,18 @@ import { PageHeader } from '@/app/PageHeader';
 import { getLanguage } from '@/core/lang/languages';
 import { Segmented } from '@/design/primitives';
 import { spring } from '@/design/motion';
+import { ExploreView } from './ExploreView';
 import { usePicks } from './hooks';
 import { NoPicks, PicksView } from './PicksView';
 import { TipsView } from './TipsView';
 
-type Tab = 'picks' | 'beyond';
+type Tab = 'explore' | 'picks' | 'beyond';
 
 /**
- * Mundus (Lingua 3.0-7): the world of the language beyond Lingua. Picks: series, films, books,
- * music, podcasts, YouTube, games and dictionaries chosen by hand, each opening where it lives.
- * Beyond the app: small challenges that take the language into the day.
+ * Mundus (Lingua 3.0-7): the world of the language beyond Lingua. Explore: a shelf for every room,
+ * each item opening inside Lingua. Picks: series, films, books, podcasts, YouTube, games and
+ * dictionaries chosen by hand, in full. Beyond the app: small challenges that take the language
+ * into the day.
  */
 export default function MundusPage() {
   const { language } = useApp();
@@ -22,9 +24,11 @@ export default function MundusPage() {
   const info = getLanguage(lang);
   const picks = usePicks(lang);
   const [params, setParams] = useSearchParams();
-  const tab: Tab = params.get('tab') === 'beyond' ? 'beyond' : 'picks';
+  const asked = params.get('tab');
+  // Older links name a kind without a tab: those open the full lists.
+  const tab: Tab = asked === 'beyond' ? 'beyond' : asked === 'picks' || params.has('kind') ? 'picks' : 'explore';
   const setTab = (next: Tab) => {
-    setParams(next === 'picks' ? {} : { tab: next }, { replace: true });
+    setParams(next === 'explore' ? {} : { tab: next }, { replace: true });
     window.scrollTo({ top: 0 });
   };
 
@@ -38,17 +42,20 @@ export default function MundusPage() {
           value={tab}
           onChange={setTab}
           options={[
-            { value: 'picks', label: 'Picks' },
+            { value: 'explore', label: 'Explore' },
+            { value: 'picks', label: 'All picks' },
             { value: 'beyond', label: 'Beyond the app' },
           ]}
         />
       </div>
       <AnimatePresence mode="wait" initial={false}>
-        <motion.section key={tab} aria-label={tab === 'picks' ? 'Picks' : 'Beyond the app'} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.snappy}>
+        <motion.section key={tab} aria-label={tab === 'explore' ? 'Explore' : tab === 'picks' ? 'All picks' : 'Beyond the app'} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.snappy}>
           {tab === 'beyond' ? (
             <TipsView lang={lang} />
           ) : picks === undefined ? (
             <div className="h-64" />
+          ) : tab === 'explore' ? (
+            <ExploreView lang={lang} picks={picks} level={language.level} />
           ) : picks ? (
             <PicksView lang={lang} picks={picks} level={language.level} />
           ) : (

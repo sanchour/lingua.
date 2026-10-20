@@ -751,6 +751,18 @@ Short records of choices that are not obvious from the code. Newest last.
 - **A click is reported** to radio-browser when a station is played (`/json/url/{id}`), as its
   API asks, since it orders stations by listens.
 
+## 2026-10-20 — Mundus as a place to explore (the user's notes)
+
+- **Shelves by room, not by kind.** The user wanted Mundus to recommend something for every part of
+  the app, with everything opening inside it. So Explore groups picks by the room they open in
+  (Watch, Read, Listen, Radio and music, Words, Play). The lists by kind stay as "All picks".
+- **Live shelves reuse Sonus's sources.** Audiobooks come from LibriVox and stations from
+  radio-browser, through Sonus's own clients and caches. Nothing is new to set up, and a shelf
+  that can't load just hides.
+- **Ways in from every room.** The phone's tab bar keeps its five rooms. Mundus is reached from the
+  top bar, Home's card, and an "Ideas from Mundus" line at the foot of Codex, Thesaurus, Sonus and
+  Visio. These are small additions to those pages, linking by route.
+
 ## 2026-10-20 — Lingua 3.0-7: Mundus and Visio › Services
 
 - **Picks open by search, not by stored links.** A title opens Netflix's, Goodreads', Amazon's,

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { ArrowRight, BookOpen, Check, Film, Tv } from 'lucide-react';
 import type { Level } from '@/core/lang/levels';
 import { tipOfTheDay, tipsFor } from '@/core/mundus/tips';
-import type { Pick, PickLevel } from '@/core/mundus/types';
+import { pickOfTheDay } from '@/core/mundus/types';
 import { toggleChallenge, useChallenges } from '@/data/challenges';
 import { Card } from '@/design/primitives';
 import { cx } from '@/lib/cx';
@@ -12,7 +12,6 @@ import { usePicks } from './hooks';
 import { TIP_ICONS } from './TipsView';
 
 const label = 'text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase';
-const ORDER: PickLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1'];
 
 /**
  * Mundus on Home: on alternate days a challenge to take the language out of the app, or something
@@ -25,16 +24,7 @@ export function MundusHomeCard({ lang, level }: { lang: string; level: Level }) 
   const day = Math.floor(Date.now() / 86_400_000);
   const tips = useMemo(() => tipsFor(lang), [lang]);
 
-  const pick = useMemo(() => {
-    if (!picks) return undefined;
-    const reach = Math.max(1, ORDER.indexOf(level as PickLevel) + 1);
-    const pool: Array<{ pick: Pick; kind: 'series' | 'film' | 'book' }> = [
-      ...picks.series.map((p) => ({ pick: p, kind: 'series' as const })),
-      ...picks.films.map((p) => ({ pick: p, kind: 'film' as const })),
-      ...picks.books.map((p) => ({ pick: p, kind: 'book' as const })),
-    ].filter((x) => ORDER.indexOf(x.pick.level) <= reach);
-    return pool.length ? pool[day % pool.length] : undefined;
-  }, [picks, level, day]);
+  const pick = useMemo(() => (picks ? pickOfTheDay(picks, level, day) : undefined), [picks, level, day]);
 
   if (done === undefined || picks === undefined) return null;
   // Today's marks don't count yet, so the challenge stays put once it's ticked.
@@ -53,9 +43,9 @@ export function MundusHomeCard({ lang, level }: { lang: string; level: Level }) 
       {showTip && tip ? (
         <TipBody lang={lang} tipId={tip.id} title={tip.title} teaser={tip.teaser} icon={tip.icon} doneToday={done.some((r) => r.tipId === tip.id && r.date === today)} />
       ) : pick ? (
-        <Link to={`/mundus?kind=${pick.kind === 'book' ? 'books' : pick.kind === 'film' ? 'films' : 'series'}`} className="group -m-2 flex items-start gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
+        <Link to="/mundus" className="group -m-2 flex items-start gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
           <span className="grid aspect-[2/3] w-11 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent-text" aria-hidden>
-            {pick.kind === 'book' ? <BookOpen size={18} /> : pick.kind === 'film' ? <Film size={18} /> : <Tv size={18} />}
+            {pick.group === 'books' ? <BookOpen size={18} /> : pick.group === 'films' ? <Film size={18} /> : <Tv size={18} />}
           </span>
           <span className="min-w-0 flex-1">
             <span lang={lang} className="block font-serif text-[17px] leading-snug font-semibold">

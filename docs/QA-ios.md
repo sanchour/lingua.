@@ -281,6 +281,10 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
       first): the book's sentences light up as they're read.
 ## Lingua 3.0-7: Mundus and Visio › Services
 
+- [ ] Mundus › Explore: the shelves swipe sideways with the finger, and the page itself doesn't move sideways.
+- [ ] Tap a series: the title sheet opens. Tap an audiobook: it opens in Sonus. Tap a station: its page opens and it plays.
+- [ ] "Ideas from Mundus" at the foot of Codex, Thesaurus, Sonus and Visio opens Mundus at the right shelf.
+
 - [ ] The globe in the top bar opens Mundus; the kind chips wrap, nothing scrolls sideways.
 - [ ] A pick's Netflix button opens the Netflix app (or its site) on a search for the title.
 - [ ] Add its subtitles: pick a .srt from Files; it opens in Visio under the pick's title.

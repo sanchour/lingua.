@@ -21,6 +21,7 @@ import { DiariumHome, NewEntryButton } from './diarium/DiariumHome';
 import { BookCard, BookRow } from './library/BookCard';
 import { BookCover } from './library/BookCover';
 import { useImporter } from './library/useImporter';
+import { MundusLink } from '@/features/mundus/MundusLink';
 
 type Group = 'reading' | 'next' | 'finished' | 'wishlist';
 type Filter = 'all' | Group;
@@ -249,6 +250,7 @@ export default function CodexPage() {
           )}
         </>
       )}
+      {texts && <MundusLink shelf="read">Books and news to read next</MundusLink>}
         </>
       )}
     </>

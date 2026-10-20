@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { RadioStation } from '@/data/types';
 import { useApp } from '@/app/context';
 import { loadPicks } from '@/core/mundus/load';
 import { deviceCountry, serviceById } from '@/core/mundus/services';
 import type { Pick, Picks } from '@/core/mundus/types';
 import { discoverTitles, findTitle, providersIn, TmdbError, whereToWatch } from '@/services/mundus/tmdb';
+import { stationsFor } from '@/services/radio/stations';
+import { searchLibrivox } from '@/services/sonus/librivox';
+import type { LibrivoxHit } from '@/services/sonus/librivox';
 import type { TitleType, TmdbTitle, WhereToWatch } from '@/services/mundus/tmdb';
 
 /** A language's picks; `undefined` while loading, `null` for a language without any. */
@@ -108,3 +112,30 @@ export function useLiveLists(lang: string, country: string, services: readonly s
   }, [lang, country, key, token]);
   return state;
 }
+
+/** A list fetched once per language; empty while loading or when the source can't be reached. */
+function useFetched<T>(lang: string, load: (lang: string) => Promise<T[]>): T[] {
+  const [state, setState] = useState<{ lang: string; items: T[] }>({ lang, items: [] });
+  useEffect(() => {
+    let alive = true;
+    load(lang)
+      .then((items) => alive && setState({ lang, items }))
+      .catch(() => alive && setState({ lang, items: [] }));
+    return () => {
+      alive = false;
+    };
+  }, [lang, load]);
+  return state.lang === lang ? state.items : [];
+}
+
+const topAudiobooks = async (lang: string) => (await searchLibrivox(lang)).hits.slice(0, 12);
+/** The most-listened stations, those with a logo first. */
+const topStations = async (lang: string) => {
+  const all = await stationsFor(lang);
+  return [...all.slice(0, 40)].sort((a, b) => Number(Boolean(b.favicon)) - Number(Boolean(a.favicon))).slice(0, 14);
+};
+
+/** LibriVox's most downloaded audiobooks in the language, for Mundus's Listen shelf. */
+export const useAudiobookPicks = (lang: string): LibrivoxHit[] => useFetched(lang, topAudiobooks);
+/** The language's most listened radio stations, for Mundus's Radio shelf. */
+export const useRadioPicks = (lang: string): RadioStation[] => useFetched(lang, topStations);

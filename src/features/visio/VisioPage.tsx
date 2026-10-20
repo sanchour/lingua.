@@ -18,6 +18,7 @@ import { addVideoFiles, AddVideoMenu } from './library/AddVideoMenu';
 import { Poster } from './library/Poster';
 import { VideoOptions } from './library/VideoOptions';
 import { ServicesTab } from './services/ServicesTab';
+import { MundusLink } from '@/features/mundus/MundusLink';
 
 const enter = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { ...spring.soft, delay: 0.05 * i } });
 
@@ -57,7 +58,10 @@ export default function VisioPage() {
       {tab === 'services' ? (
         <ServicesTab lang={lang} />
       ) : videos && !videos.length ? (
-        <EmptyVisio lang={lang} />
+        <>
+          <EmptyVisio lang={lang} />
+          <MundusLink shelf="watch">Series, films and channels to watch next</MundusLink>
+        </>
       ) : (
         <>
           {resume && (
@@ -78,6 +82,7 @@ export default function VisioPage() {
             ))}
           </motion.ul>
           {videos && query && !visible.length && <p className="py-12 text-center text-ink-soft">Nothing matches “{query.trim()}”.</p>}
+          <MundusLink shelf="watch">Series, films and channels to watch next</MundusLink>
         </>
       )}
     </>

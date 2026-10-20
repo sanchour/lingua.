@@ -5,7 +5,7 @@ import { hasPicks, loadPicks } from './load';
 import { deviceCountry, matchProviders, serviceById, serviceLink, servicesFor, SERVICES } from './services';
 import { streakOf } from './streak';
 import { tipOfTheDay, tipsFor } from './tips';
-import { GROUP_KIND, inBand } from './types';
+import { GROUP_KIND, inBand, pickOfTheDay, withinReach } from './types';
 import type { PickGroup } from './types';
 
 const MAIN = LANGUAGES.filter((l) => l.tier !== 2).map((l) => l.code);
@@ -123,5 +123,21 @@ describe('beyond the app', () => {
     expect(inBand('A2', 'beginner')).toBe(true);
     expect(inBand('B2', 'beginner')).toBe(false);
     expect(inBand('C1', 'advanced')).toBe(true);
+  });
+});
+
+describe('explore', () => {
+  it('reaches one level above the learner, and a beginner reaches A2', () => {
+    expect(withinReach('A2', 'A0')).toBe(true);
+    expect(withinReach('B1', 'A0')).toBe(false);
+    expect(withinReach('B1', 'A2')).toBe(true);
+    expect(withinReach('C1', 'B1')).toBe(false);
+  });
+  it('picks the same series, film or book all day, within reach', async () => {
+    const picks = (await loadPicks('es'))!;
+    const a = pickOfTheDay(picks, 'A1', 20_000)!;
+    expect(pickOfTheDay(picks, 'A1', 20_000)).toEqual(a);
+    expect(['series', 'films', 'books']).toContain(a.group);
+    expect(withinReach(a.pick.level, 'A1')).toBe(true);
   });
 });

@@ -22,6 +22,7 @@ import { EpisodeRow } from '../FeedPage';
 import { Artwork } from './Artwork';
 import { MediaRow } from './MediaRow';
 import { PodcastGrid } from './PodcastGrid';
+import { MundusLink } from '@/features/mundus/MundusLink';
 
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
 const enter = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { ...spring.soft, delay: 0.04 * Math.min(i, 6) } });
@@ -81,7 +82,13 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
   const own = visible.filter((m) => !m.bookId);
 
   if (!saved || !recentSongs) return null;
-  if (!saved.length && !recent.length && !feeds.length && !media.length) return <EmptyLibrary lang={lang} onMusic={onMusic} onPodcasts={onPodcasts} />;
+  if (!saved.length && !recent.length && !feeds.length && !media.length)
+    return (
+      <>
+        <EmptyLibrary lang={lang} onMusic={onMusic} onPodcasts={onPodcasts} />
+        <MundusLink shelf="listen">Podcasts, audiobooks, radio and artists picked for you</MundusLink>
+      </>
+    );
 
   const openEpisode = async (feed: Feed, episode: FeedEpisode) => navigate(`/sonus/play/${await episodeMedia(feed, episode)}`);
 
@@ -215,6 +222,10 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
           </div>
         </Shelf>
       )}
+
+      <MundusLink shelf="listen" className="mt-2">
+        Podcasts, audiobooks, radio and artists picked for you
+      </MundusLink>
     </div>
   );
 }

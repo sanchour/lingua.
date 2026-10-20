@@ -59,3 +59,16 @@ export function inBand(level: PickLevel, band: LevelBand): boolean {
   if (band === 'intermediate') return level === 'B1' || level === 'B2';
   return level === 'C1';
 }
+
+const ORDER: PickLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1'];
+
+/** Whether a pick is within a learner's reach: at their level or one above (a beginner reaches A2). */
+export function withinReach(level: PickLevel, learner: string): boolean {
+  return ORDER.indexOf(level) <= Math.max(1, ORDER.indexOf(learner as PickLevel) + 1);
+}
+
+/** One series, film or book a day within the learner's reach, the same all day. */
+export function pickOfTheDay(picks: Picks, learner: string, day: number): { pick: Pick; group: 'series' | 'films' | 'books' } | undefined {
+  const pool = (['series', 'films', 'books'] as const).flatMap((group) => picks[group].filter((p) => withinReach(p.level, learner)).map((pick) => ({ pick, group })));
+  return pool.length ? pool[day % pool.length] : undefined;
+}

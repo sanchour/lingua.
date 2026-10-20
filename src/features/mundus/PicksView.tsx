@@ -226,7 +226,7 @@ function LinkPill({ link }: { link: PickLink }) {
   );
 }
 
-const PickCard = memo(function PickCard({
+export const PickCard = memo(function PickCard({
   pick,
   kind,
   lang,

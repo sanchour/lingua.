@@ -786,6 +786,39 @@ language stopped at a usage limit, so the other picks rest on one careful pass.
       a song on repeat for a week, changing your Spotify region of discovery, writing your
       shopping list in it. Per language where it matters (a local radio app, a café phrase to try).
       Interactive cards that flip, with a streak of challenges done.
+- [x] **Mundus as a place to explore** (the user's notes, 2026-10-20). Mundus recommends something
+      for every room: series, films, books, music, radio stations, audiobooks and more. Each opens
+      inside the app's own features, so it all connects. The layout should invite exploring, and
+      Mundus should be easy to find.
+  - *Plan:*
+    - **Explore** becomes Mundus's first tab: a shelf for each room, scrolling sideways, with
+      "See all" leading to the full lists (the Picks tab as it was).
+    - **Watch (Visio):** series and films (posters with a TMDB key) open Visio's title sheet, with
+      your services and "Add its subtitles"; YouTube channels.
+    - **Read (Codex):** books, to put on the Codex wishlist; the language's news sources, opening
+      Codex › New › News.
+    - **Listen (Sonus):**
+      - podcasts, followed and opened in Sonus;
+      - audiobooks from LibriVox, opened as a book in Sonus;
+      - the most-listened radio stations, opened on their station page;
+      - artists, opening their songs in Sonus › Music;
+      - the free courses.
+    - **Words (Thesaurus):** the ready-made theme decks, opening in Thesaurus.
+    - **Play and look up:** games and dictionaries.
+    - **Beyond the app:** a shelf of today's challenges.
+    - **Today:** at the top, a pick of the day and a challenge.
+    - **Finding it:** each room gets a quiet "Ideas from Mundus" line that opens Mundus at that
+      room's shelf (Codex, Thesaurus, Sonus, Visio), and Home keeps its card.
+  - *Built (2026-10-20):* as planned, in `src/features/mundus/ExploreView.tsx` and `MundusLink.tsx`.
+    - Mundus has three tabs: Explore, All picks and Beyond the app. Older `?kind=` links still
+      open All picks.
+    - Explore has a "For my level / Everything" switch. "For my level" means your level or one
+      above it; a beginner reaches A2.
+    - Live shelves fetch only what Sonus already uses: LibriVox's most downloaded audiobooks and
+      radio-browser's most listened stations, cached as in Sonus. When either can't be reached,
+      its shelf hides.
+    - Tapping an audiobook adds it to Sonus and opens it, as Sonus's own audiobook list does.
+    - Not verified: an iPhone, and a real TMDB token with posters on the shelves.
 
 ### 3.0-8 · Grammatica and alphabets
 Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
@@ -818,6 +851,60 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
       (stroke data from KanjiVG for Japanese, Make Me a Hanzi for Mandarin, drawn by hand for the
       alphabets), then write it from memory. Strokes are checked for order, direction and shape,
       with a gentle hint on a miss. Arabic letters in their joined forms (start, middle, end).
+
+**Plan (2026-10-20).** Four parts, each pushed once it works:
+1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an
+   icon in the phone's top bar beside Mundus. Each language's topics are a typed module,
+   `src/core/grammar/topics/<lang>.ts`, loaded only when needed, like Mundus's picks. This
+   replaces the plan's `.json.gz`: the modules are typed, tests check them, and Vite splits them
+   per language.
+   - **A topic** has a one-line summary, then example sentences first (each one can be played
+     aloud), then a short rule. After that come tables, side-by-side comparisons for pairs that are
+     easily confused, a "watch out" line, and the one-line reason shown after a mistake.
+   - **Drill items** are compact: a sentence with the form in brackets, its English, three wrong
+     forms and sometimes the base word. Five steps are generated from the same items
+     (`src/core/grammar/drills.ts`, pure and seeded):
+     - recognise: which of two sentences is right;
+     - pick: the gap, from four forms;
+     - build: type the form;
+     - use: put the sentence in order, or tap the wrong word;
+     - say it yourself: build the sentence from its English, with the wrong forms among the tiles.
+   - **A lesson** is about twelve exercises. They come from the topic's current step, plus items
+     due from earlier steps and topics. A mistake shows the rule's line, and the item comes back
+     at the end.
+   - **Progress.** A step unlocks the next once you get 80 % right, and a topic is learned after
+     step 5. Items are FSRS cards in `grammarItems`, and each topic's step is kept in
+     `grammarProgress`. Both are added in Dexie v13 and to BACKUP_POLICIES. A topic's ring fills
+     as you pass its steps, and it turns to "mastered" when most of its items are mature.
+   - **Nothing is locked.** "Next up" is the first topic you haven't learned at or below your
+     level. `currentGrammarTopic(lang)` in `src/data/grammar.ts` returns it for the rest of the
+     app.
+   - **Spanish and German** get about thirty topics each, A1 to B2.
+2. **Topic maps for the other eighteen tier-1 languages**, in the same shape. Each gets twelve to
+   twenty topics covering the core from A1 to B1, with the structures that need a lesson of their
+   own (cases, aspect, verbs of motion, particles, measure words, politeness). Wider maps are a
+   later step. Tier 2 gets no grammar, to stay cheap.
+3. **Alphabets and writing** for ru, el, ar, ja (hiragana and katakana), ko (Hangul) and zh
+   (pinyin and tones, then the first characters).
+   - An Alphabet tab in Grammatica, offered first to beginners.
+   - A chart with sound.
+   - Lessons of five or six letters: see and hear them, match sound to letter and letter to sound,
+     read real words, then write.
+   - Letters are FSRS items in the same table.
+   - Writing happens on a canvas that takes a finger, pen or mouse. Strokes are checked for order,
+     direction and shape. The stroke data comes from:
+     - KanjiVG (kana, CC BY-SA 3.0);
+     - Make Me a Hanzi (characters, Arphic and LGPL), fetched by `scripts/grammar/strokes.ts`;
+     - Hangul jamo strokes written by hand.
+   - Cyrillic, Greek and Arabic have no free stroke-order data. They are traced over the letter and
+     checked by how well the ink covers it. This gap is noted.
+4. **Links and the rest:**
+   - "Why this form?" in the word drawer, matched by the form's tags.
+   - A Home card when a topic is next.
+   - A grammar link at the end of a Ludus lesson.
+   - A short placement check that skips topics you already know.
+   - Grammar in Ratio and Tabula.
+   - Then the docs and a handover.
 
 ### 3.0-9 · Lingua 3.0 complete: the full check
 - [ ] Every point of "Lingua updates.txt" checked against the app, one by one.

@@ -325,6 +325,23 @@ kind, Enter to open the top result; with the field empty, recent searches and st
 
 ## Mundus (3.0-7)
 
+- **Explore** (Mundus's first tab): a pick of the day and a challenge to try today, then a shelf for
+  every room, scrolling sideways. Each item opens inside Lingua:
+  - **Watch (Visio):** series, films and YouTube channels. A series opens Visio's title sheet,
+    with your services and "Add its subtitles".
+  - **Read (Codex):** books for the Codex wishlist, and the language's news, opening Codex › News.
+  - **Listen (Sonus):** podcasts to follow, LibriVox audiobooks that open as a book in Sonus, and
+    free courses.
+  - **Radio and music (Sonus):** the most-listened stations, opening on their page, and artists,
+    opening their songs.
+  - **Words (Thesaurus):** the ready-made decks.
+  - **Play and look up:** games and dictionaries.
+  - **Beyond the app:** challenges you haven't done yet.
+
+  "For my level" keeps to your level and one above it. "See all" opens the full lists.
+- **Ideas from Mundus:** Codex, Thesaurus, Sonus and Visio each end with a line that opens Mundus
+  at their own shelf, so you find it from wherever you are.
+
 - **Picks:** for each of the twenty main languages, series, films, books, music, podcasts, YouTube
   channels, video games and dictionaries, chosen by hand, each with the level it suits (A1 … C1, in
   green when it's at your level) and why it helps. Filter by kind and by level.
