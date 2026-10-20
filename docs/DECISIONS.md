@@ -971,3 +971,19 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Turned-off kinds fall back, never empty a lesson.** If every kind is off, a lesson still uses
   the gentlest one (meanings), and the sheet always keeps at least one kind on.
 
+## 2026-10-20 — Lingua 3.0-8, part 3: examples first, the rule at hand, your own sentence
+
+- **The lesson opens with the examples, not the rule.** This follows the user's note on teaching
+  grammar: examples, a short rule, then use it at once. Later steps open with a single sentence
+  and the one-line reason, so returning learners aren't slowed down.
+- **The rule is a side panel, not a link away.** Leaving the lesson for the topic page would lose
+  its place, so "See the rule" opens the Drawer (a slide-over on a desktop, a bottom sheet on a
+  phone) over it.
+- **Your own sentence is practice.** The AI's verdict can be wrong, so it never grades an FSRS
+  item or counts towards passing a step; it only feeds the combo. It is cached like the other AI
+  answers, and the prompt tells the model not to invent rules.
+- **Due items from other topics don't decide the step.** They are scored for their own cards, but
+  the 80 % is reckoned on the topic's own exercises.
+- **No transform drills.** Real sentences don't come in present and past pairs, and a generated
+  pair could be wrong, which the content rules forbid.
+

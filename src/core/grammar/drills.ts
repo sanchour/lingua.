@@ -13,11 +13,11 @@ export { seededRandom, shuffle };
  * match a table's pairs), 2 pick (the gap from four forms; complete the table), 3 build (type the
  * form), 4 use (put the words in order; tap the wrong word), 5 say it (build it from English).
  */
-export type DrillKind = 'recognise' | 'hear' | 'pairs' | 'pick' | 'table' | 'build' | 'order' | 'spot' | 'say';
+export type DrillKind = 'recognise' | 'hear' | 'pairs' | 'pick' | 'table' | 'build' | 'order' | 'spot' | 'say' | 'own';
 
-export const DRILL_KINDS: DrillKind[] = ['recognise', 'hear', 'pairs', 'pick', 'table', 'build', 'order', 'spot', 'say'];
+export const DRILL_KINDS: DrillKind[] = ['recognise', 'hear', 'pairs', 'pick', 'table', 'build', 'order', 'spot', 'say', 'own'];
 
-export const DRILL_STEP: Record<DrillKind, Step> = { recognise: 1, hear: 1, pairs: 1, pick: 2, table: 2, build: 3, order: 4, spot: 4, say: 5 };
+export const DRILL_STEP: Record<DrillKind, Step> = { recognise: 1, hear: 1, pairs: 1, pick: 2, table: 2, build: 3, order: 4, spot: 4, say: 5, own: 5 };
 
 export const DRILL_LABEL: Record<DrillKind, string> = {
   recognise: 'Which sentence is right?',
@@ -29,6 +29,7 @@ export const DRILL_LABEL: Record<DrillKind, string> = {
   order: 'Put the words in order',
   spot: 'Tap the wrong word',
   say: 'Say it in the language',
+  own: 'Your own sentence',
 };
 
 /** Short names for the setup sheet. */
@@ -42,6 +43,7 @@ export const DRILL_NAME: Record<DrillKind, string> = {
   order: 'Word order',
   spot: 'Spot the mistake',
   say: 'From English',
+  own: 'Own sentence (AI)',
 };
 
 interface Base {
@@ -61,6 +63,8 @@ export type Drill = Base &
     | { kind: 'say'; item: Item; tiles: string[]; answer: string[] }
     | { kind: 'table'; table: GrammarTable; row: number; col: number; options: string[]; answer: number }
     | { kind: 'pairs'; table: GrammarTable; pairs: Array<[string, string]> }
+    /** A sentence of the learner's own using the topic, checked by the AI (with a key). */
+    | { kind: 'own'; example: Item }
   );
 
 export type ItemDrill = Extract<Drill, { item: Item }>;
@@ -236,7 +240,7 @@ export function fits(kind: DrillKind, item: Item, lang: string): boolean {
   if (kind === 'order') return canOrder(item, lang);
   if (kind === 'say') return canSay(item, lang);
   if (kind === 'spot') return canSpot(item, lang);
-  return kind !== 'table' && kind !== 'pairs';
+  return kind !== 'table' && kind !== 'pairs' && kind !== 'own';
 }
 
 export function itemDrill(kind: DrillKind, item: Item, topic: string, lang: string, random: () => number, key: string): ItemDrill {
@@ -294,10 +298,14 @@ export interface DrillOptions {
   off?: ReadonlySet<DrillKind>;
   /** How many exercises (before retries); 10 by default. */
   size?: number;
+  /** An AI key is set: a last exercise asks for a sentence of the learner's own. */
+  canWrite?: boolean;
+  /** Items due from other topics, mixed in (at most three). */
+  due?: ReviewEntry[];
 }
 
 /** What an exercise of this kind becomes when it can't be made for an item, or is turned off. */
-const FALLBACK: Record<DrillKind, DrillKind> = { recognise: 'pick', hear: 'recognise', pairs: 'recognise', pick: 'recognise', table: 'pick', build: 'pick', order: 'spot', spot: 'pick', say: 'build' };
+const FALLBACK: Record<DrillKind, DrillKind> = { recognise: 'pick', hear: 'recognise', pairs: 'recognise', pick: 'recognise', table: 'pick', build: 'pick', order: 'spot', spot: 'pick', say: 'build', own: 'say' };
 
 /** The kind an item gets, given the kinds wanted: unusable or switched-off kinds fall back. */
 export function resolveKind(kind: DrillKind, item: Item, lang: string, opts: DrillOptions): DrillKind {
@@ -352,6 +360,10 @@ export function planTopicLesson(topic: Topic, lang: string, step: Step | 'mix', 
     const t = tableDrill(topic, random, key());
     if (t) out.splice(Math.min(out.length, 3 + Math.floor(random() * 3)), 0, t);
   }
+  // What's due elsewhere comes in near the end, in the steps its topics have passed.
+  const due = (opts.due ?? []).filter((e) => e.topic.id !== topic.id).slice(0, 3);
+  if (due.length) out.push(...planReview(due, lang, { ...opts, due: undefined }).map((d) => ({ ...d, key: `${topic.id}-due-${n++}` })));
+  if ((step === 5 || step === 'mix') && opts.canWrite && !opts.off?.has('own')) out.push({ key: key(), topic: topic.id, kind: 'own', example: shuffle(topic.items, random)[0] });
   return out;
 }
 
@@ -404,6 +416,7 @@ export function solutionOf(d: Drill, lang: string): string {
     case 'table':
       return d.options[d.answer];
     case 'pairs':
+    case 'own':
       return '';
     default:
       return plain(d.item.s) || joinTiles(sentenceTiles(d.item, lang)?.tokens ?? [], lang);

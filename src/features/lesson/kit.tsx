@@ -268,7 +268,7 @@ export interface EndAction {
 const minutes = (ms: number) => (ms < 60_000 ? `${Math.max(1, Math.round(ms / 1000))} s` : `${Math.round(ms / 60_000)} min`);
 
 /** The end of a lesson: the numbers, kindly, a cheer for a perfect run or a new best, and what next. */
-export function LessonEnd({ title, note, result, actions = [], onDone, badge }: { title: string; note?: ReactNode; result: LessonResult; actions?: EndAction[]; onDone: () => void; badge?: ReactNode }) {
+export function LessonEnd({ title, note, result, actions = [], onDone, badge, children }: { title: string; note?: ReactNode; result: LessonResult; actions?: EndAction[]; onDone: () => void; badge?: ReactNode; children?: ReactNode }) {
   const lightning = result.score !== undefined;
   const newBest = lightning && result.score! > 0 && result.score! > (result.previousBest ?? 0);
   const perfect = !lightning && result.answered > 0 && result.accuracy === 1;
@@ -309,6 +309,7 @@ export function LessonEnd({ title, note, result, actions = [], onDone, badge }: 
             </motion.div>
           ))}
         </dl>
+        {children}
         <div className="mt-8 flex w-full flex-col gap-2">
           {actions.map((a, i) => (
             <Button key={a.label} size="lg" variant={i === 0 ? 'primary' : 'secondary'} block onClick={a.onClick}>

@@ -430,3 +430,72 @@ export function SpotView({ d, lang, value, onChange, phase }: { d: Of<'spot'>; l
     </div>
   );
 }
+
+// ── 5 · Your own sentence (with an AI key) ──────────────────────────────────
+
+/** A sentence of the learner's own using the topic; the AI checks it. One real example as a model. */
+export function OwnView({
+  d,
+  topic,
+  lang,
+  value,
+  onChange,
+  phase,
+  checking,
+  error,
+  onSubmit,
+}: {
+  d: Of<'own'>;
+  topic: { title: string; summary: string };
+  lang: string;
+  value: string;
+  onChange: (v: string) => void;
+  phase: Phase;
+  checking: boolean;
+  error?: string;
+  onSubmit: () => void;
+}) {
+  const area = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    const t = window.setTimeout(() => area.current?.focus(), 140);
+    return () => window.clearTimeout(t);
+  }, [d.key]);
+  const rtl = isRtl(lang);
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <p className="font-serif text-[clamp(1.25rem,4vw,1.6rem)] leading-snug">Write a sentence of your own with {topic.title.toLowerCase().startsWith('the ') ? topic.title.toLowerCase() : `“${topic.title}”`}.</p>
+        <p className="mt-2 text-[14px] text-ink-soft">For example:</p>
+        <p lang={lang} dir={rtl ? 'rtl' : undefined} className={cx(serif, 'mt-1 text-[18px]')}>
+          {d.example.s.replace(/[[\]]/g, '')}
+        </p>
+      </div>
+      <textarea
+        ref={area}
+        lang={lang}
+        dir={rtl ? 'rtl' : 'auto'}
+        value={value}
+        readOnly={phase !== 'answer' || checking}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            onSubmit();
+          }
+        }}
+        rows={3}
+        placeholder="Your sentence"
+        aria-label="Your sentence"
+        spellCheck={false}
+        className={cx(
+          'w-full resize-none rounded-2xl border-2 bg-raised px-5 py-4 text-xl outline-none transition-colors placeholder:font-sans placeholder:text-base placeholder:text-ink-faint',
+          serif,
+          phase === 'right' ? 'border-sage' : phase === 'wrong' ? 'border-accent' : 'border-line focus:border-ink',
+        )}
+      />
+      <p className="min-h-5 text-center text-[13.5px] text-ink-soft" aria-live="polite">
+        {checking ? 'Reading your sentence…' : error ? <span className="text-accent-text">{error}</span> : phase === 'answer' ? 'Checked by your AI (Ordo › AI). It doesn’t move your schedule.' : ''}
+      </p>
+    </div>
+  );
+}

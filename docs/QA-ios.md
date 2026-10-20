@@ -367,3 +367,10 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 - [ ] Right or wrong: the Yes and No buttons are big enough to tap with a thumb.
 - [ ] With a natural voice (a Gemini key): Listening plays the word on its own, and the replay button works.
 - [ ] Lightning from the deck page: the clock runs, choices check themselves on a tap, the end shows the score and best.
+
+## Lingua 3.0-8, part 3: examples first
+
+- [ ] A topic's first lesson opens with "See it": three sentences (each plays), the rule below; Start begins.
+- [ ] After a mistake, "See the rule" opens a bottom sheet with the rule and tables; closing it returns to the same exercise.
+- [ ] The end of a lesson with mistakes lists "What went wrong" with each sentence and its reason.
+- [ ] With an AI key, step 5 ends with "Your own sentence": the keyboard doesn't cover the text box; the AI's answer shows in the bar.

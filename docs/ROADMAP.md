@@ -992,6 +992,29 @@ when the form is one word; for word order the form is split into its words.
 speaks the language (Lingua 2.0 removed the robotic ones). Spelling skips Mandarin, Japanese,
 Korean and Arabic. Lightning is a button on a deck and at the end of a lesson.
 
+**Part 3, plan (2026-10-20).** The user asked on 2026-10-20 to finish 3.0-8 after all, so parts
+3 to 6 go ahead. Part 3 covers progressive exercises and lessons that show examples first:
+- **Examples first.** A step lesson opens with a "See it" screen: three sentences with the form
+  marked, each of which can be played, and on a desktop the topic's rule beside them. The first
+  lesson on a topic also shows the rule and the comparison. Later steps show one sentence and the
+  one-line reason. "Start" (or Enter) begins; reviews and Lightning skip it.
+- **The rule one tap away.** After a mistake, "See the rule" opens the topic's rule, tables and
+  comparison in a side panel (a bottom sheet on a phone), without leaving the lesson.
+- **Mixed with what's due.** A step lesson adds up to three items due from other topics, each
+  labelled with its topic.
+- **What went wrong.** The end screen lists the sentences missed, each with its reason and a
+  speaker, so the lesson ends with a short review of its mistakes.
+- **Your own sentence, with an AI key.** At step 5 and in practice, a last exercise asks for a
+  sentence of the learner's own using the topic. The AI checks it, corrects it and explains in
+  one or two lines. It is practice and moves no schedule. Without a key it isn't offered.
+- Left out: transform drills (present to past, singular to plural). The items are real
+  sentences, so they don't come in pairs, and a generated pair could be wrong.
+
+*Part 3, as built (2026-10-20).* As planned. The "See it" screen shows all three examples and the
+rule for step 1 and a topic's first lesson, and one example with its reason for later steps. On a
+desktop the rule sits beside the examples. A step is passed on the topic's own exercises only, so
+items mixed in from other topics don't count for or against it.
+
 **Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an
    icon in the phone's top bar beside Mundus. Each language's topics are a typed module,

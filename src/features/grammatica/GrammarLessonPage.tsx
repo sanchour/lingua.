@@ -18,8 +18,8 @@ import { useSpeaker } from '@/features/speech/SpeakButton';
 import { LessonEnd, LessonSetup, LIGHTNING_MS, recordBest, useLessonSettings } from '@/features/lesson/kit';
 import type { EndAction, LessonResult } from '@/features/lesson/kit';
 import { GrammarLesson } from './GrammarLesson';
-import type { GrammarLessonOutcome } from './GrammarLesson';
-import { useGrammar } from './parts';
+import type { GrammarLessonOutcome, Missed } from './GrammarLesson';
+import { Rich, SentenceLine, useGrammar } from './parts';
 
 type Kind = 'step' | 'practice' | 'lightning' | 'review';
 
@@ -30,6 +30,8 @@ interface Plan {
   /** The step this lesson can pass (a topic's current step), or null. */
   step: Step | null;
   random: () => number;
+  /** Examples first: all of them for a first lesson, one for later steps. */
+  intro?: { topic: Topic; full: boolean };
 }
 
 const SETUP_KINDS = DRILL_KINDS.map((id) => ({ id, label: DRILL_NAME[id] }));
@@ -43,8 +45,9 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
   const { topicId = '' } = useParams();
   const [search] = useSearchParams();
   const kind: Kind = search.get('mode') === 'lightning' ? 'lightning' : review ? 'review' : search.get('mode') === 'practice' ? 'practice' : 'step';
-  const { language } = useApp();
+  const { language, settings } = useApp();
   const lang = language.id;
+  const canWrite = Boolean(settings.apiKeys[settings.llm.provider]?.trim() && settings.llm.model);
   const grammar = useGrammar(lang);
   const lessons = useLessonSettings();
   const { speaker } = useSpeaker(lang);
@@ -52,7 +55,7 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
   const navigate = useNavigate();
 
   const [plan, setPlan] = useState<Plan | null | 'empty'>(null);
-  const [end, setEnd] = useState<{ result: LessonResult; title: string; note: ReactNode; actions: EndAction[] } | null>(null);
+  const [end, setEnd] = useState<{ result: LessonResult; title: string; note: ReactNode; actions: EndAction[]; missed: Missed[] } | null>(null);
   const [round, setRound] = useState(0);
   const [setupOpen, setSetupOpen] = useState(false);
   const [endsAt, setEndsAt] = useState<number | undefined>();
@@ -70,7 +73,7 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
     setPlan(null);
     setEnd(null);
     void (async () => {
-      const made = await makePlan(grammar, kind, topicId, lang, canHear, settingsAtStart.current);
+      const made = await makePlan(grammar, kind, topicId, lang, canHear, canWrite, settingsAtStart.current);
       if (!alive) return;
       setPlan(made ?? 'empty');
       setEndsAt(kind === 'lightning' && made ? Date.now() + LIGHTNING_MS : undefined);
@@ -95,34 +98,36 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
   }, []);
 
   const onFinish = useCallback(
-    async ({ result, byTopic }: GrammarLessonOutcome) => {
+    async ({ result, byTopic, missed }: GrammarLessonOutcome) => {
       if (!grammar || !plan || plan === 'empty') return;
       active.current.n += result.answered;
       const again = { label: kind === 'lightning' ? 'Play again' : 'Another round', onClick: () => setRound((r) => r + 1) };
       if (kind === 'lightning') {
         const key = `${lang}:grammar${review ? '' : `:${topicId}`}`;
         const previousBest = await recordBest(lessons.best, key, result.score ?? 0);
-        setEnd({ result: { ...result, previousBest }, title: 'Time!', note: result.score ? `${result.score} right in a minute.` : 'The clock won this time. Another go?', actions: [again] });
+        setEnd({ missed: [], result: { ...result, previousBest }, title: 'Time!', note: result.score ? `${result.score} right in a minute.` : 'The clock won this time. Another go?', actions: [again] });
         return;
       }
       if (kind === 'review') {
         for (const t of byTopic.keys()) await finishGrammarLesson(lang, t, null, 0);
-        setEnd({ result, title: 'Review done', note: 'Every item comes back when it’s due again.', actions: [] });
+        setEnd({ missed, result, title: 'Review done', note: 'Every item comes back when it’s due again.', actions: [] });
         return;
       }
       const topic = findTopic(grammar, topicId)!;
-      const score = result.accuracy;
+      // The step is passed on its own topic; due items from elsewhere don't count for it.
+      const own = byTopic.get(topic.id);
+      const score = own?.n ? own.right / own.n : result.accuracy;
       const { passed, step } = await finishGrammarLesson(lang, topic.id, plan.step, score);
       const pct = Math.round(score * 100);
       if (plan.step === null) {
-        setEnd({ result, title: 'Practice done', note: `${topic.title}: ${pct}% right first time.`, actions: [again] });
+        setEnd({ missed, result, title: 'Practice done', note: `${topic.title}: ${pct}% right first time.`, actions: [again] });
       } else if (passed && step >= 6) {
-        setEnd({ result, title: 'Topic learned', note: `${topic.title} is yours. Its items come back for review when they’re due.`, actions: [{ label: 'Practise it', onClick: () => navigate(`/grammatica/${topic.id}/lesson?mode=practice`, { replace: true }) }] });
+        setEnd({ missed, result, title: 'Topic learned', note: `${topic.title} is yours. Its items come back for review when they’re due.`, actions: [{ label: 'Practise it', onClick: () => navigate(`/grammatica/${topic.id}/lesson?mode=practice`, { replace: true }) }] });
       } else if (passed) {
         const s = STEPS[step - 1];
-        setEnd({ result, title: `Step ${plan.step} passed`, note: `Next: step ${step}, ${s.name.toLowerCase()} (${s.hint.toLowerCase()}).`, actions: [{ label: `On to step ${step}`, onClick: () => setRound((r) => r + 1) }] });
+        setEnd({ missed, result, title: `Step ${plan.step} passed`, note: `Next: step ${step}, ${s.name.toLowerCase()} (${s.hint.toLowerCase()}).`, actions: [{ label: `On to step ${step}`, onClick: () => setRound((r) => r + 1) }] });
       } else {
-        setEnd({ result, title: 'Lesson done', note: `${pct}% right first time. At 80% you move on to the next step; another round?`, actions: [again] });
+        setEnd({ missed, result, title: 'Lesson done', note: `${pct}% right first time. At 80% you move on to the next step; another round?`, actions: [again] });
       }
     },
     [grammar, plan, kind, lang, review, topicId, lessons.best, navigate],
@@ -133,7 +138,9 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
   if (end) {
     return (
       <div className="grid min-h-dvh place-items-center py-10">
-        <LessonEnd title={end.title} note={end.note} result={end.result} actions={end.actions} onDone={back} />
+        <LessonEnd title={end.title} note={end.note} result={end.result} actions={end.actions} onDone={back}>
+          {end.missed.length > 0 && grammar && <WentWrong missed={end.missed} grammar={grammar} lang={lang} />}
+        </LessonEnd>
       </div>
     );
   }
@@ -157,6 +164,7 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
         random={plan.random}
         endsAt={endsAt}
         practice={kind === 'lightning'}
+        intro={plan.intro}
         onFinish={(o) => void onFinish(o)}
         onClose={back}
         onActive={onActive}
@@ -167,9 +175,9 @@ export default function GrammarLessonPage({ review = false }: { review?: boolean
   );
 }
 
-async function makePlan(grammar: Grammar, kind: Kind, topicId: string, lang: string, canHear: boolean, s: ReturnType<typeof useLessonSettings>): Promise<Plan | null> {
+async function makePlan(grammar: Grammar, kind: Kind, topicId: string, lang: string, canHear: boolean, canWrite: boolean, s: ReturnType<typeof useLessonSettings>): Promise<Plan | null> {
   const random = seededRandom(Date.now() % 2 ** 31);
-  const opts = { random, canHear, typing: s.typing, off: new Set(s.grammarOff as DrillKind[]), size: s.length };
+  const opts = { random, canHear, canWrite, typing: s.typing, off: new Set(s.grammarOff as DrillKind[]), size: s.length };
   const progress = await grammarProgress(lang);
   const stepOf = (t: Topic) => Math.min(6, Math.max(1, progress.get(t.id)?.step ?? 1));
 
@@ -198,9 +206,22 @@ async function makePlan(grammar: Grammar, kind: Kind, topicId: string, lang: str
   const current = stepOf(topic);
   const practice = kind === 'practice' || current >= 6;
   const step = practice ? 'mix' : (current as Step);
-  const drills = planTopicLesson(topic, lang, step, opts);
+  // Up to three items due from other topics come along, in the steps those topics have passed.
+  const due = (await dueGrammarItems(grammar))
+    .filter((d) => d.topic.id !== topic.id)
+    .slice(0, 3)
+    .map(({ topic: t, item }) => ({ topic: t, item, passed: Math.max(1, stepOf(t) - 1) }));
+  const drills = planTopicLesson(topic, lang, step, { ...opts, due });
   const title = practice ? `Practice · ${topic.title}` : `Step ${current} · ${STEPS[current - 1].name} · ${topic.title}`;
-  return { drills, topics: new Map([[topic.id, topic]]), title, step: practice ? null : (current as Step), random };
+  const firstTime = (progress.get(topic.id)?.lessons ?? 0) === 0;
+  return {
+    drills,
+    topics: new Map([[topic.id, topic], ...due.map((d): [string, Topic] => [d.topic.id, d.topic])]),
+    title,
+    step: practice ? null : (current as Step),
+    random,
+    intro: practice ? undefined : { topic, full: firstTime || current === 1 },
+  };
 }
 
 function Empty({ title, children, onBack }: { title: string; children: ReactNode; onBack: () => void }) {
@@ -220,3 +241,27 @@ function Empty({ title, children, onBack }: { title: string; children: ReactNode
   );
 }
 
+
+/** The lesson's mistakes, in the end: each sentence as it should be, with its reason and a speaker. */
+function WentWrong({ missed, grammar, lang }: { missed: Missed[]; grammar: Grammar; lang: string }) {
+  return (
+    <section className="mt-8 w-full text-left">
+      <h2 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">What went wrong</h2>
+      <ul className="divide-y divide-line/60 rounded-2xl bg-surface">
+        {missed.slice(0, 8).map(({ topic, item }) => {
+          const t = findTopic(grammar, topic);
+          return (
+            <li key={item.s} className="px-4 py-3">
+              <SentenceLine example={item} lang={lang} />
+              {t && (
+                <p className="mt-1 text-[13.5px] leading-snug text-ink-soft">
+                  <Rich text={t.why} lang={lang} />
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}

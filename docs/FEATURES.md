@@ -443,6 +443,12 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   exercises, typing, sounds, vibration). Right answers in a row light a combo, with a burst at 3,
   5 and 10; a perfect lesson or a new best gets confetti. "Can't type this now" swaps typing for
   choices.
+- **Examples first:** a lesson opens with "See it" (the sentences, each with a speaker, and the rule
+  beside them on a desktop). After a mistake, "See the rule" opens the whole topic in a side
+  panel without leaving the lesson. A lesson brings in up to three items due from other topics,
+  and ends with "What went wrong", each missed sentence with its reason.
+- **Your own sentence (with an AI key):** at step 5 and in practice, write a sentence using the
+  topic; the AI corrects it and explains in a line. It's practice and moves no schedule.
 
 ## Visio › Services (3.0-7)
 

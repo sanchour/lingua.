@@ -123,3 +123,24 @@ describe('grammar drills over every module', () => {
     });
   }
 });
+
+describe('grammar lessons, part 3', () => {
+  const g = GRAMMARS.find((x) => x.lang === 'es')!;
+  const [a, b, c] = topicsOf(g);
+
+  it('mixes in at most three items due from other topics, never its own', () => {
+    const due = [b, c, a, b].flatMap((t) => t.items.slice(0, 2).map((item) => ({ topic: t, item, passed: 2 })));
+    const plan = planTopicLesson(a, 'es', 2, { random: seededRandom(1), due });
+    const extra = plan.filter((d) => d.key.includes('-due-'));
+    expect(extra).toHaveLength(3);
+    expect(extra.every((d) => d.topic !== a.id)).toBe(true);
+  });
+
+  it('asks for a sentence of the learner’s own only with an AI key, at step 5 and in practice', () => {
+    const has = (step: 1 | 5 | 'mix', canWrite: boolean) => planTopicLesson(a, 'es', step, { random: seededRandom(2), canWrite }).some((d) => d.kind === 'own');
+    expect(has(5, true)).toBe(true);
+    expect(has('mix', true)).toBe(true);
+    expect(has(5, false)).toBe(false);
+    expect(has(1, true)).toBe(false);
+  });
+});
