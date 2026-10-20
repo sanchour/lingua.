@@ -3,33 +3,29 @@
 Lingua is a local-first language-learning PWA (Vite 8, React 19, TypeScript, Tailwind 4, Dexie,
 Zustand, motion/react). It is live at https://sanchour.github.io/lingua./ and GitHub Pages
 deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [docs/SETUP.md](docs/SETUP.md).
+Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
 
-## Where the work stands
+## Where the work stands (2026-10-20)
 
-- The user's brief is [Lingua updates.txt](Lingua%20updates.txt). The plan, with what is done ticked,
-  is [docs/ROADMAP.md](docs/ROADMAP.md).
-- Lingua 2.0 is closed (last step 2.0-4b). Everything still open is **Lingua 3.0**, in order
-  3.0-1 … 3.0-9 under "## Lingua 3.0" in the roadmap. Read its "Handover for the Lingua 3.0
-  session" before starting.
-- 3.0-1 is done (merged into `main` on 2026-10-18). Work on `main` from here; the branch
-  `lingua-3.0/languages-wip` is history. Known gaps are at the top of the handover.
-- 3.0-1b (tier-2 beta languages), 3.0-2 (phone and desktop, themes), 3.0-3 (Sonus and music) and 3.0-4 (voices, device sync) are done. The user swapped steps twice: 3.0-5 became Radio (done), **3.0-6 is now comics, audiobooks and courses, AI conversation, and the user's Radio and Music notes**, and Grammatica and alphabets moved to 3.0-8.
-- **Lingua 3.0 is complete and live (version 3.0.0, 2026-10-20):** 3.0-6, 3.0-7 and the full
-  check 3.0-9 are done. The user first skipped the rest of 3.0-8, then resumed it on 2026-10-20:
-  parts 1–4 (topics, drills, lessons, links, placement, Ratio) are live; part 5 (alphabets and
-  writing) and part 6 (the other languages) are next. Other sessions may still push to `main`, so rebase onto `origin/main` before pushing. Tier 2 stays cheap: only the
-  features that cost little (automatic packs, decks, podcasts, music search). Keep it cheap.
-- **Lingua 4.0 has started (2026-10-20):** five steps, 4.0-1 … 4.0-5, under "## Lingua 4.0" in the roadmap.
-  **4.0-1 is done** (tiers, the 35 placeholder languages and the language map, the glass tab bar,
-  the sidebar and icons, the new app icon, the Lingua+ placeholder). **4.0-2 is done** (the full
-  dictionary for the six core languages, the one-screen word drawer, Import a book / Import a comic,
-  the end page and reading goal, the word memory, sentences with a gap; Dexie v15). **Next is 4.0-3**
-  (Cantus games, karaoke, streaming services in Visio). 4.0 sorts the languages into four tiers and an
-  experimental shelf (the table at the top of "## Lingua 4.0"); only the six core languages get a course.
-- **Lingua 5 is planned and must not be built yet (2026-10-20, the user: plan only):**
-  [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md) and [docs/LINGUA-5.2-PLAN.md](docs/LINGUA-5.2-PLAN.md),
-  with the user's decisions at the top of 5.1 (Stripe; Max is AI with your own key; desktop only).
-  When it is built: 5.1-1 with 5.2-1 first, 5.1's Codex step on top of 4.0-2, 5.2's Visio inside 4.0-3.
+- **Start here: [docs/HANDOVER.md](docs/HANDOVER.md).** The work still open, in order, how to claim
+  a step so two accounts never do the same one, what only the user can do, and the prompt to paste.
+- The user's brief up to Lingua 4.0 is [Lingua updates.txt](Lingua%20updates.txt); Lingua 5's lists
+  are in its two plan files. The plan, with what is done ticked, is [docs/ROADMAP.md](docs/ROADMAP.md).
+- **Lingua 2.0 and 3.0 are done and live** (version 3.0.0), except Grammatica's **3.0-8 parts 5–6**
+  (alphabets and writing; topic maps for every language). Parts 1–4 are live.
+- **Lingua 4.0:** 4.0-1 (tiers, the 35 placeholder languages, the language map, the sidebar and
+  icons, the Lingua+ placeholder) and 4.0-2 (the full dictionary for the six core languages, the
+  one-screen word drawer, Import a book / a comic, the end page and reading goal, the word memory,
+  sentences with a gap; Dexie v15) are done. Open: 4.0-3, 4.0-4, 4.0-5. Only the six core languages
+  (tier 1) get a course.
+- **Lingua 5** is planned in detail: [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md) and
+  [docs/LINGUA-5.2-PLAN.md](docs/LINGUA-5.2-PLAN.md), with the user's decisions at the top of 5.1
+  (Stripe; Max is AI with your own key; Lingua+ €24.99 once, Max €5.99 a month or €49.99 a year;
+  desktop only). The user asked on 2026-10-20 to make it ready to start: it is built step by step
+  in HANDOVER.md's order, interleaved with the rest of 4.0.
+- Other accounts and sessions push to `main` all the time: rebase onto `origin/main` before every
+  push. Tier 2 stays cheap: only the features that cost little (automatic packs, decks, podcasts,
+  music search).
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 
@@ -38,10 +34,13 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
 1. Write a plan first (in the roadmap), then build it without waiting for confirmation.
 2. Check it: `npm run typecheck`, `npm test`, `npm run build`, and look at it in a browser at
    desktop sizes (1280, 1440, and a 1366×768 laptop), light and dark.
-3. Update the docs it touches (ROADMAP, DECISIONS, FEATURES, QA-ios).
+3. Update the docs it touches (ROADMAP, DECISIONS, FEATURES), and tick the step in docs/HANDOVER.md.
 4. After every finished prompt, commit and push to `main`, then check the Pages deploy went live
-   (the installed phone and desktop apps update from it).
+   (the installed desktop app updates from it).
 5. When a session finishes, give end notes: what changed, what wasn't verified, what's next.
+
+The user prefers token-efficient sessions: work inline and read only what is needed; no
+multi-agent workflows unless they ask for one.
 
 The user often works across usage limits and is away while work runs: when a limit is hit, the
 work should pick up again once it refreshes. They decide where a version ends.
@@ -65,6 +64,9 @@ Commit as `sanchour <255895307+sanchour@users.noreply.github.com>`
 
 ## Practical notes
 
+- **No formatter:** there is no Prettier or ESLint fix step. Never run `npx prettier` or
+  `eslint --fix` (a stock Prettier once rewrote about 70 files); format by hand to match: single
+  quotes, long lines (about 200 columns), JSX wrapped the way the file around it is.
 - Node 24 runs the TypeScript scripts directly (`node scripts/lang-data/fetch.ts`).
 - Windows, Git Bash: if `node` isn't found, `export PATH="/c/Program Files/nodejs:$PATH"`.
   Heredocs and `node -e` there lose backslashes: write patch scripts to a file instead.

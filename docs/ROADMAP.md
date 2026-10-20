@@ -1547,6 +1547,9 @@ free version is v16.
       meaning card that has a sentence shows it with the word missing.
 
 ### 4.0-3 · Songs and shows: Cantus games, karaoke, and streaming services in Visio
+*Built together with Lingua 5.2-4 ([LINGUA-5.2-PLAN.md](LINGUA-5.2-PLAN.md)): YouTube with two
+subtitle lines, the Lingua browser extension, the services' real marks. Step 3 of
+[HANDOVER.md](HANDOVER.md).*
 - [ ] **Different games for each song:** one that teaches the lyrics themselves (fill in, order,
       sing the next line), one that teaches the language (the song lessons of 3.0-3), and the
       song's words as flashcards or in Ludus.
@@ -1563,6 +1566,8 @@ free version is v16.
       it for desktop.
 
 ### 4.0-4 · Cursus: a course with a clear path, and speaking and writing
+*Cursus becomes a room with tabs in Lingua 5.1-1 (step 2 of [HANDOVER.md](HANDOVER.md)); the
+course fills its Course tab.*
 - [ ] **Cursus** (Latin for "a course"), a new room: a course like Duolingo, HelloChinese or Busuu,
       organised by level, with a clear learning path, each lesson with a clear objective.
 - [ ] **Units named by what you can do after them,** not by how many lessons they hold: after the
@@ -1596,8 +1601,8 @@ The user pasted the Lingua 5 list in two halves (2026-10-20), each planned in de
 [LINGUA-5.1-PLAN.md](LINGUA-5.1-PLAN.md) and **5.2** in [LINGUA-5.2-PLAN.md](LINGUA-5.2-PLAN.md) (the
 user's points, the design of each step, the files, the tests, what "done" means). The user's
 decisions are at the top of the 5.1 plan: Stripe; Max is AI with your own key; Lingua+ €24.99 once,
-Max €5.99 a month or €49.99 a year; desktop only. **The user said: plan only. Nothing is built until
-they say so.** The steps, ticked here as they finish:
+Max €5.99 a month or €49.99 a year; desktop only. **On 2026-10-20 the user asked to make it ready to
+start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, ticked here as they finish:
 
 - [ ] 5.1-1 · Rooms in the new order: Cursus, Sonus et Visio, Mentis; the device's light; no more "Ideas from Mundus"
 - [ ] 5.1-2 · Lingua+ (€24.99 once) and Lingua+ Max

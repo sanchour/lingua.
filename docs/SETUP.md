@@ -16,12 +16,11 @@ Set up Lingua on this laptop and continue the roadmap.
 2. Clone https://github.com/sanchour/lingua..git into a folder called "lingua" here. From then
    on, work only inside that folder, and never touch anything to do with my internship.
 3. Read lingua/CLAUDE.md first and follow it for everything: my way of working, the rules and
-   where the work stands. Then read docs/SETUP.md, the "Lingua 3.0" part of docs/ROADMAP.md
-   with its handover, and "Lingua updates.txt".
+   where the work stands. Then read docs/HANDOVER.md, the work queue.
 4. Run npm ci, npm run typecheck, npm test and npm run build to check this laptop works.
-5. Continue Lingua 3.0 from 3.0-1: switch to the branch lingua-3.0/languages-wip, merge main
-   into it, and start the word-data download in the background (docs/SETUP.md, section 5,
-   about 2 GB). Then carry on through 3.0-2 to 3.0-9.
+5. Take the first free step in the queue of docs/HANDOVER.md (claim it first, as it says) and
+   carry on through the queue. Start the word-data download (docs/SETUP.md, section 5, about
+   2 GB) in the background only when a step builds language packs.
 
 Work on your own: plan each step in the roadmap, build it without asking me, and commit and
 push after each finished step so the site updates. The first push needs my GitHub sign-in:
@@ -61,8 +60,8 @@ npm run build      # type check + production build into dist/
 Open the `lingua` folder in the Code tab of the Claude desktop app. Claude reads
 [CLAUDE.md](../CLAUDE.md) by itself: the way of working (plan, build, check, commit, push after
 every prompt, end notes), the rules (only this folder, nothing to do with the internship, keys
-only in headers, no real sign-ins) and where the work stands. To carry on, say for example
-"Continue Lingua 3.0 from the roadmap".
+only in headers, no real sign-ins) and where the work stands. To carry on, paste the prompt at the top of
+[HANDOVER.md](HANDOVER.md).
 
 Claude's memory from the first PC doesn't travel; CLAUDE.md holds what it held. If you want work
 to resume by itself after a usage limit, ask the new session to set that up.
