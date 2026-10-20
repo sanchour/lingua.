@@ -607,6 +607,20 @@ Short records of choices that are not obvious from the code. Newest last.
   transcript with Whisper's kept in `original`, so matching can run again from it and Stop
   puts it back. A part transcribed later is matched at once.
 
+## 2026-10-20 — Audiobooks get their own Sonus tab
+
+- **Next to Podcasts, not a page off Library.** The user asked for audiobooks as a section of
+  their own beside Podcasts. The tab mirrors Podcasts: what you have first (a cover grid, like
+  followed podcasts), then discovery (LibriVox), then the free courses. The old page
+  /sonus/audiobooks redirects to it; a book's page goes back to it.
+- **Five tabs still fit a phone** (375 px) without scrolling sideways: the tab is "Audiobooks"
+  from the `sm` width and "Books" below it (`Segmented` options can now carry a `short` label).
+- **Progress on the cover:** a thin bar at the cover's foot shows how much of the book is heard
+  (finished parts plus the place in the current one, when every part's length is known), or
+  the share of a course's lessons done. A book never played says how many parts it has.
+- **LibriVox's catalogue link** moved from the course cards to under the LibriVox search, since
+  it is books, not a course.
+
 ## 2026-10-19 — Lingua 3.0-6, part 2: comics
 
 - **A comic is a text whose chapters are pages:** the page's picture, then its speech bubbles as

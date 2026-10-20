@@ -275,6 +275,8 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 
 ## Lingua 3.0-6, part 3: audiobooks and courses
 
+- [ ] Sonus shows five tabs on the phone without scrolling sideways; "Books" opens Audiobooks:
+      your books with the part you're on and a bar on the cover, LibriVox below, then courses.
 - [ ] Sonus › Add › Free audiobooks: Spanish books show with covers; search "esopo"; open one.
 - [ ] Its page: Start plays part 1 (it streams); the player says "Part 1 of 30"; the arrow moves
       to part 2 and keeps playing.

@@ -60,7 +60,7 @@ export default function BookPage() {
 
   return (
     <>
-      <BackLink to="/sonus">Sonus</BackLink>
+      <BackLink to="/sonus?tab=books">Audiobooks</BackLink>
 
       <header className="flex flex-col gap-5 sm:flex-row sm:items-end">
         <Artwork title={book.title} coverBlobId={book.coverBlobId} coverUrl={book.coverUrl} className="w-36 sm:w-44" rounded="rounded-3xl" />
@@ -138,7 +138,7 @@ export default function BookPage() {
               onClick={async () => {
                 setSheet(null);
                 await deleteBook(book.id);
-                navigate('/sonus');
+                navigate('/sonus?tab=books');
               }}
             >
               Remove

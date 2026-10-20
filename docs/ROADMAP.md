@@ -688,11 +688,14 @@ for this step (under "Lingua 3.0, third list" in "Lingua updates.txt").
       courses (lesson by lesson, with their own order and "lesson done"), and links to good free
       courses per language. *Done (2026-10-20):* Add › "Audiobook or course" (files, or a folder
       on desktop; parts by track number, else by name; an .m4b or any file with chapters is a
-      one-part audiobook) and "Free audiobooks" (/sonus/audiobooks: LibriVox through archive.org,
+      one-part audiobook) and "Free audiobooks" (now Sonus's own Audiobooks tab, see below: LibriVox through archive.org,
       searchable, plus Language Transfer and FSI per language, and "Add a course"). A book page
       (/sonus/book/:id) with Continue, the parts (or one file's chapters), lessons to tick,
       rename, audiobook/course, read along, remove; a shelf in Library, one entry per book in
-      Recently played. In the player: the book in the back link, "Part 3 of 12", the chapter
+      Recently played. *Then (2026-10-20, the user's request):* audiobooks became a Sonus tab of
+      their own between Podcasts and Radio ("Books" on a phone): your audiobooks and courses as
+      covers with how far in you are, LibriVox's free books with search, the free courses, and
+      "Add your own"; /sonus/audiobooks now opens it. In the player: the book in the back link, "Part 3 of 12", the chapter
       playing, chapters to jump to, part arrows, "Lesson done", and a moon for the sleep timer
       (5–60 minutes with a fade, end of chapter, end of part; the minutes left on the moon and
       the mini player). At a part's end an audiobook plays on and a course marks the lesson done
@@ -979,7 +982,7 @@ v11 is kept for part 4's chats, the 3.0-7/3.0-8 session starts at v12.
   `services/sonus/librivox.ts` and `courses.ts`, the sleep timer's rules in `core/audio/sleep.ts`
   with the engine's part and chapter handling in `services/audio/engine.ts`, read along in
   `services/sonus/readAlong.ts`; the pages are `features/sonus/BookPage.tsx`,
-  `AudiobooksPage.tsx`, `library/AddBookDrawer.tsx`, and `player/BookBar.tsx`, `Chapters.tsx`,
+  `library/BooksTab.tsx` (the Audiobooks tab), `library/BookGrid.tsx`, `library/AddBookDrawer.tsx`, and `player/BookBar.tsx`, `Chapters.tsx`,
   `SleepTimer.tsx`.
 - **Part 4:** the conversation corner (prompts and links, nothing sent from Lingua) and the
   in-app text chat with an AI key (`src/services/llm`).

@@ -167,6 +167,11 @@ Practise writing in the target language; get corrected, explained and graded.
 
 ## Audiobooks and courses in Sonus (3.0-6)
 
+- **The Audiobooks tab** (Sonus, between Podcasts and Radio; "Books" on a phone): your
+  audiobooks and courses as covers, each with the part you're on (or the lessons done) and a
+  thin bar for how much is heard; then LibriVox's free books in the language, searchable by
+  title or author, with a link to its whole catalogue; then free courses. "Add your own" takes
+  files or a folder.
 - **Add one** (Sonus › Add): "Audiobook or course" takes several files or, on desktop, a folder;
   parts play in track order (else by name), chapters inside the files are kept, and the title
   comes from the files. An .m4b added as plain audio becomes an audiobook too. "Free

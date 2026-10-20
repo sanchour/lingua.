@@ -24,9 +24,11 @@ import { MediaRow } from './library/MediaRow';
 import { PodcastGrid } from './library/PodcastGrid';
 
 const RadioTab = lazy(() => import('./radio/RadioTab'));
+const BooksTab = lazy(() => import('./library/BooksTab'));
 
-/** Library first (music, podcasts and stations together), then each kind on its own, with discovery. */
-type Tab = 'library' | 'music' | 'podcasts' | 'radio';
+/** Library first (music, podcasts, books and stations together), then each kind on its own, with discovery. */
+type Tab = 'library' | 'music' | 'podcasts' | 'books' | 'radio';
+const TABS: readonly Tab[] = ['library', 'music', 'podcasts', 'books', 'radio'];
 
 const SORTS: Array<{ value: MediaSort; label: string }> = [
   { value: 'recent', label: 'Recently played' },
@@ -67,7 +69,7 @@ export default function SonusPage() {
   const [params, setParams] = useSearchParams();
   // Old links: ?tab=discover was podcast discovery, now part of Podcasts; ?q= searches music.
   const requested = params.get('tab');
-  const tab: Tab = requested === 'music' || requested === 'podcasts' || requested === 'radio' ? requested : requested === 'discover' ? 'podcasts' : params.get('q') ? 'music' : 'library';
+  const tab: Tab = TABS.find((t) => t === requested) ?? (requested === 'discover' ? 'podcasts' : params.get('q') ? 'music' : 'library');
   const navigate = useNavigate();
   // Music is Cantus, a room of its own: the tab opens it. Back from it (its X), the tab says so.
   const leftCantus = Boolean((useLocation().state as LeftCantusState | null)?.leftCantus);
@@ -130,6 +132,7 @@ export default function SonusPage() {
                     { value: 'library', label: 'Library' },
                     { value: 'music', label: 'Music' },
                     { value: 'podcasts', label: 'Podcasts' },
+                    { value: 'books', label: 'Audiobooks', short: 'Books' },
                     { value: 'radio', label: 'Radio' },
                   ]}
                 />
@@ -153,6 +156,11 @@ export default function SonusPage() {
               <RadioTab lang={lang} flag={language.flag} />
             </Suspense>
           )}
+          {tab === 'books' && (
+            <Suspense fallback={null}>
+              <BooksTab lang={lang} />
+            </Suspense>
+          )}
           {tab === 'library' &&
             media &&
             feeds &&
@@ -170,7 +178,7 @@ export default function SonusPage() {
                 </div>
               )
             ) : (
-              <LibraryHome lang={lang} media={media} visible={visible} feeds={feeds} playback={playback} transcribed={transcribed} onMusic={() => setTab('music')} onPodcasts={findPodcasts} onRadio={() => setTab('radio')} />
+              <LibraryHome lang={lang} media={media} visible={visible} feeds={feeds} playback={playback} transcribed={transcribed} onMusic={() => setTab('music')} onPodcasts={findPodcasts} onBooks={() => setTab('books')} onRadio={() => setTab('radio')} />
             ))}
           {tab === 'podcasts' && (
             <div className="space-y-10">

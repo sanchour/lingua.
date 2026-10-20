@@ -8,6 +8,8 @@ import { cx } from '@/lib/cx';
 export interface SegmentedOption<T extends string> {
   value: T;
   label: string;
+  /** A shorter label for a phone's width. */
+  short?: string;
   icon?: LucideIcon;
   /** Accessible name for icon-only options. */
   ariaLabel?: string;
@@ -68,7 +70,14 @@ export function Segmented<T extends string>({ value, onChange, options, label, b
             )}
             <span className="relative flex min-w-0 items-center justify-center gap-1.5">
               {Icon && <Icon size={16} aria-hidden className="shrink-0" />}
-              <span className="truncate">{o.label}</span>
+              {o.short ? (
+                <>
+                  <span className="truncate sm:hidden">{o.short}</span>
+                  <span className="hidden truncate sm:inline">{o.label}</span>
+                </>
+              ) : (
+                <span className="truncate">{o.label}</span>
+              )}
             </span>
           </button>
         );

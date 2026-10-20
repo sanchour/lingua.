@@ -58,7 +58,7 @@ export function AddMenu({ lang, onDiscover }: { lang: string; onDiscover: () => 
     if (choice === 'files') void addFiles();
     else if (choice === 'discover') onDiscover();
     else if (choice === 'book') setBook(true);
-    else if (choice === 'free') navigate('/sonus/audiobooks');
+    else if (choice === 'free') navigate('/sonus?tab=books');
     else setLink(choice);
   };
 

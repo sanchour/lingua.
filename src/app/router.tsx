@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { AudiobooksPage, BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage, MundusPage } from './pages';
+import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage, MundusPage } from './pages';
 import { Root } from './Root';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -30,7 +30,7 @@ export const router = createBrowserRouter(
         { path: 'sonus/play/:mediaId', element: <SonusPlayerPage /> },
         { path: 'sonus/podcast/:feedId', element: <SonusFeedPage /> },
         { path: 'sonus/book/:bookId', element: <SonusBookPage /> },
-        { path: 'sonus/audiobooks', element: <AudiobooksPage /> },
+        { path: 'sonus/audiobooks', element: <Navigate to="/sonus?tab=books" replace /> },
         { path: 'sonus/commute', element: <CommutePage /> },
         { path: 'sonus/station/:stationId', element: <StationPage /> },
         { path: 'sonus/song/:songId', element: <SongMoved /> },

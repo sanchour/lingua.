@@ -20,6 +20,12 @@ export function AddBookDrawer({ lang, kind: initialKind = 'audiobook', open, onC
   const [author, setAuthor] = useState('');
   const [kind, setKind] = useState<BookKind>(initialKind);
   const [busy, setBusy] = useState(false);
+  const [wasOpen, setWasOpen] = useState(open);
+  // Each opening starts from the kind it was opened for.
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setKind(initialKind);
+  }
   const audio = files.filter(isAudioFile);
 
   const close = () => {

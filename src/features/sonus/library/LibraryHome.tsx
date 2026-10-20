@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import { BookHeadphones, ChevronRight, FileAudio, Headphones, Music2, Radio, Search } from 'lucide-react';
 import { useBooks } from '@/data/books';
-import type { Book } from '@/data/books';
+import { BookTile } from './BookGrid';
 import { useSavedStations } from '@/data/radio';
 import { useRecentSongs, useSavedSongs } from '@/data/songs';
 import { episodeMedia } from '@/data/media';
@@ -37,15 +37,16 @@ interface LibraryHomeProps {
   transcribed?: Set<string>;
   onMusic: () => void;
   onPodcasts: () => void;
+  onBooks: () => void;
   onRadio: () => void;
 }
 
 /**
  * Sonus's first page: everything you listen to in the language, music and podcasts together. What
  * you played last first, then your songs, the podcasts you follow and their new episodes, then your
- * own audio. Music and Podcasts have their own tabs, with discovery.
+ * own audio. Music, Podcasts, Audiobooks and Radio have their own tabs, with discovery.
  */
-export function LibraryHome({ lang, media, visible, feeds, playback, transcribed, onMusic, onPodcasts, onRadio }: LibraryHomeProps) {
+export function LibraryHome({ lang, media, visible, feeds, playback, transcribed, onMusic, onPodcasts, onBooks, onRadio }: LibraryHomeProps) {
   const saved = useSavedSongs(lang);
   const recentSongs = useRecentSongs(lang, 12);
   const savedStations = useSavedStations(lang);
@@ -174,7 +175,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
       </Shelf>
 
       {books && books.length > 0 && (
-        <Shelf title="Audiobooks and courses" more={{ label: 'Find more', onClick: () => navigate('/sonus/audiobooks') }}>
+        <Shelf title="Audiobooks and courses" more={{ label: 'See all', onClick: onBooks }}>
           <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
             {books.map((b) => (
               <li key={b.id} className="w-32 shrink-0 snap-start sm:w-36">
@@ -227,28 +228,6 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
         Podcasts, audiobooks, radio and artists picked for you
       </MundusLink>
     </div>
-  );
-}
-
-function BookTile({ book, progress }: { book: Book; progress?: Map<string, PlaybackProgress> }) {
-  const where =
-    book.kind === 'course'
-      ? `${book.done} of ${book.parts.length} lessons done`
-      : book.parts.length > 1
-        ? `Part ${Math.max(1, book.parts.findIndex((p) => p.lastPlayedAt === book.lastPlayedAt) + 1)} of ${book.parts.length}`
-        : progress?.get(book.parts[0].id)?.completed
-          ? 'Finished'
-          : (book.author ?? 'Audiobook');
-  return (
-    <Link to={`/sonus/book/${book.id}`} className="group block">
-      <Artwork title={book.title} coverBlobId={book.coverBlobId} coverUrl={book.coverUrl} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
-      <span lang={book.lang} className="mt-1.5 block truncate text-[13.5px] font-semibold">
-        {book.title}
-      </span>
-      <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
-        <BookHeadphones size={12} className="shrink-0 text-sage-text" aria-hidden /> {where}
-      </span>
-    </Link>
   );
 }
 
