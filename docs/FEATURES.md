@@ -359,7 +359,6 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   learn. Your lines come back with corrections under them. Chats are kept, backed up and synced,
   to carry on or delete.
 
-## Mundus (3.0-7)
 ## Mundus, the guide (3.0-7)
 
 - **A friend who points the way.** Mundus looks at your last seven days (reading, listening,
