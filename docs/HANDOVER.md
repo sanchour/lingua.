@@ -72,7 +72,7 @@ read that part before starting.
 | 16 | [ ] | **Mundus** (the interactive guide, one Explore, Things to try). **Parallel** after 2. | 5.2-7 | M |
 | 17 | [ ] | **Grammatica's guided path** and full-width lessons. **Parallel** after 1 and 2. | 5.2-8 | L |
 | 18 | [ ] | **Ratio** (one language, compact, goals in Tabula, more numbers). **Parallel.** | 5.2-9 | M |
-| 19 | [ ] | **Grammatica part 6: topic maps for every language** (3.0-8). **Parallel.** | ROADMAP "3.0-8" | L |
+| 19 | [~] *claimed 2026-10-20* | **Grammatica part 6: topic maps for every language** (3.0-8). **Parallel.** | ROADMAP "3.0-8" | L |
 | 20 | [ ] | **A touch of the language in the design.** After the room steps above (it touches every room lightly). | 5.1-9 | M |
 | 21 | [ ] | **Lingua 5 complete:** the full check; the version says 5.0. Last, after 22. | 5.1-10 and 5.2-10 | S |
 | 22 | [ ] | **Visio, as Lingua 5.2-4:** YouTube inside Lingua with two subtitle lines; the streaming services' subtitles beside the show playing in its own app, with the same taps and translations; a Lingua browser extension for them (decided yes); the services' real marks. **Parallel** after 2. | 5.2-4 | L |
