@@ -41,7 +41,7 @@ async function install({ lang, url }: DictWorkerRequest): Promise<void> {
 
   const db = createDb();
   await db.fullDict.where('lang').equals(lang).delete();
-  const rows: FullDictRow[] = file.words.map((w) => ({ lang, key: normalizeWord(w.w, lang), fold: foldKey(w.w, lang), word: w.w, rank: w.r, confused: w.c, entries: w.e }));
+  const rows: FullDictRow[] = file.words.map((w) => ({ lang, key: normalizeWord(w.w, lang), fold: foldKey(w.w, lang), word: w.w, rank: w.r, confused: w.c, entries: w.e, mono: w.m, tatoeba: w.t }));
   for (let i = 0; i < rows.length; i += CHUNK) {
     await db.fullDict.bulkPut(rows.slice(i, i + CHUNK));
     post({ type: 'progress', phase: 'store', pct: Math.min(1, (i + CHUNK) / rows.length) });

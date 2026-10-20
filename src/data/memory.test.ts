@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createDb, TABLE_NAMES } from './db';
 import type { LinguaDB } from './db';
 import { recordSighting, sightingsOf, sourceOf, wordMemory } from './memory';
-import { cut, distractors, locate } from './sentences';
+import { buildGapRound, cut, distractors, locate } from './sentences';
 import { setWordState } from './words';
 
 const open: LinguaDB[] = [];
@@ -80,5 +80,20 @@ describe('sentences with a gap', () => {
     const wrong = distractors('perro', pool, 'es', () => 0.5);
     expect(wrong).toHaveLength(3);
     expect(wrong.map((w) => w.toLowerCase())).not.toContain('perro');
+  });
+
+  it('plays a deck’s own cards first, from their example or the sentence they were met in', async () => {
+    const db = freshDb();
+    const note = (id: string, term: string, extra: object) => ({ id, deckId: 'd1', lang: 'es', term, meaning: term.toUpperCase(), createdAt: 1, updatedAt: 1, ...extra });
+    await db.notes.bulkPut([
+      note('n1', 'perro', { example: { text: 'Mi perro duerme.', translation: 'My dog sleeps.', cloze: [3, 8] } }),
+      note('n2', 'gato', { context: { sentence: 'El Gato come pescado.' } }),
+      note('n3', 'sol', {}),
+      { ...note('n4', 'luna', { example: { text: 'La luna brilla.' } }), deckId: 'other' },
+    ] as never);
+    const round = await buildGapRound('es', 'A1', 'type', 5, 'd1', db);
+    expect(round.map((r) => [r.answer, r.from, r.gloss])).toEqual(expect.arrayContaining([['perro', 'deck', 'PERRO'], ['Gato', 'deck', 'GATO']]));
+    expect(round.find((r) => r.answer === 'perro')?.translation).toBe('My dog sleeps.');
+    expect(round.some((r) => r.lemma === 'luna' || r.lemma === 'sol')).toBe(false);
   });
 });

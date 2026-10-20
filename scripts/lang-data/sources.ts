@@ -102,5 +102,17 @@ export const corpusFile = (s: PackSource, corpus: string) => new URL(`opus-${cor
 export const UNIHAN_URL = 'https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip';
 export const unihanZip = new URL('unihan.zip', CACHE_DIR);
 export const unihanVariants = new URL('Unihan_Variants.txt', CACHE_DIR);
+/**
+ * The full dictionary's extras (4.0-2): definitions from the language's own Wiktionary (kaikki.org
+ * extracts every edition but the Arabic one), and Tatoeba's sentences with their English translations.
+ */
+export const monoUrl = (lang: string) => `https://kaikki.org/${lang}wiktionary/raw-wiktextract-data.jsonl.gz`;
+/** Only the language's own words, as [word, part of speech, definitions] lines (dictionary-fetch.ts). */
+export const monoFile = (lang: string) => new URL(`mono-${lang}.jsonl.gz`, CACHE_DIR);
+export const MONO_LANGS = ['es', 'fr', 'de', 'ru', 'zh'];
+export const TATOEBA_CODES: Record<string, string> = { es: 'spa', fr: 'fra', de: 'deu', ru: 'rus', zh: 'cmn', ar: 'ara' };
+export const tatoebaUrl = (file: string) => `https://downloads.tatoeba.org/exports/per_language/${file.split(/[_-]/)[0]}/${file}.bz2`;
+/** Decompressed: `<iso3>_sentences.tsv`, `<iso3>-eng_links.tsv` and `eng_sentences.tsv`. */
+export const tatoebaFile = (file: string) => new URL(`tatoeba/${file}`, CACHE_DIR);
 /** count.ts output: words counted from the OPUS corpus, split the way the reader splits them. */
 export const countedFile = (s: PackSource) => new URL(`counted-${s.code}.txt`, CACHE_DIR);

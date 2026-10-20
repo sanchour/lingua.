@@ -9,14 +9,16 @@
 // antonyms, set phrases (Wiktionary's multi-word entries that contain the word, and its derived
 // terms), the other half of aspect and gender pairs, the etymology, a recording, and words that
 // are easily confused with it (one letter apart, or for Mandarin the same syllables in other tones).
-import { createReadStream, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+// Since v2, with dictionary-fetch.ts's files: definitions from the language's own Wiktionary, and
+// up to three Tatoeba sentences per word with their English translations.
+import { createReadStream, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createGunzip, gunzipSync, gzipSync } from 'node:zlib';
 import { normalizeWord } from '../../src/core/text/normalize.ts';
 import { DICT_LANGS, DICT_VERSION, dictFileName } from '../../src/core/dictionary/format.ts';
-import type { FullDictFile, FullEntry, FullSense } from '../../src/core/dictionary/format.ts';
+import type { FullDictFile, FullEntry, FullSense, MonoDefinitions, TatoebaSentence } from '../../src/core/dictionary/format.ts';
 import { packFileName } from '../../src/core/packs/format.ts';
 import type { PackFile } from '../../src/core/packs/format.ts';
-import { frequencyFile, kaikkiFile, PACK_SOURCES, unihanVariants } from './sources.ts';
+import { frequencyFile, kaikkiFile, monoFile, PACK_SOURCES, TATOEBA_CODES, tatoebaFile, unihanVariants } from './sources.ts';
 
 /** Mandarin: Lingua keys words by their Simplified spelling (as the pack does); Wiktionary by the Traditional. */
 function simplifiedChars(): Map<string, string> {
@@ -39,6 +41,12 @@ const MAX_LIST = 8;
 const MAX_PHRASES = 14;
 const ETYMOLOGY_LEN = 480;
 const CONFUSED_RANK = 20_000;
+const MONO_POS = 3;
+const MONO_DEFS = 4;
+const MONO_LEN = 160;
+const MONO_WORDS = 30_000;
+const SENTENCES = 3;
+const SENTENCE_LEN = 110;
 
 /** Labels worth showing on a sense (Wiktionary has many more, mostly grammatical). */
 const LABELS = new Set([
@@ -195,6 +203,108 @@ const toneless = (pinyin: string) => pinyin.normalize('NFD').replace(/[̀-ͯ]/g,
 /** Arabic is compared without its vowel marks. */
 const bare = (w: string, lang: string) => (lang === 'ar' ? w.replace(/[ً-ْٰ]/g, '') : w);
 
+/** Definitions from the language's own Wiktionary, by part of speech, for the words the dictionary has. */
+async function monoOf(lang: string, has: (key: string) => boolean, simplified: Map<string, string> | null): Promise<Map<string, MonoDefinitions[]>> {
+  const out = new Map<string, MonoDefinitions[]>();
+  if (!existsSync(monoFile(lang))) {
+    console.log(`  ${lang}: no definitions of its own (dictionary-fetch.ts hasn't run, or there's no edition)`);
+    return out;
+  }
+  for await (const line of readLines(monoFile(lang))) {
+    if (!line) continue;
+    const [word, pos, defs] = JSON.parse(line) as [string, string, string[]];
+    // The Chinese edition writes Traditional; the dictionary is keyed by Simplified.
+    const key = normalizeWord(simplified ? [...word].map((c) => simplified.get(c) ?? c).join('') : word, lang);
+    // Proper names ("Nom de famille.") aren't the word a reader looks up.
+    if (!has(key) || pos === 'name') continue;
+    const clean = defs.map((d) => cap(d, MONO_LEN)).filter((d) => d.length > 1);
+    const list = out.get(key) ?? [];
+    const same = list.find((x) => x.pos === pos);
+    if (same) same.defs = [...new Set([...same.defs, ...clean])].slice(0, MONO_DEFS);
+    else if (list.length < MONO_POS && clean.length) list.push({ pos, defs: [...new Set(clean)].slice(0, MONO_DEFS) });
+    out.set(key, list);
+  }
+  return out;
+}
+
+/** Tatoeba's sentences that have an English translation: up to three per word, of a middling length. */
+function tatoebaOf(lang: string, has: (key: string) => boolean, pack: PackFile): Map<string, TatoebaSentence[]> {
+  const out = new Map<string, TatoebaSentence[]>();
+  const code = TATOEBA_CODES[lang];
+  const own = code && tatoebaFile(`${code}_sentences.tsv`);
+  const links = code && tatoebaFile(`${code}-eng_links.tsv`);
+  if (!own || !links || !existsSync(own) || !existsSync(links)) {
+    console.log(`  ${lang}: no Tatoeba files (run dictionary-fetch.ts)`);
+    return out;
+  }
+  const englishOf = new Map<number, number>();
+  for (const line of readFileSync(links, 'utf8').split('\n')) {
+    const [a, b] = line.split('\t');
+    if (a && b && !englishOf.has(+a)) englishOf.set(+a, +b);
+  }
+  const needed = new Set(englishOf.values());
+  const english = new Map<number, string>();
+  for (const line of readFileSync(tatoebaFile('eng_sentences.tsv'), 'utf8').split('\n')) {
+    const tab = line.indexOf('\t');
+    const id = +line.slice(0, tab);
+    if (needed.has(id)) english.set(id, line.slice(line.indexOf('\t', tab + 1) + 1).trim());
+  }
+
+  // Words as the reader finds them: a form leads to its lemmas, a word the dictionary has to itself.
+  const lemmasOf = new Map<string, string[]>();
+  for (const [form, indexes] of pack.forms) lemmasOf.set(form, indexes.map((i) => pack.lemmas[i]?.[0]).filter((k): k is string => Boolean(k)));
+  const keysOf = (token: string) => {
+    const norm = normalizeWord(token, lang);
+    return [...new Set([...(lemmasOf.get(norm) ?? []), norm])].filter(has);
+  };
+  function* wordsIn(text: string): Generator<[key: string, start: number, end: number]> {
+    if (lang === 'zh') {
+      // No spaces: the longest word the dictionary has at each point (up to four characters).
+      const chars = [...text];
+      let offset = 0;
+      for (let i = 0; i < chars.length; ) {
+        let size = Math.min(4, chars.length - i);
+        while (size > 1 && !has(chars.slice(i, i + size).join(''))) size--;
+        const word = chars.slice(i, i + size).join('');
+        if (has(word)) yield [word, offset, offset + word.length];
+        offset += word.length;
+        i += size;
+      }
+      return;
+    }
+    for (const m of text.matchAll(/[\p{L}\p{M}]+(?:['’][\p{L}\p{M}]+)*/gu)) {
+      let keys = keysOf(m[0]);
+      let start = m.index;
+      // French and the rest: l'homme, qu'elle → the word after the apostrophe.
+      const cut = m[0].search(/['’]/);
+      if (!keys.length && cut > 0) {
+        keys = keysOf(m[0].slice(cut + 1));
+        start += cut + 1;
+      }
+      for (const key of keys) yield [key, start, m.index + m[0].length];
+    }
+  }
+
+  const candidates = new Map<string, TatoebaSentence[]>();
+  for (const line of readFileSync(own, 'utf8').split('\n')) {
+    const [id, , raw] = line.split('\t');
+    const text = raw?.trim();
+    const translation = english.get(englishOf.get(+id) ?? -1);
+    if (!text || !translation || text.length < 8 || text.length > SENTENCE_LEN || translation.length > SENTENCE_LEN + 20) continue;
+    const seen = new Set<string>();
+    for (const [key, start, end] of wordsIn(text)) {
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const list = candidates.get(key) ?? [];
+      if (list.length < 24) list.push([text, translation, start, end]);
+      candidates.set(key, list);
+    }
+  }
+  // Neither a bare phrase nor a paragraph: closest to 45 characters first.
+  for (const [key, list] of candidates) out.set(key, list.sort((a, b) => Math.abs(a[0].length - 45) - Math.abs(b[0].length - 45)).slice(0, SENTENCES));
+  return out;
+}
+
 async function build(lang: string) {
   const source = PACK_SOURCES.find((s) => s.code === lang);
   if (!source) throw new Error(`No sources for ${lang}`);
@@ -286,20 +396,34 @@ async function build(lang: string) {
     for (const [variant, others] of confusedOf([...keyed.keys()])) confused.set(keyed.get(variant)!, others.map((o) => keyed.get(o)!));
   }
 
+  const has = (key: string) => found.has(key);
+  const mono = await monoOf(lang, has, simplified);
+  const sentences = tatoebaOf(lang, has, pack);
+  console.log(`  ${lang}: own definitions for ${mono.size.toLocaleString()} words, Tatoeba sentences for ${sentences.size.toLocaleString()}`);
+
   const out: FullDictFile = {
     format: 'lingua-dict',
     version: DICT_VERSION,
     lang,
     builtAt: new Date().toISOString().slice(0, 10),
-    sources: ['Wiktionary via kaikki.org (CC BY-SA 4.0)', 'FrequencyWords (CC BY-SA 4.0) for ranks'],
+    sources: [
+      'Wiktionary via kaikki.org (CC BY-SA 4.0)',
+      ...(mono.size ? [`The ${lang} Wiktionary via kaikki.org (CC BY-SA 4.0)`] : []),
+      ...(sentences.size ? ['Tatoeba (CC BY 2.0 FR)'] : []),
+      'FrequencyWords (CC BY-SA 4.0) for ranks',
+    ],
     words: [...found]
       .map(([key, row]) => {
         const r = rank.get(key);
         const c = (confused.get(key) ?? []).sort((a, b) => (rank.get(a) ?? Infinity) - (rank.get(b) ?? Infinity)).slice(0, 4).map((k) => found.get(k)!.w);
-        return { w: row.w, ...(r ? { r } : {}), ...(c.length ? { c } : {}), e: row.e };
+        const m = mono.get(key);
+        const t = sentences.get(key);
+        return { w: row.w, ...(r ? { r } : {}), ...(c.length ? { c } : {}), e: row.e, ...(m?.length ? { m } : {}), ...(t?.length ? { t } : {}) };
       })
       // By lemma rank, then (for words the pack doesn't rank) by how common the word is as written.
-      .sort((a, b) => (a.r ?? Infinity) - (b.r ?? Infinity) || (formRank.get(normalizeWord(a.w, lang)) ?? Infinity) - (formRank.get(normalizeWord(b.w, lang)) ?? Infinity)),
+      .sort((a, b) => (a.r ?? Infinity) - (b.r ?? Infinity) || (formRank.get(normalizeWord(a.w, lang)) ?? Infinity) - (formRank.get(normalizeWord(b.w, lang)) ?? Infinity))
+      // Definitions in the language for the common words only: they double the file otherwise.
+      .map((w, i) => (i < MONO_WORDS || !w.m ? w : { ...w, m: undefined })),
   };
   mkdirSync(new URL('../../public/dict/', import.meta.url), { recursive: true });
   const gz = gzipSync(JSON.stringify(out), { level: 9 });

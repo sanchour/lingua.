@@ -9,11 +9,10 @@ import { cefrForRank } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
 import type { WordState } from '@/data/types';
-import { recordSighting, sightingLink, useSightings } from '@/data/memory';
+import { recordSighting } from '@/data/memory';
 import { setWordGloss, useWord } from '@/data/words';
 import type { WordContext } from '@/data/words';
 import { Badge, Button, Drawer, Segmented } from '@/design/primitives';
-import { useLayout } from '@/design/hooks/useLayout';
 import { spring } from '@/design/motion';
 import { explainWord } from '@/services/llm/explain';
 import { findBaseForms } from '@/services/translate/gloss';
@@ -21,7 +20,7 @@ import type { WordExplanation } from '@/services/llm/explain';
 import { LlmError } from '@/services/llm/client';
 import { AddToDeck } from './AddToDeck';
 import { WordForms } from './WordForms';
-import { KIND_ICONS, Marked } from '@/features/thesaurus/library/MemoryView';
+import { entryPath } from '@/features/thesaurus/dictionary/DictionarySearch';
 import { WhyThisForm } from '@/features/grammatica/links';
 import { SpeakButton } from '@/features/speech/SpeakButton';
 
@@ -43,7 +42,7 @@ const GENDER: Record<string, string> = { m: 'masculine', f: 'feminine', n: 'neut
 /** Tier 2: everything about one word, tucked into a drawer (slide-over on desktop, sheet on iPhone). */
 export function WordDrawer({ lang, word, onClose, onState, onGloss }: WordDrawerProps) {
   return (
-    <Drawer open={word !== null} onClose={onClose} title={word?.context.surface ?? ''} description={undefined} size="lg">
+    <Drawer open={word !== null} onClose={onClose} title={word?.context.surface ?? ''} description={undefined}>
       {word && <WordDetails key={word.norm} lang={lang} word={word} onState={onState} onGloss={onGloss} />}
     </Drawer>
   );
@@ -52,7 +51,6 @@ export function WordDrawer({ lang, word, onClose, onState, onGloss }: WordDrawer
 function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: DrawerWord; onState: WordDrawerProps['onState']; onGloss: WordDrawerProps['onGloss'] }) {
   const { norm, context } = word;
   const saved = useWord(lang, norm);
-  const wide = useLayout().layout === 'wide';
   const state: WordState = saved && !saved.deletedAt ? saved.state : 0;
 
   const dict = useLiveQuery(async () => {
@@ -76,10 +74,6 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
     void recordSighting(lang, norm, context).catch(() => undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang, norm]);
-  const here = context.where?.id ?? context.songId ?? context.mediaId ?? context.textId;
-  const sightings = useSightings(lang, norm, dict?.entries[0]?.lemma ?? context.lemma);
-  const elsewhere = (sightings ?? []).filter((s) => s.sourceId !== here);
-  const [allPlaces, setAllPlaces] = useState(false);
   const [gloss, setGloss] = useState('');
   useEffect(() => setGloss(saved?.gloss ?? context.gloss ?? ''), [saved?.gloss, context.gloss]);
 
@@ -95,272 +89,165 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
     .filter(Boolean)
     .join(' · ');
 
-  const senses = (dict?.entries ?? []).reduce((n, e) => n + e!.senses.length, 0);
-  const [allSenses, setAllSenses] = useState(false);
-  // On a phone every sense shows; on desktop the first few, so the drawer fits on one screen.
-  const shown = (entry: number, count: number) => (!wide || allSenses ? count : entry === 0 ? 3 : 2);
-  const hidden = (dict?.entries ?? []).reduce((n, e, i) => n + Math.max(0, e!.senses.length - shown(i, e!.senses.length)), 0);
-
-  const badges = (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <SpeakButton lang={lang} text={context.surface ?? norm} size={16} label="Hear the word" className="size-8 bg-sunken text-ink-soft hover:text-ink" />
-      {main?.ipa && <Badge>{main.ipa}</Badge>}
-      {dict?.rank && (
-        <Badge tone="sage">
-          #{dict.rank.toLocaleString()} most common · {cefrForRank(dict.rank)}
-        </Badge>
-      )}
-      {state === 2 && saved?.noteId && (
-        <Badge tone="accent">
-          <Layers size={12} aria-hidden /> In “From my reading”
-        </Badge>
-      )}
-      {hasFullDictionary(lang) && (
-        <Link to={`/codex/dictionary/${encodeURIComponent(main?.lemma ?? norm)}`} className="ml-auto inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-[13px] font-semibold text-accent-text transition-colors hover:bg-accent-soft">
-          <BookA size={14} aria-hidden /> Full entry
-        </Link>
-      )}
-    </div>
-  );
-
-  const stateControl = (
-    <Segmented<`${WordState}`>
-      label="Word state"
-      value={String(state) as `${WordState}`}
-      onChange={(v) => onState(norm, Number(v) as WordState)}
-      block
-      options={[
-        { value: '0', label: 'Unseen', icon: Circle },
-        { value: '1', label: 'Known', icon: Check },
-        { value: '2', label: 'Learning', icon: BookMarked },
-      ]}
-    />
-  );
-
-  const tabControl = dict?.hasParadigm && (
-    <Segmented
-      label="Show"
-      value={tab}
-      onChange={setTab}
-      block
-      options={[
-        { value: 'meaning', label: 'Meaning' },
-        { value: 'forms', label: 'Forms' },
-      ]}
-    />
-  );
-
-  const meaning = (
-    <section>
-      <div className="mb-2 flex items-center gap-2">
-        <h3 className="flex-1 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</h3>
-        <AddToDeck
-          lang={lang}
-          note={{
-            term: main?.head ?? main?.lemma ?? context.surface ?? norm,
-            meaning: gloss.trim() || plainGloss(main?.senses[0]?.glosses[0] ?? ''),
-            lemma: main?.lemma,
-            pos: main?.senses[0]?.pos,
-            gender: main?.gender,
-            ipa: main?.ipa,
-            source: 'codex',
-            context: context.sentence ? { sentence: context.sentence, textId: context.textId, chapterIndex: context.chapterIndex, blockIndex: context.blockIndex } : undefined,
-          }}
-          move={state === 2 && saved?.noteId && dict?.noteDeckId ? { noteId: saved.noteId, deckId: dict.noteDeckId } : undefined}
-        />
-      </div>
-      <input
-        value={gloss}
-        onChange={(e) => setGloss(e.target.value)}
-        onBlur={commitGloss}
-        onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget as HTMLInputElement).blur()}
-        placeholder="Add your own translation"
-        aria-label="Your translation"
-        className="h-11 w-full rounded-xl border border-line bg-bg px-3.5 text-[16px] font-semibold transition-colors hover:border-line-strong focus:border-accent"
-      />
-      {context.usualGloss && !saved?.gloss && gloss === context.gloss && (
-        <p className="mt-2 flex items-start gap-1.5 text-[13px] leading-snug text-sage-text">
-          <Sparkles size={13} aria-hidden className="mt-0.5 shrink-0" />
-          <span>
-            The meaning in this sentence. Usually “{context.usualGloss}”.
-          </span>
-        </p>
-      )}
-      {dict?.base && (
-        <p className="mt-2 text-[13px] text-ink-soft">
-          Not in the dictionary as written.{' '}
-          {dict.base.part ? (
-            <>
-              Its last part, <span lang={lang} className="font-semibold">…{dict.base.via}</span>, is below.
-            </>
-          ) : (
-            <>
-              Read as <span lang={lang} className="font-semibold">{dict.base.via}</span>.
-            </>
-          )}
-        </p>
-      )}
-      {dict?.form?.d && !dict.hasParadigm && !dict.base && <p className="mt-2 text-[13px] text-ink-soft">{dict.form.d}</p>}
-    </section>
-  );
-
-  const examples = dict && dict.examples.length > 0 && (
-    <ul className={wide ? 'space-y-2.5' : 'mt-4 space-y-2.5 border-t border-line/70 pt-3'}>
-      {dict.examples.map(([sentence, translation, start, end]) => (
-        <li key={sentence}>
-          <p lang={lang} className="font-serif text-[15px] leading-snug">
-            {sentence.slice(0, start)}
-            <span className="font-semibold">{sentence.slice(start, end)}</span>
-            {sentence.slice(end)}
-          </p>
-          {translation && <p className="text-[13px] text-ink-soft italic">{translation}</p>}
-        </li>
-      ))}
-    </ul>
-  );
-
-  const dictionary = dict && dict.entries.length > 0 && (
-    <section>
-      <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Dictionary</h3>
-      <div className={wide ? 'space-y-3' : 'space-y-4'}>
-        {dict.entries.map((entry, e) => (
-          <div key={entry!.lemma}>
-            <p lang={lang} className="font-serif text-lg font-semibold">
-              {entry!.head ?? entry!.lemma}
-            </p>
-            <ol className={wide ? 'mt-0.5 space-y-1' : 'mt-1 space-y-1.5'}>
-              {entry!.senses.slice(0, shown(e, entry!.senses.length)).map((sense, i) => (
-                <li key={i} className="flex gap-2 text-[14.5px] leading-snug">
-                  <span className="mt-0.5 shrink-0 text-[11px] font-bold tracking-wide text-ink-faint uppercase">{sense.pos}</span>
-                  <span className={wide && !allSenses ? 'line-clamp-2' : undefined}>{sense.glosses.join('; ')}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        ))}
-      </div>
-      {wide && (hidden > 0 || (allSenses && senses > 3)) && (
-        <button type="button" onClick={() => setAllSenses((v) => !v)} className="hit mt-2 text-[13px] font-semibold text-accent-text underline-offset-2 hover:underline">
-          {allSenses ? 'Fewer meanings' : `${hidden} more ${hidden === 1 ? 'meaning' : 'meanings'}`}
-        </button>
-      )}
-      {!wide && examples}
-      <p className={wide ? 'mt-2 text-[11.5px] text-ink-faint' : 'mt-3 text-[11.5px] text-ink-faint'}>Wiktionary via kaikki.org · CC BY-SA</p>
-    </section>
-  );
-
-  const inContext = context.sentence && (
-    <section>
-      <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">In context</h3>
-      <p lang={lang} className={wide ? 'rounded-2xl bg-surface px-4 py-3 font-serif text-[15.5px] leading-relaxed' : 'rounded-2xl bg-surface px-4 py-3 font-serif text-[16px] leading-relaxed'}>
-        <Highlighted sentence={context.sentence} word={context.surface ?? norm} />
-      </p>
-    </section>
-  );
-
-  const metBefore = elsewhere.length > 0 && (
-    <section>
-      <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">
-        Met before{elsewhere.length > 1 ? ` · ${elsewhere.length} places` : ''}
-      </h3>
-      <ul className="space-y-1.5">
-        {elsewhere.slice(0, allPlaces ? undefined : wide ? 2 : 3).map((s) => {
-          const Icon = KIND_ICONS[s.kind];
-          const to = sightingLink(s);
-          const inner = (
-            <>
-              <span className="flex items-center gap-1.5 text-[12px] font-semibold text-ink-faint">
-                <Icon size={12} aria-hidden /> <span className="truncate">{s.title}</span>
-              </span>
-              {s.sentence && (
-                <span lang={lang} className="mt-0.5 line-clamp-2 block font-serif text-[14.5px] leading-snug">
-                  <Marked sentence={s.sentence} word={s.surface ?? s.norm} />
-                </span>
-              )}
-            </>
-          );
-          return (
-            <li key={s.id}>
-              {to ? (
-                <Link to={to} className="block rounded-xl px-3 py-2 transition-colors hover:bg-surface">
-                  {inner}
-                </Link>
-              ) : (
-                <div className="px-3 py-2">{inner}</div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      {elsewhere.length > (wide ? 2 : 3) && (
-        <button type="button" onClick={() => setAllPlaces((v) => !v)} className="hit mt-1 ml-3 text-[13px] font-semibold text-accent-text underline-offset-2 hover:underline">
-          {allPlaces ? 'Fewer places' : `All ${elsewhere.length} places`}
-        </button>
-      )}
-    </section>
-  );
-
-  const explain = <Explain lang={lang} word={context.surface ?? norm} sentence={context.sentence ?? context.surface ?? norm} compact={wide} />;
-
-  const forms = tab === 'forms' && dict?.hasParadigm && main && (
-    <>
-      {dict.form?.d && <p className="text-[14px] text-ink-soft">{dict.form.d}</p>}
-      <WordForms lang={lang} lemma={main.lemma} seen={norm} heading={false} />
-    </>
-  );
-
-  // Desktop: one screen, two columns (the word and its meanings; where it was met and more help).
-  if (wide) {
-    return (
-      <div className="-mt-1 space-y-4">
-        <div>
-          {subtitle && <p className="-mt-1 mb-2.5 font-serif text-[15px] text-ink-soft">{subtitle}</p>}
-          {badges}
-        </div>
-        <div className={tabControl ? 'grid grid-cols-[3fr_2fr] gap-3' : undefined}>
-          {stateControl}
-          {tabControl}
-        </div>
-        {dict?.form?.d && <WhyThisForm lang={lang} description={dict.form.d} />}
-        {forms || (
-          <div className="grid grid-cols-2 gap-6">
-            <div className="min-w-0 space-y-4">
-              {meaning}
-              {dictionary}
-            </div>
-            <div className="min-w-0 space-y-4">
-              {inContext}
-              {examples && (
-                <section>
-                  <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Examples</h3>
-                  {examples}
-                </section>
-              )}
-              {metBefore}
-              {explain}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       <div>
         {subtitle && <p className="-mt-2 mb-3 font-serif text-[15px] text-ink-soft">{subtitle}</p>}
-        {badges}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <SpeakButton lang={lang} text={context.surface ?? norm} size={16} label="Hear the word" className="size-8 bg-sunken text-ink-soft hover:text-ink" />
+          {main?.ipa && <Badge>{main.ipa}</Badge>}
+          {dict?.rank && (
+            <Badge tone="sage">
+              #{dict.rank.toLocaleString()} most common · {cefrForRank(dict.rank)}
+            </Badge>
+          )}
+          {state === 2 && saved?.noteId && (
+            <Badge tone="accent">
+              <Layers size={12} aria-hidden /> In “From my reading”
+            </Badge>
+          )}
+          {hasFullDictionary(lang) && (
+            <Link to={entryPath(main?.lemma ?? norm)} className="ml-auto inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-[13px] font-semibold text-accent-text transition-colors hover:bg-accent-soft">
+              <BookA size={14} aria-hidden /> Open dictionary
+            </Link>
+          )}
+        </div>
       </div>
-      {stateControl}
-      {tabControl}
+
+      <Segmented<`${WordState}`>
+        label="Word state"
+        value={String(state) as `${WordState}`}
+        onChange={(v) => onState(norm, Number(v) as WordState)}
+        block
+        options={[
+          { value: '0', label: 'Unseen', icon: Circle },
+          { value: '1', label: 'Known', icon: Check },
+          { value: '2', label: 'Learning', icon: BookMarked },
+        ]}
+      />
+
+      {dict?.hasParadigm && (
+        <Segmented
+          label="Show"
+          value={tab}
+          onChange={setTab}
+          block
+          options={[
+            { value: 'meaning', label: 'Meaning' },
+            { value: 'forms', label: 'Forms' },
+          ]}
+        />
+      )}
+
       {dict?.form?.d && <WhyThisForm lang={lang} description={dict.form.d} />}
-      {forms || (
+
+      {tab === 'forms' && dict?.hasParadigm && main ? (
         <>
-          {meaning}
-          {dictionary}
-          {inContext}
-          {metBefore}
-          {explain}
+          {dict.form?.d && <p className="text-[14px] text-ink-soft">{dict.form.d}</p>}
+          <WordForms lang={lang} lemma={main.lemma} seen={norm} heading={false} />
+        </>
+      ) : (
+        <>
+          <section>
+            <div className="mb-2 flex items-center gap-2">
+              <h3 className="flex-1 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</h3>
+              <AddToDeck
+                lang={lang}
+                note={{
+                  term: main?.head ?? main?.lemma ?? context.surface ?? norm,
+                  meaning: gloss.trim() || plainGloss(main?.senses[0]?.glosses[0] ?? ''),
+                  lemma: main?.lemma,
+                  pos: main?.senses[0]?.pos,
+                  gender: main?.gender,
+                  ipa: main?.ipa,
+                  source: 'codex',
+                  context: context.sentence ? { sentence: context.sentence, textId: context.textId, chapterIndex: context.chapterIndex, blockIndex: context.blockIndex } : undefined,
+                }}
+                move={state === 2 && saved?.noteId && dict?.noteDeckId ? { noteId: saved.noteId, deckId: dict.noteDeckId } : undefined}
+              />
+            </div>
+            <input
+              value={gloss}
+              onChange={(e) => setGloss(e.target.value)}
+              onBlur={commitGloss}
+              onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget as HTMLInputElement).blur()}
+              placeholder="Add your own translation"
+              aria-label="Your translation"
+              className="h-11 w-full rounded-xl border border-line bg-bg px-3.5 text-[16px] font-semibold transition-colors hover:border-line-strong focus:border-accent"
+            />
+            {context.usualGloss && !saved?.gloss && gloss === context.gloss && (
+              <p className="mt-2 flex items-start gap-1.5 text-[13px] leading-snug text-sage-text">
+                <Sparkles size={13} aria-hidden className="mt-0.5 shrink-0" />
+                <span>
+                  The meaning in this sentence. Usually “{context.usualGloss}”.
+                </span>
+              </p>
+            )}
+            {dict?.base && (
+              <p className="mt-2 text-[13px] text-ink-soft">
+                Not in the dictionary as written.{' '}
+                {dict.base.part ? (
+                  <>
+                    Its last part, <span lang={lang} className="font-semibold">…{dict.base.via}</span>, is below.
+                  </>
+                ) : (
+                  <>
+                    Read as <span lang={lang} className="font-semibold">{dict.base.via}</span>.
+                  </>
+                )}
+              </p>
+            )}
+            {dict?.form?.d && !dict.hasParadigm && !dict.base && <p className="mt-2 text-[13px] text-ink-soft">{dict.form.d}</p>}
+          </section>
+
+          {dict && dict.entries.length > 0 && (
+            <section>
+              <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Dictionary</h3>
+              <div className="space-y-4">
+                {dict.entries.map((entry) => (
+                  <div key={entry!.lemma}>
+                    <p lang={lang} className="font-serif text-lg font-semibold">
+                      {entry!.head ?? entry!.lemma}
+                    </p>
+                    <ol className="mt-1 space-y-1.5">
+                      {entry!.senses.map((sense, i) => (
+                        <li key={i} className="flex gap-2 text-[14.5px] leading-snug">
+                          <span className="mt-0.5 shrink-0 text-[11px] font-bold tracking-wide text-ink-faint uppercase">{sense.pos}</span>
+                          <span>{sense.glosses.join('; ')}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                ))}
+              </div>
+              {dict.examples.length > 0 && (
+                <ul className="mt-4 space-y-2.5 border-t border-line/70 pt-3">
+                  {dict.examples.map(([sentence, translation, start, end]) => (
+                    <li key={sentence}>
+                      <p lang={lang} className="font-serif text-[15px] leading-snug">
+                        {sentence.slice(0, start)}
+                        <span className="font-semibold">{sentence.slice(start, end)}</span>
+                        {sentence.slice(end)}
+                      </p>
+                      {translation && <p className="text-[13px] text-ink-soft italic">{translation}</p>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <p className="mt-3 text-[11.5px] text-ink-faint">Wiktionary via kaikki.org · CC BY-SA</p>
+            </section>
+          )}
+
+          {context.sentence && (
+            <section>
+              <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">In context</h3>
+              <p lang={lang} className="rounded-2xl bg-surface px-4 py-3 font-serif text-[16px] leading-relaxed">
+                <Highlighted sentence={context.sentence} word={context.surface ?? norm} />
+              </p>
+            </section>
+          )}
+
+          <Explain lang={lang} word={context.surface ?? norm} sentence={context.sentence ?? context.surface ?? norm} />
         </>
       )}
     </div>
@@ -379,9 +266,8 @@ function Highlighted({ sentence, word }: { sentence: string; word: string }) {
   );
 }
 
-function Explain({ lang, word, sentence, compact }: { lang: string; word: string; sentence: string; compact?: boolean }) {
+function Explain({ lang, word, sentence }: { lang: string; word: string; sentence: string }) {
   const [result, setResult] = useState<WordExplanation | null>(null);
-  const [more, setMore] = useState(!compact);
   const [error, setError] = useState<LlmError | Error | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -418,7 +304,7 @@ function Explain({ lang, word, sentence, compact }: { lang: string; word: string
   }
 
   return (
-    <motion.section initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft} className={compact ? 'rounded-2xl border border-line bg-surface p-3.5' : 'rounded-2xl border border-line bg-surface p-4'}>
+    <motion.section initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft} className="rounded-2xl border border-line bg-surface p-4">
       <h3 className="mb-2 flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
         <Sparkles size={13} aria-hidden /> Explanation
       </h3>
@@ -431,20 +317,15 @@ function Explain({ lang, word, sentence, compact }: { lang: string; word: string
           {result.form && ` · ${result.form}`}
         </p>
       )}
-      {result.explanation && <p className={compact ? 'mt-2 text-[14px] leading-snug' : 'mt-3 text-[14.5px] leading-relaxed'}>{result.explanation}</p>}
-      {!more && (result.notes.length > 0 || result.examples.length > 0) && (
-        <button type="button" onClick={() => setMore(true)} className="hit mt-2 text-[13px] font-semibold text-accent-text underline-offset-2 hover:underline">
-          Notes and examples
-        </button>
-      )}
-      {more && result.notes.length > 0 && (
+      {result.explanation && <p className="mt-3 text-[14.5px] leading-relaxed">{result.explanation}</p>}
+      {result.notes.length > 0 && (
         <ul className="mt-3 list-disc space-y-1 pl-5 text-[14px] leading-snug text-ink-soft">
           {result.notes.map((n) => (
             <li key={n}>{n}</li>
           ))}
         </ul>
       )}
-      {more && result.examples.length > 0 && (
+      {result.examples.length > 0 && (
         <div className="mt-3 space-y-2 border-t border-line pt-3">
           {result.examples.map((ex) => (
             <div key={ex.text}>

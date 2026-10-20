@@ -249,7 +249,7 @@ export interface TranslationCacheRow {
 export interface LlmCacheRow {
   /** hash(kind + model + prompt) */
   id: string;
-  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine' | 'journalCheck' | 'journalPrompt' | 'lyrics' | 'grammarSentence';
+  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine' | 'journalCheck' | 'journalPrompt' | 'lyrics' | 'grammarSentence' | 'dictTidy';
   model: string;
   response: unknown;
   createdAt: number;

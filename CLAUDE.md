@@ -14,9 +14,11 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
 - **Lingua 2.0 and 3.0 are done and live** (version 3.0.0), except Grammatica's **3.0-8 parts 5–6**
   (alphabets and writing; topic maps for every language). Parts 1–4 are live.
 - **Lingua 4.0:** 4.0-1 (tiers, the 35 placeholder languages, the language map, the sidebar and
-  icons, the Lingua+ placeholder) and 4.0-2 (the full dictionary for the six core languages, the
-  one-screen word drawer, Import a book / a comic, the end page and reading goal, the word memory,
-  sentences with a gap; Dexie v15) are done. Open: 4.0-4 and 4.0-5 (4.0-3 was removed on 2026-10-20: the karaoke and song games are dropped; its Visio part is Lingua 5.2-4). Only the six core languages
+  icons, the Lingua+ placeholder) and 4.0-2 (the full dictionary for the six core languages in
+  Thesaurus › Dictionary beside the word memory, v2 with own-language definitions, Tatoeba and AI
+  tidying; Import a book / a comic; the end page and the reader's reading-goal note; sentences with
+  a gap as a Ludus mode; the word drawer as it was, with Open dictionary; Dexie v15) are done.
+  Dictionary builds: `dictionary-fetch.ts`, then `dictionary.ts` (docs/SETUP.md). Open: 4.0-4 and 4.0-5 (4.0-3 was removed on 2026-10-20: the karaoke and song games are dropped; its Visio part is Lingua 5.2-4). Only the six core languages
   (tier 1) get a course.
 - **Lingua 5** is planned in detail: [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md) and
   [docs/LINGUA-5.2-PLAN.md](docs/LINGUA-5.2-PLAN.md), with the user's decisions at the top of 5.1

@@ -17,8 +17,6 @@ export interface DrawerProps {
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
-  /** `lg`: a wider slide-over for content laid out in two columns (the word drawer). Phones ignore it. */
-  size?: 'md' | 'lg';
 }
 
 /**
@@ -63,7 +61,7 @@ function Header({ id, title, description, onClose }: { id: string; title: string
   );
 }
 
-function SlideOver({ onClose, title, description, children, footer, size }: DrawerProps) {
+function SlideOver({ onClose, title, description, children, footer }: DrawerProps) {
   const ref = useRef<HTMLDivElement>(null);
   const titleId = useId();
   useOverlay(ref, onClose);
@@ -77,7 +75,7 @@ function SlideOver({ onClose, title, description, children, footer, size }: Draw
         aria-labelledby={titleId}
         tabIndex={-1}
         onKeyDown={trapTab}
-        className={`absolute top-3 right-3 bottom-3 flex ${size === 'lg' ? 'w-[min(780px,calc(100vw-24px))]' : 'w-[min(440px,calc(100vw-24px))]'} flex-col rounded-3xl border border-line bg-raised shadow-elev-3 outline-none`}
+        className="absolute top-3 right-3 bottom-3 flex w-[min(440px,calc(100vw-24px))] flex-col rounded-3xl border border-line bg-raised shadow-elev-3 outline-none"
         initial={{ x: '108%' }}
         animate={{ x: 0 }}
         exit={{ x: '108%' }}

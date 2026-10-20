@@ -1,8 +1,8 @@
 import { useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { Layers, Plus, Search, SearchX, Sparkles, TextCursorInput } from 'lucide-react';
+import { Layers, Plus, Search, SearchX, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { STARTER_THEMES } from '@/core/lang/starter';
@@ -15,7 +15,7 @@ import { useStudyOutlook } from '@/data/study';
 import type { Deck, Folder } from '@/data/types';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
-import { Button, buttonClasses, Card, IconButton, SearchInput, searchKey, Segmented, SortMenu } from '@/design/primitives';
+import { Button, Card, IconButton, SearchInput, searchKey, Segmented, SortMenu } from '@/design/primitives';
 import { fade, spring } from '@/design/motion';
 import { THEME_ICONS } from './common/DeckIcon';
 import { CsvImportDrawer } from './library/CsvImportDrawer';
@@ -29,9 +29,9 @@ import { StarterLibrary } from './library/StarterLibrary';
 import { TodayCard } from './library/TodayCard';
 import { useDeckImport } from './library/useDeckImport';
 import { MundusLink } from '@/features/mundus/MundusLink';
-import { MemoryView } from './library/MemoryView';
+import { DictionaryView } from './dictionary/DictionaryView';
 
-type Tab = 'decks' | 'discover' | 'memory';
+type Tab = 'decks' | 'discover' | 'dictionary';
 
 const SORTS: Array<{ value: DeckSort; label: string }> = [
   { value: 'due', label: 'Most to do' },
@@ -46,8 +46,7 @@ export default function ThesaurusPage() {
   const { language, settings } = useApp();
   const lang = language.id;
   const navigate = useNavigate();
-  const { pointer, layout } = useLayout();
-  const compact = layout === 'compact';
+  const { pointer } = useLayout();
   const decks = useDecks(lang);
   const folders = useFolders(lang);
   const counts = useDeckCounts(decks);
@@ -59,7 +58,8 @@ export default function ThesaurusPage() {
   const hasDecks = Boolean(decks?.length);
   // The tab you pick wins; with nothing chosen, an empty treasury opens on Discover.
   const picked = params.get('tab');
-  const tab: Tab = picked === 'decks' || picked === 'discover' || picked === 'memory' ? picked : decks && !hasDecks ? 'discover' : 'decks';
+  // "memory" was the word memory's own tab before it joined the dictionary.
+  const tab: Tab = picked === 'decks' || picked === 'discover' || picked === 'dictionary' ? picked : picked === 'memory' ? 'dictionary' : decks && !hasDecks ? 'discover' : 'decks';
   const setTab = (next: Tab) => setParams({ tab: next }, { replace: true });
   const tabsRef = useRef<HTMLDivElement>(null);
   const browse = () => {
@@ -108,17 +108,7 @@ export default function ThesaurusPage() {
 
   return (
     <>
-      <PageHeader
-        title="Thesaurus"
-        actions={
-          <>
-            <Link to="/thesaurus/sentences" className={buttonClasses('secondary', 'md')} title="Real sentences with one word missing">
-              <TextCursorInput size={17} aria-hidden /> {compact ? 'Sentences' : 'Sentences with a gap'}
-            </Link>
-            <NewMenu busy={imports.apkgProgress !== null} onChoose={choose} />
-          </>
-        }
-      />
+      <PageHeader title="Thesaurus" actions={<NewMenu busy={imports.apkgProgress !== null} onChoose={choose} />} />
 
       {imports.apkgProgress !== null && (
         <div className="mb-4 flex items-center gap-3 rounded-2xl bg-surface px-4 py-3 text-sm font-semibold text-ink-soft" role="status">
@@ -152,7 +142,7 @@ export default function ThesaurusPage() {
                   options={[
                     { value: 'decks', label: hasDecks ? `My decks · ${decks!.length}` : 'My decks' },
                     { value: 'discover', label: 'Discover' },
-                    { value: 'memory', label: compact ? 'Memory' : 'Word memory' },
+                    { value: 'dictionary', label: 'Dictionary' },
                   ]}
                 />
               </motion.div>
@@ -175,9 +165,9 @@ export default function ThesaurusPage() {
             {hasDecks && folders && <DeckTree decks={decks!} folders={folders} counts={counts} actions={actions} order={order} />}
             {decks && !hasDecks && <NoDecks onBrowse={browse} onNew={() => newDeck(null)} onImport={(kind) => choose(kind)} />}
           </motion.section>
-        ) : tab === 'memory' ? (
-          <motion.section key="memory" aria-label="Word memory" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>
-            <MemoryView lang={lang} />
+        ) : tab === 'dictionary' ? (
+          <motion.section key="dictionary" aria-label="Dictionary" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>
+            <DictionaryView lang={lang} />
           </motion.section>
         ) : (
           <motion.section key="discover" aria-label="Ready-made decks" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>

@@ -18,7 +18,7 @@ import { installPaperStyles } from '@/design/papers';
 import { cx } from '@/lib/cx';
 import { recordSighting } from '@/data/memory';
 import { toast } from '@/state/ui';
-import { codexGoal, useReadToday } from '../library/ReadingToday';
+import { codexGoal, useReadToday } from './readingGoal';
 import { ChapterBody } from './ChapterBody';
 import { ComicView } from './ComicView';
 import { ContentsDrawer } from './ContentsDrawer';

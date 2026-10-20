@@ -8,7 +8,7 @@ import { cx } from '@/lib/cx';
 import { searchFull, useDictionaryState } from '@/services/dictionary/fullDict';
 import { fade } from '@/design/motion';
 
-export const entryPath = (word: string) => `/codex/dictionary/${encodeURIComponent(word)}`;
+export const entryPath = (word: string) => `/thesaurus?tab=dictionary&word=${encodeURIComponent(word)}`;
 
 /** Look a word up in the full dictionary: suggestions as you type, Enter opens the first. */
 export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { lang: string; autoFocus?: boolean; size?: 'md' | 'lg'; className?: string }) {
@@ -65,7 +65,7 @@ export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { 
             if (e.key === 'ArrowUp') (e.preventDefault(), setActive((i) => Math.max(0, i - 1)));
             if (e.key === 'Enter') {
               if (results[active]) go(results[active].word);
-              else if (!ready) navigate('/codex/dictionary');
+              else if (!ready) navigate('/thesaurus?tab=dictionary');
               else if (query.trim()) go(query.trim());
             }
             if (e.key === 'Escape') setOpen(false);
@@ -96,7 +96,7 @@ export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { 
           >
             {!ready ? (
               <li>
-                <button type="button" onClick={() => navigate('/codex/dictionary')} className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-[14px] hover:bg-surface">
+                <button type="button" onClick={() => navigate('/thesaurus?tab=dictionary')} className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-[14px] hover:bg-surface">
                   <Download size={16} aria-hidden className="text-accent-text" />
                   <span>
                     <span className="font-semibold">Get the {name} dictionary</span>

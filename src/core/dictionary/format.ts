@@ -3,7 +3,8 @@
 // language and kept on the device (the `fullDict` table). Inflection tables stay in the language
 // pack (dictParadigms), which every language already has.
 
-export const DICT_VERSION = 1;
+/** 2: definitions from the language's own Wiktionary, and Tatoeba's sentences (4.0-2, second pass). */
+export const DICT_VERSION = 2;
 export const DICT_LANGS = ['es', 'ru', 'zh', 'fr', 'de', 'ar'] as const;
 export const dictFileName = (lang: string) => `${lang}.v${DICT_VERSION}.json.gz`;
 export const hasFullDictionary = (lang: string) => (DICT_LANGS as readonly string[]).includes(lang);
@@ -46,8 +47,11 @@ export interface FullDictFile {
   lang: string;
   builtAt: string;
   sources: string[];
-  /** Lemma → its entries; `r` is the lemma's frequency rank, `c` words easily confused with it. */
-  words: Array<{ w: string; r?: number; c?: string[]; e: FullEntry[] }>;
+  /**
+   * Lemma → its entries; `r` is the lemma's frequency rank, `c` words easily confused with it, `m`
+   * definitions in the language itself (its own Wiktionary), `t` Tatoeba sentences with the word.
+   */
+  words: Array<{ w: string; r?: number; c?: string[]; e: FullEntry[]; m?: MonoDefinitions[]; t?: TatoebaSentence[] }>;
 }
 
 /** A row on the device: one headword. */
@@ -61,4 +65,15 @@ export interface FullDictRow {
   rank?: number;
   confused?: string[];
   entries: FullEntry[];
+  mono?: MonoDefinitions[];
+  tatoeba?: TatoebaSentence[];
 }
+
+/** Definitions written in the language itself, as its own Wiktionary gives them (the 30,000 most common words). */
+export interface MonoDefinitions {
+  pos: string;
+  defs: string[];
+}
+
+/** A Tatoeba sentence with its English translation, and where the word is in it. */
+export type TatoebaSentence = [text: string, translation: string, start: number, end: number];

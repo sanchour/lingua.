@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, BookA, BookOpenText, Feather, LayoutGrid, Library, List, Plus, Search, SearchX, Sparkles } from 'lucide-react';
+import { ArrowRight, BookOpenText, Feather, LayoutGrid, Library, List, Plus, Search, SearchX, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { useFullMotion } from '@/app/motion';
 import { PageHeader } from '@/app/PageHeader';
@@ -20,9 +20,6 @@ import { toast } from '@/state/ui';
 import { DiariumHome, NewEntryButton } from './diarium/DiariumHome';
 import { BookCard, BookRow } from './library/BookCard';
 import { BookCover } from './library/BookCover';
-import { ReadingToday } from './library/ReadingToday';
-import { DictionarySearch } from './dictionary/DictionarySearch';
-import { hasFullDictionary } from '@/core/dictionary/format';
 import { useImporter } from './library/useImporter';
 import { MundusLink } from '@/features/mundus/MundusLink';
 
@@ -76,7 +73,7 @@ export default function CodexPage() {
   const progress = useAllProgress();
   const { busy, run } = useImporter(lang);
   const navigate = useNavigate();
-  const { pointer, layout } = useLayout();
+  const { pointer } = useLayout();
   const [filter, setFilter] = useState<Filter>('all');
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
@@ -155,23 +152,13 @@ export default function CodexPage() {
           tab === 'diarium' ? (
             <NewEntryButton />
           ) : (
-            <>
-              {hasFullDictionary(lang) &&
-                (layout === 'wide' ? (
-                  <DictionarySearch lang={lang} className="w-72" />
-                ) : (
-                  <Link to="/codex/dictionary" aria-label="Dictionary" className={buttonClasses('secondary', 'md')}>
-                    <BookA size={17} aria-hidden />
-                  </Link>
-                ))}
-              <Link to="/codex/new" className={buttonClasses('primary', 'md')}>
-                <Plus size={17} aria-hidden /> Add
-              </Link>
-            </>
+            <Link to="/codex/new" className={buttonClasses('primary', 'md')}>
+              <Plus size={17} aria-hidden /> Add
+            </Link>
           )
         }
       />
-      <div className="-mt-2 mb-7 flex items-center justify-between gap-3">
+      <div className="-mt-2 mb-7">
         <Segmented<'library' | 'diarium'>
           label="Codex"
           value={tab}
@@ -181,7 +168,6 @@ export default function CodexPage() {
             { value: 'diarium', label: 'Diarium', icon: Feather },
           ]}
         />
-        {tab === 'library' && <ReadingToday language={language} />}
       </div>
 
       {tab === 'diarium' && <DiariumHome />}

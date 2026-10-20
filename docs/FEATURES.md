@@ -157,22 +157,23 @@ Practise writing in the target language; get corrected, explained and graded.
 
 ## The dictionary, the word memory and sentences with a gap (4.0-2)
 
-- **Codex › Dictionary** (Spanish, Russian, Mandarin, French, German, Arabic): download a
+- **Thesaurus › Dictionary** (Spanish, Russian, Mandarin, French, German, Arabic): download a
   language's dictionary once and look any word up offline: pronunciation with a recording, every
-  meaning with labels and examples, pairs, set phrases, synonyms and antonyms, words easily
-  confused, the etymology and every form. Search from Codex's header or Thesaurus › Word memory,
-  or choose **Full entry** in the word drawer.
-- **The word drawer** fits on one laptop screen, in two columns, and shows where else you met
-  the word.
+  meaning with labels and examples, definitions in the language itself (its own Wiktionary),
+  Tatoeba's sentences, pairs, set phrases, synonyms and antonyms, words easily confused, the
+  etymology and every form. With your own AI key, "At a glance, tidied by AI" puts an entry's
+  meanings in order with an example each.
+- **Your words** sit beside the dictionary: every word you looked up or marked anywhere, with each
+  place and sentence, sorted by how well you know it, where you met it and theme.
+- **The word drawer** is as it was, with **Open dictionary** to see the full entry.
 - **Codex › Add** has Import a book and Import a comic as tabs of their own.
-- **Reading goal:** Codex shows today's minutes against your goal (5–60 minutes); a soft note
-  says when it is reached, between pages.
+- **Reading goal:** set it in Ordo › Languages (5–60 minutes); while you read, a soft note says
+  when today's goal is reached, between pages.
 - **The end page:** after the last page, the sitting's time, pages, new words met and words looked
   up.
-- **Thesaurus › Word memory:** every word you looked up or marked anywhere, with each place and
-  sentence, sorted by source, how well you know it and theme.
-- **Sentences with a gap** (Thesaurus): rounds of real sentences with a word missing, at three
-  levels, your own words first. Decks can show a sentence with a gap on the front of their cards.
+- **Ludus › Sentences with a gap:** rounds of real sentences with a word missing, at three levels;
+  a deck's own words first when played from a deck, then your words, then your level's. Decks can
+  also show a sentence with a gap on the front of their cards.
 
 ## Lingua+, a new icon and a calmer shell (4.0-1)
 

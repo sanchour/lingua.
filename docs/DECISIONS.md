@@ -1044,7 +1044,7 @@ Short records of choices that are not obvious from the code. Newest last.
   phrases, synonyms and etymologies for all six core languages, and it is already where the packs
   come from, so lemma keys match. Every headword with a meaning of its own goes in (not only the
   frequent ones): a dictionary is where you look up the rare word. Forms stay the pack's job.
-- **Downloaded on request, stored in IndexedDB.** At 2–13 MB a language the files are too big to
+- **Downloaded on request, stored in IndexedDB.** At 3–17 MB a language (v2) the files are too big to
   come with the pack, which every reader needs at once. A worker stores them in `fullDict` keyed
   by the pack's lemma key, with an accent-free key for the search box (prefix search on
   `[lang+fold]`). A `#version` row says which build is there, so a better build can be offered.
@@ -1073,4 +1073,24 @@ Short records of choices that are not obvious from the code. Newest last.
   study. Its note waits for a page turn or a new paragraph, as the user asked: never mid-sentence.
 - **The drawer is wider on desktop instead of shorter on content:** 780 px and two columns keep
   every section; senses fold after three, the AI explanation's notes and examples fold.
+  *Reversed the same day (second pass):* the user wanted the drawer exactly as it was, so it is
+  the 440 px drawer from before 4.0-2 again; the full entry is one click away (Open dictionary).
+
+### Second pass (the user's feedback, same day)
+
+- **The dictionary lives in Thesaurus, beside the word memory,** not in Codex: both are about
+  words, so one tab holds the search, your words and the entry. Codex's header keeps only Add.
+- **The reading goal is set in Ordo and only felt in the reader.** A ring on Codex's page was one
+  more thing to look at; the note between pages is the point.
+- **Sentences with a gap is a Ludus mode** (`mode=ludus&kind=sentences` on the study page), so
+  Ludus is the one place for play and a deck can start it with its own words first.
+- **Definitions in the language itself for the 30,000 most common words only.** For all 84,000
+  Spanish words they nearly doubled the file (5.5 → 10.2 MB); the rare words keep their English
+  definitions. The other editions are streamed and filtered on the fly, so the 100–740 MB files
+  never land on disk.
+- **Tatoeba at build time, not on the device:** pairing sentences with translations needs the
+  link list and all English sentences (about 110 MB), which a build can read once. Up to three
+  sentences per word, closest to 45 characters, so neither a bare phrase nor a paragraph.
+- **AI tidying is on request, per word, with the user's key.** Tidying the common entries in
+  advance would need a key at build time, which Lingua never uses. One request per word, cached.
 

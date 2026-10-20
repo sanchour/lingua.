@@ -16,6 +16,7 @@ import { spring } from '@/design/motion';
 import { LessonEnd, LessonSetup, recordBest } from '@/features/lesson/kit';
 import type { LessonResult } from '@/features/lesson/kit';
 import { Ludus } from './Ludus';
+import { SentencesRound } from './SentencesRound';
 import type { LudusEntry } from './Ludus';
 import { Recall } from './Recall';
 import { Summary } from './Summary';
@@ -69,7 +70,15 @@ async function loadPass(cardIds: string[]): Promise<StudySession> {
   return { queue: shuffle(cards.filter((c) => noteMap.has(c.noteId)), Math.random), notes: noteMap, decks: new Map(decks.map((d) => [d.id, d])) };
 }
 
+/** Ludus has a mode of its own, sentences with a gap; everything else studies cards. */
 export default function StudyPage() {
+  const { deckId: param } = useParams();
+  const [search] = useSearchParams();
+  if (search.get('mode') === 'ludus' && search.get('kind') === 'sentences') return <SentencesRound deckId={param && param !== 'all' ? param : null} />;
+  return <CardStudy />;
+}
+
+function CardStudy() {
   const { deckId: param } = useParams();
   const [search] = useSearchParams();
   const mode = search.get('mode') === 'ludus' ? 'ludus' : 'recall';
@@ -150,6 +159,7 @@ export default function StudyPage() {
       : [
           { label: 'Another lesson', onClick: () => setRound((r) => r + 1) },
           { label: 'Lightning round', onClick: () => navigate(`/thesaurus/study/${param}?mode=ludus&lightning=1`, { replace: true }) },
+          { label: 'Sentences with a gap', onClick: () => navigate(`/thesaurus/study/${param}?mode=ludus&kind=sentences`, { replace: true }) },
           ...(grammarNext ? [{ label: `Grammar: ${grammarNext.title}`, onClick: () => navigate(`/grammatica/${grammarNext.id}`) }] : []),
         ];
     return (

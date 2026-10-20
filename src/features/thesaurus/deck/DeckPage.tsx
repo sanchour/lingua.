@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
-import { Ellipsis, FolderInput, Layers, Pencil, Plus, Puzzle, Search, Settings2, Trash2, Zap } from 'lucide-react';
+import { Ellipsis, FolderInput, Layers, Pencil, Plus, Puzzle, Search, Settings2, TextCursorInput, Trash2, Zap } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatInterval, maturityOf } from '@/core/srs/scheduler';
@@ -145,6 +145,10 @@ export default function DeckPage() {
           <Link to={`/thesaurus/study/${deck.id}?mode=ludus&lightning=1`} className={buttonClasses('secondary', 'lg')}>
             <Zap size={18} aria-hidden />
             Lightning
+          </Link>
+          <Link to={`/thesaurus/study/${deck.id}?mode=ludus&kind=sentences`} className={buttonClasses('secondary', 'lg')} title="Real sentences with one of the deck's words missing">
+            <TextCursorInput size={18} aria-hidden />
+            Sentences
           </Link>
         </div>
       )}

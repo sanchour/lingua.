@@ -17,6 +17,7 @@ import { installPack, useInstalledPacks, usePackJobs } from '@/services/packs/pa
 import { toast } from '@/state/ui';
 import { SettingsSection } from '../SettingsSection';
 import { VoicePanel } from './VoicePanel';
+import { codexGoal } from '@/features/codex/reader/readingGoal';
 
 const GOALS = [5, 10, 15, 20, 30, 45, 60];
 
@@ -57,6 +58,12 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
           label="Daily goal"
           value={String(active.dailyGoal.readMinutes)}
           onChange={(v) => void updateLanguage(active.id, { dailyGoal: { ...active.dailyGoal, readMinutes: Number(v) } })}
+          options={GOALS.map((m) => ({ value: String(m), label: `${m} minutes` }))}
+        />
+        <Select
+          label="Reading goal in Codex"
+          value={String(codexGoal(active))}
+          onChange={(v) => void updateLanguage(active.id, { dailyGoal: { ...active.dailyGoal, codexMinutes: Number(v) } })}
           options={GOALS.map((m) => ({ value: String(m), label: `${m} minutes` }))}
         />
         <Select

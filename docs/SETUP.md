@@ -84,6 +84,15 @@ node scripts/lang-data/build.ts ru el     # → public/packs/<code>.v1.json.gz (
 `fetch.ts ja zh` downloads just those languages. Big downloads retry by themselves, and a file
 that still fails is fetched again on the next run.
 
+The full dictionary of the six core languages (Thesaurus › Dictionary) needs the packs' kaikki
+files above, plus its own extras: the languages' own Wiktionary editions (streamed, about 1.7 GB
+read, 60 MB kept) and Tatoeba's sentences (decompressed with `bunzip2`, which Git Bash has):
+
+```bash
+node scripts/lang-data/dictionary-fetch.ts                          # → scripts/.cache/mono-*.jsonl.gz, tatoeba/
+node --max-old-space-size=3072 scripts/lang-data/dictionary.ts fr   # → public/dict/fr.v2.json.gz (no codes: all six)
+```
+
 ## 6. Your learning data
 
 Words, progress, books and settings live in each browser, not on GitHub. To move them:

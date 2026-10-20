@@ -12,7 +12,7 @@ import DictWorker from '@/workers/dict.worker?worker';
 const VERSION_KEY = '#version';
 
 /** Download sizes, for the button that offers them (MB, rounded up). */
-export const DICT_SIZE_MB: Record<string, number> = { es: 6, fr: 6, de: 8, ru: 6, ar: 3, zh: 13 };
+export const DICT_SIZE_MB: Record<string, number> = { es: 9, fr: 9, de: 11, ru: 11, ar: 3, zh: 17 };
 
 export const useDictJobs = create<{ jobs: Record<string, { phase: 'download' | 'store'; pct: number } | null>; set: (lang: string, job: { phase: 'download' | 'store'; pct: number } | null) => void }>((set) => ({
   jobs: {},

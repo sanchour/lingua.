@@ -405,15 +405,20 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 
 ## Lingua 4.0-2: dictionary, memory, sentences
 
-- [ ] Codex › Dictionary (a dictionary button beside Add): download the dictionary on Wi-Fi; the
-      progress bar runs and the toast says how many words. Search "casa" (or a word in your core
-      language): suggestions as you type, the entry opens, the recording plays.
+- [ ] Thesaurus › Dictionary: download (or update to v2) the dictionary on Wi-Fi; the progress
+      bar runs and the toast says how many words. Search "casa" (or a word in your core language):
+      suggestions as you type, the entry opens with "In Spanish" definitions and Tatoeba
+      sentences, the recording plays.
+- [ ] In the reader, the word drawer's "Open dictionary" opens the word in Thesaurus › Dictionary.
+- [ ] With 15 minutes read today (Ordo › Languages › Reading goal in Codex), the next page turn
+      shows the soft note, once.
 - [ ] Turn the network off: the dictionary still searches and opens entries.
 - [ ] Codex › Add: the five tabs (Write · Book · Comic · News · Goodreads) fit the width; Comic's
       "Choose a comic" opens Files.
 - [ ] Finish a short text: the end page shows the numbers and today's minutes; "Mark as finished"
       goes back to Codex.
-- [ ] Long-press a word in the reader, then open Thesaurus › Memory: the word is there with the
-      book and the sentence.
-- [ ] Thesaurus › Sentences: choose and type levels; the keyboard doesn't cover the gap.
+- [ ] Long-press a word in the reader, then open Thesaurus › Dictionary: the word is under "Your
+      words" with the book and the sentence.
+- [ ] Thesaurus › Ludus › Sentences with a gap (and a deck's Sentences button): choose and type
+      levels; the keyboard doesn't cover the gap.
 

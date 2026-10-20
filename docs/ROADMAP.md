@@ -1546,6 +1546,54 @@ free version is v16.
       settings have "Card front: The word / A sentence with a gap"; with the second, a word →
       meaning card that has a sentence shows it with the word missing.
 
+**Second pass (2026-10-20, the user's feedback on the first):** *plan:* the dictionary moves to
+Thesaurus beside the word memory; the drawer goes back to how it was; the reading goal leaves
+Codex's page and stays only as the reader's note; Sentences becomes part of Ludus; then the three
+dictionary items left undone. *All done:*
+
+- [x] **Thesaurus › Dictionary** replaces the Word memory tab (old `?tab=memory` links land there):
+      a large search box on top, "Your words" on the left (All / Learning / Known / Looked up,
+      the places and themes, a search; the description line is gone), and the entry or the
+      word's places on the right in a sticky pane. Codex's header has only Add again; the
+      `/codex/dictionary` pages are gone and every dictionary link opens
+      `/thesaurus?tab=dictionary&word=…`.
+- [x] **The word drawer is exactly as before 4.0-2** (440 px, one column, restored from git), with
+      two additions: **Open dictionary** in its badge row (for the six core languages) and, out of
+      sight, the word memory's record of the look-up.
+- [x] **The reading goal:** no pill or ring on Codex's page. It is set in Ordo › Languages
+      ("Reading goal in Codex", 5–60 minutes), and the reader shows the soft note once the day's
+      reading reaches it, at a page turn or a new paragraph. *Checked in the browser:* with 14:56
+      read today, the next page turn showed "Today's reading goal is reached: 15 minutes. Read on
+      as long as you like."; the end page still shows the ring.
+- [x] **Sentences with a gap is a Ludus mode,** not a page of its own: Thesaurus's Ludus button
+      opens a menu (A lesson · Lightning round · Sentences with a gap), a deck page has a
+      Sentences button beside Ludus and Lightning, and Ludus's end screen offers it. Played from
+      a deck, the deck's own cards come first (their example with its gap, or the sentence they
+      were met in). The "Sentences with a gap" button beside Thesaurus's New is gone, and so is
+      `/thesaurus/sentences` (now `/thesaurus/study/<deck|all>?mode=ludus&kind=sentences`).
+- [x] **Definitions from each language's own Wiktionary** (dictionary v2):
+      `scripts/lang-data/dictionary-fetch.ts` streams the French, German, Spanish, Russian and
+      Chinese editions from kaikki.org (100–740 MB each, every language in them) and keeps only the
+      language's own words; the entry shows them as "In French" (and so on) under the English
+      senses, for the 30,000 most common words. Arabic has no edition on kaikki.org.
+- [x] **Tatoeba's sentences:** the same script downloads Tatoeba's sentences in the language, the
+      links to English and the English sentences; up to three per word go into the dictionary
+      (of a middling length, with the word's span), shown under "Sentences" with Tatoeba's credit
+      (CC BY 2.0 FR).
+- [x] **Tidying with AI:** an entry's "At a glance, tidied by AI" button sends the raw senses to
+      the user's own AI (Ordo › AI) and shows a summary, the living meanings in order with a
+      register and an example each, and a tip. One request per word, cached in `llmCache`
+      (`dictTidy`); without a key it says so and links to the settings. Nothing is tidied at
+      build time, so no key is ever used there.
+- **Sizes (v2, `public/dict/<lang>.v2.json.gz`, the v1 files removed):** Spanish 8.9 MB (own
+      definitions for 42,800 words, kept for the 30,000 most common; Tatoeba sentences for
+      16,400), French 9.3 MB (62,100; 17,400), German 11.4 MB (55,300; 24,800), Russian 10.6 MB
+      (46,200; 18,000), Mandarin 16.5 MB (45,400; 16,200), Arabic 3.1 MB (no edition; 6,100):
+      about 60 MB in all, up from 40. An installed v1 dictionary shows "A better French dictionary
+      is ready" with an Update button; checked in the browser for French ("maison": the French
+      Wiktionary's four senses, three Tatoeba sentences, and the AI tidy card with a stubbed reply
+      and the fake key `test-not-a-real-key`, sent only in the Authorization header).
+
 ### 4.0-4 · Cursus: a course with a clear path, and speaking and writing
 *Cursus becomes a room with tabs in Lingua 5.1-1 (step 2 of [HANDOVER.md](HANDOVER.md)); the
 course fills its Course tab.*

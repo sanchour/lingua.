@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { Button } from '@/design/primitives';
 import { spring } from '@/design/motion';
-import { GoalRing } from '../library/ReadingToday';
+import { GoalRing } from './readingGoal';
 import type { SessionStats } from './useReadingSession';
 
 interface EndPageProps {

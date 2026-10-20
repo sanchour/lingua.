@@ -1,6 +1,7 @@
 // Sentences with a gap (4.0-2, after Clozemaster): a real sentence with one word missing, from the
 // language pack's examples (with their translation) or from where you met the word. Your own words
-// come first (Learning, then words you looked up), then words around your level by frequency.
+// come first (a deck's own cards when it's played from a deck, then Learning, then words you looked
+// up), then words around your level by frequency. It is a Ludus mode.
 import type { Level } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
 import { db } from './db';
@@ -19,7 +20,7 @@ export interface GapSentence {
   translation?: string;
   gloss?: string;
   /** Where it came from: one of your words (and where you met it), or the frequency list. */
-  from: 'learning' | 'memory' | 'level';
+  from: 'deck' | 'learning' | 'memory' | 'level';
   metIn?: { kind: SightingKind; title: string };
   options?: string[];
 }
@@ -59,8 +60,8 @@ export function distractors(answer: string, pool: string[], lang: string, random
   return near.slice(0, 3);
 }
 
-/** One round of sentences: your words first, then words of your level. */
-export async function buildGapRound(lang: string, level: Level, gapLevel: GapLevel, size = 15, database: LinguaDB = db): Promise<GapSentence[]> {
+/** One round of sentences: the deck's words first (if any), then your words, then words of your level. */
+export async function buildGapRound(lang: string, level: Level, gapLevel: GapLevel, size = 15, deckId: string | null = null, database: LinguaDB = db): Promise<GapSentence[]> {
   const pack = packId(lang);
   const round: GapSentence[] = [];
   const used = new Set<string>();
@@ -74,6 +75,32 @@ export async function buildGapRound(lang: string, level: Level, gapLevel: GapLev
     }
     return null;
   };
+
+  // 0. The deck's own cards: their example (with its gap), the sentence they were met in, or the pack's.
+  if (deckId) {
+    const notes = shuffle((await database.notes.where('deckId').equals(deckId).toArray()).filter((n) => !n.deletedAt && n.lang === lang));
+    for (const n of notes) {
+      if (round.length >= Math.ceil(size * 0.8)) break;
+      const lemma = n.lemma || n.term;
+      if (used.has(lemma)) continue;
+      let parts: ReturnType<typeof cut> = null;
+      let translation: string | undefined;
+      if (n.example?.cloze) {
+        parts = cut(n.example.text, n.example.cloze[0], n.example.cloze[1]);
+        translation = n.example.translation;
+      }
+      for (const sentence of [n.example?.text, n.context?.sentence]) {
+        if (parts || !sentence || sentence.length > 160) continue;
+        const span = locate(sentence, n.term, lang);
+        if (span) parts = cut(sentence, span[0], span[1]);
+        if (parts && sentence === n.example?.text) translation = n.example.translation;
+      }
+      const item = parts ? { ...parts, lemma, translation } : await fromPack(lemma);
+      if (!item) continue;
+      used.add(lemma);
+      round.push({ ...item, id: `${lemma}:${round.length}`, from: 'deck', gloss: n.meaning || undefined });
+    }
+  }
 
   // 1. Words you're learning, then words you looked up, newest first.
   const learning = (await database.words.where('[lang+state]').equals([lang, 2]).toArray()).filter((w) => !w.deletedAt);

@@ -18,13 +18,25 @@ type Phase = 'answer' | 'right' | 'close' | 'wrong';
 const LEVELS: GapLevel[] = ['choose', 'type', 'hard'];
 const asLevel = (v: string | null): GapLevel => (LEVELS.includes(v as GapLevel) ? (v as GapLevel) : 'choose');
 
-/** Thesaurus › Sentences: real sentences with one word missing, many in a row (after Clozemaster). */
-export default function SentencesPage() {
+/**
+ * Ludus › Sentences: real sentences with one word missing, many in a row (after Clozemaster). A
+ * deck's own words come first when it's played from a deck, then your words, then your level's.
+ */
+export function SentencesRound({ deckId }: { deckId: string | null }) {
   const { language } = useApp();
   const lang = language.id;
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const level = asLevel(params.get('level'));
+  const back = () => navigate(deckId ? `/thesaurus/deck/${deckId}` : '/thesaurus');
+  const setLevel = (next: GapLevel) =>
+    setParams(
+      (p) => {
+        p.set('level', next);
+        return p;
+      },
+      { replace: true },
+    );
   const [roundNo, setRoundNo] = useState(0);
   const [items, setItems] = useState<GapSentence[] | null>(null);
   const [at, setAt] = useState(0);
@@ -37,7 +49,7 @@ export default function SentencesPage() {
   useEffect(() => {
     let live = true;
     setItems(null);
-    void buildGapRound(lang, language.level, level).then((round) => {
+    void buildGapRound(lang, language.level, level, 15, deckId).then((round) => {
       if (!live) return;
       setItems(round);
       setAt(0);
@@ -49,7 +61,7 @@ export default function SentencesPage() {
     return () => {
       live = false;
     };
-  }, [lang, language.level, level, roundNo]);
+  }, [lang, language.level, level, roundNo, deckId]);
 
   const item = items?.[at];
   const finished = items !== null && at >= items.length;
@@ -94,7 +106,7 @@ export default function SentencesPage() {
       '3': () => choose(2),
       '4': () => choose(3),
       enter: () => (phase === 'answer' ? check() : next()),
-      escape: () => navigate('/thesaurus'),
+      escape: back,
     },
     !finished,
   );
@@ -104,7 +116,7 @@ export default function SentencesPage() {
   return (
     <div className="min-h-dvh bg-bg" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <header className="mx-auto flex max-w-4xl items-center gap-3 px-4 pt-4 sm:px-8 sm:pt-6">
-        <IconButton icon={X} label="Close" onClick={() => navigate('/thesaurus')} />
+        <IconButton icon={X} label="Close" onClick={back} />
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-bold tracking-[0.14em] text-sage-text uppercase">Ludus</p>
           <h1 className="font-serif text-[20px] leading-tight font-semibold">Sentences</h1>
@@ -112,7 +124,7 @@ export default function SentencesPage() {
         <Segmented<GapLevel>
           label="Difficulty"
           value={level}
-          onChange={(next) => setParams({ level: next }, { replace: true })}
+          onChange={setLevel}
           options={[
             { value: 'choose', label: 'Choose' },
             { value: 'type', label: 'Type' },
@@ -142,13 +154,15 @@ export default function SentencesPage() {
               <p className="mb-6 text-center text-[12.5px] font-semibold text-ink-faint">
                 {at + 1} of {items!.length}
                 {' · '}
-                {item.from === 'learning'
-                  ? 'a word you’re learning'
-                  : item.from === 'memory'
-                    ? item.metIn
-                      ? `met in ${item.metIn.title}`
-                      : 'one of your words'
-                    : 'around your level'}
+                {item.from === 'deck'
+                  ? 'from this deck'
+                  : item.from === 'learning'
+                    ? 'a word you’re learning'
+                    : item.from === 'memory'
+                      ? item.metIn
+                        ? `met in ${item.metIn.title}`
+                        : 'one of your words'
+                      : 'around your level'}
                 {item.from !== 'level' && item.metIn && item.from === 'learning' && ` · ${SIGHTING_KINDS[item.metIn.kind].label.toLowerCase()}`}
               </p>
 
@@ -241,12 +255,12 @@ export default function SentencesPage() {
                 Another round
               </Button>
               {level !== 'hard' && (
-                <Button variant="secondary" block onClick={() => setParams({ level: level === 'choose' ? 'type' : 'hard' }, { replace: true })}>
+                <Button variant="secondary" block onClick={() => setLevel(level === 'choose' ? 'type' : 'hard')}>
                   Try it harder
                 </Button>
               )}
-              <Button variant="ghost" block onClick={() => navigate('/thesaurus')}>
-                Back to Thesaurus
+              <Button variant="ghost" block onClick={back}>
+                {deckId ? 'Back to the deck' : 'Back to Thesaurus'}
               </Button>
             </div>
           </motion.div>
