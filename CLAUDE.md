@@ -19,8 +19,10 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
   parts 1–4 (topics, drills, lessons, links, placement, Ratio) are live; part 5 (alphabets and
   writing) and part 6 (the other languages) are next. Other sessions may still push to `main`, so rebase onto `origin/main` before pushing. Tier 2 stays cheap: only the
   features that cost little (automatic packs, decks, podcasts, music search). Keep it cheap.
-- **Lingua 4.0** is next (five steps, 4.0-1 … 4.0-5, under "## Lingua 4.0" in the roadmap); start it
-  when the user asks. 4.0 sorts the languages into four tiers and an
+- **Lingua 4.0 has started (2026-10-20):** five steps, 4.0-1 … 4.0-5, under "## Lingua 4.0" in the roadmap.
+  4.0-1 is half done: the tier field, the 35 placeholder languages and the language map are live;
+  next in 4.0-1 are the 60 fps pass, the glass tab bar and its two-tap bug, the sidebar and
+  Thesaurus icon, the new app icon and the Lingua+ placeholder (the unticked bullets). 4.0 sorts the languages into four tiers and an
   experimental shelf (the table at the top of "## Lingua 4.0"); only the six core languages get a course.
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
