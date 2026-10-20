@@ -20,6 +20,7 @@ import { Scrubber } from './Scrubber';
 import { createSpotifyClock, SpotifyEmbed } from './SpotifyEmbed';
 import { NoTranscript, TranscriptBar } from './TranscriptTools';
 import { Transport } from './Transport';
+import { sonusBase, sonusHome } from '@/features/sonus/paths';
 
 const dateFmt = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -33,7 +34,7 @@ export default function PlayerPage() {
       <div className="grid min-h-[60dvh] place-items-center text-center">
         <div>
           <p className="font-serif text-xl">This item isn’t in Sonus any more.</p>
-          <Link to="/sonus" className="mt-4 inline-block font-semibold text-accent-text">
+          <Link to={sonusHome()} className="mt-4 inline-block font-semibold text-accent-text">
             Back to Sonus
           </Link>
         </div>
@@ -86,7 +87,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
   if (isLoaded && playedHere !== media.id) setPlayedHere(media.id);
   const following = !isLoaded && playedHere === media.id && Boolean(media.bookId) && loadedBookId === media.bookId;
   useEffect(() => {
-    if (following && loadedId) navigate(`/sonus/play/${loadedId}`, { replace: true });
+    if (following && loadedId) navigate(`${sonusBase()}/play/${loadedId}`, { replace: true });
   }, [following, loadedId]);
 
   // A new, edited or removed transcript is used straight away.
@@ -142,11 +143,11 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
     return (
       <div className="flex h-[calc(100dvh-8rem)] min-h-[520px] flex-col">
         {media.bookId ? (
-          <Link to={`/sonus/book/${media.bookId}`} className="mb-6 inline-flex max-w-full shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
+          <Link to={`${sonusBase()}/book/${media.bookId}`} className="mb-6 inline-flex max-w-full shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
             <ChevronLeft size={16} className="shrink-0" aria-hidden /> <span className="truncate">{bookTitle}</span>
           </Link>
         ) : (
-          <Link to={media.feedId ? `/sonus/podcast/${media.feedId}` : '/sonus?tab=podcasts'} className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
+          <Link to={media.feedId ? `${sonusBase()}/podcast/${media.feedId}` : '/cantus/podcasts'} className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
             <ChevronLeft size={16} aria-hidden /> {media.feedId ? media.collection : 'Sonus'}
           </Link>
         )}
@@ -191,11 +192,11 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
   return (
     <div className="min-h-dvh bg-bg">
       <header className="no-callout sticky top-0 z-20 flex items-center gap-1 bg-bg/90 px-2 pt-safe backdrop-blur-xl">
-        <button type="button" aria-label="Close player" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
+        <button type="button" aria-label="Close player" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(sonusHome()))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronDown size={24} aria-hidden />
         </button>
         {media.bookId ? (
-          <Link to={`/sonus/book/${media.bookId}`} className="block min-w-0 flex-1 truncate py-3 text-center text-[13px] font-semibold text-ink-soft">
+          <Link to={`${sonusBase()}/book/${media.bookId}`} className="block min-w-0 flex-1 truncate py-3 text-center text-[13px] font-semibold text-ink-soft">
             {bookTitle}
           </Link>
         ) : (
@@ -223,7 +224,7 @@ function SpotifyPlayer({ media, transcript }: { media: Media; transcript: Transc
   const clock = useMemo(createSpotifyClock, [media.id]);
   return (
     <>
-      <Link to="/sonus" className="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-ink-soft hover:text-ink">
+      <Link to={sonusHome()} className="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-ink-soft hover:text-ink">
         <ChevronLeft size={16} aria-hidden /> Sonus
       </Link>
       <div className="mx-auto max-w-3xl">

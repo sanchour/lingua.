@@ -1,12 +1,12 @@
-// The room's tabs: Today (a song for today, then rails), Explore (new songs every day), Library
-// (your songs) and Search. Everything the music room in Sonus had, moved here.
+// The room's music tabs: Today (a song for today, then rails) and Music (your songs, and new ones
+// every day). Everything the music room in Sonus had, moved here.
 import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Gamepad2, LoaderCircle, Music2, Play, Shuffle, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { formatClock } from '@/core/audio/cues';
 import { getLanguage } from '@/core/lang/languages';
-import { songIdOf, useMostPlayed, useRecentSongs, useSavedSongs, useSong } from '@/data/songs';
+import { songIdOf, useRecentSongs, useSavedSongs, useSong } from '@/data/songs';
 import { cx } from '@/lib/cx';
 import type { SongHit } from '@/services/cantus/catalog';
 import { discoverFor } from '../discover';
@@ -104,7 +104,8 @@ function Charts({ lang }: { lang: string }) {
 
 // ── Explore ──────────────────────────────────────────────────────────────────────────────────────
 
-export function ExplorePage() {
+/** Music: your songs, then new ones to explore. */
+export function MusicPage() {
   const { language, settings } = useApp();
   const lang = language.id;
   const navigate = useNavigate();
@@ -113,10 +114,18 @@ export function ExplorePage() {
   const picks = discoverFor(lang);
   const pool = [...(explore?.finds ?? []), ...(explore?.style?.songs ?? [])];
   const surprise = () => pool.length && void openHit(pool[Math.floor(Math.random() * pool.length)]);
+  const saved = useSavedSongs(lang);
 
   return (
     <>
-      <RoomTitle>Explore</RoomTitle>
+      <RoomTitle>Music</RoomTitle>
+      {saved && saved.length > 0 && (
+        <Rail title="Your songs" label="Your songs" limit={12}>
+          {saved.map((s, i) => (
+            <SongTile key={s.id} song={s} i={i} />
+          ))}
+        </Rail>
+      )}
       {explore?.finds.length ? (
         <Rail
           title="Explore today"
@@ -209,48 +218,5 @@ function SpotifyLikes({ lang }: { lang: string }) {
       {scan?.error && <p className="text-[13.5px] text-[var(--room-rose)]">{scan.error}</p>}
       {scan?.done && !scan.error && <p className="text-[14px] text-ink-soft">None of your liked songs seem to be sung in {getLanguage(lang)?.name} yet.</p>}
     </section>
-  );
-}
-
-// ── Library ──────────────────────────────────────────────────────────────────────────────────────
-
-export function LibraryPage() {
-  const lang = useApp().language.id;
-  const saved = useSavedSongs(lang);
-  const recent = useRecentSongs(lang, 30);
-  const mostPlayed = useMostPlayed(lang, 24);
-  if (!saved || !recent) return <RoomTitle>Library</RoomTitle>;
-  return (
-    <>
-      <RoomTitle>Library</RoomTitle>
-      {!saved.length && !recent.length && (
-        <div className="room-section rounded-[18px] border border-[var(--room-rim)] bg-[var(--room-fill)] p-6 text-center">
-          <Music2 size={26} className="mx-auto text-[var(--room-rose)]" aria-hidden />
-          <p className="mt-3 text-[17px] font-bold">Songs you open and save live here</p>
-          <p className="mx-auto mt-1 max-w-sm text-[14px] text-ink-soft">Find one in Today or Explore, or search for a song you know, and save it with the heart.</p>
-        </div>
-      )}
-      {saved.length > 0 && (
-        <Rail title="Your songs" label="Your songs" limit={12}>
-          {saved.map((s, i) => (
-            <SongTile key={s.id} song={s} i={i} />
-          ))}
-        </Rail>
-      )}
-      {recent.length > 0 && (
-        <Rail title="Recently opened" label="Recently opened" limit={12}>
-          {recent.map((s, i) => (
-            <SongTile key={s.id} song={s} i={i} />
-          ))}
-        </Rail>
-      )}
-      {mostPlayed && mostPlayed.length >= 3 && (
-        <Rail title="Most played by you" label="Most played by you" limit={12}>
-          {mostPlayed.map((s, i) => (
-            <SongTile key={s.id} song={s} plays i={i} />
-          ))}
-        </Rail>
-      )}
-    </>
   );
 }

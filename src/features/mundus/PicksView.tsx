@@ -23,6 +23,7 @@ import { addBookToCodex, addSubtitlesFor, followPodcast } from './actions';
 import { pickKey, usePickLookups, useStreaming } from './hooks';
 import type { PickLookup } from './hooks';
 import { ServiceMark } from './ServiceBadge';
+import { sonusBase } from '@/features/sonus/paths';
 
 type Filter = PickGroup | 'music' | 'all';
 
@@ -292,7 +293,7 @@ export const PickCard = memo(function PickCard({
         onClick={() =>
           void run(async () => {
             const feedId = await followPodcast(lang, pick);
-            if (feedId) toast(`Following “${pick.title}” in Sonus.`, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`/sonus/podcast/${feedId}`) } });
+            if (feedId) toast(`Following “${pick.title}” in Sonus.`, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`${sonusBase()}/podcast/${feedId}`) } });
             else toast('Apple’s podcast directory doesn’t have it under that name. Try Spotify or Apple Podcasts.', { duration: 6000 });
           })
         }

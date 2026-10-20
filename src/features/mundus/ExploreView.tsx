@@ -51,6 +51,7 @@ import { pickKey, useAudiobookPicks, usePickLookups, useRadioPicks, useStreaming
 import type { PickLookup } from './hooks';
 import { PickCard } from './PicksView';
 import { TIP_ICONS } from './TipsView';
+import { sonusBase } from '@/features/sonus/paths';
 
 /** The shelves, each named for the room its picks open in. `?shelf=` scrolls to one. */
 export type ShelfId = 'watch' | 'read' | 'listen' | 'radio' | 'words' | 'play' | 'beyond';
@@ -353,7 +354,7 @@ function ListenShelf({ lang, podcasts, tile }: { lang: string; podcasts: Pick[];
   const openBook = async (identifier: string) => {
     setOpening(identifier);
     try {
-      navigate(`/sonus/book/${await openLibrivoxBook(lang, identifier)}`);
+      navigate(`${sonusBase()}/book/${await openLibrivoxBook(lang, identifier)}`);
     } catch {
       toast('LibriVox didn’t answer. Try again in a moment.', { tone: 'error' });
     } finally {
@@ -374,7 +375,7 @@ function ListenShelf({ lang, podcasts, tile }: { lang: string; podcasts: Pick[];
         />
       ))}
       {courses.map((c) => (
-        <Tile key={c.url} title={c.name} sub={`Course · ${c.by}`} onClick={() => navigate('/sonus/audiobooks')} art={<Cover hue={HUE.podcasts} icon={GraduationCap} />} />
+        <Tile key={c.url} title={c.name} sub={`Course · ${c.by}`} onClick={() => navigate('/sonus?tab=books')} art={<Cover hue={HUE.podcasts} icon={GraduationCap} />} />
       ))}
     </Shelf>
   );
@@ -391,7 +392,7 @@ function RadioShelf({ lang, level, reach }: { lang: string; level: Level; reach:
           key={s.id}
           title={s.name}
           sub={['Radio', radioCountry(s.countryCode, s.country)].filter(Boolean).join(' · ')}
-          onClick={() => navigate(`/sonus/station/${s.id}`)}
+          onClick={() => navigate(`${sonusBase()}/station/${s.id}`)}
           art={<Artwork title={s.name} coverUrl={s.favicon} className="block size-full" rounded="rounded-none" />}
         />
       ))}

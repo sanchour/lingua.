@@ -12,6 +12,7 @@ import { countriesOf, placesOf, searchStations, stationPlace, stationsFor, stati
 import { getLanguage } from '@/core/lang/languages';
 import { Artwork } from '../library/Artwork';
 import { RadioMap } from './RadioMap';
+import { sonusBase } from '@/features/sonus/paths';
 
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
 
@@ -293,10 +294,10 @@ function OnAir({ lang, saved, favorite, onFavorite }: { lang: string; saved?: Ra
   const playing = status === 'playing';
   return (
     <Card className="flex items-center gap-4 p-4 sm:p-5">
-      <Link to={`/sonus/station/${media.id.replace(/^radio:/, '')}`} aria-label={`Open ${media.title}`} className="shrink-0">
+      <Link to={`${sonusBase()}/station/${media.id.replace(/^radio:/, '')}`} aria-label={`Open ${media.title}`} className="shrink-0">
         <Artwork title={media.title} coverUrl={media.coverUrl} className="w-16 sm:w-20" rounded="rounded-2xl" />
       </Link>
-      <Link to={`/sonus/station/${media.id.replace(/^radio:/, '')}`} className="min-w-0 flex-1">
+      <Link to={`${sonusBase()}/station/${media.id.replace(/^radio:/, '')}`} className="min-w-0 flex-1">
         <p className="flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
           <Radio size={13} aria-hidden /> {status === 'error' ? 'Off air' : playing ? 'Live now' : status === 'loading' ? 'Tuning in…' : 'Paused'}
         </p>
@@ -314,7 +315,7 @@ function OnAir({ lang, saved, favorite, onFavorite }: { lang: string; saved?: Ra
       >
         {status === 'loading' ? <LoaderCircle size={22} className="animate-spin" aria-hidden /> : playing ? <Pause size={22} className="fill-current" aria-hidden /> : <Play size={22} className="translate-x-0.5 fill-current" aria-hidden />}
       </button>
-      <Link to={`/sonus/station/${media.id.replace(/^radio:/, '')}`} className="hidden sm:block" aria-label="Open the station">
+      <Link to={`${sonusBase()}/station/${media.id.replace(/^radio:/, '')}`} className="hidden sm:block" aria-label="Open the station">
         <ChevronRight size={18} className="text-ink-faint" aria-hidden />
       </Link>
     </Card>

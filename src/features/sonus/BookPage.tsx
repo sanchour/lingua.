@@ -16,6 +16,7 @@ import { loadMedia, unlockAudio, usePlayer } from '@/services/audio/engine';
 import { readAlongBook, stopReadAlong } from '@/services/sonus/readAlong';
 import { toast } from '@/state/ui';
 import { Artwork } from './library/Artwork';
+import { sonusBase, sonusHome } from '@/features/sonus/paths';
 
 const field = 'h-11 w-full rounded-xl border border-line bg-bg px-3.5 text-[15px]';
 const fieldLabel = 'mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase';
@@ -32,7 +33,7 @@ export default function BookPage() {
     return (
       <div className="py-20 text-center">
         <p className="font-serif text-xl">This book isn’t in Sonus any more.</p>
-        <Link to="/sonus" className="mt-4 inline-block font-semibold text-accent-text">
+        <Link to={sonusHome()} className="mt-4 inline-block font-semibold text-accent-text">
           Back to Sonus
         </Link>
       </div>
@@ -55,7 +56,7 @@ export default function BookPage() {
   const play = (part: Media, startMs?: number) => {
     unlockAudio();
     void loadMedia(part, { autoplay: true, startMs });
-    navigate(`/sonus/play/${part.id}`);
+    navigate(`${sonusBase()}/play/${part.id}`);
   };
 
   return (
@@ -169,7 +170,7 @@ function PartRow({ part, n, course, progress, onPlay }: { part: Media; n: number
           {done ? <CircleCheck size={22} aria-hidden /> : <Circle size={22} aria-hidden />}
         </button>
       )}
-      <Link to={`/sonus/play/${part.id}`} className="flex min-w-0 flex-1 items-center gap-3">
+      <Link to={`${sonusBase()}/play/${part.id}`} className="flex min-w-0 flex-1 items-center gap-3">
         {!course && <span className="w-7 shrink-0 text-center text-[13px] font-bold text-ink-faint tabular-nums">{n}</span>}
         <span className="min-w-0 flex-1">
           <span lang={part.lang} className="line-clamp-2 text-[15px] leading-snug font-semibold">

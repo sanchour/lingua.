@@ -12,6 +12,7 @@ import { refreshFeed } from '@/services/sonus/podcasts';
 import { toast } from '@/state/ui';
 import { Artwork } from './library/Artwork';
 import { MediaRow } from './library/MediaRow';
+import { sonusBase } from '@/features/sonus/paths';
 
 const PAGE = 40;
 const dateFmt = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -34,7 +35,7 @@ export default function FeedPage() {
     return (
       <div className="py-20 text-center">
         <p className="font-serif text-xl">This podcast isn’t followed any more.</p>
-        <Link to="/sonus?tab=podcasts" className="mt-4 inline-block font-semibold text-accent-text">
+        <Link to="/cantus/podcasts" className="mt-4 inline-block font-semibold text-accent-text">
           Back to Sonus
         </Link>
       </div>
@@ -56,7 +57,7 @@ export default function FeedPage() {
 
   return (
     <>
-      <BackLink to="/sonus?tab=podcasts">Sonus</BackLink>
+      <BackLink to="/cantus/podcasts">Sonus</BackLink>
 
       <header className="flex flex-col gap-5 sm:flex-row sm:items-end">
         <Artwork title={feed.title} coverUrl={feed.imageUrl} className="w-36 sm:w-44" rounded="rounded-3xl" />
@@ -98,7 +99,7 @@ export default function FeedPage() {
           return media ? (
             <MediaRow key={ep.guid} media={media} progress={playback?.get(media.id)} hasTranscript={Boolean(transcribed?.has(media.id))} inFeed />
           ) : (
-            <EpisodeRow key={ep.guid} feed={feed} episode={ep} onOpen={async () => navigate(`/sonus/play/${await episodeMedia(feed, ep)}`)} />
+            <EpisodeRow key={ep.guid} feed={feed} episode={ep} onOpen={async () => navigate(`${sonusBase()}/play/${await episodeMedia(feed, ep)}`)} />
           );
         })}
       </div>
@@ -124,7 +125,7 @@ export default function FeedPage() {
               onClick={async () => {
                 setConfirm(false);
                 await unsubscribe(feed.id);
-                navigate('/sonus?tab=podcasts');
+                navigate('/cantus/podcasts');
               }}
             >
               Unfollow

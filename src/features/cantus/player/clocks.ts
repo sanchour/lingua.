@@ -7,7 +7,7 @@ import type { SpotifyController } from '@/services/sonus/spotify';
 import { YT_PLAYING } from '@/services/cantus/youtube';
 import type { YTPlayer } from '@/services/cantus/youtube';
 
-export type ClockKind = 'spotify' | 'youtube' | 'apple' | 'preview' | 'timer';
+export type ClockKind = 'spotify' | 'youtube' | 'soundcloud' | 'link' | 'apple' | 'preview' | 'timer';
 
 export interface SongClock extends PlayheadClock {
   kind: ClockKind;
@@ -119,7 +119,7 @@ export type TimerClock = SongClock & { nudge(ms: number): void };
  * The learner's own timer: start it when the song starts wherever it plays, nudge it to match.
  * Apple Music's player tells the page nothing, so it runs on one too (`apple`).
  */
-export function createTimerClock(kind: 'timer' | 'apple' = 'timer'): TimerClock {
+export function createTimerClock(kind: 'timer' | 'apple' | 'link' = 'timer'): TimerClock {
   const core = createCore(kind, () => controls);
   const controls: Controls = {
     play: () => core.update(core.now(), false),
@@ -202,6 +202,8 @@ const YT_CUED = 5;
 /** YouTube's player is asked where it is four times a second. */
 export function createYouTubeClock(): YouTubeClock {
   let player: (YTPlayer & { getDuration?(): number }) | null = null;
+  // Back in the tab (timers slow down in the background): ask at once, don't wait for the next poll.
+  const onVisible = () => document.visibilityState === 'visible' && poll();
   let timer = 0;
   // Where the current player was made to start (ms).
   let madeAt = 0;
@@ -246,7 +248,9 @@ export function createYouTubeClock(): YouTubeClock {
     attach(p) {
       player = p;
       window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisible);
       if (!p) return core.update(core.now(), true);
+      document.addEventListener('visibilitychange', onVisible);
       const wanted = core.takeWanted();
       // The player was made at startSeconds(); a place asked for since then is sought.
       if (wanted.ms !== null && Math.abs(wanted.ms - madeAt) > 1500) seekTo(p, wanted.ms);
@@ -338,5 +342,76 @@ export function shifted(clock: SongClock, offset: () => number): PlayheadClock {
     onTime: (fn) => clock.onTime((ms) => fn(ms - offset())),
     seek: (ms) => clock.seek(ms + offset()),
     play: () => clock.play(),
+  };
+}
+
+/** SoundCloud's Widget API, as much of it as the clock uses. */
+export interface SCWidget {
+  bind(event: string, fn: (e?: { currentPosition?: number }) => void): void;
+  play(): void;
+  pause(): void;
+  seekTo(ms: number): void;
+  getDuration(fn: (ms: number) => void): void;
+  getPosition(fn: (ms: number) => void): void;
+  isPaused(fn: (paused: boolean) => void): void;
+}
+
+export type SoundCloudClock = SongClock & { attach(widget: SCWidget | null): void };
+
+/** SoundCloud's widget tells its place as it plays (and is asked twice a second besides). */
+export function createSoundCloudClock(): SoundCloudClock {
+  let widget: SCWidget | null = null;
+  let timer = 0;
+  const core = createCore('soundcloud', () =>
+    widget
+      ? {
+          play: () => widget!.play(),
+          pause: () => widget!.pause(),
+          seek: (ms) => {
+            pending = ms;
+            widget!.seekTo(ms);
+            core.update(ms, core.isPaused());
+          },
+        }
+      : null,
+  );
+  // A place asked for that the widget hasn't reached yet (before its first play it ignores seeks):
+  // held until it is, or until a few seconds into playing.
+  let pending: number | null = null;
+  const report = (ms: number, paused: boolean) => {
+    if (pending !== null && Math.abs(ms - pending) > 1500) return core.update(pending, paused);
+    pending = null;
+    core.update(ms, paused);
+  };
+  const poll = () => widget?.getPosition((ms) => widget?.isPaused((paused) => report(ms, paused)));
+  const onVisible = () => document.visibilityState === 'visible' && poll();
+  return {
+    ...core.clock,
+    attach(w) {
+      widget = w;
+      window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisible);
+      if (!w) return core.update(core.now(), true);
+      document.addEventListener('visibilitychange', onVisible);
+      w.getDuration((ms) => core.setDuration(ms));
+      w.bind('playProgress', (e) => e?.currentPosition !== undefined && report(e.currentPosition, false));
+      w.bind('play', () => {
+        const held = pending;
+        if (held !== null) {
+          w.seekTo(held);
+          window.setTimeout(() => pending === held && (pending = null), 3000);
+        }
+        poll();
+      });
+      w.bind('pause', () => poll());
+      w.bind('finish', () => core.update(core.now(), true));
+      const wanted = core.takeWanted();
+      if (wanted.ms !== null) {
+        pending = wanted.ms;
+        w.seekTo(wanted.ms);
+      }
+      if (wanted.play) w.play();
+      timer = window.setInterval(poll, 500);
+    },
   };
 }

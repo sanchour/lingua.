@@ -8,6 +8,7 @@ import { searchPodcasts, subscribe, suggestedSearches } from '@/services/sonus/p
 import type { PodcastHit } from '@/services/sonus/podcasts';
 import { toast } from '@/state/ui';
 import { Artwork } from './Artwork';
+import { sonusBase } from '@/features/sonus/paths';
 
 // Results stay for the session, so switching tabs doesn't search again.
 const cache = new Map<string, PodcastHit[]>();
@@ -50,11 +51,11 @@ export function Discover({ lang, feeds }: { lang: string; feeds: Feed[] }) {
 
   const follow = async (hit: PodcastHit) => {
     const existing = followed.get(hit.feedUrl);
-    if (existing) return navigate(`/sonus/podcast/${existing}`);
+    if (existing) return navigate(`${sonusBase()}/podcast/${existing}`);
     setFollowing(hit.feedUrl);
     try {
       const id = await subscribe(lang, hit.feedUrl);
-      toast(`Following “${hit.title}”.`, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`/sonus/podcast/${id}`) } });
+      toast(`Following “${hit.title}”.`, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`${sonusBase()}/podcast/${id}`) } });
     } catch (e) {
       toast(e instanceof Error ? e.message : 'That podcast couldn’t be followed.', { tone: 'error' });
     } finally {

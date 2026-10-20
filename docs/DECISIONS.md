@@ -665,6 +665,28 @@ Short records of choices that are not obvious from the code. Newest last.
 - **No two-page spreads:** on desktop the page's words sit where the second page would; a comic in
   Lingua is read to learn its words, so they stay in view.
 
+## 2026-10-20 — Sonus and Sonus+
+
+- **Sonus+ is the Cantus room, grown.** Same route (`/cantus/*`), same dark design; podcasts join
+  music. Sonus's own pages (an episode, a podcast, a book) open over the room
+  through nested routes, unchanged: `sonusBase()` / `sonusHome()` read the address so their links
+  stay in the room when opened from it, and in Sonus otherwise. Radio and Audiobooks stay Sonus tabs, as
+  the user asked.
+
+## 2026-10-20 — Whole songs (design handoff, workstream C)
+
+- **YouTube first, keyless by default.** No free keyless official YouTube search exists, so the
+  learner's own Data API key (Ordo › Music, device-only, sent in `X-Goog-Api-Key`) is used when
+  set; otherwise the public Piped servers (YouTube Music's "songs" first: the artists' own audio)
+  and then Invidious instances from its directory, each tried in turn. Only YouTube's own embedded
+  player plays the result; oEmbed checks the owner allows embedding first.
+- **New song fields without a migration:** `soundcloudUrl`, `vimeoId`, `dailymotionId`,
+  `bandcampUrl`, `fullSource`, `rejected` are not indexed, so Dexie needs no new version, and
+  backups carry whole rows, so they travel too.
+- **One clock at a time** was already the design; switching source now pauses the old one and
+  seeks the new one to the same place. YouTube and SoundCloud re-read their place when the tab
+  becomes visible again.
+
 ## 2026-10-20 — Removing a language
 
 - **Each kind of data leaves the way it already does** (`data/removeLanguage.ts`): texts, decks,

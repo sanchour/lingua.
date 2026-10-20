@@ -212,7 +212,7 @@ function SectionView({ id }: { id: SectionId }) {
     case 'listening':
       return <ListeningSection audio={settings.audio} />;
     case 'music':
-      return <MusicSection cantus={settings.cantus} spotify={settings.spotify} />;
+      return <MusicSection cantus={settings.cantus} spotify={settings.spotify} youtubeKey={settings.apiKeys.youtube ?? ''} />;
     case 'language':
       return <LanguageSection active={language} />;
     case 'ai':

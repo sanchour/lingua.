@@ -15,6 +15,7 @@ import { playStation } from '@/services/radio/play';
 import { toast } from '@/state/ui';
 import { Artwork } from './library/Artwork';
 import { RATES, rateLabel } from './player/Transport';
+import { sonusHome } from '@/features/sonus/paths';
 
 /** Keeps the screen on while commute mode is open (if the learner wants it). */
 function useWakeLock(on: boolean) {
@@ -73,7 +74,7 @@ export default function CommutePage() {
     });
   }, [cues]);
 
-  const close = () => (window.history.length > 1 ? navigate(-1) : navigate('/sonus'));
+  const close = () => (window.history.length > 1 ? navigate(-1) : navigate(sonusHome()));
   const header = (
     <header className="flex items-center gap-2 px-3 pt-2">
       <button type="button" aria-label="Leave commute mode" onClick={close} className="grid size-12 place-items-center rounded-2xl text-ink-soft">
@@ -112,7 +113,7 @@ export default function CommutePage() {
         <div>
           <p className="font-serif text-2xl font-semibold">Nothing is playing</p>
           <p className="mt-2 text-ink-soft">Start an episode in Sonus, then come back for the big controls.</p>
-          <Link to="/sonus" className="hit mt-5 inline-block font-semibold text-accent-text">
+          <Link to={sonusHome()} className="hit mt-5 inline-block font-semibold text-accent-text">
             Go to Sonus
           </Link>
         </div>

@@ -1,20 +1,21 @@
-// Cantus's own navigation: its four tabs, the addresses of a song and its games, and the tab the
-// learner was on last, so leaving and coming back (or closing the player) returns to it.
+// Sonus+'s own navigation (the room began as Cantus, and keeps its addresses): its tabs, the
+// addresses of a song and its games, and the tab the learner was on last, so leaving and coming
+// back (or closing the player) returns to it.
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { create } from 'zustand';
 
-export type RoomTab = 'today' | 'explore' | 'library' | 'search';
+export type RoomTab = 'today' | 'music' | 'podcasts' | 'search';
 
 export const ROOM_TABS: ReadonlyArray<{ id: RoomTab; name: string; path: string }> = [
   { id: 'today', name: 'Today', path: '/cantus' },
-  { id: 'explore', name: 'Explore', path: '/cantus/explore' },
-  { id: 'library', name: 'Library', path: '/cantus/library' },
+  { id: 'music', name: 'Music', path: '/cantus/music' },
+  { id: 'podcasts', name: 'Podcasts', path: '/cantus/podcasts' },
   { id: 'search', name: 'Search', path: '/cantus/search' },
 ];
 
-/** Where Cantus is left for: Sonus › Music, which then says the room is closed. */
-export const CLOSED_PATH = '/sonus?tab=music';
+/** Where Sonus+ is left for: Sonus, your library, which then says the room is closed. */
+export const CLOSED_PATH = '/sonus';
 
 /** Marks the trip out of the room, so Sonus › Music can say "Back in Lingua". */
 export interface LeftCantusState {
@@ -29,6 +30,8 @@ export const tabPath = (tab: RoomTab) => ROOM_TABS.find((t) => t.id === tab)!.pa
 export function roomTabOf(pathname: string): RoomTab | null {
   const path = pathname.replace(/\/+$/, '');
   if (path === '/cantus') return 'today';
+  // The first room's Explore and Library: both are Music now (your songs are on it too).
+  if (path === '/cantus/explore' || path === '/cantus/library') return 'music';
   return ROOM_TABS.find((t) => t.id !== 'today' && t.path === path)?.id ?? null;
 }
 

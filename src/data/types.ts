@@ -543,6 +543,15 @@ export interface Song extends Synced {
   previewUrl?: string;
   spotifyId?: string;
   youtubeId?: string;
+  /** A whole recording from SoundCloud (its page link), Vimeo, Dailymotion, or Bandcamp (its player link). */
+  soundcloudUrl?: string;
+  vimeoId?: string;
+  dailymotionId?: string;
+  bandcampUrl?: string;
+  /** How the YouTube video was chosen: found by Cantus ("Official audio", "Music video", "Video") or the learner's link. */
+  fullSource?: { label: string; auto?: 1; checkedAt: number };
+  /** Videos the learner said aren't this song ("Not this one"): never chosen again. */
+  rejected?: string[];
   lrclibId?: number;
   /** Where the lyrics came from, for the credit under them (none: LRCLIB, as before 2.0-4b). */
   lyricsFrom?: 'lrclib' | 'lyrics.ovh' | 'pasted';

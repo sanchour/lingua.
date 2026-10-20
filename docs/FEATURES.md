@@ -211,6 +211,10 @@ played songs, episodes and stations together, your songs, the podcasts you follo
 files), then **Music** and **Podcasts** for finding more. The music room still goes by Cantus
 inside (its deck is "From Cantus").
 
+**Sonus and Sonus+ (2026-10-20).** Sonus is your Library, Audiobooks and the Radio. Sonus+ (the room
+below, first called Cantus) is where you find things to listen to: Today, Music and Podcasts.
+Episodes open and play inside it; the now-playing bar shows whatever plays.
+
 **Cantus, a room of its own (design handoff, 2026-10-20).** Music opens Cantus full screen:
 no Lingua sidebar, tab bar or mini player; always dark, whatever the theme; the open song's
 artwork colours its glow. Four pages: **Today** (a song for today, most played now, recently
@@ -232,6 +236,13 @@ what comes back ("Showing results for baile inolvidable", with "Search for … i
 original comes before covers, karaoke and other versions. A top result (the song, or the artist
 for their name), songs (each with its 30-second preview), artists and albums, chips to keep one
 kind, Enter to open the top result; with the field empty, recent searches and styles to browse.
+
+**Whole songs.** A song opened in Cantus finds a whole recording by itself on YouTube (with your
+own key from Ordo › Music, or through public Piped and Invidious servers without one), official
+audio first, the right length, never live, covers or sped-up. "Playing from YouTube · Official
+audio"; "Not this one" finds the next. Paste a link from YouTube, SoundCloud, Spotify, Apple Music,
+Vimeo, Dailymotion or Bandcamp. SoundCloud's player tells the lyrics where it is, like YouTube's.
+Apple and Spotify say "30-second preview". Changing source carries on from the same place.
 
 
 - **Find any song** in the language you're learning (Apple's catalogue; tap the artwork for a

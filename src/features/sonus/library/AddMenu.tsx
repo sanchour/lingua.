@@ -11,6 +11,7 @@ import { subscribe } from '@/services/sonus/podcasts';
 import { parseSpotifyLink, spotifyInfo } from '@/services/sonus/spotify';
 import { toast } from '@/state/ui';
 import { AddBookDrawer } from './AddBookDrawer';
+import { sonusBase } from '@/features/sonus/paths';
 
 type Choice = 'files' | 'book' | 'free' | 'feed' | 'spotify' | 'discover';
 
@@ -46,7 +47,7 @@ export function AddMenu({ lang, onDiscover }: { lang: string; onDiscover: () => 
     try {
       const { ids, skipped } = await importAudioFiles(lang, files);
       if (skipped.length) toast(`${skipped.length === 1 ? `“${skipped[0]}” isn’t` : `${skipped.length} files aren’t`} audio this device can play.`, { tone: 'error' });
-      if (ids.length === 1) navigate(`/sonus/play/${ids[0]}`);
+      if (ids.length === 1) navigate(`${sonusBase()}/play/${ids[0]}`);
       else if (ids.length) toast(`${ids.length} files added.`, { tone: 'success' });
     } finally {
       setBusy(false);
@@ -125,10 +126,10 @@ function LinkDrawer({ lang, kind, onClose }: { lang: string; kind: 'feed' | 'spo
         if (!parsed) throw new Error('That isn’t a Spotify episode, show, playlist or track link.');
         const info = await spotifyInfo(parsed);
         const id = await addSpotify(lang, parsed, info);
-        navigate(`/sonus/play/${id}`);
+        navigate(`${sonusBase()}/play/${id}`);
       } else {
         const id = await subscribe(lang, value);
-        navigate(`/sonus/podcast/${id}`);
+        navigate(`${sonusBase()}/podcast/${id}`);
       }
       setValue('');
       onClose();

@@ -7,6 +7,7 @@ import { Button, Drawer, Segmented } from '@/design/primitives';
 import { pickFiles, pickFolder } from '@/services/files/files';
 import { AUDIO_ACCEPT, importBook, isAudioFile, suggestBookTitle } from '@/services/sonus/files';
 import { toast } from '@/state/ui';
+import { sonusBase } from '@/features/sonus/paths';
 
 const field = 'h-11 w-full rounded-xl border border-line bg-bg px-3.5 text-[15px]';
 const fieldLabel = 'mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase';
@@ -49,7 +50,7 @@ export function AddBookDrawer({ lang, kind: initialKind = 'audiobook', open, onC
       if (skipped.length) toast(`${skipped.length === 1 ? `“${skipped[0]}” isn’t` : `${skipped.length} files aren’t`} audio this device can play.`, { tone: 'error' });
       if (!ids.length) return;
       close();
-      navigate(`/sonus/book/${bookId}`);
+      navigate(`${sonusBase()}/book/${bookId}`);
     } catch (error) {
       toast(error instanceof Error ? error.message : 'The files couldn’t be added.', { tone: 'error' });
     } finally {

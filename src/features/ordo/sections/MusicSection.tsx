@@ -6,9 +6,10 @@ import { Badge, Button, Segmented } from '@/design/primitives';
 import { disconnectSpotify, spotifyRedirectUri, startSpotifySignIn } from '@/services/cantus/spotify';
 import { toast } from '@/state/ui';
 import { SettingsSection } from '../SettingsSection';
+import { useDraft } from '../useDraft';
 
 /** Cantus: the translation under each lyric line, and your own Spotify app for liked songs. */
-export function MusicSection({ cantus, spotify }: { cantus: Settings['cantus']; spotify: Settings['spotify'] }) {
+export function MusicSection({ cantus, spotify, youtubeKey }: { cantus: Settings['cantus']; spotify: Settings['spotify']; youtubeKey: string }) {
   return (
     <SettingsSection id="music" icon={Music2} title="Music" description="How songs in Sonus show their lyrics, where more lyrics come from, and your Spotify liked songs in the language you’re learning.">
       <div>
@@ -32,6 +33,7 @@ export function MusicSection({ cantus, spotify }: { cantus: Settings['cantus']; 
           LRCLIB first, often timed line by line to the music; then lyrics.ovh. For a song neither has, its page links to Genius: copy the words there and paste them in. Lyrics without timings are shown whole, to read along as you listen.
         </p>
       </div>
+      <YouTubeKey value={youtubeKey} />
       <SpotifySetup spotify={spotify} />
     </SettingsSection>
   );
@@ -120,6 +122,31 @@ function SpotifySetup({ spotify }: { spotify: Settings['spotify'] }) {
           <p className="mt-2 text-[12.5px] text-ink-faint">Without Spotify, every song still plays from a YouTube or Spotify link, or along with music playing anywhere else.</p>
         </>
       )}
+    </div>
+  );
+}
+
+/** Optional: the learner's own YouTube key, for finding whole songs straight from YouTube. */
+function YouTubeKey({ value }: { value: string }) {
+  const [key, setKey] = useDraft(value, (v) => void patchSetting('apiKeys', { youtube: v.trim() }), 400);
+  return (
+    <div className="mt-6 border-t border-line pt-5">
+      <label htmlFor="youtube-key" className="text-[15px] font-semibold">
+        Whole songs: your YouTube key (optional)
+      </label>
+      <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">
+        Apple and Spotify play 30 seconds unless you’re signed in, so Cantus finds each song’s whole recording on YouTube by itself. Without a key it asks the public Piped and Invidious servers, which are sometimes busy. With your own free YouTube Data API key (Google Cloud › YouTube Data API v3) it asks YouTube directly. The key stays on this device and travels only in a request header.
+      </p>
+      <input
+        id="youtube-key"
+        type="password"
+        value={key}
+        onChange={(e) => setKey(e.target.value)}
+        autoComplete="off"
+        spellCheck={false}
+        placeholder="Paste your key"
+        className="mt-3 h-11 w-full rounded-xl border border-line bg-raised px-3.5 font-mono text-[14px] transition-colors hover:border-line-strong"
+      />
     </div>
   );
 }

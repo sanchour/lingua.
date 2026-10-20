@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { ArrowRight, Music2, Pause, Play, Search, SearchX } from 'lucide-react';
 import type { LeftCantusState } from '@/features/cantus/room/nav';
 import { useApp } from '@/app/context';
@@ -14,22 +14,18 @@ import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Card, IconButton, SearchInput, searchKey, Segmented, SortMenu } from '@/design/primitives';
 import { getLanguage } from '@/core/lang/languages';
-import { fade, spring } from '@/design/motion';
+import { spring } from '@/design/motion';
 import { loadMedia, toggle, unlockAudio, usePlayer } from '@/services/audio/engine';
 import { AddMenu } from './library/AddMenu';
 import { Artwork } from './library/Artwork';
-import { Discover } from './library/Discover';
 import { LibraryHome } from './library/LibraryHome';
 import { MediaRow } from './library/MediaRow';
-import { PodcastGrid } from './library/PodcastGrid';
+import { sonusBase } from '@/features/sonus/paths';
 
 const RadioTab = lazy(() => import('./radio/RadioTab'));
 const BooksTab = lazy(() => import('./library/BooksTab'));
 
-/** Library first (music, podcasts, books and stations together), then each kind on its own, with discovery. */
-type Tab = 'library' | 'music' | 'podcasts' | 'books' | 'radio';
-const TABS: readonly Tab[] = ['library', 'music', 'podcasts', 'books', 'radio'];
-
+type Tab = 'library' | 'books' | 'radio';
 const SORTS: Array<{ value: MediaSort; label: string }> = [
   { value: 'recent', label: 'Recently played' },
   { value: 'added', label: 'Recently added' },
@@ -67,31 +63,34 @@ export default function SonusPage() {
   const sort = settings.ui.mediaSort;
 
   const [params, setParams] = useSearchParams();
-  // Old links: ?tab=discover was podcast discovery, now part of Podcasts; ?q= searches music.
-  const requested = params.get('tab');
-  const tab: Tab = TABS.find((t) => t === requested) ?? (requested === 'discover' ? 'podcasts' : params.get('q') ? 'music' : 'library');
   const navigate = useNavigate();
-  // Music is Cantus, a room of its own: the tab opens it. Back from it (its X), the tab says so.
-  const leftCantus = Boolean((useLocation().state as LeftCantusState | null)?.leftCantus);
-  const musicQuery = params.get('q');
+  // Sonus is your library, audiobooks and the radio; music and podcasts live in Sonus+ (old links,
+  // and ?q=, a song search, open it there).
+  const requested = params.get('tab');
+  const asked = params.get('q');
   useEffect(() => {
-    if (tab === 'music' && !leftCantus) navigate(musicQuery ? `/cantus/search?q=${encodeURIComponent(musicQuery)}` : '/cantus', { replace: true });
-  }, [tab, leftCantus, musicQuery, navigate]);
+    const to = asked
+      ? `/cantus/search?q=${encodeURIComponent(asked)}`
+      : requested === 'music'
+        ? '/cantus/music'
+        : requested === 'podcasts' || requested === 'discover'
+          ? '/cantus/podcasts'
+          : null;
+    if (to) navigate(to, { replace: true });
+  }, [requested, asked, navigate]);
+  // Back from Sonus+ (its X): the card says the room is closed.
+  const leftRoom = Boolean((useLocation().state as LeftCantusState | null)?.leftCantus);
+  const findPodcasts = () => navigate('/cantus/podcasts');
+  const tab: Tab = requested === 'radio' || requested === 'books' ? requested : requested === 'audiobooks' ? 'books' : 'library';
   const setTab = (next: Tab) => {
-    if (next === 'music') return navigate('/cantus');
     setParams(next === 'library' ? {} : { tab: next }, { replace: true });
     window.scrollTo({ top: 0 });
-  };
-  const discoverRef = useRef<HTMLElement>(null);
-  const findPodcasts = () => {
-    setTab('podcasts');
-    window.setTimeout(() => discoverRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
   };
 
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
-  useHotkeys({ '/': () => (setTab('library'), searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && tab === 'library');
+  useHotkeys({ '/': () => (searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && tab === 'library');
 
   const visible = useMemo(() => {
     const q = searchKey(query.trim());
@@ -105,96 +104,71 @@ export default function SonusPage() {
 
   return (
     <>
-      <PageHeader title="Sonus" eyebrow={`Listen and sing in ${getLanguage(lang)?.name ?? lang}`} actions={<AddMenu lang={lang} onDiscover={findPodcasts} />} />
+      <PageHeader title="Sonus" eyebrow={`Your library in ${getLanguage(lang)?.name ?? lang}`} actions={<AddMenu lang={lang} onDiscover={findPodcasts} />} />
+
+      <motion.div {...enter(0)} className="mb-6">
+        <Segmented<Tab>
+          block
+          label="Sonus"
+          value={tab}
+          onChange={setTab}
+          options={[
+            { value: 'library', label: 'Library' },
+            { value: 'books', label: 'Audiobooks', short: 'Books' },
+            { value: 'radio', label: 'Radio' },
+          ]}
+        />
+      </motion.div>
+
+      {tab !== 'library' && (
+        <Suspense fallback={null}>
+          {tab === 'radio' ? <RadioTab lang={lang} flag={language.flag} /> : <BooksTab lang={lang} />}
+        </Suspense>
+      )}
 
       {tab === 'library' && (
-        <motion.div {...enter(0)} className="mb-9 empty:hidden">
-          <ContinueCard media={media} playback={playback} />
+      <>
+      <motion.div {...enter(1)} className="mb-9 grid gap-4 lg:grid-cols-2">
+        <SonusPlusCard left={leftRoom} />
+        <ContinueCard media={media} playback={playback} />
+      </motion.div>
+
+      {Boolean(media?.length) && (
+        <motion.div {...enter(2)} className="mb-5 flex h-12 items-center gap-2">
+          <div className="relative h-full min-w-0 flex-1">
+            {searching ? (
+              <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search your audio and episodes" onClose={closeSearch} autoFocus />
+            ) : (
+              <h2 className="text-[12px] leading-[48px] font-bold tracking-[0.14em] text-ink-faint uppercase">Your library</h2>
+            )}
+          </div>
+          {!searching && <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />}
+          <SortMenu value={sort} options={SORTS} onChange={(mediaSort) => void patchSetting('ui', { mediaSort })} />
         </motion.div>
       )}
 
-      <motion.div {...enter(1)} className="mb-6 flex h-12 items-center gap-2">
-        <div className="relative h-full min-w-0 flex-1">
-          <AnimatePresence mode="popLayout" initial={false}>
-            {searching ? (
-              <motion.div key="search" className="absolute inset-0" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={fade}>
-                <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search your audio and episodes" onClose={closeSearch} autoFocus />
-              </motion.div>
+      <motion.section {...enter(2)} aria-label="Your library">
+        {media &&
+          feeds &&
+          (query.trim() ? (
+            visible.length ? (
+              <div className="-mx-2 flex flex-col">
+                {visible.map((m) => (
+                  <MediaRow key={m.id} media={m} progress={playback?.get(m.id)} hasTranscript={Boolean(transcribed?.has(m.id))} />
+                ))}
+              </div>
             ) : (
-              <motion.div key="tabs" className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
-                {/* The sections fit the width as one control: nothing to scroll sideways on a phone. */}
-                <Segmented<Tab>
-                  block
-                  label="Sonus sections"
-                  value={tab}
-                  onChange={setTab}
-                  options={[
-                    { value: 'library', label: 'Library' },
-                    { value: 'music', label: 'Music' },
-                    { value: 'podcasts', label: 'Podcasts' },
-                    { value: 'books', label: 'Audiobooks', short: 'Books' },
-                    { value: 'radio', label: 'Radio' },
-                  ]}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-        {tab === 'library' && Boolean(media?.length) && (
-          <>
-            {!searching && <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />}
-            <SortMenu value={sort} options={SORTS} onChange={(mediaSort) => void patchSetting('ui', { mediaSort })} />
-          </>
-        )}
-      </motion.div>
-
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.section key={tab} aria-label={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.snappy}>
-          {tab === 'music' && <CantusClosed />}
-          {tab === 'radio' && (
-            <Suspense fallback={null}>
-              <RadioTab lang={lang} flag={language.flag} />
-            </Suspense>
-          )}
-          {tab === 'books' && (
-            <Suspense fallback={null}>
-              <BooksTab lang={lang} />
-            </Suspense>
-          )}
-          {tab === 'library' &&
-            media &&
-            feeds &&
-            (query.trim() ? (
-              visible.length ? (
-                <div className="-mx-2 flex flex-col">
-                  {visible.map((m) => (
-                    <MediaRow key={m.id} media={m} progress={playback?.get(m.id)} hasTranscript={Boolean(transcribed?.has(m.id))} />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center py-14 text-center text-ink-soft">
-                  <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-                  <p className="font-semibold text-ink">Nothing matches “{query.trim()}”</p>
-                </div>
-              )
-            ) : (
-              <LibraryHome lang={lang} media={media} visible={visible} feeds={feeds} playback={playback} transcribed={transcribed} onMusic={() => setTab('music')} onPodcasts={findPodcasts} onBooks={() => setTab('books')} onRadio={() => setTab('radio')} />
-            ))}
-          {tab === 'podcasts' && (
-            <div className="space-y-10">
-              {feeds?.length ? (
-                <PodcastGrid feeds={feeds} />
-              ) : (
-                feeds && <p className="text-[15px] text-ink-soft">Podcasts you follow appear here, with every episode ready to stream, save or transcribe. Find one below.</p>
-              )}
-              <section ref={discoverRef} aria-label="Find podcasts" className="scroll-mt-24">
-                <h2 className="mb-4 text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase">Find podcasts</h2>
-                <Discover lang={lang} feeds={feeds ?? []} />
-              </section>
-            </div>
-          )}
-        </motion.section>
-      </AnimatePresence>
+              <div className="flex flex-col items-center py-14 text-center text-ink-soft">
+                <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
+                <p className="font-semibold text-ink">Nothing matches “{query.trim()}”</p>
+              </div>
+            )
+          ) : (
+            <LibraryHome lang={lang} media={media} visible={visible} feeds={feeds} playback={playback} transcribed={transcribed} onMusic={() => navigate('/cantus/music')} onPodcasts={findPodcasts} onBooks={() => setTab('books')} onRadio={() => setTab('radio')} />
+          ))}
+      </motion.section>
+      </>
+      )}
     </>
   );
 }
@@ -212,7 +186,7 @@ function ContinueCard({ media, playback }: { media?: Media[]; playback?: Map<str
 
   return (
     <Card className="flex items-center gap-4 p-4 sm:gap-5 sm:p-5">
-      <Link to={`/sonus/play/${item.id}`} className="w-20 shrink-0 sm:w-24" aria-label={`Open ${item.title}`}>
+      <Link to={`${sonusBase()}/play/${item.id}`} className="w-20 shrink-0 sm:w-24" aria-label={`Open ${item.title}`}>
         <Artwork title={item.title} coverBlobId={item.coverBlobId} coverUrl={item.coverUrl} className="w-full" rounded="rounded-2xl" />
       </Link>
       <div className="min-w-0 flex-1">
@@ -242,26 +216,36 @@ function ContinueCard({ media, playback }: { media?: Media[]; playback?: Map<str
       >
         {isLoaded && playing ? <Pause size={22} className="fill-current" aria-hidden /> : <Play size={22} className="translate-x-0.5 fill-current" aria-hidden />}
       </button>
-      <Link to={`/sonus/play/${item.id}`} className="hidden sm:block" aria-label="Open the player">
+      <Link to={`${sonusBase()}/play/${item.id}`} className="hidden sm:block" aria-label="Open the player">
         <ArrowRight size={18} className="text-ink-faint" aria-hidden />
       </Link>
     </Card>
   );
 }
 
-/** Sonus › Music after leaving Cantus: the room is closed, the song keeps its place. */
-function CantusClosed() {
+/** The way into Sonus+, dark like the room; back from it, it says the room is closed. */
+function SonusPlusCard({ left }: { left: boolean }) {
   return (
-    <div className="rounded-3xl border border-line bg-surface p-6 text-center sm:p-10">
-      <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-[linear-gradient(135deg,#e8a0bf,#b4587e)] text-[#1a1215]">
-        <Music2 size={26} aria-hidden />
+    <Link
+      to="/cantus"
+      className="group relative flex min-h-[152px] flex-col justify-between overflow-hidden rounded-3xl bg-[#120e10] p-5 text-[#f6eef0] shadow-elev-1 transition-transform active:scale-[0.99] sm:p-6"
+      aria-label="Open Sonus+"
+    >
+      <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_10%_-10%,rgb(180_88_126/0.55),transparent_60%),radial-gradient(90%_70%_at_100%_0%,rgb(110_47_75/0.5),transparent_60%)]" aria-hidden />
+      <span className="relative flex items-center gap-3">
+        <span className="grid size-10 place-items-center rounded-xl bg-[linear-gradient(135deg,#e8a0bf,#b4587e)] text-[#1a1215]">
+          <Music2 size={20} aria-hidden />
+        </span>
+        <span className="text-[22px] font-extrabold tracking-[-0.02em]">
+          Sonus<span className="text-[#e8a0bf]">+</span>
+        </span>
       </span>
-      <p className="mt-4 text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase">Sonus · Music</p>
-      <h2 className="mt-1 font-serif text-[26px] leading-tight">Back in Lingua</h2>
-      <p className="mx-auto mt-2 max-w-sm text-[15px] text-ink-soft">Cantus closed. The song keeps its place.</p>
-      <Link to="/cantus" className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-inverse px-6 font-semibold text-on-inverse transition-transform active:scale-[0.97]">
-        Open Cantus <ArrowRight size={17} aria-hidden />
-      </Link>
-    </div>
+      <span className="relative mt-4 block">
+        <span className="block text-[15px] font-semibold">{left ? 'Back in Lingua. Sonus+ closed; the song keeps its place.' : 'Songs to sing and learn, and podcasts'}</span>
+        <span className="mt-3 inline-flex h-10 items-center gap-2 rounded-full bg-[#f6eef0] px-4 text-[14px] font-bold text-[#1a1215]">
+          Open Sonus+ <ArrowRight size={16} aria-hidden />
+        </span>
+      </span>
+    </Link>
   );
 }

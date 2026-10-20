@@ -69,7 +69,7 @@ describe('syncing two devices', () => {
     const [desk, phone] = [await device('desk'), await device('phone')];
     await desk.words.bulkPut([word('casa', 1, 100), word('perro', 2, 100)]);
     await phone.words.bulkPut([word('gato', 2, 200), word('perro', 1, 300)]);
-    await setSetting('apiKeys', { groq: '', gemini: 'test-not-a-real-key', tmdb: '' }, desk);
+    await setSetting('apiKeys', { groq: '', gemini: 'test-not-a-real-key', tmdb: '', youtube: '' }, desk);
 
     const secret = newSecret();
     const [x, y] = channels();

@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import type { Feed } from '@/data/types';
 import { Artwork } from './Artwork';
+import { sonusBase } from '@/features/sonus/paths';
 
 const dateFmt = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short' });
 
@@ -11,7 +12,7 @@ export function PodcastGrid({ feeds }: { feeds: Feed[] }) {
       {feeds.map((f) => {
         const latest = f.episodes[0]?.publishedAt;
         return (
-          <Link key={f.id} to={`/sonus/podcast/${f.id}`} className="group block">
+          <Link key={f.id} to={`${sonusBase()}/podcast/${f.id}`} className="group block">
             <span className="block transition-transform duration-200 ease-out group-hover:-translate-y-1 group-active:scale-[0.98]">
               <Artwork title={f.title} coverUrl={f.imageUrl} className="w-full" rounded="rounded-2xl" />
             </span>

@@ -2,6 +2,7 @@ import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState } from
 import type { CSSProperties, ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import {
+  Ban,
   BookOpen,
   Check,
   ChevronDown,
@@ -47,14 +48,15 @@ import { findLyrics, lyricCandidates, searchLyrics } from '@/services/cantus/lrc
 import { geniusSearchUrl, lyricsOvh } from '@/services/cantus/lyricSources';
 import type { FoundLyrics } from '@/services/cantus/lrclib';
 import { paletteOf } from '@/services/cantus/palette';
-import { findSpotifyTrack, spotifyTrackId } from '@/services/cantus/spotify';
+import { findSpotifyTrack } from '@/services/cantus/spotify';
 import { translateLyrics } from '@/services/cantus/translate';
-import { youtubeId } from '@/services/cantus/youtube';
+import { findFullSong, parseMusicLink } from '@/services/cantus/fullsong';
+import { youtubeEmbedCheck } from '@/services/cantus/youtube';
 import { toast } from '@/state/ui';
-import { createPreviewClock, createSpotifyClock, createTimerClock, createYouTubeClock, shifted } from './player/clocks';
-import type { ClockKind, PreviewClock, SongClock, TimerClock } from './player/clocks';
+import { createPreviewClock, createSoundCloudClock, createSpotifyClock, createTimerClock, createYouTubeClock, shifted } from './player/clocks';
+import type { ClockKind, PreviewClock, SongClock, SoundCloudClock, TimerClock } from './player/clocks';
 import { LyricSheet } from './player/LyricSheet';
-import { AppleMusicPlayer, SpotifyPlayer, YouTubePlayer } from './player/Players';
+import { AppleMusicPlayer, LinkPlayer, SoundCloudPlayer, SpotifyPlayer, YouTubePlayer } from './player/Players';
 import { SongArt } from './SongArt';
 import { gamesPath, lastRoomPath, useLeaveCantus } from './room/nav';
 import { keepPlace, keptPlace, useCantusNow } from './room/now';
@@ -136,6 +138,24 @@ function useSongSetup(song: Song) {
     void paletteOf(song.artworkUrl).then((palette) => palette && patchSong(song.id, { palette }));
   }, [song.id, song.palette, song.artworkUrl]);
 
+  // No whole song to play yet: find one by itself (and, when none was found, look again in a week).
+  const key = settings.apiKeys.youtube?.trim() ?? '';
+  const hasFull = Boolean(song.youtubeId || song.soundcloudUrl || song.vimeoId || song.dailymotionId || song.bandcampUrl);
+  const lookedAt = song.fullSource?.checkedAt ?? 0;
+  const rejected = (song.rejected ?? []).join(',');
+  useEffect(() => {
+    if (hasFull || Date.now() - lookedAt < 7 * 86_400_000) return;
+    const ctl = new AbortController();
+    void findFullSong({ title: song.title, artist: song.artist, durationMs: song.durationMs }, { key, signal: ctl.signal, rejected: rejected ? rejected.split(',') : [] })
+      .then((found) => {
+        if (ctl.signal.aborted) return;
+        void patchSong(song.id, found ? { youtubeId: found.youtubeId, fullSource: { label: found.label, auto: 1, checkedAt: Date.now() } } : { fullSource: { label: '', checkedAt: Date.now() } });
+      })
+      // Cancelled, or no server answered: nothing is saved, so it looks again next time.
+      .catch(() => undefined);
+    return () => ctl.abort();
+  }, [song.id, song.title, song.artist, song.durationMs, hasFull, lookedAt, rejected, key]);
+
   useEffect(() => {
     if (!connected || song.spotifyId) return;
     void findSpotifyTrack(song.title, song.artist)
@@ -154,6 +174,8 @@ function useSongSetup(song: Song) {
 function sourcesOf(song: Song, followable: boolean): ClockKind[] {
   const kinds: ClockKind[] = [];
   if (song.youtubeId) kinds.push('youtube');
+  if (song.soundcloudUrl) kinds.push('soundcloud');
+  if (song.vimeoId || song.dailymotionId || song.bandcampUrl) kinds.push('link');
   if (song.spotifyId) kinds.push('spotify');
   if (song.itunesId && appleSongUrl(song)) kinds.push('apple');
   if (song.previewUrl) kinds.push('preview');
@@ -167,28 +189,48 @@ function sourcesOf(song: Song, followable: boolean): ClockKind[] {
  */
 function defaultSource(song: Song, followable: boolean, wide: boolean): ClockKind | null {
   const kinds = sourcesOf(song, followable);
-  const order: ClockKind[] = wide ? ['youtube', 'spotify', 'apple', 'preview', 'timer'] : ['youtube', 'spotify', 'preview', 'apple', 'timer'];
+  const order: ClockKind[] = wide ? ['youtube', 'soundcloud', 'link', 'spotify', 'apple', 'preview', 'timer'] : ['youtube', 'soundcloud', 'link', 'spotify', 'preview', 'apple', 'timer'];
   return order.find((k) => kinds.includes(k)) ?? null;
 }
 
-const SOURCE_LABEL: Record<ClockKind, string> = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Music', preview: 'Preview (30 seconds)', timer: 'Music playing anywhere' };
+const SOURCE_LABEL: Record<ClockKind, string> = {
+  youtube: 'YouTube',
+  soundcloud: 'SoundCloud',
+  link: 'Your link',
+  spotify: 'Spotify · 30-second preview',
+  apple: 'Apple Music · 30-second preview',
+  preview: 'Apple · 30-second preview',
+  timer: 'Music playing anywhere',
+};
+/** Which service a pasted Vimeo, Dailymotion or Bandcamp link is. */
+const linkName = (song: Song) => (song.vimeoId ? 'Vimeo' : song.dailymotionId ? 'Dailymotion' : 'Bandcamp');
+const labelOf = (k: ClockKind, song: Song) => (k === 'link' ? linkName(song) : SOURCE_LABEL[k]);
+function noteOf(k: ClockKind, song: Song): string {
+  if (k === 'youtube' && song.fullSource?.label) return `Playing from YouTube · ${song.fullSource.label}`;
+  if (k === 'link') return `Playing from ${linkName(song)}`;
+  return SOURCE_NOTE[k];
+}
 const SOURCE_NOTE: Record<ClockKind, string> = {
   youtube: 'Playing from YouTube',
+  soundcloud: 'Playing from SoundCloud',
+  link: 'Playing from your link',
   spotify: 'Playing from Spotify',
   apple: 'Playing in Apple Music',
-  preview: 'Playing Apple’s preview',
+  preview: 'Playing Apple’s 30-second preview',
   timer: 'Along with music playing anywhere',
 };
 const SOURCE_DETAIL: Record<ClockKind, string> = {
   youtube: 'The whole song, for everyone',
-  spotify: 'The whole song when signed in to Spotify',
-  apple: 'The whole song when signed in to Apple Music',
+  soundcloud: 'The whole track, for everyone',
+  link: 'The whole song; start the lyrics with it',
+  spotify: 'The whole song only when signed in to Spotify',
+  apple: 'The whole song only with an Apple Music subscription',
   preview: 'Plays here, always',
   timer: 'A speaker, the Music app: start it with the song',
 };
-const SOURCE_ICON: Record<ClockKind, LucideIcon> = { youtube: Play, spotify: Music2, apple: Music2, preview: Headphones, timer: Speaker };
+const SOURCE_ICON: Record<ClockKind, LucideIcon> = { youtube: Play, soundcloud: Music2, link: Link2, spotify: Music2, apple: Music2, preview: Headphones, timer: Speaker };
 
-type Clocks = { spotify: ReturnType<typeof createSpotifyClock>; youtube: ReturnType<typeof createYouTubeClock>; apple: TimerClock; preview: PreviewClock; timer: TimerClock };
+type Clocks = { spotify: ReturnType<typeof createSpotifyClock>; youtube: ReturnType<typeof createYouTubeClock>; soundcloud: SoundCloudClock; link: TimerClock; apple: TimerClock; preview: PreviewClock; timer: TimerClock };
 
 /** A height that follows an element (the phone's docked player, which "Back to the song" sits above). */
 function useHeight() {
@@ -221,14 +263,32 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
   );
   const followable = timed || Boolean(estimated);
 
-  const clocks: Clocks = useMemo(() => ({ spotify: createSpotifyClock(), youtube: createYouTubeClock(), apple: createTimerClock('apple'), preview: createPreviewClock(), timer: createTimerClock() }), []);
+  const clocks: Clocks = useMemo(() => ({ spotify: createSpotifyClock(), youtube: createYouTubeClock(), soundcloud: createSoundCloudClock(), link: createTimerClock('link'), apple: createTimerClock('apple'), preview: createPreviewClock(), timer: createTimerClock() }), []);
   const kinds = sourcesOf(song, followable);
   const [source, setSource] = useState<ClockKind | null>(() => defaultSource(song, followable, wide));
   // A source appears later (lyrics found, a link added, Spotify finds the track): use it.
+  const best = defaultSource(song, followable, wide);
   useEffect(() => {
-    if (source === null || !kinds.includes(source)) setSource(defaultSource(song, followable, wide));
-  }, [source, kinds, song, followable, wide]);
+    if (source === null || !kinds.includes(source)) setSource(best);
+  }, [source, kinds, best]);
   const clock: SongClock | null = source ? clocks[source] : null;
+  // A whole song found while a preview waits, not playing: play the whole song instead.
+  useEffect(() => {
+    if ((best === 'youtube' || best === 'soundcloud') && (source === 'preview' || source === 'apple' || source === 'spotify') && !clocks[source].isPlaying()) setSource(best);
+  }, [best]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Another source carries on from the same place, and only one ever plays.
+  const choose = (next: ClockKind) => {
+    if (next === source) return;
+    const at = clock && clock.kind !== 'preview' ? clock.now() : 0;
+    clock?.pause();
+    setSource(next);
+    if (at > 1000 && next !== 'preview') clocks[next].seek(at);
+  };
+  const reject = () => {
+    if (!song.youtubeId) return;
+    void patchSong(song.id, { youtubeId: undefined, fullSource: undefined, rejected: [...(song.rejected ?? []), song.youtubeId] });
+    toast('Looking for another recording…');
+  };
 
   // The now-playing bar follows this song while the player is folded away.
   const setNow = useCantusNow((s) => s.set);
@@ -245,6 +305,8 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
   // The song keeps its place: closing Cantus (or the app) and coming back carries on from there.
   const clockRef = useRef(clock);
   clockRef.current = clock;
+  // An episode or a book starting in Sonus stops the song: only one thing plays.
+  useEffect(() => usePlayer.subscribe((now, before) => now.status === 'playing' && before.status !== 'playing' && clockRef.current?.pause()), []);
   useEffect(() => {
     const kept = keptPlace();
     const c = clockRef.current;
@@ -264,7 +326,7 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
   offsetRef.current = song.offsetMs ?? 0;
   // The song's timing nudge is for the players that report their place; the others are put right by taps.
   const lyricClock = useMemo(
-    () => (clock && followable ? (estimated || clock.kind === 'timer' || clock.kind === 'apple' || clock.kind === 'preview' ? clock : shifted(clock, () => offsetRef.current)) : null),
+    () => (clock && followable ? (estimated || clock.kind === 'timer' || clock.kind === 'apple' || clock.kind === 'link' || clock.kind === 'preview' ? clock : shifted(clock, () => offsetRef.current)) : null),
     [clock, followable, estimated],
   );
 
@@ -329,6 +391,7 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
       offs.forEach((off) => off());
       clocks.timer.pause();
       clocks.apple.pause();
+      clocks.link.pause();
       clocks.preview.release();
       const heard = Object.values(clocks).reduce((n, c) => n + c.heardMs(), 0);
       void recordSession({ lang: song.lang, type: 'sing', refId: song.id, startedAt, endedAt: Date.now(), activeMs: Math.round(heard) });
@@ -388,7 +451,8 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
       song={song}
       source={source}
       kinds={kinds}
-      setSource={setSource}
+      setSource={choose}
+      onReject={reject}
       clocks={clocks}
       wide={wide}
       timed={timed}
@@ -425,7 +489,7 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
 
   const dialogs = (
     <>
-      <LinkDialog song={song} open={dialog === 'link'} onClose={() => setDialog(null)} onAdded={(kind) => setSource(kind)} />
+      <LinkDialog song={song} open={dialog === 'link'} onClose={() => setDialog(null)} onAdded={(kind) => choose(kind)} />
       <LyricsDialog key={dialog === 'paste' ? 'paste' : 'find'} song={song} open={dialog === 'lyrics' || dialog === 'paste'} pasting={dialog === 'paste'} onClose={() => setDialog(null)} />
     </>
   );
@@ -544,7 +608,7 @@ function SongTitle({ song, large }: { song: Song; large?: boolean }) {
 // ── The player area: how it plays, then that source's player and controls ─────────────────────
 
 /** "Playing from …": every way this song can play, and adding a link. */
-function SourceMenu({ kinds, source, setSource, onLink }: { kinds: ClockKind[]; source: ClockKind | null; setSource: (s: ClockKind) => void; onLink: () => void }) {
+function SourceMenu({ song, kinds, source, setSource, onLink, onReject }: { song: Song; kinds: ClockKind[]; source: ClockKind | null; setSource: (s: ClockKind) => void; onLink: () => void; onReject: () => void }) {
   const Icon = source ? SOURCE_ICON[source] : Link2;
   return (
     <Popover
@@ -558,7 +622,7 @@ function SourceMenu({ kinds, source, setSource, onLink }: { kinds: ClockKind[]; 
           className="flex h-10 max-w-full min-w-0 items-center gap-2 rounded-full border border-line/70 bg-surface/80 px-3.5 text-[13.5px] font-semibold text-ink-soft transition-colors hover:bg-surface hover:text-ink"
         >
           <Icon size={15} className="shrink-0" aria-hidden />
-          <span className="truncate">{source ? SOURCE_NOTE[source] : 'Choose how to play it'}</span>
+          <span className="truncate">{source ? noteOf(source, song) : 'Choose how to play it'}</span>
           <ChevronDown size={15} className="shrink-0" aria-hidden />
         </button>
       )}
@@ -569,17 +633,29 @@ function SourceMenu({ kinds, source, setSource, onLink }: { kinds: ClockKind[]; 
             <MenuItem
               key={k}
               icon={k === source ? Check : SOURCE_ICON[k]}
-              label={SOURCE_LABEL[k]}
-              detail={SOURCE_DETAIL[k]}
+              label={labelOf(k, song)}
+              detail={k === 'youtube' && song.fullSource?.label ? `${song.fullSource.label}${song.fullSource.auto ? ', found by Cantus' : ''} · ${SOURCE_DETAIL.youtube.toLowerCase()}` : SOURCE_DETAIL[k]}
               onClick={() => {
                 close();
                 setSource(k);
               }}
             />
           ))}
+          {source === 'youtube' && song.fullSource?.auto && (
+            <MenuItem
+              icon={Ban}
+              label="Not this one"
+              detail="Find another recording"
+              onClick={() => {
+                close();
+                onReject();
+              }}
+            />
+          )}
           <MenuItem
             icon={Link2}
-            label="Add a YouTube or Spotify link"
+            label="Paste a link"
+            detail="YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion, Bandcamp"
             onClick={() => {
               close();
               onLink();
@@ -602,9 +678,11 @@ function PlayerArea({
   estimated,
   previewFailed,
   onLink,
+  onReject,
   syncing,
   onSync,
 }: {
+  onReject: () => void;
   song: Song;
   source: ClockKind | null;
   kinds: ClockKind[];
@@ -622,7 +700,7 @@ function PlayerArea({
   if (source === null) return <NoPlayer song={song} onLink={onLink} />;
   return (
     <div className="space-y-3">
-      {(kinds.length > 1 || wide) && <SourceMenu kinds={kinds} source={source} setSource={setSource} onLink={onLink} />}
+      {(kinds.length > 1 || wide || song.fullSource?.auto) && <SourceMenu song={song} kinds={kinds} source={source} setSource={setSource} onLink={onLink} onReject={onReject} />}
       <Boundary key={source} what={SOURCE_LABEL[source]}>
         {source === 'youtube' && song.youtubeId && wide && (
           <div className="song-embed">
@@ -639,14 +717,25 @@ function PlayerArea({
             <AppleMusicPlayer song={song} clock={clocks.apple} />
           </div>
         )}
-        {(source === 'youtube' || source === 'spotify') && <Transport song={song} clock={clocks[source]} />}
+        {source === 'soundcloud' && song.soundcloudUrl && (
+          <div className="song-embed">
+            <SoundCloudPlayer url={song.soundcloudUrl} clock={clocks.soundcloud} />
+          </div>
+        )}
+        {source === 'link' && (
+          <div className="song-embed">
+            <LinkPlayer song={song} clock={clocks.link} />
+          </div>
+        )}
+        {source === 'link' && followable && <TimerControls clock={clocks.link} link syncing={syncing} onSync={onSync} compact={!wide} />}
+        {(source === 'youtube' || source === 'spotify' || source === 'soundcloud') && <Transport song={song} clock={clocks[source]} />}
         {source === 'apple' && !wide && <AppleMusicLink song={song} onOpened={() => followable && onSync(true)} />}
         {source === 'apple' && followable && <TimerControls clock={clocks.apple} apple syncing={syncing} onSync={onSync} compact={!wide} />}
         {source === 'preview' && <PreviewControls clock={clocks.preview} failed={previewFailed} followable={followable} placed={song.previewAtMs !== undefined} syncing={syncing} onSync={onSync} compact={!wide} />}
         {source === 'timer' && <TimerControls clock={clocks.timer} syncing={syncing} onSync={onSync} compact={!wide} />}
       </Boundary>
-      {(source === 'youtube' || source === 'spotify') && timed && <TimingNudge song={song} />}
-      {(source === 'youtube' || source === 'spotify') && estimated && <PlaceButton syncing={syncing} onSync={onSync} />}
+      {(source === 'youtube' || source === 'spotify' || source === 'soundcloud') && timed && <TimingNudge song={song} />}
+      {(source === 'youtube' || source === 'spotify' || source === 'soundcloud') && estimated && <PlaceButton syncing={syncing} onSync={onSync} />}
     </div>
   );
 }
@@ -747,7 +836,7 @@ function PlaceButton({ syncing, onSync }: { syncing: boolean; onSync: (on: boole
  * For music playing elsewhere (and in Apple Music's player): start when the song starts, or tap the
  * line you're hearing; nudge until the lines match.
  */
-function TimerControls({ clock, apple, syncing, onSync, compact }: { clock: TimerClock; apple?: boolean; syncing: boolean; onSync: (on: boolean) => void; compact?: boolean }) {
+function TimerControls({ clock, apple, link, syncing, onSync, compact }: { clock: TimerClock; apple?: boolean; link?: boolean; syncing: boolean; onSync: (on: boolean) => void; compact?: boolean }) {
   const [playing, setPlaying] = useState(clock.isPlaying());
   const [now, setNow] = useState(0);
   useEffect(() => clock.onPlaying(setPlaying), [clock]);
@@ -779,7 +868,9 @@ function TimerControls({ clock, apple, syncing, onSync, compact }: { clock: Time
       </div>
       {!playing && now === 0 && !syncing && !compact && (
         <p className="mt-2 text-[12.5px] leading-snug text-ink-faint">
-          {apple
+          {link
+            ? 'This player tells Lingua nothing: press play on it and Start here together, or press the target and tap the line you’re hearing.'
+            : apple
             ? 'Press play on Apple Music and the lyrics start with it. Hearing a preview, or out of step? Press the target, then tap the line being sung.'
             : 'Playing it on a speaker or anywhere else? Start when the song starts, or press the target and tap the line you’re hearing. Ahead or behind? Use − and +.'}
         </p>
@@ -1151,14 +1242,38 @@ function LyricsDialog({ song, open, pasting, onClose }: { song: Song; open: bool
 
 function LinkDialog({ song, open, onClose, onAdded }: { song: Song; open: boolean; onClose: () => void; onAdded: (kind: ClockKind) => void }) {
   const [value, setValue] = useState('');
-  const yt = youtubeId(value);
-  const sp = spotifyTrackId(value);
+  const [checking, setChecking] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
+  const link = parseMusicLink(value);
   const q = encodeURIComponent(`${song.title} ${song.artist}`);
   const add = async () => {
-    if (yt) await patchSong(song.id, { youtubeId: yt });
-    else if (sp) await patchSong(song.id, { spotifyId: sp });
-    else return;
-    onAdded(yt ? 'youtube' : 'spotify');
+    if (!link) return;
+    setProblem(null);
+    if (link.kind === 'bandcamp-page') return setProblem('Bandcamp’s player needs its own link: on the song’s page, Share › Embed this track, then copy the code and paste it here.');
+    if (link.kind === 'youtube') {
+      // Some owners don't let their videos play on other sites: say so now, not on Play.
+      setChecking(true);
+      const check = await youtubeEmbedCheck(link.id).catch(() => null);
+      setChecking(false);
+      if (check && !check.ok) return setProblem(check.why === 'not-embeddable' ? 'Its owner doesn’t let this video play on other sites. Try another one.' : 'That video isn’t there any more, or it’s private.');
+    }
+    const others = { vimeoId: undefined, dailymotionId: undefined, bandcampUrl: undefined };
+    const patch: Partial<Song> =
+      link.kind === 'youtube'
+        ? { youtubeId: link.id, fullSource: { label: 'Your link', checkedAt: Date.now() } }
+        : link.kind === 'spotify'
+          ? { spotifyId: link.id }
+          : link.kind === 'apple'
+            ? { itunesId: link.id, appleUrl: link.url }
+            : link.kind === 'soundcloud'
+              ? { soundcloudUrl: link.url }
+              : link.kind === 'vimeo'
+                ? { ...others, vimeoId: link.id }
+                : link.kind === 'dailymotion'
+                  ? { ...others, dailymotionId: link.id }
+                  : { ...others, bandcampUrl: link.url };
+    await patchSong(song.id, patch);
+    onAdded(link.kind === 'youtube' || link.kind === 'spotify' || link.kind === 'apple' || link.kind === 'soundcloud' ? link.kind : 'link');
     setValue('');
     onClose();
   };
@@ -1166,37 +1281,43 @@ function LinkDialog({ song, open, onClose, onAdded }: { song: Song; open: boolea
     <Dialog
       open={open}
       onClose={onClose}
-      title="Play it from YouTube or Spotify"
+      title="Play the song from a link"
       actions={
         <>
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button disabled={!yt && !sp} onClick={() => void add()}>
+          <Button disabled={!link || checking} loading={checking} onClick={() => void add()}>
             Add
           </Button>
         </>
       }
     >
-      <p className="text-[14px] leading-snug text-ink-soft">Paste the song’s link. YouTube plays the whole song for everyone; Spotify does when you’re signed in to Spotify in this browser.</p>
+      <p className="text-[14px] leading-snug text-ink-soft">Paste the song’s link from YouTube (or YouTube Music), SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp. YouTube and SoundCloud play the whole song for everyone, and the lyrics follow them.</p>
       <input
         value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="https://youtu.be/… or https://open.spotify.com/track/…"
+        onChange={(e) => {
+          setValue(e.target.value);
+          setProblem(null);
+        }}
+        placeholder="https://…"
         inputMode="url"
         autoCapitalize="off"
         autoCorrect="off"
         spellCheck={false}
-        className="mt-3 h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[14px]"
-        aria-label="YouTube or Spotify link"
+        className="mt-3 h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[16px]"
+        aria-label="Link to the song"
       />
-      {value && !yt && !sp && <p className="mt-2 text-[13px] text-accent-text">That isn’t a YouTube video or a Spotify track link.</p>}
+      {(problem || (value && !link)) && <p className="mt-2 text-[13px] text-accent-text">{problem ?? 'That isn’t a link Lingua can play: a song or video on YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp.'}</p>}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
         <a href={`https://www.youtube.com/results?search_query=${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
           Find it on YouTube <ExternalLink size={12} aria-hidden />
         </a>
+        <a href={`https://soundcloud.com/search/sounds?q=${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
+          On SoundCloud <ExternalLink size={12} aria-hidden />
+        </a>
         <a href={`https://open.spotify.com/search/${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
-          Find it on Spotify <ExternalLink size={12} aria-hidden />
+          On Spotify <ExternalLink size={12} aria-hidden />
         </a>
       </div>
     </Dialog>

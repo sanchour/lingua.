@@ -8,6 +8,7 @@ import { loadMedia, toggle, unlockAudio, usePlayer } from '@/services/audio/engi
 import { useJobs } from '@/services/sonus/jobs';
 import { Artwork } from './Artwork';
 import { MediaOptions } from './MediaOptions';
+import { sonusBase } from '@/features/sonus/paths';
 
 const dateFmt = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short' });
 
@@ -38,7 +39,7 @@ export const MediaRow = memo(function MediaRow({ media, progress, hasTranscript,
 
   return (
     <div className={cx('group flex items-center gap-3.5 rounded-2xl px-2 py-2 transition-colors', current ? 'bg-accent-soft/60' : 'hover:bg-surface/70')}>
-      <Link to={`/sonus/play/${media.id}`} className="flex min-w-0 flex-1 items-center gap-3.5">
+      <Link to={`${sonusBase()}/play/${media.id}`} className="flex min-w-0 flex-1 items-center gap-3.5">
         <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="w-14" />
         <span className="min-w-0 flex-1">
           <span lang={media.lang} className="line-clamp-2 text-[15px] leading-snug font-semibold">

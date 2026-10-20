@@ -1,24 +1,31 @@
-// Cantus, the music room: an app inside the app. Its own dark ground, its own tabs (Today, Explore,
-// Library, Search), and a player that stays open while the learner browses, folded into the
-// now-playing bar. The X leaves for Sonus › Music; Lingua's own chrome never shows in here.
-import { useEffect, useRef, useState } from 'react';
+// Sonus+ (begun as Cantus, the music room): an app inside the app. Its own dark ground, its own
+// tabs (Today, Music, Podcasts, Audiobooks, and Search), a song player that stays open while the
+// learner browses, folded into the now-playing bar, and Sonus's episodes, podcasts and books opened
+// over it (Radio stays a tab of Sonus). The X leaves for Sonus, your library; Lingua's own chrome never shows in here.
+import { Suspense, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router';
-import { Compass, Library, Pause, Play, Search, Sun, X } from 'lucide-react';
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router';
+import { ChevronLeft, Music2, Pause, Play, Podcast, Search, Sun, X } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { SonusBookPage, SonusFeedPage, SonusPlayerPage } from '@/app/pages';
 import { useLayout } from '@/design/hooks/useLayout';
+import { Artwork } from '@/features/sonus/library/Artwork';
+import { onTime as onSonusTime, toggle as toggleSonus, usePlayer } from '@/services/audio/engine';
 import { cx } from '@/lib/cx';
 import SongGames from '../SongGames';
 import { SongArt } from '../SongArt';
 import { SongPlayer } from '../SongPage';
-import { roomSongOf, roomTabOf, ROOM_TABS, songPath, useLeaveCantus, useRoomNav } from './nav';
+import { lastRoomPath, roomSongOf, roomTabOf, ROOM_TABS, songPath, useLeaveCantus, useRoomNav } from './nav';
 import type { RoomTab } from './nav';
 import { keptPlace, useCantusNow } from './now';
-import { ExplorePage, LibraryPage, TodayPage } from './pages';
+import { PodcastsTab } from './listen';
+import { MusicPage, TodayPage } from './pages';
 import { SearchPage } from './search';
 import { useRoomTheme } from './useRoomTheme';
 
-const TAB_ICON: Record<RoomTab, LucideIcon> = { today: Sun, explore: Compass, library: Library, search: Search };
+const TAB_ICON: Record<RoomTab, LucideIcon> = { today: Sun, music: Music2, podcasts: Podcast, search: Search };
+/** Sonus's own pages, opened over the room: an episode, a podcast, a book. */
+const DETAIL = /^\/cantus\/(?:play|podcast|book)\//;
 
 export default function CantusRoom() {
   useRoomTheme();
@@ -28,7 +35,13 @@ export default function CantusRoom() {
   const routeTab = roomTabOf(pathname);
   const songId = roomSongOf(pathname);
   const games = Boolean(songId) && /\/games\/?$/.test(pathname);
+  const detail = DETAIL.test(pathname);
+  const navigate = useNavigate();
   const { tab: lastTab, setTab } = useRoomNav();
+  // Audiobooks went back to Sonus, a tab of its own there.
+  useEffect(() => {
+    if (/^\/cantus\/audiobooks\/?$/.test(pathname)) navigate('/sonus?tab=books', { replace: true });
+  }, [pathname, navigate]);
   useEffect(() => {
     if (routeTab) setTab(routeTab);
   }, [routeTab, setTab]);
@@ -56,18 +69,34 @@ export default function CantusRoom() {
         <span className="cantus-glow-rose" />
         <span className="cantus-glow-song" />
       </div>
-      <div inert={expanded || games} aria-hidden={expanded || games}>
+      <div inert={expanded || games || detail} aria-hidden={expanded || games || detail}>
         {wide ? <TopBar tab={tab} /> : <PhoneHeader />}
         <main ref={mainRef} className="cantus-room-main">
           {tab === 'today' && <TodayPage />}
-          {tab === 'explore' && <ExplorePage />}
-          {tab === 'library' && <LibraryPage />}
+          {tab === 'music' && <MusicPage />}
+          {tab === 'podcasts' && <PodcastsTab />}
           {tab === 'search' && <SearchPage />}
         </main>
         {!wide && <TabBar tab={tab} />}
       </div>
       {openId && <SongPlayer songId={openId} collapsed={!expanded} onGone={() => setOpenId(undefined)} />}
-      {!expanded && !games && <NowPlayingBar wide={wide} />}
+      {!expanded && !games && !detail && <NowPlayingBar wide={wide} />}
+      {detail && (
+        <div className="cantus-detail fixed inset-0 z-50 overflow-y-auto">
+          <div className="mx-auto max-w-[1100px] px-5 pt-[calc(env(safe-area-inset-top)+16px)] pb-24 lg:px-10">
+            <button type="button" onClick={() => ((window.history.state as { idx?: number } | null)?.idx ? navigate(-1) : navigate(lastRoomPath()))} className="mb-4 inline-flex h-10 items-center gap-1 rounded-full bg-[var(--room-fill)] pr-4 pl-2.5 text-[14px] font-semibold text-[var(--room-soft)] transition-colors hover:text-[var(--room-ink)]">
+              <ChevronLeft size={18} aria-hidden /> Back
+            </button>
+            <Suspense fallback={null}>
+              <Routes>
+                <Route path="play/:mediaId" element={<SonusPlayerPage />} />
+                <Route path="podcast/:feedId" element={<SonusFeedPage />} />
+                <Route path="book/:bookId" element={<SonusBookPage />} />
+              </Routes>
+            </Suspense>
+          </div>
+        </div>
+      )}
       {games && songId && (
         <div className="cantus-games fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal aria-label="Song games">
           <div className="mx-auto max-w-[620px] px-5 pt-[calc(env(safe-area-inset-top)+12px)] pb-16">
@@ -82,7 +111,7 @@ export default function CantusRoom() {
 function CloseRoom({ className }: { className?: string }) {
   const leave = useLeaveCantus();
   return (
-    <button type="button" onClick={leave} aria-label="Leave Cantus" title="Back to Lingua" className={cx('grid size-10 shrink-0 place-items-center rounded-full bg-[var(--room-fill)] text-[var(--room-soft)] transition-colors hover:bg-[var(--room-fill-strong)] hover:text-[var(--room-ink)] pointer-coarse:size-11', className)}>
+    <button type="button" onClick={leave} aria-label="Leave Sonus+" title="Back to Lingua" className={cx('grid size-10 shrink-0 place-items-center rounded-full bg-[var(--room-fill)] text-[var(--room-soft)] transition-colors hover:bg-[var(--room-fill-strong)] hover:text-[var(--room-ink)] pointer-coarse:size-11', className)}>
       <X size={19} aria-hidden />
     </button>
   );
@@ -94,7 +123,9 @@ function Wordmark() {
       <span className="grid size-8 place-items-center rounded-[10px] bg-[linear-gradient(135deg,#e8a0bf,#b4587e)] text-[#1a1215]" aria-hidden>
         ♪
       </span>
-      Cantus
+      <span>
+        Sonus<span className="text-[var(--room-rose)]">+</span>
+      </span>
     </span>
   );
 }
@@ -105,7 +136,7 @@ function TopBar({ tab }: { tab: RoomTab }) {
     <header className="sticky top-0 z-30 border-b border-[var(--room-rim)] bg-[rgb(18_14_16/0.72)] backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-6 px-10">
         <Wordmark />
-        <nav aria-label="Cantus" className="flex gap-1.5">
+        <nav aria-label="Sonus+" className="flex gap-1.5">
           {ROOM_TABS.filter((t) => t.id !== 'search').map((t) => (
             <Link key={t.id} to={t.path} aria-current={tab === t.id ? 'page' : undefined} className={cx('h-9 rounded-full px-4 text-[14px] leading-9 font-bold transition-colors', tab === t.id ? 'bg-[var(--room-pill)] text-[var(--room-pill-ink)]' : 'text-[var(--room-soft)] hover:bg-[var(--room-fill)] hover:text-[var(--room-ink)]')}>
               {t.name}
@@ -113,7 +144,7 @@ function TopBar({ tab }: { tab: RoomTab }) {
           ))}
         </nav>
         <Link to="/cantus/search" aria-current={tab === 'search' ? 'page' : undefined} className={cx('ml-auto flex h-10 w-[300px] items-center gap-2.5 rounded-full px-4 text-[14px] transition-colors', tab === 'search' ? 'bg-[var(--room-fill-strong)] text-[var(--room-ink)]' : 'bg-[var(--room-fill)] text-[var(--room-muted)] hover:bg-[var(--room-fill-strong)]')}>
-          <Search size={16} aria-hidden /> Songs, artists, lyrics
+          <Search size={16} aria-hidden /> Songs and artists
         </Link>
         <CloseRoom />
       </div>
@@ -125,7 +156,12 @@ function PhoneHeader() {
   return (
     <header className="flex items-center justify-between px-[var(--room-gutter)] pt-[calc(env(safe-area-inset-top)+10px)]">
       <Wordmark />
-      <CloseRoom />
+      <span className="flex gap-2">
+        <Link to="/cantus/search" aria-label="Search" className="grid size-10 place-items-center rounded-full bg-[var(--room-fill)] text-[var(--room-soft)] pointer-coarse:size-11">
+          <Search size={18} aria-hidden />
+        </Link>
+        <CloseRoom />
+      </span>
     </header>
   );
 }
@@ -133,8 +169,8 @@ function PhoneHeader() {
 /** Phones: the four tabs at the bottom, under the now-playing bar. */
 function TabBar({ tab }: { tab: RoomTab }) {
   return (
-    <nav aria-label="Cantus" className="room-tabbar">
-      {ROOM_TABS.map((t) => {
+    <nav aria-label="Sonus+" className="room-tabbar">
+      {ROOM_TABS.filter((t) => t.id !== 'search').map((t) => {
         const Icon = TAB_ICON[t.id];
         const on = tab === t.id;
         return (
@@ -148,8 +184,60 @@ function TabBar({ tab }: { tab: RoomTab }) {
   );
 }
 
-/** The song playing, folded: its line now, play and pause; tapping it opens the player again. */
+/** Whatever plays: an episode or a book from Sonus while it plays (or when no song is open), else the song. */
 function NowPlayingBar({ wide }: { wide: boolean }) {
+  const song = useCantusNow((s) => s.song);
+  const sonus = usePlayer((s) => s.media);
+  const sonusOn = usePlayer((s) => s.status === 'playing' || s.status === 'loading');
+  if (sonus && (sonusOn || !song)) return <SonusBar wide={wide} />;
+  return <SongBar wide={wide} />;
+}
+
+const barPlace = (wide: boolean) => cx('now-bar fixed z-40', wide ? 'right-0 bottom-5 left-0 mx-auto w-[min(720px,calc(100vw-80px))]' : 'inset-x-2.5 bottom-[calc(var(--room-tabbar-h)+6px)]');
+const barBox = 'relative flex items-center gap-3 overflow-hidden rounded-[18px] border border-[var(--room-rim)] bg-[var(--room-glass)] p-2 pr-2.5 shadow-[0_18px_40px_-16px_rgb(0_0_0/0.8)] backdrop-blur-2xl';
+
+/** Sonus's episode, book or station: play and pause, and how far it is; tapping it opens its player. */
+function SonusBar({ wide }: { wide: boolean }) {
+  const media = usePlayer((s) => s.media)!;
+  const playing = usePlayer((s) => s.status === 'playing');
+  const navigate = useNavigate();
+  const barRef = useRef<HTMLSpanElement>(null);
+  useEffect(
+    () =>
+      onSonusTime((ms) => {
+        const total = usePlayer.getState().durationMs;
+        if (barRef.current) barRef.current.style.transform = `scaleX(${total ? Math.min(1, ms / total) : 0})`;
+      }),
+    [],
+  );
+  const radio = media.kind === 'radio';
+  return (
+    <div className={barPlace(wide)}>
+      <div className={barBox}>
+        <button type="button" onClick={() => navigate(radio ? '/sonus?tab=radio' : `/cantus/play/${media.id}`)} className="flex min-w-0 flex-1 items-center gap-3 text-left" aria-label={`Open ${media.title}`}>
+          <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="size-11 shrink-0" rounded="rounded-[10px]" />
+          <span className="min-w-0 flex-1">
+            <span lang={media.lang} className="block truncate text-[14.5px] font-bold">
+              {media.title}
+            </span>
+            <span className="block truncate text-[12.5px] text-[var(--room-soft)]">{media.collection ?? media.artist ?? (radio ? 'Live radio' : '')}</span>
+          </span>
+        </button>
+        <button type="button" onClick={() => toggleSonus()} aria-label={playing ? 'Pause' : 'Play'} className="grid size-11 shrink-0 place-items-center rounded-full bg-[var(--room-pill)] text-[var(--room-pill-ink)] transition-transform active:scale-90">
+          {playing ? <Pause size={18} className="fill-current" aria-hidden /> : <Play size={18} className="translate-x-px fill-current" aria-hidden />}
+        </button>
+        {!radio && (
+          <span className="absolute inset-x-0 bottom-0 h-[2px] bg-[var(--room-fill)]" aria-hidden>
+            <span ref={barRef} className="block h-full origin-left bg-[var(--room-rose)]" style={{ transform: 'scaleX(0)' }} />
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** The song playing, folded: its line now, play and pause; tapping it opens the player again. */
+function SongBar({ wide }: { wide: boolean }) {
   const { song, clock } = useCantusNow();
   const navigate = useNavigate();
   const [playing, setPlaying] = useState(false);
@@ -165,7 +253,7 @@ function NowPlayingBar({ wide }: { wide: boolean }) {
   // The line being sung and how far the song is: written straight to the page, never a render a frame.
   useEffect(() => {
     if (!clock || !song) return;
-    const offset = clock.kind === 'youtube' || clock.kind === 'spotify' ? (song.offsetMs ?? 0) : 0;
+    const offset = clock.kind === 'youtube' || clock.kind === 'spotify' || clock.kind === 'soundcloud' ? (song.offsetMs ?? 0) : 0;
     const timed = song.lines.filter((l) => l.text && l.startMs !== undefined);
     let shown = -2;
     return clock.onTime((raw) => {
@@ -183,8 +271,8 @@ function NowPlayingBar({ wide }: { wide: boolean }) {
 
   if (!song) return null;
   return (
-    <div className={cx('now-bar fixed z-40', wide ? 'right-0 bottom-5 left-0 mx-auto w-[min(720px,calc(100vw-80px))]' : 'inset-x-2.5 bottom-[calc(var(--room-tabbar-h)+6px)]')}>
-      <div className="relative flex items-center gap-3 overflow-hidden rounded-[18px] border border-[var(--room-rim)] bg-[var(--room-glass)] p-2 pr-2.5 shadow-[0_18px_40px_-16px_rgb(0_0_0/0.8)] backdrop-blur-2xl">
+    <div className={barPlace(wide)}>
+      <div className={barBox}>
         <button type="button" onClick={() => navigate(songPath(song.id))} className="flex min-w-0 flex-1 items-center gap-3 text-left" aria-label={`Open ${song.title}`}>
           <SongArt url={song.artworkUrl} title={song.title} className="size-11 shrink-0" rounded="rounded-[10px]" size={200} />
           <span className="min-w-0 flex-1">

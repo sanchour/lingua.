@@ -6,6 +6,7 @@ import type { Media } from '@/data/types';
 import { cx } from '@/lib/cx';
 import { playPart } from '@/services/audio/engine';
 import { ChaptersButton } from './Chapters';
+import { sonusBase } from '@/features/sonus/paths';
 
 const pill = 'flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors';
 const step = 'grid h-full w-9 place-items-center text-ink-soft transition-colors hover:text-ink disabled:opacity-35';
@@ -24,7 +25,7 @@ export function BookBar({ media, book, live, className }: { media: Media; book: 
     const part = book?.parts[at + dir];
     if (!part) return;
     if (live) void playPart(dir);
-    else navigate(`/sonus/play/${part.id}`, { replace: true });
+    else navigate(`${sonusBase()}/play/${part.id}`, { replace: true });
   };
 
   return (

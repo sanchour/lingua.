@@ -1065,7 +1065,29 @@ playback make the room really work.
   Built 2026-10-20: `services/cantus/search.ts` (+ `fuzzy.ts`) and `room/search.tsx`; 12 tests.
   Checked live the same day: all six queries put the right song (or Bad Bunny) on top. Spotify
   only tells search who sings a song (a Spotify track with no Apple match can't be opened yet).
-- [ ] C: the master clock, finding whole songs, any link, the source menu; checked with real songs.
+- [x] C: the master clock, finding whole songs, any link, the source menu; checked with real songs.
+  Built 2026-10-20 (`services/cantus/fullsong.ts`, SoundCloud clock, link players). Checked live,
+  keyless: 10 of 10 songs (4 English, 4 Spanish, 2 Russian) got a whole recording within 4 s of
+  Apple's length; YouTube playback stayed within 2 ms of the lyrics clock; seeking either way and
+  switching source kept the place. Not built: Dailymotion search (its player has no clock here);
+  Vimeo, Dailymotion and Bandcamp links play with the lyrics started by hand.
+
+### Sonus and Sonus+ (user's request, 2026-10-20)
+
+Sonus becomes two places. **Sonus** (in Lingua, as now) is your **Library**, with **Audiobooks** and
+**Radio** as its other tabs. **Sonus+** is the room built for Cantus, the Apple-like app for finding things to
+listen to: songs to sing and learn, and now **podcasts**, in its dark design,
+with one now-playing bar for whatever plays. (The user moved Radio, then Audiobooks, back out of Sonus+.)
+
+- [x] Sonus+: the room's tabs are Today, Music (your songs and new ones; Explore and the room's
+  Library merged) and Podcasts, with Search in the header. Its address stays `/cantus`.
+- [x] Podcasts, episodes and audiobooks open over the room (`/cantus/podcast|play|book/…`, Sonus's
+  own pages with a Back button); their links stay in the room (`features/sonus/paths.ts`).
+- [x] The now-playing bar shows an episode or a book while it plays; starting one stops the song.
+- [x] Sonus: Library, Audiobooks and Radio (`/sonus/audiobooks` and `/cantus/audiobooks` open the tab). Sonus+ has a card at the top (it says the room is closed when you
+  come back from it); old `?tab=music|podcasts` and `?q=` links open Sonus+.
+- [ ] Library's own layout beyond the new top (continue listening beside Sonus+, then the
+  shelves): a fuller overhaul is still to design with the user.
 
 ### Handover for the Lingua 3.0 session
 

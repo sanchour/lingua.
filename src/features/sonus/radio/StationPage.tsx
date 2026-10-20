@@ -17,6 +17,7 @@ import { playStation, stationMedia, stationMediaId } from '@/services/radio/play
 import { stationById, stationPlace } from '@/services/radio/stations';
 import { KaraokeTranscript } from '../player/KaraokeTranscript';
 import { Artwork } from '../library/Artwork';
+import { sonusBase } from '@/features/sonus/paths';
 
 /** Sonus › a station, full screen (from the mini player): what's on, your stations, and a live transcript. */
 export default function StationPage() {
@@ -71,7 +72,7 @@ function Station({ station, lang, favorite }: { station: RadioStation; lang: str
     if (yours.length < 2) return;
     const next = yours[(Math.max(0, at) + by + yours.length) % yours.length];
     playStation(next, lang);
-    navigate(`/sonus/station/${next.id}`, { replace: true });
+    navigate(`${sonusBase()}/station/${next.id}`, { replace: true });
   };
 
   const controls = <Controls station={station} lang={lang} favorite={favorite} isOn={isOn} canStep={yours.length > 1} onStep={step} />;

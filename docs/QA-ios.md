@@ -235,6 +235,20 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
       (Sonus pauses); the shuffle button brings other songs; "Surprise me" opens one.
 - [ ] Open three songs twice each (a minute apart): "Most played by you" appears with the counts.
 
+## Sonus and Sonus+
+
+- [ ] Sonus: Library, Audiobooks and Radio tabs; the dark Sonus+ card opens the room.
+- [ ] Sonus+: Today, Music, Podcasts at the bottom; Search top right.
+- [ ] Sonus › Audiobooks: open a book, Start: it plays; in Sonus+ the bar shows it, play/pause works.
+- [ ] Podcasts: follow one, open it, play an episode: it stays in the room.
+
+## Whole songs (design handoff C)
+
+- [ ] Open a song with no link: within seconds "Playing from YouTube · Official audio"; it plays
+      the whole song and the lyrics follow. "Not this one" picks another.
+- [ ] Paste a SoundCloud link: its player, the lyrics follow it. A Vimeo link: Start with it.
+- [ ] Switch from YouTube to "Music playing anywhere" mid-song: same place.
+
 ## Languages: add and remove (2026-10-20)
 
 - [ ] Ordo › Languages with two languages: each has a bin. Remove the one not being studied:

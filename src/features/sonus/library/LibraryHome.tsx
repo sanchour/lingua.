@@ -23,6 +23,7 @@ import { Artwork } from './Artwork';
 import { MediaRow } from './MediaRow';
 import { PodcastGrid } from './PodcastGrid';
 import { MundusLink } from '@/features/mundus/MundusLink';
+import { sonusBase } from '@/features/sonus/paths';
 
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
 const enter = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { ...spring.soft, delay: 0.04 * Math.min(i, 6) } });
@@ -91,7 +92,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
       </>
     );
 
-  const openEpisode = async (feed: Feed, episode: FeedEpisode) => navigate(`/sonus/play/${await episodeMedia(feed, episode)}`);
+  const openEpisode = async (feed: Feed, episode: FeedEpisode) => navigate(`${sonusBase()}/play/${await episodeMedia(feed, episode)}`);
 
   return (
     <div className="space-y-10">
@@ -106,7 +107,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
                     type="button"
                     onClick={() => {
                       if (onAir !== stationMediaId(r.station.id)) playStation(r.station, lang);
-                      navigate(`/sonus/station/${r.station.id}`);
+                      navigate(`${sonusBase()}/station/${r.station.id}`);
                     }}
                     className="group block w-full text-left"
                   >
@@ -128,7 +129,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
                     </span>
                   </Link>
                 ) : r.media.bookId ? (
-                  <Link to={`/sonus/book/${r.media.bookId}`} className="group block">
+                  <Link to={`${sonusBase()}/book/${r.media.bookId}`} className="group block">
                     <Artwork title={r.media.collection ?? r.media.title} coverBlobId={r.media.coverBlobId} coverUrl={r.media.coverUrl} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
                     <span lang={r.media.lang} className="mt-1.5 block truncate text-[13.5px] font-semibold">
                       {r.media.collection ?? r.media.title}
@@ -138,7 +139,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
                     </span>
                   </Link>
                 ) : (
-                  <Link to={`/sonus/play/${r.media.id}`} className="group block">
+                  <Link to={`${sonusBase()}/play/${r.media.id}`} className="group block">
                     <Artwork title={r.media.title} coverBlobId={r.media.coverBlobId} coverUrl={r.media.coverUrl} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
                     <span lang={r.media.lang} className="mt-1.5 block truncate text-[13.5px] font-semibold">
                       {r.media.title}

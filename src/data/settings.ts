@@ -70,7 +70,7 @@ export interface Settings {
    * Device-only: never leaves this device unless explicitly included in a backup. `tmdb` is TMDB's
    * "API Read Access Token" (Lingua 3.0-7), sent in the Authorization header.
    */
-  apiKeys: { groq: string; gemini: string; tmdb: string };
+  apiKeys: { groq: string; gemini: string; tmdb: string; youtube: string };
   /** Visio › Services and Mundus (Lingua 3.0-7): the streaming services you have, and your country ('' = from the device). */
   streaming: { services: string[]; country: string };
   audio: {
@@ -172,7 +172,7 @@ export const DEFAULT_SETTINGS: Settings = {
   lessons: { length: 10, mode: 'classic', typing: true, sounds: true, haptics: true, ludusOff: [], grammarOff: [], best: {} },
   translation: { chain: ['local', 'mymemory', 'lingva'], lingvaHost: 'https://lingva.ml' },
   llm: { provider: 'groq', model: 'llama-3.3-70b-versatile' },
-  apiKeys: { groq: '', gemini: '', tmdb: '' },
+  apiKeys: { groq: '', gemini: '', tmdb: '', youtube: '' },
   streaming: { services: [], country: '' },
   audio: { rate: 1, skipBackSec: 10, skipFwdSec: 30, sentenceRepeat: 2, repeatGapMs: 1200, whisperModel: 'whisper-large-v3-turbo', downloadProxy: '', transcriber: 'groq', deviceModel: 'base' },
   visio: { native: 'blur', autoPause: false, subtitleScale: 1 },
