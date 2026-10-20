@@ -1603,7 +1603,7 @@ they say so.** The steps, ticked here as they finish:
 - [ ] 5.1-2 · Lingua+ (€24.99 once) and Lingua+ Max
 - [ ] 5.1-3 · Onboarding: intro pages, a map without dots, accurate language data, twelve new flags, the new screens
 - [ ] 5.1-4 · Home: Today, Next up, the week, Cursus, Mundus, numbers (the old Home one setting away)
-- [ ] 5.1-5 · Codex (built together with 4.0-2, which changes the same screens)
+- [ ] 5.1-5 · Codex (on top of what 4.0-2 built)
 - [ ] 5.1-6 · Thesaurus and Ludus: deck list and cards, a much larger Discover, even and varied Ludus
 - [ ] 5.1-7 · Sound: human recordings and a natural on-device voice without a key
 - [ ] 5.1-8 · Keyboard practice in Cursus (tier 1)

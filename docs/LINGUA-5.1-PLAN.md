@@ -19,7 +19,7 @@ Read first: [CLAUDE.md](../CLAUDE.md) (desktop first, the check, commit as sanch
 | D2 | What is Max? | **AI features that use the learner's own key** (Groq, Gemini), as the app's AI works today. No AI server; the learner pays their AI provider directly (both have free tiers). Max unlocks the AI features; a key alone no longer does. |
 | D3 | Prices | **Lingua+ €24.99 once; Max €5.99 a month or €49.99 a year**, as proposed. |
 | D4 | Free or Lingua+ for the rooms the list doesn't name | **As proposed** (the table in 5.1-2, adjusted for D2: AI with your own key is Max, not Lingua+). |
-| D5 | 5.1 and Lingua 4.0 | **Plan only; don't build Lingua 5 yet.** When it is built, section 2's order holds: 5.1-1 first, the Codex step inside 4.0-2. |
+| D5 | 5.1 and Lingua 4.0 | **Plan only; don't build Lingua 5 yet.** When it is built, section 2's order holds: 5.1-1 first. (4.0-2 has since been finished, so the Codex step builds on it.) |
 | D6 | The phone | **"Phone is not needed anymore."** Desktop only: no phone tab bar, no phone layouts, no phone checks. What exists for the phone today stays as it is. |
 
 Not a question: Lingua+ drops from the placeholder's 29.99 to **€24.99, once, with every update**, as
@@ -32,10 +32,10 @@ the user said.
 - **Lingua 4.0-1 (done)** made the tiers, the 35 placeholder languages, the language map with dots
   and the Lingua+ placeholder (`data/plus.ts`, `meta.plusAt`, Ordo › Lingua+, the raised "+").
   5.1 reworks the map (5.1-3) and turns the placeholder into real plans (5.1-2).
-- **4.0-2 (next, another session)**: Codex's Add tabs (Write or paste · Import a book · Import a
-  comic · News & links · Goodreads), the one-screen word drawer, the end page, one memory per word,
-  gap sentences. 5.1's Codex list touches the same screens, so **5.1-5 is built inside 4.0-2**:
-  whichever session starts it does both lists, and ticks both.
+- **4.0-2 (done on 2026-10-20, while this was planned)**: Codex's Add tabs (Write or paste · Import
+  a book · Import a comic · News & links · Goodreads), the one-screen word drawer, the end page, one
+  memory per word, gap sentences. **5.1-5 builds on those screens**: read 4.0-2's notes in the
+  roadmap first, and change what it made rather than starting again.
 - **4.0-3** (Cantus games, karaoke, Visio streaming) builds on the Sonus et Visio room of 5.1-1:
   5.1-1 goes first so 4.0-3 doesn't build on pages that are about to move.
 - **4.0-4 (Cursus, the course)**: 5.1-1 makes the Cursus room and its tabs; 4.0-4 fills the Course
@@ -55,7 +55,7 @@ the user said.
 | 5.1-2 | Lingua+ and Lingua+ Max | L | D1–D4 |
 | 5.1-3 | Onboarding, the map and its data, the flags | L | 5.1-2 (the plans screen) |
 | 5.1-4 | Home | M | 5.1-1 |
-| 5.1-5 | Codex (inside 4.0-2) | L | 4.0-2 starting |
+| 5.1-5 | Codex (on top of 4.0-2) | L | — |
 | 5.1-6 | Thesaurus and Ludus | L | — |
 | 5.1-7 | Sound: good pronunciation without a key | M | — |
 | 5.1-8 | Keyboard practice (Cursus › Typing) | M | 5.1-1 |
@@ -385,12 +385,12 @@ Classic brings back today's Home exactly.
 
 ---
 
-### 5.1-5 · Codex (built together with 4.0-2)
+### 5.1-5 · Codex (on top of what 4.0-2 built)
 
 **The user's points**
 - [ ] Optional comprehension questions at the end of each text, without AI.
 - [ ] Add to your library: Write or paste · Import a book (EPUB, PDF, a folder of pages) · Import a
-  comic · News & links · Goodreads. (The same tabs 4.0-2 plans.)
+  comic · News & links · Goodreads. (4.0-2 made these tabs; this point is the forms in them.)
 - [ ] Discover: the latest news and articles, comics and books, imported in one click.
 - [ ] Goodreads as its own section: sorted, grouped, filtered.
 - [ ] Faster, immediate sentence and word translation.
@@ -442,7 +442,7 @@ by ISBN. Each book: "Add the EPUB", and "Find a free edition" when it is in the 
   click still opens the word panel. The double click must not select text or start a phrase
   selection (`usePhraseGesture`).
 
-**The word panel** (one-screen drawer of 4.0-2)
+**The word panel** (4.0-2's one-screen drawer)
 - One header row: 🔊 the word · the pronunciation (IPA or pinyin) · "#1,234 most common · B1" ·
   and **+ Deck** on the right. Example sentences get their own small sound buttons.
 - "In context" and "Explain in context" show only with Max (and its key).

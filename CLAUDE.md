@@ -29,7 +29,7 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
 - **Lingua 5 is planned and must not be built yet (2026-10-20, the user: plan only):**
   [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md) and [docs/LINGUA-5.2-PLAN.md](docs/LINGUA-5.2-PLAN.md),
   with the user's decisions at the top of 5.1 (Stripe; Max is AI with your own key; desktop only).
-  When it is built: 5.1-1 with 5.2-1 first, 5.1's Codex step inside 4.0-2, 5.2's Visio inside 4.0-3.
+  When it is built: 5.1-1 with 5.2-1 first, 5.1's Codex step on top of 4.0-2, 5.2's Visio inside 4.0-3.
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 
