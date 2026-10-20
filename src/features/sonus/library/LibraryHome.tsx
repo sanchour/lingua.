@@ -2,13 +2,15 @@ import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { BookHeadphones, ChevronRight, FileAudio, Headphones, Music2, Radio, Search } from 'lucide-react';
+import { ArrowRight, BookHeadphones, FileAudio, Headphones, Music2, Podcast, Radio, Search } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useBooks } from '@/data/books';
+import type { Book } from '@/data/books';
 import { BookTile } from './BookGrid';
 import { useSavedStations } from '@/data/radio';
 import { useRecentSongs, useSavedSongs } from '@/data/songs';
 import { episodeMedia } from '@/data/media';
-import type { Feed, FeedEpisode, Media, PlaybackProgress, Song } from '@/data/types';
+import type { Feed, FeedEpisode, Media, PlaybackProgress, SavedStation, Song } from '@/data/types';
 import { buttonClasses, Card } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
@@ -25,8 +27,13 @@ import { PodcastGrid } from './PodcastGrid';
 import { MundusLink } from '@/features/mundus/MundusLink';
 import { sonusBase } from '@/features/sonus/paths';
 
+/** A kind of thing in the library, opened as a page of its own (Audiobooks and Stations have tabs). */
+export type LibraryView = 'songs' | 'podcasts' | 'episodes' | 'audio';
+export const LIBRARY_VIEWS: Record<LibraryView, string> = { songs: 'Songs', podcasts: 'Podcasts', episodes: 'Episodes', audio: 'Your audio' };
+
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
 const enter = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { ...spring.soft, delay: 0.04 * Math.min(i, 6) } });
+const TONE = { cantus: 'bg-[var(--cantus-soft)] text-[var(--cantus-text)]', sage: 'bg-sage-soft text-sage-text', accent: 'bg-accent-soft text-accent-text' } as const;
 
 interface LibraryHomeProps {
   lang: string;
@@ -36,38 +43,64 @@ interface LibraryHomeProps {
   feeds: Feed[];
   playback?: Map<string, PlaybackProgress>;
   transcribed?: Set<string>;
+  /** The kind open as a page of its own, if any. */
+  view: LibraryView | null;
+  onView: (view: LibraryView) => void;
   onMusic: () => void;
   onPodcasts: () => void;
   onBooks: () => void;
   onRadio: () => void;
 }
 
+/** Anything the library holds, as one tile: a song, an episode or your audio, a podcast, a book, a station. */
+type Item = { at: number } & ({ song: Song } | { media: Media } | { feed: Feed } | { book: Book } | { station: SavedStation });
+const keyOf = (r: Item) => ('song' in r ? `s:${r.song.id}` : 'media' in r ? `m:${r.media.id}` : 'feed' in r ? `f:${r.feed.id}` : 'book' in r ? `b:${r.book.id}` : `r:${r.station.id}`);
+
 /**
- * Sonus's first page: everything you listen to in the language, music and podcasts together. What
- * you played last first, then your songs, the podcasts you follow and their new episodes, then your
- * own audio. Music, Podcasts, Audiobooks and Radio have their own tabs, with discovery.
+ * Sonus › Library, laid out like Apple Music's: what kinds of things you have (each opens a page of
+ * its own, or its tab), then what you played lately, what you added lately, and new episodes of the
+ * podcasts you follow. Finding new things is Sonus+'s job.
  */
-export function LibraryHome({ lang, media, visible, feeds, playback, transcribed, onMusic, onPodcasts, onBooks, onRadio }: LibraryHomeProps) {
+export function LibraryHome({ lang, media, visible, feeds, playback, transcribed, view, onView, onMusic, onPodcasts, onBooks, onRadio }: LibraryHomeProps) {
   const saved = useSavedSongs(lang);
   const recentSongs = useRecentSongs(lang, 12);
   const savedStations = useSavedStations(lang);
   const books = useBooks(lang);
-  const stations = savedStations?.filter((s) => s.favorite);
-  const onAir = usePlayer((p) => (p.media?.kind === 'radio' ? p.media.id : null));
+  const stations = useMemo(() => (savedStations ?? []).filter((s) => s.favorite), [savedStations]);
   const navigate = useNavigate();
 
-  // Songs, episodes and stations played lately, in one row.
-  const recent = useMemo(() => {
-    const songs = (recentSongs ?? []).map((s) => ({ at: s.lastPlayedAt ?? 0, song: s }) as const);
+  const listened = useMemo(() => media.filter((m) => m.kind !== 'video'), [media]);
+  const episodes = listened.filter((m) => m.feedId);
+  // A book's parts live on its own tab.
+  const own = listened.filter((m) => !m.feedId && !m.bookId);
+
+  // Songs, episodes, books and stations played lately, in one row.
+  const recent = useMemo<Item[]>(() => {
+    const songs = (recentSongs ?? []).map((s) => ({ at: s.lastPlayedAt ?? 0, song: s }));
     const seenBooks = new Set<string>();
-    const items = media
-      .filter((m) => m.lastPlayedAt && m.kind !== 'video')
+    const items = listened
+      .filter((m) => m.lastPlayedAt)
       .sort((a, b) => b.lastPlayedAt! - a.lastPlayedAt!)
       .filter((m) => !m.bookId || (!seenBooks.has(m.bookId) && Boolean(seenBooks.add(m.bookId))))
-      .map((m) => ({ at: m.lastPlayedAt!, media: m }) as const);
-    const radios = (savedStations ?? []).filter((s) => s.playedAt).map((s) => ({ at: s.playedAt!, station: s }) as const);
+      .map((m) => ({ at: m.lastPlayedAt!, media: m }));
+    const radios = (savedStations ?? []).filter((s) => s.playedAt).map((s) => ({ at: s.playedAt!, station: s }));
     return [...songs, ...items, ...radios].sort((a, b) => b.at - a.at).slice(0, 14);
-  }, [recentSongs, media, savedStations]);
+  }, [recentSongs, listened, savedStations]);
+
+  // What was saved, followed or added last, of every kind.
+  const added = useMemo<Item[]>(
+    () =>
+      [
+        ...(saved ?? []).map((s) => ({ at: s.savedAt ?? s.createdAt, song: s })),
+        ...feeds.map((f) => ({ at: f.createdAt, feed: f })),
+        ...(books ?? []).map((b) => ({ at: Math.min(...b.parts.map((p) => p.createdAt)), book: b })),
+        ...stations.map((s) => ({ at: s.createdAt, station: s })),
+        ...own.map((m) => ({ at: m.createdAt, media: m })),
+      ]
+        .sort((a, b) => b.at - a.at)
+        .slice(0, 12),
+    [saved, feeds, books, stations, own],
+  );
 
   // The newest episodes of the podcasts you follow.
   const fresh = useMemo(
@@ -80,11 +113,44 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
     [feeds],
   );
 
-  // A book's parts live on its own shelf.
-  const own = visible.filter((m) => !m.bookId);
-
   if (!saved || !recentSongs) return null;
-  if (!saved.length && !recent.length && !feeds.length && !media.length)
+  const openEpisode = async (feed: Feed, episode: FeedEpisode) => navigate(`${sonusBase()}/play/${await episodeMedia(feed, episode)}`);
+  const rows = (list: Media[]) => (
+    <div className="-mx-2 flex flex-col">
+      {list.map((m) => (
+        <MediaRow key={m.id} media={m} progress={playback?.get(m.id)} hasTranscript={Boolean(transcribed?.has(m.id))} />
+      ))}
+    </div>
+  );
+
+  if (view === 'songs')
+    return (
+      <>
+        <ul className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-6">
+          {saved.map((s, i) => (
+            <SongTile key={s.id} song={s} i={i} />
+          ))}
+        </ul>
+        <MoreIn onClick={onMusic}>More music in Sonus+</MoreIn>
+      </>
+    );
+  if (view === 'podcasts')
+    return (
+      <>
+        <PodcastGrid feeds={feeds} />
+        <MoreIn onClick={onPodcasts}>Find podcasts in Sonus+</MoreIn>
+      </>
+    );
+  if (view === 'episodes') return rows(visible.filter((m) => m.feedId));
+  if (view === 'audio')
+    return (
+      <>
+        {rows(visible.filter((m) => !m.feedId && !m.bookId && m.kind !== 'video'))}
+        <AddFiles lang={lang} className="mt-6" />
+      </>
+    );
+
+  if (!saved.length && !recent.length && !feeds.length && !media.length && !books?.length && !stations.length)
     return (
       <>
         <EmptyLibrary lang={lang} onMusic={onMusic} onPodcasts={onPodcasts} />
@@ -92,114 +158,60 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
       </>
     );
 
-  const openEpisode = async (feed: Feed, episode: FeedEpisode) => navigate(`${sonusBase()}/play/${await episodeMedia(feed, episode)}`);
+  const kinds: Array<{ name: string; count: number; icon: LucideIcon; tone: keyof typeof TONE; open: () => void }> = [
+    { name: 'Songs', count: saved.length, icon: Music2, tone: 'cantus', open: () => onView('songs') },
+    { name: 'Podcasts', count: feeds.length, icon: Podcast, tone: 'sage', open: () => onView('podcasts') },
+    { name: 'Episodes', count: episodes.length, icon: Headphones, tone: 'sage', open: () => onView('episodes') },
+    { name: 'Audiobooks', count: books?.length ?? 0, icon: BookHeadphones, tone: 'accent', open: onBooks },
+    { name: 'Stations', count: stations.length, icon: Radio, tone: 'accent', open: onRadio },
+    { name: 'Your audio', count: own.length, icon: FileAudio, tone: 'accent', open: () => onView('audio') },
+  ];
 
   return (
     <div className="space-y-10">
+      <nav aria-label="Your library by kind">
+        <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+          {kinds
+            .filter((k) => k.count > 0)
+            .map((k, i) => (
+              <motion.li key={k.name} {...enter(i)}>
+                <button
+                  type="button"
+                  onClick={k.open}
+                  className="group flex w-full items-center gap-2.5 rounded-2xl border border-line/70 bg-surface p-2.5 text-left transition-transform duration-150 hover:border-line-strong active:scale-[0.98] lg:flex-col lg:items-start lg:gap-4 lg:p-4"
+                >
+                  <span className={cx('grid size-10 shrink-0 place-items-center rounded-xl', TONE[k.tone])}>
+                    <k.icon size={19} aria-hidden />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[14.5px] font-semibold">{k.name}</span>
+                    <span className="block text-[12.5px] text-ink-faint tabular-nums">{k.count}</span>
+                  </span>
+                </button>
+              </motion.li>
+            ))}
+        </ul>
+      </nav>
+
       {recent.length > 0 && (
         <Shelf title="Recently played">
           <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
             {recent.map((r) => (
-              <li key={'song' in r ? `s:${r.song.id}` : 'station' in r ? `r:${r.station.id}` : `m:${r.media.id}`} className="w-32 shrink-0 snap-start sm:w-36">
-                {'station' in r ? (
-                  // A station plays from where it is now, and opens full screen.
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (onAir !== stationMediaId(r.station.id)) playStation(r.station, lang);
-                      navigate(`${sonusBase()}/station/${r.station.id}`);
-                    }}
-                    className="group block w-full text-left"
-                  >
-                    <span className="relative block">
-                      <Artwork title={r.station.name} coverUrl={r.station.favicon} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
-                      <span className="absolute top-2 left-2 rounded-full bg-black/55 px-1.5 py-0.5 text-[10px] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-sm">Live</span>
-                    </span>
-                    <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{r.station.name}</span>
-                    <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
-                      <Radio size={12} className="shrink-0 text-sage-text" aria-hidden /> {stationPlace(r.station) ?? 'Radio'}
-                    </span>
-                  </button>
-                ) : 'song' in r ? (
-                  <Link to={`/sonus/song/${encodeURIComponent(r.song.id)}`} className="group block">
-                    <SongArt url={r.song.artworkUrl} title={r.song.title} className="w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" size={300} />
-                    <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{r.song.title}</span>
-                    <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
-                      <Music2 size={12} className="shrink-0 text-[var(--cantus-text)]" aria-hidden /> {r.song.artist}
-                    </span>
-                  </Link>
-                ) : r.media.bookId ? (
-                  <Link to={`${sonusBase()}/book/${r.media.bookId}`} className="group block">
-                    <Artwork title={r.media.collection ?? r.media.title} coverBlobId={r.media.coverBlobId} coverUrl={r.media.coverUrl} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
-                    <span lang={r.media.lang} className="mt-1.5 block truncate text-[13.5px] font-semibold">
-                      {r.media.collection ?? r.media.title}
-                    </span>
-                    <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
-                      <BookHeadphones size={12} className="shrink-0 text-sage-text" aria-hidden /> {r.media.title}
-                    </span>
-                  </Link>
-                ) : (
-                  <Link to={`${sonusBase()}/play/${r.media.id}`} className="group block">
-                    <Artwork title={r.media.title} coverBlobId={r.media.coverBlobId} coverUrl={r.media.coverUrl} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
-                    <span lang={r.media.lang} className="mt-1.5 block truncate text-[13.5px] font-semibold">
-                      {r.media.title}
-                    </span>
-                    <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
-                      <Headphones size={12} className="shrink-0 text-sage-text" aria-hidden /> {r.media.collection ?? r.media.artist ?? 'Audio'}
-                    </span>
-                  </Link>
-                )}
+              <li key={keyOf(r)} className="w-32 shrink-0 snap-start sm:w-36">
+                <ItemTile item={r} lang={lang} playback={playback} />
               </li>
             ))}
           </ul>
         </Shelf>
       )}
 
-      <Shelf title="Your songs" more={saved.length ? { label: 'All music', onClick: onMusic } : undefined}>
-        {saved.length ? (
-          <ul className="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-4 lg:grid-cols-6">
-            {saved.slice(0, 12).map((s, i) => (
-              <SongTile key={s.id} song={s} i={i} />
-            ))}
-          </ul>
-        ) : (
-          <Invite icon={Music2} tone="cantus" title="Songs you love, lyrics and all" detail="Find a song in Music and save it with the heart: it lives here." action="Find music" onClick={onMusic} />
-        )}
-      </Shelf>
-
-      <Shelf title="Podcasts you follow" more={feeds.length ? { label: 'Find more', onClick: onPodcasts } : undefined}>
-        {feeds.length ? (
-          <PodcastGrid feeds={feeds} />
-        ) : (
-          <Invite icon={Headphones} tone="sage" title="Podcasts with a transcript that follows along" detail="Follow one and its new episodes show up here." action="Find a podcast" onClick={onPodcasts} />
-        )}
-      </Shelf>
-
-      {books && books.length > 0 && (
-        <Shelf title="Audiobooks and courses" more={{ label: 'See all', onClick: onBooks }}>
-          <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
-            {books.map((b) => (
-              <li key={b.id} className="w-32 shrink-0 snap-start sm:w-36">
-                <BookTile book={b} progress={playback} />
-              </li>
-            ))}
-          </ul>
-        </Shelf>
-      )}
-
-      {stations && stations.length > 0 && (
-        <Shelf title="Your stations" more={{ label: 'All radio', onClick: onRadio }}>
-          <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
-            {stations.map((s) => (
-              <li key={s.id} className="w-28 shrink-0 snap-start sm:w-32">
-                <button type="button" onClick={() => playStation(s, lang)} className="group block w-full text-left">
-                  <Artwork title={s.name} coverUrl={s.favicon} className="block w-full transition-transform group-active:scale-[0.97]" rounded="rounded-xl" />
-                  <span className="mt-1.5 block truncate text-[13.5px] font-semibold">{s.name}</span>
-                  <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
-                    <Radio size={12} className="shrink-0 text-sage-text" aria-hidden /> {stationPlace(s) ?? 'Radio'}
-                  </span>
-                </button>
-              </li>
+      {added.length > 0 && (
+        <Shelf title="Recently added">
+          <ul className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-6">
+            {added.map((r, i) => (
+              <motion.li key={keyOf(r)} {...enter(i)} className="min-w-0">
+                <ItemTile item={r} lang={lang} playback={playback} />
+              </motion.li>
             ))}
           </ul>
         </Shelf>
@@ -215,16 +227,6 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
         </Shelf>
       )}
 
-      {own.length > 0 && (
-        <Shelf title="Your audio">
-          <div className="-mx-2 flex flex-col">
-            {own.map((m) => (
-              <MediaRow key={m.id} media={m} progress={playback?.get(m.id)} hasTranscript={Boolean(transcribed?.has(m.id))} />
-            ))}
-          </div>
-        </Shelf>
-      )}
-
       <MundusLink shelf="listen" className="mt-2">
         Podcasts, audiobooks, radio and artists picked for you
       </MundusLink>
@@ -232,19 +234,82 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
   );
 }
 
-function Shelf({ title, more, children }: { title: string; more?: { label: string; onClick: () => void }; children: ReactNode }) {
+function Shelf({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section aria-label={title}>
-      <div className="mb-3 flex items-baseline gap-3">
-        <h2 className={cx(label, 'flex-1')}>{title}</h2>
-        {more && (
-          <button type="button" onClick={more.onClick} className="inline-flex items-center gap-0.5 text-[13px] font-semibold text-ink-soft hover:text-ink">
-            {more.label} <ChevronRight size={14} aria-hidden />
-          </button>
-        )}
-      </div>
+      <h2 className={cx(label, 'mb-3')}>{title}</h2>
       {children}
     </section>
+  );
+}
+
+const art = 'block w-full transition-transform group-active:scale-[0.97]';
+
+/** One tile, whatever it is: its artwork, its name, and what kind of thing it is. */
+function ItemTile({ item, lang, playback }: { item: Item; lang: string; playback?: Map<string, PlaybackProgress> }) {
+  const navigate = useNavigate();
+  const onAir = usePlayer((p) => (p.media?.kind === 'radio' ? p.media.id : null));
+  if ('book' in item) return <BookTile book={item.book} progress={playback} />;
+  if ('station' in item) {
+    const s = item.station;
+    // A station plays from where it is now, and opens full screen.
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          if (onAir !== stationMediaId(s.id)) playStation(s, lang);
+          navigate(`${sonusBase()}/station/${s.id}`);
+        }}
+        className="group block w-full text-left"
+      >
+        <span className="relative block">
+          <Artwork title={s.name} coverUrl={s.favicon} className={art} rounded="rounded-xl" />
+          <span className="absolute top-2 left-2 rounded-full bg-black/55 px-1.5 py-0.5 text-[10px] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-sm">Live</span>
+        </span>
+        <TileText title={s.name} sub={stationPlace(s) ?? 'Radio'} icon={Radio} />
+      </button>
+    );
+  }
+  if ('song' in item)
+    return (
+      <Link to={`/sonus/song/${encodeURIComponent(item.song.id)}`} className="group block">
+        <SongArt url={item.song.artworkUrl} title={item.song.title} className={art} rounded="rounded-xl" size={300} />
+        <TileText title={item.song.title} sub={item.song.artist} icon={Music2} cantus />
+      </Link>
+    );
+  if ('feed' in item)
+    return (
+      <Link to={`${sonusBase()}/podcast/${item.feed.id}`} className="group block">
+        <Artwork title={item.feed.title} coverUrl={item.feed.imageUrl} className={art} rounded="rounded-xl" />
+        <TileText title={item.feed.title} sub={item.feed.author ?? 'Podcast'} icon={Podcast} />
+      </Link>
+    );
+  const m = item.media;
+  if (m.bookId)
+    return (
+      <Link to={`${sonusBase()}/book/${m.bookId}`} className="group block">
+        <Artwork title={m.collection ?? m.title} coverBlobId={m.coverBlobId} coverUrl={m.coverUrl} className={art} rounded="rounded-xl" />
+        <TileText title={m.collection ?? m.title} sub={m.title} icon={BookHeadphones} lang={m.lang} />
+      </Link>
+    );
+  return (
+    <Link to={`${sonusBase()}/play/${m.id}`} className="group block">
+      <Artwork title={m.title} coverBlobId={m.coverBlobId} coverUrl={m.coverUrl} className={art} rounded="rounded-xl" />
+      <TileText title={m.title} sub={m.collection ?? m.artist ?? 'Audio'} icon={m.feedId ? Podcast : Headphones} lang={m.lang} />
+    </Link>
+  );
+}
+
+function TileText({ title, sub, icon: Icon, lang, cantus }: { title: string; sub: string; icon: LucideIcon; lang?: string; cantus?: boolean }) {
+  return (
+    <>
+      <span lang={lang} className="mt-1.5 block truncate text-[13.5px] font-semibold">
+        {title}
+      </span>
+      <span className="flex items-center gap-1 truncate text-[12.5px] text-ink-soft">
+        <Icon size={12} className={cx('shrink-0', cantus ? 'text-[var(--cantus-text)]' : 'text-sage-text')} aria-hidden /> {sub}
+      </span>
+    </>
   );
 }
 
@@ -260,20 +325,27 @@ function SongTile({ song, i }: { song: Song; i: number }) {
   );
 }
 
-function Invite({ icon: Icon, tone, title, detail, action, onClick }: { icon: typeof Music2; tone: 'cantus' | 'sage'; title: string; detail: string; action: string; onClick: () => void }) {
+/** Below a kind's own page: where to find more of it. */
+function MoreIn({ onClick, children }: { onClick: () => void; children: ReactNode }) {
   return (
-    <Card className="flex items-center gap-4 p-4 sm:p-5">
-      <span className={cx('grid size-11 shrink-0 place-items-center rounded-2xl', tone === 'cantus' ? 'bg-[var(--cantus-soft)] text-[var(--cantus-text)]' : 'bg-sage-soft text-sage-text')}>
-        <Icon size={20} aria-hidden />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-[15px] font-semibold">{title}</span>
-        <span className="block text-[13.5px] leading-snug text-ink-soft">{detail}</span>
-      </span>
-      <button type="button" onClick={onClick} className={cx(buttonClasses('secondary', 'sm'), 'shrink-0')}>
-        {action}
-      </button>
-    </Card>
+    <button type="button" onClick={onClick} className={cx(buttonClasses('secondary', 'md'), 'mt-8')}>
+      {children} <ArrowRight size={16} aria-hidden />
+    </button>
+  );
+}
+
+function AddFiles({ lang, className }: { lang: string; className?: string }) {
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        const files = await pickFiles(AUDIO_ACCEPT);
+        if (files.length) await importAudioFiles(lang, files);
+      }}
+      className={cx(buttonClasses('secondary', 'md'), className)}
+    >
+      <FileAudio size={17} aria-hidden /> Add audio files
+    </button>
   );
 }
 
@@ -294,16 +366,7 @@ function EmptyLibrary({ lang, onMusic, onPodcasts }: { lang: string; onMusic: ()
         <button type="button" onClick={onPodcasts} className={buttonClasses('secondary', 'md')}>
           <Search size={17} aria-hidden /> Find a podcast
         </button>
-        <button
-          type="button"
-          onClick={async () => {
-            const files = await pickFiles(AUDIO_ACCEPT);
-            if (files.length) await importAudioFiles(lang, files);
-          }}
-          className={buttonClasses('secondary', 'md')}
-        >
-          <FileAudio size={17} aria-hidden /> Add audio files
-        </button>
+        <AddFiles lang={lang} />
       </div>
     </Card>
   );

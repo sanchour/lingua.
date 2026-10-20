@@ -213,7 +213,9 @@ inside (its deck is "From Cantus").
 
 **Sonus and Sonus+ (2026-10-20).** Sonus is your Library, Audiobooks and the Radio. Sonus+ (the room
 below, first called Cantus) is where you find things to listen to: Today, Music and Podcasts.
-Episodes open and play inside it; the now-playing bar shows whatever plays.
+Library is laid out like Apple Music's: your kinds of things with counts (Songs, Podcasts,
+Episodes, Audiobooks, Stations, Your audio; each opens its own page or tab), then Recently
+played, Recently added and New episodes. Episodes open and play inside Sonus+; the now-playing bar shows whatever plays.
 
 **Cantus, a room of its own (design handoff, 2026-10-20).** Music opens Cantus full screen:
 no Lingua sidebar, tab bar or mini player; always dark, whatever the theme; the open song's

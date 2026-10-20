@@ -1115,8 +1115,15 @@ with one now-playing bar for whatever plays. (The user moved Radio, then Audiobo
 - [x] The now-playing bar shows an episode or a book while it plays; starting one stops the song.
 - [x] Sonus: Library, Audiobooks and Radio (`/sonus/audiobooks` and `/cantus/audiobooks` open the tab). Sonus+ has a card at the top (it says the room is closed when you
   come back from it); old `?tab=music|podcasts` and `?q=` links open Sonus+.
-- [ ] Library's own layout beyond the new top (continue listening beside Sonus+, then the
-  shelves): a fuller overhaul is still to design with the user.
+- [x] Library overhaul, laid out like Apple Music's library:
+  - [x] Under the top cards, **categories** with counts: Songs, Podcasts, Episodes, Audiobooks,
+    Stations, Your audio (only those you have). Two columns on a phone, six across on a desktop.
+  - [x] Songs, Podcasts, Episodes and Your audio open a view of their own inside Library
+    (`?view=…`, so Back returns); Audiobooks and Stations open their tabs.
+  - [x] Then **Recently played** (a row), **Recently added** (a grid of what you saved last, of
+    every kind), **New episodes**. One tile for every kind of item. Checked on a phone and at
+    1280: categories, both rows, a Podcasts view with Back; a podcast followed in Sonus+ opens
+    over the room and its episode plays in the bar.
 
 ### Handover for the Lingua 3.0 session
 

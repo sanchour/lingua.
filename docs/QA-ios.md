@@ -237,6 +237,7 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
 
 ## Sonus and Sonus+
 
+- [ ] Sonus › Library: the kinds with counts in two columns; Podcasts opens its page, Back returns.
 - [ ] Sonus: Library, Audiobooks and Radio tabs; the dark Sonus+ card opens the room.
 - [ ] Sonus+: Today, Music, Podcasts at the bottom; Search top right.
 - [ ] Sonus › Audiobooks: open a book, Start: it plays; in Sonus+ the bar shows it, play/pause works.

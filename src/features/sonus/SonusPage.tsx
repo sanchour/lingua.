@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
-import { ArrowRight, Music2, Pause, Play, Search, SearchX } from 'lucide-react';
+import { ArrowRight, ChevronLeft, Music2, Pause, Play, Search, SearchX } from 'lucide-react';
 import type { LeftCantusState } from '@/features/cantus/room/nav';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
@@ -18,7 +18,8 @@ import { spring } from '@/design/motion';
 import { loadMedia, toggle, unlockAudio, usePlayer } from '@/services/audio/engine';
 import { AddMenu } from './library/AddMenu';
 import { Artwork } from './library/Artwork';
-import { LibraryHome } from './library/LibraryHome';
+import { LIBRARY_VIEWS, LibraryHome } from './library/LibraryHome';
+import type { LibraryView } from './library/LibraryHome';
 import { MediaRow } from './library/MediaRow';
 import { sonusBase } from '@/features/sonus/paths';
 
@@ -86,6 +87,13 @@ export default function SonusPage() {
     setParams(next === 'library' ? {} : { tab: next }, { replace: true });
     window.scrollTo({ top: 0 });
   };
+  // Library › Songs, Podcasts, Episodes, Your audio: a page of their own, which Back leaves.
+  const view = tab === 'library' ? ((Object.keys(LIBRARY_VIEWS) as LibraryView[]).find((v) => v === params.get('view')) ?? null) : null;
+  const setView = (next: LibraryView | null) => {
+    setParams(next ? { view: next } : {});
+    window.scrollTo({ top: 0 });
+  };
+  const listsMedia = !view || view === 'episodes' || view === 'audio';
 
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
@@ -127,47 +135,73 @@ export default function SonusPage() {
       )}
 
       {tab === 'library' && (
-      <>
-      <motion.div {...enter(1)} className="mb-9 grid gap-4 lg:grid-cols-2">
-        <SonusPlusCard left={leftRoom} />
-        <ContinueCard media={media} playback={playback} />
-      </motion.div>
+        <>
+          {!view && (
+            <motion.div {...enter(1)} className="mb-9 grid gap-4 lg:grid-cols-2">
+              <SonusPlusCard left={leftRoom} />
+              <ContinueCard media={media} playback={playback} />
+            </motion.div>
+          )}
 
-      {Boolean(media?.length) && (
-        <motion.div {...enter(2)} className="mb-5 flex h-12 items-center gap-2">
-          <div className="relative h-full min-w-0 flex-1">
-            {searching ? (
-              <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search your audio and episodes" onClose={closeSearch} autoFocus />
-            ) : (
-              <h2 className="text-[12px] leading-[48px] font-bold tracking-[0.14em] text-ink-faint uppercase">Your library</h2>
-            )}
-          </div>
-          {!searching && <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />}
-          <SortMenu value={sort} options={SORTS} onChange={(mediaSort) => void patchSetting('ui', { mediaSort })} />
-        </motion.div>
-      )}
+          {(view || Boolean(media?.length)) && (
+            <motion.div {...enter(2)} className="mb-5 flex h-12 items-center gap-2">
+              <div className="relative h-full min-w-0 flex-1">
+                {searching ? (
+                  <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search your audio and episodes" onClose={closeSearch} autoFocus />
+                ) : view ? (
+                  <span className="flex h-full items-center gap-2.5">
+                    <button type="button" onClick={() => setView(null)} aria-label="Back to your library" className="grid size-10 place-items-center rounded-full bg-sunken text-ink-soft transition-colors hover:text-ink">
+                      <ChevronLeft size={20} aria-hidden />
+                    </button>
+                    <h2 className="font-serif text-[24px] font-semibold tracking-tight">{LIBRARY_VIEWS[view]}</h2>
+                  </span>
+                ) : (
+                  <h2 className="text-[12px] leading-[48px] font-bold tracking-[0.14em] text-ink-faint uppercase">Your library</h2>
+                )}
+              </div>
+              {listsMedia && Boolean(media?.length) && (
+                <>
+                  {!searching && <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />}
+                  <SortMenu value={sort} options={SORTS} onChange={(mediaSort) => void patchSetting('ui', { mediaSort })} />
+                </>
+              )}
+            </motion.div>
+          )}
 
-      <motion.section {...enter(2)} aria-label="Your library">
-        {media &&
-          feeds &&
-          (query.trim() ? (
-            visible.length ? (
-              <div className="-mx-2 flex flex-col">
-                {visible.map((m) => (
-                  <MediaRow key={m.id} media={m} progress={playback?.get(m.id)} hasTranscript={Boolean(transcribed?.has(m.id))} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center py-14 text-center text-ink-soft">
-                <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-                <p className="font-semibold text-ink">Nothing matches “{query.trim()}”</p>
-              </div>
-            )
-          ) : (
-            <LibraryHome lang={lang} media={media} visible={visible} feeds={feeds} playback={playback} transcribed={transcribed} onMusic={() => navigate('/cantus/music')} onPodcasts={findPodcasts} onBooks={() => setTab('books')} onRadio={() => setTab('radio')} />
-          ))}
-      </motion.section>
-      </>
+          <motion.section key={view ?? 'home'} {...enter(2)} aria-label={view ? LIBRARY_VIEWS[view] : 'Your library'}>
+            {media &&
+              feeds &&
+              (query.trim() ? (
+                visible.length ? (
+                  <div className="-mx-2 flex flex-col">
+                    {visible.map((m) => (
+                      <MediaRow key={m.id} media={m} progress={playback?.get(m.id)} hasTranscript={Boolean(transcribed?.has(m.id))} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center py-14 text-center text-ink-soft">
+                    <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
+                    <p className="font-semibold text-ink">Nothing matches “{query.trim()}”</p>
+                  </div>
+                )
+              ) : (
+                <LibraryHome
+                  lang={lang}
+                  media={media}
+                  visible={visible}
+                  feeds={feeds}
+                  playback={playback}
+                  transcribed={transcribed}
+                  view={view}
+                  onView={setView}
+                  onMusic={() => navigate('/cantus/music')}
+                  onPodcasts={findPodcasts}
+                  onBooks={() => setTab('books')}
+                  onRadio={() => setTab('radio')}
+                />
+              ))}
+          </motion.section>
+        </>
       )}
     </>
   );
