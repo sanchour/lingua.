@@ -23,7 +23,7 @@ Read first: [CLAUDE.md](../CLAUDE.md) (desktop first, the check, commit as sanch
 | D6 | The phone | **"Phone is not needed anymore."** Desktop only: no phone tab bar, no phone layouts, no phone checks. What exists for the phone today stays as it is. |
 | D7 | The phone code that exists | **Leave it as it is**: nothing is removed, it is just no longer designed for or checked. |
 | D8 | A key without Max | **AI only with Max**: a key alone unlocks no AI feature anymore. |
-| D9 | A browser extension for the streaming services | **Yes**, built with 5.2-4 (inside 4.0-3); the user creates the Chrome Web Store account. |
+| D9 | A browser extension for the streaming services | **Yes**, built as 5.2-4; the user creates the Chrome Web Store account. |
 | D10 | How strict Grammatica's path is | **It leads, everything stays open**: the next step is always shown, any topic can be opened. |
 
 Not a question: Lingua+ drops from the placeholder's 29.99 to **€24.99, once, with every update**, as
@@ -40,8 +40,6 @@ the user said.
   a book · Import a comic · News & links · Goodreads), the one-screen word drawer, the end page, one
   memory per word, gap sentences. **5.1-5 builds on those screens**: read 4.0-2's notes in the
   roadmap first, and change what it made rather than starting again.
-- **4.0-3** (Cantus games, karaoke, Visio streaming) builds on the Sonus et Visio room of 5.1-1:
-  5.1-1 goes first so 4.0-3 doesn't build on pages that are about to move.
 - **4.0-4 (Cursus, the course)**: 5.1-1 makes the Cursus room and its tabs; 4.0-4 fills the Course
   tab. Until then the tab says the course is coming (tier 1 only).
 - **3.0-8 parts 5–6 (alphabets and writing, another account)** land in Cursus › Alphabets. 5.1-1

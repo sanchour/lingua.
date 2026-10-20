@@ -829,6 +829,8 @@ Short records of choices that are not obvious from the code. Newest last.
   their video and allow no other app to play it; tools that add subtitles to them are browser
   extensions. 4.0-3 brings YouTube in fully and follows the others' subtitles beside their own
   apps instead, and looks at an extension for desktop.
+  *Changed on 2026-10-20:* the user removed 4.0-3 (karaoke and song games). Its Visio part moved to
+  Lingua 5.2-4, which builds the browser extension (the user's decision: yes).
 - **The course is called Cursus,** Latin for "a course" (Iter is already the journey in Ratio). Its
   units are named by what the learner can do after them, as the user asked. Feedback from other
   speakers needs a community and a server; AI feedback with a key comes first.

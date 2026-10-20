@@ -15,8 +15,8 @@ a phone. The roadmap's "## Lingua 5" ticks the steps.
 
 - **5.1-1 (the new room order)** and **5.2-1 (Settings, the sidebar)** change the same frame and are
   built as one step, first.
-- **5.2-4 (Visio)** is what Lingua 4.0-3 plans for Visio (YouTube inside Lingua, the streaming
-  services, a browser extension). It is built inside 4.0-3, which ticks both.
+- **5.2-4 (Visio)** is Lingua 5's own step. Lingua 4.0-3 was removed on 2026-10-20 (the karaoke and
+  song games are dropped), and the Visio work moved here with the user's points below.
 - **5.2-5, 5.2-6, 5.2-7** rework the three tabs of Mentis (5.1-1). 5.1's plan is updated for them:
   Sermo has no chat inside Lingua anymore, and Explore and Picks are one.
 - **5.2-8 (Grammatica)** changes only the pages (`features/grammatica`). The topics and drills
@@ -31,7 +31,7 @@ a phone. The roadmap's "## Lingua 5" ticks the steps.
 | 5.2-1 | Settings (Ordo's new name), a narrower sidebar, flashcard widths | S | with 5.1-1 |
 | 5.2-2 | Radio: only stations in the language, a better list, a tuner for countries | M | 5.1-3's territories data |
 | 5.2-3 | Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings | M | 5.1-1 |
-| 5.2-4 | Visio: dual subtitles for YouTube and the streaming services, real service marks | L | inside 4.0-3 |
+| 5.2-4 | Visio: dual subtitles for YouTube and the streaming services, real service marks | L | after 5.1-1 |
 | 5.2-5 | Diarium: writing tools, a calendar, search, in the language | M | 5.1-1 |
 | 5.2-6 | Sermo: a guided path into your AI app, many more scenes | M | 5.1-1 |
 | 5.2-7 | Mundus: an interactive guide, one Explore, Things to try | M | 5.1-1 |
@@ -185,7 +185,7 @@ the map follows.
 - **Listening:** the speed for podcasts and books, the size of the skip back and forward, play the
   next episode by itself, the sleep timer's default.
 - **Lyrics and singing:** the translation line (always, on hover, never), romanisation for other
-  scripts (pinyin, transliteration), lyric size, karaoke highlighting (4.0-3).
+  scripts (pinyin, transliteration), lyric size.
 - **Learning:** new words from songs go to "From songs" by themselves (on or off); how hard the song
   games are.
 - **Sources:** the full-song source you prefer (Apple Music, Spotify, YouTube), or previews only.
@@ -206,10 +206,15 @@ button; Commute looks like glass and stays smooth; each Sonus+ setting changes w
 - [ ] A YouTube player with dual subtitles; if possible for the streaming services too.
 - [ ] The services' icons accurate and up to date.
 - [ ] Remove "From Mundus" at the bottom of Services.
+- [ ] The Visio the user asked for (2026-10-20): Netflix, Prime Video, Max, Disney+ and YouTube shows,
+  transcribed and watched inside Lingua with hover translations, as in Codex.
+- [ ] For the streaming services that protect their video: their subtitles brought in (3.0-7's "Add its
+  subtitles") and followed beside the show playing in its own app, with the same taps and translations.
+- [ ] A look at whether a small Lingua browser extension is worth it for desktop. The user's decision
+  D9 (yes) stands; the look comes first and fixes what the extension does.
 
 **What exists:** dual subtitles for your own video files (the language's line with every word
-hoverable, your language's line under it). YouTube doesn't play in Visio yet. Lingua 4.0-3 plans the
-same; this step is built inside it.
+hoverable, your language's line under it). YouTube doesn't play in Visio yet.
 
 **YouTube inside Visio**
 - Paste a YouTube link (or open one from Explore): YouTube's own player (its official embed, which
@@ -505,6 +510,9 @@ Tabula; each new card shows real numbers for a test profile.
 
 ## 4. Things that can't be done exactly as asked
 
+- **Protected video (DRM):** Netflix, Prime Video, Disney+ and HBO Max don't let other apps play their
+  video, so Lingua never plays it. For them it follows their subtitles beside the show, and the
+  extension reads subtitles only; the video is never touched.
 - **Dual subtitles on streaming services** only work through a browser extension, and only where a
   service doesn't block it; each needs upkeep as the services change.
 - **YouTube's captions** can't be read by Lingua itself: they come through the extension, Gemini with

@@ -1546,24 +1546,10 @@ free version is v16.
       settings have "Card front: The word / A sentence with a gap"; with the second, a word →
       meaning card that has a sentence shows it with the word missing.
 
-### 4.0-3 · Songs and shows: Cantus games, karaoke, and streaming services in Visio
-*Built together with Lingua 5.2-4 ([LINGUA-5.2-PLAN.md](LINGUA-5.2-PLAN.md)): YouTube with two
-subtitle lines, the Lingua browser extension, the services' real marks. Step 3 of
-[HANDOVER.md](HANDOVER.md).*
-- [ ] **Different games for each song:** one that teaches the lyrics themselves (fill in, order,
-      sing the next line), one that teaches the language (the song lessons of 3.0-3), and the
-      song's words as flashcards or in Ludus.
-- [ ] **Karaoke mode:** the lyrics large and in time, the line to sing lit up, the translation
-      under it when you want it.
-- [ ] **Visio, what the user asked:** Netflix, Prime Video, Max, Disney+ and YouTube shows,
-      transcribed and watched inside Lingua with hover translations, as in Codex.
-- [ ] **Visio, what can be done:** the streaming services protect their video (DRM) and don't allow
-      it to be played inside other apps; doing this in the browser needs a browser extension, as
-      Language Reactor does. So: YouTube inside Lingua (its player with its subtitles, every word
-      tappable, the transcript alongside); for the other services, their subtitles brought in
-      (3.0-7's "Add its subtitles") and followed beside the show playing in its own app, with the
-      same taps and translations; and a look at whether a small Lingua browser extension is worth
-      it for desktop.
+### 4.0-3 · Removed (2026-10-20)
+The user removed this step: the karaoke and the song games are dropped. Its Visio part (YouTube,
+the streaming services, the browser extension) moved to Lingua 5.2-4. The number stays so the
+other steps keep theirs.
 
 ### 4.0-4 · Cursus: a course with a clear path, and speaking and writing
 *Cursus becomes a room with tabs in Lingua 5.1-1 (step 2 of [HANDOVER.md](HANDOVER.md)); the
@@ -1617,7 +1603,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [ ] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
 - [ ] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries
 - [ ] 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings
-- [ ] 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks (built inside 4.0-3)
+- [ ] 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks (Lingua 5's own step; Lingua 4.0-3 was removed)
 - [ ] 5.2-5 · Diarium: writing tools, a calendar, search, in the language
 - [ ] 5.2-6 · Sermo: a guided path into your AI app, many more scenes
 - [ ] 5.2-7 · Mundus: an interactive guide, one Explore, Things to try

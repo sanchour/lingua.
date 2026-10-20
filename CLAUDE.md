@@ -16,7 +16,7 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
 - **Lingua 4.0:** 4.0-1 (tiers, the 35 placeholder languages, the language map, the sidebar and
   icons, the Lingua+ placeholder) and 4.0-2 (the full dictionary for the six core languages, the
   one-screen word drawer, Import a book / a comic, the end page and reading goal, the word memory,
-  sentences with a gap; Dexie v15) are done. Open: 4.0-3, 4.0-4, 4.0-5. Only the six core languages
+  sentences with a gap; Dexie v15) are done. Open: 4.0-4 and 4.0-5 (4.0-3 was removed on 2026-10-20: the karaoke and song games are dropped; its Visio part is Lingua 5.2-4). Only the six core languages
   (tier 1) get a course.
 - **Lingua 5** is planned in detail: [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md) and
   [docs/LINGUA-5.2-PLAN.md](docs/LINGUA-5.2-PLAN.md), with the user's decisions at the top of 5.1

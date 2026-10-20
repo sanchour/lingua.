@@ -56,8 +56,8 @@ read that part before starting.
 | --- | --- | --- | --- | --- |
 | 1 | [ ] | **Grammatica part 5: alphabets and writing** (3.0-8). **Parallel** with everything. Write it so it can move into Cursus › Alphabets (step 2 moves it). | ROADMAP "3.0-8" | L |
 | 2 | [ ] | **The frame of Lingua 5:** the rooms in the new order (Cursus, Sonus et Visio, Mentis), Ordo renamed Settings, a narrower sidebar, flashcard widths, the device's light, the Mundus lines removed. First of the rest, because 4.0-3, 4.0-4 and all of Lingua 5 build on the new rooms. | 5.1-1 and 5.2-1 | L |
-| 3 | [ ] | **Songs and shows:** Cantus games and karaoke; Visio with YouTube and two subtitle lines; the Lingua browser extension for the streaming services; the services' real marks. | ROADMAP "4.0-3" + 5.2-4 | XL |
-| 4 | [ ] | **Cursus, the course** (tier 1), in Cursus's Course tab. **Parallel** with 3. | ROADMAP "4.0-4" | XL |
+| 3 | — | *Removed 2026-10-20: the karaoke and song games are dropped; Visio moved to step 22.* | ROADMAP "4.0-3" | — |
+| 4 | [ ] | **Cursus, the course** (tier 1), in Cursus's Course tab. **Parallel** with 2. | ROADMAP "4.0-4" | XL |
 | 5 | [ ] | **Lingua 4.0 complete:** the full check; the version says 4.0. After 3 and 4. | ROADMAP "4.0-5" | S |
 | 6 | [ ] | **Lingua+ and Lingua+ Max** (Stripe in test mode, the licence server, plans, the MAX badge). **Parallel** from step 2 on. | 5.1-2 | L |
 | 7 | [ ] | **Onboarding,** the map without dots and its language data, the twelve flags. After 6 (it shows the plans). | 5.1-3 | L |
@@ -74,7 +74,8 @@ read that part before starting.
 | 18 | [ ] | **Ratio** (one language, compact, goals in Tabula, more numbers). **Parallel.** | 5.2-9 | M |
 | 19 | [ ] | **Grammatica part 6: topic maps for every language** (3.0-8). **Parallel.** | ROADMAP "3.0-8" | L |
 | 20 | [ ] | **A touch of the language in the design.** After the room steps above (it touches every room lightly). | 5.1-9 | M |
-| 21 | [ ] | **Lingua 5 complete:** the full check; the version says 5.0. Last. | 5.1-10 and 5.2-10 | S |
+| 21 | [ ] | **Lingua 5 complete:** the full check; the version says 5.0. Last, after 22. | 5.1-10 and 5.2-10 | S |
+| 22 | [ ] | **Visio, as Lingua 5.2-4:** YouTube inside Lingua with two subtitle lines; the streaming services' subtitles beside the show playing in its own app, with the same taps and translations; a Lingua browser extension for them (decided yes); the services' real marks. **Parallel** after 2. | 5.2-4 | L |
 
 ---
 
