@@ -21,9 +21,10 @@ deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [do
   features that cost little (automatic packs, decks, podcasts, music search). Keep it cheap.
 - **Lingua 4.0 has started (2026-10-20):** five steps, 4.0-1 … 4.0-5, under "## Lingua 4.0" in the roadmap.
   **4.0-1 is done** (tiers, the 35 placeholder languages and the language map, the glass tab bar,
-  the sidebar and icons, the new app icon, the Lingua+ placeholder). **Next is 4.0-2** (Codex, the full
-  dictionary for the six core languages, the one-screen word drawer, Import a book / Import a comic
-  as separate tabs, one memory for every word). 4.0 sorts the languages into four tiers and an
+  the sidebar and icons, the new app icon, the Lingua+ placeholder). **4.0-2 is done** (the full
+  dictionary for the six core languages, the one-screen word drawer, Import a book / Import a comic,
+  the end page and reading goal, the word memory, sentences with a gap; Dexie v15). **Next is 4.0-3**
+  (Cantus games, karaoke, streaming services in Visio). 4.0 sorts the languages into four tiers and an
   experimental shelf (the table at the top of "## Lingua 4.0"); only the six core languages get a course.
 - **Lingua 5.1 is planned, not started (2026-10-20):** [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md),
   steps 5.1-1 … 5.1-10, with the user's decisions at its top. Its Codex step is built together with

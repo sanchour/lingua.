@@ -116,11 +116,24 @@ interface FlipCardProps {
   flipped: boolean;
   onFlip: () => void;
   deckName?: string;
+  front?: 'word' | 'sentence';
+}
+
+/** The card's sentence and where its word stands in it, if it has both. */
+function gapOf(note: Note, lang: string): { text: string; span: [number, number]; translation?: string } | null {
+  const ex = note.example;
+  const text = ex?.text ?? (note.context?.sentence !== note.term ? note.context?.sentence : undefined);
+  if (!text) return null;
+  if (ex?.cloze) return { text, span: ex.cloze, translation: ex.translation };
+  const at = text.toLocaleLowerCase(lang).indexOf(note.term.toLocaleLowerCase(lang));
+  return at >= 0 ? { text, span: [at, at + note.term.length], translation: ex?.translation } : null;
 }
 
 /** A tactile flashcard: question in front, answer on the back, turned with a spring. */
-export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName }: FlipCardProps) {
+export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, front }: FlipCardProps) {
   const production = card.direction === 'production';
+  const gap = !production && front === 'sentence' ? gapOf(note, lang) : null;
+  const gapParts = gap ? splitAt(gap.text, gap.span) : null;
   const clip = useClip(note);
   const line = note.tags.includes('line');
   const details = [posName(note.pos), note.pos === 'noun' && lang === 'ru' ? genderName(note.gender) : undefined].filter(Boolean).join(' · ');
@@ -146,6 +159,18 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName }: 
               <>
                 <p className="text-[calc(clamp(1.75rem,5vw,2.5rem)*var(--card-scale,1))] leading-tight font-semibold">{note.meaning || '—'}</p>
                 <p className="mt-3 text-sm text-ink-faint">Say it, then turn the card</p>
+              </>
+            ) : gapParts ? (
+              <>
+                <p lang={lang} className="text-[calc(clamp(1.35rem,4vw,1.9rem)*var(--card-scale,1))] leading-relaxed">
+                  {gapParts[0]}
+                  <span className="mx-0.5 inline-block rounded-md border-b-2 border-line-strong align-baseline" style={{ width: `${Math.max(3, gapParts[1].length) + 1}ch` }}>
+                    {' '}
+                  </span>
+                  {gapParts[2]}
+                </p>
+                {gap!.translation && <p className="mt-3 text-[15px] text-ink-soft italic">{gap!.translation}</p>}
+                <p className="mt-4 text-sm text-ink-faint">Which word is missing?</p>
               </>
             ) : (
               <>

@@ -7,6 +7,7 @@ import { normalizeWord } from '@/core/text/normalize';
 import { appendMessages, deleteChat, updateLastMessage, useChat } from '@/data/chats';
 import type { Chat, ChatMessage } from '@/data/types';
 import { setWordState } from '@/data/words';
+import type { WordContext } from '@/data/words';
 import { Button, Dialog, IconButton } from '@/design/primitives';
 import { useLayout } from '@/design/hooks/useLayout';
 import { GlossText } from '@/features/codex/reader/GlossText';
@@ -109,7 +110,7 @@ export default function ChatPage() {
       )}
 
       <ol aria-label="The conversation" className={cx('flex flex-col gap-4', wide ? 'max-w-3xl pb-6' : 'px-4 pt-2 pb-[calc(env(safe-area-inset-bottom)+96px)]')}>
-        {chat.messages.map((m, i) => (m.role === 'ai' ? <AiLine key={i} lang={chat.lang} message={m} /> : <MyLine key={i} lang={chat.lang} message={m} />))}
+        {chat.messages.map((m, i) => (m.role === 'ai' ? <AiLine key={i} lang={chat.lang} message={m} where={{ kind: 'chat', id: chat.id, title: chat.title }} /> : <MyLine key={i} lang={chat.lang} message={m} />))}
         {busy && (
           <li className="flex items-center gap-2 text-[14px] text-ink-faint" aria-live="polite">
             <LoaderCircle size={16} className="animate-spin" aria-hidden /> {last?.role === 'me' ? 'Reading your line…' : 'Starting the scene…'}
@@ -196,14 +197,15 @@ export default function ChatPage() {
   );
 }
 
-function AiLine({ lang, message }: { lang: string; message: ChatMessage }) {
+function AiLine({ lang, message, where }: { lang: string; message: ChatMessage; where: WordContext['where'] }) {
   const [english, setEnglish] = useState(false);
   const [saved, setSaved] = useState<Set<string>>(() => new Set());
   const save = async (word: string, meaning: string) => {
-    await setWordState(lang, normalizeWord(word, lang), 1, {
+    await setWordState(lang, normalizeWord(word, lang), 2, {
       gloss: meaning,
       surface: word,
       sentence: message.text,
+      where,
     });
     setSaved((s) => new Set(s).add(word));
     toast(`“${word}” is in your words to learn.`, {

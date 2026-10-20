@@ -1033,3 +1033,42 @@ Short records of choices that are not obvious from the code. Newest last.
   how Tabula's other levels are meant: what you can rely on, not what you've touched.
 - **`learnedAt` without a Dexie version.** It's a plain field on the progress row with no index,
   and Ratio reads all rows for one language anyway, so the schema doesn't change.
+
+## 2026-10-20 — Lingua 4.0-2: a full dictionary, one memory for every word, sentences with a gap
+
+- **The dictionary is Wiktionary, built into a file per language, not an online service.** Oxford
+  is licensed and its API needs a paid key on a server; Lingua has no server. Wiktionary (via
+  kaikki.org's extracts, CC BY-SA) has senses with labels, examples with translations, pairs,
+  phrases, synonyms and etymologies for all six core languages, and it is already where the packs
+  come from, so lemma keys match. Every headword with a meaning of its own goes in (not only the
+  frequent ones): a dictionary is where you look up the rare word. Forms stay the pack's job.
+- **Downloaded on request, stored in IndexedDB.** At 2–13 MB a language the files are too big to
+  come with the pack, which every reader needs at once. A worker stores them in `fullDict` keyed
+  by the pack's lemma key, with an accent-free key for the search box (prefix search on
+  `[lang+fold]`). A `#version` row says which build is there, so a better build can be offered.
+  It is a cache of the site, so backups and sync skip it.
+- **Mandarin is keyed by Simplified,** as the pack is: Wiktionary files words under Traditional and
+  names the Simplified spelling; single characters go by Unihan's variants.
+- **"Easily confused" is computed, not looked up:** one letter apart among the 20,000 most common
+  words (found through one-deletion neighbours), and for Mandarin the same syllables in other
+  tones. Wiktionary rarely lists paronyms.
+- **The word memory is engagement, not exposure.** A row is kept when a word is looked up or
+  marked, not for every word on every page: a book would add thousands of rows a sitting, synced
+  to every device, and most would be words the reader didn't notice. One row per word, form and
+  place (`${lang}:${norm}:${kind}:${sourceId}`, so devices agree) keeps the latest sentence and a
+  count; the lemma gathers the forms. Where a word was met is worked out from the context the
+  rooms already pass (textId, mediaId, songId), with `where` for conversations.
+- **The memory is a view over decks, not new decks.** Decks are the user's own (and Anki's); moving
+  cards about behind their back would be worse than a clear view sorted by source, strength and
+  theme.
+- **Sentences with a gap use what's on the device:** the pack's examples (which have translations
+  and the word's span) and the sentences from the word memory. Tatoeba would need its whole link
+  list to pair sentences with translations. Choices are other answers of the same round: real
+  forms of real words, so the right one can't be told by its ending alone.
+- **A card type without a new card direction.** "A sentence with a gap" is how a deck shows its
+  word → meaning cards, so the scheduler and existing cards stay as they are.
+- **The reading goal is Codex's own** (`dailyGoal.codexMinutes`): Home's goal counts every kind of
+  study. Its note waits for a page turn or a new paragraph, as the user asked: never mid-sentence.
+- **The drawer is wider on desktop instead of shorter on content:** 780 px and two columns keep
+  every section; senses fold after three, the AI explanation's notes and examples fold.
+

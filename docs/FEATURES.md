@@ -155,6 +155,25 @@ Practise writing in the target language; get corrected, explained and graded.
   forms show what they mean themselves ("ellos" they, "estoy" am), and words the dictionary lacks
   are read through a likely base form before going online. The word's sheet says when it did that.
 
+## The dictionary, the word memory and sentences with a gap (4.0-2)
+
+- **Codex › Dictionary** (Spanish, Russian, Mandarin, French, German, Arabic): download a
+  language's dictionary once and look any word up offline: pronunciation with a recording, every
+  meaning with labels and examples, pairs, set phrases, synonyms and antonyms, words easily
+  confused, the etymology and every form. Search from Codex's header or Thesaurus › Word memory,
+  or choose **Full entry** in the word drawer.
+- **The word drawer** fits on one laptop screen, in two columns, and shows where else you met
+  the word.
+- **Codex › Add** has Import a book and Import a comic as tabs of their own.
+- **Reading goal:** Codex shows today's minutes against your goal (5–60 minutes); a soft note
+  says when it is reached, between pages.
+- **The end page:** after the last page, the sitting's time, pages, new words met and words looked
+  up.
+- **Thesaurus › Word memory:** every word you looked up or marked anywhere, with each place and
+  sentence, sorted by source, how well you know it and theme.
+- **Sentences with a gap** (Thesaurus): rounds of real sentences with a word missing, at three
+  levels, your own words first. Decks can show a sentence with a gap on the front of their cards.
+
 ## Lingua+, a new icon and a calmer shell (4.0-1)
 
 - **Lingua+ (a preview):** Ordo › Lingua+ shows what is free (Codex, Thesaurus) and what Lingua+

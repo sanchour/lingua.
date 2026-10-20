@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, VisioPage, WatchPage, MundusPage, ColloquiumPage, ChatPage, GrammaticaPage, GrammarTopicPage, GrammarLessonPage } from './pages';
+import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, DeckPage, LabPage, DictionaryPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, SentencesPage, StudyPage, ThesaurusPage, VisioPage, WatchPage, MundusPage, ColloquiumPage, ChatPage, GrammaticaPage, GrammarTopicPage, GrammarLessonPage } from './pages';
 import { Root } from './Root';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
@@ -20,12 +20,15 @@ export const router = createBrowserRouter(
         { path: 'codex', element: <CodexPage /> },
         { path: 'codex/read/:textId', element: <ReaderPage /> },
         { path: 'codex/new', element: <NewTextPage /> },
+        { path: 'codex/dictionary', element: <DictionaryPage /> },
+        { path: 'codex/dictionary/:word', element: <DictionaryPage /> },
         { path: 'codex/book/:textId', element: <BookDetailsPage /> },
         { path: 'codex/diarium/:entryId', element: <JournalEntryPage /> },
         { path: 'thesaurus', element: <ThesaurusPage /> },
         { path: 'thesaurus/deck/:deckId', element: <DeckPage /> },
         { path: 'thesaurus/ready/:key', element: <StarterPage /> },
         { path: 'thesaurus/study/:deckId', element: <StudyPage /> },
+        { path: 'thesaurus/sentences', element: <SentencesPage /> },
         { path: 'sonus', element: <SonusPage /> },
         { path: 'sonus/play/:mediaId', element: <SonusPlayerPage /> },
         { path: 'sonus/podcast/:feedId', element: <SonusFeedPage /> },

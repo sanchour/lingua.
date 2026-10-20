@@ -126,7 +126,16 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
     if (!note) return;
     setLookup({
       norm: normalizeWord(note.term, lang),
-      context: { surface: note.term, sentence: note.context?.sentence, gloss: note.meaning, lemma: note.lemma, source: note.source === 'visio' || note.source === 'sonus' || note.source === 'cantus' ? note.source : undefined },
+      context: {
+        surface: note.term,
+        sentence: note.context?.sentence,
+        gloss: note.meaning,
+        lemma: note.lemma,
+        source: note.source === 'visio' || note.source === 'sonus' || note.source === 'cantus' ? note.source : undefined,
+        textId: note.context?.textId,
+        mediaId: note.context?.mediaId,
+        songId: note.context?.songId,
+      },
     });
   }, [note, lang]);
   const press = useRef<{ timer: number; x: number; y: number; held: boolean } | null>(null);
@@ -225,7 +234,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
                 transition={spring.soft}
                 {...holdHandlers}
               >
-                <FlipCard look={look} card={card} note={note} lang={lang} flipped={flipped} onFlip={flip} deckName={session.decks.size > 1 ? deck?.name : undefined} />
+                <FlipCard look={look} card={card} note={note} lang={lang} flipped={flipped} onFlip={flip} deckName={session.decks.size > 1 ? deck?.name : undefined} front={deck?.config.front} />
               </motion.div>
             )}
           </AnimatePresence>

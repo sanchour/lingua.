@@ -13,6 +13,7 @@ export function DeckSettings({ deck, open, onClose }: { deck: Deck; open: boolea
   const [maxReviews, setMaxReviews] = useState(deck.config.maxReviews);
   const [retention, setRetention] = useState(deck.config.desiredRetention);
   const [ways, setWays] = useState<Ways>(toWays(deck.config.directions));
+  const [front, setFront] = useState(deck.config.front ?? 'word');
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -21,11 +22,12 @@ export function DeckSettings({ deck, open, onClose }: { deck: Deck; open: boolea
     setMaxReviews(deck.config.maxReviews);
     setRetention(deck.config.desiredRetention);
     setWays(toWays(deck.config.directions));
+    setFront(deck.config.front ?? 'word');
   }, [open, deck]);
 
   const save = async () => {
     setBusy(true);
-    await updateDeck(deck.id, { config: { ...deck.config, newPerDay, maxReviews, desiredRetention: retention } });
+    await updateDeck(deck.id, { config: { ...deck.config, newPerDay, maxReviews, desiredRetention: retention, front } });
     if (ways !== toWays(deck.config.directions)) await setDeckDirections(deck.id, fromWays(ways));
     setBusy(false);
     onClose();
@@ -64,6 +66,22 @@ export function DeckSettings({ deck, open, onClose }: { deck: Deck; open: boolea
                 : 'Cards for the direction you turn off are removed, with their history.'}
             </p>
           )}
+        </div>
+        <div>
+          <p className="mb-2 text-[13px] font-bold tracking-wide text-ink-soft uppercase">Card front</p>
+          <Segmented<'word' | 'sentence'>
+            label="Card front"
+            block
+            value={front}
+            onChange={setFront}
+            options={[
+              { value: 'word', label: 'The word' },
+              { value: 'sentence', label: 'A sentence with a gap' },
+            ]}
+          />
+          <p className="mt-2 text-[13px] leading-snug text-ink-soft">
+            {front === 'sentence' ? 'Cards with a sentence show it with the word missing; you think of the word, then turn the card. Cards without one show the word.' : 'Word → meaning cards show the word in front.'}
+          </p>
         </div>
         <Slider label="New cards a day" value={newPerDay} min={0} max={100} step={1} onChange={setNewPerDay} format={(v) => String(v)} />
         <Slider label="Reviews a day, at most" value={maxReviews} min={20} max={1000} step={10} onChange={setMaxReviews} format={(v) => String(v)} />

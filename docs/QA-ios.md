@@ -402,3 +402,18 @@ the home-screen icon. Paste the Device lab report back into the chat after each 
       brings it back.
 - [ ] Ordo › Performance › Device lab: average fps and p95 on the iPhone, and the song games'
       progress bars and Home's week chart look smooth.
+
+## Lingua 4.0-2: dictionary, memory, sentences
+
+- [ ] Codex › Dictionary (a dictionary button beside Add): download the dictionary on Wi-Fi; the
+      progress bar runs and the toast says how many words. Search "casa" (or a word in your core
+      language): suggestions as you type, the entry opens, the recording plays.
+- [ ] Turn the network off: the dictionary still searches and opens entries.
+- [ ] Codex › Add: the five tabs (Write · Book · Comic · News · Goodreads) fit the width; Comic's
+      "Choose a comic" opens Files.
+- [ ] Finish a short text: the end page shows the numbers and today's minutes; "Mark as finished"
+      goes back to Codex.
+- [ ] Long-press a word in the reader, then open Thesaurus › Memory: the word is there with the
+      book and the sentence.
+- [ ] Thesaurus › Sentences: choose and type levels; the keyboard doesn't cover the gap.
+

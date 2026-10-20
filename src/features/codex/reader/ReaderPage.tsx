@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ChevronLeft, ChevronRight, PartyPopper } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { resolveTheme, syncThemeColor } from '@/app/theme';
 import { READING_LANGS } from '@/core/lang/languages';
@@ -14,13 +14,16 @@ import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { useMediaQuery } from '@/design/hooks/useMediaQuery';
 import { Button, buttonClasses } from '@/design/primitives';
-import { spring } from '@/design/motion';
 import { installPaperStyles } from '@/design/papers';
 import { cx } from '@/lib/cx';
+import { recordSighting } from '@/data/memory';
+import { toast } from '@/state/ui';
+import { codexGoal, useReadToday } from '../library/ReadingToday';
 import { ChapterBody } from './ChapterBody';
 import { ComicView } from './ComicView';
 import { ContentsDrawer } from './ContentsDrawer';
 import { WordEngine } from './engine';
+import { EndPage } from './EndPage';
 import { CLICK_SLOP_PX, wordAt } from './hit';
 import { HoverGloss } from './HoverGloss';
 import { updateCachedState, useChapterModel } from './model';
@@ -31,6 +34,7 @@ import { ReaderChrome } from './ReaderChrome';
 import { TapGloss } from './TapGloss';
 import { usePager } from './usePager';
 import { useReadingSession } from './useReadingSession';
+import type { SessionStats } from './useReadingSession';
 import { WordDrawer } from './WordDrawer';
 import type { DrawerWord } from './WordDrawer';
 
@@ -42,7 +46,7 @@ type Entry = 'first' | 'last' | number;
 export default function ReaderPage() {
   const { textId } = useParams();
   const navigate = useNavigate();
-  const { settings } = useApp();
+  const { settings, language } = useApp();
   const text = useText(textId);
   const { pointer, layout } = useLayout();
   const systemDark = useMediaQuery('(prefers-color-scheme: dark)');
@@ -89,6 +93,27 @@ export default function ReaderPage() {
   const hoveredRef = useRef<HTMLElement | null>(null);
   const [engine, setEngine] = useState<WordEngine | null>(null);
   const session = useReadingSession(lang, text?.id);
+  const engineRef = useRef<WordEngine | null>(null);
+  engineRef.current = engine;
+  /** The words among these that the reader hadn't met before. */
+  const unseen = (els: Iterable<HTMLElement>) => [...els].filter((el) => el.dataset.n && engineRef.current?.state(el.dataset.n) === 0).map((el) => el.dataset.n!);
+
+  // The daily goal: a soft note once it's reached in this sitting, only ever between pages or paragraphs.
+  const readToday = useReadToday(lang);
+  const goal = codexGoal(language);
+  const goalWasMet = useRef<boolean | null>(null);
+  useEffect(() => {
+    if (readToday !== undefined && goalWasMet.current === null) goalWasMet.current = readToday + session.pendingMs() >= goal * 60_000;
+  }, [readToday, goal, session]);
+  // A ref, so the scroll observer's callback sees today's total after a recorded session too.
+  const readTodayRef = useRef(readToday);
+  readTodayRef.current = readToday;
+  const checkGoal = () => {
+    if (goalWasMet.current !== false || readTodayRef.current === undefined) return;
+    if (readTodayRef.current + session.pendingMs() < goal * 60_000) return;
+    goalWasMet.current = true;
+    toast(`Today’s reading goal is reached: ${goal} minutes. Read on as long as you like.`, { tone: 'success', duration: 6000 });
+  };
 
   const onWordChange = useCallback((norm: string, state: WordState) => {
     updateCachedState(norm, state);
@@ -119,10 +144,17 @@ export default function ReaderPage() {
   );
 
   const [ended, setEnded] = useState(false);
+  const [endStats, setEndStats] = useState<SessionStats | null>(null);
   const goChapter = useCallback(
     (index: number, landing: Entry) => {
       if (!text) return;
       if (index >= text.chapterCount) {
+        // The last page counts as read.
+        if (paged && flowRef.current) {
+          session.addPage();
+          session.meet(unseen(pager.onPage(pager.page, '.w')));
+        }
+        setEndStats(session.stats());
         setEnded(true);
         return;
       }
@@ -151,7 +183,10 @@ export default function ReaderPage() {
       setTapped(null);
       if (page > previous && engine) {
         session.addWords((model?.chapter.wordCount ?? 0) / Math.max(1, pager.pageCount));
+        session.addPage();
+        session.meet(unseen(pager.onPage(previous, '.w')));
         if (reader.autoKnownOnPageTurn) engine.markSeenAsKnown(pager.onPage(previous, '.w'));
+        checkGoal();
       }
     },
   });
@@ -182,6 +217,8 @@ export default function ReaderPage() {
             seen.add(b);
             const tokens = model.blocks[b]?.tokens;
             session.addWords(tokens ? tokens.filter((t) => t.isWord).length : 0);
+            session.meet(unseen(e.target.querySelectorAll<HTMLElement>('.w')));
+            checkGoal();
           }
           persist(b, comic ? 1 : b / model.blocks.length);
           session.touch();
@@ -218,6 +255,7 @@ export default function ReaderPage() {
       if (!engine) return;
       flowRef.current?.dispatchEvent(new Event('reader:hide-tip', { bubbles: true }));
       setTapped(null);
+      session.lookUp(el.dataset.n!);
       setDrawer({ norm: el.dataset.n!, context: engine.context(el) });
     },
     [engine],
@@ -337,6 +375,10 @@ export default function ReaderPage() {
     }
     if (g.longPressed || Math.hypot(e.clientX - g.x, e.clientY - g.y) > 10) return;
     if (g.word) {
+      if (g.word.dataset.n && engine) {
+        session.lookUp(g.word.dataset.n);
+        void recordSighting(lang, g.word.dataset.n, engine.context(g.word)).catch(() => undefined);
+      }
       setTapped((current) => (current === g.word ? null : g.word));
     } else if (tapped) {
       setTapped(null);
@@ -569,41 +611,21 @@ export default function ReaderPage() {
       />
 
       <AnimatePresence>
-        {ended && (
-          <motion.div
-            className="fixed inset-0 z-40 grid place-items-center bg-scrim p-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setEnded(false)}
-          >
-            <motion.div
-              className="w-full max-w-sm rounded-3xl border border-line bg-raised p-7 text-center shadow-elev-3"
-              initial={{ scale: 0.94, y: 10 }}
-              animate={{ scale: 1, y: 0 }}
-              transition={spring.snappy}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <PartyPopper size={28} className="mx-auto text-accent-text" aria-hidden />
-              <p className="mt-3 font-serif text-2xl font-semibold">The end</p>
-              <p lang={lang} className="mt-1 text-ink-soft">
-                You finished “{text.title}”.
-              </p>
-              <div className="mt-6 flex flex-col gap-2">
-                <Button
-                  onClick={async () => {
-                    await updateText(text.id, { finishedAt: Date.now(), shelf: 'read' });
-                    navigate('/codex');
-                  }}
-                >
-                  Mark as finished
-                </Button>
-                <Button variant="ghost" onClick={() => setEnded(false)}>
-                  Keep reading
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
+        {ended && endStats && (
+          <EndPage
+            lang={lang}
+            title={text.title}
+            author={text.author}
+            stats={endStats}
+            todayMs={(readToday ?? 0) + session.pendingMs()}
+            goal={goal}
+            finished={Boolean(text.finishedAt)}
+            onFinish={async () => {
+              if (!text.finishedAt) await updateText(text.id, { finishedAt: Date.now(), shelf: 'read' });
+              navigate('/codex');
+            }}
+            onKeepReading={() => setEnded(false)}
+          />
         )}
       </AnimatePresence>
     </motion.div>

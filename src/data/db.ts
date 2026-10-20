@@ -1,5 +1,6 @@
 import Dexie from 'dexie';
 import type { EntityTable, Table } from 'dexie';
+import type { FullDictRow } from '@/core/dictionary/format';
 import type {
   ActivitySession,
   BlobRow,
@@ -8,6 +9,7 @@ import type {
   ChallengeDone,
   Chapter,
   Chat,
+  Sighting,
   DailyStat,
   Deck,
   DictEntry,
@@ -138,7 +140,13 @@ export const SCHEMA_V14 = {
   chats: 'id, lang, updatedAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14 };
+/** Version 15 (Lingua 4.0-2): where each word was met, and the full dictionary of the core languages. */
+export const SCHEMA_V15 = {
+  sightings: 'id, [lang+norm], [lang+lemma], [lang+at], updatedAt',
+  fullDict: '[lang+key], [lang+fold], lang',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -183,6 +191,8 @@ export type LinguaDB = Dexie & {
   grammarItems: EntityTable<GrammarItemRow, 'id'>;
   grammarProgress: EntityTable<GrammarProgressRow, 'id'>;
   chats: EntityTable<Chat, 'id'>;
+  sightings: EntityTable<Sighting, 'id'>;
+  fullDict: Table<FullDictRow, [string, string]>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -200,6 +210,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(12).stores(SCHEMA_V12);
   db.version(13).stores(SCHEMA_V13);
   db.version(14).stores(SCHEMA_V14);
+  db.version(15).stores(SCHEMA_V15);
   return db;
 }
 

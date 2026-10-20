@@ -1470,54 +1470,81 @@ and makes 20 with them. The new languages are placeholders for now, as the user 
       "+" beside the Lingua name once it is had; the sidebar now fits a laptop screen (rooms scroll,
       Ratio and Ordo stay at the bottom); Thesaurus has a hand-drawn deck icon.
 
-### 4.0-2 · Codex, a full dictionary, and one memory for every word
-- [ ] **A full dictionary for the six core languages, as good as Oxford's, inside Lingua** (the
+### 4.0-2 · Codex, a full dictionary, and one memory for every word ✅
+
+**Plan (2026-10-20), built in this order:** (1) Codex › Add's tabs and the word drawer on one
+screen; (2) reading time, a goal and the end page; (3) the word memory; (4) sentences with a gap;
+(5) the full dictionary. Dexie **v15** is taken by this step (`sightings`, `fullDict`); the next
+free version is v16.
+
+- [x] **A full dictionary for the six core languages, as good as Oxford's, inside Lingua** (the
       user's third 4.0 list).
   - **What can't be done as asked:** Oxford's own dictionaries can't go in the app. Their content
     is licensed, and their API is paid and needs a server to keep its key.
-  - **What is done instead:** a dictionary built from open data for Spanish, Russian, Mandarin,
-    French, German and Arabic. It is downloaded once per language and kept on the device.
-  - **Each entry has:**
-    - the pronunciation (IPA, or pinyin with tones), with audio;
-    - every sense in order of how common it is, with labels (formal, slang, regional) and examples
-      from real sentences;
-    - the full inflection or conjugation table, with gender and aspect pairs;
-    - collocations and set phrases;
-    - synonyms, antonyms and words easily confused;
-    - the etymology.
-  - **Where the data comes from:**
-    - Wiktionary (the kaikki.org extracts, plus the language's own Wiktionary for definitions in
-      the language);
-    - Tatoeba's sentences;
-    - Lingua's packs and frequency lists.
-
-    Sources are credited as their licences ask. The most common few thousand entries are tidied
-    once when the dictionary is built, with AI where the open data is thin.
-  - **Where it opens:** as a full page from the word drawer ("Full entry"), and from a search box
-    in Codex and Thesaurus.
-- [ ] **The word drawer fits on one desktop screen** (the user's third 4.0 list). Right-click a word
-      on desktop and everything in the side panel shows at once, without scrolling:
-  - a tighter layout, with two columns where the panel is wide;
-  - sections that fold, and fewer lines per sense;
-  - "Full entry" for the rest.
-
-  Checked on a laptop screen (1366×768) and larger. On a phone the drawer stays as it is.
-- [ ] **Codex › Add: "Import a book" and "Import a comic" as tabs of their own** (the user's third
-      4.0 list). Today one "Import a file" tab holds both; the tabs become Write or paste · Import
-      a book · Import a comic · News & links · Goodreads. On a phone the labels stay short (Write ·
-      Book · Comic · News · Goodreads) and fit the width.
-- [ ] **An end page** after finishing a book or a text: minimal and beautiful, with the session's
-      basic numbers (time, pages or words read, new words met, words looked up).
-- [ ] **Reading time and a goal** in Codex: today's reading against a daily goal you choose, and a
-      soft note when it's reached (never in the middle of a sentence).
-- [ ] **A personal memory of every word:** each word you meet anywhere (a book, a song, a podcast,
-      a film, a drill, your journal) is kept with where it was met, and everything connects: the
-      same word from different places is one word, with all its sentences. Decks stay clear and
-      tidy (by source, by theme, by how well you know them), made and kept in order by Lingua.
-- [ ] **Sentences with a gap, like Clozemaster,** in Ludus and as a card type: a real sentence with
-      one word missing ("Несмотря на дождь, мы решили _____ гулять."), choose or type it. Levels of
-      difficulty (choices, then typing, then a harder sentence), many sentences in a row, and the
-      words from your own memory first.
+  - **What was done instead (2026-10-20):** `scripts/lang-data/dictionary.ts` builds one file per
+    language from the English Wiktionary extract (kaikki.org) into `public/dict/<lang>.v1.json.gz`:
+    every headword with a meaning of its own, not only the frequent ones. Spanish 84,000 words,
+    German 78,000, French 67,000, Russian 49,000, Arabic 17,000, Mandarin 156,000 (keyed by the
+    Simplified spelling, the Traditional shown beside it); about 40 MB in all, 2–13 MB each.
+  - **Each entry has:** the pronunciation (IPA; pinyin with tones for Mandarin) with a recording
+    from Wikimedia Commons where there is one; every sense with Wiktionary's labels (formal, slang,
+    regional, Latin America, …), old and rare senses last, with up to two real examples each and
+    their synonyms and antonyms; the other half of pairs (perfective/imperfective, feminine and
+    masculine, the plural); set phrases with their meaning (Wiktionary's multi-word entries that
+    contain the word); related words; words easily confused (one letter apart among the 20,000
+    most common, or for Mandarin the same syllables in other tones); the etymology; the frequency
+    rank and level; and the inflection table from the language pack.
+  - **On the device:** downloaded once per language (Codex › Dictionary, "Download the
+    dictionary"), stored in the `fullDict` table by a worker, then looked up and searched offline.
+    It can be removed again from the same page.
+  - **Where it opens:** "Full entry" in the word drawer; a search box in Codex's header (desktop;
+    a dictionary button on the phone) and above Thesaurus › Word memory; the page
+    `/codex/dictionary/<word>`, with every word in it a link to its own entry.
+  - **Not done:** definitions from each language's own Wiktionary (a second, larger download per
+    language), Tatoeba's sentences (they need the whole Tatoeba link list to pair sentences with
+    translations), and tidying the most common entries with AI (needs a key; Lingua never uses the
+    user's own in a build). Arabic is thin (17,000 headwords, few recordings) because the English
+    Wiktionary is.
+- [x] **The word drawer fits on one desktop screen** (the user's third 4.0 list). *Done:* on
+      desktop the drawer is 780 px wide with two columns (the word and its meanings; where it was
+      met, examples and "Explain"), tighter spacing, at most three senses for the first entry and
+      two for the others with "N more meanings" to fold the rest open, and the AI explanation's
+      notes and examples folded. Checked at 1366×768 on a dozen common French words: the tallest
+      came to 486 of 675 px. On a phone the drawer is as it was.
+- [x] **Codex › Add: "Import a book" and "Import a comic" as tabs of their own.** *Done:* Write or
+      paste · Import a book · Import a comic · News & links · Goodreads (on a phone Write · Book ·
+      Comic · News · Goodreads). The book tab takes EPUB, PDF and text (a comic dropped there still
+      goes to comics); the comic tab takes archives, PDFs, pictures and a folder of pages. Old
+      `?way=file` links open the book tab.
+- [x] **An end page** after finishing a book or a text. *Done:* the last page opens a quiet full
+      page: "The end", the title and author, then four numbers for this sitting (time read, pages
+      or words read, new words met, words looked up) and today's reading against the goal, with
+      "Mark as finished" and "Keep reading". New words are the words on the pages read that were
+      still unseen; looked up counts right-clicked and tapped words.
+- [x] **Reading time and a goal** in Codex. *Done:* Codex's header shows today's minutes against
+      the goal with a ring; it opens to choose 5–60 minutes (`dailyGoal.codexMinutes`, 15 by
+      default; Home's goal stays the one for every kind of study). The reader shows a soft note
+      when the goal is reached in that sitting, only at a page turn or a new paragraph, never
+      mid-sentence, and not again that day.
+- [x] **A personal memory of every word.** *Done:* every word looked up (the drawer, a tap in the
+      reader) or marked (Known, Learning) anywhere, in a book, a comic, a song, a podcast, a film,
+      a conversation or a card, is kept in `sightings`: one row per word and place, with the
+      sentence, how often and when, filed under its lemma so the forms of a word are one word.
+      The drawer shows "Met before" (the other places, with their sentences, linked), and
+      Thesaurus has a third tab, **Word memory**: every word with its forms and places, sorted by
+      where it came from (books, songs, conversations, …), by how well you know it (Learning,
+      Known, Looked up) and by theme (the ready-made theme decks), with a search. Decks themselves
+      stay as they were; the memory is the tidy view across them. Fixed on the way: Colloquium
+      saved a word as Known while saying "in your words to learn"; it is now Learning.
+- [x] **Sentences with a gap, like Clozemaster.** *Done:* Thesaurus › "Sentences with a gap"
+      (`/thesaurus/sentences`, under Ludus): rounds of 15 real sentences with one word missing, at
+      three levels: Choose (four choices, keys 1–4), Type (the first letter as a hint) and Harder
+      (no hint, the translation only after answering, rarer words). Your own words come first
+      (Learning, then words you looked up, with where you met them), then words of your level by
+      frequency; a miss comes back once at the end of the round. Sentences are the pack's examples
+      with their translation, or the sentence you met the word in. **As a card type:** a deck's
+      settings have "Card front: The word / A sentence with a gap"; with the second, a word →
+      meaning card that has a sentence shows it with the word missing.
 
 ### 4.0-3 · Songs and shows: Cantus games, karaoke, and streaming services in Visio
 - [ ] **Different games for each song:** one that teaches the lyrics themselves (fill in, order,

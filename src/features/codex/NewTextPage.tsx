@@ -22,17 +22,19 @@ import { CoverDesigner } from './library/CoverDesigner';
 import { LevelPicker } from './library/LevelPicker';
 import { NewsPanel } from './library/NewsPanel';
 
-type Way = 'write' | 'file' | 'news' | 'goodreads';
-const WAYS: Way[] = ['write', 'file', 'news', 'goodreads'];
+type Way = 'write' | 'book' | 'comic' | 'news' | 'goodreads';
+const WAYS: Way[] = ['write', 'book', 'comic', 'news', 'goodreads'];
+/** `?way=file` was the one import tab before 4.0-2. */
+const asWay = (v: string | null): Way => (v === 'file' ? 'book' : WAYS.includes(v as Way) ? (v as Way) : 'write');
 
-/** Adding to the library, on a page of its own: write or paste, import a file, or bring Goodreads shelves. */
+/** Adding to the library, on a page of its own: write or paste, import a book or a comic, news, or Goodreads shelves. */
 export default function NewTextPage() {
   const { language } = useApp();
   const compact = useLayout().layout === 'compact';
   const lang = language.id;
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const [way, setWay] = useState<Way>(() => (WAYS.includes(params.get('way') as Way) ? (params.get('way') as Way) : 'write'));
+  const [way, setWay] = useState<Way>(() => asWay(params.get('way')));
 
   return (
     <>
@@ -48,10 +50,11 @@ export default function NewTextPage() {
           value={way}
           onChange={setWay}
           block={compact}
-          // On a phone the four ways fit as words alone.
+          // On a phone the five ways fit as words alone.
           options={[
             { value: 'write', label: compact ? 'Write' : 'Write or paste', icon: compact ? undefined : ClipboardPaste },
-            { value: 'file', label: compact ? 'File' : 'Import a file', icon: compact ? undefined : BookUp },
+            { value: 'book', label: compact ? 'Book' : 'Import a book', icon: compact ? undefined : BookUp },
+            { value: 'comic', label: compact ? 'Comic' : 'Import a comic', icon: compact ? undefined : PanelsTopLeft },
             { value: 'news', label: compact ? 'News' : 'News & links', icon: compact ? undefined : Newspaper },
             { value: 'goodreads', label: 'Goodreads', icon: compact ? undefined : Library },
           ]}
@@ -61,7 +64,7 @@ export default function NewTextPage() {
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={way} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={fade}>
           {way === 'write' && <WriteOrPaste lang={lang} onDone={(id) => navigate(`/codex/read/${id}`)} />}
-          {way === 'file' && <ImportFile lang={lang} onDone={(id) => navigate(`/codex/book/${id}?new=1`)} onComic={(id) => navigate(`/codex/read/${id}`)} />}
+          {(way === 'book' || way === 'comic') && <ImportFile key={way} kind={way} lang={lang} onDone={(id) => navigate(`/codex/book/${id}?new=1`)} onComic={(id) => navigate(`/codex/read/${id}`)} />}
           {way === 'news' && <NewsPanel lang={lang} onDone={(id) => navigate(`/codex/read/${id}`)} onPaste={() => setWay('write')} />}
           {way === 'goodreads' && <Goodreads lang={lang} onDone={() => navigate('/codex')} />}
         </motion.div>
@@ -141,7 +144,7 @@ function WriteOrPaste({ lang, onDone }: { lang: string; onDone: (id: string) => 
   );
 }
 
-function ImportFile({ lang, onDone, onComic }: { lang: string; onDone: (id: string) => void; onComic: (id: string) => void }) {
+function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; lang: string; onDone: (id: string) => void; onComic: (id: string) => void }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [over, setOver] = useState(false);
@@ -179,9 +182,9 @@ function ImportFile({ lang, onDone, onComic }: { lang: string; onDone: (id: stri
     depth.current = 0;
     setOver(false);
     const files = [...e.dataTransfer.files];
-    // Comic archives and pictures go to comics; a PDF dropped here is read as a book.
+    // Comic archives and pictures go to comics wherever they're dropped; a PDF follows the tab.
     const source = comicSource(files);
-    if (source === 'archive' || source === 'images') return void takeComic(files);
+    if (kind === 'comic' || source === 'archive' || source === 'images') return void takeComic(files);
     if (files[0]) void take(files[0]);
   };
 
@@ -205,36 +208,47 @@ function ImportFile({ lang, onDone, onComic }: { lang: string; onDone: (id: stri
       <span className="mb-4 grid size-16 place-items-center rounded-2xl bg-sage-soft text-sage-text">
         <UploadCloud size={28} aria-hidden />
       </span>
-      <p className="font-serif text-2xl font-semibold">{busy ? `Shelving “${busy}”…${progress > 0 && progress < 1 ? ` ${Math.round(progress * 100)}%` : ''}` : 'Drop a book or a comic here'}</p>
+      <p className="font-serif text-2xl font-semibold">{busy ? `Shelving “${busy}”…${progress > 0 && progress < 1 ? ` ${Math.round(progress * 100)}%` : ''}` : kind === 'book' ? 'Drop a book here' : 'Drop a comic here'}</p>
       <p className="mt-2 max-w-md text-[14.5px] leading-relaxed text-ink-soft">
-        DRM-free EPUB books, PDFs with real text, and plain text files. Comics as CBZ files, PDFs or the pages’ pictures: Lingua reads their speech bubbles on this device. On iPhone, choose a file from Files or iCloud Drive. Books bought in Apple Books are locked to that app.
+        {kind === 'book'
+          ? 'DRM-free EPUB books, PDFs with real text, and plain text files. On iPhone, choose a file from Files or iCloud Drive. Books bought in Apple Books are locked to that app.'
+          : 'CBZ (or CBR made as zip) files, PDFs of pages, or the pages’ pictures. Lingua reads the speech bubbles on this device, and every word in them is a tap away.'}
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
-        <Button icon={BookUp} loading={busy !== null} onClick={() => void pickFile(BOOK_FILE_ACCEPT).then((f) => f && take(f))}>
-          Choose a book
-        </Button>
-        <Button variant="secondary" icon={FileText} disabled={busy !== null} onClick={() => void pickFile('.pdf,application/pdf').then((f) => f && take(f))}>
-          Choose a PDF
-        </Button>
-        <Button variant="secondary" icon={PanelsTopLeft} disabled={busy !== null} onClick={() => void pickFiles(COMIC_FILE_ACCEPT).then(takeComic)}>
-          Choose a comic
-        </Button>
-        {pointer === 'fine' && (
-          <Button variant="ghost" icon={FolderOpen} disabled={busy !== null} onClick={() => void pickFolder().then(takeComic)}>
-            A folder of pages
-          </Button>
+        {kind === 'book' ? (
+          <>
+            <Button icon={BookUp} loading={busy !== null} onClick={() => void pickFile(BOOK_FILE_ACCEPT).then((f) => f && take(f))}>
+              Choose a book
+            </Button>
+            <Button variant="secondary" icon={FileText} disabled={busy !== null} onClick={() => void pickFile('.pdf,application/pdf').then((f) => f && take(f))}>
+              Choose a PDF
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button icon={PanelsTopLeft} loading={busy !== null} onClick={() => void pickFiles(COMIC_FILE_ACCEPT).then(takeComic)}>
+              Choose a comic
+            </Button>
+            {pointer === 'fine' && (
+              <Button variant="secondary" icon={FolderOpen} disabled={busy !== null} onClick={() => void pickFolder().then(takeComic)}>
+                A folder of pages
+              </Button>
+            )}
+          </>
         )}
       </div>
-      <button
-        type="button"
-        onClick={async () => {
-          setBusy('a short sample');
-          onDone(await importSample(lang));
-        }}
-        className="hit mt-6 text-[13px] font-semibold text-accent-text underline-offset-2 hover:underline"
-      >
-        Or start with a short sample text
-      </button>
+      {kind === 'book' && (
+        <button
+          type="button"
+          onClick={async () => {
+            setBusy('a short sample');
+            onDone(await importSample(lang));
+          }}
+          className="hit mt-6 text-[13px] font-semibold text-accent-text underline-offset-2 hover:underline"
+        >
+          Or start with a short sample text
+        </button>
+      )}
     </div>
   );
 }

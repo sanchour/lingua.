@@ -3,8 +3,9 @@ import { getLanguage } from '@/core/lang/languages';
 import { bumpDaily } from './activity';
 import { defaultDeckConfig, newCard } from './decks';
 import { db } from './db';
+import { recordSighting } from './memory';
 import type { LinguaDB } from './db';
-import type { Deck, Note, Word, WordState } from './types';
+import type { Deck, Note, SightingKind, Word, WordState } from './types';
 
 export const wordId = (lang: string, norm: string) => `${lang}:${norm}`;
 
@@ -40,6 +41,8 @@ export interface WordContext {
   startMs?: number;
   endMs?: number;
   source?: Note['source'];
+  /** Where it was met when that isn't a text, a song or a programme (a conversation, a drill). */
+  where?: { kind: SightingKind; id: string; title: string };
 }
 
 /** The language's "From my reading" deck, created on first use. */
@@ -122,6 +125,7 @@ export async function setWordState(lang: string, norm: string, state: WordState,
     return before;
   });
 
+  if (state !== previous && state !== 0) await recordSighting(lang, norm, ctx, database).catch(() => undefined);
   if (state === 1 && previous !== 1) await bumpDaily(lang, { newKnown: 1 }, database);
   if (state === 2 && previous !== 2) await bumpDaily(lang, { newLearning: 1 }, database);
 }

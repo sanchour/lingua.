@@ -15,6 +15,25 @@ export interface Synced {
   deletedAt?: number;
 }
 
+/** Where a word was met (4.0-2). `listening` is a podcast or an audiobook. */
+export type SightingKind = 'book' | 'comic' | 'song' | 'listening' | 'radio' | 'video' | 'chat' | 'journal' | 'cards';
+
+/** One word met in one place: `${lang}:${norm}:${kind}:${sourceId}`. */
+export interface Sighting extends Synced {
+  id: string;
+  lang: Lang;
+  norm: string;
+  lemma?: string;
+  surface?: string;
+  kind: SightingKind;
+  sourceId: string;
+  title: string;
+  sentence?: string;
+  /** The last time it was met there, and how many times. */
+  at: number;
+  count: number;
+}
+
 // ── Profile & settings ──────────────────────────────────────────────────────
 
 export interface LanguageProfile extends Synced {
@@ -25,7 +44,8 @@ export interface LanguageProfile extends Synced {
   isActive: Bit;
   /** e.g. 'ru-en@1' once a dictionary pack is installed. */
   dictPackId?: string;
-  dailyGoal: { reviews: number; readMinutes: number; listenMinutes: number };
+  /** `codexMinutes`: Codex's own reading goal (4.0-2); `readMinutes` is Home's, for every kind of study. */
+  dailyGoal: { reviews: number; readMinutes: number; listenMinutes: number; codexMinutes?: number };
   /** Proficiency seeding: pre-mark the top-N frequency forms as Known (0 = off). */
   seededKnownTopN: number;
   /** Set once the seeding has been applied (it needs the language pack). */
@@ -252,6 +272,8 @@ export interface DeckConfig {
   desiredRetention: number;
   directions: Array<'recognition' | 'production'>;
   defaultMode: 'classic' | 'ludus';
+  /** What a word → meaning card shows in front: the word, or a sentence with the word missing (4.0-2). */
+  front?: 'word' | 'sentence';
 }
 
 export interface Deck extends Synced {
