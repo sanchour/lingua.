@@ -156,7 +156,7 @@
 
 /* Big lyric type makes the reader's dotted "unseen" underline loud: keep it as a hint. */
 .lyric-sheet.hl-unseen .w[data-s='0'] {
-  text-decoration-color: color-mix(in oklab, var(--unseen-line) 50%, transparent);
+  text-decoration-color: var(--ws0-color, color-mix(in oklab, var(--unseen-line) 50%, transparent));
 }
 
 /* Music keeps its own colour inside Sonus: the room's headings in rose. */

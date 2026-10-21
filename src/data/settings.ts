@@ -29,6 +29,14 @@ export type LearningReason = 'travel' | 'family' | 'work' | 'culture' | 'study' 
 /** The kinds of practice someone enjoys most, in their order: Home lists these first. */
 export type Enjoyment = 'reading' | 'listening' | 'music' | 'watching' | 'writing' | 'speaking' | 'cards';
 
+/** How a word state is drawn in the reader ("T" › Words, 5.1-3a). */
+export type WordLookState = 'known' | 'learning' | 'unseen';
+export type WordColor = 'accent' | 'sage' | 'gold' | 'blue' | 'plum' | 'ink';
+export interface WordLook {
+  style: 'none' | 'underline' | 'dotted' | 'highlight' | 'faint';
+  color: WordColor;
+}
+
 export interface Settings {
   theme: ThemePref;
   /** The look within Paper and within Nocturne (design/palettes): a page colour and its accent. */
@@ -51,6 +59,8 @@ export interface Settings {
     contextGlosses: boolean;
     /** Mandarin and Japanese: pinyin or kana over words you don't know yet, over every word, or none. */
     readings: 'new' | 'all' | 'off';
+    /** How Known, Learning and Unseen words look; unset is the usual look. Unseen marks show with `highlightUnseen`. */
+    words?: Partial<Record<WordLookState, WordLook>>;
   };
   /** How flashcards look (Thesaurus). */
   cards: { font: ReaderFontId; style: CardStyleId; tint: CardTintId; size: 'sm' | 'md' | 'lg'; width: CardWidth };

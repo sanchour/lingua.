@@ -23,6 +23,7 @@ import { usePhraseGesture } from '@/features/codex/reader/usePhraseGesture';
 import { TapGloss } from '@/features/codex/reader/TapGloss';
 import { WordDrawer } from '@/features/codex/reader/WordDrawer';
 import type { DrawerWord } from '@/features/codex/reader/WordDrawer';
+import { wordStyleVars } from '@/features/codex/reader/wordStyles';
 import { ClipEngine } from './ClipEngine';
 
 /** After the learner scrolls, the transcript stops following the audio for this long. */
@@ -239,6 +240,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
     '--reader-font': readerFontStack(font, lang),
     '--reader-size': `${Math.round(reader.sizePx * 0.95)}px`,
     '--reader-lh': String(Math.max(1.5, reader.lineHeight - 0.05)),
+    ...wordStyleVars(reader.words),
   } as CSSProperties;
 
   return (

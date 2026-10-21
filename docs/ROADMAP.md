@@ -1735,8 +1735,9 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 
 ### Codex (5.1-3a, handover step 9): how it is built
 *Planned 2026-10-21; the design is in LINGUA-5.1-PLAN.md "5.1-3a". Each part pushed. The user
-(2026-10-21): Cursus, the course for the six core languages, comes right after 5.1-3a; 5.1-3b and c
-follow it.*
+(2026-10-21): Cursus, the course for the six core languages, comes right after 5.1-3 (all three
+parts); and word translations must get much better in the six core languages (Spanish "a" said
+"bishop").*
 - [x] **1 · Clicks, the word panel, no machine-translation note.** One click Known (a Known word
       Unseen again), a double click Learning (a Learning word Unseen), the first click applied at
       once (`clickState`, tested), in the reader, lyrics, transcripts and subtitles alike. The word
@@ -1748,7 +1749,13 @@ follow it.*
       sentence of the word the mouse rests on (600 ms), with a small budget for the free
       translators. **S** shows the hovered word's sentence in the phrase bubble, from the cache.
       Word meanings were already instant from the pack.
-- [ ] **3 · Word styles in "T".** Known, Learning and Unseen each with a style and a colour.
+- [x] **3 · Word styles in "T".** The panel has Text and Words; Words gives Known, Learning and
+      Unseen a style (none, line, dots, mark; Known also faint) and one of six colours, with a live
+      sample and "Back to the usual look". Stored as `reader.words`; the CSS reads variables
+      (`wordStyles.ts`), so the reader, lyrics and transcripts follow it. Unseen's None is the usual
+      "highlight unseen words" switch.
+- [ ] **3b · Better word meanings** for the six core languages (the user): the right sense for the
+      most common words first.
 - [ ] **4 · Check yourself** on the end page: questions made from the text, without AI.
 - [ ] **5 · Add to your library,** the fun-but-minimal forms, and a folder of page photos read by OCR.
 - [ ] **6 · Discover:** news, free books (Gutendex, Wikisource, StoryWeaver, African Storybook) and

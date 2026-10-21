@@ -110,17 +110,30 @@
   pointer-events: none;
 }
 
+/* Each state reads its look from variables the reader's "T" › Words may set (wordStyles.ts); the
+   fallbacks are the usual look. A highlight is a background image, so hover's colour still shows. */
 .reader-flow.hl-unseen .w[data-s='0'] {
-  text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: var(--unseen-line);
+  color: var(--ws0-ink, inherit);
+  background-image: linear-gradient(var(--ws0-bg, transparent), var(--ws0-bg, transparent));
+  text-decoration-line: var(--ws0-line, underline);
+  text-decoration-style: var(--ws0-style, dotted);
+  text-decoration-color: var(--ws0-color, var(--unseen-line));
+}
+
+.reader-flow .w[data-s='1'] {
+  color: var(--ws1-ink, inherit);
+  background-image: linear-gradient(var(--ws1-bg, transparent), var(--ws1-bg, transparent));
+  text-decoration-line: var(--ws1-line, none);
+  text-decoration-style: var(--ws1-style, solid);
+  text-decoration-color: var(--ws1-color, currentColor);
 }
 
 .reader-flow .w[data-s='2'] {
-  background-color: var(--learning-bg);
-  text-decoration-line: underline;
-  text-decoration-style: solid;
-  text-decoration-color: var(--learning-line);
+  color: var(--ws2-ink, inherit);
+  background-image: linear-gradient(var(--ws2-bg, var(--learning-bg)), var(--ws2-bg, var(--learning-bg)));
+  text-decoration-line: var(--ws2-line, underline);
+  text-decoration-style: var(--ws2-style, solid);
+  text-decoration-color: var(--ws2-color, var(--learning-line));
 }
 
 @media (hover: hover) and (pointer: fine) {

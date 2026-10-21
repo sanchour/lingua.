@@ -23,6 +23,7 @@ import { TapGloss } from '@/features/codex/reader/TapGloss';
 import { WordDrawer } from '@/features/codex/reader/WordDrawer';
 import type { DrawerWord } from '@/features/codex/reader/WordDrawer';
 import type { PlayheadClock } from '@/features/sonus/player/KaraokeTranscript';
+import { wordStyleVars } from '@/features/codex/reader/wordStyles';
 import { SongEngine } from './SongEngine';
 
 /** After the learner scrolls, the sheet stops following the song for this long. */
@@ -276,6 +277,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
   const style = {
     '--reader-font': readerFontStack(getReaderFont(reader.font), lang),
     '--lyric-size': `${Math.round(Math.min(34, Math.max(22, reader.sizePx * 1.25)))}px`,
+    ...wordStyleVars(reader.words),
   } as CSSProperties;
 
   return (

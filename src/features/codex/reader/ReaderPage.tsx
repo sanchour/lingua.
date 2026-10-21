@@ -20,6 +20,7 @@ import { recordSighting } from '@/data/memory';
 import { toast } from '@/state/ui';
 import { sentencesOf } from '@/core/text/tokenizer';
 import { translateAhead } from '@/services/translate/ahead';
+import { wordStyleVars } from './wordStyles';
 import { codexGoal, useReadToday } from './readingGoal';
 import { ChapterBody } from './ChapterBody';
 import { ComicView } from './ComicView';
@@ -459,8 +460,9 @@ export default function ReaderPage() {
         '--reader-font': readerFontStack(font, lang),
         '--reader-size': `${reader.sizePx}px`,
         '--reader-lh': String(reader.lineHeight),
+        ...wordStyleVars(reader.words),
       }) as CSSProperties,
-    [font, lang, reader.sizePx, reader.lineHeight],
+    [font, lang, reader.sizePx, reader.lineHeight, reader.words],
   );
   useScriptFont(lang);
   const flowClass = cx(
