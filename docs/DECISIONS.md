@@ -1203,5 +1203,5 @@ Short records of choices that are not obvious from the code. Newest last.
   that finished onboarding before the plans act as Max in test mode, so nothing they used locks.
 - **The MAX mark is quiet** (the user, 2026-10-21: "more minimal, luxe"): no fill and no sheen, but
   spaced capitals in the accent shaded towards the ink (deeper on light grounds, brighter on
-  dark), a hairline beside the name and a hairline outline elsewhere, and one fade-in (opacity
+  dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).

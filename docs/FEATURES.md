@@ -553,7 +553,7 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   calm card; a locked lesson, Sonus+ or a chat goes back to its room with the plans open. The
   plans sheet: Free, Lingua+ ("Best value") and Max side by side, "Continue free" as clear as the
   buy buttons.
-- **The mark beside the Lingua name:** "+" for Lingua+, and for Max a hairline and MAX in small,
+- **The mark beside the Lingua name:** "+" for Lingua+; for Max the same "+" (the user asked to keep it), then a hairline and MAX in small,
   spaced capitals in the palette's accent, shaded like foil, fading in once (the user asked for it
   more minimal and luxe). The same quiet MAX, in a hairline outline, marks Max everywhere else.
 - **Settings › Lingua+:** your plan and since when, Max's paid-until date and renewal, Manage

@@ -10,20 +10,22 @@ export function MaxMark({ className }: { className?: string }) {
   );
 }
 
-/** Beside the Lingua name: "+" for Lingua+, a hairline and MAX for Max (quiet, no fill), nothing for free. */
+/** Beside the Lingua name: "+" for Lingua+; for Max the same "+", then a hairline and MAX (quiet, no fill); nothing for free. */
 export function PlanBadge({ plan, size = 17 }: { plan: PlanKind; size?: number }) {
-  if (plan === 'max')
-    return (
-      <span className="plan-max-in ml-2 inline-flex items-center gap-2 align-[0.2em]" title="Lingua+ Max">
+  if (plan === 'free') return null;
+  const plus = (
+    <sup className="ml-0.5 font-medium text-accent-text" style={{ fontSize: size }} aria-label="Plus">
+      +
+    </sup>
+  );
+  if (plan === 'plus') return plus;
+  return (
+    <>
+      {plus}
+      <span className="plan-max-in ml-1 inline-flex items-center gap-1.5 align-[0.2em]" title="Lingua+ Max">
         <span className="h-3 w-px bg-line-strong" aria-hidden />
         <span className="plan-max-word font-sans text-[9.5px] leading-none font-semibold tracking-[0.32em]">MAX</span>
       </span>
-    );
-  if (plan === 'plus')
-    return (
-      <sup className="ml-0.5 font-medium text-accent-text" style={{ fontSize: size }} aria-label="Plus">
-        +
-      </sup>
-    );
-  return null;
+    </>
+  );
 }
