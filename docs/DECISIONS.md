@@ -1138,3 +1138,11 @@ Short records of choices that are not obvious from the code. Newest last.
   fits that exactly. Devanagari, Tamil and Thai don't (vowel signs, conjuncts, schwa deletion,
   tone classes), and Persian is written without its vowels, so a chart would teach them wrong.
   They are named in the roadmap rather than built half-right.
+
+## 2026-10-21 — Cursus moves into Lingua 5; no separate 4.0 check
+
+- **4.0-4 (Cursus, the course) is now part of Lingua 5, and 4.0-5 (the 4.0 check) is removed,** at
+  the user's request. Lingua 4.0 is therefore 4.0-1 and 4.0-2, both done (4.0-3 went on
+  2026-10-20). Nothing about the course changed: same plan, now in ROADMAP's Lingua 5 section
+  ("Cursus"), step 4 of the handover, parallel with 5.1-1, ahead of Lingua 5's final check.
+- **The version goes from 3.0 to 5.0** at that check (step 21); there is no 4.0 release.

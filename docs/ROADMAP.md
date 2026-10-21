@@ -1488,10 +1488,10 @@ is out for the reason under 2.0-4b; lyrics.ovh and LRCLIB both allow browsers. K
 first PC rewrote Chrome's traffic: a CORS failure seen only in the test Chrome may be the antivirus,
 so check in the app's built-in browser.
 
-## Lingua 4.0
+## Lingua 4.0 ✅
 
 The user's list for Lingua 4.0 (2026-10-19) is under "Lingua 4.0" in "Lingua updates.txt". It
-comes after Lingua 3.0 is complete (3.0-9). On 2026-10-20 the user removed 4.0-3 (the karaoke and song games); its Visio part is Lingua 5.2-4. The user asked for at most five steps, so each step
+comes after Lingua 3.0 is complete (3.0-9). On 2026-10-20 the user removed 4.0-3 (the karaoke and song games); its Visio part is Lingua 5.2-4. On 2026-10-21 the user moved 4.0-4 (Cursus, the course) into Lingua 5 and removed 4.0-5 (the 4.0 check), so Lingua 4.0 is 4.0-1 and 4.0-2, both done. The user asked for at most five steps, so each step
 combines a lot; each is planned in detail when it starts. Where something can't be done as asked,
 the step says so and what is done instead.
 
@@ -1502,7 +1502,7 @@ and makes 20 with them. The new languages are placeholders for now, as the user 
 
 | Tier | Languages | What they get |
 | --- | --- | --- |
-| 1 · Core (Core) | Spanish, Russian, Mandarin, French, German, Arabic | Everything at its best, and Cursus, the course (4.0-4). The most work goes here. |
+| 1 · Core (Core) | Spanish, Russian, Mandarin, French, German, Arabic | Everything at its best, and Cursus, the course (Lingua 5). The most work goes here. |
 | 2 · Full (Full) | Italian, English, Portuguese, Greek, Swedish, Hungarian, Dutch, Norwegian, Turkish, Indonesian, Swahili, Latin, Japanese, Korean | Everything (packs, recommendations, Sonus, Cantus, Grammatica, alphabets) except a course. |
 | 3 · Partial (Beta) | Hindi, Polish, Tagalog, Vietnamese, Thai, Persian, Cantonese, Czech, Romanian, Serbo-Croatian, Malay, Tamil, Georgian, Uzbek, Mongolian, and new: Icelandic, Frisian, Ancient Greek, Bengali, Punjabi | What today's beta languages have, built by script: an automatic word pack, decks, Codex with lookups, podcasts, radio, music search, an alphabet page where the script is new. No hand-written grammar. |
 | 4 · Basics (Basics) | Hebrew, Ukrainian, Finnish, Danish, Catalan, Bulgarian, Kazakh, Afrikaans, Amharic, Yoruba, Armenian, Burmese, Urdu, Slovak, Estonian, Lithuanian, Latvian, Khmer, Albanian, Maltese | The bare minimum, added in one go: Codex with tap-to-translate (Wiktionary where it has the word, machine translation otherwise), your own words and decks, radio and podcast search. A small word pack only where the data comes free with the tier 3 script. |
@@ -1697,36 +1697,6 @@ dictionary items left undone. *All done:*
       Wiktionary's four senses, three Tatoeba sentences, and the AI tidy card with a stubbed reply
       and the fake key `test-not-a-real-key`, sent only in the Authorization header).
 
-### 4.0-4 · Cursus: a course with a clear path, and speaking and writing
-*Cursus becomes a room with tabs in Lingua 5.1-1 (step 2 of [HANDOVER.md](HANDOVER.md)); the
-course fills its Course tab.*
-- [ ] **Cursus** (Latin for "a course"), a new room: a course like Duolingo, HelloChinese or Busuu,
-      organised by level, with a clear learning path, each lesson with a clear objective.
-- [ ] **Units named by what you can do after them,** not by how many lessons they hold: after the
-      first Russian unit you can introduce yourself, describe your family, order food and ask
-      simple questions. The path shows where you are and where you're going.
-- [ ] **Every skill:** reading, listening, speaking and writing exercises, grammar explained when
-      it's needed (3.0-8), sentences with a gap (4.0-2), and feedback on writing and speaking from
-      AI with a key. Feedback from other speakers needs a community and a server, which Lingua
-      doesn't have; the step looks at a light way to do it (sharing an exercise to a speaker).
-- [ ] **More open questions and active production,** in Cursus and across the app: answer in your
-      own words, describe a picture or a scene, retell what you read or heard, write the next line.
-- [ ] **Speak your journal:** in Diarium a microphone button; what you say is transcribed (Whisper on
-      the device, or Groq with a key) into the entry, to read back and correct. Links and prompts
-      to talk in the language with ChatGPT, Claude, Gemini or Copilot in their own apps (with
-      3.0-6's conversation corner).
-- [ ] **How possible:** quite possible, and the largest step of 4.0. Most parts exist: words and
-      themes per language (the packs and themes.ts), grammar topics and drills (3.0-8), sentences
-      with audio (packs and voices, 3.0-4), Ludus exercises, Diarium with AI corrections, Whisper.
-      The new work is one shared outline of can-do units (A1 to B1, from the CEFR's can-do lists)
-      filled per language with that language's words, grammar and sentences, and the room around
-      it. Only the six core languages (tier 1) get a course, as the user decided: Cursus is
-      where most of the work goes, so each of the six is done well rather than twenty done thinly.
-
-### 4.0-5 · Lingua 4.0 complete: the full check
-- [ ] Every point of the 4.0 list checked against the app, on a phone and on desktop, light and dark.
-- [ ] The app's version says 4.0. Docs, then commit, push and the live site checked.
-
 ## Lingua 5
 
 The user pasted the Lingua 5 list in two halves (2026-10-20), each planned in detail: **5.1** in
@@ -1755,4 +1725,32 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [ ] 5.2-7 · Mundus: an interactive guide, one Explore, Things to try
 - [ ] 5.2-8 · Grammatica: a guided path at your level, lessons at desktop size
 - [ ] 5.2-9 · Ratio: one language, compact, goals in Tabula instead of Iter, more numbers
+- [ ] Cursus · the course, with speaking and writing (moved here from 4.0-4; section "Cursus" below)
 - [ ] 5.2-10 · Lingua 5 complete: the full check
+
+### Cursus: a course with a clear path, and speaking and writing (moved here from 4.0-4)
+*Moved from Lingua 4.0 into Lingua 5 on 2026-10-21 (the user's request). Cursus becomes a room with
+tabs in 5.1-1 (step 2 of [HANDOVER.md](HANDOVER.md)); the course fills its Course tab. It is step 4
+of the handover and runs in parallel with 5.1-1.*
+- [ ] **Cursus** (Latin for "a course"), a new room: a course like Duolingo, HelloChinese or Busuu,
+      organised by level, with a clear learning path, each lesson with a clear objective.
+- [ ] **Units named by what you can do after them,** not by how many lessons they hold: after the
+      first Russian unit you can introduce yourself, describe your family, order food and ask
+      simple questions. The path shows where you are and where you're going.
+- [ ] **Every skill:** reading, listening, speaking and writing exercises, grammar explained when
+      it's needed (3.0-8), sentences with a gap (4.0-2), and feedback on writing and speaking from
+      AI with a key. Feedback from other speakers needs a community and a server, which Lingua
+      doesn't have; the step looks at a light way to do it (sharing an exercise to a speaker).
+- [ ] **More open questions and active production,** in Cursus and across the app: answer in your
+      own words, describe a picture or a scene, retell what you read or heard, write the next line.
+- [ ] **Speak your journal:** in Diarium a microphone button; what you say is transcribed (Whisper on
+      the device, or Groq with a key) into the entry, to read back and correct. Links and prompts
+      to talk in the language with ChatGPT, Claude, Gemini or Copilot in their own apps (with
+      3.0-6's conversation corner).
+- [ ] **How possible:** quite possible, and the largest step of 4.0. Most parts exist: words and
+      themes per language (the packs and themes.ts), grammar topics and drills (3.0-8), sentences
+      with audio (packs and voices, 3.0-4), Ludus exercises, Diarium with AI corrections, Whisper.
+      The new work is one shared outline of can-do units (A1 to B1, from the CEFR's can-do lists)
+      filled per language with that language's words, grammar and sentences, and the room around
+      it. Only the six core languages (tier 1) get a course, as the user decided: Cursus is
+      where most of the work goes, so each of the six is done well rather than twenty done thinly.

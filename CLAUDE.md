@@ -19,7 +19,7 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
   Thesaurus › Dictionary beside the word memory, v2 with own-language definitions, Tatoeba and AI
   tidying; Import a book / a comic; the end page and the reader's reading-goal note; sentences with
   a gap as a Ludus mode; the word drawer as it was, with Open dictionary; Dexie v15) are done.
-  Dictionary builds: `dictionary-fetch.ts`, then `dictionary.ts` (docs/SETUP.md). Open: 4.0-4 and 4.0-5 (4.0-3 was removed on 2026-10-20: the karaoke and song games are dropped; its Visio part is Lingua 5.2-4). Only the six core languages
+  Dictionary builds: `dictionary-fetch.ts`, then `dictionary.ts` (docs/SETUP.md). Lingua 4.0 is finished: 4.0-3 was removed on 2026-10-20 (the karaoke and song games are dropped; its Visio part is Lingua 5.2-4), and on 2026-10-21 4.0-4 (Cursus, the course) moved into Lingua 5 and 4.0-5 (the 4.0 check) was removed. Only the six core languages
   (tier 1) get a course.
 - **Lingua 5** is planned in detail: [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md) and
   [docs/LINGUA-5.2-PLAN.md](docs/LINGUA-5.2-PLAN.md), with the user's decisions at the top of 5.1

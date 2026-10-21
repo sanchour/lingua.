@@ -40,7 +40,7 @@ the user said.
   a book · Import a comic · News & links · Goodreads), the one-screen word drawer, the end page, one
   memory per word, gap sentences. **5.1-5 builds on those screens**: read 4.0-2's notes in the
   roadmap first, and change what it made rather than starting again.
-- **4.0-4 (Cursus, the course)**: 5.1-1 makes the Cursus room and its tabs; 4.0-4 fills the Course
+- **Cursus, the course** (moved here from 4.0-4 on 2026-10-21): 5.1-1 makes the Cursus room and its tabs; the course fills the Course
   tab. Until then the tab says the course is coming (tier 1 only).
 - **3.0-8 parts 5–6 (alphabets and writing, another account)** land in Cursus › Alphabets. 5.1-1
   only moves routes and adds redirects, so part 5 can be written against either address.
@@ -102,7 +102,7 @@ assumed.
   the sessions working in them; ARCHITECTURE.md lists which folder is which room.
 
 **Cursus** (`/cursus`): a desktop tab strip like Mundus's, with 1–4 key hints.
-- Tabs: **Course** (4.0-4; until then a short "coming to the six core languages" page, and hidden
+- Tabs: **Course** (the course step; until then a short "coming to the six core languages" page, and hidden
   for other tiers), **Grammatica** (today's room, unchanged inside), **Alphabets** (3.0-8 part 5;
   shown where the language has a script to learn), **Typing** (5.1-8, tier 1).
 - The room opens on the tab you used last; first time, Course for tier 1, Grammatica otherwise.

@@ -5,7 +5,7 @@ needs is in this repository; Claude's memory doesn't travel, and [CLAUDE.md](../
 way of working and the rules. This file is the **work queue**: what is still open, in order, how to
 take a step without clashing with another account, and the prompts to paste.
 
-Last updated 2026-10-20.
+Last updated 2026-10-21.
 
 ---
 
@@ -55,10 +55,10 @@ read that part before starting.
 | # | Status | Step | Where it is planned | Size |
 | --- | --- | --- | --- | --- |
 | 1 | [x] | **Grammatica part 5: alphabets and writing** (3.0-8). *Done 2026-10-20:* `src/core/script`, `src/data/script.ts` and `src/features/grammatica/letters` hold all of it, so it can move whole. **Parallel** with everything. Write it so it can move into Cursus › Alphabets (step 2 moves it). | ROADMAP "3.0-8" | L |
-| 2 | [ ] | **The frame of Lingua 5:** the rooms in the new order (Cursus, Sonus et Visio, Mentis), Ordo renamed Settings, a narrower sidebar, flashcard widths, the device's light, the Mundus lines removed. First of the rest, because 4.0-3, 4.0-4 and all of Lingua 5 build on the new rooms. | 5.1-1 and 5.2-1 | L |
+| 2 | [ ] | **The frame of Lingua 5:** the rooms in the new order (Cursus, Sonus et Visio, Mentis), Ordo renamed Settings, a narrower sidebar, flashcard widths, the device's light, the Mundus lines removed. First of the rest, because the course and the rest of Lingua 5 build on the new rooms. | 5.1-1 and 5.2-1 | L |
 | 3 | — | *Removed 2026-10-20: the karaoke and song games are dropped; Visio moved to step 22.* | ROADMAP "4.0-3" | — |
-| 4 | [~] *claimed 2026-10-21* | **Cursus, the course** (tier 1), in Cursus's Course tab. **Parallel** with 2. | ROADMAP "4.0-4" | XL |
-| 5 | [ ] | **Lingua 4.0 complete:** the full check; the version says 4.0. After 3 and 4. | ROADMAP "4.0-5" | S |
+| 4 | [ ] | **Cursus, the course** (tier 1; moved into Lingua 5 from 4.0-4 on 2026-10-21), in Cursus's Course tab. **Parallel** with 2. | ROADMAP "Lingua 5" › "Cursus" | XL |
+| 5 | — | *Removed 2026-10-21: there is no separate 4.0 check; the version goes from 3.0 to 5.0 at step 21.* | — | — |
 | 6 | [ ] | **Lingua+ and Lingua+ Max** (Stripe in test mode, the licence server, plans, the MAX badge). **Parallel** from step 2 on. | 5.1-2 | L |
 | 7 | [ ] | **Onboarding,** the map without dots and its language data, the twelve flags. After 6 (it shows the plans). | 5.1-3 | L |
 | 8 | [ ] | **Home,** the new layout (the old one a setting away). After 2. | 5.1-4 | M |
