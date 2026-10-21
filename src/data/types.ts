@@ -274,6 +274,8 @@ export interface DeckConfig {
   defaultMode: 'classic' | 'ludus';
   /** What a word → meaning card shows in front: the word, or a sentence with the word missing (4.0-2). */
   front?: 'word' | 'sentence';
+  /** The deck's own card width; none: the width chosen for every card (5.2-1). */
+  cardWidth?: 'thin' | 'normal' | 'wide';
 }
 
 export interface Deck extends Synced {

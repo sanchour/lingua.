@@ -52,7 +52,7 @@ async function tokenRequest(body: Record<string, string>): Promise<{ access_toke
   } catch {
     throw new SpotifyError('Spotify couldn’t be reached. Check the connection.', 'network');
   }
-  if (!res.ok) throw new SpotifyError('Spotify didn’t accept the sign-in. Connect again from Ordo › Music.', 'expired');
+  if (!res.ok) throw new SpotifyError('Spotify didn’t accept the sign-in. Connect again from Settings › Music.', 'expired');
   return res.json();
 }
 
@@ -62,7 +62,7 @@ export async function finishSpotifySignIn(search: string): Promise<string> {
   const pending = JSON.parse(sessionStorage.getItem(PENDING) ?? 'null') as { verifier: string; state: string; returnTo: string; clientId: string } | null;
   sessionStorage.removeItem(PENDING);
   if (params.get('error')) throw new SpotifyError(params.get('error') === 'access_denied' ? 'Spotify wasn’t connected: the request was declined.' : 'Spotify couldn’t connect.', 'denied');
-  if (!pending || params.get('state') !== pending.state || !params.get('code')) throw new SpotifyError('This sign-in didn’t start here. Connect again from Ordo › Music.', 'state');
+  if (!pending || params.get('state') !== pending.state || !params.get('code')) throw new SpotifyError('This sign-in didn’t start here. Connect again from Settings › Music.', 'state');
   const token = await tokenRequest({
     grant_type: 'authorization_code',
     code: params.get('code')!,
@@ -110,7 +110,7 @@ export async function spotifyGet<T>(path: string): Promise<T> {
   }
   if (res.status === 401) {
     await patchSetting('spotify', { accessToken: '', expiresAt: 0 });
-    throw new SpotifyError('The Spotify sign-in expired. Connect again from Ordo › Music.', 'expired');
+    throw new SpotifyError('The Spotify sign-in expired. Connect again from Settings › Music.', 'expired');
   }
   if (!res.ok) throw new SpotifyError('Spotify didn’t answer. Try again in a moment.', 'network');
   return res.json() as Promise<T>;

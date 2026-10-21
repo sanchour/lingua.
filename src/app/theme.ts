@@ -27,7 +27,7 @@ function applyTheme(theme: Theme, palette: string) {
 /** Keeps <html data-theme> in sync with the saved preference and the system appearance. */
 export function useThemeController(pref: ThemePref | undefined, palettes?: Settings['palette']): Theme {
   const systemDark = useMediaQuery('(prefers-color-scheme: dark)');
-  const theme = resolveTheme(pref ?? 'paper', systemDark);
+  const theme = resolveTheme(pref ?? 'system', systemDark);
   const palette = palettes?.[theme] ?? (theme === 'paper' ? 'cream' : 'charcoal');
 
   useLayoutEffect(() => {

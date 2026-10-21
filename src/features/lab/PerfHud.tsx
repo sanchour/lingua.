@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { startFrameMeter } from '@/services/perf/frames';
 
 /**
- * Live FPS readout (Ordo → Performance). Writes straight to the DOM once per second,
+ * Live FPS readout (Settings → Performance). Writes straight to the DOM once per second,
  * so the monitor itself never causes React renders.
  */
 export default function PerfHud() {

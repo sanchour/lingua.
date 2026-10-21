@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, BookOpenText, Feather, LayoutGrid, Library, List, Plus, Search, SearchX, Sparkles } from 'lucide-react';
+import { ArrowRight, BookOpenText, LayoutGrid, List, Plus, Search, SearchX, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
+import { movedPath } from '@/app/redirects';
 import { useFullMotion } from '@/app/motion';
 import { PageHeader } from '@/app/PageHeader';
 import { SAMPLES } from '@/core/lang/samples';
@@ -17,11 +18,9 @@ import { fade, spring } from '@/design/motion';
 import { attachEpub } from '@/services/import/importers';
 import { pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
-import { DiariumHome, NewEntryButton } from './diarium/DiariumHome';
 import { BookCard, BookRow } from './library/BookCard';
 import { BookCover } from './library/BookCover';
 import { useImporter } from './library/useImporter';
-import { MundusLink } from '@/features/mundus/MundusLink';
 
 type Group = 'reading' | 'next' | 'finished' | 'wishlist';
 type Filter = 'all' | Group;
@@ -79,10 +78,11 @@ export default function CodexPage() {
   const [query, setQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
   const { librarySort: sort, libraryView: view } = settings.ui;
-  const [params, setParams] = useSearchParams();
-  const tab: 'library' | 'diarium' = params.get('tab') === 'diarium' ? 'diarium' : 'library';
+  // Diarium moved to Mentis (Lingua 5); its old tab address lands there.
+  const { search } = useLocation();
+  const moved = movedPath('/codex', search);
 
-  useHotkeys({ '/': () => (searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && tab === 'library' && Boolean(texts?.length));
+  useHotkeys({ '/': () => (searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && Boolean(texts?.length));
 
   // Comprehension drifts as words become known; refresh quietly, one book at a time.
   useEffect(() => {
@@ -144,35 +144,17 @@ export default function CodexPage() {
     setSearching(false);
   };
 
+  if (moved) return <Navigate to={moved} replace />;
   return (
     <>
       <PageHeader
         title="Codex"
         actions={
-          tab === 'diarium' ? (
-            <NewEntryButton />
-          ) : (
-            <Link to="/codex/new" className={buttonClasses('primary', 'md')}>
-              <Plus size={17} aria-hidden /> Add
-            </Link>
-          )
+          <Link to="/codex/new" className={buttonClasses('primary', 'md')}>
+            <Plus size={17} aria-hidden /> Add
+          </Link>
         }
       />
-      <div className="-mt-2 mb-7">
-        <Segmented<'library' | 'diarium'>
-          label="Codex"
-          value={tab}
-          onChange={(next) => setParams(next === 'library' ? {} : { tab: next }, { replace: true })}
-          options={[
-            { value: 'library', label: 'Library', icon: Library },
-            { value: 'diarium', label: 'Diarium', icon: Feather },
-          ]}
-        />
-      </div>
-
-      {tab === 'diarium' && <DiariumHome />}
-      {tab === 'library' && (
-        <>
 
       {texts && texts.length === 0 && <EmptyLibrary lang={lang} busy={busy === 'sample'} onSample={() => void run('sample')} />}
 
@@ -248,9 +230,6 @@ export default function CodexPage() {
               ))}
             </div>
           )}
-        </>
-      )}
-      {texts && <MundusLink shelf="read">Books and news to read next</MundusLink>}
         </>
       )}
     </>

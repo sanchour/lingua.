@@ -11,6 +11,7 @@ import { db } from '@/data/db';
 import { currentGrammarTopic } from '@/data/grammar';
 import { localDateKey } from '@/lib/format';
 import { usePicks } from '@/features/mundus/hooks';
+import { useRecent } from '@/features/mentis/useRecent';
 
 const DAY = 86_400_000;
 
@@ -79,10 +80,11 @@ export function useGuide(): Guide | undefined {
   const used = useUsed(lang);
   const done = useChallenges(lang);
   const grammar = useGrammarNext(lang, language.level);
+  const recent = useRecent(lang);
   const day = Math.floor(Date.now() / DAY);
 
   return useMemo(() => {
-    if (picks === undefined || !week || !used || !done) return undefined;
+    if (picks === undefined || !week || !used || !done || !recent) return undefined;
     const today = localDateKey();
     const doneTips = new Set(done.filter((r) => r.date !== today).map((r) => r.tipId));
     const s = steer(week, enjoys);
@@ -93,9 +95,9 @@ export function useGuide(): Guide | undefined {
       week,
       steer: s,
       note: guideNote(week, s, langName),
-      steps: nextSteps({ level: language.level, enjoys, week, picks, tips: tipsFor(lang), doneTips, used, grammar, day }),
+      steps: nextSteps({ level: language.level, enjoys, week, picks, tips: tipsFor(lang), doneTips, used, grammar, recent: recent[0], day }),
       picks,
       doneToday: new Set(done.filter((r) => r.date === today).map((r) => r.tipId)),
     };
-  }, [picks, week, used, done, enjoys, lang, language.level, grammar, day]);
+  }, [picks, week, used, done, recent, enjoys, lang, language.level, grammar, day]);
 }

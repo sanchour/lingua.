@@ -130,7 +130,7 @@ export function ExploreView({ lang, picks, level }: { lang: string; picks: Picks
 
 
       <div className="mt-10 space-y-10">
-        <Shelf id="watch" title="Watch" room="Visio" icon={Clapperboard} more={picks ? '/mundus/picks?kind=series' : undefined}>
+        <Shelf id="watch" title="Watch" room="Sonus et Visio" icon={Clapperboard} more={picks ? '/mentis/picks?kind=series' : undefined}>
           {list('series').map(pickTile('series'))}
           {list('films').map(pickTile('films'))}
           {list('youtube').map(pickTile('youtube'))}
@@ -144,7 +144,7 @@ export function ExploreView({ lang, picks, level }: { lang: string; picks: Picks
 
         <WordsShelf lang={lang} />
 
-        <Shelf id="play" title="Play and look up" icon={Gamepad2} more={picks ? '/mundus/picks?kind=games' : undefined}>
+        <Shelf id="play" title="Play and look up" icon={Gamepad2} more={picks ? '/mentis/picks?kind=games' : undefined}>
           {list('games').map(pickTile('games'))}
           {(picks?.dictionaries ?? []).map(pickTile('dictionaries'))}
         </Shelf>
@@ -154,7 +154,7 @@ export function ExploreView({ lang, picks, level }: { lang: string; picks: Picks
 
       {!picks && (
         <p className="mt-10 text-[14px] leading-relaxed text-ink-faint">
-          Series, films, books and podcasts picked by hand come with the twenty main languages. For {name}, Visio › Services lists what streams in it on your services.
+          Series, films, books and podcasts picked by hand come with the twenty main languages. For {name}, Sonus et Visio › Streaming lists what streams in it on your services.
         </p>
       )}
 
@@ -263,7 +263,7 @@ function ReadShelf({ lang, books, tile }: { lang: string; books: Pick[]; tile: (
   const navigate = useNavigate();
   const news = newsSources(lang);
   return (
-    <Shelf id="read" title="Read" room="Codex" icon={BookOpen} more={books.length ? '/mundus/picks?kind=books' : undefined}>
+    <Shelf id="read" title="Read" room="Codex" icon={BookOpen} more={books.length ? '/mentis/picks?kind=books' : undefined}>
       {books.map(tile)}
       {news.map((s) => (
         <Tile key={s.id} title={s.name} sub="News · today’s articles" onClick={() => navigate('/codex/new?way=news')} art={<Art query={{ kind: 'wiki', q: `${s.name} newspaper`, must: s.name }} fit="contain" fallback={<Cover hue={HUE.news} icon={Newspaper} />} />} />
@@ -288,7 +288,7 @@ function ListenShelf({ lang, podcasts, tile }: { lang: string; podcasts: Pick[];
     }
   };
   return (
-    <Shelf id="listen" title="Listen" room="Sonus" icon={Headphones} more={podcasts.length ? '/mundus/picks?kind=podcasts' : undefined}>
+    <Shelf id="listen" title="Listen" room="Sonus et Visio" icon={Headphones} more={podcasts.length ? '/mentis/picks?kind=podcasts' : undefined}>
       {podcasts.map(tile)}
       {books.map((b) => (
         <Tile
@@ -312,7 +312,7 @@ function RadioShelf({ lang, level, reach }: { lang: string; level: Level; reach:
   const stations = useRadioPicks(lang);
   const artists = (discoverFor(lang)?.artists ?? []).filter((a) => reach === 'all' || withinReach(a.ease === 'clear' ? 'A2' : a.ease === 'medium' ? 'B1' : 'B2', level));
   return (
-    <Shelf id="radio" title="Radio and music" room="Sonus" icon={Radio}>
+    <Shelf id="radio" title="Radio and music" room="Sonus et Visio" icon={Radio}>
       {stations.map((s) => (
         <Tile
           key={s.id}
@@ -353,9 +353,9 @@ function BeyondShelf({ lang }: { lang: string }) {
   const doneIds = new Set((done ?? []).map((r) => r.tipId));
   const open = tips.filter((t) => !doneIds.has(t.id)).slice(0, 10);
   return (
-    <Shelf id="beyond" title="Beyond the app" icon={Sparkles} more="/mundus/try">
+    <Shelf id="beyond" title="Beyond the app" icon={Sparkles} more="/mentis/try">
       {open.map((t) => (
-        <Tile key={t.id} title={t.title} sub="A small challenge" onClick={() => navigate('/mundus/try')} art={<Cover hue="#6b8e78" icon={TIP_ICONS[t.icon]} />} />
+        <Tile key={t.id} title={t.title} sub="A small challenge" onClick={() => navigate('/mentis/try')} art={<Cover hue="#6b8e78" icon={TIP_ICONS[t.icon]} />} />
       ))}
     </Shelf>
   );

@@ -83,7 +83,7 @@ export function GoalStep({ reasons, minutes, onReasons, onMinutes }: GoalStepPro
           );
         })}
       </div>
-      <p className="mt-3 text-[13px] text-ink-faint">Your daily goal. Change it any time in Ordo.</p>
+      <p className="mt-3 text-[13px] text-ink-faint">Your daily goal. Change it any time in Settings.</p>
     </div>
   );
 }

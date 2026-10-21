@@ -183,7 +183,7 @@ function SpotifyInvite() {
         <span className="block font-bold">Your Spotify liked songs</span>
         <span className="block text-[13.5px] text-ink-soft">Connect your own free Spotify app and Lingua finds the ones sung in this language.</span>
       </span>
-      <Link to="/ordo/music" className={cx(smallPill, 'h-10')}>
+      <Link to="/settings/music" className={cx(smallPill, 'h-10')}>
         Set up
       </Link>
     </section>

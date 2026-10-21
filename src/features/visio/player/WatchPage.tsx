@@ -38,9 +38,9 @@ export default function WatchPage() {
     return (
       <div className="grid min-h-[60dvh] place-items-center text-center">
         <div>
-          <p className="font-serif text-xl">This video isn’t in Visio any more.</p>
-          <Link to="/visio" className="mt-4 inline-block font-semibold text-accent-text">
-            Back to Visio
+          <p className="font-serif text-xl">This video isn’t in your library any more.</p>
+          <Link to="/sonus?show=watch" className="mt-4 inline-block font-semibold text-accent-text">
+            Back to Sonus et Visio
           </Link>
         </div>
       </div>
@@ -365,7 +365,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
         </h1>
         {meta.length > 0 && <p className="mt-1 text-[13.5px] text-ink-soft">{meta.join(' · ')}</p>}
       </div>
-      <VideoOptions media={media} onRemoved={() => navigate('/visio')} />
+      <VideoOptions media={media} onRemoved={() => navigate('/sonus?show=watch')} />
     </div>
   );
 
@@ -379,7 +379,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
   if (wide) {
     return (
       <>
-        <BackLink to="/visio">Visio</BackLink>
+        <BackLink to="/sonus?show=watch">Sonus et Visio</BackLink>
         <div className="grid gap-8 min-[1180px]:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0 space-y-5">
             {stage}
@@ -403,7 +403,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
   return (
     <div className="min-h-dvh bg-bg pb-[calc(env(safe-area-inset-bottom)+40px)]">
       <header className="no-callout sticky top-0 z-20 flex items-center gap-1 bg-bg/90 px-2 pt-safe backdrop-blur-xl">
-        <button type="button" aria-label="Back to Visio" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/visio'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
+        <button type="button" aria-label="Back to Sonus et Visio" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus?show=watch'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronLeft size={24} aria-hidden />
         </button>
         <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{media.collection ?? 'Visio'}</p>

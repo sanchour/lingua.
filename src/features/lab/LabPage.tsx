@@ -28,10 +28,10 @@ export default function LabPage() {
 
   return (
     <>
-      <BackLink to="/ordo/about">About and more</BackLink>
+      <BackLink to="/settings/about">About and more</BackLink>
       <PageHeader
         title="Device lab"
-        eyebrow="Ordo"
+        eyebrow="Settings"
         actions={
           <Button variant="secondary" icon={ClipboardCopy} onClick={() => void copyReport()}>
             Copy report

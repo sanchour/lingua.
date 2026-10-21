@@ -521,3 +521,23 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   services in your country, with posters; a title shows its story (in the language when TMDB has
   it), which of your services has it (each opens the service), other ways to watch, and Add its
   subtitles. Mundus's picks show where they stream for you too. The key stays on the device.
+
+## Lingua 5's rooms (5.1-1 with 5.2-1)
+
+- **Cursus** (`/cursus`): Course · Grammatica · Alphabets · Typing, a tab strip with 1–4, opening
+  on the tab used last (first time: Course for the six core languages, Grammatica otherwise). The
+  course and typing say they're coming until handover steps 4 and 12 fill them.
+- **Sonus et Visio** (`/sonus`): + Listen and + Watch side by side; Library · Audiobooks · Radio ·
+  Streaming and Sonus+ at the end of the strip. The library: a sticky rail with All · Listen · Watch
+  and the categories (Songs, Podcasts, Episodes, Audiobooks, Stations, Your audio, Films & series,
+  Videos); Continue (audio and video, with what's left), Recently played, Recently added, New
+  episodes, To watch. One calm card when it's empty.
+- **Mentis** (`/mentis`): Mundus · Sermo · Diarium with Today's prompt on the right of every tab:
+  something to write and something to talk about from this week. The guide has a Speak lane
+  (for those who like speaking): "Talk about *Lupin* for five minutes" opens Sermo on that topic,
+  "Write three lines about …" opens Diarium with it as the day's prompt. A Diarium entry has
+  "Talk about this".
+- **Settings** (Ordo's old name, `/settings`); a narrower sidebar; new installs follow the device's
+  light; the "Ideas from Mundus" lines are gone.
+- **Card width:** Thin · Normal · Wide in the card look (Settings › Flashcards and the study
+  screen's Aa), with a scale preview; a deck can have its own in its settings.

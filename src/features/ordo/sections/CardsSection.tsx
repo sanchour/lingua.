@@ -1,7 +1,7 @@
 import { SquareStack } from 'lucide-react';
 import type { Settings } from '@/data/settings';
 import { cx } from '@/lib/cx';
-import { cardLookProps } from '@/features/thesaurus/common/cardLook';
+import { CARD_WIDTH, cardLookProps } from '@/features/thesaurus/common/cardLook';
 import { CardLookPanel } from '@/features/thesaurus/common/CardLookPanel';
 import { SettingsSection } from '../SettingsSection';
 
@@ -35,7 +35,8 @@ export function CardsSection({ look, lang }: { look: Settings['cards']; lang: st
   const face = 'flashcard flex aspect-[3/2] flex-col items-center justify-center overflow-hidden rounded-2xl border border-line px-4 text-center shadow-elev-1';
   return (
     <SettingsSection id="cards" icon={SquareStack} title="Flashcards" description="Make your cards your own. The study screen’s Aa button changes this too.">
-      <div className="mb-6 grid grid-cols-2 gap-3" aria-hidden>
+      {/* The preview grows and shrinks with the card width, to scale. */}
+      <div className="mb-6 grid grid-cols-2 gap-3 transition-[max-width] duration-300" style={{ maxWidth: `${(CARD_WIDTH[look.width ?? 'normal'] / CARD_WIDTH.wide) * 100}%` }} aria-hidden>
         <div {...props} className={face}>
           <p lang={lang} className="text-[calc(1.6rem*var(--card-scale,1))] leading-tight font-semibold">
             {article && <span className="font-normal text-ink-faint">{article} </span>}

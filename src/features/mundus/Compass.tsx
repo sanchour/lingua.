@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { BookOpen, Clapperboard, Headphones, Layers, PenLine } from 'lucide-react';
+import { BookOpen, Clapperboard, Headphones, Layers, MessagesSquare, PenLine } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { LANE_NAME, LANES } from '@/core/mundus/guide';
 import type { Lane, Week } from '@/core/mundus/guide';
 
 /** Mundus's own colour: deep sea teal, like a chart's ink. */
 export const MUNDUS = '#2f7f86';
-export const LANE_HUE: Record<Lane, string> = { read: '#6b8e78', listen: '#5f87a8', watch: '#c86d51', words: '#b38a3e', write: '#8a7fb0' };
-export const LANE_ICON: Record<Lane, LucideIcon> = { read: BookOpen, listen: Headphones, watch: Clapperboard, words: Layers, write: PenLine };
+export const LANE_HUE: Record<Lane, string> = { read: '#6b8e78', listen: '#5f87a8', watch: '#c86d51', words: '#b38a3e', write: '#8a7fb0', speak: '#b0607a' };
+export const LANE_ICON: Record<Lane, LucideIcon> = { read: BookOpen, listen: Headphones, watch: Clapperboard, words: Layers, write: PenLine, speak: MessagesSquare };
 
 const C = 110;
 const R0 = 30;

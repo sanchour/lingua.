@@ -45,7 +45,7 @@ export async function resetLanguageProgress(lang: string, database: LinguaDB = d
       await database.grammarItems.where('[lang+topic]').between([lang, ''], [lang, '\uffff']).delete();
       await database.grammarProgress.where('lang').equals(lang).delete();
       await database.reviewLogs.where('[deckId+reviewedAt]').between([`grammar:${lang}`, 0], [`grammar:${lang}`, Infinity]).delete();
-      // Ready-made "known" seeding can be applied again from Ordo › Languages.
+      // Ready-made "known" seeding can be applied again from Settings › Languages.
       await database.languages.update(lang, { seedAppliedAt: undefined, updatedAt: Date.now() });
       return { words, cards: cardIds.length, sessions };
     },

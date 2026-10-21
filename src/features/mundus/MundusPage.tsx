@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ArrowRight, Check, ChevronRight, Lock, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
+import { useInRoom } from '@/app/room';
 import { LANE_NAME, LANES, nextLevelPicks, STAGES, stageIndex, tipsByReach } from '@/core/mundus/guide';
 import type { Lane, Step } from '@/core/mundus/guide';
 import { tipsFor } from '@/core/mundus/tips';
@@ -13,8 +14,7 @@ import { GROUP_KIND } from '@/core/mundus/types';
 import type { Pick, PickGroup } from '@/core/mundus/types';
 import { toggleChallenge, useChallenges } from '@/data/challenges';
 import { useVocabularyCounts } from '@/data/words';
-import { Drawer, Kbd, Segmented } from '@/design/primitives';
-import { useHotkeys } from '@/design/hooks/useHotkeys';
+import { Drawer, Segmented } from '@/design/primitives';
 import { useLayout } from '@/design/hooks/useLayout';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
@@ -40,10 +40,10 @@ const rise = (i: number) => ({ initial: { opacity: 0, y: 12 }, animate: { opacit
 
 type Tab = 'guide' | 'explore' | 'picks' | 'try';
 const TABS: Array<{ id: Tab; label: string; short: string; to: string }> = [
-  { id: 'guide', label: 'Your guide', short: 'Guide', to: '/mundus' },
-  { id: 'explore', label: 'Explore', short: 'Explore', to: '/mundus/explore' },
-  { id: 'picks', label: 'Every pick', short: 'Picks', to: '/mundus/picks' },
-  { id: 'try', label: 'Things to try', short: 'Try', to: '/mundus/try' },
+  { id: 'guide', label: 'Your guide', short: 'Guide', to: '/mentis' },
+  { id: 'explore', label: 'Explore', short: 'Explore', to: '/mentis/explore' },
+  { id: 'picks', label: 'Every pick', short: 'Picks', to: '/mentis/picks' },
+  { id: 'try', label: 'Things to try', short: 'Try', to: '/mentis/try' },
 ];
 
 /**
@@ -90,39 +90,29 @@ export default function MundusPage() {
   );
 }
 
-/** On desktop, a tab strip like a desktop app's, with 1–4 as shortcuts; on a phone, a segmented control. */
+/** Mundus's own tabs, under Mentis's: a segmented control (Mentis's tabs have the digit shortcuts). */
 function Tabs({ tab }: { tab: Tab }) {
   const navigate = useNavigate();
-  const { layout, pointer } = useLayout();
-  useHotkeys(Object.fromEntries(TABS.map((t, i) => [String(i + 1), () => navigate(t.to)])), pointer === 'fine');
-  if (layout !== 'wide') {
-    return (
-      <div className="mb-7">
-        <Segmented<Tab> block label="Mundus" value={tab} onChange={(next) => navigate(TABS.find((t) => t.id === next)!.to)} options={TABS.map((t) => ({ value: t.id, label: t.short }))} />
-      </div>
-    );
-  }
+  const { layout } = useLayout();
   return (
-    <nav aria-label="Mundus" className="mb-9 flex items-center gap-1 border-b border-line">
-      {TABS.map((t, i) => (
-        <Link
-          key={t.id}
-          to={t.to}
-          aria-current={tab === t.id ? 'page' : undefined}
-          className={cx('-mb-px inline-flex h-11 items-center gap-2 border-b-2 px-3.5 text-[14.5px] font-semibold transition-colors', tab === t.id ? 'border-ink text-ink' : 'border-transparent text-ink-soft hover:text-ink')}
-        >
-          {t.label}
-          {pointer === 'fine' && <Kbd>{i + 1}</Kbd>}
-        </Link>
-      ))}
-    </nav>
+    <div className="-mt-2 mb-8">
+      <Segmented<Tab>
+        block={layout !== 'wide'}
+        label="Mundus"
+        value={tab}
+        onChange={(next) => navigate(TABS.find((t) => t.id === next)!.to)}
+        options={TABS.map((t) => ({ value: t.id, label: layout === 'wide' ? t.label : t.short }))}
+      />
+    </div>
   );
 }
 
 /** Your guide: the note and next steps; on a wide window, the week and things to try in a side panel. */
 function GuideTab({ guide, level, lookups, onOpen }: { guide: Guide; level: Parameters<typeof stageIndex>[0]; lookups: Map<string, PickLookup>; onOpen: (pick: Pick, group: PickGroup) => void }) {
+  const inRoom = useInRoom();
   return (
-    <div className="grid gap-12 xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-10">
+    // In Mentis the room's rail takes the right; the week and things to try follow below.
+    <div className={cx('grid gap-12', !inRoom && 'xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-10')}>
       <div className="min-w-0 space-y-12">
         <Hero guide={guide} level={level} />
         <section aria-labelledby="next-title">
@@ -249,7 +239,7 @@ function StepCard({ step, n, lang, done, lookup, onOpen }: { step: Step; n: numb
         <button type="button" aria-pressed={done} onClick={() => void toggleChallenge(lang, step.tip.id)} className={cx(button, done ? 'bg-sage text-on-accent' : 'bg-inverse text-on-inverse')}>
           <Check size={15} strokeWidth={2.6} aria-hidden /> {done ? 'Done today' : 'I did it'}
         </button>
-        <Link to="/mundus/try" className="hit text-[13px] font-semibold text-ink-soft hover:text-ink">
+        <Link to="/mentis/try" className="hit text-[13px] font-semibold text-ink-soft hover:text-ink">
           How
         </Link>
       </span>
@@ -383,7 +373,7 @@ function TryNow({ lang, level }: { lang: string; level: Parameters<typeof stageI
         <h2 id="try-title" className="min-w-0 flex-1 font-serif text-[24px] leading-tight font-semibold">
           Things to try
         </h2>
-        <Link to="/mundus/try" className="hit inline-flex shrink-0 items-center gap-0.5 text-[13px] font-semibold text-ink-soft hover:text-ink">
+        <Link to="/mentis/try" className="hit inline-flex shrink-0 items-center gap-0.5 text-[13px] font-semibold text-ink-soft hover:text-ink">
           All of them <ChevronRight size={14} aria-hidden />
         </Link>
       </div>

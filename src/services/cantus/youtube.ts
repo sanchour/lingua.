@@ -53,7 +53,7 @@ export function withTimeout(signal: AbortSignal | undefined, ms: number): AbortS
 /** The learner's YouTube key was refused (wrong, or the API isn't turned on for it), or today's quota is used up. */
 export class YouTubeKeyError extends Error {
   constructor(readonly code: 'key' | 'quota') {
-    super(code === 'quota' ? 'Your YouTube key has used up today’s searches. They come back tomorrow.' : 'YouTube didn’t accept your key. Check it in Ordo › Music.');
+    super(code === 'quota' ? 'Your YouTube key has used up today’s searches. They come back tomorrow.' : 'YouTube didn’t accept your key. Check it in Settings › Music.');
     this.name = 'YouTubeKeyError';
   }
 }

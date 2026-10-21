@@ -52,10 +52,10 @@ export default function OrdoPage() {
 
   if (!groupId && hash) {
     const owner = groupOf(hash.slice(1));
-    if (owner) return <Navigate to={`/ordo/${owner.id}${hash}`} replace state={state} />;
+    if (owner) return <Navigate to={`/settings/${owner.id}${hash}`} replace state={state} />;
   }
   const group = getGroup(groupId);
-  if (groupId && !group) return <Navigate to="/ordo" replace />;
+  if (groupId && !group) return <Navigate to="/settings" replace />;
 
   if (layout === 'wide') return <WideOrdo group={group ?? GROUPS[0]} hidden={hidden} />;
   return group ? <GroupPage group={group} hidden={hidden} /> : <Overview hidden={hidden} />;
@@ -68,7 +68,7 @@ function Overview({ hidden }: { hidden: ReadonlySet<SectionId> }) {
   const summaries = useSummaries(hidden);
   return (
     <>
-      <PageHeader title="Ordo" />
+      <PageHeader title="Settings" />
       <SearchInput value={query} onChange={setQuery} placeholder="Search settings" className="mb-6" />
       {query.trim() ? (
         <SearchResults query={query} hidden={hidden} />
@@ -89,7 +89,7 @@ function GroupList({ title, groups, summaries }: { title: string; groups: Settin
       <ul className="overflow-hidden rounded-3xl border border-line/70 bg-surface">
         {groups.map((g, i) => (
           <li key={g.id}>
-            <Link to={`/ordo/${g.id}`} className="flex items-center gap-3.5 pl-4 transition-colors active:bg-sunken">
+            <Link to={`/settings/${g.id}`} className="flex items-center gap-3.5 pl-4 transition-colors active:bg-sunken">
               <Tile group={g} />
               <span className={cx('flex min-h-[64px] min-w-0 flex-1 items-center gap-2 py-3 pr-3.5', i > 0 && 'border-t border-line/70')}>
                 <span className="min-w-0 flex-1">
@@ -111,7 +111,7 @@ function GroupList({ title, groups, summaries }: { title: string; groups: Settin
 function GroupPage({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet<SectionId> }) {
   return (
     <>
-      <PageHeader eyebrow="Ordo" title={group.title} />
+      <PageHeader eyebrow="Settings" title={group.title} />
       <GroupSections group={group} hidden={hidden} />
     </>
   );
@@ -127,7 +127,7 @@ function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet
 
   return (
     <>
-      <PageHeader title="Ordo" />
+      <PageHeader title="Settings" />
       <div className="grid grid-cols-[236px_minmax(0,1fr)] gap-10">
         <nav aria-label="Settings" className="sticky top-12 self-start">
           <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search settings" className="mb-4" />
@@ -138,7 +138,7 @@ function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet
                 return (
                   <li key={g.id}>
                     <Link
-                      to={`/ordo/${g.id}`}
+                      to={`/settings/${g.id}`}
                       onClick={() => setQuery('')}
                       aria-current={current ? 'page' : undefined}
                       className={cx(
@@ -243,7 +243,7 @@ function SearchResults({ query, hidden, onPick }: { query: string; hidden: Reado
   const open = (entry: SettingEntry) => {
     const group = groupOf(entry.section)!;
     onPick?.();
-    navigate(`/ordo/${group.id}#${entry.section}`, { state: { find: entry.find ?? entry.label } });
+    navigate(`/settings/${group.id}#${entry.section}`, { state: { find: entry.find ?? entry.label } });
   };
 
   if (!results.length) {

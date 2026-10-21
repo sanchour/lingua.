@@ -21,11 +21,11 @@ export function MundusHomeCard() {
         <p className="inline-flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] uppercase" style={{ color: MUNDUS }}>
           <CompassIcon size={14} aria-hidden /> Mundus suggests
         </p>
-        <Link to="/mundus" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
+        <Link to="/mentis" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
           Your guide <ArrowRight size={14} aria-hidden />
         </Link>
       </div>
-      <Link to="/mundus" className="group -m-2 flex items-start gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
+      <Link to="/mentis" className="group -m-2 flex items-start gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
         <span className={step.type === 'pick' ? 'aspect-[2/3] w-12 shrink-0 overflow-hidden rounded-xl shadow-elev-1' : 'size-11 shrink-0 overflow-hidden rounded-2xl'} aria-hidden>
           <Art
             query={step.type === 'pick' ? pickImageQuery(step.pick, step.group, guide.lang) : null}

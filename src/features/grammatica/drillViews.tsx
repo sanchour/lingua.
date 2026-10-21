@@ -494,7 +494,7 @@ export function OwnView({
         )}
       />
       <p className="min-h-5 text-center text-[13.5px] text-ink-soft" aria-live="polite">
-        {checking ? 'Reading your sentence…' : error ? <span className="text-accent-text">{error}</span> : phase === 'answer' ? 'Checked by your AI (Ordo › AI). It doesn’t move your schedule.' : ''}
+        {checking ? 'Reading your sentence…' : error ? <span className="text-accent-text">{error}</span> : phase === 'answer' ? 'Checked by your AI (Settings › AI). It doesn’t move your schedule.' : ''}
       </p>
     </div>
   );

@@ -25,7 +25,7 @@ export type MotionPref = 'system' | 'reduced' | 'full';
 /** Why someone learns, from onboarding (kept for later suggestions). */
 export type LearningReason = 'travel' | 'books' | 'talk' | 'family' | 'work' | 'culture' | 'fun';
 /** The kinds of practice someone enjoys most, in their order: Home lists these first. */
-export type Enjoyment = 'reading' | 'listening' | 'music' | 'watching' | 'writing' | 'cards';
+export type Enjoyment = 'reading' | 'listening' | 'music' | 'watching' | 'writing' | 'speaking' | 'cards';
 
 export interface Settings {
   theme: ThemePref;
@@ -50,7 +50,7 @@ export interface Settings {
     readings: 'new' | 'all' | 'off';
   };
   /** How flashcards look (Thesaurus). */
-  cards: { font: ReaderFontId; style: CardStyleId; tint: CardTintId; size: 'sm' | 'md' | 'lg' };
+  cards: { font: ReaderFontId; style: CardStyleId; tint: CardTintId; size: 'sm' | 'md' | 'lg'; width: CardWidth };
   study: {
     newPerDay: number;
     maxReviews: number;
@@ -112,6 +112,10 @@ export interface Settings {
     mediaSort: MediaSort;
     /** Home's "first steps" list, once put away. */
     firstStepsHidden: boolean;
+    /** Cursus opens on the tab used last (none yet: Course for tier 1, Grammatica otherwise). */
+    cursusTab: '' | 'course' | 'grammatica' | 'alphabets' | 'typing';
+    /** Sonus et Visio's library filter. */
+    sonusShow: MediaShow;
   };
   /** Device-only. */
   meta: { deviceId: string; onboardedAt: number | null; lastBackupAt: number | null; plusAt: number | null };
@@ -121,6 +125,12 @@ export interface Settings {
    */
   sync: { devices: PairedDevice[]; includeApiKeys: boolean };
 }
+
+/** Sonus et Visio's library: everything, or only what you listen to or watch. */
+export type MediaShow = 'all' | 'listen' | 'watch';
+
+/** How wide a flashcard is on desktop (Lingua 5.2-1): about 460, 576 (as before) or 840 px. */
+export type CardWidth = 'thin' | 'normal' | 'wide';
 
 export type LessonMode = 'classic' | 'zen';
 
@@ -150,7 +160,8 @@ export interface PairedDevice {
 export type SettingKey = keyof Settings;
 
 export const DEFAULT_SETTINGS: Settings = {
-  theme: 'paper',
+  // New installs follow the device's light (Lingua 5.1-1); see rowsToSettings for earlier ones.
+  theme: 'system',
   palette: { paper: 'cream', nocturne: 'charcoal' },
   learner: { reasons: [], enjoys: [] },
   reader: {
@@ -167,7 +178,7 @@ export const DEFAULT_SETTINGS: Settings = {
     contextGlosses: true,
     readings: 'new',
   },
-  cards: { font: 'literata', style: 'plain', tint: 'paper', size: 'md' },
+  cards: { font: 'literata', style: 'plain', tint: 'paper', size: 'md', width: 'normal' },
   study: { newPerDay: 15, maxReviews: 200, desiredRetention: 0.9, ludusAffectsSchedule: true, autoPromoteMature: true },
   lessons: { length: 10, mode: 'classic', typing: true, sounds: true, haptics: true, ludusOff: [], grammarOff: [], best: {} },
   translation: { chain: ['local', 'mymemory', 'lingva'], lingvaHost: 'https://lingva.ml' },
@@ -179,7 +190,7 @@ export const DEFAULT_SETTINGS: Settings = {
   voice: { off: false, chosen: {} },
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all' },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null },
   sync: { devices: [], includeApiKeys: false },
 };
@@ -201,6 +212,9 @@ export function rowsToSettings(rows: SettingRow[]): Settings {
   for (const row of rows) {
     if (row.key in DEFAULT_SETTINGS) out[row.key as SettingKey] = mergeValue(row.key as SettingKey, row.value);
   }
+  // An install from before 5.1-1 that never chose a light kept the old default, paper.
+  const onboarded = (rows.find((r) => r.key === 'meta')?.value as Partial<Settings['meta']> | undefined)?.onboardedAt;
+  if (!rows.some((r) => r.key === 'theme') && typeof onboarded === 'number') out.theme = 'paper';
   return out as unknown as Settings;
 }
 

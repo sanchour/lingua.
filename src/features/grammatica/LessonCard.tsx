@@ -41,17 +41,17 @@ export function LessonCard({ topic, state }: { topic: Topic; state?: TopicState 
         <IconButton icon={Settings2} label="Lesson settings" size="sm" variant="soft" onClick={() => setSetup(true)} />
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
-        <Link to={`/grammatica/${topic.id}/lesson${learned ? '?mode=practice' : ''}`} className={cx(buttonClasses('primary', 'md'), 'flex-1 sm:flex-none')}>
+        <Link to={`/cursus/grammatica/${topic.id}/lesson${learned ? '?mode=practice' : ''}`} className={cx(buttonClasses('primary', 'md'), 'flex-1 sm:flex-none')}>
           {learned ? <Repeat size={17} aria-hidden /> : <Play size={17} aria-hidden />}
           {learned ? 'Practise' : state?.started ? `Continue: step ${step}` : 'Start'}
         </Link>
         {!learned && step > 1 && (
-          <Link to={`/grammatica/${topic.id}/lesson?mode=practice`} className={buttonClasses('secondary', 'md')}>
+          <Link to={`/cursus/grammatica/${topic.id}/lesson?mode=practice`} className={buttonClasses('secondary', 'md')}>
             <Repeat size={17} aria-hidden />
             Mixed
           </Link>
         )}
-        <Link to={`/grammatica/${topic.id}/lesson?mode=lightning`} className={buttonClasses('secondary', 'md')}>
+        <Link to={`/cursus/grammatica/${topic.id}/lesson?mode=lightning`} className={buttonClasses('secondary', 'md')}>
           <Zap size={17} aria-hidden />
           Lightning
         </Link>

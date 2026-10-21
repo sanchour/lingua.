@@ -24,11 +24,11 @@ export function ColloquiumHomeCard({ lang, level }: { lang: string; level: Level
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center justify-between gap-3">
         <p className={label}>{recent ? 'Carry on talking' : 'Talk today'}</p>
-        <Link to="/colloquium" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
-          Colloquium <ArrowRight size={14} aria-hidden />
+        <Link to="/mentis/sermo" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
+          Sermo <ArrowRight size={14} aria-hidden />
         </Link>
       </div>
-      <Link to={recent ? `/colloquium/chat/${recent.id}` : `/colloquium?scene=${scene}`} className="group -m-2 flex items-start gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
+      <Link to={recent ? `/mentis/sermo/chat/${recent.id}` : `/mentis/sermo?scene=${scene}`} className="group -m-2 flex items-start gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-accent-soft text-accent-text" aria-hidden>
           {recent ? <MessageCircle size={20} /> : <MessagesSquare size={20} />}
         </span>

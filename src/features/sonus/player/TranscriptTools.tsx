@@ -71,7 +71,7 @@ export function NoTranscript({ media }: { media: Media }) {
                   Make a transcript
                 </Button>
               ) : (
-                <Button icon={KeyRound} onClick={() => navigate('/ordo/ai')}>
+                <Button icon={KeyRound} onClick={() => navigate('/settings/ai')}>
                   Add a free Groq key
                 </Button>
               ))}
@@ -79,7 +79,7 @@ export function NoTranscript({ media }: { media: Media }) {
               Add a file
             </Button>
           </div>
-          {!spotify && !hasKey && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Transcripts use Whisper on Groq with your own free key, or Whisper on this device (Ordo › Listening). SRT, VTT and plain text files work without either.</p>}
+          {!spotify && !hasKey && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Transcripts use Whisper on Groq with your own free key, or Whisper on this device (Settings › Listening). SRT, VTT and plain text files work without either.</p>}
           {!spotify && onDevice && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Made on this device: private and free, slower than Groq.</p>}
         </>
       )}

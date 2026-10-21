@@ -11,7 +11,7 @@ import { qrText, readCode, showCode as groupCode } from '@/services/sync/protoco
 import { toast } from '@/state/ui';
 import { SettingsSection } from '../SettingsSection';
 
-/** Ordo › Your data › Your devices: pair the desktop app and the phone once; they sync when both are open. */
+/** Settings › Your data › Your devices: pair the desktop app and the phone once; they sync when both are open. */
 export function SyncSection({ sync }: { sync: Settings['sync'] }) {
   const pairs = useSyncStore((s) => s.pairs);
   const [pairing, setPairing] = useState(false);

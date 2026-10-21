@@ -259,9 +259,9 @@ export function LiveText({ media, isOn, scrollRef, large = false }: { media: Med
         <div className="min-w-0 flex-1">
           <h2 className="text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase">Live text</h2>
           {note && <p className={cx('mt-1 text-[13.5px] leading-snug', mine && (status === 'blocked' || status === 'error') ? 'text-accent-text' : 'text-ink-soft')}>{note}</p>}
-          {failed && /Ordo › AI/.test(failed) && (
-            <Link to="/ordo/ai" className="mt-1.5 inline-block text-[13.5px] font-semibold text-ink underline underline-offset-2">
-              Add a key in Ordo
+          {failed && /Settings › AI/.test(failed) && (
+            <Link to="/settings/ai" className="mt-1.5 inline-block text-[13.5px] font-semibold text-ink underline underline-offset-2">
+              Add a key in Settings
             </Link>
           )}
         </div>
@@ -277,7 +277,7 @@ export function LiveText({ media, isOn, scrollRef, large = false }: { media: Med
       ) : (
         !on && (
           <Card className="p-4 text-[14px] leading-relaxed text-ink-soft">
-            Turn on <span className="font-semibold text-ink">Live text</span> to have what’s said written out as it airs, with every word to tap, hover and save like in Codex. It uses Whisper: on Groq with your free key (Ordo › AI), or on this device (Ordo › Listening). The station is streamed a second time for it, and only stations whose servers allow it can be written out.
+            Turn on <span className="font-semibold text-ink">Live text</span> to have what’s said written out as it airs, with every word to tap, hover and save like in Codex. It uses Whisper: on Groq with your free key (Settings › AI), or on this device (Settings › Listening). The station is streamed a second time for it, and only stations whose servers allow it can be written out.
           </Card>
         )
       )}

@@ -12,7 +12,7 @@ import { eyebrow } from '../parts';
 import { GroupRing, LetterSheet, Sample, useScript } from './parts';
 import { shown } from './LettersLesson';
 
-/** `/grammatica/letters`: a language's alphabet as a chart in groups, each with its lesson. */
+/** `/cursus/alphabets`: a language's alphabet as a chart in groups, each with its lesson. */
 export default function LettersPage() {
   const { language } = useApp();
   const lang = language.id;
@@ -46,7 +46,7 @@ export default function LettersPage() {
 
       {next && (
         <Link
-          to={`/grammatica/letters/${next.id}/lesson`}
+          to={`/cursus/alphabets/${next.id}/lesson`}
           className="group mb-2 flex items-center gap-4 rounded-3xl border border-line/70 bg-surface p-5 transition-colors hover:border-line-strong sm:p-6"
         >
           <span lang={lang} dir={script.rtl ? 'rtl' : undefined} className="grid min-w-16 shrink-0 place-items-center rounded-2xl bg-sage-soft px-3 py-2 text-[30px] leading-tight text-sage-text">
@@ -64,11 +64,11 @@ export default function LettersPage() {
         </Link>
       )}
       <div className="mb-2 flex flex-wrap gap-2">
-        <Link to="/grammatica/letters/review" className={cx(buttonClasses(due ? 'primary' : 'secondary', 'md'), 'flex-1 sm:flex-none', !due && 'pointer-events-none opacity-60')} aria-disabled={!due}>
+        <Link to="/cursus/alphabets/review" className={cx(buttonClasses(due ? 'primary' : 'secondary', 'md'), 'flex-1 sm:flex-none', !due && 'pointer-events-none opacity-60')} aria-disabled={!due}>
           <RotateCcw size={17} aria-hidden />
           {due ? `Review ${due} ${due === 1 ? 'letter' : 'letters'}` : 'No letters due'}
         </Link>
-        <Link to="/grammatica" className={cx(buttonClasses('ghost', 'md'), 'flex-1 sm:ml-auto sm:flex-none')}>
+        <Link to="/cursus/grammatica" className={cx(buttonClasses('ghost', 'md'), 'flex-1 sm:ml-auto sm:flex-none')}>
           Grammatica <ArrowRight size={16} aria-hidden />
         </Link>
       </div>
@@ -88,7 +88,7 @@ export default function LettersPage() {
                     </h3>
                     {g.note && <p className="mt-0.5 text-[13.5px] leading-snug text-ink-soft">{g.note}</p>}
                   </div>
-                  <Link to={`/grammatica/letters/${g.id}/lesson${learned(g) ? '?mode=practice' : ''}`} className={cx(buttonClasses(g.id === next?.id ? 'primary' : 'secondary', 'sm'), 'shrink-0')}>
+                  <Link to={`/cursus/alphabets/${g.id}/lesson${learned(g) ? '?mode=practice' : ''}`} className={cx(buttonClasses(g.id === next?.id ? 'primary' : 'secondary', 'sm'), 'shrink-0')}>
                     {learned(g) ? 'Practise' : progress?.get(g.id)?.lessons ? 'Try again' : 'Learn'}
                   </Link>
                 </div>

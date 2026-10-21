@@ -58,7 +58,7 @@ describe('next steps', () => {
   it('sends a learner to a room they haven’t used, and falls back to rooms without picks', async () => {
     const steps = nextSteps(await base({ picks: null, used: { ...used, visio: false } }));
     expect(steps[0]).toMatchObject({ type: 'room', to: '/sonus?tab=podcasts' });
-    expect(steps[2]).toMatchObject({ type: 'room', to: '/visio?tab=services' });
+    expect(steps[2]).toMatchObject({ type: 'room', to: '/sonus?tab=streaming' });
   });
   it('writes a note about the week', () => {
     expect(guideNote(week({ read: 50, listen: 10 }), steer(week({ read: 50, listen: 10 }), []), 'Spanish')).toMatch(/^60 minutes of Spanish this week, mostly reading/);

@@ -20,7 +20,7 @@ import { GoalStep } from './GoalStep';
 import { LanguageStep } from './LanguageStep';
 import { LevelStep } from './LevelStep';
 
-// "What do you enjoy most" went in 3.0-2: Home orders itself from the reasons (Ordo › Languages keeps the choice).
+// "What do you enjoy most" went in 3.0-2: Home orders itself from the reasons (Settings › Languages keeps the choice).
 const STEPS = ['Language', 'Level', 'Goal', 'Aesthetic'] as const;
 
 function guessNative(): string {
@@ -50,7 +50,7 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
   const [reasons, setReasons] = useState<LearningReason[] | null>(null);
   const [minutes, setMinutes] = useState(15);
   const [busy, setBusy] = useState(false);
-  const theme: ThemePref = settings?.theme ?? 'paper';
+  const theme: ThemePref = settings?.theme ?? 'system';
   // Adding another language starts from what was chosen the first time.
   const reasonsNow = reasons ?? settings?.learner.reasons ?? [];
   const enjoysNow = settings?.learner.enjoys?.length ? settings.learner.enjoys : enjoymentsFor(reasonsNow);

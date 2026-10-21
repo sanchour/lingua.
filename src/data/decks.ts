@@ -15,7 +15,7 @@ export type { NoteInput } from './cardFactory';
 
 export const TRASH_DECK = '~deleted';
 
-/** Deck settings start from the learner's study defaults (Ordo › Study). */
+/** Deck settings start from the learner's study defaults (Settings › Study). */
 export async function defaultDeckConfig(database: LinguaDB = db): Promise<Deck['config']> {
   const study = (await getSettings(database)).study;
   return { ...DEFAULT_DECK_CONFIG, newPerDay: study.newPerDay, maxReviews: study.maxReviews, desiredRetention: study.desiredRetention };

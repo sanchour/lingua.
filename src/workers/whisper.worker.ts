@@ -133,6 +133,6 @@ self.onmessage = (event: MessageEvent<WhisperWorkerRequest>) => {
   if (event.data.type !== 'run') return;
   run(event.data).catch((error: unknown) => {
     const message = error instanceof Error ? error.message : String(error);
-    post({ type: 'error', message: /memory|allocation|OOM/i.test(message) ? 'This device ran out of memory. Try the smaller model in Ordo › Listening.' : message });
+    post({ type: 'error', message: /memory|allocation|OOM/i.test(message) ? 'This device ran out of memory. Try the smaller model in Settings › Listening.' : message });
   });
 };

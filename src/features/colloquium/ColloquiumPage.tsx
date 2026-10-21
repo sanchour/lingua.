@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Check, Copy, ExternalLink, MessageCircle, Mic, Type } from 'lucide-react';
+import { Check, Copy, ExternalLink, MessageCircle, Mic, Type, X } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { asScene, buildPrompt, promptInLanguage, SCENE_INFO, SCENES } from '@/core/colloquium/prompts';
@@ -59,6 +59,8 @@ export default function ColloquiumPage() {
   const [params] = useSearchParams();
   // Home's scene of the day opens with that scene picked.
   const [scene, setScene] = useState<SceneId>(() => asScene(params.get('scene')) ?? 'cafe');
+  // Mentis's prompt and Diarium's "Talk about this" open Sermo with something to talk about instead of a scene.
+  const [about, setAbout] = useState(() => params.get('topic')?.trim().slice(0, 160) || '');
   const [correct, setCorrect] = useState(true);
   const [slow, setSlow] = useState(LOW.has(language.level));
   const [mode, setMode] = useState<'voice' | 'text'>('voice');
@@ -80,6 +82,7 @@ export default function ColloquiumPage() {
     voice: mode === 'voice',
     words: useWords ? (due ?? []) : [],
     topic,
+    about: about || undefined,
   });
 
   const copy = async () => {
@@ -106,7 +109,7 @@ export default function ColloquiumPage() {
     const id = await createChat(
       lang,
       scene,
-      SCENE_INFO[scene].title,
+      about ? `About ${about}` : SCENE_INFO[scene].title,
       buildPrompt(lang, {
         scene,
         level: language.level,
@@ -115,9 +118,10 @@ export default function ColloquiumPage() {
         voice: false,
         words: useWords ? (due ?? []) : [],
         topic,
+        about: about || undefined,
       }),
     );
-    navigate(`/colloquium/chat/${id}`);
+    navigate(`/mentis/sermo/chat/${id}`);
   };
 
   const toggle = (on: boolean, set: (v: boolean) => void, text: string) => (
@@ -137,14 +141,27 @@ export default function ColloquiumPage() {
 
   return (
     <>
-      <PageHeader title="Colloquium" eyebrow={`Talk in ${name}`} />
+      <PageHeader title="Sermo" eyebrow={`Talk in ${name}`} />
       <p className="-mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-soft">
         Pick a scene and Lingua writes the opening in {name}, for your level and the words you’re learning. Talk it through in the AI you already use, by voice or text
         {hasKey ? ', or chat here with corrections.' : '.'}
       </p>
 
-      <h2 className={cx(label, 'mt-8 mb-3')}>The scene</h2>
-      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+      {about && (
+        <Card className="mt-8 flex items-center gap-3 p-4 sm:p-5">
+          <MessageCircle size={20} className="shrink-0 text-accent-text" aria-hidden />
+          <span className="min-w-0 flex-1">
+            <span className="block text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase">Talking about</span>
+            <span className="block truncate font-serif text-[19px] font-semibold">{about}</span>
+          </span>
+          <Button variant="ghost" size="sm" icon={X} onClick={() => setAbout('')}>
+            Pick a scene instead
+          </Button>
+        </Card>
+      )}
+
+      <h2 className={cx(label, 'mt-8 mb-3', about && 'hidden')}>The scene</h2>
+      <ul hidden={Boolean(about)} className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         {SCENES.map((id) => {
           const info = SCENE_INFO[id];
           return (
@@ -228,8 +245,8 @@ export default function ColloquiumPage() {
         ) : (
           <p className="text-[14.5px] leading-snug text-ink-soft">
             With a free Groq or Gemini key you can chat right here, with your mistakes corrected as you go.{' '}
-            <Link to="/ordo/ai" className="font-semibold text-accent-text hover:underline">
-              Add a key in Ordo › AI
+            <Link to="/settings/ai" className="font-semibold text-accent-text hover:underline">
+              Add a key in Settings › AI
             </Link>
           </p>
         )}
@@ -237,7 +254,7 @@ export default function ColloquiumPage() {
           <ul className="mt-4 -mx-2 flex flex-col">
             {chats.map((c) => (
               <li key={c.id}>
-                <Link to={`/colloquium/chat/${c.id}`} className="flex items-center gap-3 rounded-2xl px-2 py-2.5 transition-colors hover:bg-surface/70">
+                <Link to={`/mentis/sermo/chat/${c.id}`} className="flex items-center gap-3 rounded-2xl px-2 py-2.5 transition-colors hover:bg-surface/70">
                   <MessageCircle size={18} className="shrink-0 text-ink-faint" aria-hidden />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[15px] font-semibold">{c.title}</span>

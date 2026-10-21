@@ -26,7 +26,7 @@ export default function SpotifyCallback() {
         <div className="max-w-sm">
           <p className="font-serif text-xl font-semibold">Spotify isn’t connected</p>
           <p className="mt-2 text-[14.5px] text-ink-soft">{error}</p>
-          <Link to="/ordo/music" className="mt-5 inline-block font-semibold text-accent-text">
+          <Link to="/settings/music" className="mt-5 inline-block font-semibold text-accent-text">
             Back to the Spotify settings
           </Link>
         </div>

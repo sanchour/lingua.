@@ -1,8 +1,9 @@
-import { BookA, BookOpen, ChartNoAxesColumn, Clapperboard, Earth, Headphones, House, MessagesSquare, Settings2 } from 'lucide-react';
+import { BookOpen, ChartNoAxesColumn, GraduationCap, House, Lamp, Settings2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { DeckIcon } from './DeckIcon';
+import { SonusVisioIcon } from './RoomIcons';
 
-export type SectionId = 'home' | 'codex' | 'thesaurus' | 'sonus' | 'visio' | 'mundus' | 'grammatica' | 'colloquium' | 'ratio' | 'ordo';
+export type SectionId = 'home' | 'cursus' | 'codex' | 'thesaurus' | 'sonus' | 'mentis' | 'ratio' | 'ordo';
 
 export interface Section {
   id: SectionId;
@@ -17,17 +18,16 @@ export interface Section {
   tint?: string;
 }
 
+/** Lingua 5's rooms, in the sidebar's order (Alt 1…8). Ratio and Settings sit apart at the bottom. */
 export const SECTIONS: Section[] = [
   { id: 'home', path: '/', name: 'Home', role: 'Your hearth', icon: House, placement: 'tab' },
+  { id: 'cursus', path: '/cursus', name: 'Cursus', role: 'Course & grammar', icon: GraduationCap, placement: 'header' },
   { id: 'codex', path: '/codex', name: 'Codex', role: 'Read', icon: BookOpen, placement: 'tab' },
   { id: 'thesaurus', path: '/thesaurus', name: 'Thesaurus', role: 'Vocabulary', icon: DeckIcon, placement: 'tab' },
-  { id: 'sonus', path: '/sonus', name: 'Sonus', role: 'Listen & sing', icon: Headphones, placement: 'tab' },
-  { id: 'visio', path: '/visio', name: 'Visio', role: 'Watch', icon: Clapperboard, placement: 'tab' },
-  { id: 'mundus', path: '/mundus', name: 'Mundus', role: 'Your guide', icon: Earth, placement: 'header' },
-  { id: 'grammatica', path: '/grammatica', name: 'Grammatica', role: 'Grammar', icon: BookA, placement: 'header' },
-  { id: 'colloquium', path: '/colloquium', name: 'Colloquium', role: 'Conversation', icon: MessagesSquare, placement: 'side' },
+  { id: 'sonus', path: '/sonus', name: 'Sonus et Visio', role: 'Listen & watch', icon: SonusVisioIcon, placement: 'tab' },
+  { id: 'mentis', path: '/mentis', name: 'Mentis', role: 'Guide, talk & write', icon: Lamp, placement: 'tab' },
   { id: 'ratio', path: '/ratio', name: 'Ratio', role: 'Stats', icon: ChartNoAxesColumn, placement: 'header' },
-  { id: 'ordo', path: '/ordo', name: 'Ordo', role: 'Settings', icon: Settings2, placement: 'header' },
+  { id: 'ordo', path: '/settings', name: 'Settings', role: 'Settings', icon: Settings2, placement: 'header' },
 ];
 
 export const TAB_SECTIONS = SECTIONS.filter((s) => s.placement === 'tab');

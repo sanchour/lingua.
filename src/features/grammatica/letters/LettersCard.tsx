@@ -22,7 +22,7 @@ export function LettersCard({ lang, home, level }: { lang: string; home?: boolea
   if (!next) {
     return (
       <Link
-        to="/grammatica/letters"
+        to="/cursus/alphabets"
         className="mb-2 flex items-center gap-3 rounded-2xl border border-line/60 bg-surface px-4 py-3 text-[14.5px] font-semibold transition-colors hover:border-line-strong"
       >
         <GroupRing learned size={30} />
@@ -39,11 +39,11 @@ export function LettersCard({ lang, home, level }: { lang: string; home?: boolea
         <p className={cx(eyebrow, 'inline-flex items-center gap-1.5 text-sage-text')}>
           <Languages size={14} aria-hidden /> The alphabet · {script.name}
         </p>
-        <Link to="/grammatica/letters" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
+        <Link to="/cursus/alphabets" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
           {learned} of {script.groups.length} groups <ArrowRight size={14} aria-hidden />
         </Link>
       </div>
-      <Link to={`/grammatica/letters/${next.id}/lesson`} className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
+      <Link to={`/cursus/alphabets/${next.id}/lesson`} className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
         <span lang={lang} dir={script.rtl ? 'rtl' : undefined} className="grid min-w-14 shrink-0 place-items-center rounded-2xl bg-sage-soft px-2.5 py-1.5 text-[26px] leading-tight text-sage-text">
           <Sample letters={next.letters} />
         </span>

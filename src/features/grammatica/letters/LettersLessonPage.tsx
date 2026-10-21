@@ -28,8 +28,8 @@ interface Plan {
 }
 
 /**
- * An alphabet lesson, full screen: a group's lesson (`/grammatica/letters/:group/lesson`), its
- * practice once learned (`?mode=practice`), or the letters due (`/grammatica/letters/review`).
+ * An alphabet lesson, full screen: a group's lesson (`/cursus/alphabets/:group/lesson`), its
+ * practice once learned (`?mode=practice`), or the letters due (`/cursus/alphabets/review`).
  */
 export default function LettersLessonPage({ review = false }: { review?: boolean }) {
   const { groupId = '' } = useParams();
@@ -51,7 +51,7 @@ export default function LettersLessonPage({ review = false }: { review?: boolean
   const [round, setRound] = useState(0);
   const active = useRef({ ms: 0, startedAt: Date.now(), n: 0 });
 
-  const back = useCallback(() => navigate('/grammatica/letters', { replace: true }), [navigate]);
+  const back = useCallback(() => navigate('/cursus/alphabets', { replace: true }), [navigate]);
 
   useEffect(() => {
     if (!script) return;
@@ -117,7 +117,7 @@ export default function LettersLessonPage({ review = false }: { review?: boolean
                 {
                   label: `Next: ${next.title}`,
                   onClick: () =>
-                    navigate(`/grammatica/letters/${next.id}/lesson`, {
+                    navigate(`/cursus/alphabets/${next.id}/lesson`, {
                       replace: true,
                     }),
                 },

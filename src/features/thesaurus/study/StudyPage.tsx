@@ -160,7 +160,7 @@ function CardStudy() {
           { label: 'Another lesson', onClick: () => setRound((r) => r + 1) },
           { label: 'Lightning round', onClick: () => navigate(`/thesaurus/study/${param}?mode=ludus&lightning=1`, { replace: true }) },
           { label: 'Sentences with a gap', onClick: () => navigate(`/thesaurus/study/${param}?mode=ludus&kind=sentences`, { replace: true }) },
-          ...(grammarNext ? [{ label: `Grammar: ${grammarNext.title}`, onClick: () => navigate(`/grammatica/${grammarNext.id}`) }] : []),
+          ...(grammarNext ? [{ label: `Grammar: ${grammarNext.title}`, onClick: () => navigate(`/cursus/grammatica/${grammarNext.id}`) }] : []),
         ];
     return (
       <div className="grid min-h-dvh place-items-center py-10">

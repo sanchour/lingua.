@@ -46,7 +46,7 @@ export const WATCHING_SHORTCUTS: Array<[string[], string]> = [
   [['F'], 'Full screen'],
 ];
 
-/** Every desktop shortcut, grouped. Shown in Ordo and in the `?` dialog. */
+/** Every desktop shortcut, grouped. Shown in Settings and in the `?` dialog. */
 export function ShortcutList() {
   return (
     <div className="grid gap-6 sm:grid-cols-2">

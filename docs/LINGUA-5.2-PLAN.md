@@ -1,6 +1,6 @@
 # Lingua 5.2 · the plan
 
-**Status (2026-10-20): planned, not to be built yet** (the user: plan only). This is the second half
+**Status: being built since 2026-10-21, in the order of HANDOVER.md** (planned 2026-10-20; 5.2-1 done 2026-10-21). This is the second half
 of the Lingua 5 list; the first half is [LINGUA-5.1-PLAN.md](LINGUA-5.1-PLAN.md), whose section 0
 holds the user's decisions (Stripe; Max is AI with your own key; €24.99 once, €5.99 a month or €49.99
 a year). **Desktop only:** the phone isn't needed anymore, so nothing here is designed or checked for
@@ -54,9 +54,9 @@ Pages deploy. "Done when" is checked in the browser.
 ### 5.2-1 · Settings, a narrower sidebar, and flashcard widths
 
 **The user's points**
-- [ ] Ordo is called Settings again.
-- [ ] The sidebar a bit less wide.
-- [ ] Every flashcard: thin, normal or wide on desktop.
+- [x] Ordo is called Settings again.
+- [x] The sidebar a bit less wide.
+- [x] Every flashcard: thin, normal or wide on desktop.
 
 **Settings**
 - "Settings" everywhere the learner reads it: the sidebar, the page title, the shortcut dialog and

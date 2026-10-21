@@ -42,6 +42,8 @@ interface Kit {
   slow: string;
   words: string;
   grammar: string;
+  /** Instead of the scene: talk about something the learner read or watched. */
+  about: string;
   voice: string;
   start: string;
   scenes: Record<SceneId, string>;
@@ -54,6 +56,7 @@ const EN: Kit = {
   slow: 'Speak slowly and simply, in short sentences.',
   words: 'Try to use these words I’m learning: {words}.',
   grammar: 'Help me practise this: {topic}.',
+  about: 'Let’s talk about “{about}”: ask me what it’s about and what I thought of it.',
   voice: 'We’re talking out loud, so keep your turns short.',
   start: 'Begin now with your first line.',
   scenes: {
@@ -78,6 +81,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Habla despacio y con sencillez, en frases cortas.',
     words: 'Intenta usar estas palabras que estoy aprendiendo: {words}.',
     grammar: 'Ayúdame a practicar esto: {topic}.',
+    about: 'Hablemos de «{about}»: pregúntame de qué trata y qué me pareció.',
     voice: 'Hablamos en voz alta, así que haz turnos cortos.',
     start: 'Empieza tú ahora con la primera frase.',
     scenes: {
@@ -100,6 +104,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Parle lentement et simplement, avec des phrases courtes.',
     words: 'Essaie d’utiliser ces mots que j’apprends : {words}.',
     grammar: 'Aide-moi à pratiquer ceci : {topic}.',
+    about: 'Parlons de « {about} » : demande-moi de quoi ça parle et ce que j’en ai pensé.',
     voice: 'Nous parlons à voix haute, alors fais des répliques courtes.',
     start: 'Commence maintenant avec la première réplique.',
     scenes: {
@@ -122,6 +127,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Sprich langsam und einfach, in kurzen Sätzen.',
     words: 'Versuche, diese Wörter zu benutzen, die ich gerade lerne: {words}.',
     grammar: 'Hilf mir, das hier zu üben: {topic}.',
+    about: 'Lass uns über „{about}“ sprechen: Frag mich, worum es geht und wie ich es fand.',
     voice: 'Wir sprechen laut miteinander, also halte deine Antworten kurz.',
     start: 'Fang jetzt mit dem ersten Satz an.',
     scenes: {
@@ -144,6 +150,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Parla lentamente e in modo semplice, con frasi brevi.',
     words: 'Prova a usare queste parole che sto imparando: {words}.',
     grammar: 'Aiutami a esercitarmi su questo: {topic}.',
+    about: 'Parliamo di «{about}»: chiedimi di cosa parla e cosa ne ho pensato.',
     voice: 'Parliamo ad alta voce, quindi fai battute brevi.',
     start: 'Comincia adesso con la prima battuta.',
     scenes: {
@@ -166,6 +173,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Fale devagar e de forma simples, com frases curtas.',
     words: 'Tente usar estas palavras que estou aprendendo: {words}.',
     grammar: 'Me ajude a praticar isto: {topic}.',
+    about: 'Vamos falar sobre «{about}»: pergunte-me do que se trata e o que achei.',
     voice: 'Estamos falando em voz alta, então fale pouco de cada vez.',
     start: 'Comece agora com a primeira fala.',
     scenes: {
@@ -188,6 +196,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Говори медленно и просто, короткими фразами.',
     words: 'Постарайся использовать слова, которые я сейчас учу: {words}.',
     grammar: 'Помоги мне потренировать вот это: {topic}.',
+    about: 'Давай поговорим о «{about}»: спроси меня, о чём это и что я об этом думаю.',
     voice: 'Мы говорим вслух, так что отвечай коротко.',
     start: 'Начни разговор первой репликой.',
     scenes: {
@@ -210,6 +219,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Μίλα αργά και απλά, με σύντομες προτάσεις.',
     words: 'Προσπάθησε να χρησιμοποιήσεις αυτές τις λέξεις που μαθαίνω: {words}.',
     grammar: 'Βοήθησέ με να εξασκηθώ σε αυτό: {topic}.',
+    about: 'Ας μιλήσουμε για το «{about}»: ρώτα με για τι πρόκειται και τι γνώμη έχω.',
     voice: 'Μιλάμε φωναχτά, οπότε κάνε σύντομες ατάκες.',
     start: 'Ξεκίνα τώρα με την πρώτη σου ατάκα.',
     scenes: {
@@ -232,6 +242,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Prata långsamt och enkelt, i korta meningar.',
     words: 'Försök att använda de här orden som jag håller på att lära mig: {words}.',
     grammar: 'Hjälp mig att öva på det här: {topic}.',
+    about: 'Vi pratar om ”{about}”: fråga mig vad det handlar om och vad jag tyckte.',
     voice: 'Vi pratar högt, så håll dina repliker korta.',
     start: 'Börja nu med den första repliken.',
     scenes: {
@@ -254,6 +265,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Beszélj lassan és egyszerűen, rövid mondatokban.',
     words: 'Próbáld használni ezeket a szavakat, amelyeket most tanulok: {words}.',
     grammar: 'Segíts gyakorolni ezt: {topic}.',
+    about: 'Beszélgessünk erről: „{about}”. Kérdezd meg, miről szól, és mit gondolok róla.',
     voice: 'Hangosan beszélgetünk, ezért röviden válaszolj.',
     start: 'Most kezdd te az első mondattal.',
     scenes: {
@@ -276,6 +288,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Praat langzaam en eenvoudig, in korte zinnen.',
     words: 'Probeer deze woorden te gebruiken die ik aan het leren ben: {words}.',
     grammar: 'Help me dit te oefenen: {topic}.',
+    about: 'Laten we het hebben over ‘{about}’: vraag me waar het over gaat en wat ik ervan vond.',
     voice: 'We praten hardop, dus houd je beurten kort.',
     start: 'Begin nu met de eerste zin.',
     scenes: {
@@ -298,6 +311,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Snakk sakte og enkelt, i korte setninger.',
     words: 'Prøv å bruke disse ordene som jeg lærer nå: {words}.',
     grammar: 'Hjelp meg å øve på dette: {topic}.',
+    about: 'La oss snakke om «{about}»: spør meg hva det handler om og hva jeg syntes.',
     voice: 'Vi snakker høyt, så hold replikkene dine korte.',
     start: 'Begynn nå med den første replikken.',
     scenes: {
@@ -320,6 +334,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Yavaş ve basit konuş, kısa cümleler kur.',
     words: 'Şu an öğrendiğim bu kelimeleri kullanmaya çalış: {words}.',
     grammar: 'Şunu çalışmama yardım et: {topic}.',
+    about: '“{about}” hakkında konuşalım: bana neyle ilgili olduğunu ve ne düşündüğümü sor.',
     voice: 'Sesli konuşuyoruz, o yüzden kısa konuş.',
     start: 'Şimdi ilk cümleyle sen başla.',
     scenes: {
@@ -342,6 +357,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Bicaralah pelan-pelan dan sederhana, dengan kalimat pendek.',
     words: 'Coba pakai kata-kata yang sedang aku pelajari ini: {words}.',
     grammar: 'Bantu aku berlatih ini: {topic}.',
+    about: 'Ayo kita bicara tentang “{about}”: tanyakan padaku isinya tentang apa dan apa pendapatku.',
     voice: 'Kita berbicara dengan suara, jadi jawablah dengan singkat.',
     start: 'Mulailah sekarang dengan kalimat pertama.',
     scenes: {
@@ -364,6 +380,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Ongea polepole na kwa urahisi, kwa sentensi fupi.',
     words: 'Jaribu kutumia maneno haya ninayojifunza: {words}.',
     grammar: 'Nisaidie kufanya mazoezi ya hili: {topic}.',
+    about: 'Tuzungumze kuhusu “{about}”: niulize inahusu nini na nilionaje.',
     voice: 'Tunazungumza kwa sauti, kwa hiyo jibu kwa ufupi.',
     start: 'Anza sasa kwa sentensi ya kwanza.',
     scenes: {
@@ -386,6 +403,7 @@ const KITS: Record<string, Kit> = {
     slow: 'Lente et simpliciter loquere, brevibus sententiis.',
     words: 'Conare his verbis uti quae nunc disco: {words}.',
     grammar: 'Adiuva me hoc exercere: {topic}.',
+    about: 'De «{about}» colloquamur: interroga me quid narret et quid de eo sentiam.',
     voice: 'Voce loquimur, itaque breviter responde.',
     start: 'Incipe nunc prima sententia.',
     scenes: {
@@ -408,6 +426,7 @@ const KITS: Record<string, Kit> = {
     slow: 'تكلّم ببطء وببساطة، بجمل قصيرة.',
     words: 'حاول أن تستخدم هذه الكلمات التي أتعلمها: {words}.',
     grammar: 'ساعدني على التدرّب على هذا: {topic}.',
+    about: 'لنتحدث عن «{about}»: اسألني عمّ يدور وما رأيي فيه.',
     voice: 'نحن نتحدث بصوت عالٍ، فاجعل كلامك قصيرًا.',
     start: 'ابدأ الآن بالجملة الأولى.',
     scenes: {
@@ -430,6 +449,7 @@ const KITS: Record<string, Kit> = {
     slow: '请说得慢一点、简单一点，用短句。',
     words: '请尽量用上我正在学的这些词：{words}。',
     grammar: '请帮我练习这个：{topic}。',
+    about: '我们来聊聊《{about}》：问问我它讲的是什么，我觉得怎么样。',
     voice: '我们是口头对话，所以每次请说得短一点。',
     start: '现在请你先说第一句。',
     scenes: {
@@ -452,6 +472,7 @@ const KITS: Record<string, Kit> = {
     slow: 'ゆっくり、簡単に、短い文で話してください。',
     words: '私が今勉強しているこの言葉を使ってみてください：{words}。',
     grammar: 'これを練習するのを手伝ってください：{topic}。',
+    about: '「{about}」について話しましょう。どんな内容か、私がどう思ったかを聞いてください。',
     voice: '声で話しているので、一回の発言は短くしてください。',
     start: '今、最初の一言から始めてください。',
     scenes: {
@@ -474,6 +495,7 @@ const KITS: Record<string, Kit> = {
     slow: '천천히, 쉽게, 짧은 문장으로 말해 주세요.',
     words: '제가 지금 배우고 있는 이 단어들을 써 보세요: {words}.',
     grammar: '이것을 연습하도록 도와주세요: {topic}.',
+    about: '‘{about}’에 대해 이야기해요. 무슨 내용인지, 제가 어떻게 생각했는지 물어봐 주세요.',
     voice: '소리 내어 대화하고 있으니까 짧게 말해 주세요.',
     start: '지금 첫 마디로 시작해 주세요.',
     scenes: {
@@ -508,6 +530,8 @@ export interface PromptOptions {
   words: string[];
   /** The grammar topic being learned, when Grammatica has one. */
   topic?: string;
+  /** Something read or watched to talk about, in place of the scene (Diarium's "Talk about this", Mentis's prompt). */
+  about?: string;
 }
 
 /** Whether the prompt is written in the language itself (the core twenty) or in English. */
@@ -523,10 +547,11 @@ export function buildPrompt(lang: string, o: PromptOptions): string {
       .replaceAll('{name}', name)
       .replaceAll('{level}', level)
       .replaceAll('{words}', o.words.join(LIST_SEPARATOR[lang] ?? ', '))
-      .replaceAll('{topic}', o.topic ?? '');
+      .replaceAll('{topic}', o.topic ?? '')
+      .replaceAll('{about}', o.about ?? '');
   const parts = [
     kit.open,
-    kit.scenes[o.scene],
+    o.about ? kit.about : kit.scenes[o.scene],
     kit.level,
     o.slow && kit.slow,
     o.correct && kit.correct,

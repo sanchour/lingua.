@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { Ellipsis, PenLine, RotateCcw, Sparkles, Trash2, Wand2 } from 'lucide-react';
+import { Ellipsis, MessagesSquare, PenLine, RotateCcw, Sparkles, Trash2, Wand2 } from 'lucide-react';
 import { BackLink } from '@/app/BackLink';
 import { useDockBottom } from '@/app/dock';
 import { useApp } from '@/app/context';
@@ -16,6 +16,7 @@ import { Button, buttonClasses, Dialog, MenuItem, Popover, Segmented } from '@/d
 import { spring } from '@/design/motion';
 import { LlmError, PROVIDERS } from '@/services/llm/client';
 import { checkEntry } from '@/services/llm/journal';
+import { cx } from '@/lib/cx';
 import { toast } from '@/state/ui';
 import { CorrectionList, ReviewSummary, ReviewText } from './Review';
 
@@ -31,7 +32,7 @@ export default function EntryPage() {
     return (
       <div className="py-20 text-center">
         <p className="font-serif text-2xl font-semibold">This entry isn’t here any more</p>
-        <Link to="/codex?tab=diarium" className="mt-4 inline-block font-semibold text-accent-text">
+        <Link to="/mentis/diarium" className="mt-4 inline-block font-semibold text-accent-text">
           Back to Diarium
         </Link>
       </div>
@@ -125,7 +126,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       if (error instanceof LlmError && error.kind === 'no-key') {
-        toast(error.message, { tone: 'error', action: { label: 'Open Ordo', onClick: () => navigate('/ordo/ai') } });
+        toast(error.message, { tone: 'error', action: { label: 'Open Settings', onClick: () => navigate('/settings/ai') } });
       } else toast(error instanceof Error ? error.message : 'The check didn’t work. Try again.', { tone: 'error' });
     } finally {
       setChecking(false);
@@ -139,11 +140,13 @@ function Entry({ entry }: { entry: JournalEntry }) {
   };
 
   const date = new Date(`${entry.date}T12:00:00`);
+  // "Talk about this" opens Sermo with the entry's prompt, or its first sentence, as the topic.
+  const talkTopic = (entry.prompt ?? entry.text.split(/(?<=[.!?。！？])\s*/)[0] ?? '').trim().slice(0, 80);
   const fontStyle = { '--entry-font': readerFontStack(getReaderFont(settings.reader.font), lang) } as CSSProperties;
 
   return (
     <div className="pb-36" style={fontStyle}>
-      <BackLink to="/codex?tab=diarium">Diarium</BackLink>
+      <BackLink to="/mentis/diarium">Diarium</BackLink>
       <header className="mb-7 flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
@@ -158,6 +161,11 @@ function Entry({ entry }: { entry: JournalEntry }) {
             <h1 className="mt-2 font-serif text-[30px] leading-tight font-semibold">Dear diary</h1>
           )}
         </div>
+        {talkTopic && (
+          <Link to={`/mentis/sermo?topic=${encodeURIComponent(talkTopic)}`} className={cx(buttonClasses('secondary', 'md'), 'shrink-0')}>
+            <MessagesSquare size={16} aria-hidden /> Talk about this
+          </Link>
+        )}
         <Popover
           label="Entry options"
           placement="bottom-end"
@@ -248,14 +256,14 @@ function Entry({ entry }: { entry: JournalEntry }) {
 
       {/* Floating bar: words, saving, and the check */}
       {(mode === 'write' || !review) && (
-        <div className="pointer-events-none fixed inset-x-0 z-20 flex justify-center px-4 lg:pl-[248px]" style={{ bottom: dockBottom }}>
+        <div className="pointer-events-none fixed inset-x-0 z-20 flex justify-center px-4 lg:pl-[var(--sidebar-w,0px)]" style={{ bottom: dockBottom }}>
           <div className="pointer-events-auto flex w-full max-w-2xl items-center gap-3 rounded-3xl border border-line/80 bg-raised/95 p-2 pl-4 shadow-elev-3 backdrop-blur-xl">
             <div className="min-w-0 flex-1 text-[13px] leading-tight text-ink-faint">
               <span className="font-semibold text-ink-soft tabular-nums">
                 {words} {words === 1 ? 'word' : 'words'}
               </span>
               <span className="ml-2">{saved ? 'Saved' : 'Saving…'}</span>
-              <p className="hidden truncate sm:block">{hasAi ? `Checking sends this entry to ${provider}.` : 'Add a free AI key in Ordo to get corrections.'}</p>
+              <p className="hidden truncate sm:block">{hasAi ? `Checking sends this entry to ${provider}.` : 'Add a free AI key in Settings to get corrections.'}</p>
             </div>
             {stale && review && (
               <button type="button" onClick={() => setMode('review')} className="hidden px-2 text-[13px] font-semibold text-ink-soft hover:text-ink sm:block">
@@ -267,7 +275,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
                 {review && stale ? 'Check again' : 'Check my writing'}
               </Button>
             ) : (
-              <Link to="/ordo/ai" className={buttonClasses('secondary', 'md')}>
+              <Link to="/settings/ai" className={buttonClasses('secondary', 'md')}>
                 Set up AI
               </Link>
             )}
@@ -288,7 +296,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
               variant="danger"
               onClick={() => {
                 void deleteEntry(entry.id);
-                navigate('/codex?tab=diarium', { replace: true });
+                navigate('/mentis/diarium', { replace: true });
               }}
             >
               Delete

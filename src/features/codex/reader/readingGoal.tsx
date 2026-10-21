@@ -6,7 +6,7 @@ import { localDateKey } from '@/lib/format';
 
 export const CODEX_GOALS = [5, 10, 15, 20, 30, 45, 60];
 
-/** Codex's own daily goal, in minutes of reading (Home's goal counts every kind of study). Set in Ordo › Languages. */
+/** Codex's own daily goal, in minutes of reading (Home's goal counts every kind of study). Set in Settings › Languages. */
 export const codexGoal = (language: Pick<LanguageProfile, 'dailyGoal'>) => language.dailyGoal.codexMinutes ?? 15;
 
 /** Time read in Codex today, as recorded (an open reader adds what it hasn't recorded yet). */

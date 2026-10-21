@@ -1,4 +1,4 @@
-// Removing a language (Ordo › Languages): the language and everything learnt in it go from this
+// Removing a language (Settings › Languages): the language and everything learnt in it go from this
 // device, with the files and the offline dictionary that took their room. Other languages stay.
 import Dexie from 'dexie';
 import { removePack } from '@/services/packs/packs';

@@ -8,12 +8,16 @@ const toWays = (d: Card['direction'][]): Ways => (d.length > 1 ? 'both' : d[0] =
 const fromWays = (w: Ways): Card['direction'][] => (w === 'both' ? ['recognition', 'production'] : [w]);
 
 /** How a deck is studied: daily pace, how sure you want to be, and in which direction. */
+/** A deck's card width: the one every card has, or its own. */
+type CardWidthChoice = 'all' | NonNullable<Deck['config']['cardWidth']>;
+
 export function DeckSettings({ deck, open, onClose }: { deck: Deck; open: boolean; onClose: () => void }) {
   const [newPerDay, setNewPerDay] = useState(deck.config.newPerDay);
   const [maxReviews, setMaxReviews] = useState(deck.config.maxReviews);
   const [retention, setRetention] = useState(deck.config.desiredRetention);
   const [ways, setWays] = useState<Ways>(toWays(deck.config.directions));
   const [front, setFront] = useState(deck.config.front ?? 'word');
+  const [width, setWidth] = useState<CardWidthChoice>(deck.config.cardWidth ?? 'all');
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -23,11 +27,12 @@ export function DeckSettings({ deck, open, onClose }: { deck: Deck; open: boolea
     setRetention(deck.config.desiredRetention);
     setWays(toWays(deck.config.directions));
     setFront(deck.config.front ?? 'word');
+    setWidth(deck.config.cardWidth ?? 'all');
   }, [open, deck]);
 
   const save = async () => {
     setBusy(true);
-    await updateDeck(deck.id, { config: { ...deck.config, newPerDay, maxReviews, desiredRetention: retention, front } });
+    await updateDeck(deck.id, { config: { ...deck.config, newPerDay, maxReviews, desiredRetention: retention, front, cardWidth: width === 'all' ? undefined : width } });
     if (ways !== toWays(deck.config.directions)) await setDeckDirections(deck.id, fromWays(ways));
     setBusy(false);
     onClose();
@@ -82,6 +87,21 @@ export function DeckSettings({ deck, open, onClose }: { deck: Deck; open: boolea
           <p className="mt-2 text-[13px] leading-snug text-ink-soft">
             {front === 'sentence' ? 'Cards with a sentence show it with the word missing; you think of the word, then turn the card. Cards without one show the word.' : 'Word → meaning cards show the word in front.'}
           </p>
+        </div>
+        <div>
+          <p className="mb-2 text-[13px] font-bold tracking-wide text-ink-soft uppercase">Card width</p>
+          <Segmented<CardWidthChoice>
+            label="Card width"
+            block
+            value={width}
+            onChange={setWidth}
+            options={[
+              { value: 'all', label: 'As all cards' },
+              { value: 'thin', label: 'Thin' },
+              { value: 'normal', label: 'Normal' },
+              { value: 'wide', label: 'Wide' },
+            ]}
+          />
         </div>
         <Slider label="New cards a day" value={newPerDay} min={0} max={100} step={1} onChange={setNewPerDay} format={(v) => String(v)} />
         <Slider label="Reviews a day, at most" value={maxReviews} min={20} max={1000} step={10} onChange={setMaxReviews} format={(v) => String(v)} />

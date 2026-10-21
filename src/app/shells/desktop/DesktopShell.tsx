@@ -15,6 +15,14 @@ export function DesktopShell({ children }: { children: ReactNode }) {
     if (collapsed !== settings.ui.sidebarCollapsed) void patchSetting('ui', { sidebarCollapsed: collapsed });
   }, [collapsed, settings.ui.sidebarCollapsed]);
 
+  // Fixed bars that centre themselves beside the sidebar read its width from --sidebar-w.
+  const width = collapsed ? SIDEBAR_WIDTH.collapsed : SIDEBAR_WIDTH.expanded;
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--sidebar-w', `${width}px`);
+    return () => void root.style.removeProperty('--sidebar-w');
+  }, [width]);
+
   const toggle = () => setCollapsed((c) => !c);
   useHotkeys({ '[': toggle });
 
@@ -25,7 +33,7 @@ export function DesktopShell({ children }: { children: ReactNode }) {
         layout="position"
         layoutDependency={collapsed}
         transition={spring.soft}
-        style={{ marginLeft: collapsed ? SIDEBAR_WIDTH.collapsed : SIDEBAR_WIDTH.expanded }}
+        style={{ marginLeft: width }}
         className="min-h-dvh"
       >
         <div className="mx-auto w-full max-w-6xl px-10 pt-12 pb-20">{children}</div>

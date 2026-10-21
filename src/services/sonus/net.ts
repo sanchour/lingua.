@@ -1,5 +1,5 @@
 // Fetching podcast feeds and audio from the web. Most podcast hosts let apps read feeds and many
-// let them download audio; for hosts that don't (no CORS), an optional relay can be set in Ordo.
+// let them download audio; for hosts that don't (no CORS), an optional relay can be set in Settings.
 import { getSettings } from '@/data/settings';
 
 export class NetError extends Error {

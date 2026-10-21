@@ -37,9 +37,9 @@ interface Plan {
 const SETUP_KINDS = DRILL_KINDS.map((id) => ({ id, label: DRILL_NAME[id] }));
 
 /**
- * A grammar lesson, full screen: a topic's current step (`/grammatica/:topic/lesson`), its mixed
+ * A grammar lesson, full screen: a topic's current step (`/cursus/grammatica/:topic/lesson`), its mixed
  * practice once learned (`?mode=practice`), a Lightning round (`?mode=lightning`), or the items due
- * across topics (`/grammatica/review`).
+ * across topics (`/cursus/grammatica/review`).
  */
 export default function GrammarLessonPage({ review = false, placement = false }: { review?: boolean; placement?: boolean }) {
   const { topicId = '' } = useParams();
@@ -61,7 +61,7 @@ export default function GrammarLessonPage({ review = false, placement = false }:
   const [endsAt, setEndsAt] = useState<number | undefined>();
   const active = useRef({ ms: 0, startedAt: Date.now(), n: 0 });
 
-  const back = useCallback(() => navigate(review || placement || !topicId ? '/grammatica' : `/grammatica/${topicId}`, { replace: true }), [navigate, review, placement, topicId]);
+  const back = useCallback(() => navigate(review || placement || !topicId ? '/cursus/grammatica' : `/cursus/grammatica/${topicId}`, { replace: true }), [navigate, review, placement, topicId]);
 
   // Settings are read when the lesson is made; changing them mid-lesson applies to the next one.
   const settingsAtStart = useRef(lessons);
@@ -134,7 +134,7 @@ export default function GrammarLessonPage({ review = false, placement = false }:
       if (plan.step === null) {
         setEnd({ missed, result, title: 'Practice done', note: `${topic.title}: ${pct}% right first time.`, actions: [again] });
       } else if (passed && step >= 6) {
-        setEnd({ missed, result, title: 'Topic learned', note: `${topic.title} is yours. Its items come back for review when they’re due.`, actions: [{ label: 'Practise it', onClick: () => navigate(`/grammatica/${topic.id}/lesson?mode=practice`, { replace: true }) }] });
+        setEnd({ missed, result, title: 'Topic learned', note: `${topic.title} is yours. Its items come back for review when they’re due.`, actions: [{ label: 'Practise it', onClick: () => navigate(`/cursus/grammatica/${topic.id}/lesson?mode=practice`, { replace: true }) }] });
       } else if (passed) {
         const s = STEPS[step - 1];
         setEnd({ missed, result, title: `Step ${plan.step} passed`, note: `Next: step ${step}, ${s.name.toLowerCase()} (${s.hint.toLowerCase()}).`, actions: [{ label: `On to step ${step}`, onClick: () => setRound((r) => r + 1) }] });

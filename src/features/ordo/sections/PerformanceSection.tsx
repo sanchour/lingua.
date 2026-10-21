@@ -14,7 +14,7 @@ export function PerformanceSection({ perfHud }: { perfHud: boolean }) {
         onChange={(on) => void patchSetting('ui', { perfHud: on })}
       />
       <Link
-        to="/ordo/lab"
+        to="/settings/lab"
         className="mt-2 flex items-center gap-3 rounded-2xl border border-line bg-raised px-4 py-3 transition-colors hover:border-line-strong"
       >
         <FlaskConical size={18} className="text-sage-text" aria-hidden />

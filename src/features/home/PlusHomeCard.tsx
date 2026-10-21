@@ -4,13 +4,13 @@ import { useApp } from '@/app/context';
 import { hasPlus, PLUS_PRICE } from '@/data/plus';
 import { Card } from '@/design/primitives';
 
-/** Lingua+ on Home, until it is had: a quiet note with a way to Ordo › Lingua+. */
+/** Lingua+ on Home, until it is had: a quiet note with a way to Settings › Lingua+. */
 export function PlusHomeCard() {
   const { settings } = useApp();
   if (hasPlus(settings.meta)) return null;
   return (
     <Card className="p-5 sm:p-6">
-      <Link to="/ordo/plus" className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
+      <Link to="/settings/plus" className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-accent-soft text-accent-text">
           <Gem size={20} aria-hidden />
         </span>

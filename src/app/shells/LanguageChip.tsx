@@ -38,7 +38,7 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
           title={compact ? `${target?.endonym ?? language.id} · ${language.level}` : undefined}
           className={cx(
             'no-callout group flex items-center gap-2 rounded-xl border border-line/80 bg-raised text-left transition-[border-color,transform] duration-150 hover:border-line-strong active:scale-[0.98]',
-            compact ? 'size-11 justify-center' : 'h-11 w-full px-3',
+            compact ? 'size-10 justify-center' : 'h-11 w-full px-3',
           )}
         >
           <LanguageFlag lang={language.id} chosen={language.flag} width={24} />
@@ -96,7 +96,7 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
               label="Language settings"
               onClick={() => {
                 close();
-                navigate('/ordo/languages');
+                navigate('/settings/languages');
               }}
             />
           </div>

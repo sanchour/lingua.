@@ -9,12 +9,12 @@ export const PLUS_PRICE = '29.99';
 
 /** What the free edition has, and what Lingua+ adds. */
 export const FREE_ROOMS = ['Codex', 'Thesaurus'];
-export const PLUS_ROOMS = ['Sonus', 'Visio', 'Mundus', 'Grammatica', 'Colloquium', 'Ratio'];
+export const PLUS_ROOMS = ['Cursus', 'Sonus et Visio', 'Mentis', 'Ratio'];
 
 export const hasPlus = (meta: Settings['meta']): boolean => typeof meta.plusAt === 'number';
 
 /** "Buys" Lingua+. Nothing is charged: this is the placeholder. */
 export const getPlus = () => patchSetting('meta', { plusAt: Date.now() });
 
-/** Takes Lingua+ away again (Ordo › Lingua+ › Reset). */
+/** Takes Lingua+ away again (Settings › Lingua+ › Reset). */
 export const resetPlus = () => patchSetting('meta', { plusAt: null });

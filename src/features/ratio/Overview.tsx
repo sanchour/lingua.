@@ -279,7 +279,7 @@ function Dashboard({ data, summaries, single, lang }: { data: OverviewData; summ
             title="Writing"
             icon={Feather}
             action={
-              <Link to="/codex?tab=diarium" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
+              <Link to="/mentis/diarium" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
                 Diarium <ArrowRight size={14} aria-hidden />
               </Link>
             }

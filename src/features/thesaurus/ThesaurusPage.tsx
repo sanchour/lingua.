@@ -28,7 +28,6 @@ import type { NewAction } from './library/NewMenu';
 import { StarterLibrary } from './library/StarterLibrary';
 import { TodayCard } from './library/TodayCard';
 import { useDeckImport } from './library/useDeckImport';
-import { MundusLink } from '@/features/mundus/MundusLink';
 import { DictionaryView } from './dictionary/DictionaryView';
 
 type Tab = 'decks' | 'discover' | 'dictionary';
@@ -172,7 +171,6 @@ export default function ThesaurusPage() {
         ) : (
           <motion.section key="discover" aria-label="Ready-made decks" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>
             <StarterLibrary lang={lang} onOpen={openStarter} />
-            <MundusLink>Series, books, podcasts and radio for new words</MundusLink>
           </motion.section>
         )}
       </AnimatePresence>

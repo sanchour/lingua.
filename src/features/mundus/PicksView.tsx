@@ -211,7 +211,7 @@ function Empty() {
 function ServicesLine({ services, country, hasToken }: { services: string[]; country: string; hasToken: boolean }) {
   return (
     <Link
-      to="/visio?tab=services"
+      to="/sonus?tab=streaming"
       className="mb-8 flex items-center gap-3 rounded-2xl border border-dashed border-line px-4 py-3 text-[14px] text-ink-soft transition-colors hover:border-line-strong hover:bg-surface"
     >
       {services.length ? (
@@ -223,11 +223,11 @@ function ServicesLine({ services, country, hasToken }: { services: string[]; cou
           </span>
           <span className="min-w-0 flex-1">
             Your services in {countryName(country)}
-            {hasToken ? ': series and films show where they stream.' : '. Add a free TMDB key in Visio › Services to see where each one streams.'}
+            {hasToken ? ': series and films show where they stream.' : '. Add a free TMDB key in Sonus et Visio › Streaming to see where each one streams.'}
           </span>
         </>
       ) : (
-        <span className="min-w-0 flex-1">Which streaming services do you have? Choose them in Visio › Services and the picks show what’s on them.</span>
+        <span className="min-w-0 flex-1">Which streaming services do you have? Choose them in Sonus et Visio › Streaming and the picks show what’s on them.</span>
       )}
       <span className="shrink-0 font-semibold text-accent-text">Services</span>
     </Link>
@@ -435,11 +435,11 @@ export function NoPicks({ lang }: { lang: string }) {
       <p className={label}>Beta language</p>
       <h2 className="mt-1 font-serif text-2xl font-semibold">Picks by hand come with the twenty main languages</h2>
       <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-ink-soft">
-        For {name}, Visio › Services lists series and films made in {name} that stream on your services (with a free TMDB key), and Beyond the app works in any language.
+        For {name}, Sonus et Visio › Streaming lists series and films made in {name} that stream on your services (with a free TMDB key), and Beyond the app works in any language.
       </p>
       <div className="mt-5 flex flex-wrap gap-2">
-        <Link to="/visio?tab=services" className="no-callout inline-flex h-10 items-center gap-2 rounded-xl bg-inverse px-4 text-sm font-semibold text-on-inverse">
-          <Tv size={17} aria-hidden /> Visio › Services
+        <Link to="/sonus?tab=streaming" className="no-callout inline-flex h-10 items-center gap-2 rounded-xl bg-inverse px-4 text-sm font-semibold text-on-inverse">
+          <Tv size={17} aria-hidden /> Sonus et Visio › Streaming
         </Link>
       </div>
     </Card>

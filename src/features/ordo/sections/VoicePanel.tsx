@@ -14,7 +14,7 @@ import { toast } from '@/state/ui';
 
 const fail = (e: unknown) => toast(e instanceof Error ? e.message : 'Couldn’t speak that.', { tone: 'error' });
 
-/** Ordo › Languages › Voice: who reads the language aloud, in which accent, and another voice to pick. */
+/** Settings › Languages › Voice: who reads the language aloud, in which accent, and another voice to pick. */
 export function VoicePanel({ active }: { active: LanguageProfile }) {
   const settings = useSettings();
   const { speaker } = useSpeaker(active.id);

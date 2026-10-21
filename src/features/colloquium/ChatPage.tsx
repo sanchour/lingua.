@@ -76,8 +76,8 @@ export default function ChatPage() {
     return (
       <div className="px-5 py-16 text-center">
         <p className="text-ink-soft">This chat isn’t here any more.</p>
-        <Link to="/colloquium" className="mt-3 inline-block font-semibold text-accent-text hover:underline">
-          Back to Colloquium
+        <Link to="/mentis/sermo" className="mt-3 inline-block font-semibold text-accent-text hover:underline">
+          Back to Sermo
         </Link>
       </div>
     );
@@ -98,10 +98,10 @@ export default function ChatPage() {
   return (
     <div className={cx(!wide && 'min-h-dvh bg-bg')}>
       {wide ? (
-        <PageHeader title={chat.title} eyebrow="Colloquium" actions={remove} />
+        <PageHeader title={chat.title} eyebrow="Sermo" actions={remove} />
       ) : (
         <header className="no-callout sticky top-0 z-20 flex items-center gap-1 bg-bg/90 px-2 pt-safe backdrop-blur-xl">
-          <button type="button" aria-label="Back to Colloquium" onClick={() => navigate('/colloquium')} className="grid size-11 place-items-center rounded-xl text-ink-soft">
+          <button type="button" aria-label="Back to Sermo" onClick={() => navigate('/mentis/sermo')} className="grid size-11 place-items-center rounded-xl text-ink-soft">
             <ChevronLeft size={24} aria-hidden />
           </button>
           <h1 className="min-w-0 flex-1 truncate text-[16px] font-semibold">{chat.title}</h1>
@@ -119,9 +119,9 @@ export default function ChatPage() {
         {error && (
           <li role="alert" className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-raised px-4 py-3 text-[14px]">
             <span className="min-w-0 flex-1 text-ink-soft">{error}</span>
-            {error.includes('Ordo') ? (
-              <Link to="/ordo/ai" className="font-semibold text-accent-text hover:underline">
-                Open Ordo › AI
+            {error.includes('Settings') ? (
+              <Link to="/settings/ai" className="font-semibold text-accent-text hover:underline">
+                Open Settings › AI
               </Link>
             ) : (
               <Button variant="ghost" size="sm" icon={RotateCcw} onClick={() => void ask(chat)}>
@@ -183,7 +183,7 @@ export default function ChatPage() {
               onClick={async () => {
                 setRemoving(false);
                 await deleteChat(chat.id);
-                navigate('/colloquium');
+                navigate('/mentis/sermo');
               }}
             >
               Delete

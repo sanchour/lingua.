@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { BookOpen, Clapperboard, Headphones, Layers, Music2, PenLine } from 'lucide-react';
+import { BookOpen, Clapperboard, Headphones, Layers, MessagesSquare, Music2, PenLine } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { Enjoyment, LearningReason } from '@/data/settings';
 import { spring } from '@/design/motion';
@@ -10,8 +10,9 @@ export const ENJOYMENTS: Array<{ id: Enjoyment; name: string; place: string; blu
   { id: 'reading', name: 'Reading', place: 'Codex', blurb: 'Books, stories and articles, a tap from every meaning', icon: BookOpen },
   { id: 'listening', name: 'Listening', place: 'Sonus', blurb: 'Podcasts and audio with a transcript that follows along', icon: Headphones },
   { id: 'music', name: 'Music', place: 'Sonus', blurb: 'Songs you love, with lyrics that light up as they’re sung', icon: Music2 },
-  { id: 'watching', name: 'Watching', place: 'Visio', blurb: 'Films and shows with subtitles in both languages', icon: Clapperboard },
+  { id: 'watching', name: 'Watching', place: 'Sonus et Visio', blurb: 'Films and shows with subtitles in both languages', icon: Clapperboard },
   { id: 'writing', name: 'Writing', place: 'Diarium', blurb: 'A few lines a day in your own journal', icon: PenLine },
+  { id: 'speaking', name: 'Speaking', place: 'Sermo', blurb: 'Scenes at your level to talk through with the AI you use', icon: MessagesSquare },
   { id: 'cards', name: 'Flashcards & games', place: 'Thesaurus', blurb: 'Decks that come back at the right time, and Ludus lessons', icon: Layers },
 ];
 
@@ -24,6 +25,7 @@ export function enjoymentsFor(reasons: LearningReason[]): Enjoyment[] {
     if (r === 'culture') add('watching');
     if (r === 'culture' || r === 'fun') add('music');
     if (r === 'talk' || r === 'travel') add('listening');
+    if (r === 'talk') add('speaking');
     if (r === 'work') add('cards');
   }
   return out;

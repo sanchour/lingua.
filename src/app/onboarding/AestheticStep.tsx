@@ -26,7 +26,7 @@ export function AestheticStep({ pref, sample, lang, onChange }: AestheticStepPro
 
   return (
     <div>
-      <StepTitle title="Choose your study light" body="You can switch any time from the sidebar or Ordo." />
+      <StepTitle title="Choose your study light" body="You can switch any time from the sidebar or Settings." />
       <div role="radiogroup" aria-label="Theme" className="grid gap-3 sm:grid-cols-2">
         {THEMES.map((t) => (
           <ThemePreview key={t.id} theme={t} selected={shown === t.id} sample={sample} lang={lang} onSelect={() => onChange(t.id)} />

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
 import { ArrowRight, PenLine, Shuffle, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -20,7 +20,7 @@ export function NewEntryButton() {
   const { language } = useApp();
   const navigate = useNavigate();
   return (
-    <Button icon={PenLine} onClick={() => void createEntry(language.id).then((id) => navigate(`/codex/diarium/${id}`))}>
+    <Button icon={PenLine} onClick={() => void createEntry(language.id).then((id) => navigate(`/mentis/diarium/${id}`))}>
       New entry
     </Button>
   );
@@ -38,17 +38,21 @@ function writingStreak(entries: JournalEntry[]): number {
   return n;
 }
 
-/** Codex › Diarium: today's prompt, a few honest numbers, and every entry by month. */
+/** Mentis › Diarium: today's prompt, a few honest numbers, and every entry by month. */
 export function DiariumHome() {
   const { language, settings } = useApp();
   const lang = language.id;
   const entries = useJournal(lang);
   const navigate = useNavigate();
   const hasAi = Boolean(settings.apiKeys[settings.llm.provider] && settings.llm.model);
-  const [prompt, setPrompt] = useState<WritingPrompt>(() => curatedPrompt(lang, language.level));
+  // The guide's "Write three lines about …" opens here with that as the day's prompt.
+  const about = useSearchParams()[0].get('about')?.trim().slice(0, 120) || '';
+  const aboutPrompt = (title: string): WritingPrompt => ({ text: title, en: `Write three lines about ${title}.` });
+  const [prompt, setPrompt] = useState<WritingPrompt>(() => (about ? aboutPrompt(about) : curatedPrompt(lang, language.level)));
   const [starting, setStarting] = useState(false);
 
   useEffect(() => {
+    if (about) return setPrompt(aboutPrompt(about));
     setPrompt(curatedPrompt(lang, language.level));
     if (!hasAi || !navigator.onLine) return;
     let alive = true;
@@ -58,7 +62,7 @@ export function DiariumHome() {
     return () => {
       alive = false;
     };
-  }, [lang, language.level, hasAi]);
+  }, [lang, language.level, hasAi, about]);
 
   const today = entries?.find((e) => e.date === localDateKey());
   const stats = useMemo(() => {
@@ -84,10 +88,10 @@ export function DiariumHome() {
 
   const start = async (withPrompt: boolean) => {
     // An empty entry from earlier today is picked up rather than duplicated.
-    if (withPrompt && today && !today.words) return navigate(`/codex/diarium/${today.id}`);
+    if (withPrompt && today && !today.words) return navigate(`/mentis/diarium/${today.id}`);
     setStarting(true);
     const id = await createEntry(lang, withPrompt ? prompt : undefined);
-    navigate(`/codex/diarium/${id}`);
+    navigate(`/mentis/diarium/${id}`);
   };
 
   return (
@@ -107,7 +111,7 @@ export function DiariumHome() {
               {today.text}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Link to={`/codex/diarium/${today.id}`} className="inline-flex h-10 items-center gap-2 rounded-xl bg-inverse px-4 text-sm font-semibold text-on-inverse shadow-elev-1">
+              <Link to={`/mentis/diarium/${today.id}`} className="inline-flex h-10 items-center gap-2 rounded-xl bg-inverse px-4 text-sm font-semibold text-on-inverse shadow-elev-1">
                 <PenLine size={16} aria-hidden /> Open today’s entry
               </Link>
               <Button variant="ghost" onClick={() => void start(false)} loading={starting}>
@@ -158,7 +162,7 @@ export function DiariumHome() {
         <div className="flex flex-col items-center py-6 text-center text-ink-soft">
           <Sparkles size={22} className="mb-3 text-sage-text" aria-hidden />
           <p className="max-w-sm text-[15px] leading-relaxed">
-            A few sentences a day is plenty. Write, then let the AI correct and explain{hasAi ? '' : ' (add a free key in Ordo › AI)'}; your mistakes become flashcards.
+            A few sentences a day is plenty. Write, then let the AI correct and explain{hasAi ? '' : ' (add a free key in Settings › AI)'}; your mistakes become flashcards.
           </p>
         </div>
       )}
@@ -185,7 +189,7 @@ function EntryRow({ entry, lang }: { entry: JournalEntry; lang: string }) {
   const first = entry.text.trim().split('\n')[0];
   const review = entry.review;
   return (
-    <Link to={`/codex/diarium/${entry.id}`} className="group flex items-center gap-4 rounded-2xl px-2 py-3 transition-colors hover:bg-surface">
+    <Link to={`/mentis/diarium/${entry.id}`} className="group flex items-center gap-4 rounded-2xl px-2 py-3 transition-colors hover:bg-surface">
       <div className="w-12 shrink-0 text-center">
         <p className="font-serif text-2xl leading-none font-semibold tabular-nums">{date.getDate()}</p>
         <p className="mt-1 text-[11px] font-bold tracking-wide text-ink-faint uppercase">{date.toLocaleDateString(undefined, { weekday: 'short' })}</p>

@@ -32,7 +32,7 @@ const OPTIONS: Array<{ id: Choice; icon: LucideIcon; title: string; detail: stri
 ];
 
 /** "Add" in the Sonus header: files, a podcast by address, a Spotify link, or the directory. */
-export function AddMenu({ lang, onDiscover }: { lang: string; onDiscover: () => void }) {
+export function AddMenu({ lang, onDiscover, label = 'Add' }: { lang: string; onDiscover: () => void; label?: string }) {
   const { layout } = useLayout();
   const navigate = useNavigate();
   const [sheet, setSheet] = useState(false);
@@ -85,12 +85,12 @@ export function AddMenu({ lang, onDiscover }: { lang: string; onDiscover: () => 
     <>
       {layout === 'wide' ? (
         <Popover
-          label="Add to Sonus"
+          label="Add something to listen to"
           placement="bottom-end"
           className="w-80"
           trigger={(props) => (
             <Button {...props} icon={Plus} loading={busy}>
-              Add
+              {label}
             </Button>
           )}
         >
@@ -99,9 +99,9 @@ export function AddMenu({ lang, onDiscover }: { lang: string; onDiscover: () => 
       ) : (
         <>
           <Button icon={Plus} loading={busy} onClick={() => setSheet(true)}>
-            Add
+            {label}
           </Button>
-          <Drawer open={sheet} onClose={() => setSheet(false)} title="Add to Sonus">
+          <Drawer open={sheet} onClose={() => setSheet(false)} title="Add something to listen to">
             {list(() => setSheet(false))}
           </Drawer>
         </>

@@ -20,6 +20,7 @@ import { DEFAULT_SETTINGS } from '@/data/settings';
 import { normalizeWord } from '@/core/text/normalize';
 import { WordDrawer } from '@/features/codex/reader/WordDrawer';
 import type { DrawerWord } from '@/features/codex/reader/WordDrawer';
+import { cardWidth } from '../common/cardLook';
 import { CardLookPanel } from '../common/CardLookPanel';
 import { NoteEditor } from '../deck/NoteEditor';
 import type { EditorTarget } from '../deck/NoteEditor';
@@ -67,6 +68,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
   const card = queue[0];
   const note = card ? notes.get(card.noteId) : undefined;
   const deck = card ? session.decks.get(card.deckId) : undefined;
+  const width = cardWidth(look, deck?.config.cardWidth);
   const counts = countQueue(queue);
   const progress = done / Math.max(1, done + queue.length);
 
@@ -214,7 +216,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
         <IconButton icon={Pencil} label="Edit card" shortcut="E" size="sm" disabled={!note} onClick={() => card && note && setEditor({ mode: 'edit', note, cards: [card] })} />
       </StudyBar>
 
-      <main className="mx-auto flex min-h-dvh max-w-3xl flex-col px-4 sm:px-6" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 76px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)' }}>
+      <main className="mx-auto flex min-h-dvh w-full flex-col px-4 sm:px-6" style={{ maxWidth: Math.max(768, width + 48), paddingTop: 'calc(env(safe-area-inset-top) + 76px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)' }}>
         <p className="mb-4 flex justify-center gap-3 text-[13px] font-bold tabular-nums" aria-label={`${counts.new} new, ${counts.learning} learning, ${counts.review} to review`}>
           <span className="text-sage-text">{counts.new}</span>
           <span className="text-accent-text">{counts.learning}</span>
@@ -234,13 +236,13 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
                 transition={spring.soft}
                 {...holdHandlers}
               >
-                <FlipCard look={look} card={card} note={note} lang={lang} flipped={flipped} onFlip={flip} deckName={session.decks.size > 1 ? deck?.name : undefined} front={deck?.config.front} />
+                <FlipCard look={look} card={card} note={note} lang={lang} flipped={flipped} onFlip={flip} deckName={session.decks.size > 1 ? deck?.name : undefined} front={deck?.config.front} width={width} />
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        <div className="mx-auto mt-6 w-full max-w-xl">
+        <div className="mx-auto mt-6 w-full" style={{ maxWidth: Math.min(width, 576) }}>
           {flipped && (intervals || practice) ? (
             <motion.div className="grid grid-cols-4 gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>
               {GRADES.map((g) => (

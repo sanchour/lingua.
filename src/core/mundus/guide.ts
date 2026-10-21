@@ -8,19 +8,21 @@ import type { Pick, PickGroup, PickLevel, Picks } from '@/core/mundus/types';
 import type { Enjoyment } from '@/data/settings';
 
 /** The ways into a language that the guide balances. */
-export type Lane = 'read' | 'listen' | 'watch' | 'words' | 'write';
-export const LANES: Lane[] = ['read', 'listen', 'watch', 'words', 'write'];
+export type Lane = 'read' | 'listen' | 'watch' | 'words' | 'write' | 'speak';
+export const LANES: Lane[] = ['read', 'listen', 'watch', 'words', 'write', 'speak'];
 /** Minutes per lane over the last seven days. */
 export type Week = Record<Lane, number>;
 
-export const LANE_NAME: Record<Lane, string> = { read: 'Read', listen: 'Listen', watch: 'Watch', words: 'Words', write: 'Write' };
-const NOUN: Record<Lane, string> = { read: 'reading', listen: 'listening', watch: 'watching', words: 'word practice', write: 'writing' };
+export const LANE_NAME: Record<Lane, string> = { read: 'Read', listen: 'Listen', watch: 'Watch', words: 'Words', write: 'Write', speak: 'Speak' };
+const NOUN: Record<Lane, string> = { read: 'reading', listen: 'listening', watch: 'watching', words: 'word practice', write: 'writing', speak: 'speaking' };
 
 /** Activity sessions (`ActivitySession.type`) by lane. */
-export const SESSION_LANE: Record<string, Lane> = { read: 'read', listen: 'listen', sing: 'listen', watch: 'watch', review: 'words', ludus: 'words', write: 'write' };
-const ENJOY_LANE: Record<Enjoyment, Lane> = { reading: 'read', listening: 'listen', music: 'listen', watching: 'watch', writing: 'write', cards: 'words' };
+export const SESSION_LANE: Record<string, Lane> = { read: 'read', listen: 'listen', sing: 'listen', watch: 'watch', review: 'words', ludus: 'words', write: 'write', speak: 'speak' };
+const ENJOY_LANE: Record<Enjoyment, Lane> = { reading: 'read', listening: 'listen', music: 'listen', watching: 'watch', writing: 'write', speaking: 'speak', cards: 'words' };
+/** Lanes the guide steers toward only for those who said they enjoy them (talking happens in the learner's own AI app, so Lingua can't time it). */
+const OPT_IN: Lane[] = ['write', 'speak'];
 
-export const emptyWeek = (): Week => ({ read: 0, listen: 0, watch: 0, words: 0, write: 0 });
+export const emptyWeek = (): Week => ({ read: 0, listen: 0, watch: 0, words: 0, write: 0, speak: 0 });
 
 export interface Steer {
   /** Where to go next. */
@@ -33,15 +35,15 @@ export interface Steer {
 
 /**
  * The lane to steer toward: the quietest part of the week, leaning toward what the learner enjoys
- * (writing only counts for those who said they like it). A week barely begun starts with the
- * favourite.
+ * (writing and speaking only count for those who said they like them). A week barely begun starts
+ * with the favourite.
  */
 export function steer(week: Week, enjoys: readonly Enjoyment[]): Steer {
   const liked = [...new Set(enjoys.map((e) => ENJOY_LANE[e]))];
   const total = LANES.reduce((n, l) => n + week[l], 0);
   if (total < 10) return { lane: liked[0] ?? 'listen', why: 'start' };
   const top = LANES.reduce((a, b) => (week[b] > week[a] ? b : a));
-  const pool = LANES.filter((l) => l !== top && (l !== 'write' || liked.includes('write')));
+  const pool = LANES.filter((l) => l !== top && (!OPT_IN.includes(l) || liked.includes(l)));
   const pull = (l: Lane) => (liked.includes(l) ? 0.12 - liked.indexOf(l) * 0.02 : 0);
   const score = (l: Lane) => week[l] / total - pull(l);
   const lane = pool.reduce((a, b) => (score(b) < score(a) ? b : a));
@@ -88,7 +90,7 @@ export function tipsByReach(tips: readonly Tip[], level: Level): { now: Tip[]; l
 
 // ── Picks by lane ──────────────────────────────────────────────────────────
 
-const LANE_GROUPS: Record<Lane, PickGroup[]> = { read: ['books'], listen: ['podcasts'], watch: ['series', 'films', 'youtube'], words: [], write: [] };
+const LANE_GROUPS: Record<Lane, PickGroup[]> = { read: ['books'], listen: ['podcasts'], watch: ['series', 'films', 'youtube'], words: [], write: [], speak: [] };
 
 /** A pick for the lane within reach, a different one each day. */
 export function lanePick(picks: Picks | null, lane: Lane, level: Level, day: number): { pick: Pick; group: PickGroup } | undefined {
@@ -130,6 +132,8 @@ export interface GuideInput {
   /** Whether the learner has anything in each room yet. */
   used: { codex: boolean; sonus: boolean; visio: boolean; thesaurus: boolean };
   grammar?: { id: string; title: string };
+  /** What the learner read or watched last this week, so a speak or write step can be about it. */
+  recent?: { title: string; lane: 'read' | 'watch' | 'listen' };
   /** Days since the epoch: picks and tips rotate daily. */
   day: number;
 }
@@ -146,14 +150,22 @@ export function steerReason(s: Steer): string {
 const LANE_ROOM: Record<Lane, { title: string; to: string; action: string }> = {
   read: { title: 'Read today’s news', to: '/codex/new?way=news', action: 'Open the news' },
   listen: { title: 'Find a podcast you like', to: '/sonus?tab=podcasts', action: 'Browse podcasts' },
-  watch: { title: 'Find a series on your services', to: '/visio?tab=services', action: 'Open Services' },
+  watch: { title: 'Find a series on your services', to: '/sonus?tab=streaming', action: 'Open Services' },
   words: { title: 'Take a ready-made deck', to: '/thesaurus?tab=discover', action: 'Choose a deck' },
-  write: { title: 'Write five lines in Diarium', to: '/codex?tab=diarium', action: 'Open Diarium' },
+  write: { title: 'Write five lines in Diarium', to: '/mentis/diarium', action: 'Open Diarium' },
+  speak: { title: 'Talk for five minutes in Sermo', to: '/mentis/sermo', action: 'Open Sermo' },
 };
 
+/** The lane's room step; speaking and writing are about what the learner read or watched this week when there is something. */
+export function laneRoom(lane: Lane, recent?: GuideInput['recent']): { title: string; to: string; action: string } {
+  if (recent && lane === 'speak') return { title: `Talk about ${recent.title} for five minutes`, to: `/mentis/sermo?topic=${encodeURIComponent(recent.title)}`, action: 'Open Sermo' };
+  if (recent && lane === 'write') return { title: `Write three lines about ${recent.title}`, to: `/mentis/diarium?about=${encodeURIComponent(recent.title)}`, action: 'Open Diarium' };
+  return LANE_ROOM[lane];
+}
+
 const FIRST_TIME: Array<{ room: keyof GuideInput['used']; lane: Lane; title: string; to: string; action: string; reason: string }> = [
-  { room: 'visio', lane: 'watch', title: 'Watch something with its subtitles', to: '/visio?tab=services', action: 'Open Visio', reason: 'You haven’t watched anything in Visio yet: with subtitles, a series becomes a lesson.' },
-  { room: 'sonus', lane: 'listen', title: 'Follow a podcast', to: '/sonus?tab=podcasts', action: 'Open Sonus', reason: 'Nothing in Sonus yet: a podcast at your level fits into a walk or the dishes.' },
+  { room: 'visio', lane: 'watch', title: 'Watch something with its subtitles', to: '/sonus?tab=streaming', action: 'Open Streaming', reason: 'You haven’t watched anything in Sonus et Visio yet: with subtitles, a series becomes a lesson.' },
+  { room: 'sonus', lane: 'listen', title: 'Follow a podcast', to: '/sonus?tab=podcasts', action: 'Open Sonus et Visio', reason: 'Nothing to listen to yet: a podcast at your level fits into a walk or the dishes.' },
   { room: 'codex', lane: 'read', title: 'Put something on your shelf', to: '/codex/new', action: 'Open Codex', reason: 'Codex is empty: an article or a short book, and every word is a tap away.' },
   { room: 'thesaurus', lane: 'words', title: 'Start your first deck', to: '/thesaurus?tab=discover', action: 'Open Thesaurus', reason: 'No decks yet: the most common words make everything else easier.' },
 ];
@@ -167,7 +179,7 @@ export function nextSteps(input: GuideInput): Step[] {
   const steps: Step[] = [];
   const pick = lanePick(input.picks, s.lane, input.level, input.day);
   if (pick) steps.push({ key: `pick:${pick.pick.title}`, type: 'pick', lane: s.lane, ...pick, reason: steerReason(s) });
-  else steps.push({ key: `room:${s.lane}`, type: 'room', lane: s.lane, ...LANE_ROOM[s.lane], reason: steerReason(s) });
+  else steps.push({ key: `room:${s.lane}`, type: 'room', lane: s.lane, ...laneRoom(s.lane, input.recent), reason: steerReason(s) });
 
   const { now } = tipsByReach(input.tips, input.level);
   const tip = tipOfTheDay(now, input.doneTips, input.day);
@@ -175,7 +187,7 @@ export function nextSteps(input: GuideInput): Step[] {
 
   const fresh = FIRST_TIME.find((f) => !input.used[f.room] && f.lane !== s.lane);
   if (input.grammar && (!fresh || input.day % 2 === 0)) {
-    steps.push({ key: `grammar:${input.grammar.id}`, type: 'grammar', title: input.grammar.title, to: `/grammatica/${encodeURIComponent(input.grammar.id)}`, reason: 'Your next topic in Grammatica: a few examples, then try it.' });
+    steps.push({ key: `grammar:${input.grammar.id}`, type: 'grammar', title: input.grammar.title, to: `/cursus/grammatica/${encodeURIComponent(input.grammar.id)}`, reason: 'Your next topic in Grammatica: a few examples, then try it.' });
   } else if (fresh) {
     steps.push({ key: `room:${fresh.room}`, type: 'room', lane: fresh.lane, title: fresh.title, to: fresh.to, action: fresh.action, reason: fresh.reason });
   } else {

@@ -217,13 +217,13 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], 
   const wroteToday = journal.some((e) => e.date === localDateKey() && e.words > 0);
   if (!wroteToday) {
     const prompt = curatedPrompt(lang, level);
-    steps.push({ key: 'write', to: '/codex?tab=diarium', icon: PenLine, tone: 'sage', title: 'Write today’s entry', detail: prompt.en || prompt.text });
+    steps.push({ key: 'write', to: '/mentis/diarium', icon: PenLine, tone: 'sage', title: 'Write today’s entry', detail: prompt.en || prompt.text });
   }
 
   // Now and then (every third day, when no chat here this week) ten minutes of talking.
   const day = Math.floor(Date.now() / 86_400_000);
   if (day % 3 === 0 && !chats.some((c) => Date.now() - c.updatedAt < 7 * 86_400_000)) {
-    steps.push({ key: 'talk', to: '/colloquium', icon: MessagesSquare, tone: 'accent', title: 'Talk for ten minutes', detail: 'A scene in Colloquium, by voice or text with an AI' });
+    steps.push({ key: 'talk', to: '/mentis/sermo', icon: MessagesSquare, tone: 'accent', title: 'Talk for ten minutes', detail: 'A scene in Sermo, by voice or text with an AI' });
   }
 
   if (!book) steps.push({ key: 'find', to: '/codex', icon: Sparkles, tone: 'ink', title: 'Find something to read', detail: 'Graded stories, articles, or your own books' });
@@ -235,7 +235,7 @@ function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], 
     steps.push({ key: 'find-song', to: '/sonus?tab=music', icon: Music2, tone: 'accent', title: 'Find a song to learn', detail: 'Lyrics that light up as they’re sung, every word a tap away' });
   }
   if (!video && enjoys.includes('watching')) {
-    steps.push({ key: 'find-watch', to: '/visio', icon: Clapperboard, tone: 'accent', title: 'Watch something', detail: 'A film or an episode with subtitles in both languages' });
+    steps.push({ key: 'find-watch', to: '/sonus?show=watch', icon: Clapperboard, tone: 'accent', title: 'Watch something', detail: 'A film or an episode with subtitles in both languages' });
   }
   return orderSteps(steps, enjoys).slice(0, 4);
 }
@@ -307,7 +307,7 @@ const FIRST: Array<{ key: keyof HomeFacts['firstSteps']; title: string; to: stri
   { key: 'marked', title: 'Mark a word you’re learning', to: '/codex' },
   { key: 'reviewed', title: 'Review a few flashcards', to: '/thesaurus' },
   { key: 'listened', title: 'Listen or watch with a transcript', to: '/sonus' },
-  { key: 'wrote', title: 'Write a first journal entry', to: '/codex?tab=diarium' },
+  { key: 'wrote', title: 'Write a first journal entry', to: '/mentis/diarium' },
 ];
 
 function FirstSteps({ steps }: { steps: HomeFacts['firstSteps'] }) {

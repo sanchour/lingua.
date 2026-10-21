@@ -292,7 +292,7 @@ function Tidy({ lang, row }: { lang: string; row: FullDictRow }) {
           <p className="mt-1.5 text-[13px] text-accent-text">
             {error.message}{' '}
             {error instanceof LlmError && error.kind === 'no-key' && (
-              <Link to="/ordo/ai" className="font-semibold underline">
+              <Link to="/settings/ai" className="font-semibold underline">
                 Open settings
               </Link>
             )}

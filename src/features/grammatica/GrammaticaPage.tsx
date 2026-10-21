@@ -102,7 +102,7 @@ function levelSpan(topics: Topic[]): string {
 function NextUp({ topic, state }: { topic: Topic; state?: TopicState }) {
   return (
     <Link
-      to={`/grammatica/${topic.id}`}
+      to={`/cursus/grammatica/${topic.id}`}
       className="group mb-2 flex items-center gap-4 rounded-3xl border border-line/70 bg-surface p-5 transition-colors hover:border-line-strong sm:p-6"
     >
       <TopicRing state={state} size={56} />
@@ -119,7 +119,7 @@ function NextUp({ topic, state }: { topic: Topic; state?: TopicState }) {
 function TopicRow({ topic, state, next }: { topic: Topic; state?: TopicState; next: boolean }) {
   return (
     <Link
-      to={`/grammatica/${topic.id}`}
+      to={`/cursus/grammatica/${topic.id}`}
       className={cx(
         'flex h-full items-center gap-3.5 rounded-2xl border p-3.5 transition-colors active:scale-[0.99]',
         next ? 'border-sage/50 bg-sage-soft/30' : 'border-line/60 bg-surface hover:border-line-strong',
@@ -147,7 +147,7 @@ function Placement() {
         <span className="block font-serif text-[18px] leading-snug font-semibold">Know some already?</span>
         <span className="mt-0.5 block text-[14px] leading-snug text-ink-soft">A two-minute check, two quick questions per topic. What you get right is marked learned, so you start where you are.</span>
       </span>
-      <Link to="/grammatica/placement" className={cx(buttonClasses('secondary', 'md'), 'shrink-0')}>
+      <Link to="/cursus/grammatica/placement" className={cx(buttonClasses('secondary', 'md'), 'shrink-0')}>
         Check what I know
       </Link>
     </div>
@@ -158,16 +158,16 @@ function Placement() {
 function Practice({ due, placed }: { due: number; placed: boolean }) {
   return (
     <div className="mb-2 flex flex-wrap gap-2">
-      <Link to="/grammatica/review" className={cx(buttonClasses(due ? 'primary' : 'secondary', 'md'), 'flex-1 sm:flex-none', !due && 'pointer-events-none opacity-60')} aria-disabled={!due}>
+      <Link to="/cursus/grammatica/review" className={cx(buttonClasses(due ? 'primary' : 'secondary', 'md'), 'flex-1 sm:flex-none', !due && 'pointer-events-none opacity-60')} aria-disabled={!due}>
         <RotateCcw size={17} aria-hidden />
         {due ? `Review ${due} due` : 'Nothing due to review'}
       </Link>
-      <Link to="/grammatica/review?mode=lightning" className={cx(buttonClasses('secondary', 'md'), 'flex-1 sm:flex-none')}>
+      <Link to="/cursus/grammatica/review?mode=lightning" className={cx(buttonClasses('secondary', 'md'), 'flex-1 sm:flex-none')}>
         <Zap size={17} aria-hidden />
         Lightning round
       </Link>
       {placed && (
-        <Link to="/grammatica/placement" className={cx(buttonClasses('ghost', 'md'), 'flex-1 sm:ml-auto sm:flex-none')}>
+        <Link to="/cursus/grammatica/placement" className={cx(buttonClasses('ghost', 'md'), 'flex-1 sm:ml-auto sm:flex-none')}>
           <Compass size={17} aria-hidden />
           Check what I know
         </Link>

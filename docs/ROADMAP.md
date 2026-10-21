@@ -1706,7 +1706,7 @@ decisions are at the top of the 5.1 plan: Stripe; Max is AI with your own key; L
 Max €5.99 a month or €49.99 a year; desktop only. **On 2026-10-20 the user asked to make it ready to
 start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, ticked here as they finish:
 
-- [ ] 5.1-1 · Rooms in the new order: Cursus, Sonus et Visio, Mentis; the device's light; no more "Ideas from Mundus"
+- [x] 5.1-1 · Rooms in the new order: Cursus, Sonus et Visio, Mentis; the device's light; no more "Ideas from Mundus"
 - [ ] 5.1-2 · Lingua+ (€24.99 once) and Lingua+ Max
 - [ ] 5.1-3 · Onboarding: intro pages, a map without dots, accurate language data, twelve new flags, the new screens
 - [ ] 5.1-4 · Home: Today, Next up, the week, Cursus, Mundus, numbers (the old Home one setting away)
@@ -1716,7 +1716,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [ ] 5.1-8 · Keyboard practice in Cursus (tier 1)
 - [ ] 5.1-9 · A touch of the language in the design
 - [ ] 5.1-10 · Lingua 5.1 complete: the full check (one check with 5.2-10)
-- [ ] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
+- [x] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
 - [ ] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries
 - [ ] 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings
 - [ ] 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks (Lingua 5's own step; Lingua 4.0-3 was removed)
@@ -1727,6 +1727,26 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [ ] 5.2-9 · Ratio: one language, compact, goals in Tabula instead of Iter, more numbers
 - [ ] Cursus · the course, with speaking and writing (moved here from 4.0-4; section "Cursus" below)
 - [ ] 5.2-10 · Lingua 5 complete: the full check
+
+### The frame of Lingua 5 (5.1-1 with 5.2-1, handover step 2): how it is built
+*Planned 2026-10-21. The design is in the two plan files; this is the build order, each part pushed.*
+- [x] **a · Rooms, addresses, Settings.** `app/sections.ts` in the new order (Home, Cursus, Codex,
+      Thesaurus, Sonus et Visio, Mentis, Ratio, Settings). One table of moved addresses,
+      `app/redirects.ts` (`movedPath`), with a table test; every internal link updated to the new
+      address. `features/rooms/RoomTabs` (a desktop tab strip with 1–4) and a "room" context that
+      turns an embedded page's `PageHeader` into its actions only. `/cursus/{course,grammatica,
+      alphabets,typing}` (the last tab remembered; Course and Typing say they're coming, tier 1
+      only), `/mentis/{…,sermo,diarium}`, `/settings/*`. "Ordo" reads Settings everywhere the learner
+      sees it. Sidebar 216/64 px and `--sidebar-w`; `theme: 'system'` for new installs; MundusLink deleted.
+- [x] **b · Sonus et Visio, one library.** + Listen and + Watch side by side; Library · Audiobooks ·
+      Radio · Streaming and the Sonus+ card in the strip; the library's sticky left rail (All · Listen
+      · Watch, remembered, and the categories with Films & series and Videos), Continue (audio and
+      video), the shelves with To watch; one calm empty card. Visio's video card moves to a shared file.
+- [x] **c · Mentis combined.** The guide's speak lane (with tests); Today's prompt rail (a writing
+      prompt and a conversation starter from this week's reading and watching, `core/mentis`, with
+      tests); Diarium's "Talk about this" and Sermo starting from a topic.
+- [x] **d · Flashcard widths.** Card width Thin · Normal · Wide in the card look (all decks and per
+      deck), on FlipCard, Recall and the previews.
 
 ### Cursus: a course with a clear path, and speaking and writing (moved here from 4.0-4)
 *Moved from Lingua 4.0 into Lingua 5 on 2026-10-21 (the user's request). Cursus becomes a room with

@@ -10,11 +10,9 @@ import { SettingsSection } from '../SettingsSection';
 const BLURB: Record<string, string> = {
   Codex: 'Read books, articles and comics with every word at a tap.',
   Thesaurus: 'Your words and decks, spaced so they stick.',
-  Sonus: 'Podcasts, audiobooks, music and radio with live text.',
-  Visio: 'Films and shows with subtitles you can study.',
-  Mundus: 'A guide to what to read, watch and play next.',
-  Grammatica: 'Grammar when you need it, with drills.',
-  Colloquium: 'Talk with an AI, in your language.',
+  Cursus: 'The course, grammar with drills, alphabets and typing.',
+  'Sonus et Visio': 'Podcasts, audiobooks, radio, films and shows, with text you can study.',
+  Mentis: 'Your guide, scenes to talk through and a journal to write in.',
   Ratio: 'Your time, words and progress.',
 };
 

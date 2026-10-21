@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useLayout } from '@/design/hooks/useLayout';
+import { useInRoom } from './room';
 import { useUI } from '@/state/ui';
 
 interface PageHeaderProps {
@@ -12,9 +13,15 @@ interface PageHeaderProps {
 
 /**
  * Large page title. On phones it hands off to the compact header title once scrolled away,
- * like native iOS large titles.
+ * like native iOS large titles. Inside a room's tab only the actions show (the room has the title).
  */
-export function PageHeader({ title, eyebrow, actions }: PageHeaderProps) {
+export function PageHeader(props: PageHeaderProps) {
+  const inRoom = useInRoom();
+  if (inRoom) return props.actions ? <div className="-mt-2 mb-6 flex items-center justify-end gap-2">{props.actions}</div> : null;
+  return <LargeTitle {...props} />;
+}
+
+function LargeTitle({ title, eyebrow, actions }: PageHeaderProps) {
   const { layout } = useLayout();
   const setPageTitle = useUI((s) => s.setPageTitle);
   const setHidden = useUI((s) => s.setPageTitleHidden);

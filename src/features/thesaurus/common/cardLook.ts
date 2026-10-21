@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { CardStyleId, CardTintId, Settings } from '@/data/settings';
+import type { CardStyleId, CardTintId, CardWidth, Settings } from '@/data/settings';
 import { getReaderFont, readerFontStack } from '@/design/fonts';
 
 export const CARD_STYLES: Array<{ id: CardStyleId; label: string }> = [
@@ -21,6 +21,12 @@ export const CARD_TINTS: Array<{ id: CardTintId; label: string; color: string }>
 ];
 
 const SCALE = { sm: 0.88, md: 1, lg: 1.16 } as const;
+
+/** A flashcard's widest, in px: thin, normal (the width cards always had) and wide. */
+export const CARD_WIDTH: Record<CardWidth, number> = { thin: 460, normal: 576, wide: 840 };
+
+/** The width a card is shown at: its deck's own, or the one chosen for every card. */
+export const cardWidth = (look: CardLook, deckWidth?: CardWidth): number => CARD_WIDTH[deckWidth ?? look.width ?? 'normal'];
 
 export type CardLook = Settings['cards'];
 

@@ -1,4 +1,4 @@
-// The learner's motion preference (Ordo → Preferences → Motion), readable outside React.
+// The learner's motion preference (Settings → Preferences → Motion), readable outside React.
 // Root mirrors it onto <html data-motion>, so CSS and imperative animations follow it too.
 
 import type { MotionPref } from '@/data/settings';

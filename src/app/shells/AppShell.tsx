@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import { useApp } from '@/app/context';
 import { useFullMotion } from '@/app/motion';
+import { roomKey } from '@/app/redirects';
 import { sectionKey, SECTIONS } from '@/app/sections';
 import { ShortcutsDialog } from '@/app/ShortcutsDialog';
 import { MiniPlayer } from '@/features/sonus/MiniPlayer';
@@ -19,17 +20,17 @@ import { TouchShell } from './touch/TouchShell';
 const isImmersive = (pathname: string, wide: boolean) =>
   pathname.startsWith('/codex/read/') ||
   pathname.startsWith('/thesaurus/study/') ||
-  pathname === '/grammatica/review' ||
-  pathname === '/grammatica/placement' ||
-  pathname === '/grammatica/letters/review' ||
-  /^\/grammatica\/letters\/[^/]+\/lesson\/?$/.test(pathname) ||
-  /^\/grammatica\/[^/]+\/lesson\/?$/.test(pathname) ||
+  pathname === '/cursus/grammatica/review' ||
+  pathname === '/cursus/grammatica/placement' ||
+  pathname === '/cursus/alphabets/review' ||
+  /^\/cursus\/alphabets\/[^/]+\/lesson\/?$/.test(pathname) ||
+  /^\/cursus\/grammatica\/[^/]+\/lesson\/?$/.test(pathname) ||
   pathname === '/sonus/commute' ||
   (pathname.startsWith('/cantus') && !pathname.startsWith('/cantus/spotify')) ||
-  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/sonus/station/') || pathname.startsWith('/visio/watch/') || pathname.startsWith('/colloquium/chat/')));
+  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/sonus/station/') || pathname.startsWith('/visio/watch/') || pathname.startsWith('/mentis/sermo/chat/')));
 
-/** On wide screens Ordo's groups open beside their list, so moving between them isn't a new page. */
-const pageKey = (pathname: string, wide: boolean) => (wide && /^\/ordo(?:\/(?!lab)[\w-]+)?\/?$/.test(pathname) ? '/ordo' : pathname);
+/** On wide screens Settings' groups open beside their list, so moving between them isn't a new page. */
+const pageKey = (pathname: string, wide: boolean) => (wide && /^\/settings(?:\/(?!lab)[\w-]+)?\/?$/.test(pathname) ? '/settings' : (roomKey(pathname) ?? pathname));
 
 export function AppShell() {
   const { layout } = useLayout();

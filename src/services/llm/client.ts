@@ -96,8 +96,8 @@ async function complete(provider: Provider, key: string, model: string, system: 
 export async function chatJson<T>(system: string, turns: Turn[]): Promise<T> {
   const { llm, apiKeys } = await getSettings();
   const key = apiKeys[llm.provider];
-  if (!key) throw new LlmError('Add a free API key in Ordo → AI to chat here.', 'no-key');
-  if (!llm.model) throw new LlmError('Choose a model in Ordo → AI.', 'no-key');
+  if (!key) throw new LlmError('Add a free API key in Settings → AI to chat here.', 'no-key');
+  if (!llm.model) throw new LlmError('Choose a model in Settings → AI.', 'no-key');
   const text = await complete(llm.provider, key, llm.model, system, turns, 0.7);
   try {
     return JSON.parse(text ?? '') as T;
@@ -117,8 +117,8 @@ interface JsonRequest {
 export async function askJson<T>({ system, user, kind }: JsonRequest): Promise<T> {
   const { llm, apiKeys } = await getSettings();
   const key = apiKeys[llm.provider];
-  if (!key) throw new LlmError('Add a free API key in Ordo → AI to use explanations.', 'no-key');
-  if (!llm.model) throw new LlmError('Choose a model in Ordo → AI.', 'no-key');
+  if (!key) throw new LlmError('Add a free API key in Settings → AI to use explanations.', 'no-key');
+  if (!llm.model) throw new LlmError('Choose a model in Settings → AI.', 'no-key');
 
   const id = hashString(`${llm.provider}|${llm.model}|${kind}|${system}|${user}`);
   const cached = await db.llmCache.get(id);

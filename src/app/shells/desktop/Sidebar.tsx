@@ -11,7 +11,7 @@ import { hasPlus } from '@/data/plus';
 import { LanguageChip } from '../LanguageChip';
 import { LogoMark } from '../Wordmark';
 
-export const SIDEBAR_WIDTH = { expanded: 248, collapsed: 76 } as const;
+export const SIDEBAR_WIDTH = { expanded: 216, collapsed: 64 } as const;
 
 interface SidebarProps {
   collapsed: boolean;
@@ -21,10 +21,9 @@ interface SidebarProps {
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { settings } = useApp();
   const plus = hasPlus(settings.meta);
-  const main = SECTIONS.filter((s) => s.placement === 'tab');
-  // Ratio and Ordo (your numbers and your settings) sit at the bottom, apart from the rooms.
+  // Ratio and Settings (your numbers and your settings) sit at the bottom, apart from the rooms.
   const bottom = SECTIONS.filter((s) => s.id === 'ratio' || s.id === 'ordo');
-  const extra = SECTIONS.filter((s) => s.placement !== 'tab' && !bottom.includes(s));
+  const main = SECTIONS.filter((s) => !bottom.includes(s));
 
   return (
     // Only the (contained, fixed) sidebar reflows while it resizes; the page content moves with a transform.
@@ -32,7 +31,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       initial={false}
       animate={{ width: collapsed ? SIDEBAR_WIDTH.collapsed : SIDEBAR_WIDTH.expanded }}
       transition={spring.soft}
-      className="no-callout fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden border-r border-line bg-surface px-3.5 pt-4 pb-3 [contain:layout_paint]"
+      className="no-callout fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden border-r border-line bg-surface px-3 pt-4 pb-3 [contain:layout_paint]"
     >
       <div className={cx('flex items-center', collapsed ? 'flex-col gap-3' : 'gap-2 pr-0.5 pl-1')}>
         <LogoMark size={30} className="shrink-0" />
@@ -63,10 +62,6 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         {main.map((section) => (
           <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
         ))}
-        <div className="mx-2 my-2 h-px shrink-0 bg-line" />
-        {extra.map((section) => (
-          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
-        ))}
       </nav>
 
       <nav aria-label="Statistics and settings" className="mt-2 flex shrink-0 flex-col gap-0.5 border-t border-line pt-2">
@@ -87,7 +82,7 @@ function SidebarLink({ section, collapsed, index }: { section: Section; collapse
         end={section.path === '/'}
         className={({ isActive }) =>
           cx(
-            'group relative flex h-10 shrink-0 items-center gap-3 rounded-xl px-3 transition-colors duration-150',
+            'group relative flex h-10 shrink-0 items-center gap-3 rounded-xl px-2.5 transition-colors duration-150',
             isActive ? 'text-ink' : 'text-ink-soft hover:bg-raised/70 hover:text-ink',
           )
         }

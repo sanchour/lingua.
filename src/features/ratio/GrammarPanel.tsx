@@ -27,7 +27,7 @@ export function GrammarPanel({ lang }: { lang: string }) {
       title="Grammar"
       icon={BookA}
       action={
-        <Link to="/grammatica" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
+        <Link to="/cursus/grammatica" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
           Grammatica <ArrowRight size={14} aria-hidden />
         </Link>
       }
@@ -54,7 +54,7 @@ export function GrammarPanel({ lang }: { lang: string }) {
             <ul className="space-y-2">
               {stats.weakest.map((s) => (
                 <li key={s.topic.id}>
-                  <Link to={`/grammatica/${s.topic.id}/lesson?mode=practice`} className="group grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1">
+                  <Link to={`/cursus/grammatica/${s.topic.id}/lesson?mode=practice`} className="group grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1">
                     <span className="truncate text-[14px] font-semibold group-hover:underline">{s.topic.title}</span>
                     <span className="text-[12.5px] text-ink-faint tabular-nums">
                       {pct(s.accuracy)} right · {s.answers}

@@ -13,9 +13,9 @@ import { LogoMark } from '../Wordmark';
 const BACK_TO: Record<string, string> = {
   'sonus/podcast': '/sonus?tab=podcasts',
   'sonus/book': '/sonus?tab=books',
-  'codex/diarium': '/codex?tab=diarium',
+  'mentis/diarium': '/mentis/diarium',
   'thesaurus/ready': '/thesaurus?tab=discover',
-  'ordo/lab': '/ordo/about',
+  'settings/lab': '/settings/about',
   'cantus/spotify': '/sonus',
   'sonus/song': '/sonus',
 };

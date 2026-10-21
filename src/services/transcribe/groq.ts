@@ -34,7 +34,7 @@ async function request(key: string, body: FormData): Promise<WhisperResult> {
   } catch {
     throw new TranscribeError('Couldn’t reach Groq. Check your connection.', 'network');
   }
-  if (res.status === 401 || res.status === 403) throw new TranscribeError('Groq didn’t accept the API key (Ordo › AI).', 'auth');
+  if (res.status === 401 || res.status === 403) throw new TranscribeError('Groq didn’t accept the API key (Settings › AI).', 'auth');
   if (res.status === 413) throw new TranscribeError('That audio is larger than Groq accepts.', 'too-large');
   if (res.status === 429) throw new TranscribeError('Groq’s free transcription allowance is used up for now. Try again later.', 'rate');
   if (!res.ok) {
@@ -103,7 +103,7 @@ async function onDevice(media: Media, model: DeviceModel, onProgress?: Transcrib
 }
 
 /**
- * Transcribes an item with the transcriber chosen in Ordo › Listening: Whisper on Groq (its
+ * Transcribes an item with the transcriber chosen in Settings › Listening: Whisper on Groq (its
  * downloaded audio, otherwise its web address) or Whisper on this device. `onProgress` gets 0–1.
  */
 export async function transcribe(media: Media, onProgress?: TranscribeProgress): Promise<{ cues: Cue[]; source: 'whisper-groq' | 'whisper-local' }> {
@@ -113,7 +113,7 @@ export async function transcribe(media: Media, onProgress?: TranscribeProgress):
 }
 
 async function withGroq(media: Media, key: string | undefined, model: string, onProgress?: TranscribeProgress): Promise<Cue[]> {
-  if (!key) throw new TranscribeError('Add a free Groq key in Ordo › AI to make transcripts, or choose Whisper on this device in Ordo › Listening.', 'no-key');
+  if (!key) throw new TranscribeError('Add a free Groq key in Settings › AI to make transcripts, or choose Whisper on this device in Settings › Listening.', 'no-key');
   const blob = await audioBlob(media);
 
   // Videos: only the sound is sent, as compact WAV parts.
@@ -159,9 +159,9 @@ const INVENTED = /amara\.org|subt[ií]tul|untertitel|sous-titr|sottotitol|ondert
 
 /**
  * A short stretch of a live stream (a station's last few seconds), with the transcriber chosen in
- * Ordo › Listening. MP3 goes to Groq as it is; anything else is decoded here and sent as WAV.
+ * Settings › Listening. MP3 goes to Groq as it is; anything else is decoded here and sent as WAV.
  */
-const NO_CLIP_KEY = 'Add a free Groq key in Ordo › AI, or choose Whisper on this device in Ordo › Listening.';
+const NO_CLIP_KEY = 'Add a free Groq key in Settings › AI, or choose Whisper on this device in Settings › Listening.';
 
 /** Why live text can't start (no Groq key, and Whisper isn't set to run on this device), or null. */
 export async function clipBlocker(): Promise<string | null> {

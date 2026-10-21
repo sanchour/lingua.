@@ -191,7 +191,7 @@ function Booklet({ spec }: { spec: StarterSpec }) {
         )}
       </div>
 
-      <div className="pointer-events-none fixed inset-x-0 z-20 flex justify-center px-4 lg:pl-[248px]" style={{ bottom: barBottom }}>
+      <div className="pointer-events-none fixed inset-x-0 z-20 flex justify-center px-4 lg:pl-[var(--sidebar-w,0px)]" style={{ bottom: barBottom }}>
         <div className="pointer-events-auto flex w-full max-w-xl items-center gap-2 rounded-3xl border border-line/80 bg-raised/95 p-2 shadow-elev-3 backdrop-blur-xl">
           {deck ? (
             <>

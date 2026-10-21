@@ -28,7 +28,7 @@ export default function TopicPage() {
   if (grammar === undefined) return <div className="h-64" />;
   const topic = grammar ? findTopic(grammar, topicId) : undefined;
   // A topic from another language (after a language switch) leads back to the list.
-  if (!grammar || !topic) return <Navigate to="/grammatica" replace />;
+  if (!grammar || !topic) return <Navigate to="/cursus/grammatica" replace />;
 
   const unit = grammar.units.find((u) => u.topics.includes(topic));
   const opening = openingExamples(topic);
@@ -38,7 +38,7 @@ export default function TopicPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <BackLink to="/grammatica">Grammatica</BackLink>
+      <BackLink to="/cursus/grammatica">Grammatica</BackLink>
       <PageHeader title={topic.title} eyebrow={`${topic.level} · ${unit?.title ?? 'Grammar'}`} />
       <p className="-mt-3 text-[17px] leading-snug text-ink-soft">{topic.summary}</p>
       <LessonCard topic={topic} state={state} />
@@ -101,7 +101,7 @@ export default function TopicPage() {
         <Section title="Related">
           <div className="flex flex-wrap gap-2">
             {related.map((t) => (
-              <Link key={t.id} to={`/grammatica/${t.id}`} className="rounded-full border border-line px-3.5 py-1.5 text-[14px] font-semibold transition-colors hover:border-line-strong hover:bg-surface">
+              <Link key={t.id} to={`/cursus/grammatica/${t.id}`} className="rounded-full border border-line px-3.5 py-1.5 text-[14px] font-semibold transition-colors hover:border-line-strong hover:bg-surface">
                 {t.title}
               </Link>
             ))}

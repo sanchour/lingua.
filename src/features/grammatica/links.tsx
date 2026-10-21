@@ -32,7 +32,7 @@ export function WhyThisForm({ lang, description }: { lang: string; description: 
   if (!topic) return null;
   return (
     <Link
-      to={`/grammatica/${topic.id}`}
+      to={`/cursus/grammatica/${topic.id}`}
       className="group flex items-center gap-3 rounded-2xl border border-sage/40 bg-sage-soft/40 px-3.5 py-2.5 transition-colors hover:border-sage hover:bg-sage-soft"
     >
       <Lightbulb size={18} className="shrink-0 text-sage-text" aria-hidden />
@@ -63,12 +63,12 @@ export function GrammarHomeCard({ lang, level }: { lang: string; level: string }
         <p className="inline-flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
           <BookA size={14} aria-hidden /> Grammatica
         </p>
-        <Link to="/grammatica" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
+        <Link to="/cursus/grammatica" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
           {learned} of {topicsOf(grammar).length} learned <ArrowRight size={14} aria-hidden />
         </Link>
       </div>
       {due > 0 ? (
-        <Link to="/grammatica/review" className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
+        <Link to="/cursus/grammatica/review" className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
           <span className="grid size-12 shrink-0 place-items-center rounded-full bg-accent-soft font-serif text-[18px] font-semibold text-accent-text tabular-nums">{due}</span>
           <span className="min-w-0 flex-1">
             <span className="block font-serif text-[17px] leading-snug font-semibold">{due === 1 ? 'One grammar item to review' : `${due} grammar items to review`}</span>
@@ -77,7 +77,7 @@ export function GrammarHomeCard({ lang, level }: { lang: string; level: string }
         </Link>
       ) : (
         next && (
-          <Link to={`/grammatica/${next.id}/lesson`} className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
+          <Link to={`/cursus/grammatica/${next.id}/lesson`} className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
             <TopicRing state={state} size={48} />
             <span className="min-w-0 flex-1">
               <span className="block text-[12.5px] font-semibold text-ink-faint">

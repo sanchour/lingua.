@@ -117,6 +117,8 @@ interface FlipCardProps {
   onFlip: () => void;
   deckName?: string;
   front?: 'word' | 'sentence';
+  /** At most this wide, in px (the card width setting). */
+  width?: number;
 }
 
 /** The card's sentence and where its word stands in it, if it has both. */
@@ -130,7 +132,7 @@ function gapOf(note: Note, lang: string): { text: string; span: [number, number]
 }
 
 /** A tactile flashcard: question in front, answer on the back, turned with a spring. */
-export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, front }: FlipCardProps) {
+export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, front, width = 576 }: FlipCardProps) {
   const production = card.direction === 'production';
   const gap = !production && front === 'sentence' ? gapOf(note, lang) : null;
   const gapParts = gap ? splitAt(gap.text, gap.span) : null;
@@ -150,7 +152,7 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, fr
   );
 
   return (
-    <div className="mx-auto w-full max-w-xl [perspective:1600px]">
+    <div className="mx-auto w-full [perspective:1600px]" style={{ maxWidth: width }}>
       <motion.div className="grid [transform-style:preserve-3d]" initial={false} animate={{ rotateY: flipped ? 180 : 0 }} transition={FLIP}>
         <Face look={look} onClick={flipped ? undefined : onFlip}>
           {corner}

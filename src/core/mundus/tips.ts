@@ -196,7 +196,7 @@ export function tipsFor(lang: string): Tip[] {
         { name: 'PlayStation', steps: ['Settings › System › Language.', 'Many games follow it; some have their own setting inside.'] },
         { name: 'Xbox', steps: ['Settings › System › Language & location.'] },
       ],
-      action: { label: 'Games in Mundus', to: '/mundus?kind=games' },
+      action: { label: 'Games in Mundus', to: '/mentis?kind=games' },
     },
     {
       id: 'labels',

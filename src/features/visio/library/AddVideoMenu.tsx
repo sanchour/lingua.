@@ -29,7 +29,7 @@ export async function addVideoFiles(lang: string, onOpen: (id: string) => void):
 }
 
 /** "Add" in the Visio header: video files, a link, or subtitles on their own. */
-export function AddVideoMenu({ lang }: { lang: string }) {
+export function AddVideoMenu({ lang, label = 'Add' }: { lang: string; label?: string }) {
   const { layout } = useLayout();
   const navigate = useNavigate();
   const [sheet, setSheet] = useState(false);
@@ -85,12 +85,12 @@ export function AddVideoMenu({ lang }: { lang: string }) {
     <>
       {layout === 'wide' ? (
         <Popover
-          label="Add to Visio"
+          label="Add something to watch"
           placement="bottom-end"
           className="w-80"
           trigger={(props) => (
             <Button {...props} icon={Plus} loading={busy}>
-              Add
+              {label}
             </Button>
           )}
         >
@@ -99,9 +99,9 @@ export function AddVideoMenu({ lang }: { lang: string }) {
       ) : (
         <>
           <Button icon={Plus} loading={busy} onClick={() => setSheet(true)}>
-            Add
+            {label}
           </Button>
-          <Drawer open={sheet} onClose={() => setSheet(false)} title="Add to Visio">
+          <Drawer open={sheet} onClose={() => setSheet(false)} title="Add something to watch">
             {list(() => setSheet(false))}
           </Drawer>
         </>

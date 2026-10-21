@@ -10,15 +10,24 @@ Every phase starts by reading this file, `FEATURES.md`, `DECISIONS.md` and `PERF
 
 ## Product map
 
-| # | Section | Contains | Desktop | iPhone |
-|---|---------|----------|---------|--------|
-| 1 | **Home** | Streak, continue reading/listening, daily review queue, language overview strip | sidebar | tab bar |
-| 2 | **Codex** | *Library* (reader + word engine) · *Diarium* (writing journal with AI corrections) | sidebar | tab bar |
-| 3 | **Thesaurus** | Folders, decks, Classic Recall (FSRS) + Ludus exercises | sidebar | tab bar |
-| 4 | **Sonus** | *Music* (Cantus: songs from Apple's catalogue, lyrics from LRCLIB or lyrics.ovh that follow Apple Music, YouTube, Spotify or a timer, translation per line, song games, Spotify liked songs, weekly charts) · *Library* (audio player, karaoke transcripts, commute mode) · *Podcasts* (followed and discovery) | sidebar | tab bar |
-| 5 | **Visio** | Dual-subtitle video player, dialogue mining | sidebar | tab bar |
-| 6 | **Ratio** | *Overview* (statistics) · *Tabula* (capabilities table) · *Iter* (journey) | sidebar | header button |
-| 7 | **Ordo** | Settings in groups with a search: reading, study, listening, music, languages, look, AI keys, your data, about | sidebar | header button |
+Lingua 5 (5.1-1, 2026-10-21) put the rooms in this order; Alt+1…8 follow it. Desktop only: the
+phone layout that exists is kept as it is but no longer designed for.
+
+| # | Room | Address | Contains | Code folders |
+|---|------|---------|----------|--------------|
+| 1 | **Home** | `/` | Today, next up, the week, first steps, room cards | `features/home` |
+| 2 | **Cursus** | `/cursus/{course,grammatica,alphabets,typing}` | The course (tier 1), Grammatica, alphabets (where there is a script), typing (tier 1) | `features/cursus` (the room), `features/grammatica`, `features/grammatica/letters` |
+| 3 | **Codex** | `/codex` | Reading: the library, the reader and word engine, adding books, comics and news | `features/codex` |
+| 4 | **Thesaurus** | `/thesaurus` | Folders, decks, the dictionary, Classic Recall (FSRS) + Ludus | `features/thesaurus` |
+| 5 | **Sonus et Visio** | `/sonus` (tabs `?tab=books`, `radio`, `streaming`) | One library for listening and watching, audiobooks, radio, the streaming services; Sonus+ (`/cantus`) for music and podcasts | `features/sonus`, `features/visio` (players, video cards, services), `features/cantus` |
+| 6 | **Mentis** | `/mentis`, `/mentis/{explore,picks,try,sermo,diarium}` | Mundus the guide, Sermo (talking; Colloquium in the code), Diarium (writing), today's prompt beside every tab | `features/mentis` (the room), `features/mundus`, `features/colloquium`, `features/codex/diarium` |
+| 7 | **Ratio** | `/ratio` | *Overview* (statistics) · *Tabula* (capabilities table) · *Iter* (journey) | `features/ratio` |
+| 8 | **Settings** | `/settings/:group` | Settings in groups with a search (Ordo until 5.2-1; the folder keeps the name) | `features/ordo`, `features/lab` |
+
+Every address from before Lingua 5 redirects (`app/redirects.ts`, one table with its test). The
+players keep their addresses: `/sonus/play/:id`, `/visio/watch/:id`, `/cantus/*`. A room's tabs
+are drawn by `app/RoomTabs`; a page shown inside a room's tab (`app/room.ts`, `InRoom`) keeps
+only the actions of its `PageHeader`.
 
 **Languages with full support from the start:** English, Spanish, Russian, Portuguese, French, Greek,
 German, Italian, Swedish, Hungarian. Each gets an offline dictionary pack (instant translations into
@@ -164,7 +173,7 @@ lingua/
    ├─ workers/           packs.worker.ts
    ├─ state/             ui.ts · reader.ts (+ player/ study/ visio later)
    ├─ design/            tokens.css · motion.ts · fonts.ts · primitives/ · hooks/
-   ├─ features/          home/ codex/ thesaurus/ sonus/ visio/ ratio/ ordo/ lab/
+   ├─ features/          home/ cursus/ codex/ thesaurus/ sonus/ visio/ mentis/ mundus/ colloquium/ grammatica/ ratio/ ordo/ lab/ (Product map: which room each is)
    └─ test/              setup.ts
 ```
 

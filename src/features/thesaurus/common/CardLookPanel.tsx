@@ -4,11 +4,11 @@ import type { Settings } from '@/data/settings';
 import { READER_FONTS, readerFontStack } from '@/design/fonts';
 import { Segmented } from '@/design/primitives';
 import { cx } from '@/lib/cx';
-import { CARD_STYLES, CARD_TINTS, cardLookProps } from './cardLook';
+import { CARD_STYLES, CARD_TINTS, CARD_WIDTH, cardLookProps } from './cardLook';
 
 const Label = ({ children }: { children: string }) => <p className="mb-2 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase">{children}</p>;
 
-/** Font, card style, colour and size for flashcards. Changes show at once on the card itself. */
+/** Font, card style, colour, width and size for flashcards. Changes show at once on the card itself. */
 export function CardLookPanel({ look, compact = false }: { look: Settings['cards']; compact?: boolean }) {
   const set = (patch: Partial<Settings['cards']>) => void patchSetting('cards', patch);
   return (
@@ -79,6 +79,31 @@ export function CardLookPanel({ look, compact = false }: { look: Settings['cards
             >
               {look.tint === t.id && <Check size={15} strokeWidth={3} className="text-ink" aria-hidden />}
             </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <Label>Card width</Label>
+        <Segmented<Settings['cards']['width']>
+          label="Card width"
+          block
+          value={look.width ?? 'normal'}
+          onChange={(width) => set({ width })}
+          options={[
+            { value: 'thin', label: 'Thin' },
+            { value: 'normal', label: 'Normal' },
+            { value: 'wide', label: 'Wide' },
+          ]}
+        />
+        {/* The three widths side by side, to scale, the chosen one filled. */}
+        <div className="mt-2.5 space-y-1" aria-hidden>
+          {(['thin', 'normal', 'wide'] as const).map((w) => (
+            <span
+              key={w}
+              className={cx('block h-1.5 rounded-full transition-colors', (look.width ?? 'normal') === w ? 'bg-accent' : 'bg-sunken')}
+              style={{ width: `${(CARD_WIDTH[w] / CARD_WIDTH.wide) * 100}%` }}
+            />
           ))}
         </div>
       </div>

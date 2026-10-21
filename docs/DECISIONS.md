@@ -1146,3 +1146,34 @@ Short records of choices that are not obvious from the code. Newest last.
   2026-10-20). Nothing about the course changed: same plan, now in ROADMAP's Lingua 5 section
   ("Cursus"), step 4 of the handover, parallel with 5.1-1, ahead of Lingua 5's final check.
 - **The version goes from 3.0 to 5.0** at that check (step 21); there is no 4.0 release.
+
+## 2026-10-21 — Lingua 5's frame: Cursus, Sonus et Visio, Mentis, Settings (5.1-1 with 5.2-1)
+
+- **Rooms are frames around the pages that were there.** Cursus and Mentis render Grammatica,
+  the alphabet, Mundus, Colloquium (Sermo) and Diarium inside their tabs instead of rewriting them,
+  so the sessions working in those folders aren't disturbed. A small context (`InRoom`) tells an
+  embedded page's `PageHeader` to keep only its actions; the room draws the title and tabs.
+- **One table of moved addresses** (`app/redirects.ts`, with a table test) rather than a redirect
+  per page: the router sends every old prefix to one `Moved` component. Internal links were
+  rewritten to the new addresses too, so nothing inside the app goes through a redirect.
+- **Mundus's own tabs became a segmented control** under Mentis's tab strip: the digits 1–3 belong
+  to Mentis's tabs, and two rows of tab strips read as clutter. Its guide's side panel stacks
+  below in Mentis, because the room's prompt rail takes the right.
+- **Speaking is opt-in in the guide, like writing.** Talking happens in the learner's own AI app,
+  so Lingua can't time it; a lane with 0 minutes would otherwise always look like the quietest. It
+  is steered to only for learners who chose Speaking (a new choice in onboarding).
+- **Today's prompt comes from what was read, watched and listened to this week** (texts opened and
+  media played in the last seven days, a series or podcast by its name), turning by day, the two
+  prompts about different things when there are two. Without anything, Diarium's prompt of the day
+  and Sermo's scene of the day. Talking about a title is a new line in every conversation kit
+  (twenty languages), used in place of the scene.
+- **Sonus et Visio filters, it doesn't split.** All · Listen · Watch is one remembered setting; the
+  categories, Continue and the shelves follow it. Films & series are videos added as files (or
+  subtitles only), Videos are ones from a link. Visio's old page is gone; its card moved to
+  `features/visio/library/VideoCard`.
+- **The device's light for new installs only.** An install that finished onboarding before this and
+  never chose a light keeps paper (`rowsToSettings`), so nobody's app changes colour on update.
+- **Card width is a maximum** (460, 576 or 840 px); Normal is exactly the old `max-w-xl`. A deck's
+  own width is optional and falls back to the one for every card.
+- **The sidebar is 216/64 px** and publishes its width as `--sidebar-w` for the fixed bars that
+  centre beside it.

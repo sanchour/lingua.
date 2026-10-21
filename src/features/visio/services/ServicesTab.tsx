@@ -217,7 +217,7 @@ function PicksOnServices({ lang, services, country, token, onOpen }: { lang: str
           })}
         </ul>
       )}
-      <Link to="/mundus/picks?kind=series" className="hit mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-accent-text hover:underline">
+      <Link to="/mentis/picks?kind=series" className="hit mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-accent-text hover:underline">
         All picks in Mundus <ArrowRight size={14} aria-hidden />
       </Link>
     </section>

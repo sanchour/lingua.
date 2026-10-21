@@ -11,7 +11,7 @@ export interface TidiedEntry {
 }
 
 /**
- * Tidies a Wiktionary entry with the learner's own key (Ordo › AI): merges overlapping senses,
+ * Tidies a Wiktionary entry with the learner's own key (Settings › AI): merges overlapping senses,
  * orders them by how common they are today, and adds a natural example to each. Cached, so each
  * word costs one request once.
  */

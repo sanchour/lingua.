@@ -21,10 +21,10 @@ export interface PlayerState {
   rate: number;
   /** How many times each sentence plays (1 = straight through). */
   repeat: number;
-  /** The count Repeat switches on to (Ordo › Listening). */
+  /** The count Repeat switches on to (Settings › Listening). */
   repeatTimes: number;
   cues: Cue[] | null;
-  /** Seek lengths and the pause between sentence repeats, from Ordo › Listening. */
+  /** Seek lengths and the pause between sentence repeats, from Settings › Listening. */
   skipBackSec: number;
   skipFwdSec: number;
   gapMs: number;

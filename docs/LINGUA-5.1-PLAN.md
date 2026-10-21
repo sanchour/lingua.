@@ -1,6 +1,6 @@
 # Lingua 5.1 · the plan
 
-**Status (2026-10-20): planned, not to be built yet** (the user: plan only). The user pasted the first
+**Status: being built since 2026-10-21, in the order of HANDOVER.md** (planned 2026-10-20; 5.1-1 done 2026-10-21). The user pasted the first
 half of the Lingua 5 list ("Lingua 5.1") and asked for a very careful plan; the second half is
 [LINGUA-5.2-PLAN.md](LINGUA-5.2-PLAN.md). The roadmap's "## Lingua 5" ticks the steps.
 **Desktop only** (D6): nothing here is designed or checked for a phone. **Ordo is called Settings**
@@ -80,12 +80,12 @@ assumed.
 ### 5.1-1 · Rooms in the new order: Cursus, Sonus et Visio, Mentis
 
 **The user's points**
-- [ ] Sidebar order: Home, Cursus, Codex, Thesaurus, Sonus et Visio, Mentis, Ratio, Ordo (Settings).
-- [ ] Cursus holds Grammatica and Alphabets (and the course).
-- [ ] Sonus and Visio become one room with a clear, overseeable layout: one big, aesthetic library with two add buttons.
-- [ ] Mentis, a new room: Mundus, Sermo (Colloquium renamed) and Diarium, combined smartly.
-- [ ] Standard light: follow the device's light or dark on first start.
-- [ ] Remove the "Ideas from Mundus" lines everywhere.
+- [x] Sidebar order: Home, Cursus, Codex, Thesaurus, Sonus et Visio, Mentis, Ratio, Ordo (Settings).
+- [x] Cursus holds Grammatica and Alphabets (and the course).
+- [x] Sonus and Visio become one room with a clear, overseeable layout: one big, aesthetic library with two add buttons.
+- [x] Mentis, a new room: Mundus, Sermo (Colloquium renamed) and Diarium, combined smartly.
+- [x] Standard light: follow the device's light or dark on first start.
+- [x] Remove the "Ideas from Mundus" lines everywhere.
 
 **Navigation**
 - `app/sections.ts`: `SectionId` becomes `home | cursus | codex | thesaurus | sonus | mentis | ratio
