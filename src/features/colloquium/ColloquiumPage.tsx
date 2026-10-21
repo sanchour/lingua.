@@ -12,6 +12,8 @@ import { currentGrammarTopic } from '@/data/grammar';
 import { dueTerms } from '@/data/study';
 import { Button, Card, Segmented } from '@/design/primitives';
 import { cx } from '@/lib/cx';
+import { aiBlock } from '@/data/plan';
+import { MaxLink } from '@/features/plans/Locked';
 import { toast } from '@/state/ui';
 
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
@@ -72,7 +74,8 @@ export default function ColloquiumPage() {
   const grammar = useLiveQuery(() => currentGrammarTopic(lang, language.level), [lang, language.level]);
   const topic = useTopic && grammar ? grammar.topic.title : undefined;
   const chats = useChats(lang);
-  const hasKey = Boolean(settings.apiKeys[settings.llm.provider]);
+  const block = aiBlock(settings, settings.llm.provider);
+  const hasKey = !block;
 
   const prompt = buildPrompt(lang, {
     scene,
@@ -242,6 +245,11 @@ export default function ColloquiumPage() {
               Start chatting
             </Button>
           </Card>
+        ) : block === 'max' ? (
+          <p className="text-[14.5px] leading-snug text-ink-soft">
+            With Lingua+ Max you can chat right here, using your own free key, with your mistakes corrected as you go.{' '}
+            <MaxLink className="text-accent-text" />
+          </p>
         ) : (
           <p className="text-[14.5px] leading-snug text-ink-soft">
             With a free Groq or Gemini key you can chat right here, with your mistakes corrected as you go.{' '}

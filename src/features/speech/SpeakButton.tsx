@@ -4,13 +4,14 @@ import { AppContext } from '@/app/context';
 import { cx } from '@/lib/cx';
 import { resetSpeakers, speak, speakerFor, stopSpeaking } from '@/services/speech/voice';
 import type { Speaker } from '@/services/speech/voice';
+import { aiKeys } from '@/data/plan';
 import { toast } from '@/state/ui';
 
 /** Who speaks `lang` here, worked out again when the key, the flag or the voice settings change. */
 export function useSpeaker(lang: string): { speaker: Speaker | null; flag?: string } {
   const app = useContext(AppContext);
   const flag = app?.language.id === lang ? app.language.flag : undefined;
-  const key = app?.settings.apiKeys.gemini.trim() ?? '';
+  const key = app ? aiKeys(app.settings).gemini.trim() : '';
   const voice = app?.settings.voice;
   const [speaker, setSpeaker] = useState<Speaker | null>(null);
   useEffect(() => {

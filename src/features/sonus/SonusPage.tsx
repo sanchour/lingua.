@@ -18,6 +18,9 @@ import { getLanguage } from '@/core/lang/languages';
 import { spring } from '@/design/motion';
 import { toast } from '@/state/ui';
 import { AddVideoMenu } from '@/features/visio/library/AddVideoMenu';
+import { PlusChip, RequirePlan } from '@/features/plans/Locked';
+import { useGate } from '@/features/plans/PlanRoute';
+import { useCan } from '@/features/plans/usePlan';
 import { AddMenu } from './library/AddMenu';
 import { LIBRARY_VIEWS, LibraryHome } from './library/LibraryHome';
 import type { LibraryView } from './library/LibraryHome';
@@ -70,6 +73,7 @@ export default function SonusPage() {
   const { language, settings } = useApp();
   const lang = language.id;
   const { pointer } = useLayout();
+  const streamingOpen = useCan('streaming');
   const media = useMediaList(lang, 'all');
   const feeds = useFeeds(lang);
   const playback = usePlaybackMap();
@@ -187,11 +191,17 @@ export default function SonusPage() {
         }
       />
 
-      <RoomTabs label="Sonus et Visio" tabs={TABS} active={tab} keys={!searching} end={<SonusPlusLink />} />
+      <RoomTabs label="Sonus et Visio" tabs={streamingOpen ? TABS : TABS.map((t) => (t.id === 'streaming' ? { ...t, badge: <PlusChip feature="streaming" /> } : t))} active={tab} keys={!searching} end={<SonusPlusLink />} />
 
       {tab !== 'library' && (
         <Suspense fallback={null}>
-          {tab === 'radio' ? <RadioTab lang={lang} flag={language.flag} /> : tab === 'books' ? <BooksTab lang={lang} /> : <ServicesTab lang={lang} />}
+          {tab === 'radio' ? <RadioTab lang={lang} flag={language.flag} /> : tab === 'books' ? (
+            <BooksTab lang={lang} />
+          ) : (
+            <RequirePlan feature="streaming">
+              <ServicesTab lang={lang} />
+            </RequirePlan>
+          )}
         </Suspense>
       )}
 
@@ -223,9 +233,11 @@ export default function SonusPage() {
 
 /** The way into Sonus+, dark like the room, at the end of the tab strip. */
 function SonusPlusLink() {
+  const gate = useGate('sonusPlus');
   return (
     <Link
       to="/cantus"
+      onClick={gate ?? undefined}
       aria-label="Open Sonus+: songs to sing and learn, and podcasts"
       className="group relative inline-flex h-9 items-center gap-2 overflow-hidden rounded-full bg-[#120e10] pr-3.5 pl-1.5 text-[#f6eef0] shadow-elev-1 transition-transform active:scale-[0.98]"
     >
@@ -236,6 +248,7 @@ function SonusPlusLink() {
       <span className="relative text-[14px] font-extrabold tracking-[-0.01em]">
         Sonus<span className="text-[#e8a0bf]">+</span>
       </span>
+      {gate && <span className="relative ml-0.5 rounded-full bg-[#f6eef0]/15 px-1.5 text-[11px] font-bold">Lingua+</span>}
     </Link>
   );
 }

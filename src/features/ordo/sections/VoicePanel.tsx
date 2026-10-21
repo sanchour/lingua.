@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Check, Loader2, Volume2 } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
 import { accentName, otherLocales, voiceLocale } from '@/core/lang/voiceLocale';
+import { aiBlock, aiKeys } from '@/data/plan';
 import { setSetting, useSettings } from '@/data/settings';
 import type { LanguageProfile } from '@/data/types';
 import { Button, Switch } from '@/design/primitives';
@@ -25,7 +26,8 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
   const locale = voiceLocale(active.id, active.flag);
   const name = info?.name ?? active.id;
   const voice = settings?.voice ?? { off: false, chosen: {} };
-  const key = settings?.apiKeys.gemini.trim() ?? '';
+  const key = settings ? aiKeys(settings).gemini.trim() : '';
+  const addKey = settings && aiBlock(settings, 'gemini') === 'max' ? ' Gemini’s natural voices come with Lingua+ Max.' : ' Add a free Gemini key in AI and translation for Gemini’s natural voices.';
   const sample = info?.sample ?? '';
 
   const status = !speaker
@@ -33,12 +35,12 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
     : speaker.kind === 'gemini'
       ? `Gemini’s voice ${speaker.voice.name}, ${accentName(speaker.locale)}. Each word is made once and kept on this device.`
       : speaker.kind === 'device'
-        ? `This device’s voice ${speaker.voice.name} (${accentName(speaker.locale)}).${key ? '' : ' Add a free Gemini key in AI and translation for Gemini’s natural voices.'}`
+        ? `This device’s voice ${speaker.voice.name} (${accentName(speaker.locale)}).${key ? '' : addKey}`
         : speaker.why === 'off'
           ? 'Reading aloud is off.'
           : speaker.why === 'no-locale'
             ? `${name} has no natural voice anywhere, so nothing is read aloud.`
-            : `No natural voice for ${accentName(speaker.locale ?? '')} on this device${key ? ', and Gemini has none for it yet' : ''}, so there are no speaker buttons.${key ? '' : ' Add a free Gemini key in AI and translation for Gemini’s voices.'}`;
+            : `No natural voice for ${accentName(speaker.locale ?? '')} on this device${key ? ', and Gemini has none for it yet' : ''}, so there are no speaker buttons.${key ? '' : addKey}`;
 
   const findVoices = async () => {
     if (!locale) return;

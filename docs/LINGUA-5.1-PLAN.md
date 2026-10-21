@@ -157,13 +157,13 @@ all three tabs with the prompt rail on desktop; a fresh profile follows the devi
 ### 5.1-2a · Lingua+ and Lingua+ Max
 
 **The user's points**
-- [ ] Free: unlimited decks; practising them, but not in Ludus; Discover decks; add anything to
+- [x] Free: unlimited decks; practising them, but not in Ludus; Discover decks; add anything to
   Thesaurus; Codex fully free; Sonus with audiobooks and radio.
-- [ ] Lingua+: €24.99 once, updates for life. Sonus+, the courses and everything else.
-- [ ] Lingua+ Max: monthly (D3). All AI: better translation, diary checking, automatic dictation.
-- [ ] The plans screen in onboarding and in Ordo.
-- [ ] Ordo: manage the subscription, or subscribe easily.
-- [ ] Top left: "+" for Lingua+, "Max" for Max, with a fade, luxe effect in the theme's colours.
+- [x] Lingua+: €24.99 once, updates for life. Sonus+, the courses and everything else.
+- [x] Lingua+ Max: monthly (D3). All AI: better translation, diary checking, automatic dictation.
+- [~] The plans screen in onboarding and in Ordo. (Ordo, the sheet and the "+" chips: done; onboarding: 5.1-2b.)
+- [x] Ordo: manage the subscription, or subscribe easily.
+- [x] Top left: "+" for Lingua+, "Max" for Max, with a fade, luxe effect in the theme's colours. (Made quieter at the user's ask on 2026-10-21: a hairline and MAX in spaced accent capitals, no fill; DECISIONS.md.)
 
 **What each plan has** (D4; the user's points in bold, my proposal for the rest in plain)
 

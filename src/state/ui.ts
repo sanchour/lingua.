@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { Feature } from '@/data/plan';
 
 export type ToastTone = 'default' | 'success' | 'error';
 
@@ -19,6 +20,10 @@ interface UIState {
   /** Measured height of the touch header (incl. safe area), used for title-collapse detection. */
   topBarHeight: number;
   shortcutsOpen: boolean;
+  /** The plans sheet: open for a locked feature, for all plans, or closed. */
+  plansFor: Feature | 'all' | null;
+  openPlans: (feature?: Feature) => void;
+  closePlans: () => void;
   setPageTitle: (title: string) => void;
   setTopBarHeight: (height: number) => void;
   setPageTitleHidden: (hidden: boolean) => void;
@@ -35,6 +40,9 @@ export const useUI = create<UIState>((set) => ({
   pageTitle: '',
   topBarHeight: 56,
   shortcutsOpen: false,
+  plansFor: null,
+  openPlans: (feature) => set({ plansFor: feature ?? 'all' }),
+  closePlans: () => set({ plansFor: null }),
   setPageTitle: (pageTitle) => set({ pageTitle, pageTitleHidden: false }),
   setTopBarHeight: (topBarHeight) => set({ topBarHeight }),
   setPageTitleHidden: (pageTitleHidden) => set({ pageTitleHidden }),

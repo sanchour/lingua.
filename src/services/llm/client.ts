@@ -2,6 +2,7 @@
 // sent only to the provider, in a request header (never in a URL).
 import { hashString } from '@/core/hash';
 import { db } from '@/data/db';
+import { aiBlock, aiKeys, AI_NEEDS_MAX } from '@/data/plan';
 import { getSettings } from '@/data/settings';
 import type { Settings } from '@/data/settings';
 import type { LlmCacheRow } from '@/data/types';
@@ -24,7 +25,7 @@ export const PROVIDERS: Record<Provider, { name: string; keyUrl: string; preferr
 export class LlmError extends Error {
   constructor(
     message: string,
-    readonly kind: 'no-key' | 'auth' | 'rate' | 'network' | 'bad-response',
+    readonly kind: 'no-key' | 'no-plan' | 'auth' | 'rate' | 'network' | 'bad-response',
   ) {
     super(message);
   }
@@ -94,9 +95,10 @@ async function complete(provider: Provider, key: string, model: string, system: 
 
 /** A conversation's next answer as JSON (never cached: the same words can deserve a new reply). */
 export async function chatJson<T>(system: string, turns: Turn[]): Promise<T> {
-  const { llm, apiKeys } = await getSettings();
-  const key = apiKeys[llm.provider];
-  if (!key) throw new LlmError('Add a free API key in Settings → AI to chat here.', 'no-key');
+  const settings = await getSettings();
+  const { llm } = settings;
+  const key = aiKeys(settings)[llm.provider];
+  if (!key) throw aiBlock(settings, llm.provider) === 'max' ? new LlmError(AI_NEEDS_MAX, 'no-plan') : new LlmError('Add a free API key in Settings → AI to chat here.', 'no-key');
   if (!llm.model) throw new LlmError('Choose a model in Settings → AI.', 'no-key');
   const text = await complete(llm.provider, key, llm.model, system, turns, 0.7);
   try {
@@ -115,9 +117,10 @@ interface JsonRequest {
 
 /** Sends a prompt and returns the parsed JSON answer (cached). */
 export async function askJson<T>({ system, user, kind }: JsonRequest): Promise<T> {
-  const { llm, apiKeys } = await getSettings();
-  const key = apiKeys[llm.provider];
-  if (!key) throw new LlmError('Add a free API key in Settings → AI to use explanations.', 'no-key');
+  const settings = await getSettings();
+  const { llm } = settings;
+  const key = aiKeys(settings)[llm.provider];
+  if (!key) throw aiBlock(settings, llm.provider) === 'max' ? new LlmError(AI_NEEDS_MAX, 'no-plan') : new LlmError('Add a free API key in Settings → AI to use explanations.', 'no-key');
   if (!llm.model) throw new LlmError('Choose a model in Settings → AI.', 'no-key');
 
   const id = hashString(`${llm.provider}|${llm.model}|${kind}|${system}|${user}`);

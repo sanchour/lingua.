@@ -7,7 +7,8 @@ import { IconButton, Tooltip } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { useApp } from '@/app/context';
-import { hasPlus } from '@/data/plus';
+import { planOf } from '@/data/plan';
+import { PlanBadge } from '@/features/plans/PlanMarks';
 import { LanguageChip } from '../LanguageChip';
 import { LogoMark } from '../Wordmark';
 
@@ -20,7 +21,7 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { settings } = useApp();
-  const plus = hasPlus(settings.meta);
+  const plan = planOf(settings.meta);
   // Ratio and Settings (your numbers and your settings) sit at the bottom, apart from the rooms.
   const bottom = SECTIONS.filter((s) => s.id === 'ratio' || s.id === 'ordo');
   const main = SECTIONS.filter((s) => !bottom.includes(s));
@@ -42,7 +43,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           hidden={collapsed}
         >
           Lingua
-          {plus && <sup className="ml-0.5 text-[17px] font-medium text-accent-text" aria-label="Plus">+</sup>}
+          <PlanBadge plan={plan} />
         </motion.span>
         <IconButton
           icon={collapsed ? PanelLeftOpen : PanelLeftClose}

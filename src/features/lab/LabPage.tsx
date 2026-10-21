@@ -7,6 +7,7 @@ import { Button } from '@/design/primitives';
 import { toast } from '@/state/ui';
 import { AudioTest } from './AudioTest';
 import { FlagsCard } from './FlagsCard';
+import { PretendCard } from './PretendCard';
 import { EnvironmentCard, LongPressCard, ShareCard, SheetCard, StorageCard, WordsCard } from './LabTests';
 import { useLabReport } from './report';
 import { SmoothnessTest } from './SmoothnessTest';
@@ -39,6 +40,7 @@ export default function LabPage() {
         }
       />
       <div className="grid gap-4 lg:grid-cols-2">
+        <PretendCard />
         <EnvironmentCard />
         <AudioTest />
         <SmoothnessTest perfHud={settings.ui.perfHud} />

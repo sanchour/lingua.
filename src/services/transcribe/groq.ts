@@ -6,6 +6,7 @@ import { isMp3, splitMp3 } from '@/core/audio/mp3';
 import { cuesFromWhisper } from '@/core/parsers/whisper';
 import type { WhisperResult } from '@/core/parsers/whisper';
 import { audioBlob } from '@/data/media';
+import { aiBlock, AI_NEEDS_MAX, getAiSettings } from '@/data/plan';
 import { getSettings } from '@/data/settings';
 import type { Cue, Media } from '@/data/types';
 import { downloadBlob } from '@/services/sonus/net';
@@ -21,7 +22,7 @@ const PART_SIZE = 20 * 1024 * 1024;
 export class TranscribeError extends Error {
   constructor(
     message: string,
-    readonly kind: 'no-key' | 'auth' | 'rate' | 'too-large' | 'network' | 'bad-response' | 'no-audio',
+    readonly kind: 'no-key' | 'no-plan' | 'auth' | 'rate' | 'too-large' | 'network' | 'bad-response' | 'no-audio',
   ) {
     super(message);
   }
@@ -107,8 +108,10 @@ async function onDevice(media: Media, model: DeviceModel, onProgress?: Transcrib
  * downloaded audio, otherwise its web address) or Whisper on this device. `onProgress` gets 0–1.
  */
 export async function transcribe(media: Media, onProgress?: TranscribeProgress): Promise<{ cues: Cue[]; source: 'whisper-groq' | 'whisper-local' }> {
-  const { apiKeys, audio } = await getSettings();
+  const settings = await getSettings();
+  const { apiKeys, audio } = settings;
   if (audio.transcriber === 'device') return { cues: await onDevice(media, audio.deviceModel, onProgress), source: 'whisper-local' };
+  if (aiBlock(settings, 'groq') === 'max') throw new TranscribeError(NO_PLAN, 'no-plan');
   return { cues: await withGroq(media, apiKeys.groq, audio.whisperModel, onProgress), source: 'whisper-groq' };
 }
 
@@ -162,15 +165,18 @@ const INVENTED = /amara\.org|subt[ií]tul|untertitel|sous-titr|sottotitol|ondert
  * Settings › Listening. MP3 goes to Groq as it is; anything else is decoded here and sent as WAV.
  */
 const NO_CLIP_KEY = 'Add a free Groq key in Settings › AI, or choose Whisper on this device in Settings › Listening.';
+const NO_PLAN = `${AI_NEEDS_MAX} Or choose Whisper on this device in Settings › Listening.`;
 
 /** Why live text can't start (no Groq key, and Whisper isn't set to run on this device), or null. */
 export async function clipBlocker(): Promise<string | null> {
-  const { apiKeys, audio } = await getSettings();
-  return audio.transcriber === 'device' || apiKeys.groq ? null : NO_CLIP_KEY;
+  const settings = await getSettings();
+  if (settings.audio.transcriber === 'device') return null;
+  const block = aiBlock(settings, 'groq');
+  return block === 'max' ? NO_PLAN : block === 'key' ? NO_CLIP_KEY : null;
 }
 
 export async function transcribeClip(bytes: Uint8Array, lang: string): Promise<Cue[]> {
-  const { apiKeys, audio } = await getSettings();
+  const { apiKeys, audio } = await getAiSettings();
   const device = audio.transcriber === 'device';
   if (!device && !apiKeys.groq) throw new TranscribeError(NO_CLIP_KEY, 'no-key');
   let result: WhisperResult;

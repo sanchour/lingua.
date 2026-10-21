@@ -17,7 +17,9 @@ import { spring } from '@/design/motion';
 import { LlmError, PROVIDERS } from '@/services/llm/client';
 import { checkEntry } from '@/services/llm/journal';
 import { cx } from '@/lib/cx';
-import { toast } from '@/state/ui';
+import { aiBlock } from '@/data/plan';
+import { MaxLink } from '@/features/plans/Locked';
+import { toast, useUI } from '@/state/ui';
 import { CorrectionList, ReviewSummary, ReviewText } from './Review';
 
 const SAVE_DELAY = 500;
@@ -60,7 +62,9 @@ function Entry({ entry }: { entry: JournalEntry }) {
   const areaRef = useRef<HTMLTextAreaElement>(null);
   const words = countWords(text, lang);
   const provider = PROVIDERS[settings.llm.provider].name;
-  const hasAi = Boolean(settings.apiKeys[settings.llm.provider] && settings.llm.model);
+  const block = aiBlock(settings, settings.llm.provider);
+  const hasAi = !block && Boolean(settings.llm.model);
+  const openPlans = useUI((s) => s.openPlans);
 
   // Saves shortly after typing stops, and on leaving.
   const pending = useRef<number | undefined>(undefined);
@@ -125,7 +129,9 @@ function Entry({ entry }: { entry: JournalEntry }) {
       setMode('review');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
-      if (error instanceof LlmError && error.kind === 'no-key') {
+      if (error instanceof LlmError && error.kind === 'no-plan') {
+        toast(error.message, { action: { label: 'See Lingua+ Max', onClick: () => openPlans('ai') } });
+      } else if (error instanceof LlmError && error.kind === 'no-key') {
         toast(error.message, { tone: 'error', action: { label: 'Open Settings', onClick: () => navigate('/settings/ai') } });
       } else toast(error instanceof Error ? error.message : 'The check didn’t work. Try again.', { tone: 'error' });
     } finally {
@@ -263,7 +269,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
                 {words} {words === 1 ? 'word' : 'words'}
               </span>
               <span className="ml-2">{saved ? 'Saved' : 'Saving…'}</span>
-              <p className="hidden truncate sm:block">{hasAi ? `Checking sends this entry to ${provider}.` : 'Add a free AI key in Settings to get corrections.'}</p>
+              <p className="hidden truncate sm:block">{hasAi ? `Checking sends this entry to ${provider}.` : block === 'max' ? 'Corrections come with Lingua+ Max.' : 'Add a free AI key in Settings to get corrections.'}</p>
             </div>
             {stale && review && (
               <button type="button" onClick={() => setMode('review')} className="hidden px-2 text-[13px] font-semibold text-ink-soft hover:text-ink sm:block">
@@ -274,6 +280,8 @@ function Entry({ entry }: { entry: JournalEntry }) {
               <Button icon={review && stale ? RotateCcw : Sparkles} onClick={() => void check()} loading={checking} disabled={words < 3 || (Boolean(review) && !stale)}>
                 {review && stale ? 'Check again' : 'Check my writing'}
               </Button>
+            ) : block === 'max' ? (
+              <MaxLink className={buttonClasses('secondary', 'md')}>Lingua+ Max</MaxLink>
             ) : (
               <Link to="/settings/ai" className={buttonClasses('secondary', 'md')}>
                 Set up AI

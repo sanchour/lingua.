@@ -1,0 +1,10 @@
+# Lingua's licence server (README.md beside this file). Two secrets, never in this file:
+#   STRIPE_SECRET_KEY    Stripe's secret key (sk_test_… while testing, sk_live_… after)
+#   LICENCE_PRIVATE_KEY  the private key that keygen.mjs prints
+name = "lingua-licence"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+
+[vars]
+# The app's origin: the only page browsers let call this server.
+ALLOWED_ORIGIN = "https://sanchour.github.io"

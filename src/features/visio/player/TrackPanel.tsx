@@ -9,7 +9,8 @@ import { Button, Card, MenuItem, Popover } from '@/design/primitives';
 import { pickFile } from '@/services/files/files';
 import { startTranscription, startTranslation, useJobs } from '@/services/sonus/jobs';
 import { readSubtitleFile, SUBTITLE_ACCEPT } from '@/services/visio/files';
-import { toast } from '@/state/ui';
+import { aiBlock, aiKeys } from '@/data/plan';
+import { toast, useUI } from '@/state/ui';
 
 const SOURCE: Record<Transcript['source'], string> = {
   'whisper-groq': 'Whisper',
@@ -42,8 +43,10 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
   const note = useJobs((s) => s.notes[media.id]);
   const translating = useJobs((s) => s.translating[media.id]);
   const hasSound = Boolean(media.blobId || media.remoteUrl);
-  const canTranscribe = settings.audio.transcriber === 'device' || Boolean(settings.apiKeys.groq);
-  const hasAi = Boolean(settings.apiKeys[settings.llm.provider] && settings.llm.model);
+  const canTranscribe = settings.audio.transcriber === 'device' || Boolean(aiKeys(settings).groq);
+  const needsMax = aiBlock(settings, settings.llm.provider) === 'max';
+  const hasAi = Boolean(aiKeys(settings)[settings.llm.provider] && settings.llm.model);
+  const openPlans = useUI((s) => s.openPlans);
   const name = getLanguage(media.lang)?.name ?? media.lang;
 
   const row = (role: TrackRole) => {
@@ -73,13 +76,13 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
           ) : (
             <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
               {role === 'target' && hasSound && (
-                <Button size="sm" variant="secondary" icon={canTranscribe ? Sparkles : KeyRound} onClick={() => (canTranscribe ? void startTranscription(media) : navigate('/settings/listening'))}>
+                <Button size="sm" variant="secondary" icon={canTranscribe ? Sparkles : KeyRound} onClick={() => (canTranscribe ? void startTranscription(media) : needsMax ? openPlans('ai') : navigate('/settings/listening'))}>
                   {canTranscribe ? 'Make' : 'Set up Whisper'}
                 </Button>
               )}
               {role === 'native' && tracks.target && (
-                <Button size="sm" variant="secondary" icon={hasAi ? Languages : KeyRound} onClick={() => (hasAi ? void startTranslation(media, tracks.target!.cues) : navigate('/settings/ai'))}>
-                  {hasAi ? 'Translate' : 'Add AI key'}
+                <Button size="sm" variant="secondary" icon={hasAi ? Languages : KeyRound} onClick={() => (hasAi ? void startTranslation(media, tracks.target!.cues) : needsMax ? openPlans('ai') : navigate('/settings/ai'))}>
+                  {hasAi ? 'Translate' : needsMax ? 'Lingua+ Max' : 'Add AI key'}
                 </Button>
               )}
               <Button size="sm" variant="ghost" icon={FileText} onClick={() => void addFile(media, role)}>

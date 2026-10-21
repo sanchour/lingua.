@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from './db';
+import type { PlanState } from './plan';
 import type { LinguaDB } from './db';
 import type { SettingRow } from './types';
 import type { NocturnePaletteId, PaperPaletteId } from '@/design/palettes';
@@ -118,7 +119,15 @@ export interface Settings {
     sonusShow: MediaShow;
   };
   /** Device-only. */
-  meta: { deviceId: string; onboardedAt: number | null; lastBackupAt: number | null; plusAt: number | null };
+  meta: {
+    deviceId: string;
+    onboardedAt: number | null;
+    lastBackupAt: number | null;
+    /** Lingua 4.0-1's placeholder; carried into `plan` (data/plan.ts) and then cleared. */
+    plusAt: number | null;
+    /** Lingua+ and Max on this device (5.1-2a). */
+    plan: PlanState | null;
+  };
   /**
    * Device-only: the devices this one is paired with (each pairing's secret, which side of it this
    * device is, and when they last synced), and whether API keys go along. Never in backups.
@@ -191,7 +200,7 @@ export const DEFAULT_SETTINGS: Settings = {
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
   ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all' },
-  meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null },
+  meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null, plan: null },
   sync: { devices: [], includeApiKeys: false },
 };
 

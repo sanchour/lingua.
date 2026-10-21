@@ -3,11 +3,13 @@ import { BookOpenText, Captions, Clock, Ellipsis, FileText, KeyRound, Sparkles, 
 import { useApp } from '@/app/context';
 import { deleteTranscript, saveTranscript, shiftTranscript, transcriptText } from '@/data/media';
 import type { Media, Transcript } from '@/data/types';
-import { Button, Card, MenuItem, Popover } from '@/design/primitives';
+import { Button, buttonClasses, Card, MenuItem, Popover } from '@/design/primitives';
 import { setCues } from '@/services/audio/engine';
 import { pickFile } from '@/services/files/files';
 import { TRANSCRIPT_ACCEPT, readTranscriptFile } from '@/services/sonus/files';
 import { startTranscription, useJobs } from '@/services/sonus/jobs';
+import { aiBlock } from '@/data/plan';
+import { MaxLink } from '@/features/plans/Locked';
 import { toast } from '@/state/ui';
 
 const SOURCE: Record<Transcript['source'], string> = {
@@ -40,7 +42,8 @@ export function NoTranscript({ media }: { media: Media }) {
   const progress = useJobs((s) => s.transcribing[media.id]);
   const note = useJobs((s) => s.notes[media.id]);
   const onDevice = settings.audio.transcriber === 'device';
-  const hasKey = Boolean(settings.apiKeys.groq) || onDevice;
+  const block = onDevice ? null : aiBlock(settings, 'groq');
+  const hasKey = !block;
   const spotify = media.kind === 'spotify';
 
   return (
@@ -70,6 +73,8 @@ export function NoTranscript({ media }: { media: Media }) {
                 <Button icon={Sparkles} onClick={() => void startTranscription(media)}>
                   Make a transcript
                 </Button>
+              ) : block === 'max' ? (
+                <MaxLink className={buttonClasses('primary', 'md')}>Transcripts with Lingua+ Max</MaxLink>
               ) : (
                 <Button icon={KeyRound} onClick={() => navigate('/settings/ai')}>
                   Add a free Groq key
@@ -79,7 +84,11 @@ export function NoTranscript({ media }: { media: Media }) {
               Add a file
             </Button>
           </div>
-          {!spotify && !hasKey && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Transcripts use Whisper on Groq with your own free key, or Whisper on this device (Settings › Listening). SRT, VTT and plain text files work without either.</p>}
+          {!spotify && !hasKey && (
+            <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">
+              Transcripts use Whisper on Groq with your own free key{block === 'max' ? ' (Lingua+ Max)' : ''}, or Whisper on this device (Settings › Listening). SRT, VTT and plain text files work without either.
+            </p>
+          )}
           {!spotify && onDevice && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Made on this device: private and free, slower than Groq.</p>}
         </>
       )}

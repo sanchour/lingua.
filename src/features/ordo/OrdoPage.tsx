@@ -11,6 +11,7 @@ import { getReaderFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { fade } from '@/design/motion';
+import { aiBlock } from '@/data/plan';
 import { SearchInput } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { formatDateTime } from '@/lib/format';
@@ -27,7 +28,7 @@ import { LanguageSection } from './sections/LanguageSection';
 import { ListeningSection } from './sections/ListeningSection';
 import { MusicSection } from './sections/MusicSection';
 import { PerformanceSection } from './sections/PerformanceSection';
-import { PlusSection } from './sections/PlusSection';
+import { PlanSection } from './sections/PlanSection';
 import { ReadingSection } from './sections/ReadingSection';
 import { ResetSection } from './sections/ResetSection';
 import { StorageSection } from './sections/StorageSection';
@@ -219,7 +220,7 @@ function SectionView({ id }: { id: SectionId }) {
     case 'ai':
       return <AiSection llm={settings.llm} apiKeys={settings.apiKeys} translation={settings.translation} />;
     case 'plus':
-      return <PlusSection meta={settings.meta} />;
+      return <PlanSection meta={settings.meta} />;
     case 'sync':
       return <SyncSection sync={settings.sync} />;
     case 'storage':
@@ -285,7 +286,7 @@ function useSummaries(hidden: ReadonlySet<SectionId>): Summaries {
   const names = (languages ?? [language]).map((l) => getLanguage(l.id)?.name ?? l.id);
   const themeName = { paper: 'Paper', nocturne: 'Nocturne', system: 'Follows the device' }[theme];
   const motionName = { system: 'system motion', reduced: 'reduced motion', full: 'full motion' }[ui.motion];
-  const hasKey = Boolean(apiKeys[llm.provider]?.trim());
+  const block = aiBlock(settings, llm.provider);
   return {
     reading: { text: `${getReaderFont(reader.font).label} · ${reader.sizePx} px · ${reader.mode === 'paged' ? 'page flip' : 'smooth scroll'}` },
     study: { text: `${study.newPerDay} new cards a day · remember ${Math.round(study.desiredRetention * 100)}%` },
@@ -293,7 +294,7 @@ function useSummaries(hidden: ReadonlySet<SectionId>): Summaries {
     music: { text: `English ${{ show: 'shown', blur: 'blurred', hide: 'hidden' }[settings.cantus.translation]} · ${settings.spotify.refreshToken ? 'Spotify connected' : 'Spotify not connected'}` },
     languages: { text: names.join(', ') },
     look: { text: `${themeName} · ${motionName}` },
-    ai: hasKey ? { text: `${llm.provider === 'groq' ? 'Groq' : 'Gemini'} key connected` } : { text: 'Add a free key for explanations', attention: true },
+    ai: !block ? { text: `${llm.provider === 'groq' ? 'Groq' : 'Gemini'} key connected` } : block === 'max' ? { text: apiKeys[llm.provider]?.trim() ? 'Key saved · works with Lingua+ Max' : 'Comes with Lingua+ Max' } : { text: 'Add a free key for explanations', attention: true },
     data: meta.lastBackupAt ? { text: `Last backup ${formatDateTime(meta.lastBackupAt)}` } : { text: 'No backup yet', attention: true },
     about: { text: `Lingua ${APP_VERSION} · ${hidden.has('keyboard') ? '' : 'shortcuts, '}performance, credits` },
   };

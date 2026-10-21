@@ -15,6 +15,7 @@ import { buttonClasses } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { LessonEnd, LessonSetup, recordBest } from '@/features/lesson/kit';
 import type { LessonResult } from '@/features/lesson/kit';
+import { PlanRoute } from '@/features/plans/PlanRoute';
 import { Ludus } from './Ludus';
 import { SentencesRound } from './SentencesRound';
 import type { LudusEntry } from './Ludus';
@@ -74,7 +75,13 @@ async function loadPass(cardIds: string[]): Promise<StudySession> {
 export default function StudyPage() {
   const { deckId: param } = useParams();
   const [search] = useSearchParams();
-  if (search.get('mode') === 'ludus' && search.get('kind') === 'sentences') return <SentencesRound deckId={param && param !== 'all' ? param : null} />;
+  const back = param && param !== 'all' ? `/thesaurus/deck/${param}` : '/thesaurus';
+  if (search.get('mode') === 'ludus')
+    return (
+      <PlanRoute feature="ludus" fallback={back}>
+        {search.get('kind') === 'sentences' ? <SentencesRound deckId={param && param !== 'all' ? param : null} /> : <CardStudy />}
+      </PlanRoute>
+    );
   return <CardStudy />;
 }
 

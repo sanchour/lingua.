@@ -28,7 +28,6 @@ import { BookCover } from '@/features/codex/library/BookCover';
 import { SongArt } from '@/features/cantus/SongArt';
 import { Artwork } from '@/features/sonus/library/Artwork';
 import { Poster } from '@/features/visio/library/Poster';
-import { PlusHomeCard } from './PlusHomeCard';
 import { MundusHomeCard } from '@/features/mundus/HomeCard';
 import { ColloquiumHomeCard } from '@/features/colloquium/HomeCard';
 import { GrammarHomeCard } from '@/features/grammatica/links';
@@ -98,9 +97,6 @@ export default function HomePage() {
           </motion.div>
           <motion.div {...enter(5)} className="empty:hidden">
             <MundusHomeCard />
-          </motion.div>
-          <motion.div {...enter(6)} className="empty:hidden">
-            <PlusHomeCard />
           </motion.div>
           <motion.div {...enter(6)} className="empty:hidden">
             <ColloquiumHomeCard lang={language.id} level={language.level} />

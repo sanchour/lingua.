@@ -1,7 +1,7 @@
 // A translation under each lyric line: the AI reads the whole song (so a line is translated in the
 // light of the verse it's in); without a key, the free online translators take it line by line.
 import { getLanguage } from '@/core/lang/languages';
-import { getSettings } from '@/data/settings';
+import { getAiSettings } from '@/data/plan';
 import type { Song } from '@/data/types';
 import { askJson } from '@/services/llm/client';
 import { translateLine } from '@/services/translate/gloss';
@@ -9,7 +9,7 @@ import { translateLine } from '@/services/translate/gloss';
 const BATCH = 60;
 
 async function hasAiKey(): Promise<boolean> {
-  const { llm, apiKeys } = await getSettings();
+  const { llm, apiKeys } = await getAiSettings();
   return Boolean(apiKeys[llm.provider]?.trim() && llm.model);
 }
 

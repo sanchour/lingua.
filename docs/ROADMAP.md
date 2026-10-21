@@ -1710,7 +1710,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 
 - [x] 5.1-1 · The frame: rooms in the new order (Cursus, Sonus et Visio, Mentis), Settings, the device's light, no more "Ideas from Mundus" (with 5.2-1)
 - [ ] 5.1-2 · Plans, the first start and Home
-  - [ ] a · Lingua+ (€24.99 once) and Lingua+ Max
+  - [x] a · Lingua+ (€24.99 once) and Lingua+ Max (in test mode until the user sets up Stripe: server/licence/README.md)
   - [ ] b · Onboarding: intro pages, a map without dots, accurate language data, twelve new flags, the new screens
   - [ ] c · Home: Today, Next up, the week, Cursus, Mundus, numbers (the old Home one setting away)
 - [ ] 5.1-3 · Reading, words and sound

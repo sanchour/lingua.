@@ -14,6 +14,8 @@ import { articleFor } from '../common/words';
 import { ConfirmDialog, MoveDialog, NameDialog } from '../library/dialogs';
 import type { ConfirmRequest, MoveRequest, NameRequest } from '../library/dialogs';
 import { DeckSettings } from './DeckSettings';
+import { PlusChip } from '@/features/plans/Locked';
+import { useGate } from '@/features/plans/PlanRoute';
 import { DeckStats } from './DeckStats';
 import { NoteEditor } from './NoteEditor';
 import type { EditorTarget } from './NoteEditor';
@@ -26,6 +28,7 @@ export default function DeckPage() {
   const { language } = useApp();
   const navigate = useNavigate();
   const deck = useDeck(deckId);
+  const ludusGate = useGate('ludus');
   const notes = useDeckNotes(deckId);
   const cards = useDeckCards(deckId);
   const folders = useFolders(language.id);
@@ -138,15 +141,16 @@ export default function DeckPage() {
             <Layers size={18} aria-hidden />
             {due ? `Review ${due}` : 'Nothing due'}
           </Link>
-          <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} className={buttonClasses('secondary', 'lg')}>
+          <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')}>
             <Puzzle size={18} aria-hidden />
             Ludus
+            {ludusGate && <PlusChip feature="ludus" />}
           </Link>
-          <Link to={`/thesaurus/study/${deck.id}?mode=ludus&lightning=1`} className={buttonClasses('secondary', 'lg')}>
+          <Link to={`/thesaurus/study/${deck.id}?mode=ludus&lightning=1`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')}>
             <Zap size={18} aria-hidden />
             Lightning
           </Link>
-          <Link to={`/thesaurus/study/${deck.id}?mode=ludus&kind=sentences`} className={buttonClasses('secondary', 'lg')} title="Real sentences with one of the deck's words missing">
+          <Link to={`/thesaurus/study/${deck.id}?mode=ludus&kind=sentences`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')} title="Real sentences with one of the deck's words missing">
             <TextCursorInput size={18} aria-hidden />
             Sentences
           </Link>

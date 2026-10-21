@@ -4,6 +4,8 @@ import { Layers, Puzzle, Sparkles, TextCursorInput, Zap } from 'lucide-react';
 import { useToday } from '@/data/stats';
 import { useDueSummary } from '@/data/study';
 import { buttonClasses, Card, Popover } from '@/design/primitives';
+import { PlusChip } from '@/features/plans/Locked';
+import { useGate } from '@/features/plans/PlanRoute';
 
 /** Ludus's ways to play, from every deck. */
 const LUDUS_PLAYS = [
@@ -21,6 +23,7 @@ const DAY = 86_400_000;
 export function TodayCard({ lang, hasDecks, forecast, onDiscover }: { lang: string; hasDecks: boolean; forecast?: number[]; onDiscover: () => void }) {
   const today = useDueSummary(lang);
   const activity = useToday(lang);
+  const ludusGate = useGate('ludus');
   if (!today) return <Card className="h-[132px]" />;
 
   if (!hasDecks) {
@@ -62,30 +65,38 @@ export function TodayCard({ lang, hasDecks, forecast, onDiscover }: { lang: stri
           </div>
         </div>
         <div className="flex gap-2">
-          <Popover
-            label="Ludus"
-            placement="bottom-end"
-            trigger={(props) => (
-              <button type="button" {...props} className={buttonClasses(waiting > 0 ? 'secondary' : 'primary', 'md')}>
-                <Puzzle size={17} aria-hidden />
-                Ludus
-              </button>
-            )}
-          >
-            {(close) => (
-              <div className="w-72 p-1.5">
-                {LUDUS_PLAYS.map((play) => (
-                  <Link key={play.to} to={play.to} onClick={close} className="flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-surface">
-                    <play.icon size={17} aria-hidden className="mt-0.5 shrink-0 text-ink-soft" />
-                    <span>
-                      <span className="block text-[14px] font-semibold">{play.title}</span>
-                      <span className="block text-[12.5px] leading-snug text-ink-soft">{play.detail}</span>
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </Popover>
+          {ludusGate ? (
+            <button type="button" onClick={ludusGate} className={buttonClasses(waiting > 0 ? 'secondary' : 'primary', 'md')}>
+              <Puzzle size={17} aria-hidden />
+              Ludus
+              <PlusChip feature="ludus" />
+            </button>
+          ) : (
+            <Popover
+              label="Ludus"
+              placement="bottom-end"
+              trigger={(props) => (
+                <button type="button" {...props} className={buttonClasses(waiting > 0 ? 'secondary' : 'primary', 'md')}>
+                  <Puzzle size={17} aria-hidden />
+                  Ludus
+                </button>
+              )}
+            >
+              {(close) => (
+                <div className="w-72 p-1.5">
+                  {LUDUS_PLAYS.map((play) => (
+                    <Link key={play.to} to={play.to} onClick={close} className="flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-surface">
+                      <play.icon size={17} aria-hidden className="mt-0.5 shrink-0 text-ink-soft" />
+                      <span>
+                        <span className="block text-[14px] font-semibold">{play.title}</span>
+                        <span className="block text-[12.5px] leading-snug text-ink-soft">{play.detail}</span>
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </Popover>
+          )}
           {waiting > 0 && (
             <Link to="/thesaurus/study/all?mode=recall" className={buttonClasses('primary', 'md')}>
               <Layers size={17} aria-hidden />

@@ -541,3 +541,25 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   light; the "Ideas from Mundus" lines are gone.
 - **Card width:** Thin · Normal · Wide in the card look (Settings › Flashcards and the study
   screen's Aa), with a scale preview; a deck can have its own in its settings.
+
+## Lingua+ and Lingua+ Max (5.1-2a)
+
+- **Three plans.** Free: Codex, Thesaurus (unlimited decks and flashcards, Discover), the library,
+  audiobooks, the radio, alphabets, Mundus, Diarium, Ratio and every setting. **Lingua+** (€24.99
+  once): Ludus, Sonus+, Streaming, the course, Grammatica, typing, Sermo. **Lingua+ Max** (€5.99 a
+  month or €49.99 a year): all of Lingua+ plus AI with your own free key (AI translation, Explain in
+  context, diary checking, automatic dictation, natural voices).
+- **Never pushy.** A locked tab or button has a small "+" (or MAX) chip; a locked room shows one
+  calm card; a locked lesson, Sonus+ or a chat goes back to its room with the plans open. The
+  plans sheet: Free, Lingua+ ("Best value") and Max side by side, "Continue free" as clear as the
+  buy buttons.
+- **The mark beside the Lingua name:** "+" for Lingua+, and for Max a hairline and MAX in small,
+  spaced capitals in the palette's accent, shaded like foil, fading in once (the user asked for it
+  more minimal and luxe). The same quiet MAX, in a hairline outline, marks Max everywhere else.
+- **Settings › Lingua+:** your plan and since when, Max's paid-until date and renewal, Manage
+  subscription (Stripe's page), Copy licence, Restore with a licence key, and the plans.
+- **Settings › AI** says the key works with Max; every AI feature without Max says it comes with
+  Lingua+ Max and opens the plans, instead of asking for a key.
+- **Test mode** until the user sets up Stripe and the licence server (server/licence/README.md):
+  buying switches the plan on this device and charges nothing; Settings › Lab › Pretend a plan acts
+  as Free, Lingua+ or Max. Installs from before the plans act as Max, so nothing disappears.

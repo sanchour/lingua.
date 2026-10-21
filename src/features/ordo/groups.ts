@@ -112,8 +112,10 @@ export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Sync now', section: 'sync', also: 'sync devices iphone phone desktop' },
   { label: 'Reset a language', find: 'Reset ', section: 'reset', also: 'start over progress' },
   { label: 'Erase everything', section: 'reset', also: 'delete wipe clear all data' },
-  { label: 'Get Lingua+', section: 'plus', also: 'purchase buy upgrade premium pro unlock free edition price' },
-  { label: 'Reset Lingua+', section: 'plus', also: 'remove undo refund' },
+  { label: 'Get Lingua+', section: 'plus', also: 'purchase buy upgrade premium pro unlock free edition price plans' },
+  { label: 'Get Max', section: 'plus', also: 'lingua+ max ai subscription monthly yearly' },
+  { label: 'Manage subscription', section: 'plus', also: 'cancel max invoices billing renew stripe' },
+  { label: 'Restore with a licence key', section: 'plus', also: 'license licence restore purchase email another device' },
 
   { label: 'Keyboard shortcuts', section: 'keyboard', also: 'keys hotkeys' },
   { label: 'FPS monitor', section: 'performance', also: 'frame rate speed performance' },

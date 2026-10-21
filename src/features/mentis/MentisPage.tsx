@@ -9,6 +9,8 @@ import { getLanguage } from '@/core/lang/languages';
 import { DiariumHome, NewEntryButton } from '@/features/codex/diarium/DiariumHome';
 import ColloquiumPage from '@/features/colloquium/ColloquiumPage';
 import MundusPage from '@/features/mundus/MundusPage';
+import { PlusChip, RequirePlan } from '@/features/plans/Locked';
+import { useCan } from '@/features/plans/usePlan';
 import { TodayRail } from './TodayRail';
 
 type Tab = 'mundus' | 'sermo' | 'diarium';
@@ -25,20 +27,26 @@ const MUNDUS_TABS = new Set(['', 'explore', 'picks', 'try']);
  */
 export default function MentisPage() {
   const { language } = useApp();
+  const sermoOpen = useCan('sermo');
   const sub = (useParams()['*'] ?? '').replace(/\/+$/, '');
   const tab: Tab | null = MUNDUS_TABS.has(sub) ? 'mundus' : sub === 'sermo' || sub === 'diarium' ? sub : null;
   if (!tab) return <Navigate to="/mentis" replace />;
   const name = getLanguage(language.id)?.name ?? language.id;
+  const tabs = sermoOpen ? TABS : TABS.map((t) => (t.id === 'sermo' ? { ...t, badge: <PlusChip feature="sermo" /> } : t));
 
   return (
     <>
       <PageHeader title="Mentis" eyebrow={`Think, talk and write in ${name}`} actions={tab === 'diarium' ? <NewEntryButton /> : undefined} />
-      <RoomTabs label="Mentis" tabs={TABS} active={tab} />
+      <RoomTabs label="Mentis" tabs={tabs} active={tab} />
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_288px]">
         <div className="min-w-0">
           <InRoom.Provider value>
             {tab === 'mundus' && <MundusPage />}
-            {tab === 'sermo' && <ColloquiumPage />}
+            {tab === 'sermo' && (
+              <RequirePlan feature="sermo">
+                <ColloquiumPage />
+              </RequirePlan>
+            )}
             {tab === 'diarium' && <DiariumHome />}
           </InRoom.Provider>
         </div>

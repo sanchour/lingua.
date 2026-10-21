@@ -13,6 +13,8 @@ export interface RoomTab<T extends string> {
   short?: string;
   to: string;
   icon?: LucideIcon;
+  /** After the label: a "+" chip on a tab the plan doesn't open. */
+  badge?: ReactNode;
 }
 
 interface RoomTabsProps<T extends string> {
@@ -49,6 +51,7 @@ export function RoomTabs<T extends string>({ label, tabs, active, end, keys = tr
         >
           {t.icon && <t.icon size={16} aria-hidden />}
           {t.label}
+          {t.badge}
           {hints && <Kbd>{i + 1}</Kbd>}
         </Link>
       ))}

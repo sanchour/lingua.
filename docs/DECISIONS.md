@@ -1177,3 +1177,31 @@ Short records of choices that are not obvious from the code. Newest last.
   own width is optional and falls back to the one for every card.
 - **The sidebar is 216/64 px** and publishes its width as `--sidebar-w` for the fixed bars that
   centre beside it.
+
+## 2026-10-21 — Lingua+ and Lingua+ Max (5.1-2a)
+
+- **One table decides every lock** (`FEATURE_PLAN` and `can()` in `data/plan.ts`), with `usePlan`,
+  `useCan`, `RequirePlan` (a tab or room), `PlanRoute` (a full page: back to its room with the
+  plans open) and `useGate` (a link or button). Moving a feature between plans is one line.
+- **Max gates the keys, not the features' code.** `aiKeys(settings)` blanks the Groq and Gemini
+  keys without Max, and the AI services read settings through `getAiSettings()`, so no AI call can
+  forget the check; `aiBlock()` tells the screens whether the plan or the key is missing. TMDB and
+  YouTube keys aren't AI and stay free. Sermo is Lingua+ (the scenes, talked through in the
+  learner's own AI app); chatting inside Lingua uses a key, so that part is Max.
+- **Licences are signed, checked offline.** ECDSA P-256 over the payload's text, the public key in
+  `services/licence/config.ts`, the private key only in the Worker's secrets. Max keeps 14 days'
+  grace past its paid-until date while the device can't reach the server.
+- **The licence server is a Cloudflare Worker in this repo** (`server/licence`, tested in
+  `services/licence/server.test.ts` against a stand-in Stripe). It reads the checkout and the
+  subscription, also from Stripe's newer API where the period sits on the subscription item.
+  Stripe returns the learner to Settings › Lingua+ with `?checkout=`; GitHub Pages serves deep
+  links through its 404 page, so the address works on the live site.
+- **The licence stays on its device.** `meta` is device-local (it holds the device id), so the
+  licence doesn't sync; Settings › Lingua+ has Copy licence and Restore instead.
+- **Test mode is automatic** (`TEST_MODE` while the links, the server or the public key are
+  empty), so the code that charges ships now and switches on with configuration alone. Installs
+  that finished onboarding before the plans act as Max in test mode, so nothing they used locks.
+- **The MAX mark is quiet** (the user, 2026-10-21: "more minimal, luxe"): no fill and no sheen, but
+  spaced capitals in the accent shaded towards the ink (deeper on light grounds, brighter on
+  dark), a hairline beside the name and a hairline outline elsewhere, and one fade-in (opacity
+  only, as PERFORMANCE.md asks; none with reduced motion).

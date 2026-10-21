@@ -1,7 +1,7 @@
 // A selected phrase, sentence or paragraph in English: by the AI when a key is set (it reads the
 // sentence around it for meaning), otherwise by the free translators.
 import { getLanguage } from '@/core/lang/languages';
-import { getSettings } from '@/data/settings';
+import { getAiSettings } from '@/data/plan';
 import { askJson } from '@/services/llm/client';
 import { translateLine } from './gloss';
 
@@ -11,7 +11,7 @@ export interface PhraseTranslation {
 }
 
 export async function translatePhrase(lang: string, text: string, sentence?: string): Promise<PhraseTranslation | null> {
-  const { llm, apiKeys } = await getSettings();
+  const { llm, apiKeys } = await getAiSettings();
   if (apiKeys[llm.provider] && llm.model) {
     const name = getLanguage(lang)?.name ?? lang;
     const system =

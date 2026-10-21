@@ -3,6 +3,8 @@ import { ExternalLink, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { patchSetting } from '@/data/settings';
 import type { Settings } from '@/data/settings';
 import { Badge, Button, Segmented, Select, ToggleRow } from '@/design/primitives';
+import { MaxLink } from '@/features/plans/Locked';
+import { useCan } from '@/features/plans/usePlan';
 import { listModels, LlmError, PROVIDERS } from '@/services/llm/client';
 import type { Provider } from '@/services/llm/client';
 import { SettingsSection } from '../SettingsSection';
@@ -18,6 +20,7 @@ export function AiSection({ llm, apiKeys, translation }: AiSectionProps) {
   const provider = llm.provider;
   const [key, setKey] = useDraft(apiKeys[provider], (value) => void patchSetting('apiKeys', { [provider]: value.trim() }), 400);
   const [reveal, setReveal] = useState(false);
+  const withMax = useCan('ai');
   const [models, setModels] = useState<string[]>([]);
   const [status, setStatus] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -49,6 +52,12 @@ export function AiSection({ llm, apiKeys, translation }: AiSectionProps) {
       title="AI & translation"
       description="Deep explanations use your own free AI key. Instant translations work offline without it."
     >
+      {!withMax && (
+        <p className="mb-4 rounded-xl bg-accent-soft/50 px-4 py-3 text-[13.5px] leading-snug text-ink-soft">
+          Lingua uses your key with Lingua+ Max: AI translation, diary checking, automatic dictation and natural voices. You can add it now; it starts working once Max is on.{' '}
+          <MaxLink className="text-accent-text" />
+        </p>
+      )}
       <Segmented<Provider>
         label="AI provider"
         value={provider}

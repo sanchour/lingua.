@@ -2,12 +2,12 @@
 // it has there (not a translation of the sentence). Cached like every AI answer, so a sentence is
 // asked about once.
 import { getLanguage } from '@/core/lang/languages';
-import { getSettings } from '@/data/settings';
+import { getAiSettings } from '@/data/plan';
 import { askJson } from './client';
 
 /** Context glosses are used when they're switched on and an AI key and model are set. */
 export async function contextGlossesEnabled(): Promise<boolean> {
-  const { reader, llm, apiKeys } = await getSettings();
+  const { reader, llm, apiKeys } = await getAiSettings();
   return reader.contextGlosses && Boolean(apiKeys[llm.provider] && llm.model);
 }
 

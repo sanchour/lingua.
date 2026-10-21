@@ -8,6 +8,7 @@ import type { WritingPrompt } from '@/core/lang/prompts';
 import { createEntry, useJournal } from '@/data/journal';
 import type { JournalEntry } from '@/data/types';
 import { gradeColor, Ring } from '@/design/charts/Ring';
+import { aiBlock } from '@/data/plan';
 import { Button, Card } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { localDateKey } from '@/lib/format';
@@ -44,7 +45,8 @@ export function DiariumHome() {
   const lang = language.id;
   const entries = useJournal(lang);
   const navigate = useNavigate();
-  const hasAi = Boolean(settings.apiKeys[settings.llm.provider] && settings.llm.model);
+  const block = aiBlock(settings, settings.llm.provider);
+  const hasAi = !block && Boolean(settings.llm.model);
   // The guide's "Write three lines about …" opens here with that as the day's prompt.
   const about = useSearchParams()[0].get('about')?.trim().slice(0, 120) || '';
   const aboutPrompt = (title: string): WritingPrompt => ({ text: title, en: `Write three lines about ${title}.` });
@@ -162,7 +164,7 @@ export function DiariumHome() {
         <div className="flex flex-col items-center py-6 text-center text-ink-soft">
           <Sparkles size={22} className="mb-3 text-sage-text" aria-hidden />
           <p className="max-w-sm text-[15px] leading-relaxed">
-            A few sentences a day is plenty. Write, then let the AI correct and explain{hasAi ? '' : ' (add a free key in Settings › AI)'}; your mistakes become flashcards.
+            A few sentences a day is plenty. Write, then let the AI correct and explain{hasAi ? '' : block === 'max' ? ' (with Lingua+ Max)' : ' (add a free key in Settings › AI)'}; your mistakes become flashcards.
           </p>
         </div>
       )}

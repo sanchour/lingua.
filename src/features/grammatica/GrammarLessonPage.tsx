@@ -12,6 +12,7 @@ import { findTopic, topicsOf } from '@/core/grammar/types';
 import type { Grammar, Topic } from '@/core/grammar/types';
 import { recordSession } from '@/data/activity';
 import { dueGrammarItems, finishGrammarLesson, grammarProgress, placeTopics } from '@/data/grammar';
+import { aiKeys } from '@/data/plan';
 import { buttonClasses } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { useSpeaker } from '@/features/speech/SpeakButton';
@@ -47,7 +48,7 @@ export default function GrammarLessonPage({ review = false, placement = false }:
   const kind: Kind = placement ? 'placement' : search.get('mode') === 'lightning' ? 'lightning' : review ? 'review' : search.get('mode') === 'practice' ? 'practice' : 'step';
   const { language, settings } = useApp();
   const lang = language.id;
-  const canWrite = Boolean(settings.apiKeys[settings.llm.provider]?.trim() && settings.llm.model);
+  const canWrite = Boolean(aiKeys(settings)[settings.llm.provider]?.trim() && settings.llm.model);
   const grammar = useGrammar(lang);
   const lessons = useLessonSettings();
   const { speaker } = useSpeaker(lang);

@@ -17,6 +17,7 @@ import { spring } from '@/design/motion';
 import { explainWord } from '@/services/llm/explain';
 import { findBaseForms } from '@/services/translate/gloss';
 import type { WordExplanation } from '@/services/llm/explain';
+import { MaxLink } from '@/features/plans/Locked';
 import { LlmError } from '@/services/llm/client';
 import { AddToDeck } from './AddToDeck';
 import { WordForms } from './WordForms';
@@ -292,6 +293,7 @@ function Explain({ lang, word, sentence }: { lang: string; word: string; sentenc
         {error && (
           <p className="mt-2 text-[13px] text-accent-text">
             {error.message}{' '}
+            {error instanceof LlmError && error.kind === 'no-plan' && <MaxLink className="underline" />}
             {error instanceof LlmError && error.kind === 'no-key' && (
               <Link to="/settings/ai" className="font-semibold underline">
                 Open settings

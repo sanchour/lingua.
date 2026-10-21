@@ -7,6 +7,8 @@ import { roomKey } from '@/app/redirects';
 import { sectionKey, SECTIONS } from '@/app/sections';
 import { ShortcutsDialog } from '@/app/ShortcutsDialog';
 import { MiniPlayer } from '@/features/sonus/MiniPlayer';
+import { PlansSheet } from '@/features/plans/PlansSheet';
+import { usePlanUpkeep } from '@/features/plans/usePlan';
 import { loadScriptFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
@@ -42,6 +44,7 @@ export function AppShell() {
   const showMini = !immersive && !pathname.startsWith('/sonus/play/') && !pathname.startsWith('/sonus/station/') && !pathname.startsWith('/visio/watch/');
   const { language } = useApp();
   const fullMotion = useFullMotion();
+  usePlanUpkeep();
 
   // Lets a language switch know when the new language is on screen (see app/languageSwitch.ts).
   useLayoutEffect(() => {
@@ -70,6 +73,7 @@ export function AppShell() {
           <Outlet />
         </Suspense>
         <ShortcutsDialog />
+        <PlansSheet />
       </>
     );
   }
@@ -87,6 +91,7 @@ export function AppShell() {
       {layout === 'wide' ? <DesktopShell>{content}</DesktopShell> : <TouchShell>{content}</TouchShell>}
       {showMini && <MiniPlayer />}
       <ShortcutsDialog />
+      <PlansSheet />
     </>
   );
 }

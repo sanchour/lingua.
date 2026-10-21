@@ -16,6 +16,7 @@ import { Badge, Button, Card, Segmented } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { installDictionary, searchFull, useDictJobs, useFullEntry, DICT_SIZE_MB } from '@/services/dictionary/fullDict';
+import { MaxLink } from '@/features/plans/Locked';
 import { LlmError } from '@/services/llm/client';
 import { tidyEntry } from '@/services/llm/tidyEntry';
 import type { TidiedEntry } from '@/services/llm/tidyEntry';
@@ -291,6 +292,7 @@ function Tidy({ lang, row }: { lang: string; row: FullDictRow }) {
         {error && (
           <p className="mt-1.5 text-[13px] text-accent-text">
             {error.message}{' '}
+            {error instanceof LlmError && error.kind === 'no-plan' && <MaxLink className="underline" />}
             {error instanceof LlmError && error.kind === 'no-key' && (
               <Link to="/settings/ai" className="font-semibold underline">
                 Open settings

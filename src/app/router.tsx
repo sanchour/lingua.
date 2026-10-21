@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react';
 import { createBrowserRouter, Navigate, useLocation, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
 import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, CursusPage, DeckPage, LabPage, MentisPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, WatchPage, ChatPage, GrammarTopicPage, GrammarLessonPage, LettersLessonPage } from './pages';
+import { PlanRoute } from '@/features/plans/PlanRoute';
 import { movedPath } from './redirects';
 import { Root } from './Root';
 
@@ -10,6 +12,13 @@ function SongMoved({ games = false }: { games?: boolean }) {
   const { songId = '' } = useParams();
   return <Navigate to={`/cantus/song/${encodeURIComponent(songId)}${games ? '/games' : ''}`} replace />;
 }
+
+/** Grammatica's pages come with Lingua+ (5.1-2a); without it, back to Cursus › Grammatica and the plans. */
+const grammar = (page: ReactNode) => (
+  <PlanRoute feature="grammatica" fallback="/cursus/grammatica">
+    {page}
+  </PlanRoute>
+);
 
 /** An address from before Lingua 5's rooms (app/redirects.ts says where it went). */
 function Moved() {
@@ -27,10 +36,10 @@ export const router = createBrowserRouter(
         // Cursus: the course, Grammatica, alphabets and typing as tabs; lessons and topics as pages of their own.
         { path: 'cursus', element: <CursusPage /> },
         { path: 'cursus/:tab', element: <CursusPage /> },
-        { path: 'cursus/grammatica/review', element: <GrammarLessonPage review /> },
-        { path: 'cursus/grammatica/placement', element: <GrammarLessonPage placement /> },
-        { path: 'cursus/grammatica/:topicId', element: <GrammarTopicPage /> },
-        { path: 'cursus/grammatica/:topicId/lesson', element: <GrammarLessonPage /> },
+        { path: 'cursus/grammatica/review', element: grammar(<GrammarLessonPage review />) },
+        { path: 'cursus/grammatica/placement', element: grammar(<GrammarLessonPage placement />) },
+        { path: 'cursus/grammatica/:topicId', element: grammar(<GrammarTopicPage />) },
+        { path: 'cursus/grammatica/:topicId/lesson', element: grammar(<GrammarLessonPage />) },
         { path: 'cursus/alphabets/review', element: <LettersLessonPage review /> },
         { path: 'cursus/alphabets/:groupId/lesson', element: <LettersLessonPage /> },
         { path: 'codex', element: <CodexPage /> },
@@ -52,13 +61,27 @@ export const router = createBrowserRouter(
         { path: 'sonus/song/:songId', element: <SongMoved /> },
         { path: 'sonus/song/:songId/games', element: <SongMoved games /> },
         // Cantus, the music room: one page that shows its tabs, player and games by the address.
-        { path: 'cantus/*', element: <CantusPage /> },
+        {
+          path: 'cantus/*',
+          element: (
+            <PlanRoute feature="sonusPlus" fallback="/sonus">
+              <CantusPage />
+            </PlanRoute>
+          ),
+        },
         // Kept as it is: learners entered this address in their own Spotify app.
         { path: 'cantus/spotify', element: <SpotifyCallbackPage /> },
         { path: 'visio/watch/:mediaId', element: <WatchPage /> },
         // Mentis: Mundus (with its own tabs), Sermo and Diarium; a chat and an entry are pages of their own.
         { path: 'mentis/*', element: <MentisPage /> },
-        { path: 'mentis/sermo/chat/:chatId', element: <ChatPage /> },
+        {
+          path: 'mentis/sermo/chat/:chatId',
+          element: (
+            <PlanRoute feature="sermo" fallback="/mentis/sermo">
+              <ChatPage />
+            </PlanRoute>
+          ),
+        },
         { path: 'mentis/diarium/:entryId', element: <JournalEntryPage /> },
         { path: 'ratio', element: <RatioPage /> },
         { path: 'settings', element: <OrdoPage /> },

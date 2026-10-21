@@ -3,7 +3,7 @@
 // else none (and no speaker button). What Gemini says is kept, so each text is generated once.
 import { sameLocale, voiceLocale } from '@/core/lang/voiceLocale';
 import { db } from '@/data/db';
-import { getSettings } from '@/data/settings';
+import { getAiSettings } from '@/data/plan';
 import { listVoices, pcmToWav, SpeechError, synthesize } from './gemini';
 
 export type Speaker =
@@ -75,7 +75,7 @@ export function speakerFor(lang: string, flag?: string): Promise<Speaker> {
 async function resolve(lang: string, flag?: string): Promise<Speaker> {
   const locale = voiceLocale(lang, flag);
   if (!locale) return { kind: 'none', locale: null, why: 'no-locale' };
-  const { voice, apiKeys } = await getSettings();
+  const { voice, apiKeys } = await getAiSettings();
   if (voice.off) return { kind: 'none', locale, why: 'off' };
   if (apiKeys.gemini.trim()) {
     const chosen = voice.chosen[locale] ?? recall(locale);
@@ -177,7 +177,7 @@ export async function sayWith(voice: string, lang: string, text: string, onStart
   const id = `${voice}|${clean}`;
   let row = await db.speech.get(id);
   if (!row) {
-    const { apiKeys } = await getSettings();
+    const { apiKeys } = await getAiSettings();
     const blob = await synthesize(apiKeys.gemini.trim(), voice, clean);
     row = { id, lang, text: clean, voice, blob, createdAt: Date.now() };
     await db.speech.put(row);
