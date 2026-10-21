@@ -1082,6 +1082,33 @@ Left out, and why:
 - On a short window the writing square shrinks so the Check bar never covers it; on a phone the
   "Next up" card shows one sample letter instead of three.
 
+**Part 6, plan (2026-10-20).** The other languages, tier by tier, kept cheap. Tier 2 gets a short
+grammar module per language: about eight A1–A2 topics, the ones a beginner trips on first
+(articles and gender, the present, the main past tense, pronouns, a case or two where the
+language has them). Each topic has a short rule, a table where it helps, and six to eight real
+sentences from the pack, with the same tests as the core six. Lessons, review, placement, Home
+and the word drawer's "Why this form?" work for them at once, because they read any module.
+Three commits:
+- 6a: Italian, Portuguese, Dutch.
+- 6b: Swedish, Norwegian, Greek, Hungarian, Turkish.
+- 6c: Indonesian, Latin, Japanese, Korean.
+
+Left out of tier 2: English (its pack's sentences have no translation to show) and Swahili (only
+18 usable sentences). Tier 3 gets no hand-written grammar, as the tier table says. Its alphabet
+pages (Hindi, Bengali, Punjabi, Tamil, Thai, Georgian, Persian) are a step of their own after 6c:
+Georgian is a plain alphabet and fits part 5's lessons as they are, while the others need vowel
+signs, conjuncts or tone classes taught properly, or they are left out and named.
+
+*6a, as built (2026-10-21).* Italian (9 topics: articles, essere and avere, the present, the
+prepositions with the article, piacere, the passato prossimo, the imperfetto, object pronouns,
+the future), Portuguese (7: articles, ser and estar, the present, contractions, the preterite,
+the imperfect, ir + infinitive) and Dutch (7: de and het, zijn and hebben, the present, the verb
+second, niet and geen, the perfect, the simple past). Each module's `notes` names what was left
+out: Portuguese object pronouns (their place differs between Brazil and Portugal, and the pack
+mixes both), Dutch separable verbs and subordinate word order, Italian ci, ne and the
+subjunctive. The drills test over every module now has 20 seconds per test: with more modules it
+timed out at 5 seconds when the whole suite ran at once.
+
 **Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an
    icon in the phone's top bar beside Mundus. Each language's topics are a typed module,

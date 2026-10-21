@@ -77,7 +77,8 @@ const check = (d: Drill, lang: string) => {
   if (d.kind === 'pairs') expect(d.pairs.length).toBeGreaterThanOrEqual(3);
 };
 
-describe('grammar drills over every module', () => {
+// Every module, every item, every kind: slow when the whole suite runs at once, so more time.
+describe('grammar drills over every module', { timeout: 20_000 }, () => {
   for (const g of GRAMMARS) {
     describe(g.lang, () => {
       const topics = topicsOf(g);

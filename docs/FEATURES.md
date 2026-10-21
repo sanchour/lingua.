@@ -463,6 +463,8 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 
 - **Grammar topics** for Spanish (28), German (23), French (21), Russian (17), Arabic (16) and
   Mandarin (15), A1 to B2, in units (First steps, then the cases, the past, going further).
+- **A short grammar for tier 2 languages:** Italian (9 topics), Portuguese (7) and Dutch (7), A1
+  and A2, with the same lessons, review and placement.
 - **Next up:** the first topic you haven't learned at or below your level, at the top.
 - **A topic page shows examples first** (each one can be played aloud), then the rule in a few
   lines, side-by-side comparisons of things that are easily confused (ser and estar, wo and wohin,

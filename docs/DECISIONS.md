@@ -1117,3 +1117,14 @@ Short records of choices that are not obvious from the code. Newest last.
   transliteration read from the vowel marks, Japanese modified Hepburn, Korean Revised
   Romanization. Where a scheme can't be applied letter by letter (Korean sound changes, unvowelled
   Arabic), the word isn't used.
+
+## 2026-10-21 — Lingua 3.0-8, part 6: short grammars for tier 2
+
+- **Seven to nine A1–A2 topics per tier 2 language, not thirty.** Tier 2 is kept cheap, and the
+  first topics are where a beginner trips. Each module is written like the core six (real pack
+  sentences, a named source, the same tests), so it can grow later without changing shape.
+- **A topic is left out rather than taught from thin data.** Portuguese object pronouns are the
+  clearest case: Brazil and Portugal put them in different places, and the pack's sentences mix
+  both, so drills would mark one country's usage wrong.
+- **English and Swahili get no grammar for now.** English pack sentences carry no translation to
+  show, and Swahili has eighteen usable sentences.
