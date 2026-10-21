@@ -139,7 +139,7 @@ Visio and Whisper are skipped here and come in prompt 2.
 
 Notes: Home's numbers are known words, learning, hours this week and hours in all (coverage stays in Ratio). Streaming sites (YouTube, Netflix…) can't play inside Lingua; their subtitle files can be added as "Subtitles only". That is revisited with the streaming services in Lingua 2.0.
 
-## Lingua 2.0
+## Lingua 2.0 ✅
 
 Built as prompts, each checked, committed and pushed on its own, so the live app got better step
 by step. Fixes to what already existed came first, because they make every later feature feel
@@ -261,7 +261,7 @@ better. On 2026-10-17 Lingua 2.0 was closed after 2.0-4b: everything still open 
 
 Lingua 2.0 ends here.
 
-## Lingua 3.0
+## Lingua 3.0 ✅
 
 Everything still open from "Lingua updates.txt", as its own version, built in a new session (see
 the handover at the end). Same way of working: plan each prompt here first, build without
@@ -869,7 +869,7 @@ language stopped at a usage limit, so the other picks rest on one careful pass.
     open its shelves. No new tables.
   - The picks, tips and shelves keep their code in `core/mundus` and `features/mundus`.
 
-### 3.0-8 · Grammatica and alphabets
+### 3.0-8 · Grammatica and alphabets ✅
 
 *Skipped by the user on 2026-10-20 ("do -9 just skip -8") after parts 1 and 2a, then resumed the
 same day ("everything has been done from Lingua 3.0 except grammar and alphabet, so finish it").*
@@ -1268,7 +1268,7 @@ real phone (QA-ios.md) · S skipped with 3.0-8.
 | Tier 2: fifteen beta languages | the language list | ✓ all have packs |
 | Radio map; full-screen station; recently played radios; music page explore | Radio, Library, Sonus+ | ✓ (3.0-6 part 1) |
 
-### Cantus overhaul (design handoff)
+### Cantus overhaul (design handoff) ✅
 
 The user's design handoff (2026-10-19; a mock-up, frames 2a desktop and 2b phone, and a written
 brief kept outside the repository) asks for three workstreams, built beside 3.0-6 in a session of
@@ -1323,7 +1323,7 @@ playback make the room really work.
   switching source kept the place. Not built: Dailymotion search (its player has no clock here);
   Vimeo, Dailymotion and Bandcamp links play with the lyrics started by hand.
 
-### Sonus and Sonus+ (user's request, 2026-10-20)
+### Sonus and Sonus+ (user's request, 2026-10-20) ✅
 
 Sonus becomes two places. **Sonus** (in Lingua, as now) is your **Library**, with **Audiobooks** and
 **Radio** as its other tabs. **Sonus+** is the room built for Cantus, the Apple-like app for finding things to
@@ -1508,7 +1508,7 @@ and makes 20 with them. The new languages are placeholders for now, as the user 
 | 4 · Basics (Basics) | Hebrew, Ukrainian, Finnish, Danish, Catalan, Bulgarian, Kazakh, Afrikaans, Amharic, Yoruba, Armenian, Burmese, Urdu, Slovak, Estonian, Lithuanian, Latvian, Khmer, Albanian, Maltese | The bare minimum, added in one go: Codex with tap-to-translate (Wiktionary where it has the word, machine translation otherwise), your own words and decks, radio and podcast search. A small word pack only where the data comes free with the tier 3 script. |
 | Experimental | Esperanto, Old Norse, Sanskrit, Haitian Creole, Quechua, Maya (Yucatec), Hawaiian, Māori, Irish, Basque | Offered under "Experimental", as tier 4 where the services know the language, less where they don't; said plainly on the language. |
 
-### 4.0-1 · Languages in tiers, a new language picker, smooth, a new icon, and Lingua+
+### 4.0-1 · Languages in tiers, a new language picker, smooth, a new icon, and Lingua+ ✅
 - [x] **Five kinds of language:** the tiers above become one field on each language (`tier: 1 | 2 |
       3 | 4 | 'x'`, replacing today's `tier?: 1 | 2`), and what a language shows follows from it
       (Cursus for tier 1, the beta notes for 3, the short list of rooms for 4 and experimental).
