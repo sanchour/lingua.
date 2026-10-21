@@ -1771,7 +1771,14 @@ and c; and word translations must get much better in the six core languages (Spa
       (`services/llm/storyQuestions`). Keys 1–4 answer, Enter goes on; the round counts in Ratio
       as Ludus. Found on the way: the Spanish pack gave "hermana" its brother's meaning; it and a
       few other female family words are hand-fixed.
-- [ ] **5 · Add to your library,** the fun-but-minimal forms, and a folder of page photos read by OCR.
+- [x] **5 · Add to your library,** fun but minimal: a large drop area with a line drawing of the kind
+      (book, comic, photos of pages), one clear button, the new book's cover shown "On your shelf"
+      for a moment before it opens, a progress bar, and the reading level on a small joined scale
+      (Guess · A1 … C2). **Photos of a book's pages** (a folder, or pictures dropped on the book
+      tab) are read on this device with the comics' Tesseract in a whole-page mode
+      (`services/import/pagePhotos`); paragraphs are rebuilt from where the lines sit (gaps,
+      indents, columns, short last lines), words broken over two lines are mended, page numbers and
+      smudges dropped (`core/text/ocrPage`, tested), and each photo stays beside its text.
 - [ ] **6 · Discover:** news, free books (Gutendex, Wikisource, StoryWeaver, African Storybook) and
       Pepper&Carrot, one click into the library.
 - [ ] **7 · Goodreads** as its own section: sort, group, filter, covers by ISBN.

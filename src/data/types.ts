@@ -69,7 +69,7 @@ export interface Text extends Synced {
   lang: Lang;
   /** 'comic': one chapter per page, the page's picture first and its speech bubbles after it. */
   kind: 'book' | 'article' | 'transcript' | 'shelfItem' | 'comic';
-  source: 'epub' | 'pdf' | 'txt' | 'paste' | 'article' | 'goodreads' | 'sonus' | 'visio' | 'cantus' | 'comic';
+  source: 'epub' | 'pdf' | 'txt' | 'paste' | 'article' | 'goodreads' | 'sonus' | 'visio' | 'cantus' | 'comic' | 'photos';
   title: string;
   author?: string;
   coverBlobId?: string;

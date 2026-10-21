@@ -8,7 +8,7 @@ export const COMIC_FILE_ACCEPT = '.cbz,.cbr,.zip,application/zip,application/vnd
 
 const IMAGE = /\.(jpe?g|png|webp|gif|avif|bmp)$/i;
 const MIME: Record<string, string> = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', avif: 'image/avif', bmp: 'image/bmp' };
-const mimeOf = (name: string) => MIME[name.split('.').pop()!.toLowerCase()] ?? 'image/jpeg';
+export const mimeOf = (name: string) => MIME[name.split('.').pop()!.toLowerCase()] ?? 'image/jpeg';
 const natural = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
 
 export class ComicError extends Error {}
@@ -46,7 +46,7 @@ interface Page {
   h: number;
 }
 
-async function page(blob: Blob, mime: string): Promise<Page | null> {
+export async function page(blob: Blob, mime: string): Promise<Page | null> {
   try {
     const bitmap = await createImageBitmap(blob);
     const size = { w: bitmap.width, h: bitmap.height };

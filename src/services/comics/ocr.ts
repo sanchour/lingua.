@@ -1,10 +1,11 @@
-// Reading a comic page's speech bubbles on this device with Tesseract (tesseract.js), loaded only
-// when a comic is open. Its engine and worker are served by Lingua itself; the reading data for the
+// Reading a comic page's speech bubbles, or a photographed book page (5.1-3a), on this device with
+// Tesseract (tesseract.js), loaded only when needed. Its engine and worker are served by Lingua itself; the reading data for the
 // language (1–15 MB) comes from tesseract.js's own data on jsDelivr the first time and is kept on
 // the device after that.
 import Dexie from 'dexie';
 import type { Worker } from 'tesseract.js';
 import { bubblesFrom } from '@/core/comics/bubbles';
+import { pageParagraphs } from '@/core/text/ocrPage';
 import { db } from '@/data/db';
 import type { Bubble, OcrParagraph } from '@/core/comics/bubbles';
 
@@ -28,7 +29,12 @@ const simd = () => {
 
 export type OcrProgress = (status: 'loading' | 'reading', fraction: number) => void;
 
-let current: { key: string; worker: Promise<Worker> } | null = null;
+/** How a picture is read: a comic's scattered lettering, or a printed page's column of text. */
+type Mode = 'sparse' | 'page';
+
+let current: { key: string; worker: Promise<Worker>; mode?: Mode } | null = null;
+/** Tesseract's names for the two ways of reading, known once it has loaded. */
+let modes: Record<Mode, string> | null = null;
 let listener: OcrProgress | null = null;
 
 async function start(langs: string[]): Promise<Worker> {
@@ -51,9 +57,20 @@ async function start(langs: string[]): Promise<Worker> {
     },
   });
   // A comic page is scattered text, not a column: every line is found on its own, and
-  // core/comics/bubbles.ts puts the lines of each bubble back together.
-  await reader.setParameters({ tessedit_pageseg_mode: tesseract.PSM.SPARSE_TEXT });
+  // core/comics/bubbles.ts puts the lines of each bubble back together. A book page is read whole.
+  modes = { sparse: tesseract.PSM.SPARSE_TEXT, page: tesseract.PSM.AUTO };
   return reader;
+}
+
+/** The worker for the language, set to read the way this picture needs. */
+async function readerFor(lang: string, mode: Mode): Promise<Worker> {
+  const worker = await workerFor(lang);
+  const own = current;
+  if (own && own.mode !== mode && modes) {
+    await worker.setParameters({ tessedit_pageseg_mode: modes[mode] as never });
+    own.mode = mode;
+  }
+  return worker;
 }
 
 /** One reader at a time, for the language of the comic that is open. */
@@ -77,10 +94,13 @@ export function stopOcr(): void {
   if (done) void done.worker.then((w) => w.terminate()).catch(() => undefined);
 }
 
-/** The page at a size Tesseract reads well: lettering about 30 px high, so small pages are enlarged. */
-async function prepare(image: Blob): Promise<HTMLCanvasElement> {
+/**
+ * The page at a size Tesseract reads well: lettering about 30 px high, so small pages are enlarged. A
+ * phone's photo of a book page is made smaller instead: its letters are big enough, and it reads faster.
+ */
+async function prepare(image: Blob, mode: Mode = 'sparse'): Promise<HTMLCanvasElement> {
   const bitmap = await createImageBitmap(image);
-  const scale = Math.min(2.5, Math.max(1, 2000 / bitmap.width));
+  const scale = mode === 'page' ? Math.min(1.5, 2400 / bitmap.width) : Math.min(2.5, Math.max(1, 2000 / bitmap.width));
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(bitmap.width * scale);
   canvas.height = Math.round(bitmap.height * scale);
@@ -113,12 +133,32 @@ export function readBubbles(image: Blob, lang: string, onProgress?: OcrProgress)
   const job = queue.then(async () => {
     listener = onProgress ?? null;
     try {
-      const worker = await workerFor(lang);
+      const worker = await readerFor(lang, 'sparse');
       const canvas = await prepare(image);
       const { data } = await worker.recognize(canvas, {}, { blocks: true, text: false });
       // Each line on its own, with its own certainty; the bubbles are made from them.
       const paragraphs: OcrParagraph[] = (data.blocks ?? []).flatMap((b) => b.paragraphs.flatMap((p) => p.lines.map((l) => ({ text: l.text, confidence: l.confidence, bbox: l.bbox, lines: [{ text: l.text, bbox: l.bbox }] }))));
       return bubblesFrom(paragraphs, canvas.width, canvas.height, lang, await dictionaryCheck(lang, paragraphs.map((p) => p.text)));
+    } finally {
+      listener = null;
+    }
+  });
+  queue = job.catch(() => undefined);
+  return job;
+}
+
+/** A photographed or scanned book page: its paragraphs, in order. */
+export function readPageText(image: Blob, lang: string, onProgress?: OcrProgress): Promise<string[]> {
+  const job = queue.then(async () => {
+    listener = onProgress ?? null;
+    try {
+      const worker = await readerFor(lang, 'page');
+      const canvas = await prepare(image, 'page');
+      const { data } = await worker.recognize(canvas, {}, { blocks: true, text: false });
+      return pageParagraphs(
+        (data.blocks ?? []).flatMap((b) => b.paragraphs.flatMap((p) => p.lines.map((l) => ({ text: l.text, confidence: l.confidence, bbox: l.bbox })))),
+        lang,
+      );
     } finally {
       listener = null;
     }

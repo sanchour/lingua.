@@ -3,22 +3,26 @@ import type { DragEvent, ReactNode } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
 import { AnimatePresence, motion } from 'motion/react';
-import { BookUp, ClipboardPaste, FileText, FolderOpen, Library, Newspaper, PanelsTopLeft, Sparkles, UploadCloud } from 'lucide-react';
+import { BookUp, ClipboardPaste, Library, Newspaper, PanelsTopLeft, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import type { Cefr } from '@/core/lang/levels';
 import { countWords } from '@/core/text/tokenizer';
-import type { CoverDesign } from '@/data/types';
+import { db } from '@/data/db';
+import type { CoverDesign, Text } from '@/data/types';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Button, Card, Segmented } from '@/design/primitives';
-import { fade } from '@/design/motion';
+import { fade, spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { EpubError } from '@/services/import/epub';
 import { COMIC_FILE_ACCEPT, comicSource, importComic } from '@/services/import/comic';
 import { BOOK_FILE_ACCEPT, bookFileKind, importBookFile, importGoodreads, importPasted, importSample } from '@/services/import/importers';
+import { importPagePhotos, isPicture } from '@/services/import/pagePhotos';
 import { pickFile, pickFiles, pickFolder } from '@/services/files/files';
 import { toast } from '@/state/ui';
+import { BookCover } from './library/BookCover';
 import { CLOTHS } from './library/covers';
 import { CoverDesigner } from './library/CoverDesigner';
+import { KindDrawing } from './library/KindDrawing';
 import { LevelPicker } from './library/LevelPicker';
 import { NewsPanel } from './library/NewsPanel';
 
@@ -144,50 +148,69 @@ function WriteOrPaste({ lang, onDone }: { lang: string; onDone: (id: string) => 
   );
 }
 
+type Busy = { name: string; progress: number; note?: string };
+
+/**
+ * A book, a comic or photos of a book's pages: a large drop area with a line drawing of the kind and
+ * one clear button. Once the file is read its cover shows for a moment before the book opens.
+ */
 function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; lang: string; onDone: (id: string) => void; onComic: (id: string) => void }) {
-  const [busy, setBusy] = useState<string | null>(null);
-  const [progress, setProgress] = useState(0);
+  const [busy, setBusy] = useState<Busy | null>(null);
+  const [shelved, setShelved] = useState<Text | null>(null);
+  const [photos, setPhotos] = useState(false);
   const [over, setOver] = useState(false);
   const depth = useRef(0);
   const { pointer } = useLayout();
 
-  // A comic: an archive, a PDF of pages, or the pages' pictures (several, or a folder of them).
-  const takeComic = async (files: File[]) => {
-    if (!files.length) return;
-    if (!comicSource(files)) return toast('Lingua opens comics as CBZ (or CBR made as zip) files, PDFs, or the pages’ pictures.', { tone: 'error' });
-    setBusy(files.length === 1 ? files[0].name : files[0].webkitRelativePath.split('/')[0] || `${files.length} pages`);
-    setProgress(0);
+  const run = async (name: string, work: (progress: (fraction: number, note?: string) => void) => Promise<string>, then: (id: string) => void, fallback: string) => {
+    setBusy({ name, progress: 0 });
     try {
-      onComic(await importComic(lang, files, setProgress));
+      const id = await work((progress, note) => setBusy({ name, progress, note }));
+      const text = await db.texts.get(id);
+      if (!text) return then(id);
+      setShelved(text);
+      setTimeout(() => then(id), 1100);
     } catch (error) {
-      toast(error instanceof Error ? error.message : 'That comic couldn’t be added.', { tone: 'error' });
+      toast(error instanceof EpubError || error instanceof Error ? error.message : fallback, { tone: 'error' });
       setBusy(null);
     }
   };
 
-  const take = async (file: File) => {
+  // A comic: an archive, a PDF of pages, or the pages' pictures (several, or a folder of them).
+  const takeComic = (files: File[]) => {
+    if (!files.length) return;
+    if (!comicSource(files)) return toast('Lingua opens comics as CBZ (or CBR made as zip) files, PDFs, or the pages’ pictures.', { tone: 'error' });
+    void run(files.length === 1 ? files[0].name : files[0].webkitRelativePath.split('/')[0] || `${files.length} pages`, (p) => importComic(lang, files, p), onComic, 'That comic couldn’t be added.');
+  };
+
+  const take = (file: File) => {
     if (!bookFileKind(file)) return toast('Lingua reads DRM-free EPUB books, PDFs with text, and plain text files.', { tone: 'error' });
-    setBusy(file.name);
-    setProgress(0);
-    try {
-      onDone(await importBookFile(lang, file, setProgress));
-    } catch (error) {
-      toast(error instanceof EpubError || error instanceof Error ? error.message : 'That file couldn’t be imported.', { tone: 'error' });
-      setBusy(null);
-    }
+    void run(file.name, (p) => importBookFile(lang, file, p), onDone, 'That file couldn’t be imported.');
+  };
+
+  // Photos of a printed book's pages, read on this device.
+  const takePhotos = (files: File[]) => {
+    const pictures = files.filter(isPicture);
+    if (!pictures.length) return;
+    setPhotos(true);
+    void run(pictures[0].webkitRelativePath.split('/')[0] || `${pictures.length} pages`, (p) => importPagePhotos(lang, pictures, p), onDone, 'Those pages couldn’t be read.');
   };
 
   const onDrop = (e: DragEvent) => {
     e.preventDefault();
     depth.current = 0;
     setOver(false);
+    if (busy) return;
     const files = [...e.dataTransfer.files];
-    // Comic archives and pictures go to comics wherever they're dropped; a PDF follows the tab.
+    // Comic archives go to comics wherever they're dropped; pictures follow the tab (a book's pages,
+    // or a comic's); so does a PDF.
     const source = comicSource(files);
-    if (kind === 'comic' || source === 'archive' || source === 'images') return void takeComic(files);
-    if (files[0]) void take(files[0]);
+    if (kind === 'comic' || source === 'archive') return takeComic(files);
+    if (source === 'images') return takePhotos(files);
+    if (files[0]) take(files[0]);
   };
 
+  const drawing = photos ? 'photos' : kind;
   return (
     <div
       onDragEnter={(e) => {
@@ -201,54 +224,65 @@ function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; l
       }}
       onDrop={onDrop}
       className={cx(
-        'flex flex-col items-center rounded-3xl border-2 border-dashed px-6 py-14 text-center transition-colors',
+        'flex min-h-[26rem] flex-col items-center justify-center rounded-3xl border-2 border-dashed px-6 py-12 text-center transition-colors',
         over ? 'border-accent bg-accent-soft/60' : 'border-line-strong/70 bg-surface',
       )}
     >
-      <span className="mb-4 grid size-16 place-items-center rounded-2xl bg-sage-soft text-sage-text">
-        <UploadCloud size={28} aria-hidden />
-      </span>
-      <p className="font-serif text-2xl font-semibold">{busy ? `Shelving “${busy}”…${progress > 0 && progress < 1 ? ` ${Math.round(progress * 100)}%` : ''}` : kind === 'book' ? 'Drop a book here' : 'Drop a comic here'}</p>
-      <p className="mt-2 max-w-md text-[14.5px] leading-relaxed text-ink-soft">
-        {kind === 'book'
-          ? 'DRM-free EPUB books, PDFs with real text, and plain text files. On iPhone, choose a file from Files or iCloud Drive. Books bought in Apple Books are locked to that app.'
-          : 'CBZ (or CBR made as zip) files, PDFs of pages, or the pages’ pictures. Lingua reads the speech bubbles on this device, and every word in them is a tap away.'}
-      </p>
-      <div className="mt-6 flex flex-wrap justify-center gap-2">
-        {kind === 'book' ? (
-          <>
-            <Button icon={BookUp} loading={busy !== null} onClick={() => void pickFile(BOOK_FILE_ACCEPT).then((f) => f && take(f))}>
-              Choose a book
-            </Button>
-            <Button variant="secondary" icon={FileText} disabled={busy !== null} onClick={() => void pickFile('.pdf,application/pdf').then((f) => f && take(f))}>
-              Choose a PDF
-            </Button>
-          </>
+      <AnimatePresence mode="wait" initial={false}>
+        {shelved ? (
+          <motion.div key="shelved" className="flex flex-col items-center" initial={{ opacity: 0, scale: 0.92, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={spring.soft}>
+            <BookCover text={shelved} size="lg" className="w-36 shadow-elev-2" />
+            <p className="mt-5 font-serif text-2xl font-semibold">On your shelf</p>
+            <p lang={lang} className="mt-1 max-w-sm truncate text-[14.5px] text-ink-soft">
+              {shelved.title}
+            </p>
+          </motion.div>
         ) : (
-          <>
-            <Button icon={PanelsTopLeft} loading={busy !== null} onClick={() => void pickFiles(COMIC_FILE_ACCEPT).then(takeComic)}>
-              Choose a comic
-            </Button>
-            {pointer === 'fine' && (
-              <Button variant="secondary" icon={FolderOpen} disabled={busy !== null} onClick={() => void pickFolder().then(takeComic)}>
-                A folder of pages
-              </Button>
+          <motion.div key="drop" className="flex w-full flex-col items-center" exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.15 }}>
+            <KindDrawing kind={drawing} className={cx('mb-5 h-20 w-auto transition-colors', over ? 'text-accent-text' : 'text-sage-text')} />
+            <p className="font-serif text-2xl font-semibold">
+              {busy ? (photos ? 'Reading the pages…' : `Shelving “${busy.name}”…`) : kind === 'book' ? 'Drop a book here' : 'Drop a comic here'}
+            </p>
+            {busy ? (
+              <div className="mt-5 w-full max-w-xs">
+                <div className="h-1.5 overflow-hidden rounded-full bg-sunken" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(busy.progress * 100)}>
+                  <div className="h-full w-full rounded-full bg-sage transition-transform duration-300" style={{ transform: `translateX(-${100 - Math.round(busy.progress * 100)}%)` }} />
+                </div>
+                <p className="mt-2 text-[13px] text-ink-faint tabular-nums">{busy.note ?? (busy.progress > 0 ? `${Math.round(busy.progress * 100)}%` : 'Opening the file…')}</p>
+              </div>
+            ) : (
+              <>
+                <p className="mt-2 max-w-md text-[14.5px] leading-relaxed text-ink-soft">
+                  {kind === 'book'
+                    ? 'An EPUB without DRM, a PDF with real text, or a plain text file. Photos of a printed book’s pages work too.'
+                    : 'CBZ (or CBR made as zip) files, PDFs of pages, or the pages’ pictures. Lingua reads the speech bubbles on this device.'}
+                </p>
+                <Button size="lg" className="mt-6" icon={kind === 'book' ? BookUp : PanelsTopLeft} onClick={() => void (kind === 'book' ? pickFile(BOOK_FILE_ACCEPT).then((f) => f && take(f)) : pickFiles(COMIC_FILE_ACCEPT).then(takeComic))}>
+                  {kind === 'book' ? 'Choose a book' : 'Choose a comic'}
+                </Button>
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] font-semibold">
+                  {kind === 'book' ? (
+                    <>
+                      <button type="button" onClick={() => void (pointer === 'fine' ? pickFolder() : pickFiles('image/*')).then(takePhotos)} className="hit text-accent-text underline-offset-2 hover:underline">
+                        {pointer === 'fine' ? 'A folder of page photos' : 'Photos of the pages'}
+                      </button>
+                      <button type="button" onClick={() => void run('a short sample', () => importSample(lang), onDone, 'The sample couldn’t be added.')} className="hit text-ink-soft underline-offset-2 hover:text-ink hover:underline">
+                        Or start with a short sample
+                      </button>
+                    </>
+                  ) : (
+                    pointer === 'fine' && (
+                      <button type="button" onClick={() => void pickFolder().then(takeComic)} className="hit text-accent-text underline-offset-2 hover:underline">
+                        A folder of pages
+                      </button>
+                    )
+                  )}
+                </div>
+              </>
             )}
-          </>
+          </motion.div>
         )}
-      </div>
-      {kind === 'book' && (
-        <button
-          type="button"
-          onClick={async () => {
-            setBusy('a short sample');
-            onDone(await importSample(lang));
-          }}
-          className="hit mt-6 text-[13px] font-semibold text-accent-text underline-offset-2 hover:underline"
-        >
-          Or start with a short sample text
-        </button>
-      )}
+      </AnimatePresence>
     </div>
   );
 }

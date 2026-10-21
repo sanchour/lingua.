@@ -1206,6 +1206,19 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-21 — Photos of a book's pages (5.1-3a)
+
+- **The comics' OCR, on the device,** in a second mode: a book page is read whole (Tesseract's
+  automatic layout) where comic lettering is read as scattered lines. One worker, switched between
+  the two as needed, and let go when the import ends.
+- **Paragraphs from the lines' positions,** not Tesseract's paragraphs, which split mid-word in
+  testing ("ciu-" / "dad"). A paragraph ends at a wider gap, an indent against the line before (so a
+  second column works), a jump up to another column, or a line ending a sentence well short of the
+  column's right edge. A phone photo is made smaller (at most 2400 px across) rather than larger.
+- **The photo stays with its text,** so a misread word can be checked against the page; ten pages
+  to a chapter in a long book.
+- Pictures dropped on the book tab are a book's pages; on the comic tab, a comic's.
+
 ## 2026-10-21 — Check yourself (5.1-3a)
 
 - **Made from the text, without AI;** it checks words and sentences, not understanding, and says
