@@ -1120,6 +1120,13 @@ definite conjugation as a topic of its own, Turkish accusative, dative and posse
 Hungarian and Turkish topics carry no form tags, so the word drawer shows no "Why this form?"
 for them.
 
+*6c, as built (2026-10-21).* Indonesian (3 topics: tidak and bukan, sudah, belum, sedang and
+akan, the di- passive), Latin (2: sum and the present endings; the pack has 311 short sentences,
+mostly quotations), Japanese (4: は, を, に, へ and で, the polite ます forms) and Korean (3: 은 or
+는, 을 or 를, the polite past). Japanese は versus が and Korean 이/가 versus 은/는 are left out:
+both are often right, and the difference is emphasis, which a gap can't test fairly. With 6c,
+every tier 2 language except English and Swahili has a grammar.
+
 **Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an
    icon in the phone's top bar beside Mundus. Each language's topics are a typed module,
