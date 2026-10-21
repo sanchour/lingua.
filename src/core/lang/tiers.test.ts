@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { placesOf } from '@/data/territories';
+import { hasFlag } from '@/design/flags';
 import { WORLD_MAP } from '@/features/sonus/radio/worldMap';
 import { AVAILABLE_LANGUAGES, isBeta, LANGUAGES, TIERS } from './languages';
 
@@ -22,9 +24,13 @@ describe('language tiers', () => {
   it('puts every language on the map, except Esperanto, which has no country', () => {
     const countries = new Set(WORLD_MAP.map((c) => c[0]));
     for (const l of LANGUAGES) {
-      const placed = l.flags.filter((f) => countries.has(f.toUpperCase()));
+      const placed = placesOf(l.code).filter((p) => countries.has(p.country));
       if (l.code === 'eo') expect(placed, l.code).toHaveLength(0);
-      else if (l.code !== 'la') expect(placed.length, l.code).toBeGreaterThan(0);
+      else expect(placed.length, l.code).toBeGreaterThan(0);
     }
+  });
+
+  it('draws a flag or emblem for every language', () => {
+    for (const l of LANGUAGES) expect(hasFlag(l.flags[0] ?? ''), l.code).toBe(true);
   });
 });

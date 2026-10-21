@@ -161,7 +161,7 @@ all three tabs with the prompt rail on desktop; a fresh profile follows the devi
   Thesaurus; Codex fully free; Sonus with audiobooks and radio.
 - [x] Lingua+: €24.99 once, updates for life. Sonus+, the courses and everything else.
 - [x] Lingua+ Max: monthly (D3). All AI: better translation, diary checking, automatic dictation.
-- [~] The plans screen in onboarding and in Ordo. (Ordo, the sheet and the "+" chips: done; onboarding: 5.1-2b.)
+- [x] The plans screen in onboarding and in Ordo. (Onboarding's is a pitch of its own since 5.1-2b: `PlanPitch`.)
 - [x] Ordo: manage the subscription, or subscribe easily.
 - [x] Top left: "+" for Lingua+, "Max" for Max, with a fade, luxe effect in the theme's colours. (Made quieter at the user's ask on 2026-10-21: a hairline and MAX in spaced accent capitals, no fill; DECISIONS.md.)
 
@@ -228,22 +228,46 @@ Ordo › Lingua+ look right on desktop, light and dark; the MAX badge fades in e
 
 ### 5.1-2b · Onboarding
 
-**The user's points**
-- [ ] One or two minimal, bookish intro screens.
-- [ ] A clean map without dots; another minimal way to show the languages. Countries with a language
+**The user's points** (done 2026-10-21; "As built" below has what the user's review changed)
+- [x] One or two minimal, bookish intro screens.
+- [x] A clean map without dots; another minimal way to show the languages. Countries with a language
   are clickable and show their main languages; countries without one can't be chosen.
-- [ ] Accurate language data per country: official, regional, minority.
-- [ ] Title: "Which language do you want to learn?"
-- [ ] No long scrolling list: an organised, minimal overview.
-- [ ] Remove "I already speak" (for now).
-- [ ] Core: drop "Everything at its best"; say clearly and professionally what each tier includes.
-- [ ] Better flags for Frisian, Punjabi, Serbo-Croatian, Catalan, Amharic, Esperanto, Old Norse,
+- [x] Accurate language data per country: official, regional, minority.
+- [x] Title: "Which language do you want to learn?" (later "What language will it be?", the user's)
+- [x] No long scrolling list: an organised, minimal overview. (The user then asked for the full list
+  under the map, peeking in at the bottom of the screen.)
+- [x] Remove "I already speak" (for now).
+- [x] Core: drop "Everything at its best"; say clearly and professionally what each tier includes.
+- [x] Better flags for Frisian, Punjabi, Serbo-Croatian, Catalan, Amharic, Esperanto, Old Norse,
   Maya, Sanskrit, Hawaiian, Basque, Māori.
-- [ ] Level: more interactive and fun; a better "mark words as known" element and text.
-- [ ] "What brings you here?": a more fun layout; a daily-time slider with checkpoints.
-- [ ] New screen: "Which languages do you already speak?", adding them to Tabula, and saying so.
-- [ ] "Choose your study light": every style and theme.
-- [ ] Lingua+ and Lingua+ Max.
+- [x] Level: more interactive and fun; a better "mark words as known" element and text.
+- [x] "What brings you here?": a more fun layout; a daily-time slider with checkpoints. (Split in
+  two at the user's review: "Why do you want to learn …?" and "Set your own goal".)
+- [x] New screen: "Which languages do you already speak?", adding them to Tabula, and saying so.
+- [x] "Choose your study light": every style and theme.
+- [x] Lingua+ and Lingua+ Max.
+
+**As built (2026-10-21, after the user's review in the browser).** The user's own outline: minimal,
+informal, bookish, building up the excitement, with funny subtitles. The flow is your name ("First
+things first"), "Welcome, {name}" with a funny line, "See what Lingua can do", then seven steps:
+"What language will it be?", "So, how far along are you?", "Which languages do you already speak?",
+"Why do you want to learn {language}?", "Set your own goal", "Choose your study light", and the
+plans. Every page fits a 1366×768 screen without scrolling except the language page, where the list
+of every language peeks in under the map on purpose.
+- The language page is the world first, big and wide (72° N to 48° S fills the width). Clicking a
+  country centres it and opens a panel with its languages; choosing one flies the map to where it
+  is spoken and names it on the map ("You're learning …") and on the button. The core six are one
+  click away under the map; every tier follows below.
+- Tints are stricter (the user: German in Germany, Austria and Switzerland, Belgium, Poland and
+  Denmark, not Slovenia, Hungary or Slovakia): only official, regional, minority and historical
+  places are tinted. "Widely spoken" needs half the population now and shows only on a country's
+  card (English in the Netherlands, not German in Hungary).
+- The level ladder starts with "A0 · Nothing yet" as a row like the others; the chosen line shows
+  its new words, and the switch for the common words sits in the same card.
+- The goal is a level to reach (milestones on a path) and minutes a day, with a rough "about N
+  months" from the usual guided learning hours per level (Cambridge's estimates).
+- The plans page is a pitch: Lingua+ and Max as two big cards (Max always dark, monthly first),
+  free as one clear line, only true promises; it fits one screen.
 
 **The flow:** two intro pages (no step dots), then six steps with dots: Language · Level · You
 speak · Goal · Study light · Plans. Back works everywhere; nothing is lost going back.

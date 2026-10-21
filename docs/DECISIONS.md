@@ -1205,3 +1205,26 @@ Short records of choices that are not obvious from the code. Newest last.
   spaced capitals in the accent shaded towards the ink (deeper on light grounds, brighter on
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
+
+## 2026-10-21 — The first start (5.1-2b)
+
+- **The user shaped it in the browser.** After the first build the user asked, page by page, for:
+  a big, wide map clicked first; a stricter map; the list of every language under the map, peeking
+  in; level rows that are easy to see and press; the spoken languages centred with the level asked
+  at once; the reasons and the goal on separate pages; a plans page that sells; and every page on
+  one screen. Their outline added the name, the welcome and the funny subtitles.
+- **Tints only where a language has a standing.** CLDR counts second-language speakers, so German
+  showed in Slovenia (42%), Slovakia and Hungary. The map now tints official, regional, minority
+  and historical places only; "widely spoken" needs at least half the population (was 5% or a
+  million) and shows on a country's card, not in colour.
+- **The map opens on the inhabited world** (72° N to 48° S), filling a wide box instead of fitting
+  the whole Mercator world into it. A panel over the map's right side shifts every flight
+  (`inset`), so the country or the language lands in the part still showing. The hit test runs
+  untransformed: the drawing leaves the pixel-ratio scale set, which made hover and clicks miss on
+  screens scaled above 100%.
+- **The goal is a level,** stored on the language (`LanguageProfile.goal`); the name on the
+  learner (`learner.name`). Neither needs a database version. The "about N months" uses the middle
+  of Cambridge's guided learning hours per level (A1 95 … C2 1100) and says it is rough.
+- **The plans page in onboarding is its own pitch** (`features/plans/PlanPitch`), sharing the buy
+  logic with the plan cards (`useBuy`). It promises only what is true. Max shows monthly first, here
+  and in Settings (the user).

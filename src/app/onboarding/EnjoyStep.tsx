@@ -21,12 +21,12 @@ export function enjoymentsFor(reasons: LearningReason[]): Enjoyment[] {
   const out: Enjoyment[] = [];
   const add = (e: Enjoyment) => !out.includes(e) && out.push(e);
   for (const r of reasons) {
-    if (r === 'books') add('reading');
+    if (r === 'books' || r === 'culture' || r === 'study' || r === 'sharp') add('reading');
     if (r === 'culture') add('watching');
     if (r === 'culture' || r === 'fun') add('music');
-    if (r === 'talk' || r === 'travel') add('listening');
-    if (r === 'talk') add('speaking');
-    if (r === 'work') add('cards');
+    if (r === 'talk' || r === 'travel' || r === 'family') add('listening');
+    if (r === 'talk' || r === 'family') add('speaking');
+    if (r === 'work' || r === 'study' || r === 'sharp') add('cards');
   }
   return out;
 }

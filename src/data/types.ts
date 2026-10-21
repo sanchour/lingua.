@@ -52,6 +52,8 @@ export interface LanguageProfile extends Synced {
   seedAppliedAt?: number;
   /** The flag shown for the language (one of its flags in core/lang/languages); its usual one when unset. */
   flag?: string;
+  /** The level the learner set out to reach (the first start's goal, 5.1-2b). */
+  goal?: CefrLevel;
 }
 
 export interface SettingRow {

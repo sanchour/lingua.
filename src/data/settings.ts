@@ -24,7 +24,8 @@ export type MediaSort = 'recent' | 'added' | 'title' | 'longest' | 'shortest';
 export type MotionPref = 'system' | 'reduced' | 'full';
 
 /** Why someone learns, from onboarding (kept for later suggestions). */
-export type LearningReason = 'travel' | 'books' | 'talk' | 'family' | 'work' | 'culture' | 'fun';
+/** Why someone learns. 'study' and 'sharp' came with 5.1-2b; 'books', 'talk' and 'fun' are kept for choices made before. */
+export type LearningReason = 'travel' | 'family' | 'work' | 'culture' | 'study' | 'sharp' | 'books' | 'talk' | 'fun';
 /** The kinds of practice someone enjoys most, in their order: Home lists these first. */
 export type Enjoyment = 'reading' | 'listening' | 'music' | 'watching' | 'writing' | 'speaking' | 'cards';
 
@@ -32,7 +33,8 @@ export interface Settings {
   theme: ThemePref;
   /** The look within Paper and within Nocturne (design/palettes): a page colour and its accent. */
   palette: { paper: PaperPaletteId; nocturne: NocturnePaletteId };
-  learner: { reasons: LearningReason[]; enjoys: Enjoyment[] };
+  /** Why they learn, what they enjoy, and what to call them (the first start's name, 5.1-2b). */
+  learner: { reasons: LearningReason[]; enjoys: Enjoyment[]; name?: string };
   reader: {
     font: ReaderFontId;
     sizePx: number;

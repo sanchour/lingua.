@@ -12,8 +12,10 @@ const SPECIAL: Record<string, Record<string, string>> = {
 export function voiceLocale(lang: string, flag?: string): string | null {
   const info = getLanguage(lang);
   if (!info) return null;
-  const f = flag && info.flags.includes(flag) ? flag : info.flags[0];
-  if (!f || !/^[a-z]{2}$/.test(f)) return null;
+  // Emblems and script badges (Catalan's Senyera, Serbo-Croatian's Š / Ћ) have no accent: the first country's.
+  const country = (f: string) => /^[a-z]{2}$/.test(f);
+  const f = flag && info.flags.includes(flag) && country(flag) ? flag : info.flags.find(country);
+  if (!f) return null;
   return SPECIAL[lang]?.[f] ?? `${lang}-${f.toUpperCase()}`;
 }
 

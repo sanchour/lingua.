@@ -232,11 +232,18 @@ const FLAGS: Record<string, { name: string; draw: () => ReactNode }> = {
   },
   et: {
     name: 'Ethiopia',
+    // The blue disc over all three stripes, with the yellow pentagram drawn in lines and its five rays.
     draw: () => (
       <>
         {hStripes([C.green, C.yellow, C.red])}
-        <circle cx={18} cy={12} r={4.6} fill={C.blue} />
-        <Star x={18} y={12} r={3} fill={C.yellow} />
+        <circle cx={18} cy={12} r={6.4} fill="#2d5ba8" />
+        <polygon points={star(18, 12.3, 4.4)} fill="none" stroke={C.yellow} strokeWidth={0.7} strokeLinejoin="round" />
+        <g stroke={C.yellow} strokeWidth={0.55} strokeLinecap="round">
+          {[0, 72, 144, 216, 288].map((a) => {
+            const r = ((a + 126) * Math.PI) / 180;
+            return <line key={a} x1={18 + 2 * Math.cos(r)} y1={12.3 + 2 * Math.sin(r)} x2={18 + 5.3 * Math.cos(r)} y2={12.3 + 5.3 * Math.sin(r)} />;
+          })}
+        </g>
       </>
     ),
   },
@@ -839,7 +846,115 @@ const BETA_FLAGS: Record<string, { name: string; draw: () => ReactNode }> = {
     ),
   },
 };
-Object.assign(FLAGS, BETA_FLAGS);
+/** A script badge (5.1-2b): one glyph in the reading font on soft paper, for a language that belongs to no one flag. */
+const badge = (glyph: string, size = 11, y = 15.6) => (
+  <>
+    <rect width={36} height={24} fill="#efe6d4" />
+    <text x={18} y={y} textAnchor="middle" fontSize={size} fontFamily="'Literata Variable', 'Noto Serif', Georgia, 'Nirmala UI', serif" fontWeight={600} fill="#3e3229">
+      {glyph}
+    </text>
+  </>
+);
+
+// Lingua 5.1-2b: emblems for languages a national flag doesn't fit (regional, international,
+// historical), drawn to the same size and corner, and script badges sharing one calm design.
+const EMBLEMS: Record<string, { name: string; draw: () => ReactNode }> = {
+  senyera: { name: 'Catalan (the Senyera)', draw: () => hStripes([C.yellow, C.red, C.yellow, C.red, C.yellow, C.red, C.yellow, C.red, C.yellow]) },
+  ikurrina: {
+    name: 'Basque (the Ikurriña)',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill={C.red} />
+        <path d="M0 0L36 24M36 0L0 24" stroke={C.green} strokeWidth={3.6} />
+        <path d="M18 0V24M0 12H36" stroke={C.white} strokeWidth={3} />
+      </>
+    ),
+  },
+  frisian: {
+    name: 'Frisian (the Frisian flag)',
+    // Seven diagonal bands, blue and white, with red pompeblêden on the white ones.
+    draw: () => (
+      <g transform="rotate(33.7 18 12)">
+        {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+          <rect key={i} x={-14} y={-9 + i * 6} width={64} height={6.05} fill={i % 2 ? C.white : C.blue} />
+        ))}
+        {/* Two, three and two, in the middle of the white bands as far as the flag shows them. */}
+        {[
+          [19, 0],
+          [27, 0],
+          [6, 12],
+          [18, 12],
+          [30, 12],
+          [9, 24],
+          [17, 24],
+        ].map(([x, y], i) => (
+          <path key={i} d={`M${x} ${y - 0.8}c-1.1-1.2-2.6-0.3-1.8 1 0.5 0.8 1.8 1.6 1.8 1.6s1.3-0.8 1.8-1.6c0.8-1.3-0.7-2.2-1.8-1z`} fill={C.red} />
+        ))}
+      </g>
+    ),
+  },
+  esperanto: {
+    name: 'Esperanto (the green star)',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill="#2f8a4a" />
+        <rect width={12} height={12} fill={C.white} />
+        <Star x={6} y={6.3} r={4.2} fill="#2f8a4a" />
+      </>
+    ),
+  },
+  hawaii: {
+    name: 'Hawaiian (the flag of Hawaiʻi)',
+    draw: () => (
+      <>
+        {hStripes([C.white, C.red, C.navy, C.white, C.red, C.navy, C.white, C.red])}
+        {unionJack(18, 12)}
+      </>
+    ),
+  },
+  tino: {
+    name: 'Māori (Tino Rangatiratanga)',
+    // Black over red with a white band between, and the white koru unfurling in the black.
+    draw: () => (
+      <>
+        <rect width={36} height={11} fill={C.black} />
+        <rect y={11} width={36} height={13} fill={C.red} />
+        <rect y={10.6} width={36} height={1.7} fill={C.white} />
+        <path d="M2 11.4C6 11.4 9 9 12 6.6C15.6 3.8 21 4.4 21.4 7.6C21.7 9.8 19.2 10.6 17.8 9.4C16.8 8.5 17.4 7 18.7 7.2" fill="none" stroke={C.white} strokeWidth={1.5} strokeLinecap="round" />
+      </>
+    ),
+  },
+  gurmukhi: { name: 'Punjabi (Gurmukhi)', draw: () => badge('ਪੰ', 11.5, 16) },
+  'sh-script': { name: 'Serbo-Croatian (both alphabets)', draw: () => badge('Š / Ћ', 9.5, 15.2) },
+  devanagari: { name: 'Sanskrit (Devanagari)', draw: () => badge('सं', 11.5, 16.2) },
+  rune: {
+    name: 'Old Norse (the rune ᚱ)',
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill="#e9d9b4" />
+        <path d="M15.2 4.6V19.4M15.2 4.6L21 8.4L15.2 12.2L21.2 19.4" fill="none" stroke="#4a3626" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+  },
+  maya: {
+    name: 'Maya (a Maya numeral)',
+    // Thirteen in Maya numerals: three dots over two bars.
+    draw: () => (
+      <>
+        <rect width={36} height={24} fill="#efe6d4" />
+        <g fill="#2f6f6a">
+          <circle cx={12.5} cy={7} r={1.7} />
+          <circle cx={18} cy={7} r={1.7} />
+          <circle cx={23.5} cy={7} r={1.7} />
+          <rect x={9.5} y={11} width={17} height={2.6} rx={1.3} />
+          <rect x={9.5} y={15.6} width={17} height={2.6} rx={1.3} />
+        </g>
+      </>
+    ),
+  },
+};
+
+Object.assign(FLAGS, BETA_FLAGS, EMBLEMS);
 
 export const flagName = (code: string) => FLAGS[code]?.name ?? code.toUpperCase();
 export const hasFlag = (code: string) => code in FLAGS;

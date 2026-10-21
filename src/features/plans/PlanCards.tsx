@@ -37,12 +37,9 @@ interface PlanCardsProps {
   onBought?: () => void;
 }
 
-/** Free, Lingua+ and Max side by side: what each adds, its price, one button. Never pushy. */
-export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps) {
-  const [yearly, setYearly] = useState(true);
+/** Buying a plan: which product is on its way, and the call that starts it (shared with the first start's pitch). */
+export function useBuy(onBought?: () => void) {
   const [busy, setBusy] = useState<Product | null>(null);
-  const lifted = feature ? NEEDS[feature] : 'plus';
-
   const get = async (product: Product) => {
     setBusy(product);
     try {
@@ -55,6 +52,14 @@ export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps
       setBusy(null);
     }
   };
+  return { busy, get };
+}
+
+/** Free, Lingua+ and Max side by side: what each adds, its price, one button. Never pushy. */
+export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps) {
+  const [yearly, setYearly] = useState(false);
+  const { busy, get } = useBuy(onBought);
+  const lifted = feature ? NEEDS[feature] : 'plus';
 
   return (
     <div>
@@ -98,8 +103,8 @@ export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps
                 value={yearly ? 'year' : 'month'}
                 onChange={(v) => setYearly(v === 'year')}
                 options={[
-                  { value: 'year', label: 'Yearly' },
                   { value: 'month', label: 'Monthly' },
+                  { value: 'year', label: 'Yearly' },
                 ]}
               />
               <Button block variant={lifted === 'max' ? 'primary' : 'secondary'} loading={busy === 'maxYear' || busy === 'maxMonth'} onClick={() => void get(yearly ? 'maxYear' : 'maxMonth')}>

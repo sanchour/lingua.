@@ -563,3 +563,34 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Test mode** until the user sets up Stripe and the licence server (server/licence/README.md):
   buying switches the plan on this device and charges nothing; Settings › Lab › Pretend a plan acts
   as Free, Lingua+ or Max. Installs from before the plans act as Max, so nothing disappears.
+
+## The first start (5.1-2b)
+
+- **Ten pages, building up.** Your name ("First things first"), "Welcome, {name}" with a funny line,
+  and "See what Lingua can do" (three things in fine line drawings); then seven steps with dots:
+  the language, your level, the languages you speak, why, your goal, your study light, the plans.
+  Back works everywhere and keeps what was chosen. Every page fits one desktop screen except the
+  language page, whose full list peeks in under the map.
+- **What language will it be?** The world, big and wide, drawn without dots. Hovering a country
+  lifts it and shows its languages; clicking it centres it and opens a panel with its languages
+  (official first), and the panel's other tab and the search have every language. Hovering or
+  choosing a language tints where it stands: solid where official, lighter where regional, hatched
+  where a minority or historical. The language chosen is named on the map and on the button. The
+  six core languages sit under the map, every tier below them.
+- **Where languages are spoken** comes from Unicode CLDR (`scripts/lang-data/territories.ts`), with
+  Latin, Ancient Greek, Old Norse, Sanskrit and Yucatec Maya added by hand. Twelve new flags and
+  emblems: the senyera, the ikurrina, Frisian's hearts, the Esperanto star, Hawaiʻi, Tino
+  Rangatiratanga, Gurmukhi, Serbo-Croatian's two scripts, Devanagari, a rune and Maya numerals.
+- **So, how far along are you?** Six rows: "A0 · Nothing yet", then five real sentences in the
+  language, A1 to C1. The one you pick shows its English and its new words as the reader would;
+  "Skip the N most common words" sits in the same card.
+- **Which languages do you already speak?** A card for each, saying hello in it, with its level as
+  signal bars or Native. Adding one (a search of every language, or one-click flags) asks how well
+  straight away. They go into Tabula; the first native one Lingua knows is the translation language.
+- **Why do you want to learn {language}?** Six tiles, any number, and a line that answers each pick.
+- **Set your own goal.** The level to reach as milestones on a path, minutes a day on a slider with
+  named checkpoints, and about how long that takes, from the usual hours of study per level.
+- **Choose your study light.** Light and Dark as two big pages of the app; choosing one opens its
+  palettes under it, and "Follow my device" opens both.
+- **Unlock all of Lingua.** Lingua+ and Max as two big cards with what each opens (Max dark with the
+  gold MAX, monthly first), free as one clear line with "Continue free".

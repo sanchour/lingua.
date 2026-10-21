@@ -5,33 +5,56 @@ import { ArrowRight } from 'lucide-react';
 import { Wordmark } from '@/app/shells/Wordmark';
 import { getLanguage, LANGUAGES } from '@/core/lang/languages';
 import type { Level } from '@/core/lang/levels';
+import { codeForLanguage } from '@/core/parsers/notion';
 import { completeOnboarding } from '@/data/languages';
-import { patchSetting, setSetting, useSettings } from '@/data/settings';
+import { planOf } from '@/data/plan';
+import { patchSetting, useSettings } from '@/data/settings';
 import type { LearningReason, ThemePref } from '@/data/settings';
+import type { CefrLevel } from '@/data/types';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { Button } from '@/design/primitives';
 import { spring } from '@/design/motion';
+import { PlanPitch } from '@/features/plans/PlanPitch';
 import { requestPersistence } from '@/services/storage/persist';
 import { toast } from '@/state/ui';
 import { cx } from '@/lib/cx';
 import { AestheticStep } from './AestheticStep';
 import { enjoymentsFor } from './EnjoyStep';
-import { GoalStep } from './GoalStep';
+import { defaultGoal, GoalStep } from './GoalStep';
+import { AboutPage, NamePage, WelcomePage } from './IntroPages';
 import { LanguageStep } from './LanguageStep';
 import { LevelStep } from './LevelStep';
+import { SpeakStep, spokenName } from './SpeakStep';
+import type { Spoken } from './SpeakStep';
+import { WhyStep } from './WhyStep';
 
-// "What do you enjoy most" went in 3.0-2: Home orders itself from the reasons (Settings › Languages keeps the choice).
-const STEPS = ['Language', 'Level', 'Goal', 'Aesthetic'] as const;
+type Page = 'name' | 'welcome' | 'about' | 'language' | 'level' | 'speak' | 'why' | 'goal' | 'light' | 'plans';
 
-function guessNative(): string {
+/**
+ * The first start (5.1-2b): your name, a welcome and what Lingua does, then seven steps that build up
+ * to the plans. Adding another language: its language, level and goal.
+ */
+const FIRST: Page[] = ['name', 'welcome', 'about', 'language', 'level', 'speak', 'why', 'goal', 'light', 'plans'];
+const ANOTHER: Page[] = ['language', 'level', 'goal'];
+const INTRO = new Set<Page>(['name', 'welcome', 'about']);
+const ORDER: CefrLevel[] = ['A0', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+/** The device's language, as a code Lingua knows when it can (Norwegian is nb). */
+function deviceLanguage(): string {
   const code = (navigator.language || 'en').split('-')[0].toLowerCase();
-  return getLanguage(code) ? code : 'en';
+  return code === 'no' ? 'nb' : code;
 }
 
-const slide = {
-  enter: (dir: number) => ({ opacity: 0, x: dir * 48 }),
-  center: { opacity: 1, x: 0 },
-  exit: (dir: number) => ({ opacity: 0, x: dir * -48 }),
+/** The language translations are given in: the first native language Lingua can gloss in, else English. */
+function nativeOf(spoken: Spoken[], target: string | null): string {
+  const native = spoken.find((s) => s.level === 'native' && s.code !== target && getLanguage(s.code) && !getLanguage(s.code)?.soon);
+  return native?.code ?? 'en';
+}
+
+const turn = {
+  enter: (dir: number) => ({ opacity: 0, x: dir * 48, rotateY: dir * -6 }),
+  center: { opacity: 1, x: 0, rotateY: 0 },
+  exit: (dir: number) => ({ opacity: 0, x: dir * -48, rotateY: dir * 6 }),
 };
 
 /**
@@ -41,35 +64,58 @@ const slide = {
 export default function Onboarding({ canCancel = false }: { canCancel?: boolean }) {
   const navigate = useNavigate();
   const settings = useSettings();
-  const [step, setStep] = useState(0);
+  const pages = canCancel ? ANOTHER : FIRST;
+  const [index, setIndex] = useState(0);
   const [dir, setDir] = useState(1);
+  const [name, setName] = useState<string | null>(null);
   const [target, setTarget] = useState<string | null>(null);
-  const [native, setNative] = useState(guessNative);
   const [level, setLevel] = useState<Level>('A0');
   const [seedKnown, setSeedKnown] = useState(true);
+  const [spoken, setSpoken] = useState<Spoken[]>(() => [{ code: deviceLanguage(), level: 'native' }]);
   const [reasons, setReasons] = useState<LearningReason[] | null>(null);
+  const [goal, setGoal] = useState<CefrLevel | null>(null);
   const [minutes, setMinutes] = useState(15);
   const [busy, setBusy] = useState(false);
+  const page = pages[index];
+  const steps = pages.filter((p) => !INTRO.has(p));
   const theme: ThemePref = settings?.theme ?? 'system';
   // Adding another language starts from what was chosen the first time.
+  const nameNow = name ?? settings?.learner.name ?? '';
   const reasonsNow = reasons ?? settings?.learner.reasons ?? [];
   const enjoysNow = settings?.learner.enjoys?.length ? settings.learner.enjoys : enjoymentsFor(reasonsNow);
+  // A goal at or below the level chosen since moves up with it.
+  const goalNow = goal && ORDER.indexOf(goal) > ORDER.indexOf(level) ? goal : defaultGoal(level);
+  const languageName = getLanguage(target ?? '')?.name ?? 'this language';
 
-  const canContinue = step !== 0 || (target !== null && target !== native);
+  const canContinue = page !== 'language' || target !== null;
 
   const go = (next: number) => {
-    setDir(next > step ? 1 : -1);
-    setStep(next);
+    setDir(next > index ? 1 : -1);
+    setIndex(next);
+    window.scrollTo({ top: 0 });
   };
 
   const finish = async () => {
-    if (!target) return;
+    if (!target || busy) return;
     setBusy(true);
     try {
-      await completeOnboarding({ target, native, level, seedKnown, theme, minutes, learner: { reasons: reasonsNow, enjoys: enjoysNow } });
+      await completeOnboarding({
+        target,
+        // Adding another language skips "You speak": the device's language, as before 5.1-2b.
+        native: nativeOf(spoken, target),
+        level,
+        seedKnown,
+        theme,
+        minutes,
+        goal: goalNow,
+        learner: { reasons: reasonsNow, enjoys: enjoysNow, name: nameNow.trim() || undefined },
+        spoken: canCancel
+          ? undefined
+          : spoken.map((s) => ({ id: getLanguage(s.code) ? s.code : codeForLanguage(spokenName(s.code)), name: spokenName(s.code), level: s.level === 'native' ? 'C2' : s.level, native: s.level === 'native' })),
+      });
       void requestPersistence();
       navigate('/', { replace: true });
-      toast(canCancel ? `Now studying ${getLanguage(target)?.name ?? target}.` : 'Welcome to Lingua. Happy reading!', { tone: 'success' });
+      toast(canCancel ? `Now studying ${getLanguage(target)?.name ?? target}.` : `Welcome to Lingua${nameNow.trim() ? `, ${nameNow.trim()}` : ''}. Happy reading!`, { tone: 'success' });
     } catch {
       setBusy(false);
       toast('Could not save your choices. Please try again.', { tone: 'error' });
@@ -78,64 +124,85 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
 
   const next = () => {
     if (!canContinue || busy) return;
-    if (step < STEPS.length - 1) go(step + 1);
+    if (index < pages.length - 1) go(index + 1);
     else void finish();
   };
 
   const cancel = () => void patchSetting('meta', { onboardedAt: Date.now() });
   useHotkeys({ escape: cancel }, canCancel);
 
+  const width = page === 'language' ? 'max-w-7xl' : page === 'about' || page === 'light' || page === 'plans' ? 'max-w-6xl' : 'max-w-3xl';
+  const label =
+    page === 'name'
+      ? nameNow.trim()
+        ? 'Continue'
+        : 'Skip for now'
+      : page === 'welcome'
+        ? 'Show me around'
+        : page === 'about'
+          ? 'Choose a language'
+          : page === 'language' && target
+            ? `Continue with ${getLanguage(target)?.endonym ?? target}`
+            : index === pages.length - 1
+              ? 'Begin'
+              : 'Continue';
+
   return (
-    <div className="flex min-h-dvh flex-col pt-safe pb-safe">
-      <header className={cx("mx-auto flex w-full items-center justify-between gap-4 px-6 pt-6", step === 0 ? "max-w-5xl" : "max-w-2xl")}>
+    <div className="flex min-h-dvh flex-col overflow-x-clip">
+      <header className={cx('mx-auto flex w-full items-center justify-between gap-4 px-8 pt-6', width)}>
         <Wordmark />
         {canCancel && (
           <Button variant="ghost" size="sm" onClick={cancel} className="mr-auto">
             Cancel
           </Button>
         )}
-        <ol className="flex items-center gap-1.5" aria-label={`Step ${step + 1} of ${STEPS.length}`}>
-          {STEPS.map((name, i) => (
-            <motion.li
-              key={name}
-              layout
-              aria-current={i === step ? 'step' : undefined}
-              className={cx('h-2 rounded-full', i === step ? 'w-6 bg-accent' : i < step ? 'w-2 bg-sage' : 'w-2 bg-line-strong')}
-              transition={spring.snappy}
-            />
-          ))}
-        </ol>
+        {!INTRO.has(page) && (
+          <ol className="flex items-center gap-1.5" aria-label={`Step ${steps.indexOf(page) + 1} of ${steps.length}`}>
+            {steps.map((step) => {
+              const i = steps.indexOf(step);
+              const at = steps.indexOf(page);
+              return (
+                <motion.li
+                  key={step}
+                  layout
+                  aria-current={i === at ? 'step' : undefined}
+                  className={cx('h-2 rounded-full', i === at ? 'w-6 bg-accent' : i < at ? 'w-2 bg-sage' : 'w-2 bg-line-strong')}
+                  transition={spring.snappy}
+                />
+              );
+            })}
+          </ol>
+        )}
       </header>
 
-      <main className="flex flex-1 justify-center px-5 py-8 sm:items-center">
-        <div className={cx("w-full", step === 0 ? "max-w-5xl" : "max-w-2xl")}>
+      <main className={cx('flex flex-1 justify-center px-8', page === 'language' ? 'pt-1 pb-2' : page === 'plans' ? 'items-center py-3' : 'items-center py-8')} style={{ perspective: 1600 }}>
+        <div className={cx('w-full', width)}>
           <AnimatePresence mode="popLayout" custom={dir} initial={false}>
-            <motion.section key={step} custom={dir} variants={slide} initial="enter" animate="center" exit="exit" transition={spring.gentle}>
-              {step === 0 && <LanguageStep target={target} native={native} onTarget={setTarget} onNative={setNative} />}
-              {step === 1 && <LevelStep level={level} seedKnown={seedKnown} onLevel={setLevel} onSeedKnown={setSeedKnown} />}
-              {step === 2 && <GoalStep reasons={reasonsNow} minutes={minutes} onReasons={setReasons} onMinutes={setMinutes} />}
-              {step === 3 && target && (
-                <AestheticStep
-                  pref={theme}
-                  sample={getLanguage(target)?.sample ?? LANGUAGES[0].sample}
-                  lang={target}
-                  onChange={(pref) => void setSetting('theme', pref)}
-                />
-              )}
+            <motion.section key={page} custom={dir} variants={turn} initial="enter" animate="center" exit="exit" transition={spring.gentle}>
+              {page === 'name' && <NamePage name={nameNow} onName={setName} onEnter={next} />}
+              {page === 'welcome' && <WelcomePage name={nameNow} />}
+              {page === 'about' && <AboutPage />}
+              {page === 'language' && <LanguageStep target={target} onTarget={setTarget} />}
+              {page === 'level' && target && <LevelStep lang={target} level={level} seedKnown={seedKnown} onLevel={setLevel} onSeedKnown={setSeedKnown} />}
+              {page === 'speak' && <SpeakStep spoken={spoken} target={target} onSpoken={setSpoken} />}
+              {page === 'why' && <WhyStep language={languageName} reasons={reasonsNow} onReasons={setReasons} />}
+              {page === 'goal' && <GoalStep level={level} goal={goalNow} minutes={minutes} onGoal={setGoal} onMinutes={setMinutes} />}
+              {page === 'light' && settings && <AestheticStep pref={theme} palette={settings.palette} sample={getLanguage(target ?? 'en')?.sample || LANGUAGES[0].sample} lang={target ?? 'en'} />}
+              {page === 'plans' && settings && <PlanPitch current={planOf(settings.meta)} onFree={() => void finish()} />}
             </motion.section>
           </AnimatePresence>
         </div>
       </main>
 
-      <footer className="sticky bottom-0 bg-gradient-to-t from-bg via-bg/95 to-bg/0 px-5 pt-6 pb-5">
-        <div className={cx("mx-auto flex gap-3", step === 0 ? "max-w-5xl" : "max-w-2xl")}>
-          {step > 0 && (
-            <Button variant="secondary" size="lg" onClick={() => go(step - 1)} disabled={busy}>
+      <footer className="sticky bottom-0 bg-gradient-to-t from-bg via-bg/95 to-bg/0 px-8 pt-3 pb-4">
+        <div className={cx('mx-auto flex gap-3', width, INTRO.has(page) && 'max-w-md')}>
+          {index > 0 && (
+            <Button variant="secondary" size="lg" onClick={() => go(index - 1)} disabled={busy}>
               Back
             </Button>
           )}
           <Button size="lg" className="flex-1" onClick={next} disabled={!canContinue} loading={busy} iconRight={ArrowRight}>
-            {step === STEPS.length - 1 ? 'Begin' : 'Continue'}
+            {label}
           </Button>
         </div>
       </footer>
