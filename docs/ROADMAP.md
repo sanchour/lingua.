@@ -1735,8 +1735,8 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 
 ### Codex (5.1-3a, handover step 9): how it is built
 *Planned 2026-10-21; the design is in LINGUA-5.1-PLAN.md "5.1-3a". Each part pushed. The user
-(2026-10-21): Cursus, the course for the six core languages, comes right after 5.1-3 (all three
-parts); and word translations must get much better in the six core languages (Spanish "a" said
+(2026-10-21): Cursus, the course for the six core languages, comes right after 5.1-3a, then 5.1-3b
+and c; and word translations must get much better in the six core languages (Spanish "a" said
 "bishop").*
 - [x] **1 · Clicks, the word panel, no machine-translation note.** One click Known (a Known word
       Unseen again), a double click Learning (a Learning word Unseen), the first click applied at
@@ -1754,8 +1754,16 @@ parts); and word translations must get much better in the six core languages (Sp
       sample and "Back to the usual look". Stored as `reader.words`; the CSS reads variables
       (`wordStyles.ts`), so the reader, lyrics and transcripts follow it. Unseen's None is the usual
       "highlight unseen words" switch.
-- [ ] **3b · Better word meanings** for the six core languages (the user): the right sense for the
-      most common words first.
+- [x] **3b · Better word meanings** (the user: "improve translation massively"). Spanish, French,
+      German and Russian forms are read in their own English on the device, no pack rebuild:
+      Wiktionary's description of a form, or its row in the lemma's paradigm, inflects the lemma's
+      meaning ("tengo" I have, "entiende" understands, "años" years, "könnte" could, "сказал" said),
+      only the named lemma counts (no "summit" for "somos"), and a form that is a word itself keeps its
+      own meaning ("casa" house, not "to marry"). Hand-checked tables (`core/lang/commonGlosses`): the
+      English verb for about 80 common verbs per language and fixes for some 150 common words each.
+      The context picker no longer turns a function word into a rare sense (Spanish "a" after "poco"
+      was "bishop"), and only a word's two main parts of speech compete. Tested on the real packs.
+      Arabic and Mandarin keep their build-time fixes; their forms aren't inflected in English.
 - [ ] **4 · Check yourself** on the end page: questions made from the text, without AI.
 - [ ] **5 · Add to your library,** the fun-but-minimal forms, and a folder of page photos read by OCR.
 - [ ] **6 · Discover:** news, free books (Gutendex, Wikisource, StoryWeaver, African Storybook) and

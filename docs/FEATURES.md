@@ -564,6 +564,22 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   buying switches the plan on this device and charges nothing; Settings › Lab › Pretend a plan acts
   as Free, Lingua+ or Max. Installs from before the plans act as Max, so nothing disappears.
 
+## Codex, 5.1-3a (so far)
+
+- **Clicks:** one click marks a word Known (a Known word Unseen again); a double click marks it
+  Learning (a Learning word Unseen). The same in lyrics, transcripts and subtitles. K, L and X still
+  work on the hovered word.
+- **The word panel:** sound, pronunciation, "#437 most common · A1" and **+ Deck** in one row; sound
+  buttons on the examples; Open dictionary by the Dictionary heading; "In context" and "Explain in
+  context" with Max and a key.
+- **Sentences at once:** **S** translates the hovered word's sentence. The sentence you rest on is
+  translated ahead (with Max and a key, every sentence coming into view), so it shows at once.
+- **Words in "T":** Known, Learning and Unseen each get a style (none, line, dots, mark; Known also
+  faint) and one of six colours, with a live sample and "Back to the usual look".
+- **Meanings that fit the form** in Spanish, French, German and Russian: "tengo" I have, "entiende"
+  understands, "años" years, "könnte" could, "сказал" said; the commonest words hand-checked; a
+  function word never takes a rare sense from its neighbour.
+
 ## Home, Today (5.1-2c)
 
 - **A square grid.** "Good evening, {name}" with the date, the language and level → goal above it;

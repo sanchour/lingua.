@@ -1206,6 +1206,29 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-21 — Word meanings in the core languages (5.1-3a)
+
+- **At reading time, not in the packs.** The user asked for much better translations (Spanish "a"
+  read "bishop"). The packs already carry what is needed: each form's Wiktionary description, each
+  lemma's senses and paradigm. Reading them when a chapter loads (`services/translate/gloss`
+  `refineForms`) reaches every install at once, with no pack version or 2 GB rebuild. The rules are
+  pure (`core/lang/formGloss`) and tested on the real packs.
+- **The form's own English.** A verb form is the lemma's verb inflected by person, number and tense
+  ("I have", "has", "said", "will go", "would be"; German subjunctive II as "would"); a plural noun
+  is made plural ("children"). Only the lemma the description names counts. A form that is itself a
+  headword keeps the pack's meaning, because its description names the rarer reading ("casa" of
+  casar). "Inflection of X" is looked up in X's paradigm, preferring the indicative and the third
+  person.
+- **Hand-checked tables** for es, fr, de and ru (`core/lang/commonGlosses`, loaded with the
+  reader): the English verb for common lemmas (Wiktionary's first sense is often not the usual one:
+  querer "to desire") and the meanings of some 150 common words each, reviewed against the 300
+  commonest forms. They win over the pack and over context.
+- **Context is more careful.** Function words (prepositions, articles, pronouns…) keep their usual
+  meaning; of a word's own senses only its two main parts of speech compete; another lemma of the
+  same form still can ("se tarde": tardar).
+- Arabic and Mandarin are left as they are: their fixes are in the build (scripts/lang-data/fixes.ts)
+  and their forms don't inflect in English the same way.
+
 ## 2026-10-21 — Home, Today (5.1-2c)
 
 - **The old Home stays, one setting away.** `HomePage` picks `HomeToday` or `HomeClassic` by

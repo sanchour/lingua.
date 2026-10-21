@@ -22,6 +22,46 @@ export interface GlossInfo {
   reading?: string;
 }
 
+/**
+ * Core languages whose forms are read in their own English (5.1-3a), with hand-checked meanings for
+ * the commonest words. Arabic and Mandarin keep the pack's (their fixes are in the build).
+ */
+const REFINED = new Set(['es', 'fr', 'de', 'ru']);
+
+/**
+ * Each listed form in its own English: its description read with the lemma it names ("tengo" → I
+ * have, "años" → years, "somos" → we are, without "summit"), and the commonest words' hand-checked
+ * meanings (core/lang/commonGlosses), which win.
+ */
+async function refineForms(lang: string, pack: string, norms: string[], forms: Array<DictForm | undefined>, out: Map<string, GlossInfo>): Promise<void> {
+  const [{ formGloss, fromParadigm, needsParadigm, planForm }, { FIXES, VERBS }] = await Promise.all([import('@/core/lang/formGloss'), import('@/core/lang/commonGlosses')]);
+  const fixes = FIXES[lang] ?? {};
+  const verbs = VERBS[lang] ?? {};
+  const plans = forms.map((f) => (f && !fixes[f.form] ? planForm(lang, f) : null));
+  // "inflection of X" says only the lemma: X's paradigm says which form it is.
+  const vague = [...new Set(plans.flatMap((x) => (x && needsParadigm(x) ? [x.lemma] : [])))];
+  if (vague.length) {
+    const tables = new Map((await db.dictParadigms.bulkGet(vague.map((l) => [pack, l] as [string, string]))).filter((t) => t !== undefined).map((t) => [t.lemma, t.forms]));
+    plans.forEach((plan, i) => {
+      const table = plan && needsParadigm(plan) ? tables.get(plan.lemma) : undefined;
+      if (plan && table) fromParadigm(lang, plan, table.filter(([form]) => form.toLocaleLowerCase(lang) === forms[i]!.form).map(([, tags]) => tags));
+    });
+  }
+  const lemmas = [...new Set(plans.flatMap((x) => (x ? [x.lemma] : [])))];
+  const entries = lemmas.length ? await db.dictEntries.bulkGet(lemmas.map((l) => [pack, l] as [string, string])) : [];
+  const byLemma = new Map(entries.filter((e) => e !== undefined).map((e) => [e.lemma, e]));
+  forms.forEach((f, i) => {
+    if (!f) return;
+    const before = out.get(norms[i]);
+    const fix = fixes[f.form];
+    if (fix) return out.set(norms[i], { ...before, text: fix, source: 'dict' });
+    const plan = plans[i];
+    const entry = plan && byLemma.get(plan.lemma);
+    const text = entry && formGloss(plan.p, entry.senses, verbs[plan.lemma]);
+    if (text) out.set(norms[i], { ...before, text, lemma: plan.lemma, source: 'dict' });
+  });
+}
+
 /** Languages whose packs index a looser spelling too: Greek without accents, Arabic with a bare alef. */
 const FOLDED = new Set(['el', 'ar']);
 
@@ -71,6 +111,7 @@ export async function lookupGlosses(lang: string, norms: string[]): Promise<Map<
   let misses: string[] = [];
   const fromForm = (f: DictForm): GlossInfo => (f.r ? { text: f.g, lemma: f.lemmas[0], source: 'dict', reading: f.r } : { text: f.g, lemma: f.lemmas[0], source: 'dict' });
   forms.forEach((f, i) => (f ? out.set(norms[i], fromForm(f)) : misses.push(norms[i])));
+  if (REFINED.has(lang)) await refineForms(lang, pack, norms, forms, out);
 
   // Greek written without accents (ALL CAPS, subtitles), Arabic with a bare alef: the pack indexes those spellings.
   if (misses.length && FOLDED.has(lang)) {
@@ -166,6 +207,10 @@ export async function lookupSenses(lang: string, norms: string[]): Promise<Map<s
     for (const lemma of f.lemmas) for (const s of byLemma.get(lemma)?.senses ?? []) if (s.glosses.length) options.push({ lemma, pos: s.pos, glosses: s.glosses });
     if (new Set(options.map((o) => o.pos)).size > 1) out.set(norms[i], options);
   });
+  if (REFINED.has(lang)) {
+    const { FIXES } = await import('@/core/lang/commonGlosses');
+    for (const norm of out.keys()) if (FIXES[lang]?.[norm]) out.delete(norm);
+  }
   return out;
 }
 

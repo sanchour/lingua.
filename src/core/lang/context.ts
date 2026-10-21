@@ -102,15 +102,24 @@ export function shortGloss(glosses: string[], max = 60): string {
   return out.length > max ? `${out.slice(0, max - 1)}…` : out;
 }
 
+/** Parts of speech that are function words: their usual meaning stands whatever comes before. */
+const FUNCTION_WORDS = new Set(['prep', 'conj', 'det', 'article', 'pron', 'particle', 'num', 'postp', 'intj', 'contraction', 'prep_phrase']);
+
 /**
  * The sense the context points to, among a form's senses (all its lemmas, in dictionary order).
- * Adjectives also accept adverbs (Spanish "muy tarde" is "very late").
+ * Adjectives also accept adverbs (Spanish "muy tarde" is "very late"). A function word keeps its
+ * usual meaning (Spanish "a" after "poco" is still "to", never the chess bishop Wiktionary lists
+ * third), and of the word's own senses only its two main parts of speech compete; another word the
+ * form belongs to still can ("se tarde": tardar).
  */
 export function senseInContext(options: SenseOption[], pos: ContextPos | null): SenseOption | null {
-  if (!pos || options.length < 2) return null;
+  if (!pos || options.length < 2 || FUNCTION_WORDS.has(options[0].pos)) return null;
+  const head = options[0].lemma;
+  const main = [...new Set(options.filter((o) => o.lemma === head).map((o) => o.pos))].slice(0, 2);
+  const allowed = (o: SenseOption) => o.lemma !== head || main.includes(o.pos);
   const wanted = pos === 'adj' ? ['adj', 'adv'] : [pos];
   for (const w of wanted) {
-    const hit = options.find((o) => o.pos === w && o.glosses.length);
+    const hit = options.find((o) => o.pos === w && o.glosses.length && allowed(o));
     if (hit) return hit;
   }
   return null;
