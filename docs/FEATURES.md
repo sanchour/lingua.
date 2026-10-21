@@ -564,6 +564,22 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   buying switches the plan on this device and charges nothing; Settings › Lab › Pretend a plan acts
   as Free, Lingua+ or Max. Installs from before the plans act as Max, so nothing disappears.
 
+## Home, Today (5.1-2c)
+
+- **A square grid.** "Good evening, {name}" with the date, the language and level → goal above it;
+  a quiet Lingua+ button top right on the free plan only.
+- **Today:** the minutes so far in serif numerals ("8 of 15 minutes") and a ribbon across the card,
+  split by room in the rooms' tones (reading, listening, watching, writing), with a legend. Under
+  it **Next up**: up to four rows, one click each (the book you're reading, cards due, the episode
+  or film half-done, today's song, today's diary prompt, a way in for what you enjoy).
+- **Beside it** the week (opens Ratio) and four numbers two by two: days in a row, words known,
+  minutes this week, cards due. Both columns end on the same line.
+- **First steps** for a new learner run across the page as five tiles, until done or hidden.
+- **Cursus and Mundus** in equal columns: the next grammar topic (and the alphabet's next group,
+  for beginners in a script of their own) and Mundus's suggestion.
+- **Home layout: Today / Classic** in Settings › Look and feel brings back Home as it was before
+  Lingua 5.
+
 ## The first start (5.1-2b)
 
 - **Ten pages, building up.** Your name ("First things first"), "Welcome, {name}" with a funny line,

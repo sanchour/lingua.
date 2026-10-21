@@ -119,6 +119,8 @@ export interface Settings {
     cursusTab: '' | 'course' | 'grammatica' | 'alphabets' | 'typing';
     /** Sonus et Visio's library filter. */
     sonusShow: MediaShow;
+    /** Home's layout: Today (5.1-2c) or the one before it. */
+    homeLayout: 'today' | 'classic';
   };
   /** Device-only. */
   meta: {
@@ -201,7 +203,7 @@ export const DEFAULT_SETTINGS: Settings = {
   voice: { off: false, chosen: {} },
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all' },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today' },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null, plan: null },
   sync: { devices: [], includeApiKeys: false },
 };

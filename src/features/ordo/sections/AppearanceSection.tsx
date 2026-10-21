@@ -1,4 +1,4 @@
-import { Monitor, Moon, Sparkles, SlidersHorizontal, Sun, Waves, Wind } from 'lucide-react';
+import { History, LayoutDashboard, Monitor, Moon, Sparkles, SlidersHorizontal, Sun, Waves, Wind } from 'lucide-react';
 import { AnimatePresence, motion as m } from 'motion/react';
 import { patchSetting, setSetting } from '@/data/settings';
 import type { MotionPref, Settings, ThemePref } from '@/data/settings';
@@ -47,7 +47,7 @@ function PaletteRow({ title, palettes, value, onChange }: { title: string; palet
   );
 }
 
-export function AppearanceSection({ theme, motion, palette }: { theme: ThemePref; motion: MotionPref; palette: Settings['palette'] }) {
+export function AppearanceSection({ theme, motion, palette, homeLayout }: { theme: ThemePref; motion: MotionPref; palette: Settings['palette']; homeLayout: Settings['ui']['homeLayout'] }) {
   return (
     <SettingsSection id="appearance" icon={SlidersHorizontal} title="Preferences" description="How Lingua looks and moves.">
       <div>
@@ -88,6 +88,21 @@ export function AppearanceSection({ theme, motion, palette }: { theme: ThemePref
             </m.p>
           </AnimatePresence>
         </div>
+      </div>
+
+      <div className="mt-6">
+        <p className="mb-2 text-[15px] font-semibold">Home layout</p>
+        <Segmented<Settings['ui']['homeLayout']>
+          label="Home layout"
+          value={homeLayout}
+          onChange={(value) => void patchSetting('ui', { homeLayout: value })}
+          block
+          options={[
+            { value: 'today', label: 'Today', icon: LayoutDashboard },
+            { value: 'classic', label: 'Classic', icon: History },
+          ]}
+        />
+        <p className="mt-2 text-[13px] text-ink-soft">Today puts the day's goal and what's next up first, beside the week and your numbers, with Cursus and Mundus below. Classic is Home as it was before Lingua 5.</p>
       </div>
     </SettingsSection>
   );

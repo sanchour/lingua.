@@ -1206,6 +1206,19 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-21 — Home, Today (5.1-2c)
+
+- **The old Home stays, one setting away.** `HomePage` picks `HomeToday` or `HomeClassic` by
+  `ui.homeLayout` (device-local, default Today), so the user can compare and nothing is removed
+  until they say the new one stays. Next up, the week and first steps are shared from HomeClassic.
+- **Square, at the user's request.** The first build left gaps where one column ran longer than
+  the other. Now each row's cards stretch to one height: the numbers moved from a row of their own
+  to a two-by-two card under the week, sized so the two columns meet; Next up shows at most four
+  rows; first steps became a full-width strip; Cursus and Mundus share a row in equal columns
+  (`auto-cols-fr`), so a third card (the alphabet) never wraps alone.
+- **The ribbon animates once, by transform** (scaleX), and the segments are plain widths; nothing
+  animates layout (PERFORMANCE.md).
+
 ## 2026-10-21 — The first start (5.1-2b)
 
 - **The user shaped it in the browser.** After the first build the user asked, page by page, for:

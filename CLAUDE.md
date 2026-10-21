@@ -27,7 +27,7 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
   desktop only). The user asked on 2026-10-20 to make it ready to start: it is built step by step
   in HANDOVER.md's order. **5.1 is four steps and the check** (the user, 2026-10-21): 5.1-1 the
   frame (**done 2026-10-21**, with 5.2-1: Cursus, Sonus et Visio, Mentis, Settings), 5.1-2 plans,
-  onboarding and Home, 5.1-3 Codex, Thesaurus/Ludus and sound, 5.1-4 typing and the design touch.
+  onboarding and Home (**done 2026-10-21**), 5.1-3 Codex, Thesaurus/Ludus and sound, 5.1-4 typing and the design touch.
   The user asked (2026-10-21) for all of 5.1 and 5.2 to be done without needing them.
 - Other accounts and sessions push to `main` all the time: rebase onto `origin/main` before every
   push. Tier 2 stays cheap: only the features that cost little (automatic packs, decks, podcasts,

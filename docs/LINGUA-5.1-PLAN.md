@@ -379,14 +379,15 @@ lists Spanish, Catalan, Basque, Galician; the twelve emblems look right next to 
 ### 5.1-2c · Home
 
 **The user's points**
-- [ ] A top-right button to the Lingua+ plans, only for those without it.
-- [ ] Today: an aesthetic time-goal tracker, and next up / recently opened from each room, minimal
+- [x] A top-right button to the Lingua+ plans, only for those without it.
+- [x] Today: an aesthetic time-goal tracker, and next up / recently opened from each room, minimal
   and one click to open.
-- [ ] The weekly calendar as now (click opens Ratio).
-- [ ] A Cursus card (next lesson, where you are).
-- [ ] Mundus.
-- [ ] Some basic numbers.
-- [ ] Same feel: minimal, clean, bookish, calm. Easy to revert.
+- [x] The weekly calendar as now (click opens Ratio).
+- [x] A Cursus card (next lesson, where you are).
+- [x] Mundus.
+- [x] Some basic numbers.
+- [x] Same feel: minimal, clean, bookish, calm. Easy to revert.
+- [x] Square, without odd gaps (the user, 2026-10-21, on the first build).
 
 **Layout (desktop, a 12-column grid)**
 1. Header: the greeting and date; top right a quiet **Lingua+** button (outlined, the "+" mark) for
@@ -406,6 +407,14 @@ Today / Classic". One setting, no code removed until the user says the new one s
 
 **Done when:** each row of Next up opens the right place; the tracker fills as minutes are logged;
 Classic brings back today's Home exactly.
+
+**As built (2026-10-21).** `features/home/HomeToday`, with the old Home renamed `HomeClassic` and
+`ui.homeLayout` choosing between them (Settings › Look and feel › Home layout). After the first
+build the user asked for it "square, not weird whitespace gaps", so every row's cards share one
+height: Today (the ribbon, then Next up, at most four rows) beside the week with the four numbers
+under it as a two-by-two card; a new learner's first steps as one row of five across the page;
+Cursus (Grammatica, and the alphabet where the language has one) and Mundus in equal columns. The
+course's next lesson joins the Cursus card when the course is built.
 
 ---
 
