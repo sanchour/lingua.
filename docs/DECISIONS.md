@@ -1128,3 +1128,8 @@ Short records of choices that are not obvious from the code. Newest last.
   both, so drills would mark one country's usage wrong.
 - **English and Swahili get no grammar for now.** English pack sentences carry no translation to
   show, and Swahili has eighteen usable sentences.
+- **Gaps with only two right answers get distractors that are wrong everywhere.** De and het,
+  a and az, en and ett have one alternative each, so the other two choices are words that never
+  fit there (die and deze before a het-word, azt and annak as "the"). A choice that is right in a
+  dialect or a looser standard is never offered as wrong: Norwegian ei and en for feminine nouns
+  are both kept out of the drills.

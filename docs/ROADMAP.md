@@ -1109,6 +1109,17 @@ mixes both), Dutch separable verbs and subordinate word order, Italian ci, ne an
 subjunctive. The drills test over every module now has 20 seconds per test: with more modules it
 timed out at 5 seconds when the whole suite ran at once.
 
+*6b, as built (2026-10-21).* Swedish (6 topics: en and ett, the definite ending, the present,
+the verb second, the past, the perfect with the supine), Norwegian Bokmål (5: gender, the
+definite ending, the present, the past, the perfect), Greek (5: articles, είμαι, the present,
+the future with θα, δεν and μη), Hungarian (5: a and az, -ban and -ben, the object -t, the
+present, the past) and Turkish (5: the plural, the locative, mi, -iyor, -di). Left out and
+named in each module: Norwegian word order (too few sentences that start with something other
+than the subject) and the en/ei choice (Bokmål allows both), Greek past tenses, Hungarian
+definite conjugation as a topic of its own, Turkish accusative, dative and possessives.
+Hungarian and Turkish topics carry no form tags, so the word drawer shows no "Why this form?"
+for them.
+
 **Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an
    icon in the phone's top bar beside Mundus. Each language's topics are a typed module,

@@ -12,7 +12,7 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
 - The user's brief up to Lingua 4.0 is [Lingua updates.txt](Lingua%20updates.txt); Lingua 5's lists
   are in its two plan files. The plan, with what is done ticked, is [docs/ROADMAP.md](docs/ROADMAP.md).
 - **Lingua 2.0 and 3.0 are done and live** (version 3.0.0), except Grammatica's **3.0-8 part 6**
-  (topic maps for every language; 6a, Italian, Portuguese and Dutch, is live). Parts 1–5 are live,
+  (topic maps for every language; 6a and 6b, eight tier 2 languages, are live; 6c is next). Parts 1–5 are live,
   part 5 being alphabets and writing.
 - **Lingua 4.0:** 4.0-1 (tiers, the 35 placeholder languages, the language map, the sidebar and
   icons, the Lingua+ placeholder) and 4.0-2 (the full dictionary for the six core languages in
