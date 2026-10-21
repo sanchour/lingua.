@@ -1,7 +1,7 @@
 import { Keyboard } from 'lucide-react';
 import { Card, EmptyState } from '@/design/primitives';
 
-/** Cursus › Typing until keyboard practice is built (Lingua 5.1-8). */
+/** Cursus › Typing until keyboard practice is built (Lingua 5.1-4a). */
 export function TypingTab() {
   return (
     <Card>

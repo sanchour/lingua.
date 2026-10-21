@@ -29,7 +29,7 @@ a phone. The roadmap's "## Lingua 5" ticks the steps.
 | Step | What | Size | Built with / waits for |
 | --- | --- | --- | --- |
 | 5.2-1 | Settings (Ordo's new name), a narrower sidebar, flashcard widths | S | with 5.1-1 |
-| 5.2-2 | Radio: only stations in the language, a better list, a tuner for countries | M | 5.1-3's territories data |
+| 5.2-2 | Radio: only stations in the language, a better list, a tuner for countries | M | 5.1-2b's territories data |
 | 5.2-3 | Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings | M | 5.1-1 |
 | 5.2-4 | Visio: dual subtitles for YouTube and the streaming services, real service marks | L | after 5.1-1 |
 | 5.2-5 | Diarium: writing tools, a calendar, search, in the language | M | 5.1-1 |
@@ -37,7 +37,7 @@ a phone. The roadmap's "## Lingua 5" ticks the steps.
 | 5.2-7 | Mundus: an interactive guide, one Explore, Things to try | M | 5.1-1 |
 | 5.2-8 | Grammatica: a guided path at your level, lessons at desktop size | L | 5.1-1 |
 | 5.2-9 | Ratio: one language, compact, goals in Tabula instead of Iter, more numbers | M | — |
-| 5.2-10 | Lingua 5 complete: the full check (one check with 5.1-10) | S | all |
+| 5.2-10 | Lingua 5 complete: the full check (one check with 5.1-5) | S | all |
 
 **In parallel** once the frame (5.1-1 with 5.2-1) is pushed: Radio and Listening together (both in
 Sonus's folders) in one session; Diarium, Sermo and Mundus each in its own (separate folders);
@@ -99,7 +99,7 @@ station tagged by its owner's language, lands under Spanish.
 Russian and Arabic): a station stays under a language only when
 1. the language is its **only or first** tag (a list of three or more languages is dropped unless
    this language comes first);
-2. it is in a country where the language is **official, regional or widely spoken** (5.1-3's
+2. it is in a country where the language is **official, regional or widely spoken** (5.1-2b's
    territories data), **or** the language is its only tag (real stations abroad, such as a Russian
    station in Israel or a Turkish one in Germany, stay);
 3. it isn't on a short hand-kept list of known wrong stations per language
@@ -486,7 +486,7 @@ screen without scrolling. Numbers use even-width figures.
   means progress).
 - **Listening and watching:** hours by kind (podcasts, books, radio, songs, video).
 - **Practice:** cards reviewed, how many you remembered after a day or more, Ludus accuracy by
-  exercise, grammar topics mastered, typing speed (5.1-8).
+  exercise, grammar topics mastered, typing speed (5.1-4a).
 - **Time:** a year of days as a heat map in ink, time per room, your best time of day, your run of
   days.
 - **Your level, estimated:** where your numbers put you, as a range, and what's missing for the next

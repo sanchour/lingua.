@@ -5,7 +5,7 @@ needs is in this repository; Claude's memory doesn't travel, and [CLAUDE.md](../
 way of working and the rules. This file is the **work queue**: what is still open, in order, how to
 take a step without clashing with another account, and the prompts to paste.
 
-Last updated 2026-10-21.
+Last updated 2026-10-21 (5.1 regrouped into four steps; step 2 done).
 
 ---
 
@@ -59,13 +59,13 @@ read that part before starting.
 | 3 | — | *Removed 2026-10-20: the karaoke and song games are dropped; Visio moved to step 22.* | ROADMAP "4.0-3" | — |
 | 4 | [ ] | **Cursus, the course** (tier 1; moved into Lingua 5 from 4.0-4 on 2026-10-21), in Cursus's Course tab. **Parallel** with 2. | ROADMAP "Lingua 5" › "Cursus" | XL |
 | 5 | — | *Removed 2026-10-21: there is no separate 4.0 check; the version goes from 3.0 to 5.0 at step 21.* | — | — |
-| 6 | [ ] | **Lingua+ and Lingua+ Max** (Stripe in test mode, the licence server, plans, the MAX badge). **Parallel** from step 2 on. | 5.1-2 | L |
-| 7 | [ ] | **Onboarding,** the map without dots and its language data, the twelve flags. After 6 (it shows the plans). | 5.1-3 | L |
-| 8 | [ ] | **Home,** the new layout (the old one a setting away). After 2. | 5.1-4 | M |
-| 9 | [ ] | **Codex,** on top of what 4.0-2 built. **Parallel.** | 5.1-5 | L |
-| 10 | [ ] | **Thesaurus and Ludus,** including the larger Discover (pack rebuild). **Parallel.** | 5.1-6 | L |
-| 11 | [ ] | **Sound without a key** (recordings, an on-device voice). **Parallel.** | 5.1-7 | M |
-| 12 | [ ] | **Typing practice** in Cursus. **Parallel** after 2. | 5.1-8 | M |
+| 6 | [~] | *claimed 2026-10-21* **5.1-2 · Plans, the first start and Home,** one step in three parts, in order: a · Lingua+ and Lingua+ Max (Stripe in test mode, the licence server, plans, the MAX badge); b · onboarding, the map without dots and its language data, the twelve flags (it shows the plans); c · Home, the new layout (the old one a setting away). After 2. | 5.1-2a, b, c | XL |
+| 7 | — | *Merged into step 6 on 2026-10-21 (5.1 in four steps).* | — | — |
+| 8 | — | *Merged into step 6 on 2026-10-21.* | — | — |
+| 9 | [ ] | **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
+| 10 | — | *Merged into step 9 on 2026-10-21.* | — | — |
+| 11 | — | *Merged into step 9 on 2026-10-21.* | — | — |
+| 12 | — | *Merged into step 20 on 2026-10-21 (typing goes with the design touch as 5.1-4).* | — | — |
 | 13 | [ ] | **Radio and listening** (stations in the language, the tuner, audiobooks and courses, the player, Commute, Sonus+ settings). **Parallel** after 2. | 5.2-2 and 5.2-3 | L |
 | 14 | [ ] | **Diarium.** **Parallel** after 2. | 5.2-5 | M |
 | 15 | [ ] | **Sermo.** **Parallel** after 2. | 5.2-6 | M |
@@ -73,9 +73,13 @@ read that part before starting.
 | 17 | [ ] | **Grammatica's guided path** and full-width lessons. **Parallel** after 1 and 2. | 5.2-8 | L |
 | 18 | [ ] | **Ratio** (one language, compact, goals in Tabula, more numbers). **Parallel.** | 5.2-9 | M |
 | 19 | [x] | **Grammatica part 6: topic maps for every language** (3.0-8). *Done 2026-10-21:* short grammars for twelve tier 2 languages, the Georgian alphabet; the rest named in ROADMAP "3.0-8". **Parallel.** | ROADMAP "3.0-8" | L |
-| 20 | [ ] | **A touch of the language in the design.** After the room steps above (it touches every room lightly). | 5.1-9 | M |
-| 21 | [ ] | **Lingua 5 complete:** the full check; the version says 5.0. Last, after 22. | 5.1-10 and 5.2-10 | S |
+| 20 | [ ] | **5.1-4 · Typing, and the language in the design,** one step in two parts: a · typing practice in Cursus; b · a touch of the language in the design. After the room steps above (b touches every room lightly). | 5.1-4a, b | L |
+| 21 | [ ] | **Lingua 5 complete:** the full check; the version says 5.0. Last, after 22. | 5.1-5 and 5.2-10 | S |
 | 22 | [ ] | **Visio, as Lingua 5.2-4:** YouTube inside Lingua with two subtitle lines; the streaming services' subtitles beside the show playing in its own app, with the same taps and translations; a Lingua browser extension for them (decided yes); the services' real marks. **Parallel** after 2. | 5.2-4 | L |
+
+
+**Lingua 5.1 is four steps and the check** (the user, 2026-10-21): 2 (5.1-1, done), 6 (5.1-2), 9 (5.1-3)
+and 20 (5.1-4); 21 holds 5.1's check (5.1-5) with 5.2's.
 
 ---
 
@@ -85,7 +89,7 @@ read that part before starting.
 - **Stripe** (step 6): create the account and the products (Lingua+ €24.99 once; Max €5.99 a month
   and €49.99 a year) and register for the EU's VAT one-stop shop. Until then, Stripe's test mode.
 - **Cloudflare** (step 6): an account for the small licence server (free tier).
-- **Chrome Web Store** (step 3): a developer account to publish the browser extension. Until then
+- **Chrome Web Store** (step 22): a developer account to publish the browser extension. Until then
   the user loads it unpacked.
 - **API keys** (Groq, Gemini, TMDB) stay in the app's settings on each device, never in the repo.
 

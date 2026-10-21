@@ -1706,16 +1706,21 @@ decisions are at the top of the 5.1 plan: Stripe; Max is AI with your own key; L
 Max €5.99 a month or €49.99 a year; desktop only. **On 2026-10-20 the user asked to make it ready to
 start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, ticked here as they finish:
 
-- [x] 5.1-1 · Rooms in the new order: Cursus, Sonus et Visio, Mentis; the device's light; no more "Ideas from Mundus"
-- [ ] 5.1-2 · Lingua+ (€24.99 once) and Lingua+ Max
-- [ ] 5.1-3 · Onboarding: intro pages, a map without dots, accurate language data, twelve new flags, the new screens
-- [ ] 5.1-4 · Home: Today, Next up, the week, Cursus, Mundus, numbers (the old Home one setting away)
-- [ ] 5.1-5 · Codex (on top of what 4.0-2 built)
-- [ ] 5.1-6 · Thesaurus and Ludus: deck list and cards, a much larger Discover, even and varied Ludus
-- [ ] 5.1-7 · Sound: human recordings and a natural on-device voice without a key
-- [ ] 5.1-8 · Keyboard practice in Cursus (tier 1)
-- [ ] 5.1-9 · A touch of the language in the design
-- [ ] 5.1-10 · Lingua 5.1 complete: the full check (one check with 5.2-10)
+**5.1 is four steps and the check** (the user, 2026-10-21; the parts are the plan's sections):
+
+- [x] 5.1-1 · The frame: rooms in the new order (Cursus, Sonus et Visio, Mentis), Settings, the device's light, no more "Ideas from Mundus" (with 5.2-1)
+- [ ] 5.1-2 · Plans, the first start and Home
+  - [ ] a · Lingua+ (€24.99 once) and Lingua+ Max
+  - [ ] b · Onboarding: intro pages, a map without dots, accurate language data, twelve new flags, the new screens
+  - [ ] c · Home: Today, Next up, the week, Cursus, Mundus, numbers (the old Home one setting away)
+- [ ] 5.1-3 · Reading, words and sound
+  - [ ] a · Codex (on top of what 4.0-2 built)
+  - [ ] b · Thesaurus and Ludus: deck list and cards, a much larger Discover, even and varied Ludus
+  - [ ] c · Sound: human recordings and a natural on-device voice without a key
+- [ ] 5.1-4 · Typing, and the language in the design
+  - [ ] a · Keyboard practice in Cursus (tier 1)
+  - [ ] b · A touch of the language in the design
+- [ ] 5.1-5 · Lingua 5.1 complete: the full check (one check with 5.2-10)
 - [x] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
 - [ ] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries
 - [ ] 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings

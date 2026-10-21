@@ -15,10 +15,10 @@ Read first: [CLAUDE.md](../CLAUDE.md) (desktop first, the check, commit as sanch
 
 | # | Question | The user's answer, and what follows from it |
 | --- | --- | --- |
-| D1 | Who takes the payments? | **Stripe.** Stripe Checkout through Payment Links (one for Lingua+, one each for Max monthly and yearly), Stripe Tax for VAT (the user registers for the EU's VAT one-stop shop; Stripe calculates, it doesn't file), and Stripe's customer portal to manage a subscription. Stripe's secret key can't be in the app, so one tiny server is needed to hand out licences (5.1-2). The user creates the Stripe account. |
+| D1 | Who takes the payments? | **Stripe.** Stripe Checkout through Payment Links (one for Lingua+, one each for Max monthly and yearly), Stripe Tax for VAT (the user registers for the EU's VAT one-stop shop; Stripe calculates, it doesn't file), and Stripe's customer portal to manage a subscription. Stripe's secret key can't be in the app, so one tiny server is needed to hand out licences (5.1-2a). The user creates the Stripe account. |
 | D2 | What is Max? | **AI features that use the learner's own key** (Groq, Gemini), as the app's AI works today. No AI server; the learner pays their AI provider directly (both have free tiers). Max unlocks the AI features; a key alone no longer does. |
 | D3 | Prices | **Lingua+ €24.99 once; Max €5.99 a month or €49.99 a year**, as proposed. |
-| D4 | Free or Lingua+ for the rooms the list doesn't name | **As proposed** (the table in 5.1-2, adjusted for D2: AI with your own key is Max, not Lingua+). |
+| D4 | Free or Lingua+ for the rooms the list doesn't name | **As proposed** (the table in 5.1-2a, adjusted for D2: AI with your own key is Max, not Lingua+). |
 | D5 | 5.1 and Lingua 4.0 | **Plan only; don't build Lingua 5 yet.** When it is built, section 2's order holds: 5.1-1 first. (4.0-2 has since been finished, so the Codex step builds on it.) |
 | D6 | The phone | **"Phone is not needed anymore."** Desktop only: no phone tab bar, no phone layouts, no phone checks. What exists for the phone today stays as it is. |
 | D7 | The phone code that exists | **Leave it as it is**: nothing is removed, it is just no longer designed for or checked. |
@@ -35,10 +35,10 @@ the user said.
 
 - **Lingua 4.0-1 (done)** made the tiers, the 35 placeholder languages, the language map with dots
   and the Lingua+ placeholder (`data/plus.ts`, `meta.plusAt`, Ordo › Lingua+, the raised "+").
-  5.1 reworks the map (5.1-3) and turns the placeholder into real plans (5.1-2).
+  5.1 reworks the map (5.1-2b) and turns the placeholder into real plans (5.1-2a).
 - **4.0-2 (done on 2026-10-20, while this was planned)**: Codex's Add tabs (Write or paste · Import
   a book · Import a comic · News & links · Goodreads), the one-screen word drawer, the end page, one
-  memory per word, gap sentences. **5.1-5 builds on those screens**: read 4.0-2's notes in the
+  memory per word, gap sentences. **5.1-3a builds on those screens**: read 4.0-2's notes in the
   roadmap first, and change what it made rather than starting again.
 - **Cursus, the course** (moved here from 4.0-4 on 2026-10-21): 5.1-1 makes the Cursus room and its tabs; the course fills the Course
   tab. Until then the tab says the course is coming (tier 1 only).
@@ -51,22 +51,20 @@ the user said.
 
 ## 2. The order, and what can run at the same time
 
-| Step | What | Size | Waits for |
-| --- | --- | --- | --- |
-| 5.1-1 | Rooms in the new order: Cursus, Sonus et Visio, Mentis; system light; Mundus lines removed | L | — |
-| 5.1-2 | Lingua+ and Lingua+ Max | L | D1–D4 |
-| 5.1-3 | Onboarding, the map and its data, the flags | L | 5.1-2 (the plans screen) |
-| 5.1-4 | Home | M | 5.1-1 |
-| 5.1-5 | Codex (on top of 4.0-2) | L | — |
-| 5.1-6 | Thesaurus and Ludus | L | — |
-| 5.1-7 | Sound: good pronunciation without a key | M | — |
-| 5.1-8 | Keyboard practice (Cursus › Typing) | M | 5.1-1 |
-| 5.1-9 | A touch of the language in the design | M | 5.1-1 |
-| 5.1-10 | 5.1 complete: the full check | S | all |
+**Four steps, then the check (the user, 2026-10-21: "max 4 steps", the end check apart).** Each
+step is built and pushed as one; its parts (a, b, c) are the sections below, in that order.
 
-**In parallel:** after 5.1-1 is pushed, 5.1-6, 5.1-7 and 5.1-8 touch separate files and can each run
-in a session of their own. 5.1-2 → 5.1-3 → 5.1-4 run in order in the main session. 5.1-9 last of the
-design work, since it touches every room lightly.
+| Step | What | Parts | Size | Waits for |
+| --- | --- | --- | --- | --- |
+| 5.1-1 | **The frame:** rooms in the new order (Cursus, Sonus et Visio, Mentis), Settings, the sidebar, card widths (5.2-1), the device's light, no Mundus lines. *Done 2026-10-21.* | — | L | — |
+| 5.1-2 | **Plans, the first start and Home** | a · Lingua+ and Lingua+ Max · b · Onboarding, the map and its data, the flags · c · Home | XL | 5.1-1; b needs a's plans screen, c needs b's answers |
+| 5.1-3 | **Reading, words and sound** | a · Codex (on top of 4.0-2) · b · Thesaurus and Ludus · c · Sound: good pronunciation without a key | XL | 5.1-1 |
+| 5.1-4 | **Typing, and the language in the design** | a · Keyboard practice (Cursus › Typing) · b · A touch of the language in the design | L | 5.1-1; b after 5.2's room steps, since it touches every room lightly |
+| 5.1-5 | 5.1 complete: the full check (one check with 5.2-10) | — | S | all |
+
+The old numbers: 5.1-2, -3, -4 are now 5.1-2a, b, c; 5.1-5, -6, -7 are 5.1-3a, b, c; 5.1-8 and -9
+are 5.1-4a and b; 5.1-10 is 5.1-5. **In parallel:** 5.1-2 and 5.1-3 touch separate rooms and can run
+in sessions of their own after 5.1-1.
 
 ---
 
@@ -104,7 +102,7 @@ assumed.
 **Cursus** (`/cursus`): a desktop tab strip like Mundus's, with 1–4 key hints.
 - Tabs: **Course** (the course step; until then a short "coming to the six core languages" page, and hidden
   for other tiers), **Grammatica** (today's room, unchanged inside), **Alphabets** (3.0-8 part 5;
-  shown where the language has a script to learn), **Typing** (5.1-8, tier 1).
+  shown where the language has a script to learn), **Typing** (5.1-4a, tier 1).
 - The room opens on the tab you used last; first time, Course for tier 1, Grammatica otherwise.
 
 **Sonus et Visio** (`/sonus`): one library for everything you listen to and watch.
@@ -137,12 +135,12 @@ assumed.
   - A Diarium entry has **"Talk about this"**, which opens Sermo with the entry as its topic, and
     Sermo can start from what you read or watched this week. (5.2-6 removes the chat inside Lingua:
     Sermo becomes a guided path into the AI app the learner uses.)
-- Mundus's Home card stays on Home (5.1-4).
+- Mundus's Home card stays on Home (5.1-2c).
 
 **System light**
 - New installs start with `theme: 'system'` (the setting already exists): the app follows the
   device until the learner picks a light. Existing installs keep their choice. The onboarding's
-  study-light screen (5.1-3) starts on "Follow my device".
+  study-light screen (5.1-2b) starts on "Follow my device".
 
 **Mundus lines removed**
 - `features/mundus/MundusLink.tsx` and its five uses (Codex, Thesaurus, Sonus library and its empty
@@ -156,7 +154,7 @@ all three tabs with the prompt rail on desktop; a fresh profile follows the devi
 
 ---
 
-### 5.1-2 · Lingua+ and Lingua+ Max
+### 5.1-2a · Lingua+ and Lingua+ Max
 
 **The user's points**
 - [ ] Free: unlimited decks; practising them, but not in Ludus; Discover decks; add anything to
@@ -228,7 +226,7 @@ Ordo › Lingua+ look right on desktop, light and dark; the MAX badge fades in e
 
 ---
 
-### 5.1-3 · Onboarding
+### 5.1-2b · Onboarding
 
 **The user's points**
 - [ ] One or two minimal, bookish intro screens.
@@ -267,7 +265,7 @@ speak · Goal · Study light · Plans. Back works everywhere; nothing is lost go
   can't hold: Latin (the Vatican), Ancient Greek, Old Norse and Sanskrit (historical regions, shown
   hatched), Esperanto (no country: chosen from the overview only).
 - `flags` on each language today means both "which flag to draw" and "where it's spoken"; it is split
-  into `emblem` (5.1-3's flags) and the territories above.
+  into `emblem` (5.1-2b's flags) and the territories above.
 - Tests pin facts that must hold: Catalan official in Andorra and regional in Spain; Basque and
   Galician regional in Spain; Frisian regional in the Netherlands; Māori official in New Zealand;
   Hawaiian regional in the USA; Swahili in Kenya and Tanzania; Arabic's 20+ countries.
@@ -345,7 +343,7 @@ calmly beside real flags.
   word highlighted, a card), in two rows: Paper and Nocturne. On top, **Follow my device** (chosen by
   default, 5.1-1). Picking one changes the whole screen at once.
 
-**Plans:** the plans screen of 5.1-2, with "Continue free" as clear as the rest.
+**Plans:** the plans screen of 5.1-2a, with "Continue free" as clear as the rest.
 
 **Tests:** territories facts; `completeOnboarding` with the new fields (`known`, `plan`); the level
 sentences exist for every available language. **Done when:** a fresh profile goes through every page
@@ -354,7 +352,7 @@ lists Spanish, Catalan, Basque, Galician; the twelve emblems look right next to 
 
 ---
 
-### 5.1-4 · Home
+### 5.1-2c · Home
 
 **The user's points**
 - [ ] A top-right button to the Lingua+ plans, only for those without it.
@@ -387,7 +385,7 @@ Classic brings back today's Home exactly.
 
 ---
 
-### 5.1-5 · Codex (on top of what 4.0-2 built)
+### 5.1-3a · Codex (on top of what 4.0-2 built)
 
 **The user's points**
 - [ ] Optional comprehension questions at the end of each text, without AI.
@@ -459,7 +457,7 @@ in pages and scroll mode; the word panel fits a 1366×768 screen; Discover impor
 
 ---
 
-### 5.1-6 · Thesaurus and Ludus
+### 5.1-3b · Thesaurus and Ludus
 
 **The user's points**
 - [ ] A better, better-placed My decks / Discover switch.
@@ -521,7 +519,7 @@ and Russian with long words.
 
 ---
 
-### 5.1-7 · Sound: good pronunciation without a key
+### 5.1-3c · Sound: good pronunciation without a key
 
 **The user's points**
 - [ ] AI sound with an AI key (exists: Gemini's voices, 3.0-4).
@@ -556,7 +554,7 @@ word plays a human recording and a sentence a natural voice, on Windows (Chrome 
 
 ---
 
-### 5.1-8 · Keyboard practice (Cursus › Typing)
+### 5.1-4a · Keyboard practice (Cursus › Typing)
 
 **The user's points**
 - [ ] Typing practice like keybr.com: simple, step by step, effective, for other alphabets
@@ -588,7 +586,7 @@ without installing anything, and the seventh letter unlocks at target speed.
 
 ---
 
-### 5.1-9 · A touch of the language in the design
+### 5.1-4b · A touch of the language in the design
 
 **The user's point**
 - [ ] Slight, minimal touches that fit the language throughout the app (French aesthetics when
@@ -618,7 +616,7 @@ nothing else; light and dark both pass contrast.
 
 ---
 
-### 5.1-10 · Lingua 5.1 complete: the full check
+### 5.1-5 · Lingua 5.1 complete: the full check
 
 - [ ] Every point above checked in the app: on desktop (1280, 1440, 1366×768);
   light and dark; each pretend plan.
