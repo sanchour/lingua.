@@ -1133,3 +1133,8 @@ Short records of choices that are not obvious from the code. Newest last.
   fit there (die and deze before a het-word, azt and annak as "the"). A choice that is right in a
   dialect or a looser standard is never offered as wrong: Norwegian ei and en for feminine nouns
   are both kept out of the drills.
+- **Tier 3 alphabets only where a letter chart teaches the script honestly.** Part 5's lessons
+  assume a letter has one shape and one sound and that words romanize letter by letter. Georgian
+  fits that exactly. Devanagari, Tamil and Thai don't (vowel signs, conjuncts, schwa deletion,
+  tone classes), and Persian is written without its vowels, so a chart would teach them wrong.
+  They are named in the roadmap rather than built half-right.

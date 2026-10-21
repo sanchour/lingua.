@@ -5,17 +5,18 @@ import type { ScriptDrill } from './drills';
 import { dilate, normalize, scoreInk } from './ink';
 import type { Mask } from './ink';
 import { lettersInWord, pinyinParts } from './letters';
-import { romanizeAr, romanizeEl, romanizeKana, romanizeKo, romanizeRu, ROMANIZE } from './romanize';
+import { romanizeAr, romanizeEl, romanizeKa, romanizeKana, romanizeKo, romanizeRu, ROMANIZE } from './romanize';
 import { joinedForm, lettersOf } from './types';
 import type { Script } from './types';
 import ar from './alphabets/ar';
 import el from './alphabets/el';
 import ja from './alphabets/ja';
+import ka from './alphabets/ka';
 import ko from './alphabets/ko';
 import ru from './alphabets/ru';
 import zh from './alphabets/zh';
 
-const SCRIPTS: Script[] = [ru, el, ar, ja, ko, zh];
+const SCRIPTS: Script[] = [ru, el, ar, ja, ko, zh, ka];
 
 describe('romanization', () => {
   it('reads each script by its scheme', () => {
@@ -35,6 +36,8 @@ describe('romanization', () => {
     expect(romanizeKana('ほんや')).toBe("hon'ya");
     expect(romanizeKo('사랑')).toBe('sarang');
     expect(romanizeKo('도시')).toBe('dosi');
+    expect(romanizeKa('წყალი')).toBe("ts'q'ali");
+    expect(romanizeKa('ქალაქი')).toBe('kalaki');
   });
 
   it('refuses what it can’t read letter by letter', () => {

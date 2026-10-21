@@ -7,6 +7,7 @@
 //   Japanese  modified Hepburn (し shi, つ tsu, ふ fu, ん n, っ doubles, ー a macron)
 //   Korean    Revised Romanization, for words whose syllables are open but the last (no sound
 //             changes then happen between syllables, so the spelling and the sound agree)
+//   Georgian  the national system of 2002 (თ t, ტ t', ქ k, კ k', ღ gh, ყ q', წ ts', ჭ ch')
 
 const RU: Record<string, string> = {
   а: 'a',
@@ -364,6 +365,52 @@ export function romanizeKo(word: string): string | null {
   return s;
 }
 
+// Georgian: the national system of 2002, letter for letter; the apostrophe marks the ejectives.
+const KA: Record<string, string> = {
+  ა: 'a',
+  ბ: 'b',
+  გ: 'g',
+  დ: 'd',
+  ე: 'e',
+  ვ: 'v',
+  ზ: 'z',
+  თ: 't',
+  ი: 'i',
+  კ: "k'",
+  ლ: 'l',
+  მ: 'm',
+  ნ: 'n',
+  ო: 'o',
+  პ: "p'",
+  ჟ: 'zh',
+  რ: 'r',
+  ს: 's',
+  ტ: "t'",
+  უ: 'u',
+  ფ: 'p',
+  ქ: 'k',
+  ღ: 'gh',
+  ყ: "q'",
+  შ: 'sh',
+  ჩ: 'ch',
+  ც: 'ts',
+  ძ: 'dz',
+  წ: "ts'",
+  ჭ: "ch'",
+  ხ: 'kh',
+  ჯ: 'j',
+  ჰ: 'h',
+};
+
+export function romanizeKa(word: string): string | null {
+  let s = '';
+  for (const c of word) {
+    if (!KA[c]) return null;
+    s += KA[c];
+  }
+  return s;
+}
+
 /** Each language's romanizer; Arabic needs the vowelled spelling. */
 export const ROMANIZE: Record<string, (word: string) => string | null> = {
   ru: romanizeRu,
@@ -371,4 +418,5 @@ export const ROMANIZE: Record<string, (word: string) => string | null> = {
   ar: romanizeAr,
   ja: romanizeKana,
   ko: romanizeKo,
+  ka: romanizeKa,
 };

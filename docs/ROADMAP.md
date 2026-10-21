@@ -878,7 +878,7 @@ Built as in [`GRAMMAR-PLAN.md`](GRAMMAR-PLAN.md), steps 1–4:
 - [x] Grammar files, the topic browser, explanations and tables (2026-10-20: Spanish 28 topics,
       German 23, French 21, Russian 17, Arabic 16, Mandarin 15).
 - [x] The drills: conjugate, decline, pick the form, word order. Items are FSRS cards, with mastery rings.
-- [ ] Topic maps for every language (Spanish and German first).
+- [x] Topic maps for every language (Spanish and German first). *Done 2026-10-21 for tier 2, short (see part 6); tier 3 gets none by design.*
 - [x] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
 - [x] **Progressive, high-quality exercises:** each topic's drills climb in steps (recognise the
       form, pick it, build it, use it in a sentence, translate into the language), in real
@@ -914,7 +914,7 @@ with the six core languages (Spanish, Russian, German, Arabic, Mandarin, French)
 3. [x] Progressive exercises, and lessons that show examples first.
 4. [x] Links from the word drawer, Home and Ludus; placement; Ratio and Tabula.
 5. [x] Alphabets and writing practice for the languages with their own script.
-6. [ ] The other languages, tier by tier, keeping tier 2 and below cheap.
+6. [x] The other languages, tier by tier, keeping tier 2 and below cheap.
 
 Content rules: every rule is checked against a named source (listed in each module's `sources`),
 every sentence is a real sentence from the language's pack (a test enforces it), and a topic
@@ -1126,6 +1126,21 @@ mostly quotations), Japanese (4: は, を, に, へ and で, the polite ます f
 는, 을 or 를, the polite past). Japanese は versus が and Korean 이/가 versus 은/는 are left out:
 both are often right, and the difference is emphasis, which a gap can't test fairly. With 6c,
 every tier 2 language except English and Swahili has a grammar.
+
+*Tier 3 alphabets, as built (2026-10-21).* Georgian: 33 letters in 5 groups (vowels, first
+consonants, the breathy and popped pairs, the hissing sounds, the back of the mouth), the
+national romanization of 2002, and 88 words from the Georgian pack. It uses part 5's lessons and
+writing pad unchanged. Left out, and why:
+- **Hindi (Devanagari) and Tamil:** a letter is mostly met with a vowel sign or in a conjunct,
+  which needs drills of its own (consonant + vowel sign), and Hindi's dropped vowels (schwa
+  deletion) mean a word can't be romanized letter by letter.
+- **Thai:** the tone of a syllable comes from its consonant class, its tone mark and whether it
+  is open or closed; that is a course of its own, not a letter chart.
+- **Persian:** written without vowel marks, so neither the reading words nor the romanization
+  can be checked from the spelling (the reason unvowelled Arabic is refused too).
+- **Mongolian (Cyrillic):** most letters are Russian ones, but several sound different (в, е,
+  ө, ү), and they weren't checked against a good enough source.
+- **Bengali and Punjabi:** no word packs yet.
 
 **Original plan (2026-10-20).** Four parts, each pushed once it works:
 1. **The Grammatica room, with Spanish and German.** `/grammatica` is a header section, with an

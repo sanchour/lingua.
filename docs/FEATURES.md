@@ -502,8 +502,8 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 
 ## Alphabets and writing (3.0-8)
 
-- **The alphabet** for Russian, Greek, Arabic, Japanese (hiragana and katakana), Korean and
-  Mandarin (pinyin, tones and the first characters), in Grammatica › Alphabet: a chart by group,
+- **The alphabet** for Russian, Greek, Arabic, Japanese (hiragana and katakana), Korean,
+  Mandarin (pinyin, tones and the first characters) and Georgian, in Grammatica › Alphabet: a chart by group,
   each letter with its sound, name and real words to hear. Arabic shows each letter at the start,
   middle and end of a word.
 - **Short lessons per group:** meet the letters, match sound and letter both ways, match pairs,
