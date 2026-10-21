@@ -1206,6 +1206,17 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-21 — Check yourself (5.1-3a)
+
+- **Made from the text, without AI;** it checks words and sentences, not understanding, and says
+  so in what it asks. The words asked about are Learning words first, then new ones; a gap never
+  takes a sentence's first word and options are shown as written mid-sentence, so a capital letter
+  gives nothing away. The questions are made once as the end page opens, so they don't change while
+  you answer. With Max, the AI adds two questions about the story, asked for when the panel opens;
+  if they come after you're through, they're left out.
+- Folded, because the end page is a quiet place; it counts in Ratio like a Ludus round (and, like
+  every session, not under five seconds).
+
 ## 2026-10-21 — Word meanings in the core languages (5.1-3a)
 
 - **At reading time, not in the packs.** The user asked for much better translations (Spanish "a"

@@ -66,7 +66,7 @@ describe('English inflection', () => {
 
 describe('what a reader sees', () => {
   const cases: Record<string, Record<string, string>> = {
-    es: { a: 'to; at', entiende: 'understands', lleva: 'carries', tenía: 'had', necesito: 'I need', años: 'years', podría: 'could', estaba: 'was', personas: 'people' },
+    es: { hermana: 'sister', hija: 'daughter', a: 'to; at', entiende: 'understands', lleva: 'carries', tenía: 'had', necesito: 'I need', años: 'years', podría: 'could', estaba: 'was', personas: 'people' },
     fr: { suis: 'I am; I follow', ai: 'I have', enfants: 'children', avait: 'had', sont: 'they are; are' },
     de: { kann: 'can', habe: 'I have', kinder: 'children', gesagt: 'said', wäre: 'would be', könnte: 'could', steht: 'stands' },
     ru: { знаю: 'I know', хочу: 'I want', сказал: 'said', был: 'was', есть: 'there is; is; to eat' },

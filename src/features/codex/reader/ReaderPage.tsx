@@ -19,6 +19,7 @@ import { cx } from '@/lib/cx';
 import { recordSighting } from '@/data/memory';
 import { toast } from '@/state/ui';
 import { sentencesOf } from '@/core/text/tokenizer';
+import { makeChecks } from '@/core/text/checks';
 import { translateAhead } from '@/services/translate/ahead';
 import { wordStyleVars } from './wordStyles';
 import { codexGoal, useReadToday } from './readingGoal';
@@ -168,6 +169,16 @@ export default function ReaderPage() {
 
   const [ended, setEnded] = useState(false);
   const [endStats, setEndStats] = useState<SessionStats | null>(null);
+  // "Check yourself" on the end page, from the last chapter's paragraphs. Made once as the end page
+  // opens (keyed on the chapter, not the model), so the questions stay put while you answer them.
+  const checksChapter = ended && !comic ? model?.chapter.id : undefined;
+  const checks = useMemo(() => {
+    if (!checksChapter || !model) return { words: [], source: '' };
+    const blocks = model.blocks.flatMap(({ block, tokens }) => (tokens && (block.t === 'p' || block.t === 'quote') ? [{ text: block.text, tokens }] : []));
+    const words = makeChecks({ lang, blocks, gloss: (n) => model.glosses.get(n)?.text, state: (n) => model.states.get(n) ?? 0 });
+    return { words, source: blocks.map((b) => b.text).join('\n\n') };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checksChapter]);
   const goChapter = useCallback(
     (index: number, landing: Entry) => {
       if (!text) return;
@@ -643,12 +654,15 @@ export default function ReaderPage() {
         {ended && endStats && (
           <EndPage
             lang={lang}
+            refId={text.id}
             title={text.title}
             author={text.author}
             stats={endStats}
             todayMs={(readToday ?? 0) + session.pendingMs()}
             goal={goal}
             finished={Boolean(text.finishedAt)}
+            checks={checks.words}
+            source={checks.source}
             onFinish={async () => {
               if (!text.finishedAt) await updateText(text.id, { finishedAt: Date.now(), shelf: 'read' });
               navigate('/codex');

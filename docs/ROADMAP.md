@@ -1764,7 +1764,13 @@ and c; and word translations must get much better in the six core languages (Spa
       The context picker no longer turns a function word into a rare sense (Spanish "a" after "poco"
       was "bishop"), and only a word's two main parts of speech compete. Tested on the real packs.
       Arabic and Mandarin keep their build-time fixes; their forms aren't inflected in English.
-- [ ] **4 · Check yourself** on the end page: questions made from the text, without AI.
+- [x] **4 · Check yourself** on the end page, folded until asked for: two sentences of the text with
+      a word missing (Learning words first, never a sentence's first word), two "which word
+      means…" from the meanings, and a short sentence put back in order (`core/text/checks`, tested).
+      With Max and a key, two questions about the story itself follow
+      (`services/llm/storyQuestions`). Keys 1–4 answer, Enter goes on; the round counts in Ratio
+      as Ludus. Found on the way: the Spanish pack gave "hermana" its brother's meaning; it and a
+      few other female family words are hand-fixed.
 - [ ] **5 · Add to your library,** the fun-but-minimal forms, and a folder of page photos read by OCR.
 - [ ] **6 · Discover:** news, free books (Gutendex, Wikisource, StoryWeaver, African Storybook) and
       Pepper&Carrot, one click into the library.

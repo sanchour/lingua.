@@ -579,6 +579,9 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Meanings that fit the form** in Spanish, French, German and Russian: "tengo" I have, "entiende"
   understands, "años" years, "könnte" could, "сказал" said; the commonest words hand-checked; a
   function word never takes a rare sense from its neighbour.
+- **Check yourself** at the end of a text: four or five quick questions from the text (a missing
+  word, which word means…, a sentence back in order), two more about the story with Max. 1–4 and
+  Enter; the round counts in Ratio.
 
 ## Home, Today (5.1-2c)
 

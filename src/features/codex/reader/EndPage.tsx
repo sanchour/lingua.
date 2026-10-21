@@ -1,11 +1,15 @@
 import { motion } from 'motion/react';
 import { Button } from '@/design/primitives';
 import { spring } from '@/design/motion';
+import type { CheckItem } from '@/core/text/checks';
+import { CheckYourself } from './CheckYourself';
 import { GoalRing } from './readingGoal';
 import type { SessionStats } from './useReadingSession';
 
 interface EndPageProps {
   lang: string;
+  /** The text's id, for Ratio. */
+  refId: string;
   title: string;
   author?: string;
   stats: SessionStats;
@@ -13,6 +17,9 @@ interface EndPageProps {
   todayMs: number;
   goal: number;
   finished: boolean;
+  /** "Check yourself": none when the text is too short to ask about; `source` is the text for the AI's story questions. */
+  checks: CheckItem[];
+  source: string;
   onFinish: () => void;
   onKeepReading: () => void;
 }
@@ -25,7 +32,7 @@ const duration = (ms: number) => {
 };
 
 /** After the last page of a book or a text: a quiet page with what this sitting came to. */
-export function EndPage({ lang, title, author, stats, todayMs, goal, finished, onFinish, onKeepReading }: EndPageProps) {
+export function EndPage({ lang, refId, title, author, stats, todayMs, goal, finished, checks, source, onFinish, onKeepReading }: EndPageProps) {
   const time = duration(stats.activeMs);
   const numbers = [
     { value: time.value, label: time.unit === 'hours' ? 'hours read' : `${time.unit} read` },
@@ -85,6 +92,12 @@ export function EndPage({ lang, title, author, stats, todayMs, goal, finished, o
             <span className="text-ink-soft">{todayMinutes >= goal ? 'read today. Your goal is reached.' : 'read today.'}</span>
           </p>
         </motion.div>
+
+        {checks.length > 0 && (
+          <motion.div className="w-full max-w-xl" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.8 }}>
+            <CheckYourself lang={lang} refId={refId} words={checks} source={source} />
+          </motion.div>
+        )}
 
         <motion.div className="mt-10 flex w-full max-w-xs flex-col gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.85 }}>
           <Button size="lg" onClick={onFinish} block>
