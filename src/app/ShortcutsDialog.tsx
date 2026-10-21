@@ -11,12 +11,13 @@ const GENERAL: Array<[string[], string]> = [
 
 export const READER_SHORTCUTS: Array<[string[], string]> = [
   [['←', '→'], 'Previous / next page'],
-  [['Click'], 'A word: learning; click again: known'],
+  [['Click'], 'A word: known; double-click: learning'],
   [['K'], 'Mark the hovered word known'],
   [['L'], 'Mark the hovered word learning'],
   [['X'], 'Reset the hovered word to unseen'],
   [['Right-click'], 'Open a word’s details'],
   [['D'], 'Open the hovered word’s details'],
+  [['S'], 'Translate the hovered word’s sentence'],
 ];
 
 export const STUDY_SHORTCUTS: Array<[string[], string]> = [
@@ -32,7 +33,7 @@ export const LISTENING_SHORTCUTS: Array<[string[], string]> = [
   [['←', '→'], 'Skip back / forward'],
   [['↑', '↓'], 'Previous / next sentence'],
   [['R'], 'Repeat each sentence on or off'],
-  [['Click'], 'A word: learning, again: known · its time: jump there'],
+  [['Click'], 'A word: known, double-click: learning · its time: jump there'],
 ];
 
 export const WATCHING_SHORTCUTS: Array<[string[], string]> = [

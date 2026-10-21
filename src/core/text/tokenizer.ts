@@ -73,6 +73,13 @@ export function sentenceAt(text: string, offset: number, lang: string): string {
   return (seg.segment(text).containing(offset)?.segment ?? text).trim();
 }
 
+/** Every sentence of a text, each as `sentenceAt` gives it. */
+export function sentencesOf(text: string, lang: string): string[] {
+  let seg = sentenceSegmenters.get(lang);
+  if (!seg) sentenceSegmenters.set(lang, (seg = new Intl.Segmenter(lang, { granularity: 'sentence' })));
+  return [...seg.segment(text)].map((s) => s.segment.trim()).filter(Boolean);
+}
+
 /**
  * Splits text into tokens with Intl.Segmenter (UAX #29 word boundaries, dictionary-based for
  * languages without spaces). Combining stress marks stay inside their word. Japanese is split

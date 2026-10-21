@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { foldKey, normalizeWord } from './normalize';
-import { tokenize } from './tokenizer';
+import { sentenceAt, sentencesOf, tokenize } from './tokenizer';
 
 describe('normalizeWord', () => {
   it('strips Russian stress marks but keeps й and ё', () => {
@@ -49,5 +49,14 @@ describe('tokenize', () => {
     expect(tokens.map((t) => t.text).join('')).toBe('Glad, 2 cats.');
     const cats = tokens.find((t) => t.text === 'cats')!;
     expect('Glad, 2 cats.'.slice(cats.start, cats.start + 4)).toBe('cats');
+  });
+});
+
+describe('sentencesOf', () => {
+  it('splits a text into the same sentences sentenceAt gives, for translating ahead', () => {
+    const text = 'Cada tarde, Ana abre un libro. Algunas palabras son nuevas.  ¿Y qué?';
+    const all = sentencesOf(text, 'es');
+    expect(all).toEqual(['Cada tarde, Ana abre un libro.', 'Algunas palabras son nuevas.', '¿Y qué?']);
+    expect(all[1]).toBe(sentenceAt(text, text.indexOf('palabras'), 'es'));
   });
 });

@@ -18,6 +18,8 @@ const GRACE_MS = 120;
 const FETCH_DELAY_MS = 70;
 /** Resting this long on a word asks the AI for its sentence's meanings (when that's switched on). */
 const CONTEXT_DELAY_MS = 300;
+/** Resting this long on a word translates its sentence ahead, so S (or selecting it) answers at once. */
+const SENTENCE_DELAY_MS = 600;
 
 /**
  * Desktop hover translation. One always-mounted element, positioned with a transform and filled
@@ -51,6 +53,7 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
     let hideTimer = 0;
     let fetchTimer = 0;
     let contextTimer = 0;
+    let sentenceTimer = 0;
     let frame = 0;
     // Last mouse position in client coordinates (-1 = outside the window or not a mouse).
     let x = -1;
@@ -71,11 +74,13 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
       if (!engine) return;
       window.clearTimeout(fetchTimer);
       window.clearTimeout(contextTimer);
+      window.clearTimeout(sentenceTimer);
       current = el;
       hoveredRef.current = el;
       const norm = el.dataset.n!;
       const gloss = engine.glossAt(el);
       contextTimer = window.setTimeout(() => void engine.requestContext(el, resync), CONTEXT_DELAY_MS);
+      sentenceTimer = window.setTimeout(() => engine.prepareSentence(el), SENTENCE_DELAY_MS);
       label.textContent = gloss?.text ?? '…';
       tip.dataset.pending = gloss ? '0' : '1';
       place(el);
@@ -95,6 +100,7 @@ export function HoverGloss({ rootRef, engine, hoveredRef }: HoverGlossProps) {
     const hide = () => {
       window.clearTimeout(fetchTimer);
       window.clearTimeout(contextTimer);
+      window.clearTimeout(sentenceTimer);
       current = null;
       hoveredRef.current = null;
       tip.dataset.visible = '0';

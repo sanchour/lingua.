@@ -127,7 +127,7 @@ export function SubtitleOverlay({ media, target, native, clock, onHold }: Overla
       },
       onTap: ({ word, type }) => {
         if (!word || !engine) return;
-        if (type === 'mouse') engine.cycle(word);
+        if (type === 'mouse') engine.click(word);
         else {
           onHold(true);
           setTapped((t) => (t === word ? null : word));

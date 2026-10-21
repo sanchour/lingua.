@@ -81,6 +81,9 @@ read that part before starting.
 **Lingua 5.1 is four steps and the check** (the user, 2026-10-21): 2 (5.1-1, done), 6 (5.1-2), 9 (5.1-3)
 and 20 (5.1-4); 21 holds 5.1's check (5.1-5) with 5.2's.
 
+**The order now (the user, 2026-10-21):** finish 5.1-3a (Codex, step 9's first part), then step 4,
+**Cursus, the course, for all six core languages**, then 5.1-3b and c (the rest of step 9).
+
 ---
 
 ## 4. What the user has to do (sessions never create accounts or sign in)

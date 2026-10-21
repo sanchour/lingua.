@@ -3,6 +3,7 @@
 import { getLanguage } from '@/core/lang/languages';
 import { getAiSettings } from '@/data/plan';
 import { askJson } from '@/services/llm/client';
+import { sentenceKey } from './ahead';
 import { translateLine } from './gloss';
 
 export interface PhraseTranslation {
@@ -10,7 +11,10 @@ export interface PhraseTranslation {
   by: 'ai' | 'online';
 }
 
-export async function translatePhrase(lang: string, text: string, sentence?: string): Promise<PhraseTranslation | null> {
+export async function translatePhrase(lang: string, raw: string, sentence?: string): Promise<PhraseTranslation | null> {
+  // One spacing, so a sentence translated ahead (services/translate/ahead) is found in the cache.
+  const text = sentenceKey(raw);
+  if (sentence && sentenceKey(sentence) === text) sentence = undefined;
   const { llm, apiKeys } = await getAiSettings();
   if (apiKeys[llm.provider] && llm.model) {
     const name = getLanguage(lang)?.name ?? lang;

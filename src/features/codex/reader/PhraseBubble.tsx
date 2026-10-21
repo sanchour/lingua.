@@ -81,7 +81,6 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
       <p className={cx('mt-2 text-[16.5px] leading-snug font-semibold', result === undefined && 'animate-pulse opacity-60')}>
         {result === undefined ? 'Translating…' : (result?.text ?? 'No translation came back. Check the connection.')}
       </p>
-      {result?.by === 'online' && <p className="mt-1 text-[11.5px] opacity-60">Machine translation. Add an AI key for one that reads the context.</p>}
       <div className="mt-3 -mb-1 flex flex-wrap gap-1">
         <button
           type="button"

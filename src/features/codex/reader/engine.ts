@@ -4,16 +4,24 @@ import type { Text, WordState } from '@/data/types';
 import { markKnownBulk, setWordState } from '@/data/words';
 import type { WordContext } from '@/data/words';
 import { contextGlosses, contextGlossesEnabled } from '@/services/llm/contextGloss';
+import { translateAhead } from '@/services/translate/ahead';
 import { fetchOnlineGloss } from '@/services/translate/gloss';
 import type { GlossInfo } from '@/services/translate/gloss';
 import type { ChapterModel } from './model';
 
 /**
- * A click always means "I'm learning this", and clicking a Learning word means "now I know it":
- * one click Learning, two clicks Known, from Unseen and from Known alike. Resetting to Unseen is
- * X, or the reset button in the word's details.
+ * Clicks on a word (5.1-3a): one click marks it Known, and a Known word Unseen again; a second click
+ * right after (a double click) marks it Learning, or Unseen when it was Learning before the first.
+ * The first click applies at once, without waiting to see if a second follows. K, L and X and the
+ * word's details still set any state.
  */
-export const nextState = (s: WordState): WordState => (s === 2 ? 1 : 2);
+export function clickState(before: WordState, second: boolean): WordState {
+  if (second) return before === 2 ? 0 : 2;
+  return before === 1 ? 0 : 1;
+}
+
+/** How soon a second click on the same word counts as a double click. */
+export const DOUBLE_CLICK_MS = 450;
 
 const WORD_EVENT = 'lingua:word';
 interface WordEvent {
@@ -36,6 +44,8 @@ export class WordEngine {
   private contextual = new Map<string, GlossInfo>();
   /** Sentences already sent to the AI (`block:start`). */
   private asked = new Set<string>();
+  /** The last click, to tell a double click: the word, when, and its state before. */
+  private lastClick: { norm: string; t: number; before: WordState } | null = null;
 
   constructor(
     readonly text: Text,
@@ -134,6 +144,11 @@ export class WordEngine {
     }
   }
 
+  /** Translates this word's sentence ahead (the mouse rests on it), so asking for it is instant. */
+  prepareSentence(el: HTMLElement): void {
+    translateAhead(this.lang, [this.context(el).sentence], { online: true });
+  }
+
   /** Online fallback for a missing gloss; the answer is remembered for the chapter. */
   async ensureGloss(norm: string, surface: string): Promise<GlossInfo | null> {
     const known = this.gloss(norm);
@@ -215,9 +230,14 @@ export class WordEngine {
     return () => document.removeEventListener(WORD_EVENT, on);
   }
 
-  cycle(el: HTMLElement): WordState {
+  click(el: HTMLElement): WordState {
     const norm = el.dataset.n!;
-    const next = nextState(this.state(norm));
+    const now = performance.now();
+    const last = this.lastClick;
+    const second = Boolean(last && last.norm === norm && now - last.t < DOUBLE_CLICK_MS);
+    const before = second ? last!.before : this.state(norm);
+    this.lastClick = second ? null : { norm, t: now, before };
+    const next = clickState(before, second);
     this.set(norm, next, el);
     return next;
   }

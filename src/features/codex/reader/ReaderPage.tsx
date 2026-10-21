@@ -18,6 +18,8 @@ import { installPaperStyles } from '@/design/papers';
 import { cx } from '@/lib/cx';
 import { recordSighting } from '@/data/memory';
 import { toast } from '@/state/ui';
+import { sentencesOf } from '@/core/text/tokenizer';
+import { translateAhead } from '@/services/translate/ahead';
 import { codexGoal, useReadToday } from './readingGoal';
 import { ChapterBody } from './ChapterBody';
 import { ComicView } from './ComicView';
@@ -126,6 +128,26 @@ export default function ReaderPage() {
     e.attach(flowRef.current);
     setEngine(e);
   }, [ready, model, text, onWordChange]);
+
+  // With an AI key, the sentences of each block coming into view (and the next page's) are
+  // translated ahead in idle time, so asking for one shows it at once.
+  useEffect(() => {
+    const flow = flowRef.current;
+    if (!engine || !flow || !model) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          io.unobserve(e.target);
+          const block = model.blocks[Number((e.target as HTMLElement).dataset.b)]?.block;
+          if (block && block.t !== 'img') translateAhead(lang, sentencesOf(block.text, lang));
+        }
+      },
+      { rootMargin: '50% 100%' },
+    );
+    flow.querySelectorAll('[data-b]').forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [engine, model, lang]);
 
   // Comprehension on the library card catches up when the reader closes.
   useEffect(() => () => void (textId && refreshTextStats(textId)), [textId]);
@@ -364,7 +386,7 @@ export default function ReaderPage() {
     }
     if (g.type === 'mouse') {
       if (g.word && Math.hypot(e.clientX - g.x, e.clientY - g.y) < CLICK_SLOP_PX && engine) {
-        engine.cycle(g.word);
+        engine.click(g.word);
       }
       return;
     }
@@ -387,7 +409,7 @@ export default function ReaderPage() {
     }
   };
 
-  // Right-click a word for its details (a left click cycles its state). On touch, long-press does this.
+  // Right-click a word for its details (a click marks it known, a double click learning). On touch, long-press does this.
   const onContextMenu = (e: ReactMouseEvent) => {
     const word = wordAt(e.target, e.clientX, e.clientY, flowRef.current);
     if (!word) return;
@@ -420,6 +442,11 @@ export default function ReaderPage() {
       l: withHovered((el) => engine?.set(el.dataset.n!, 2, el)),
       x: withHovered((el) => engine?.set(el.dataset.n!, 0, el)),
       d: withHovered(openDrawer),
+      s: withHovered((el) => {
+        if (!engine) return;
+        const ctx = engine.context(el);
+        if (ctx.sentence) setPhrase({ text: ctx.sentence, anchor: el, context: { sentence: ctx.sentence, textId: ctx.textId, chapterIndex: ctx.chapterIndex, blockIndex: ctx.blockIndex } });
+      }),
     },
     !drawer && !contents && !typographyOpen,
   );

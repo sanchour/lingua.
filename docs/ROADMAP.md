@@ -1733,6 +1733,28 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [ ] Cursus · the course, with speaking and writing (moved here from 4.0-4; section "Cursus" below)
 - [ ] 5.2-10 · Lingua 5 complete: the full check
 
+### Codex (5.1-3a, handover step 9): how it is built
+*Planned 2026-10-21; the design is in LINGUA-5.1-PLAN.md "5.1-3a". Each part pushed. The user
+(2026-10-21): Cursus, the course for the six core languages, comes right after 5.1-3a; 5.1-3b and c
+follow it.*
+- [x] **1 · Clicks, the word panel, no machine-translation note.** One click Known (a Known word
+      Unseen again), a double click Learning (a Learning word Unseen), the first click applied at
+      once (`clickState`, tested), in the reader, lyrics, transcripts and subtitles alike. The word
+      panel's header is one row: sound, pronunciation, frequency and level, **+ Deck** on the right;
+      Open dictionary by the Dictionary heading; sound buttons on the examples; "In context" and
+      "Explain in context" only with Max and a key. The phrase bubble's "Machine translation…" line goes.
+- [x] **2 · Sentences at once.** `services/translate/ahead`: with Max and a key, the sentences of
+      each block coming into view are translated in idle time, one at a time; without it, only the
+      sentence of the word the mouse rests on (600 ms), with a small budget for the free
+      translators. **S** shows the hovered word's sentence in the phrase bubble, from the cache.
+      Word meanings were already instant from the pack.
+- [ ] **3 · Word styles in "T".** Known, Learning and Unseen each with a style and a colour.
+- [ ] **4 · Check yourself** on the end page: questions made from the text, without AI.
+- [ ] **5 · Add to your library,** the fun-but-minimal forms, and a folder of page photos read by OCR.
+- [ ] **6 · Discover:** news, free books (Gutendex, Wikisource, StoryWeaver, African Storybook) and
+      Pepper&Carrot, one click into the library.
+- [ ] **7 · Goodreads** as its own section: sort, group, filter, covers by ISBN.
+
 ### The frame of Lingua 5 (5.1-1 with 5.2-1, handover step 2): how it is built
 *Planned 2026-10-21. The design is in the two plan files; this is the build order, each part pushed.*
 - [x] **a · Rooms, addresses, Settings.** `app/sections.ts` in the new order (Home, Cursus, Codex,

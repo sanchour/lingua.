@@ -216,7 +216,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
         }
         if (word && engine) {
           setPicked(null);
-          if (type === 'mouse') engine.cycle(word);
+          if (type === 'mouse') engine.click(word);
           else setTapped((t) => (t === word ? null : word));
           return;
         }

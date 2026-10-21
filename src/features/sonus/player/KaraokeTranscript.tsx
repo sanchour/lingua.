@@ -202,7 +202,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
       onSelecting: (on) => on && setTapped(null),
       onTap: ({ word, target, type }) => {
         if (word && engine) {
-          if (type === 'mouse') engine.cycle(word);
+          if (type === 'mouse') engine.click(word);
           else setTapped((t) => (t === word ? null : word));
           return;
         }

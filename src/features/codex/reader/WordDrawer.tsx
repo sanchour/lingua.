@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { BookA, BookMarked, Check, Circle, Layers, Sparkles } from 'lucide-react';
+import { BookA, BookMarked, Check, Circle, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useApp } from '@/app/context';
 import { hasFullDictionary } from '@/core/dictionary/format';
 import { plainGloss } from '@/core/lang/context';
 import { cefrForRank } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
+import { aiBlock } from '@/data/plan';
 import type { WordState } from '@/data/types';
 import { recordSighting } from '@/data/memory';
 import { setWordGloss, useWord } from '@/data/words';
@@ -51,6 +53,9 @@ export function WordDrawer({ lang, word, onClose, onState, onGloss }: WordDrawer
 
 function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: DrawerWord; onState: WordDrawerProps['onState']; onGloss: WordDrawerProps['onGloss'] }) {
   const { norm, context } = word;
+  const { settings } = useApp();
+  // Reading the word in its sentence needs AI: Max with a key.
+  const ai = aiBlock(settings, settings.llm.provider) === null;
   const saved = useWord(lang, norm);
   const state: WordState = saved && !saved.deletedAt ? saved.state : 0;
 
@@ -94,24 +99,31 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
     <div className="space-y-6">
       <div>
         {subtitle && <p className="-mt-2 mb-3 font-serif text-[15px] text-ink-soft">{subtitle}</p>}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <SpeakButton lang={lang} text={context.surface ?? norm} size={16} label="Hear the word" className="size-8 bg-sunken text-ink-soft hover:text-ink" />
+        {/* One row: hear it, how it sounds, how common it is, and + Deck on the right. */}
+        <div className="flex items-center gap-1.5">
+          <SpeakButton lang={lang} text={context.surface ?? norm} size={16} label="Hear the word" className="size-8 shrink-0 bg-sunken text-ink-soft hover:text-ink" />
           {main?.ipa && <Badge>{main.ipa}</Badge>}
           {dict?.rank && (
             <Badge tone="sage">
               #{dict.rank.toLocaleString()} most common · {cefrForRank(dict.rank)}
             </Badge>
           )}
-          {state === 2 && saved?.noteId && (
-            <Badge tone="accent">
-              <Layers size={12} aria-hidden /> In “From my reading”
-            </Badge>
-          )}
-          {hasFullDictionary(lang) && (
-            <Link to={entryPath(main?.lemma ?? norm)} className="ml-auto inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-[13px] font-semibold text-accent-text transition-colors hover:bg-accent-soft">
-              <BookA size={14} aria-hidden /> Open dictionary
-            </Link>
-          )}
+          <span className="ml-auto">
+            <AddToDeck
+              lang={lang}
+              note={{
+                term: main?.head ?? main?.lemma ?? context.surface ?? norm,
+                meaning: gloss.trim() || plainGloss(main?.senses[0]?.glosses[0] ?? ''),
+                lemma: main?.lemma,
+                pos: main?.senses[0]?.pos,
+                gender: main?.gender,
+                ipa: main?.ipa,
+                source: 'codex',
+                context: context.sentence ? { sentence: context.sentence, textId: context.textId, chapterIndex: context.chapterIndex, blockIndex: context.blockIndex } : undefined,
+              }}
+              move={state === 2 && saved?.noteId && dict?.noteDeckId ? { noteId: saved.noteId, deckId: dict.noteDeckId } : undefined}
+            />
+          </span>
         </div>
       </div>
 
@@ -150,23 +162,7 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
       ) : (
         <>
           <section>
-            <div className="mb-2 flex items-center gap-2">
-              <h3 className="flex-1 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</h3>
-              <AddToDeck
-                lang={lang}
-                note={{
-                  term: main?.head ?? main?.lemma ?? context.surface ?? norm,
-                  meaning: gloss.trim() || plainGloss(main?.senses[0]?.glosses[0] ?? ''),
-                  lemma: main?.lemma,
-                  pos: main?.senses[0]?.pos,
-                  gender: main?.gender,
-                  ipa: main?.ipa,
-                  source: 'codex',
-                  context: context.sentence ? { sentence: context.sentence, textId: context.textId, chapterIndex: context.chapterIndex, blockIndex: context.blockIndex } : undefined,
-                }}
-                move={state === 2 && saved?.noteId && dict?.noteDeckId ? { noteId: saved.noteId, deckId: dict.noteDeckId } : undefined}
-              />
-            </div>
+            <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</h3>
             <input
               value={gloss}
               onChange={(e) => setGloss(e.target.value)}
@@ -203,7 +199,14 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
 
           {dict && dict.entries.length > 0 && (
             <section>
-              <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Dictionary</h3>
+              <div className="mb-2 flex items-center gap-2">
+                <h3 className="flex-1 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Dictionary</h3>
+                {hasFullDictionary(lang) && (
+                  <Link to={entryPath(main?.lemma ?? norm)} className="-my-1 inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[12.5px] font-semibold text-accent-text transition-colors hover:bg-accent-soft">
+                    <BookA size={13} aria-hidden /> Open dictionary
+                  </Link>
+                )}
+              </div>
               <div className="space-y-4">
                 {dict.entries.map((entry) => (
                   <div key={entry!.lemma}>
@@ -224,13 +227,16 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
               {dict.examples.length > 0 && (
                 <ul className="mt-4 space-y-2.5 border-t border-line/70 pt-3">
                   {dict.examples.map(([sentence, translation, start, end]) => (
-                    <li key={sentence}>
-                      <p lang={lang} className="font-serif text-[15px] leading-snug">
-                        {sentence.slice(0, start)}
-                        <span className="font-semibold">{sentence.slice(start, end)}</span>
-                        {sentence.slice(end)}
-                      </p>
-                      {translation && <p className="text-[13px] text-ink-soft italic">{translation}</p>}
+                    <li key={sentence} className="flex gap-2">
+                      <SpeakButton lang={lang} text={sentence} size={13} label="Hear the sentence" className="mt-px size-6 shrink-0 text-ink-faint hover:bg-sunken hover:text-ink" />
+                      <div className="min-w-0">
+                        <p lang={lang} className="font-serif text-[15px] leading-snug">
+                          {sentence.slice(0, start)}
+                          <span className="font-semibold">{sentence.slice(start, end)}</span>
+                          {sentence.slice(end)}
+                        </p>
+                        {translation && <p className="text-[13px] text-ink-soft italic">{translation}</p>}
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -239,7 +245,7 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
             </section>
           )}
 
-          {context.sentence && (
+          {ai && context.sentence && (
             <section>
               <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">In context</h3>
               <p lang={lang} className="rounded-2xl bg-surface px-4 py-3 font-serif text-[16px] leading-relaxed">
@@ -248,7 +254,7 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
             </section>
           )}
 
-          <Explain lang={lang} word={context.surface ?? norm} sentence={context.sentence ?? context.surface ?? norm} />
+          {ai && <Explain lang={lang} word={context.surface ?? norm} sentence={context.sentence ?? context.surface ?? norm} />}
         </>
       )}
     </div>
