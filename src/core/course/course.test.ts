@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { seededRandom } from '@/core/grammar/drills';
 import { loadGrammar } from '@/core/grammar/load';
@@ -11,6 +12,11 @@ describe('the course outline', () => {
     expect(OUTLINE.map((u) => u.id)).toEqual([...UNIT_IDS]);
     expect(OUTLINE.map((u) => u.level).join(' ')).toBe('A1 A1 A1 A1 A1 A1 A2 A2 A2 A2 B1 B1');
     for (const u of OUTLINE) expect(u.canDo.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('finds every language’s file (a stale test cache once hid new ones: delete node_modules/.vitest-cache)', () => {
+    const files = readdirSync(new URL('./content', import.meta.url)).map((f) => f.replace(/\.ts$/, ''));
+    expect([...COURSE_LANGS].sort()).toEqual(files.sort());
   });
 });
 
@@ -37,7 +43,8 @@ describe.each(COURSE_LANGS)('the %s course', (lang) => {
         if (lang === 'zh') expect(p.reading, `${where}: pinyin for ${p.s}`).toBeTruthy();
       }
       for (const t of unit.grammar) expect(grammar && findTopic(grammar, t), `${where}: Grammatica has no topic "${t}"`).toBeTruthy();
-      expect(unit.model.length, where).toBeGreaterThan(40);
+      // Characters: Mandarin says in about 25 what takes an alphabet 40.
+      expect(unit.model.length, where).toBeGreaterThan(lang === 'zh' ? 25 : 40);
     }
   });
 

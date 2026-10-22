@@ -32,12 +32,14 @@ describe('grammar drills, by hand', () => {
     expect(joinTiles(t!.tokens, 'zh')).toBe('这是什么');
   });
 
-  it('takes Russian stress marks off forms only', () => {
+  it('takes Russian stress marks off forms and tiles, so a planted wrong form doesn’t stand out', () => {
     expect(bare('моя́', 'ru')).toBe('моя');
     expect(bare('está', 'es')).toBe('está');
     const t = sentenceTiles(item('Я Том, а э́то [моя́] ма́ма.', ['мой', 'моё', 'мою']), 'ru')!;
     expect(t.tokens[t.at]).toBe('моя');
-    expect(t.tokens).toContain('э́то');
+    expect(t.tokens).toEqual(['Я', 'Том', 'а', 'это', 'моя', 'мама']);
+    const spot = itemDrill('spot', item('Я Том, а э́то [моя́] ма́ма.', ['мой', 'моё', 'мою']), 'gender', 'ru', seededRandom(1), 'k');
+    expect('tokens' in spot && spot.tokens.join(' ').normalize('NFD')).not.toMatch(/́/);
   });
 
   it('forgives missing accents unless they make another form', () => {

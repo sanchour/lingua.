@@ -99,15 +99,16 @@ function segmentedTokens(text: string, lang: string): string[] {
 const tokensOf = (text: string, lang: string) => (UNSPACED.has(lang) ? segmentedTokens(text, lang) : spacedTokens(text));
 
 /**
- * The sentence as tiles, its bracketed form one tile (stress marks off), with the form's index;
- * null when the form is glued to a neighbouring word ("d’[un]"), so it can't stand as a tile.
+ * The sentence as tiles, its bracketed form one tile, with the form's index; null when the form is
+ * glued to a neighbouring word ("d’[un]"), so it can't stand as a tile. Every tile drops its stress
+ * marks: the wrong forms have none, so in "Tap the wrong word" a planted one would stand out.
  */
 export function sentenceTiles(item: Item, lang: string): { tokens: string[]; at: number } | null {
   const { before, focus, after } = splitFocus(item.s);
   if (!focus) return null;
   if (!UNSPACED.has(lang) && (/[\p{L}\p{N}’']$/u.test(before) || /^[\p{L}\p{N}’']/u.test(after))) return null;
-  const head = tokensOf(before, lang);
-  const tail = tokensOf(after, lang);
+  const head = tokensOf(bare(before, lang), lang);
+  const tail = tokensOf(bare(after, lang), lang);
   return { tokens: [...head, bare(focus, lang), ...tail], at: head.length };
 }
 

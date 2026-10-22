@@ -1224,6 +1224,11 @@ Short records of choices that are not obvious from the code. Newest last.
   to paste to a friend or a language exchange. No community or server.
 - **Testing out:** a unit's check can be taken first; 80% marks every lesson of the unit done.
 - Lessons count in Ratio as Ludus (writing as writing); the course is Lingua+, like Grammatica.
+- **How each script is written:** Russian with stress marks, which the exercises take off every
+  answer and tile (the wrong forms have none, so a marked word would give it away); Arabic as
+  Modern Standard Arabic, fully vowelled, each phrase's answer a whole word so the tiles work;
+  Mandarin in simplified characters with pinyin (tone marks, 一 and 不 as said) for every word
+  and phrase.
 
 ## 2026-10-22 — Goodreads as Codex's third tab (5.1-3a)
 

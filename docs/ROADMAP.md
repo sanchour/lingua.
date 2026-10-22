@@ -1892,3 +1892,11 @@ of the handover and runs in parallel with 5.1-1.*
       outline, with each unit's grammar drawn from that language's Grammatica (French: être and
       avoir, the partitive, the passé composé with être, y and en; German: separable verbs, the
       two-way prepositions, adjective endings, the Perfekt, word order after `weil` and `dass`).
+- [x] **Part 3 · Russian, Arabic and Mandarin** (2026-10-22): Russian with stress marks (the
+      exercises' answers and tiles drop them), Arabic as Modern Standard Arabic, fully vowelled
+      and right to left (the words and phrases list puts the Arabic and its English on one line),
+      Mandarin in simplified characters with pinyin for every word and phrase. All six core
+      languages now have the course. Found on the way: in Grammatica's Russian "Tap the wrong
+      word", the planted form was the only tile without stress marks; every tile now drops them.
+      The course test also checks that every language file is found: Vitest's module cache
+      (`node_modules/.vitest-cache`) once kept an old list and hid the new languages.

@@ -75,6 +75,9 @@ Commit as `sanchour <255895307+sanchour@users.noreply.github.com>`
   `eslint --fix` (a stock Prettier once rewrote about 70 files); format by hand to match: single
   quotes, long lines (about 200 columns), JSX wrapped the way the file around it is.
 - Node 24 runs the TypeScript scripts directly (`node scripts/lang-data/fetch.ts`).
+- Vitest caches transformed modules in `node_modules/.vitest-cache`, and an `import.meta.glob`
+  there doesn't see files added later (the course's languages): delete the folder when a test
+  should find a new file and doesn't.
 - Windows, Git Bash: if `node` isn't found, `export PATH="/c/Program Files/nodejs:$PATH"`.
   Heredocs and `node -e` there lose backslashes: write patch scripts to a file instead.
 - Antivirus software (Kaspersky did this on the first PC) can rewrite a local headless Chrome's

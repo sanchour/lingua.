@@ -37,13 +37,14 @@ export function CourseIntro({ part, unit, content, lang, onStart }: { part: 'wor
         {rows.map((r, i) => (
           <motion.div
             key={r.text}
-            className="flex items-center gap-3 border-b border-line/60 px-4 py-3 sm:px-5"
+            // Right to left: the Arabic and its sound on the right, the English on the left of the same line.
+            className={cx('flex items-center gap-3 border-b border-line/60 px-4 py-3 sm:px-5', rtl && 'flex-row-reverse')}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...spring.soft, delay: 0.04 + Math.min(i, 12) * 0.03 }}
           >
             <SpeakButton lang={lang} text={r.text} size={17} className="shrink-0" />
-            <div className="min-w-0 flex-1">
+            <div className={cx('min-w-0 flex-1', rtl && 'flex flex-row-reverse items-center justify-between gap-4')}>
               <p lang={lang} dir={rtl ? 'rtl' : undefined} className={cx('font-serif leading-snug font-semibold', part === 'words' ? 'text-[19px]' : 'text-[18px]', rtl && 'text-right')}>
                 {r.text}
               </p>
