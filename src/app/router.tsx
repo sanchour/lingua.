@@ -44,6 +44,7 @@ export const router = createBrowserRouter(
         { path: 'cursus/alphabets/:groupId/lesson', element: <LettersLessonPage /> },
         { path: 'codex', element: <CodexPage /> },
         { path: 'codex/discover', element: <CodexPage /> },
+        { path: 'codex/goodreads', element: <CodexPage /> },
         { path: 'codex/read/:textId', element: <ReaderPage /> },
         { path: 'codex/new', element: <NewTextPage /> },
         { path: 'codex/book/:textId', element: <BookDetailsPage /> },

@@ -116,27 +116,28 @@ export async function addText(input: NewText, database: LinguaDB = db): Promise<
   return id;
 }
 
-/** Goodreads shelf rows become library entries without text; an EPUB can be attached later. */
+/**
+ * Goodreads shelf rows become library entries without text; an EPUB can be attached later. Books
+ * already here (a newer export) take its shelf, rating and dates. Returns how many are new.
+ */
 export async function addShelfItems(lang: string, books: GoodreadsBook[], database: LinguaDB = db): Promise<number> {
-  const existing = new Set((await database.texts.where('lang').equals(lang).toArray()).map((t) => t.goodreads?.bookId).filter(Boolean));
+  const existing = new Map((await database.texts.where('lang').equals(lang).toArray()).flatMap((t) => (t.goodreads?.bookId && !t.deletedAt ? [[t.goodreads.bookId, t] as const] : [])));
   const now = Date.now();
-  const rows: Text[] = books
-    .filter((b) => !b.bookId || !existing.has(b.bookId))
-    .map((b, i) => ({
-      id: crypto.randomUUID(),
-      lang,
-      kind: 'shelfItem',
-      source: 'goodreads',
-      title: b.title,
-      author: b.author,
-      shelf: b.shelf,
-      goodreads: { bookId: b.bookId, isbn13: b.isbn13, rating: b.rating, dateRead: b.dateRead, shelves: b.shelves },
-      chapterCount: 0,
-      wordCount: 0,
-      createdAt: now + i,
-      updatedAt: now + i,
-    }));
-  await database.texts.bulkAdd(rows);
+  const rows: Text[] = [];
+  const changes: Array<{ key: string; changes: Partial<Text> }> = [];
+  for (const [i, b] of books.entries()) {
+    const goodreads = { bookId: b.bookId, isbn13: b.isbn13, rating: b.rating, dateRead: b.dateRead, dateAdded: b.dateAdded, year: b.year, shelves: b.shelves };
+    const known = b.bookId ? existing.get(b.bookId) : undefined;
+    if (known) {
+      changes.push({ key: known.id, changes: { goodreads, ...(known.kind === 'shelfItem' ? { shelf: b.shelf } : {}), updatedAt: now } });
+      continue;
+    }
+    rows.push({ id: crypto.randomUUID(), lang, kind: 'shelfItem', source: 'goodreads', title: b.title, author: b.author, shelf: b.shelf, goodreads, chapterCount: 0, wordCount: 0, createdAt: now + i, updatedAt: now + i });
+  }
+  await database.transaction('rw', database.texts, async () => {
+    await database.texts.bulkAdd(rows);
+    if (changes.length) await database.texts.bulkUpdate(changes);
+  });
   return rows.length;
 }
 

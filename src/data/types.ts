@@ -73,7 +73,7 @@ export interface Text extends Synced {
   title: string;
   author?: string;
   coverBlobId?: string;
-  /** A cover picture on the web (Gutenberg, Open Library by ISBN), shown when there is none stored. */
+  /** A cover picture on the web (Gutenberg, Open Library by ISBN), shown when there is none stored; '' when Open Library had none. */
   coverUrl?: string;
   /** A designed cover (cloth colour and ornament) for texts without a picture of their own. */
   cover?: CoverDesign;
@@ -81,7 +81,7 @@ export interface Text extends Synced {
   /** Where an article came from. */
   sourceUrl?: string;
   shelf?: 'to-read' | 'reading' | 'read';
-  goodreads?: { bookId?: string; isbn13?: string; rating?: number; dateRead?: string; shelves?: string[] };
+  goodreads?: { bookId?: string; isbn13?: string; rating?: number; dateRead?: string; dateAdded?: string; year?: number; shelves?: string[] };
   /** The reading level the learner gave it (Lingua's own guess is in `stats.level`). */
   level?: Cefr;
   chapterCount: number;

@@ -1792,7 +1792,19 @@ and c; and word translations must get much better in the six core languages (Spa
       Wikinews (no new stories in a month in Spanish or French), and the picture-book and comic
       libraries (StoryWeaver, African Storybook, Bloom, Pepper&Carrot), which don't let apps read
       their files: linked, to download and add as files.
-- [ ] **7 · Goodreads** as its own section: sort, group, filter, covers by ISBN.
+- [x] **7 · Goodreads,** Codex's third tab (`/codex/goodreads`). Sort (date added, date read,
+      your rating, author, title, year published), group (shelf, author, year read, none), filter
+      (shelf, rating, your own shelves, only books to read here) and search; covers or a table whose
+      headings sort it. Covers from Open Library (`services/goodreads/covers`): fifty ISBNs to a
+      request through the Books API, else by title and author, asked once per book. A book's drawer:
+      its facts, **Add the EPUB**, and **Find a free edition** when it was published 96 years ago or
+      more (Gutenberg and Wikisource in the language, by title and surname, then surname, then
+      title); the book that comes in keeps the Goodreads shelf, rating, cover and author. A newer
+      export updates the books already there. The library shows only what can be read (no more
+      Wishlist group).
+
+**5.1-3a is done (2026-10-22).** Next, in the user's order: Cursus, the course for the six core
+languages; then 5.1-3b and c.
 
 ### The frame of Lingua 5 (5.1-1 with 5.2-1, handover step 2): how it is built
 *Planned 2026-10-21. The design is in the two plan files; this is the build order, each part pushed.*

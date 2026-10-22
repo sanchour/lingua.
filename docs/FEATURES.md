@@ -28,7 +28,9 @@ Things the original brief asked for that the plan now covers explicitly:
   shelves Reading / To read / Finished with ratings (Goodreads, Phase 2), a yearly **reading
   challenge** in Iter (Goodreads, Phase 6).
 - **Integrations, within what these services allow:**
-  - *Goodreads* — import your shelves from Goodreads' CSV export (Phase 2); export books finished in
+  - *Goodreads* — import your shelves from Goodreads' CSV export (Phase 2), shown in Codex ›
+    Goodreads (5.1-3a): sorted, grouped and filtered, with covers from Open Library, and each book's
+    EPUB or a free edition (Gutenberg, Wikisource) to read it here; export books finished in
     Lingua as a Goodreads-compatible CSV to import back (Phase 6). Goodreads closed its public API in
     2020, so a live connection isn't possible.
   - *Apple Books* — import any DRM-free EPUB (from Files, iCloud Drive or a download). Apple Books has

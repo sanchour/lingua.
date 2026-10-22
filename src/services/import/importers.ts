@@ -82,11 +82,18 @@ export async function readFileChapters(lang: string, file: File, onProgress?: (f
   throw new Error('Lingua reads DRM-free EPUB books, PDFs with text, and plain text files.');
 }
 
-/** Gives a Goodreads shelf item its text: the EPUB becomes the book, keeping shelf and rating. */
+/** A Goodreads shelf item's book has come in (an EPUB, a free edition): it keeps the shelf, rating and cover, and the item goes. */
+export async function adoptShelfItem(item: Text, id: string): Promise<void> {
+  const book = await db.texts.get(id);
+  const cover = !book?.coverBlobId && !book?.coverUrl && item.coverUrl ? { coverUrl: item.coverUrl } : {};
+  await db.texts.update(id, { goodreads: item.goodreads, shelf: item.shelf === 'read' ? 'read' : 'reading', author: book?.author ?? item.author, ...cover, updatedAt: Date.now() });
+  await deleteText(item.id);
+}
+
+/** Gives a Goodreads shelf item its text: the EPUB becomes the book. */
 export async function attachEpub(item: Text, file: File): Promise<string> {
   const id = await importEpubFile(item.lang, file);
-  await db.texts.update(id, { goodreads: item.goodreads, shelf: item.shelf === 'read' ? 'read' : 'reading', updatedAt: Date.now() });
-  await deleteText(item.id);
+  await adoptShelfItem(item, id);
   return id;
 }
 

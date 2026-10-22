@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, BookOpenText, Compass, LayoutGrid, Library, List, Plus, Search, SearchX, Sparkles } from 'lucide-react';
+import { ArrowRight, BookMarked, BookOpenText, Compass, LayoutGrid, Library, List, Plus, Search, SearchX, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { movedPath } from '@/app/redirects';
 import { useFullMotion } from '@/app/motion';
@@ -21,23 +21,24 @@ import { attachEpub } from '@/services/import/importers';
 import { pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
 import { DiscoverTab } from './discover/DiscoverTab';
+import { GoodreadsTab } from './goodreads/GoodreadsTab';
 import { BookCard, BookRow } from './library/BookCard';
 import { BookCover } from './library/BookCover';
 import { useImporter } from './library/useImporter';
 
-type Tab = 'library' | 'discover';
+type Tab = 'library' | 'discover' | 'goodreads';
 const TABS: Array<RoomTab<Tab>> = [
   { id: 'library', label: 'Library', to: '/codex', icon: Library },
   { id: 'discover', label: 'Discover', to: '/codex/discover', icon: Compass },
+  { id: 'goodreads', label: 'Goodreads', to: '/codex/goodreads', icon: BookMarked },
 ];
 
-type Group = 'reading' | 'next' | 'finished' | 'wishlist';
+type Group = 'reading' | 'next' | 'finished';
 type Filter = 'all' | Group;
 
 const GROUPS: Array<{ id: Group; title: string; hint?: string }> = [
   { id: 'reading', title: 'Reading' },
   { id: 'next', title: 'Up next' },
-  { id: 'wishlist', title: 'Wishlist', hint: 'From Goodreads. Add the EPUB to start reading.' },
   { id: 'finished', title: 'Finished' },
 ];
 
@@ -51,8 +52,7 @@ const SORTS: Array<{ value: LibrarySort; label: string }> = [
 ];
 
 function groupOf(t: Text, progress: Map<string, ReadingProgress> | undefined): Group {
-  if (t.finishedAt || (t.kind === 'shelfItem' && t.shelf === 'read')) return 'finished';
-  if (t.kind === 'shelfItem') return 'wishlist';
+  if (t.finishedAt) return 'finished';
   return (progress?.get(t.id)?.percent ?? 0) > 0 ? 'reading' : 'next';
 }
 
@@ -77,7 +77,9 @@ function sorter(sort: LibrarySort, progress: Map<string, ReadingProgress> | unde
 export default function CodexPage() {
   const { language, settings } = useApp();
   const lang = language.id;
-  const texts = useLibrary(lang);
+  const all = useLibrary(lang);
+  // Goodreads books without their text have a tab of their own (5.1-3a): the library is what can be read.
+  const texts = useMemo(() => all?.filter((t) => t.kind !== 'shelfItem'), [all]);
   const progress = useAllProgress();
   const { busy, run } = useImporter(lang);
   const navigate = useNavigate();
@@ -90,8 +92,8 @@ export default function CodexPage() {
   // Diarium moved to Mentis (Lingua 5); its old tab address lands there.
   const { pathname, search } = useLocation();
   const moved = movedPath('/codex', search);
-  // Codex's tabs (5.1-3a): your library, and Discover for free reading from the web.
-  const tab: Tab = pathname.startsWith('/codex/discover') ? 'discover' : 'library';
+  // Codex's tabs (5.1-3a): your library, Discover for free reading from the web, and your Goodreads shelves.
+  const tab: Tab = pathname.startsWith('/codex/discover') ? 'discover' : pathname.startsWith('/codex/goodreads') ? 'goodreads' : 'library';
 
   useHotkeys({ '/': () => (searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && Boolean(texts?.length) && tab === 'library');
 
@@ -99,7 +101,7 @@ export default function CodexPage() {
   useEffect(() => {
     if (!texts) return;
     let cancelled = false;
-    const stale = texts.filter((t) => t.kind !== 'shelfItem' && (!t.stats || Date.now() - t.stats.computedAt > 120_000));
+    const stale = texts.filter((t) => !t.stats || Date.now() - t.stats.computedAt > 120_000);
     void (async () => {
       for (const t of stale) {
         if (cancelled) return;
@@ -113,7 +115,7 @@ export default function CodexPage() {
   }, [texts?.length, lang]);
 
   const current = useMemo(
-    () => texts?.find((t) => t.kind !== 'shelfItem' && !t.finishedAt && progress?.has(t.id)),
+    () => texts?.find((t) => !t.finishedAt && progress?.has(t.id)),
     [texts, progress],
   );
 
@@ -169,6 +171,7 @@ export default function CodexPage() {
       <RoomTabs label="Codex" tabs={TABS} active={tab} />
 
       {tab === 'discover' && <DiscoverTab lang={lang} />}
+      {tab === 'goodreads' && <GoodreadsTab lang={lang} />}
       {tab === 'library' && texts && texts.length === 0 && <EmptyLibrary lang={lang} busy={busy === 'sample'} onSample={() => void run('sample')} />}
 
       {tab === 'library' && current && progress && !query && <ContinueCard text={current} progress={progress.get(current.id)!} />}

@@ -83,7 +83,8 @@ and 20 (5.1-4); 21 holds 5.1's check (5.1-5) with 5.2's.
 
 **The order now (the user, 2026-10-21, settled: "I meant after 5.1-3a do cursus"):** finish 5.1-3a
 (Codex, with much better word translations for the six core languages), then step 4, **Cursus, the
-course, for all six core languages**, then 5.1-3b and c (the rest of step 9).
+course, for all six core languages**, then 5.1-3b and c (the rest of step 9). **5.1-3a is done
+(2026-10-22, ROADMAP "Codex (5.1-3a)"); Cursus is next.**
 
 ---
 

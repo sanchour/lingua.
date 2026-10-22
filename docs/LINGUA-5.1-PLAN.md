@@ -418,21 +418,21 @@ course's next lesson joins the Cursus card when the course is built.
 
 ---
 
-### 5.1-3a · Codex (on top of what 4.0-2 built)
+### 5.1-3a · Codex (on top of what 4.0-2 built) — done 2026-10-22
 
 **The user's points**
-- [ ] Optional comprehension questions at the end of each text, without AI.
-- [ ] Add to your library: Write or paste · Import a book (EPUB, PDF, a folder of pages) · Import a
+- [x] Optional comprehension questions at the end of each text, without AI.
+- [x] Add to your library: Write or paste · Import a book (EPUB, PDF, a folder of pages) · Import a
   comic · News & links · Goodreads. (4.0-2 made these tabs; this point is the forms in them.)
-- [ ] Discover: the latest news and articles, comics and books, imported in one click.
-- [ ] Goodreads as its own section: sorted, grouped, filtered.
-- [ ] Faster, immediate sentence and word translation.
-- [ ] Remove "Machine translation…" under translations.
-- [ ] One click marks a word known, two clicks learning.
-- [ ] Word panel: "+ Deck" on the right, level with the frequency and the pronunciation; a sound button.
-- [ ] "In context" only with an AI key.
-- [ ] More fun forms, still minimal.
-- [ ] Codex "T": choose the style and colour of known, learning and unseen words.
+- [x] Discover: the latest news and articles, comics and books, imported in one click.
+- [x] Goodreads as its own section: sorted, grouped, filtered.
+- [x] Faster, immediate sentence and word translation.
+- [x] Remove "Machine translation…" under translations.
+- [x] One click marks a word known, two clicks learning.
+- [x] Word panel: "+ Deck" on the right, level with the frequency and the pronunciation; a sound button.
+- [x] "In context" only with an AI key.
+- [x] More fun forms, still minimal.
+- [x] Codex "T": choose the style and colour of known, learning and unseen words.
 
 **Questions at the end** (honest about what works without AI)
 - On the end page (4.0-2), "Check yourself" (optional, folded): four or five items made from the

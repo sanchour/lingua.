@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
-import { addText, appendChapters, getChapter, rewriteChapters, textChapters } from './library';
+import { addShelfItems, addText, appendChapters, getChapter, rewriteChapters, textChapters } from './library';
 
 const open: LinguaDB[] = [];
 function freshDb(): LinguaDB {
@@ -72,5 +72,17 @@ describe('editing a text', () => {
     const id = await book(db);
     await appendChapters(id, [{ title: 'Cuatro', blocks: [para('Fin.')] }], [], db);
     expect((await textChapters(id, db)).map((c) => c.title)).toEqual(['Uno', 'Dos', 'Tres', 'Cuatro']);
+  });
+});
+
+describe('Goodreads shelves', () => {
+  it('adds new books, and a newer export updates the ones already here', async () => {
+    const db = freshDb();
+    const niebla = { bookId: '1', title: 'Niebla', author: 'Miguel de Unamuno', shelf: 'to-read' as const, shelves: ['to-read'] };
+    expect(await addShelfItems('es', [niebla], db)).toBe(1);
+    expect(await addShelfItems('es', [{ ...niebla, shelf: 'read', rating: 4, dateRead: '2026/01/02', year: 1914 }, { bookId: '2', title: 'Rayuela', shelf: 'to-read', shelves: [] }], db)).toBe(1);
+    const rows = await db.texts.where('lang').equals('es').toArray();
+    expect(rows).toHaveLength(2);
+    expect(rows.find((t) => t.title === 'Niebla')).toMatchObject({ shelf: 'read', goodreads: { rating: 4, dateRead: '2026/01/02', year: 1914 } });
   });
 });

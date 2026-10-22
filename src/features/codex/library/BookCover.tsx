@@ -8,6 +8,8 @@ interface BookCoverProps {
   text: Pick<Text, 'id' | 'title' | 'author' | 'coverBlobId' | 'lang' | 'cover' | 'coverUrl'>;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  /** Load a web cover only near the screen (long shelves). */
+  lazy?: boolean;
 }
 
 /** Small decorations for designed covers, drawn in the cover's ink colour. */
@@ -34,7 +36,7 @@ function Ornament({ kind, place }: { kind: CoverOrnament; place: 'top' | 'middle
   return <span className="my-[8%] h-px w-1/3 bg-current/40" aria-hidden />;
 }
 
-export const BookCover = memo(function BookCover({ text, className, size = 'md' }: BookCoverProps) {
+export const BookCover = memo(function BookCover({ text, className, size = 'md', lazy = false }: BookCoverProps) {
   const [url, setUrl] = useState<string | null>(null);
   // A picture on the web that didn't load (offline, or gone): the designed cover instead.
   const [remoteFailed, setRemoteFailed] = useState(false);
@@ -62,7 +64,7 @@ export const BookCover = memo(function BookCover({ text, className, size = 'md' 
   if (picture) {
     return (
       <div className={frame}>
-        <img src={picture} alt="" className="size-full object-cover" draggable={false} referrerPolicy="no-referrer" onError={url ? undefined : () => setRemoteFailed(true)} />
+        <img src={picture} alt="" loading={lazy && !url ? 'lazy' : undefined} className="size-full object-cover" draggable={false} referrerPolicy="no-referrer" onError={url ? undefined : () => setRemoteFailed(true)} onLoad={url ? undefined : (e) => e.currentTarget.naturalWidth < 8 && setRemoteFailed(true)} />
         <span className="pointer-events-none absolute inset-y-0 left-0 w-[6%] bg-gradient-to-r from-black/20 to-transparent" aria-hidden />
       </div>
     );

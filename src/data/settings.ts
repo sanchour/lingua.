@@ -20,6 +20,8 @@ export type CardTintId = (typeof CARD_TINT_IDS)[number];
 export type LibrarySort = 'recent' | 'added' | 'title' | 'author' | 'progress' | 'known';
 export type DeckSort = 'due' | 'name' | 'recent' | 'size';
 export type MediaSort = 'recent' | 'added' | 'title' | 'longest' | 'shortest';
+export type GoodreadsSort = 'added' | 'read' | 'rating' | 'author' | 'title' | 'year';
+export type GoodreadsGroup = 'none' | 'shelf' | 'author' | 'yearRead';
 /** System follows the device; Reduced keeps movement minimal; Full adds richer, longer motion. */
 export type MotionPref = 'system' | 'reduced' | 'full';
 
@@ -121,6 +123,9 @@ export interface Settings {
     perfHud: boolean;
     librarySort: LibrarySort;
     libraryView: 'grid' | 'list';
+    /** Codex › Goodreads (5.1-3a); its view (covers or list) is the library's. */
+    goodreadsSort: GoodreadsSort;
+    goodreadsGroup: GoodreadsGroup;
     deckSort: DeckSort;
     mediaSort: MediaSort;
     /** Home's "first steps" list, once put away. */
@@ -213,7 +218,7 @@ export const DEFAULT_SETTINGS: Settings = {
   voice: { off: false, chosen: {} },
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today' },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today' },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null, plan: null },
   sync: { devices: [], includeApiKeys: false },
 };

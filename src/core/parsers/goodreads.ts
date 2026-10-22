@@ -8,6 +8,9 @@ export interface GoodreadsBook {
   rating?: number;
   shelf: 'to-read' | 'reading' | 'read';
   dateRead?: string;
+  dateAdded?: string;
+  /** The year it was first published (else this edition's year). */
+  year?: number;
   shelves: string[];
 }
 
@@ -26,6 +29,7 @@ export function parseGoodreadsCsv(text: string): GoodreadsBook[] {
     .filter((r) => r.Title?.trim())
     .map((r) => {
       const rating = Number(r['My Rating']);
+      const year = Number(r['Original Publication Year']) || Number(r['Year Published']);
       return {
         bookId: r['Book Id']?.trim() || undefined,
         title: r.Title.trim(),
@@ -34,10 +38,24 @@ export function parseGoodreadsCsv(text: string): GoodreadsBook[] {
         rating: rating > 0 ? rating : undefined,
         shelf: SHELF[r['Exclusive Shelf']?.trim()] ?? 'to-read',
         dateRead: r['Date Read']?.trim() || undefined,
+        dateAdded: r['Date Added']?.trim() || undefined,
+        year: year > 0 ? year : undefined,
         shelves: (r.Bookshelves ?? '').split(',').map((s) => s.trim()).filter(Boolean),
       };
     });
 }
+
+/** A Goodreads date ("2019/05/12") as a timestamp. */
+export function goodreadsTime(date: string | undefined): number | undefined {
+  const m = /^(\d{4})\/(\d{1,2})\/(\d{1,2})/.exec(date ?? '');
+  return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).getTime() : undefined;
+}
+
+/** Free to read where Project Gutenberg is (the United States): published 96 years ago or more. */
+export const inPublicDomain = (year: number | undefined, now = new Date()) => year !== undefined && year <= now.getFullYear() - 96;
+
+/** A title as it is searched for, without Goodreads' series note: "Dune (Dune, #1)" → "Dune". */
+export const plainTitle = (title: string) => title.replace(/\s*\([^()]*\)\s*$/, '').trim() || title;
 
 export interface FinishedBook {
   title: string;

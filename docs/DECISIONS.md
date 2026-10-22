@@ -1206,6 +1206,21 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-22 — Goodreads as Codex's third tab (5.1-3a)
+
+- **The library is what can be read.** Goodreads books without their text left the library's
+  shelves (the Wishlist group, and read books never opened here under Finished) for their own tab;
+  a book whose EPUB or free edition comes in is in both, keeping its Goodreads shelf and rating.
+- **Covers by cover id, not by ISBN.** Open Library limits covers by ISBN to 100 an IP every five
+  minutes; its Books API answers fifty ISBNs at once with covers by id, which aren't limited. Books
+  without an ISBN are searched by title and author, one at a time. A book is asked about once
+  (`coverUrl` '' when there is none); a cover id of -1, and a one-pixel picture, count as none.
+- **"Find a free edition" only when it can be free:** published 96 years ago or more (Gutenberg is
+  in the United States; 1930 and before in 2026), or the year unknown. A newer book says so.
+- **A newer export updates.** Importing the CSV again adds new books and gives those already here
+  the export's shelf, rating and dates (matched by Goodreads' book id).
+- Sort, group and the view are remembered on the device; the filters last while the tab is open.
+
 ## 2026-10-22 — Discover (5.1-3a)
 
 - **Only sources an app may read, checked when built.** Wikipedia, Wikisource and Gutendex send

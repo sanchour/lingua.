@@ -15,10 +15,11 @@ import { fade, spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { EpubError } from '@/services/import/epub';
 import { COMIC_FILE_ACCEPT, comicSource, importComic } from '@/services/import/comic';
-import { BOOK_FILE_ACCEPT, bookFileKind, importBookFile, importGoodreads, importPasted, importSample } from '@/services/import/importers';
+import { BOOK_FILE_ACCEPT, bookFileKind, importBookFile, importPasted, importSample } from '@/services/import/importers';
 import { importPagePhotos, isPicture } from '@/services/import/pagePhotos';
 import { pickFile, pickFiles, pickFolder } from '@/services/files/files';
 import { toast } from '@/state/ui';
+import { GoodreadsImport } from './goodreads/GoodreadsImport';
 import { BookCover } from './library/BookCover';
 import { CLOTHS } from './library/covers';
 import { CoverDesigner } from './library/CoverDesigner';
@@ -70,7 +71,7 @@ export default function NewTextPage() {
           {way === 'write' && <WriteOrPaste lang={lang} onDone={(id) => navigate(`/codex/read/${id}`)} />}
           {(way === 'book' || way === 'comic') && <ImportFile key={way} kind={way} lang={lang} onDone={(id) => navigate(`/codex/book/${id}?new=1`)} onComic={(id) => navigate(`/codex/read/${id}`)} />}
           {way === 'news' && <NewsPanel lang={lang} onDone={(id) => navigate(`/codex/read/${id}`)} onPaste={() => setWay('write')} />}
-          {way === 'goodreads' && <Goodreads lang={lang} onDone={() => navigate('/codex')} />}
+          {way === 'goodreads' && <GoodreadsImport lang={lang} onDone={() => navigate('/codex/goodreads')} />}
         </motion.div>
       </AnimatePresence>
     </>
@@ -284,39 +285,5 @@ function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; l
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-function Goodreads({ lang, onDone }: { lang: string; onDone: () => void }) {
-  const [busy, setBusy] = useState(false);
-  return (
-    <Card className="max-w-2xl p-6">
-      <p className="font-serif text-xl font-semibold">Bring your Goodreads shelves</p>
-      <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-[14.5px] leading-relaxed text-ink-soft">
-        <li>On goodreads.com, open My Books → Import and export.</li>
-        <li>Choose “Export Library” and download the CSV file.</li>
-        <li>Choose it below. Your shelves, ratings and dates come along; add an EPUB to any book to read it here.</li>
-      </ol>
-      <Button
-        className="mt-5"
-        icon={Library}
-        loading={busy}
-        onClick={async () => {
-          const file = await pickFile('.csv,text/csv');
-          if (!file) return;
-          setBusy(true);
-          try {
-            const added = await importGoodreads(lang, file);
-            toast(added ? `Added ${added} books to your shelves.` : 'Those books are already on your shelves.', { tone: 'success' });
-            onDone();
-          } catch (error) {
-            toast(error instanceof Error ? error.message : 'That file couldn’t be read.', { tone: 'error' });
-            setBusy(false);
-          }
-        }}
-      >
-        Choose the Goodreads CSV
-      </Button>
-    </Card>
   );
 }
