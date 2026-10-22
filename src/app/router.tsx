@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { createBrowserRouter, Navigate, useLocation, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, CursusPage, DeckPage, LabPage, MentisPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, WatchPage, ChatPage, GrammarTopicPage, GrammarLessonPage, LettersLessonPage } from './pages';
+import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, CursusPage, DeckPage, LabPage, MentisPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, WatchPage, ChatPage, GrammarTopicPage, GrammarLessonPage, LettersLessonPage, CourseLessonPage } from './pages';
 import { PlanRoute } from '@/features/plans/PlanRoute';
 import { movedPath } from './redirects';
 import { Root } from './Root';
@@ -16,6 +16,13 @@ function SongMoved({ games = false }: { games?: boolean }) {
 /** Grammatica's pages come with Lingua+ (5.1-2a); without it, back to Cursus › Grammatica and the plans. */
 const grammar = (page: ReactNode) => (
   <PlanRoute feature="grammatica" fallback="/cursus/grammatica">
+    {page}
+  </PlanRoute>
+);
+
+/** The course's lessons come with Lingua+ too; without it, back to Cursus › Course and the plans. */
+const course = (page: ReactNode) => (
+  <PlanRoute feature="course" fallback="/cursus/course">
     {page}
   </PlanRoute>
 );
@@ -36,6 +43,7 @@ export const router = createBrowserRouter(
         // Cursus: the course, Grammatica, alphabets and typing as tabs; lessons and topics as pages of their own.
         { path: 'cursus', element: <CursusPage /> },
         { path: 'cursus/:tab', element: <CursusPage /> },
+        { path: 'cursus/course/:unit/:lesson', element: course(<CourseLessonPage />) },
         { path: 'cursus/grammatica/review', element: grammar(<GrammarLessonPage review />) },
         { path: 'cursus/grammatica/placement', element: grammar(<GrammarLessonPage placement />) },
         { path: 'cursus/grammatica/:topicId', element: grammar(<GrammarTopicPage />) },

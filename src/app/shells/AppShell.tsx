@@ -27,6 +27,7 @@ const isImmersive = (pathname: string, wide: boolean) =>
   pathname === '/cursus/alphabets/review' ||
   /^\/cursus\/alphabets\/[^/]+\/lesson\/?$/.test(pathname) ||
   /^\/cursus\/grammatica\/[^/]+\/lesson\/?$/.test(pathname) ||
+  /^\/cursus\/course\/[^/]+\/[^/]+\/?$/.test(pathname) ||
   pathname === '/sonus/commute' ||
   (pathname.startsWith('/cantus') && !pathname.startsWith('/cantus/spotify')) ||
   (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/sonus/station/') || pathname.startsWith('/visio/watch/') || pathname.startsWith('/mentis/sermo/chat/')));

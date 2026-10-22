@@ -269,16 +269,21 @@ export interface EndAction {
 
 const minutes = (ms: number) => (ms < 60_000 ? `${Math.max(1, Math.round(ms / 1000))} s` : `${Math.round(ms / 60_000)} min`);
 
-/** The end of a lesson: the numbers, kindly, a cheer for a perfect run or a new best, and what next. */
-export function LessonEnd({ title, note, result, actions = [], onDone, badge, children }: { title: string; note?: ReactNode; result: LessonResult; actions?: EndAction[]; onDone: () => void; badge?: ReactNode; children?: ReactNode }) {
+/**
+ * The end of a lesson: the numbers, kindly, a cheer for a perfect run or a new best, and what next.
+ * `tiles` replaces the numbers for a lesson that isn't a run of exercises (writing, speaking).
+ */
+export function LessonEnd({ title, note, result, actions = [], onDone, badge, children, tiles: own }: { title: string; note?: ReactNode; result: LessonResult; actions?: EndAction[]; onDone: () => void; badge?: ReactNode; children?: ReactNode; tiles?: Array<[string, string]> }) {
   const lightning = result.score !== undefined;
   const newBest = lightning && result.score! > 0 && result.score! > (result.previousBest ?? 0);
-  const perfect = !lightning && result.answered > 0 && result.accuracy === 1;
+  const perfect = !lightning && !own && result.answered > 0 && result.accuracy === 1;
   const { cue } = useLessonFeel();
   useEffect(() => {
     cue('finish');
   }, [cue]);
-  const tiles: Array<[string, string]> = lightning
+  const tiles: Array<[string, string]> = own
+    ? own
+    : lightning
     ? [
         ['Right', String(result.score)],
         ['Best', String(Math.max(result.score!, result.previousBest ?? 0))],

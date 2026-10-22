@@ -803,6 +803,17 @@ export interface GrammarItemRow extends Synced {
   lastReview?: number;
 }
 
+/** Cursus, the course: one unit's lessons done (by lesson id, with the share right first time). */
+export interface CourseProgressRow extends Synced {
+  /** `${lang}:${unit}` */
+  id: string;
+  lang: Lang;
+  unit: string;
+  lessons: Record<string, { score: number; at: number }>;
+  /** When the unit check was passed (the unit is done). */
+  doneAt?: number;
+}
+
 /** Where a learner stands in a topic: the step being worked on (1–5), 6 once it is learned. */
 export interface GrammarProgressRow extends Synced {
   /** `${lang}:${topic}` */

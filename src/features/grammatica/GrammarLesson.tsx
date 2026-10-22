@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { BookOpen, Keyboard, Settings2, Zap } from 'lucide-react';
 import { checkForm, DRILL_LABEL, hasItem, itemDrill, retryDrill, solutionOf, tilesMatch } from '@/core/grammar/drills';
-import type { Drill, FormCheck } from '@/core/grammar/drills';
+import type { Drill, DrillKind, FormCheck } from '@/core/grammar/drills';
 import { gradeFor } from '@/core/srs/ludus';
 import type { Item, Topic } from '@/core/grammar/types';
 import { answerGrammarItem } from '@/data/grammar';
@@ -60,6 +60,8 @@ interface Props {
   onClose: () => void;
   onActive: (ms: number) => void;
   onSetup: () => void;
+  /** Other titles for some kinds of exercise (the course's words: "Which word is it?"). */
+  labels?: Partial<Record<DrillKind, string>>;
 }
 
 /**
@@ -68,7 +70,7 @@ interface Props {
  * item graded into its FSRS card when it is done with (no mistake Good, right on the retry Hard,
  * missed twice Again).
  */
-export function GrammarLesson({ lang, title, drills, topics, random, endsAt, practice, retries: allowRetries = true, intro, onFinish, onClose, onActive, onSetup }: Props) {
+export function GrammarLesson({ lang, title, drills, topics, random, endsAt, practice, retries: allowRetries = true, intro, onFinish, onClose, onActive, onSetup, labels }: Props) {
   const lightning = endsAt !== undefined;
   const feel = useLessonFeel();
   const tracks = useRef<Map<string, Track> | null>(null);
@@ -355,7 +357,7 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
               <p id="drill-label" className="mb-6 flex items-center gap-2 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">
                 {lightning && <Zap size={14} aria-hidden />}
                 {d.key.includes('-r') ? 'One more try · ' : d.key.includes('-due-') ? 'Due again · ' : ''}
-                {DRILL_LABEL[d.kind]}
+                {labels?.[d.kind] ?? DRILL_LABEL[d.kind]}
                 {topics.size > 1 && topic && <span className="truncate font-semibold tracking-normal text-ink-faint normal-case">· {topic.title}</span>}
               </p>
               {d.kind === 'recognise' && <RecogniseView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}

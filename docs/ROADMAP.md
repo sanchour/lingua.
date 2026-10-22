@@ -1852,3 +1852,39 @@ of the handover and runs in parallel with 5.1-1.*
       filled per language with that language's words, grammar and sentences, and the room around
       it. Only the six core languages (tier 1) get a course, as the user decided: Cursus is
       where most of the work goes, so each of the six is done well rather than twenty done thinly.
+
+**How it is built** (planned 2026-10-22; each part pushed):
+- **The outline** (`core/course/outline.ts`): twelve units named by what you can do after them,
+  A1 to B1: 1 Say hello and introduce yourself · 2 Talk about yourself · 3 Describe your family ·
+  4 Order food and drink · 5 Talk about your day · 6 Find your way around town (A1) · 7 Go
+  shopping · 8 Describe your home · 9 Say what you did · 10 Say how you feel (A2) · 11 Make plans
+  and travel · 12 Give your opinion (B1). Each has three or four can-do lines, a writing task and a
+  speaking task.
+- **Each language's content, written and checked by hand** (`core/course/content/{es,fr,de,ru,ar,zh}.ts`),
+  not taken from the packs' theme lists (which have errors such as Spanish "aunque" = "but"):
+  per unit about ten words, eight key phrases (the word each turns on in brackets, three wrong
+  forms beside it, like Grammatica's items), the Grammatica topics the unit needs, and a model
+  answer for the writing task. Arabic fully vowelled; Mandarin with pinyin for words and phrases.
+  A test checks every unit of every language is complete and well formed.
+- **Six lessons a unit, each with one objective:** Words (pairs, then hear, pick and type),
+  Phrases (the phrases first, then hear, fill the gap, put in order, build from English), Grammar
+  (the unit's Grammatica topic, its examples first), Speak (say each phrase: the browser's speech
+  recognition compares what it heard word by word; without it, listen, say it and compare
+  yourself), Write (the unit's task; with an AI key, corrections and a better version; without,
+  the model answer and a checklist; either way "Ask a speaker" copies it with a request), and the
+  unit check (a mixed round, 80% passes). The exercises are Grammatica's lesson engine, so the
+  feel, sounds, keys and setup are the same. A unit's check can be taken first to test out.
+- **Progress** in a new table (`courseProgress`, Dexie 16, in backups); sessions count in Ratio.
+- **The Course tab:** the path of units down the page (where you are, what's next, each lesson's
+  mark), a sticky side panel with the current unit's can-do list and Continue; Home's Cursus card
+  gets the next lesson.
+- **Parts:** 1 · the frame and Spanish; 2 · French and German; 3 · Russian, Arabic and Mandarin;
+  4 · open production across the app (retell what you read, describe a scene, write the next
+  line) and Home's card; 5 · speak your journal (Diarium's microphone) and the conversation links.
+- [x] **Part 1 · the frame and Spanish** (2026-10-22): `core/course` (outline, lessons on
+      Grammatica's engine, `speechMatch`), Spanish's twelve units, `courseProgress` (Dexie 16;
+      backups, reset and removing a language include it), the Course tab's path and side panel,
+      `/cursus/course/:unit/:lesson` full screen (words and phrases open with all of them to hear;
+      the course's own exercise titles; Speak and Write end with their own numbers), Home's Course
+      card (moved here from part 4). Found on the way: Grammatica's "Tap the wrong word" never came
+      for a form with an "s" in it (`/s/` where `/\s/` was meant); fixed.

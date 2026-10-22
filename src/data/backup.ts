@@ -57,6 +57,7 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   grammarProgress: { policy: 'lww', key: 'id' },
   chats: { policy: 'lww', key: 'id' },
   sightings: { policy: 'lww', key: 'id' },
+  courseProgress: { policy: 'lww', key: 'id' },
   // Downloaded again from the site when needed.
   fullDict: { policy: 'skip', key: '' },
 };

@@ -16,7 +16,7 @@ import { PlusChip, RequirePlan } from '@/features/plans/Locked';
 import { usePlan } from '@/features/plans/usePlan';
 import { can } from '@/data/plan';
 import type { Feature, PlanKind } from '@/data/plan';
-import { CourseTab } from './CourseTab';
+import { CourseTab } from './course/CourseTab';
 import { TypingTab } from './TypingTab';
 
 type Tab = Exclude<Settings['ui']['cursusTab'], ''>;

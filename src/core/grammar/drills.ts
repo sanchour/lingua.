@@ -229,7 +229,7 @@ const canSay = (item: Item, lang: string) => {
   return Boolean(t && t.tokens.length >= 3 && t.tokens.length <= 10 && item.en);
 };
 /** One wrong word to find: the form must be one word (a short one in Mandarin), or it stands out. */
-const oneWord = (form: string, lang: string) => (UNSPACED.has(lang) ? [...form].length <= 2 : !/s/.test(form.trim()));
+const oneWord = (form: string, lang: string) => (UNSPACED.has(lang) ? [...form].length <= 2 : !/\s/.test(form.trim()));
 const canSpot = (item: Item, lang: string) => {
   const t = sentenceTiles(item, lang);
   return Boolean(t && t.tokens.length >= 3 && oneWord(splitFocus(item.s).focus, lang) && item.wrong.every((w) => oneWord(w, lang)));

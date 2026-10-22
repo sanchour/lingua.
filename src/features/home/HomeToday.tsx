@@ -12,6 +12,7 @@ import { Card } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { MundusHomeCard } from '@/features/mundus/HomeCard';
+import { CourseHomeCard } from '@/features/cursus/course/HomeCard';
 import { GrammarHomeCard } from '@/features/grammatica/links';
 import { LettersCard } from '@/features/grammatica/letters/LettersCard';
 import { usePlan } from '@/features/plans/usePlan';
@@ -94,8 +95,11 @@ export function HomeToday() {
             <FirstStepsStrip steps={steps!} />
           </motion.div>
         )}
-        {/* Cursus (grammar and the alphabet, as each language has them) and Mundus, in equal columns. */}
+        {/* Cursus (the course, grammar and the alphabet, as each language has them) and Mundus, in equal columns. */}
         <div className="col-span-12 grid min-w-0 auto-cols-fr grid-flow-col gap-5">
+          <motion.div {...enter(3)} className="empty:hidden [&>*]:h-full">
+            <CourseHomeCard lang={language.id} />
+          </motion.div>
           <motion.div {...enter(3)} className="empty:hidden [&>*]:h-full">
             <GrammarHomeCard lang={language.id} level={language.level} />
           </motion.div>

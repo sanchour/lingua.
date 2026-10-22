@@ -1206,6 +1206,25 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-22 — Cursus, the course
+
+- **One outline, each language written by hand.** Twelve can-do units (A1 to B1) shared by the six
+  core languages; each language's words, phrases, grammar and model answers are written and
+  checked for it, not drawn from the packs' theme lists, which are machine-made and have errors.
+  A test checks every unit is complete, every phrase has one bracketed word and three wrong ones,
+  and every grammar topic named exists.
+- **Grammatica's lesson engine runs the course.** A unit's words and phrases become topics of
+  their own (a word is an item whose sentence is the word), so the exercises, keys, sounds, setup
+  and feel are the same as Grammatica's. Course lessons run as practice: no grammar schedule moves.
+  The course gives some kinds its own titles ("Which word is it?").
+- **Speaking without a server:** the browser's speech recognition, compared word by word with the
+  phrase (accents, case, punctuation and Arabic marks don't count; Mandarin by character); 75%
+  passes. Where there is no recognition, or no microphone, you say it and go on yourself.
+- **Feedback from people, lightly:** "Ask a speaker" copies the task and the text with a request,
+  to paste to a friend or a language exchange. No community or server.
+- **Testing out:** a unit's check can be taken first; 80% marks every lesson of the unit done.
+- Lessons count in Ratio as Ludus (writing as writing); the course is Lingua+, like Grammatica.
+
 ## 2026-10-22 — Goodreads as Codex's third tab (5.1-3a)
 
 - **The library is what can be read.** Goodreads books without their text left the library's
