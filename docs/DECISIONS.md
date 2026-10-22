@@ -1206,6 +1206,18 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-22 — Speaking your journal (Cursus, part 5)
+
+- **Whisper, not the browser's recognition:** the browser's speech recognition (used for the
+  course's short phrases) sends audio to the browser maker and stops after a sentence; a journal
+  is longer and private. Whisper runs on the device (free, offline once downloaded) or on Groq with
+  the learner's key, the same choice Settings › Listening already makes for live text.
+- **Record, then write out:** one recording of up to five minutes, written out when you stop,
+  rather than live text: Whisper is far better with the whole of what was said, and it fits how a
+  journal is spoken. The recording itself is never stored.
+- **No new AI links:** Sermo already opens ChatGPT, Claude, Gemini and Copilot with a prompt in the
+  language; the course's Speak lesson and Diarium lead there instead of repeating them.
+
 ## 2026-10-22 — In your own words (Cursus, part 4)
 
 - **Where it is asked for:** at the natural end of something (a text's end page) or beside it

@@ -57,7 +57,7 @@ read that part before starting.
 | 1 | [x] | **Grammatica part 5: alphabets and writing** (3.0-8). *Done 2026-10-20:* `src/core/script`, `src/data/script.ts` and `src/features/grammatica/letters` hold all of it, so it can move whole. **Parallel** with everything. Write it so it can move into Cursus › Alphabets (step 2 moves it). | ROADMAP "3.0-8" | L |
 | 2 | [x] | **The frame of Lingua 5:** *Done 2026-10-21 (ROADMAP "The frame of Lingua 5").* the rooms in the new order (Cursus, Sonus et Visio, Mentis), Ordo renamed Settings, a narrower sidebar, flashcard widths, the device's light, the Mundus lines removed. First of the rest, because the course and the rest of Lingua 5 build on the new rooms. | 5.1-1 and 5.2-1 | L |
 | 3 | — | *Removed 2026-10-20: the karaoke and song games are dropped; Visio moved to step 22.* | ROADMAP "4.0-3" | — |
-| 4 | [~] | *claimed 2026-10-22; parts 1–4 (the frame, all six languages, your own words across the app) done; 5 next* **Cursus, the course** (tier 1; moved into Lingua 5 from 4.0-4 on 2026-10-21), in Cursus's Course tab. **Parallel** with 2. | ROADMAP "Lingua 5" › "Cursus" | XL |
+| 4 | [x] | *done 2026-10-22 (five parts: the frame, all six languages, your own words across the app, speaking your journal)* **Cursus, the course** (tier 1; moved into Lingua 5 from 4.0-4 on 2026-10-21), in Cursus's Course tab. **Parallel** with 2. | ROADMAP "Lingua 5" › "Cursus" | XL |
 | 5 | — | *Removed 2026-10-21: there is no separate 4.0 check; the version goes from 3.0 to 5.0 at step 21.* | — | — |
 | 6 | [x] | *Done 2026-10-21 (a, b and c).* **5.1-2 · Plans, the first start and Home,** one step in three parts, in order: a · Lingua+ and Lingua+ Max (Stripe in test mode, the licence server, plans, the MAX badge); b · onboarding, the map without dots and its language data, the twelve flags (it shows the plans); c · Home, the new layout (the old one a setting away). After 2. | 5.1-2a, b, c | XL |
 | 7 | — | *Merged into step 6 on 2026-10-21 (5.1 in four steps).* | — | — |
@@ -84,7 +84,7 @@ and 20 (5.1-4); 21 holds 5.1's check (5.1-5) with 5.2's.
 **The order now (the user, 2026-10-21, settled: "I meant after 5.1-3a do cursus"):** finish 5.1-3a
 (Codex, with much better word translations for the six core languages), then step 4, **Cursus, the
 course, for all six core languages**, then 5.1-3b and c (the rest of step 9). **5.1-3a is done
-(2026-10-22, ROADMAP "Codex (5.1-3a)"); Cursus is next.**
+(2026-10-22, ROADMAP "Codex (5.1-3a)"), and Cursus (2026-10-22, ROADMAP "Cursus"); 5.1-3b is next.**
 
 ---
 

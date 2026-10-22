@@ -16,10 +16,12 @@ import { Button, buttonClasses, Dialog, MenuItem, Popover, Segmented } from '@/d
 import { spring } from '@/design/motion';
 import { LlmError, PROVIDERS } from '@/services/llm/client';
 import { checkEntry } from '@/services/llm/journal';
+import { appendSpoken } from '@/services/transcribe/dictate';
 import { cx } from '@/lib/cx';
 import { aiBlock } from '@/data/plan';
 import { MaxLink } from '@/features/plans/Locked';
 import { toast, useUI } from '@/state/ui';
+import { DictateButton } from './Dictate';
 import { CorrectionList, ReviewSummary, ReviewText } from './Review';
 
 const SAVE_DELAY = 500;
@@ -137,6 +139,17 @@ function Entry({ entry }: { entry: JournalEntry }) {
     } finally {
       setChecking(false);
     }
+  };
+
+  // What was said goes after what is written, counts as writing time, and the caret waits at its end to correct it.
+  const speak = (spoken: string, ms: number) => {
+    onChange(appendSpoken(latest.current, spoken, lang));
+    activity.current.ms += ms;
+    window.setTimeout(() => {
+      const el = areaRef.current;
+      el?.focus();
+      el?.setSelectionRange(el.value.length, el.value.length);
+    }, 50);
   };
 
   const useCorrected = async () => {
@@ -276,6 +289,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
                 Last review
               </button>
             )}
+            <DictateButton lang={lang} onSpoken={speak} />
             {hasAi ? (
               <Button icon={review && stale ? RotateCcw : Sparkles} onClick={() => void check()} loading={checking} disabled={words < 3 || (Boolean(review) && !stale)}>
                 {review && stale ? 'Check again' : 'Check my writing'}

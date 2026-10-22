@@ -134,6 +134,8 @@ Practise writing in the target language; get corrected, explained and graded.
     order, agreement, tense/aspect, case, punctuation, style), short explanation in English, severity
   - scores 0–100 for grammar, vocabulary, coherence and overall, plus a CEFR estimate
   - two strengths and one focused tip
+- **Speak:** the microphone in the bar records, and Whisper (on this device, or Groq with a key)
+  writes it out after what is written, to read back and correct; the recording isn't kept.
 - **Review:** original and corrected side by side on desktop, a toggle on iPhone; a word-level diff
   (deletions struck through in terracotta, insertions in sage); tap a change for its explanation.
 - **Learn:** send corrected phrases or new words to Thesaurus (deck "Journal") in one tap; every

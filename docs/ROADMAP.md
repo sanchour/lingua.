@@ -1803,8 +1803,8 @@ and c; and word translations must get much better in the six core languages (Spa
       export updates the books already there. The library shows only what can be read (no more
       Wishlist group).
 
-**5.1-3a is done (2026-10-22).** Next, in the user's order: Cursus, the course for the six core
-languages; then 5.1-3b and c.
+**5.1-3a is done (2026-10-22), and Cursus after it (2026-10-22).** Next, in the user's order:
+5.1-3b and c.
 
 ### The frame of Lingua 5 (5.1-1 with 5.2-1, handover step 2): how it is built
 *Planned 2026-10-21. The design is in the two plan files; this is the build order, each part pushed.*
@@ -1830,22 +1830,22 @@ languages; then 5.1-3b and c.
 *Moved from Lingua 4.0 into Lingua 5 on 2026-10-21 (the user's request). Cursus becomes a room with
 tabs in 5.1-1 (step 2 of [HANDOVER.md](HANDOVER.md)); the course fills its Course tab. It is step 4
 of the handover and runs in parallel with 5.1-1.*
-- [ ] **Cursus** (Latin for "a course"), a new room: a course like Duolingo, HelloChinese or Busuu,
+- [x] **Cursus** (Latin for "a course"), a new room: a course like Duolingo, HelloChinese or Busuu,
       organised by level, with a clear learning path, each lesson with a clear objective.
-- [ ] **Units named by what you can do after them,** not by how many lessons they hold: after the
+- [x] **Units named by what you can do after them,** not by how many lessons they hold: after the
       first Russian unit you can introduce yourself, describe your family, order food and ask
       simple questions. The path shows where you are and where you're going.
-- [ ] **Every skill:** reading, listening, speaking and writing exercises, grammar explained when
+- [x] **Every skill:** reading, listening, speaking and writing exercises, grammar explained when
       it's needed (3.0-8), sentences with a gap (4.0-2), and feedback on writing and speaking from
       AI with a key. Feedback from other speakers needs a community and a server, which Lingua
       doesn't have; the step looks at a light way to do it (sharing an exercise to a speaker).
 - [x] **More open questions and active production,** in Cursus and across the app: answer in your
       own words, describe a picture or a scene, retell what you read or heard, write the next line.
-- [ ] **Speak your journal:** in Diarium a microphone button; what you say is transcribed (Whisper on
+- [x] **Speak your journal:** in Diarium a microphone button; what you say is transcribed (Whisper on
       the device, or Groq with a key) into the entry, to read back and correct. Links and prompts
       to talk in the language with ChatGPT, Claude, Gemini or Copilot in their own apps (with
       3.0-6's conversation corner).
-- [ ] **How possible:** quite possible, and the largest step of 4.0. Most parts exist: words and
+- [x] **How possible:** quite possible, and the largest step of 4.0. Most parts exist: words and
       themes per language (the packs and themes.ts), grammar topics and drills (3.0-8), sentences
       with audio (packs and voices, 3.0-4), Ludus exercises, Diarium with AI corrections, Whisper.
       The new work is one shared outline of can-do units (A1 to B1, from the CEFR's can-do lists)
@@ -1909,3 +1909,14 @@ of the handover and runs in parallel with 5.1-1.*
       (each unit now has one) and one of its questions to answer. Beginners (to A2) are asked for
       less. Home's card came in part 1. Found on the way: Check yourself's number keys and Enter
       worked even while typing in a text box; they no longer do.
+- [x] **Part 5 · speak your journal, and talking with an AI** (2026-10-22): Diarium's Speak button
+      records (`useRecorder`, at most five minutes), and Whisper writes it out on this device or
+      on Groq with a key, the route Settings › Listening chose (`services/transcribe/dictate.ts`,
+      the same as a station's live text); the words go after what is written, the caret at their
+      end to correct them, and the time counts as writing. Nothing of the recording is kept. With
+      no key and Whisper not on the device, the note offers "Use Whisper on this device" in one
+      click. The conversation links were already in Sermo (ChatGPT, Claude, Gemini and Copilot,
+      with a prompt in the language) and Diarium ("Talk about this"); the course's Speak lesson now
+      ends with "Finish, and keep talking with an AI", opening Sermo on the unit's subject.
+
+**Cursus is done (2026-10-22).** Next, in the user's order: 5.1-3b and c.

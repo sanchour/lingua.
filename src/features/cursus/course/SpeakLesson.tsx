@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { Mic, RotateCcw, Square } from 'lucide-react';
+import { MessagesSquare, Mic, RotateCcw, Square } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { plain } from '@/core/grammar/types';
 import { speechMatch, SPOKEN_PASS } from '@/core/course/speech';
@@ -221,6 +222,7 @@ export function SpeakLesson({ unit, content, lang, onClose, onActive, onFinish }
 /** The last turn: talk about the unit's subject, see what was heard, and with an AI key, how to say it better. */
 function OpenTurn({ unit, lang, canListen, onDone }: { unit: UnitOutline; lang: string; canListen: boolean; onDone: () => void }) {
   const { settings, language } = useApp();
+  const navigate = useNavigate();
   const canCheck = Boolean(aiKeys(settings)[settings.llm.provider]?.trim() && settings.llm.model);
   const [said, setSaid] = useState('');
   const [live, setLive] = useState('');
@@ -294,6 +296,17 @@ function OpenTurn({ unit, lang, canListen, onDone }: { unit: UnitOutline; lang: 
           </Button>
         )}
         <Button onClick={onDone}>Finish the lesson</Button>
+        {/* Sermo makes a prompt in the language for ChatGPT, Claude, Gemini or Copilot (or talks here with a key); the lesson is saved first. */}
+        <Button
+          variant="ghost"
+          icon={MessagesSquare}
+          onClick={() => {
+            onDone();
+            navigate(`/mentis/sermo?topic=${encodeURIComponent(unit.speak)}`);
+          }}
+        >
+          Finish, and keep talking with an AI
+        </Button>
       </div>
     </motion.div>
   );
