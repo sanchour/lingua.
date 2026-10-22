@@ -1888,3 +1888,7 @@ of the handover and runs in parallel with 5.1-1.*
       the course's own exercise titles; Speak and Write end with their own numbers), Home's Course
       card (moved here from part 4). Found on the way: Grammatica's "Tap the wrong word" never came
       for a form with an "s" in it (`/s/` where `/\s/` was meant); fixed.
+- [x] **Part 2 · French and German** (2026-10-22): twelve units each, written by hand on the same
+      outline, with each unit's grammar drawn from that language's Grammatica (French: être and
+      avoir, the partitive, the passé composé with être, y and en; German: separable verbs, the
+      two-way prepositions, adjective endings, the Perfekt, word order after `weil` and `dass`).
