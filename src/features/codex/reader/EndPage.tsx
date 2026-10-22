@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Button } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import type { CheckItem } from '@/core/text/checks';
+import { OwnWordsFold } from '@/features/production/OwnWords';
 import { CheckYourself } from './CheckYourself';
 import { GoalRing } from './readingGoal';
 import type { SessionStats } from './useReadingSession';
@@ -98,6 +99,10 @@ export function EndPage({ lang, refId, title, author, stats, todayMs, goal, fini
             <CheckYourself lang={lang} refId={refId} words={checks} source={source} />
           </motion.div>
         )}
+
+        <motion.div className="w-full max-w-xl" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.82 }}>
+          <OwnWordsFold lang={lang} title={title} refId={refId} className={checks.length > 0 ? 'mt-4' : 'mt-10'} />
+        </motion.div>
 
         <motion.div className="mt-10 flex w-full max-w-xs flex-col gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.85 }}>
           <Button size="lg" onClick={onFinish} block>

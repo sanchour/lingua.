@@ -20,6 +20,8 @@ export interface UnitOutline {
   write: string;
   /** What to talk about in the speaking lesson's last, open turn. */
   speak: string;
+  /** A scene to describe in your own words (the Write lesson's second task). */
+  scene: string;
 }
 
 export const OUTLINE: UnitOutline[] = [
@@ -31,6 +33,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Say hello and goodbye', 'Say your name and ask someone theirs', 'Ask how someone is, and answer'],
     write: 'Write a short message to a new classmate: say hello, give your name and ask theirs.',
     speak: 'Greet someone, say your name and ask how they are.',
+    scene: 'The first evening of a language class: people arrive, greet each other and say their names.',
   },
   {
     id: 'me',
@@ -40,6 +43,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Say where you are from and where you live', 'Say which languages you speak', 'Say what you do and how old you are'],
     write: 'Introduce yourself in three or four sentences: where you are from, where you live, what you do and which languages you speak.',
     speak: 'Say where you are from, where you live and what you do.',
+    scene: 'A party where you meet someone new: where they are from, where they live and what they do.',
   },
   {
     id: 'family',
@@ -49,6 +53,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Name the people in your family', 'Say what they are like', 'Say whether you have brothers, sisters or children'],
     write: 'Describe your family, or a family you know: who they are and what they are like.',
     speak: 'Tell someone about two people in your family.',
+    scene: 'A family photo on the wall: who is in it, how old they are and what they are like.',
   },
   {
     id: 'cafe',
@@ -58,6 +63,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Order something to eat and drink', 'Say what you like and don’t like', 'Ask what something costs, and pay'],
     write: 'Write what you would order in a café, and say what you like to eat and drink.',
     speak: 'Order a drink and something to eat, then ask for the bill.',
+    scene: 'A busy café on a Saturday morning: what people order, eat and drink, and who pays.',
   },
   {
     id: 'day',
@@ -67,6 +73,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Tell the time', 'Describe your usual day', 'Say what you do on which day'],
     write: 'Describe a usual weekday: when you get up, what you do and when you go to bed.',
     speak: 'Describe your morning, from getting up to leaving the house.',
+    scene: 'An ordinary Monday morning at home, from the alarm clock to leaving the house.',
   },
   {
     id: 'town',
@@ -76,6 +83,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Ask where a place is', 'Understand simple directions', 'Say what there is in your town'],
     write: 'Describe your town or neighbourhood: what there is and how you get around.',
     speak: 'Ask the way to the station and repeat the directions.',
+    scene: 'The main square of a town: the shops and cafés, the people, and how they get around.',
   },
   {
     id: 'shopping',
@@ -85,6 +93,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Ask for something in a shop', 'Talk about sizes, colours and prices', 'Compare two things and choose'],
     write: 'Write about something you bought recently: what it is, its colour and price, and why you chose it.',
     speak: 'Ask for a shirt in another size and colour, and say which one you take.',
+    scene: 'A clothes shop on the first day of the sales: what people try on, the colours and the prices.',
   },
   {
     id: 'home',
@@ -94,6 +103,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Describe your home and its rooms', 'Say where things are', 'Say what you like about where you live'],
     write: 'Describe your home: its rooms, what is in them, and your favourite place in it.',
     speak: 'Describe your favourite room and where things are in it.',
+    scene: 'A living room on a rainy Sunday afternoon: the furniture, where things are, and who is there.',
   },
   {
     id: 'weekend',
@@ -103,6 +113,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Say what you did yesterday and last weekend', 'Ask someone what they did', 'Tell a short story in the past'],
     write: 'Write about last weekend: where you went, what you did and with whom.',
     speak: 'Tell someone what you did last weekend.',
+    scene: 'A day at the beach last summer: who was there and what everyone did.',
   },
   {
     id: 'health',
@@ -112,6 +123,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Say how you feel and what hurts', 'Explain a problem at the doctor’s or the pharmacy', 'Give and understand simple advice'],
     write: 'Write a message to say you are ill and can’t come: what is wrong and what you are doing about it.',
     speak: 'Explain to a doctor what hurts and since when.',
+    scene: 'A doctor’s waiting room: who is waiting, what is wrong with them and how they feel.',
   },
   {
     id: 'plans',
@@ -121,6 +133,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Say what you are going to do and will do', 'Invite someone, and accept or decline', 'Book a room and deal with a problem on a trip'],
     write: 'Write to a friend about your plans for the next holiday, and invite them to come along.',
     speak: 'Invite a friend to do something on Saturday and agree on a time.',
+    scene: 'A railway station before the holidays: where people are going and what they will do there.',
   },
   {
     id: 'opinions',
@@ -130,6 +143,7 @@ export const OUTLINE: UnitOutline[] = [
     canDo: ['Say what you think and why', 'Agree and disagree politely', 'Compare two options and recommend one'],
     write: 'Give your opinion on living in a city or in the countryside, with two reasons.',
     speak: 'Say what you think of social media, and why.',
+    scene: 'A city street and a village street side by side: what is better and what is worse about each.',
   },
 ];
 

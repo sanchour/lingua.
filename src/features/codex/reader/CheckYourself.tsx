@@ -5,6 +5,7 @@ import type { CheckItem } from '@/core/text/checks';
 import { useApp } from '@/app/context';
 import { recordSession } from '@/data/activity';
 import { aiBlock } from '@/data/plan';
+import { isEditable } from '@/design/hooks/useHotkeys';
 import { Button, Kbd } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
@@ -130,7 +131,8 @@ function ChoiceQuestion({ lang, item, answered, onAnswer }: { lang: string; item
     if (answered) return;
     const onKey = (e: KeyboardEvent) => {
       const n = Number(e.key);
-      if (n >= 1 && n <= item.options.length && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      // Not while writing in your own words below.
+      if (n >= 1 && n <= item.options.length && !e.metaKey && !e.ctrlKey && !e.altKey && !isEditable(e.target)) {
         e.preventDefault();
         e.stopPropagation();
         pick(n - 1);
@@ -238,7 +240,7 @@ function Feedback({ ok, item, last, onNext }: { ok: boolean; item: CheckItem; la
   // Enter goes on.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Enter') return;
+      if (e.key !== 'Enter' || isEditable(e.target)) return;
       e.preventDefault();
       e.stopPropagation();
       onNext();

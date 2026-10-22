@@ -1206,6 +1206,17 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-22 — In your own words (Cursus, part 4)
+
+- **Where it is asked for:** at the natural end of something (a text's end page) or beside it
+  (the players' side panel), always folded or behind a button, never in the way. Each place asks
+  two things that fit it: retell, plus carry it on (reading), describe a scene (watching) or keep
+  one thing (listening). No new room: what is written goes to Diarium, where writing already lives.
+- **Scenes in words, not pictures:** "describe a picture" would need pictures Lingua doesn't have
+  and can't license; each course unit has a scene described in English to write about instead.
+- **One panel and one hook** (`useOwnWriting`) for the course's Write lesson and the rest, so the
+  check, Diarium and "Ask a speaker" behave the same everywhere.
+
 ## 2026-10-22 — Cursus, the course
 
 - **One outline, each language written by hand.** Twelve can-do units (A1 to B1) shared by the six

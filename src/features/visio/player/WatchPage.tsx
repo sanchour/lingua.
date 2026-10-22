@@ -22,6 +22,7 @@ import { VIDEO_ACCEPT } from '@/services/visio/files';
 import { toVtt } from '@/services/visio/subtitles';
 import { translateLine } from '@/services/translate/gloss';
 import { toast } from '@/state/ui';
+import { OwnWordsButton } from '@/features/production/OwnWords';
 import { VideoOptions } from '../library/VideoOptions';
 import { createVideoClock } from './clock';
 import { lineAt, matchingLine, nextLineStart, previousLineStart } from './lines';
@@ -365,6 +366,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
         </h1>
         {meta.length > 0 && <p className="mt-1 text-[13.5px] text-ink-soft">{meta.join(' · ')}</p>}
       </div>
+      <OwnWordsButton lang={media.lang} lane="watch" title={media.title} refId={media.id} />
       <VideoOptions media={media} onRemoved={() => navigate('/sonus?show=watch')} />
     </div>
   );

@@ -21,6 +21,7 @@ import { createSpotifyClock, SpotifyEmbed } from './SpotifyEmbed';
 import { NoTranscript, TranscriptBar } from './TranscriptTools';
 import { Transport } from './Transport';
 import { sonusBase, sonusHome } from '@/features/sonus/paths';
+import { OwnWordsButton } from '@/features/production/OwnWords';
 
 const dateFmt = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -165,6 +166,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
               </div>
               {bar && <div className="mt-4">{bar}</div>}
               <div className="mt-6">{controls}</div>
+              <OwnWordsButton lang={media.lang} lane="listen" title={media.title} refId={media.id} className="mt-3 -ml-3" />
             </div>
           </aside>
           <section aria-label="Transcript" className="flex min-h-0 min-w-0 flex-col">

@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 
 export type HotkeyMap = Record<string, (event: KeyboardEvent) => void>;
 
-function isEditable(target: EventTarget | null): boolean {
+export function isEditable(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
   return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
 }

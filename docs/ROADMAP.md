@@ -1839,7 +1839,7 @@ of the handover and runs in parallel with 5.1-1.*
       it's needed (3.0-8), sentences with a gap (4.0-2), and feedback on writing and speaking from
       AI with a key. Feedback from other speakers needs a community and a server, which Lingua
       doesn't have; the step looks at a light way to do it (sharing an exercise to a speaker).
-- [ ] **More open questions and active production,** in Cursus and across the app: answer in your
+- [x] **More open questions and active production,** in Cursus and across the app: answer in your
       own words, describe a picture or a scene, retell what you read or heard, write the next line.
 - [ ] **Speak your journal:** in Diarium a microphone button; what you say is transcribed (Whisper on
       the device, or Groq with a key) into the entry, to read back and correct. Links and prompts
@@ -1900,3 +1900,12 @@ of the handover and runs in parallel with 5.1-1.*
       word", the planted form was the only tile without stress marks; every tile now drops them.
       The course test also checks that every language file is found: Vitest's module cache
       (`node_modules/.vitest-cache`) once kept an old list and hid the new languages.
+- [x] **Part 4 · in your own words, across the app** (2026-10-22): `core/production/tasks.ts`
+      (with tests) and one panel, `features/production`: the task, the text, Check it (Max with
+      a key), Keep in Diarium, Ask a speaker; the writing time counts in Ratio. The reader's end
+      page folds it under Check yourself (retell it, or write what comes next); the audio and video
+      players open it in a side panel (retell it; keep one thing you heard, or describe a scene you
+      watched); the course's Write lesson chooses between the unit's task, a scene to describe
+      (each unit now has one) and one of its questions to answer. Beginners (to A2) are asked for
+      less. Home's card came in part 1. Found on the way: Check yourself's number keys and Enter
+      worked even while typing in a text box; they no longer do.

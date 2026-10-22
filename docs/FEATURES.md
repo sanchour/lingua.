@@ -584,6 +584,10 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Adding to the library:** a drop area with a drawing per kind and one button; the cover appears
   once the file is read. **Photos of a printed book's pages** become a text on this device (OCR),
   each photo beside its page's text. The reading level on a small scale.
+- **In your own words:** after reading (the end page), listening and watching (the players), a
+  panel to retell it, carry a text on, keep one thing you heard or describe a scene you watched,
+  checked by AI with Max and a key, kept in Diarium, or copied for someone who speaks the
+  language. The course's Write lesson offers the unit's task, a scene, or a question to answer.
 - **The course** (Cursus › Course, Lingua+), in Spanish, French, German, Russian, Arabic and
   Mandarin: twelve units from A1 to B1, each named by what you can
   do after it (say hello, talk about yourself … give your opinion), with six lessons: words,
