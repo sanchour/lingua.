@@ -69,7 +69,7 @@ function Details({ text, fresh }: { text: Text; fresh: boolean }) {
             <>
               {' · '}
               <a href={text.sourceUrl} target="_blank" rel="noreferrer" className="font-semibold text-accent-text underline-offset-2 hover:underline">
-                The original article
+                {text.kind === 'article' ? 'The original article' : 'Where it came from'}
               </a>
             </>
           )}

@@ -582,6 +582,9 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Adding to the library:** a drop area with a drawing per kind and one button; the cover appears
   once the file is read. **Photos of a printed book's pages** become a text on this device (OCR),
   each photo beside its page's text. The reading level on a small scale.
+- **Discover** (Codex › Discover): Wikipedia's most read today, the latest news, free classics from
+  Project Gutenberg and Wikisource (search titles and authors), each one click into the library with
+  its chapters; links to free picture-book and comic libraries.
 - **Check yourself** at the end of a text: four or five quick questions from the text (a missing
   word, which word means…, a sentence back in order), two more about the story with Max. 1–4 and
   Enter; the round counts in Ratio.

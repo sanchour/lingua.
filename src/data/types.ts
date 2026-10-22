@@ -69,10 +69,12 @@ export interface Text extends Synced {
   lang: Lang;
   /** 'comic': one chapter per page, the page's picture first and its speech bubbles after it. */
   kind: 'book' | 'article' | 'transcript' | 'shelfItem' | 'comic';
-  source: 'epub' | 'pdf' | 'txt' | 'paste' | 'article' | 'goodreads' | 'sonus' | 'visio' | 'cantus' | 'comic' | 'photos';
+  source: 'epub' | 'pdf' | 'txt' | 'paste' | 'article' | 'goodreads' | 'sonus' | 'visio' | 'cantus' | 'comic' | 'photos' | 'gutenberg' | 'wiki';
   title: string;
   author?: string;
   coverBlobId?: string;
+  /** A cover picture on the web (Gutenberg, Open Library by ISBN), shown when there is none stored. */
+  coverUrl?: string;
   /** A designed cover (cloth colour and ornament) for texts without a picture of their own. */
   cover?: CoverDesign;
   mediaId?: string;

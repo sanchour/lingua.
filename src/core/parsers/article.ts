@@ -43,7 +43,7 @@ export interface ReadArticle {
 }
 
 /** Links, pictures and emphasis out of a line of Markdown, keeping the words. */
-function inline(md: string): string {
+export function inline(md: string): string {
   return md
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
     .replace(/\[([^\]]*)\]\((?:[^()]|\([^)]*\))*\)/g, '$1')

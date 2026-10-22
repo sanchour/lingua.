@@ -1206,6 +1206,25 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-22 — Discover (5.1-3a)
+
+- **Only sources an app may read, checked when built.** Wikipedia, Wikisource and Gutendex send
+  CORS; Gutenberg's files and search page don't, so they go through Jina Reader, which the news
+  already uses (it sees the link and nothing else). StoryWeaver, African Storybook, Bloom and
+  Pepper&Carrot don't let apps read their files (and Commons has Pepper&Carrot only in English and
+  Esperanto): they are links, and their downloads come in through Import. Wikinews is left out: no
+  new stories in a month.
+- **Belt and braces for flaky lists.** Wikipedia's two most-read lists were each empty for some
+  languages on some days: the feed (yesterday, then the day before) comes first, then the API's
+  list. Gutendex often didn't answer (once over 40 seconds): eight seconds, then Gutenberg's own
+  search. Gutendex's data keeps out audio books and bilingual books; at import, a missing edition
+  is said plainly instead of importing an error page.
+- **Books keep their chapters:** the HTML edition's headings become chapters (the title page's
+  lines and the table of contents left out); a Wikisource work's subpages, in the order its main
+  page links them.
+- **Covers from the web** (`coverUrl`): shown as pictures, which needs no CORS; the designed cover
+  when one doesn't load.
+
 ## 2026-10-21 — Photos of a book's pages (5.1-3a)
 
 - **The comics' OCR, on the device,** in a second mode: a book page is read whole (Tesseract's

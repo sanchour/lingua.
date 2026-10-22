@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, BookOpenText, LayoutGrid, List, Plus, Search, SearchX, Sparkles } from 'lucide-react';
+import { ArrowRight, BookOpenText, Compass, LayoutGrid, Library, List, Plus, Search, SearchX, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { movedPath } from '@/app/redirects';
 import { useFullMotion } from '@/app/motion';
 import { PageHeader } from '@/app/PageHeader';
+import { RoomTabs } from '@/app/RoomTabs';
+import type { RoomTab } from '@/app/RoomTabs';
 import { SAMPLES } from '@/core/lang/samples';
 import { refreshTextStats, useAllProgress, useLibrary } from '@/data/library';
 import { patchSetting } from '@/data/settings';
@@ -18,9 +20,16 @@ import { fade, spring } from '@/design/motion';
 import { attachEpub } from '@/services/import/importers';
 import { pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
+import { DiscoverTab } from './discover/DiscoverTab';
 import { BookCard, BookRow } from './library/BookCard';
 import { BookCover } from './library/BookCover';
 import { useImporter } from './library/useImporter';
+
+type Tab = 'library' | 'discover';
+const TABS: Array<RoomTab<Tab>> = [
+  { id: 'library', label: 'Library', to: '/codex', icon: Library },
+  { id: 'discover', label: 'Discover', to: '/codex/discover', icon: Compass },
+];
 
 type Group = 'reading' | 'next' | 'finished' | 'wishlist';
 type Filter = 'all' | Group;
@@ -79,10 +88,12 @@ export default function CodexPage() {
   const searchRef = useRef<HTMLInputElement>(null);
   const { librarySort: sort, libraryView: view } = settings.ui;
   // Diarium moved to Mentis (Lingua 5); its old tab address lands there.
-  const { search } = useLocation();
+  const { pathname, search } = useLocation();
   const moved = movedPath('/codex', search);
+  // Codex's tabs (5.1-3a): your library, and Discover for free reading from the web.
+  const tab: Tab = pathname.startsWith('/codex/discover') ? 'discover' : 'library';
 
-  useHotkeys({ '/': () => (searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && Boolean(texts?.length));
+  useHotkeys({ '/': () => (searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && Boolean(texts?.length) && tab === 'library');
 
   // Comprehension drifts as words become known; refresh quietly, one book at a time.
   useEffect(() => {
@@ -155,12 +166,14 @@ export default function CodexPage() {
           </Link>
         }
       />
+      <RoomTabs label="Codex" tabs={TABS} active={tab} />
 
-      {texts && texts.length === 0 && <EmptyLibrary lang={lang} busy={busy === 'sample'} onSample={() => void run('sample')} />}
+      {tab === 'discover' && <DiscoverTab lang={lang} />}
+      {tab === 'library' && texts && texts.length === 0 && <EmptyLibrary lang={lang} busy={busy === 'sample'} onSample={() => void run('sample')} />}
 
-      {current && progress && !query && <ContinueCard text={current} progress={progress.get(current.id)!} />}
+      {tab === 'library' && current && progress && !query && <ContinueCard text={current} progress={progress.get(current.id)!} />}
 
-      {texts && texts.length > 0 && (
+      {tab === 'library' && texts && texts.length > 0 && (
         <>
           <div className="mt-8 mb-6 flex h-11 items-center gap-2">
             <div className="relative h-full min-w-0 flex-1">

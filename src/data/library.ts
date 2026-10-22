@@ -28,6 +28,7 @@ export interface NewText {
   shelf?: Text['shelf'];
   level?: Text['level'];
   sourceUrl?: string;
+  coverUrl?: string;
 }
 
 /** A text's chapters in reading order, without removed ones. */
@@ -98,6 +99,7 @@ export async function addText(input: NewText, database: LinguaDB = db): Promise<
     shelf: input.shelf ?? 'reading',
     level: input.level,
     sourceUrl: input.sourceUrl,
+    coverUrl: input.coverUrl,
     chapterCount: chapters.length,
     wordCount: chapters.reduce((sum, c) => sum + c.wordCount, 0),
     createdAt: now,

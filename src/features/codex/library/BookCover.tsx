@@ -5,7 +5,7 @@ import { cx } from '@/lib/cx';
 import { coverOf } from './covers';
 
 interface BookCoverProps {
-  text: Pick<Text, 'id' | 'title' | 'author' | 'coverBlobId' | 'lang' | 'cover'>;
+  text: Pick<Text, 'id' | 'title' | 'author' | 'coverBlobId' | 'lang' | 'cover' | 'coverUrl'>;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
 }
@@ -36,6 +36,8 @@ function Ornament({ kind, place }: { kind: CoverOrnament; place: 'top' | 'middle
 
 export const BookCover = memo(function BookCover({ text, className, size = 'md' }: BookCoverProps) {
   const [url, setUrl] = useState<string | null>(null);
+  // A picture on the web that didn't load (offline, or gone): the designed cover instead.
+  const [remoteFailed, setRemoteFailed] = useState(false);
 
   useEffect(() => {
     if (!text.coverBlobId) return setUrl(null);
@@ -56,10 +58,11 @@ export const BookCover = memo(function BookCover({ text, className, size = 'md' 
   }, [text.coverBlobId]);
 
   const frame = cx('relative aspect-[2/3] overflow-hidden rounded-[6px] shadow-elev-2', className);
-  if (url) {
+  const picture = url ?? (text.coverUrl && !remoteFailed ? text.coverUrl : null);
+  if (picture) {
     return (
       <div className={frame}>
-        <img src={url} alt="" className="size-full object-cover" draggable={false} />
+        <img src={picture} alt="" className="size-full object-cover" draggable={false} referrerPolicy="no-referrer" onError={url ? undefined : () => setRemoteFailed(true)} />
         <span className="pointer-events-none absolute inset-y-0 left-0 w-[6%] bg-gradient-to-r from-black/20 to-transparent" aria-hidden />
       </div>
     );

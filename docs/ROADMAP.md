@@ -1779,8 +1779,19 @@ and c; and word translations must get much better in the six core languages (Spa
       (`services/import/pagePhotos`); paragraphs are rebuilt from where the lines sit (gaps,
       indents, columns, short last lines), words broken over two lines are mended, page numbers and
       smudges dropped (`core/text/ocrPage`, tested), and each photo stays beside its text.
-- [ ] **6 · Discover:** news, free books (Gutendex, Wikisource, StoryWeaver, African Storybook) and
-      Pepper&Carrot, one click into the library.
+- [x] **6 · Discover,** a tab beside Library (`/codex/discover`; Codex has room tabs now). Sources
+      checked for CORS and licences on 2026-10-21/22: **Wikipedia's most read** (the feed for
+      yesterday, then the day before, then the API's list; each was empty for some languages on
+      some days), whole articles without the lists of sources, CC BY-SA; **the news** from the
+      language's feeds (News & links); **Project Gutenberg** (Gutendex, without audio books,
+      bilingual books or books under copyright; Gutenberg's own search through Jina Reader when
+      Gutendex doesn't answer; the HTML edition through Jina Reader, its headings made chapters,
+      the title page and contents left out, drop capitals mended); **Wikisource** by search (a
+      work's subpages as its chapters, an edition list followed to its first edition). Real covers
+      (`coverUrl` on texts), one click into the library, "On your shelf" once there. Left out:
+      Wikinews (no new stories in a month in Spanish or French), and the picture-book and comic
+      libraries (StoryWeaver, African Storybook, Bloom, Pepper&Carrot), which don't let apps read
+      their files: linked, to download and add as files.
 - [ ] **7 · Goodreads** as its own section: sort, group, filter, covers by ISBN.
 
 ### The frame of Lingua 5 (5.1-1 with 5.2-1, handover step 2): how it is built
