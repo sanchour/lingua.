@@ -12,7 +12,7 @@ import type { Cue, Media } from '@/data/types';
 import { downloadBlob } from '@/services/sonus/net';
 import { decodeToMono16k, splitAtPauses, wav } from './audio';
 import { DEVICE_MODELS, whisperOnDevice } from './device';
-import type { DeviceModel } from './device';
+import type { DeviceModel, DeviceProgress } from './device';
 
 const ENDPOINT = 'https://api.groq.com/openai/v1/audio/transcriptions';
 /** Groq's free tier accepts uploads up to 25 MB; parts stay safely under it. */
@@ -175,7 +175,7 @@ export async function clipBlocker(): Promise<string | null> {
   return block === 'max' ? NO_PLAN : block === 'key' ? NO_CLIP_KEY : null;
 }
 
-export async function transcribeClip(bytes: Uint8Array, lang: string): Promise<Cue[]> {
+export async function transcribeClip(bytes: Uint8Array, lang: string, onProgress?: (p: DeviceProgress) => void): Promise<Cue[]> {
   const { apiKeys, audio } = await getAiSettings();
   const device = audio.transcriber === 'device';
   if (!device && !apiKeys.groq) throw new TranscribeError(NO_CLIP_KEY, 'no-key');
@@ -184,7 +184,7 @@ export async function transcribeClip(bytes: Uint8Array, lang: string): Promise<C
     result = await request(apiKeys.groq!, form(audio.whisperModel, lang, { file: new Blob([bytes as BlobPart], { type: 'audio/mpeg' }), name: 'live.mp3' }));
   } else {
     const samples = await decode(new Blob([bytes as BlobPart]));
-    result = device ? await whisperOnDevice(samples, lang, audio.deviceModel) : await request(apiKeys.groq!, form(audio.whisperModel, lang, { file: wav(samples), name: 'live.wav' }));
+    result = device ? await whisperOnDevice(samples, lang, audio.deviceModel, onProgress) : await request(apiKeys.groq!, form(audio.whisperModel, lang, { file: wav(samples), name: 'live.wav' }));
   }
   return cuesFromWhisper(result, lang).filter((c) => !INVENTED.test(c.text.trim()));
 }
