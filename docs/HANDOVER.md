@@ -5,7 +5,7 @@ needs is in this repository; Claude's memory doesn't travel, and [CLAUDE.md](../
 way of working and the rules. This file is the **work queue**: what is still open, in order, how to
 take a step without clashing with another account, and the prompts to paste.
 
-Last updated 2026-10-21 (5.1 regrouped into four steps; step 2 done).
+Last updated 2026-10-23 (5.1-3b part 1 done; parts 2–4 and 5.1-3c free to take, see section 6).
 
 ---
 
@@ -62,7 +62,7 @@ read that part before starting.
 | 6 | [x] | *Done 2026-10-21 (a, b and c).* **5.1-2 · Plans, the first start and Home,** one step in three parts, in order: a · Lingua+ and Lingua+ Max (Stripe in test mode, the licence server, plans, the MAX badge); b · onboarding, the map without dots and its language data, the twelve flags (it shows the plans); c · Home, the new layout (the old one a setting away). After 2. | 5.1-2a, b, c | XL |
 | 7 | — | *Merged into step 6 on 2026-10-21 (5.1 in four steps).* | — | — |
 | 8 | — | *Merged into step 6 on 2026-10-21.* | — | — |
-| 9 | [~] | *claimed 2026-10-21; a done 2026-10-22; b in progress (part 1 of 4 done 2026-10-23); c not started, the user asked for b only here (2026-10-23)* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
+| 9 | [ ] | *a done 2026-10-22; b part 1 of 4 done 2026-10-23; **b parts 2–4 and c are free** (released 2026-10-23; where b stopped: section 6)* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
 | 10 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 11 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 12 | — | *Merged into step 20 on 2026-10-21 (typing goes with the design touch as 5.1-4).* | — | — |
@@ -84,7 +84,8 @@ and 20 (5.1-4); 21 holds 5.1's check (5.1-5) with 5.2's.
 **The order now (the user, 2026-10-21, settled: "I meant after 5.1-3a do cursus"):** finish 5.1-3a
 (Codex, with much better word translations for the six core languages), then step 4, **Cursus, the
 course, for all six core languages**, then 5.1-3b and c (the rest of step 9). **5.1-3a is done
-(2026-10-22, ROADMAP "Codex (5.1-3a)"), and Cursus (2026-10-22, ROADMAP "Cursus"); 5.1-3b is next.**
+(2026-10-22, ROADMAP "Codex (5.1-3a)"), and Cursus (2026-10-22, ROADMAP "Cursus"). 5.1-3b part 1 is
+done (2026-10-23); next are 5.1-3b parts 2, 3 and 4, then 5.1-3c (section 6).**
 
 ---
 
@@ -111,3 +112,59 @@ course, for all six core languages**, then 5.1-3b and c (the rest of step 9). **
   scripts must keep whatever the file has.
 - **Learning data** lives in each browser, not in the repo; device sync (SETUP.md, section 6)
   moves it.
+
+---
+
+## 6. Where 5.1-3b stopped (2026-10-23)
+
+The plan is ROADMAP "Thesaurus and Ludus (5.1-3b, handover step 9): how it is built" (four parts,
+each pushed on its own) and the design is LINGUA-5.1-PLAN.md "5.1-3b". Claim step 9 again before
+starting, as section 2 says.
+
+**Done, part 1 (the room), commit a053a1c:** header tabs, the deck table and cards view, the Today
+rail, the journey under My decks. Files: `src/features/thesaurus/ThesaurusPage.tsx`,
+`library/DeckTree.tsx`, `library/TodayCard.tsx`, `library/JourneySection.tsx`,
+`library/states.ts` (`CARD_STATES`: new sage, learning amber, to review blue, fixed because the
+accent changes with every palette; `studiedAgo`), `common/DeckIcon.tsx` (`deckHue`, `THEME_HUES`),
+`src/app/RoomTabs.tsx` (its `end` tools now also show below 1024 px), setting `ui.deckView`.
+
+**Next, part 2 (a deck):** `src/features/thesaurus/deck/DeckPage.tsx` and `DeckSettings.tsx`: the
+settings as a right-hand panel in sections (Daily limits, Order, Card look, Ludus, Danger zone) with
+a live card preview at the top; the card list as a grid of small cards (word, meaning, a state dot
+from `CARD_STATES`, when it's due) that turn over on hover, five across on a wide screen, "Show
+more" as now.
+
+**Then part 3 (Ludus):** `study/exercises.tsx` `Options` (one height with `auto-rows-fr`,
+`hyphens: auto` with `lang` set, smaller type only for very long answers, four short ones in a
+row); `src/core/srs/ludus.ts` `planLesson` by weights (never the same kind twice running, no kind
+over about a third, gentle kinds for new cards, their second round mixed in, gap sentences in the
+mix); a test over many seeded lessons. Check German and Russian with long words.
+
+**Then part 4 (Discover, with a pack rebuild):**
+- About 40 themes in groups Path, Everyday, Fun, Grammar and Computed (cognates; your words from
+  songs and shows), as minimal cards with search, sort and group. Discover lost the frequency path
+  to My decks in part 1: show it again there as the Path group.
+- "Add to My decks" or "Add to…" a deck you have, skipping words already in it and saying how many
+  were added, on themes and on journey stages (`src/data/starter.ts` `addStarterDeck`;
+  `library/JourneySection.tsx` and `VocabularyJourney.tsx`).
+- New concept lists in `scripts/lang-data/themes.ts` (CONCEPTS), the themes in
+  `src/core/lang/starter.ts` `STARTER_THEMES`, icons and hues in `common/DeckIcon.tsx`.
+- Build: `node scripts/lang-data/translations.ts`, `node scripts/lang-data/themes.ts`, then
+  `node scripts/lang-data/build.ts <codes>`, one pack at a time, tier 1 and 2 first, **dev server
+  stopped** (1–2 GB each). Bump `PACK_VERSION` in `src/core/packs/format.ts` (7 → 8) and the
+  `v7` file name in `src/core/lang/formGloss.test.ts`. Japanese and Mandarin also need
+  `node scripts/lang-data/count.ts` first (about an hour; not run yet).
+- `scripts/.cache` (2.3 GB) was fully downloaded on 2026-10-23, but only on the laptop that did
+  part 1. On any other computer run `node scripts/lang-data/fetch.ts` first (SETUP.md, section 5).
+
+**Then 5.1-3c** (sound without a key), planned in LINGUA-5.1-PLAN.md "5.1-3c"; it isn't in the
+roadmap yet.
+
+**Things that cost time in part 1:**
+- Tailwind only sees class names written out in full: a class built in a template string
+  (`bg-[color-mix(...${hue}...)]`) never reaches the CSS. Spell each one out, or use `style`.
+- When Claude's window is hidden, the built-in browser stops drawing: screenshots time out, and
+  `AnimatePresence mode="wait"` swaps (tabs, search results) stall until a screenshot forces a
+  frame. Check with DOM reads or by measuring with JavaScript, and retry the screenshot.
+- A fresh browser profile starts at onboarding. Test decks can be made from the page's console:
+  `(await import('/src/data/starter.ts')).addStarterDeck('es', { kind: 'theme', id: 'food' }, { skipKnown: false })`.

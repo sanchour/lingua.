@@ -1919,11 +1919,13 @@ of the handover and runs in parallel with 5.1-1.*
       with a prompt in the language) and Diarium ("Talk about this"); the course's Speak lesson now
       ends with "Finish, and keep talking with an AI", opening Sermo on the unit's subject.
 
-**Cursus is done (2026-10-22).** Next, in the user's order: 5.1-3b and c.
+**Cursus is done (2026-10-22).** Next, in the user's order: 5.1-3b and c. 5.1-3b part 1 is done (2026-10-23);
+parts 2–4 and 5.1-3c are next (HANDOVER.md, section 6).
 
 ### Thesaurus and Ludus (5.1-3b, handover step 9): how it is built
 *Planned 2026-10-23; the design is in LINGUA-5.1-PLAN.md "5.1-3b". The user asked (2026-10-23) for
-5.1-3b here and not 5.1-3c. Each part pushed.*
+5.1-3b here and not 5.1-3c. Each part pushed. The user stopped it after part 1 (2026-10-23); parts 2–4
+are free for the next account (HANDOVER.md, section 6).*
 - **Part 1 · the room** (done 2026-10-23)**:** My decks · Discover · Dictionary as the room's header tabs (1 2 3), with
   search, sort, the list/cards view and New at the right of the row. My decks: a desktop list
   (picture, name, folder, cards, new · learning · review pills, last studied; Study, Ludus and ⋯ on
