@@ -2,41 +2,21 @@ import type { CSSProperties } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Check, Download } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
-import { FREQUENCY_MILESTONES, STARTER_THEMES } from '@/core/lang/starter';
-import { starterKey, useFrequencyProgress, useStarterDecks, useStarterList } from '@/data/starter';
+import { STARTER_THEMES } from '@/core/lang/starter';
+import { starterKey, useStarterDecks, useStarterList } from '@/data/starter';
 import type { StarterSpec } from '@/data/starter';
 import { Button, Card } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { installPack, usePackJobs } from '@/services/packs/packs';
-import { THEME_ICONS } from '../common/DeckIcon';
-import { VocabularyJourney } from './VocabularyJourney';
-
-/** Each themed set has its own soft colour, mixed into the page so it suits Paper and Nocturne alike. */
-const THEME_HUES: Record<string, string> = {
-  basics: '#c86d51',
-  verbs: '#d49b54',
-  connectors: '#8a7fb0',
-  animals: '#6b8e78',
-  food: '#c98a4b',
-  people: '#c4707f',
-  home: '#9a8466',
-  time: '#5f87a8',
-  describe: '#b56fa0',
-  body: '#cf6a6a',
-  travel: '#4f93a0',
-  nature: '#6f9a5a',
-  feelings: '#d18aa0',
-  work: '#7c8aa8',
-};
+import { THEME_HUES, THEME_ICONS } from '../common/DeckIcon';
 
 /** A few words from across the set, as a taste of it. */
 const samples = (rows: Array<[string, string, string, string]>) => [0, Math.floor(rows.length / 3), Math.floor((rows.length * 2) / 3)].map((i) => rows[i]?.[0]).filter((w, i, all) => w && all.indexOf(w) === i);
 
-/** The ready-made library: a path of frequency milestones and a shelf of themed sets. */
+/** The ready-made library: a shelf of themed sets (the frequency path is under My decks). */
 export function StarterLibrary({ lang, onOpen }: { lang: string; onOpen: (spec: StarterSpec) => void }) {
   const list = useStarterList(lang);
   const added = useStarterDecks(lang);
-  const progress = useFrequencyProgress(lang, FREQUENCY_MILESTONES);
   const job = usePackJobs((s) => s.jobs[lang]);
   const name = getLanguage(lang)?.name ?? lang;
 
@@ -56,20 +36,8 @@ export function StarterLibrary({ lang, onOpen }: { lang: string; onOpen: (spec: 
     );
   }
 
-  const milestones = FREQUENCY_MILESTONES.filter((_, i) => i === 0 || FREQUENCY_MILESTONES[i - 1] < list.lemmaFreq.length);
   return (
     <div className="space-y-6">
-      <section>
-        <h3 className="mb-1 font-serif text-[22px] font-semibold">Your vocabulary journey</h3>
-        <VocabularyJourney
-          milestones={milestones}
-          progress={progress}
-          added={(m) => Boolean(added?.get(starterKey({ kind: 'frequency', milestone: m })))}
-          onOpen={(m) => onOpen({ kind: 'frequency', milestone: m })}
-        />
-        <p className="mt-1 text-[12.5px] text-ink-faint">Each stop adds the next band of words, so you never see a word twice.</p>
-      </section>
-
       <div>
         <h3 className="mb-3 text-[13px] font-bold tracking-wide text-ink-soft uppercase">Themes</h3>
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-3 xl:grid-cols-4">

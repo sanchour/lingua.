@@ -1714,7 +1714,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
   - [x] b · Onboarding: your name and a welcome, a big map without dots, accurate language data, twelve new flags, the new screens, the plans as a pitch (2026-10-21)
   - [x] c · Home: Today, Next up, the week, Cursus, Mundus, numbers, as a square grid (the old Home one setting away; 2026-10-21)
 - [ ] 5.1-3 · Reading, words and sound
-  - [ ] a · Codex (on top of what 4.0-2 built)
+  - [x] a · Codex (on top of what 4.0-2 built) (2026-10-22)
   - [ ] b · Thesaurus and Ludus: deck list and cards, a much larger Discover, even and varied Ludus
   - [ ] c · Sound: human recordings and a natural on-device voice without a key
 - [ ] 5.1-4 · Typing, and the language in the design
@@ -1920,3 +1920,30 @@ of the handover and runs in parallel with 5.1-1.*
       ends with "Finish, and keep talking with an AI", opening Sermo on the unit's subject.
 
 **Cursus is done (2026-10-22).** Next, in the user's order: 5.1-3b and c.
+
+### Thesaurus and Ludus (5.1-3b, handover step 9): how it is built
+*Planned 2026-10-23; the design is in LINGUA-5.1-PLAN.md "5.1-3b". The user asked (2026-10-23) for
+5.1-3b here and not 5.1-3c. Each part pushed.*
+- **Part 1 · the room** (done 2026-10-23)**:** My decks · Discover · Dictionary as the room's header tabs (1 2 3), with
+  search, sort, the list/cards view and New at the right of the row. My decks: a desktop list
+  (picture, name, folder, cards, new · learning · review pills, last studied; Study, Ludus and ⋯ on
+  hover; folders fold with their counts) or a grid of deck cards; the Today card in a sticky right
+  rail (a ring split into review, learning and new, the week ahead, one big Study and Ludus
+  beside it); "Your vocabulary journey" under the decks, no longer on Discover.
+  *Built:* `library/DeckTree.tsx` (the table, the cards and their menus), `TodayCard.tsx` (the
+  rail), `JourneySection.tsx`, `states.ts` (the three state colours, "last studied"); the list or
+  cards choice is `ui.deckView`, inside the sort menu as in Codex. Below 1024 px the Today card
+  stays above the decks and RoomTabs keeps its tools beside the segmented tabs.
+- **Part 2 · a deck:** its settings as a right-hand panel in sections (Daily limits, Order, Card
+  look, Ludus, Danger zone) with a live card preview; its cards as a grid of small cards (word,
+  meaning, a state dot, when it's due) that turn over on hover, five across on a wide screen.
+- **Part 3 · Ludus:** even answer cards (one height, wrapping with hyphens in the language, smaller
+  type only for very long answers, four short ones in a row); `planLesson` by weights: never the
+  same kind twice running, no kind over about a third, gentle kinds for new cards, their second
+  round mixed in, gap sentences in the mix; a test over many seeded lessons.
+- **Part 4 · Discover:** themes from 14 to about 40 in groups (Path, Everyday, Fun, Grammar,
+  Computed: words that look like English, your words from songs and shows), as minimal cards with
+  search, sort and group; "Add to My decks" or "Add to…" a deck you have, skipping words already
+  there, on themes and journey stages. New concept lists in `scripts/lang-data/themes.ts`; packs
+  rebuilt v7 → v8 one at a time (tier 1 and 2), the dev server stopped.
+

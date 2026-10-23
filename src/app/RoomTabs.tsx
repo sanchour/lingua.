@@ -21,7 +21,7 @@ interface RoomTabsProps<T extends string> {
   label: string;
   tabs: Array<RoomTab<T>>;
   active: T;
-  /** Something at the end of the strip (Sonus+ in Sonus et Visio). */
+  /** Something at the end of the strip (Sonus+ in Sonus et Visio; Thesaurus's search, sort, view and New). */
   end?: ReactNode;
   /** 1…n open the tabs (off where the page uses the digits itself). */
   keys?: boolean;
@@ -35,8 +35,11 @@ export function RoomTabs<T extends string>({ label, tabs, active, end, keys = tr
   useHotkeys(Object.fromEntries(tabs.map((t, i) => [String(i + 1), () => navigate(t.to)])), hints);
   if (layout !== 'wide') {
     return (
-      <div className="mb-7">
-        <Segmented<T> block label={label} value={active} onChange={(next) => navigate(tabs.find((t) => t.id === next)!.to)} options={tabs.map((t) => ({ value: t.id, label: t.short ?? t.label }))} />
+      <div className="mb-7 flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <Segmented<T> block label={label} value={active} onChange={(next) => navigate(tabs.find((t) => t.id === next)!.to)} options={tabs.map((t) => ({ value: t.id, label: t.short ?? t.label }))} />
+        </div>
+        {end}
       </div>
     );
   }
@@ -55,7 +58,7 @@ export function RoomTabs<T extends string>({ label, tabs, active, end, keys = tr
           {hints && <Kbd>{i + 1}</Kbd>}
         </Link>
       ))}
-      {end && <div className="mb-1.5 ml-auto">{end}</div>}
+      {end && <div className="mb-1.5 ml-auto flex items-center gap-2">{end}</div>}
     </nav>
   );
 }

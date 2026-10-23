@@ -1206,6 +1206,16 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-23 — The Thesaurus room (5.1-3b, part 1)
+
+- **Fixed colours for new, learning and to review** (sage, amber, blue), as Anki has, instead of the
+  accent: the accent changes with every palette (amber in Charcoal, green in Sage, blue in Linen and
+  Ink), so "learning" and "to review" looked the same in some of them.
+- **A deck's colour without photos:** a theme deck takes its theme's hue, words from reading the
+  accent, the path sage, and any other deck a steady hue from its id. There are no theme photos (none
+  are shipped; a hue and an icon keep the app offline and light).
+- **List or cards inside the sort menu,** as Codex does, so the strip holds only search, sort and New.
+
 ## 2026-10-22 — Speaking your journal (Cursus, part 5)
 
 - **Whisper, not the browser's recognition:** the browser's speech recognition (used for the

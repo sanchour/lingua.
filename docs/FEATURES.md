@@ -568,6 +568,17 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   buying switches the plan on this device and charges nothing; Settings › Lab › Pretend a plan acts
   as Free, Lingua+ or Max. Installs from before the plans act as Max, so nothing disappears.
 
+## Thesaurus and Ludus, 5.1-3b (so far)
+
+- **The room:** My decks, Discover and Dictionary as header tabs (1 2 3); search (/), sort, and New
+  at the right of the same row. Sort's menu also switches My decks between a list and cards.
+- **My decks as a table:** each deck's picture in its own colour, name, folder and cards; today's
+  new · learning · to review as pills (sage, amber, blue); when it was last studied; Study and Ludus
+  on hover, ⋯ for rename, move and delete. Folders fold and add up what's inside them.
+- **Today, in a rail:** on a wide window a sticky card beside the decks: a ring split into new,
+  learning and to review, one big Study with Ludus beside it, and the week ahead.
+- **Your vocabulary journey** sits under My decks.
+
 ## Codex, 5.1-3a (so far)
 
 - **Clicks:** one click marks a word Known (a Known word Unseen again); a double click marks it

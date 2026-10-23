@@ -1,11 +1,12 @@
-import type { ReactNode } from 'react';
 import { Link } from 'react-router';
-import { Layers, Puzzle, Sparkles, TextCursorInput, Zap } from 'lucide-react';
+import { Layers, Puzzle, TextCursorInput, Zap } from 'lucide-react';
+import type { DeckCounts } from '@/data/decks';
 import { useToday } from '@/data/stats';
-import { useDueSummary } from '@/data/study';
 import { buttonClasses, Card, Popover } from '@/design/primitives';
 import { PlusChip } from '@/features/plans/Locked';
 import { useGate } from '@/features/plans/PlanRoute';
+import { cx } from '@/lib/cx';
+import { CARD_STATES, REVIEW } from './states';
 
 /** Ludus's ways to play, from every deck. */
 const LUDUS_PLAYS = [
@@ -16,57 +17,59 @@ const LUDUS_PLAYS = [
 
 const DAY = 86_400_000;
 
+interface TodayCardProps {
+  lang: string;
+  /** Today's work summed over every deck. */
+  totals: DeckCounts | undefined;
+  forecast?: number[];
+  /** In the sticky rail beside My decks (wide windows): stacked; otherwise one row. */
+  rail?: boolean;
+}
+
 /**
- * What's waiting today across every deck: a ring that fills as the day's work gets done,
- * the two ways to study it, and a quiet strip with the week ahead.
+ * What's waiting today across every deck (5.1-3b): a ring split into new, learning and to review,
+ * one big Study with Ludus beside it, and the week ahead as a small bar line.
  */
-export function TodayCard({ lang, hasDecks, forecast, onDiscover }: { lang: string; hasDecks: boolean; forecast?: number[]; onDiscover: () => void }) {
-  const today = useDueSummary(lang);
+export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardProps) {
   const activity = useToday(lang);
   const ludusGate = useGate('ludus');
-  if (!today) return <Card className="h-[132px]" />;
+  if (!totals) return <Card className={rail ? 'h-[380px]' : 'h-[132px]'} />;
 
-  if (!hasDecks) {
-    return (
-      <Card className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-sage-soft text-sage-text">
-          <Sparkles size={22} aria-hidden />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="font-serif text-lg font-semibold">Your treasury is empty, for now</p>
-          <p className="text-sm text-ink-soft">Start with a ready-made deck, make your own, or mark words as Learning while you read.</p>
-        </div>
-        <button type="button" onClick={onDiscover} className={buttonClasses('secondary', 'md')}>
-          Browse ready-made decks
-        </button>
-      </Card>
-    );
-  }
-
-  const waiting = today.due + today.fresh;
+  const waiting = totals.new + totals.learning + totals.due;
   const done = activity?.reviews ?? 0;
-  const share = done + waiting > 0 ? done / (done + waiting) : 1;
   const ahead = forecast?.some(Boolean) ? forecast : undefined;
+  const ludusClass = cx(buttonClasses(waiting > 0 ? 'secondary' : 'primary', rail ? 'lg' : 'md'), rail && waiting === 0 && 'flex-1');
 
   return (
     <Card className="p-5 sm:p-6">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-        <div className="flex min-w-0 flex-1 items-center gap-4">
-          <Ring value={share} label={waiting === 0 ? '✓' : waiting.toLocaleString()} />
-          <div className="min-w-0">
-            <p className="text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">Today</p>
-            <p className="font-serif text-xl leading-tight font-semibold">{waiting === 0 ? 'All caught up' : waiting === 1 ? '1 card waiting' : `${waiting.toLocaleString()} cards waiting`}</p>
-            <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[13px] text-ink-soft">
-              {today.due > 0 && <Dot tone="accent">{today.due.toLocaleString()} to review</Dot>}
-              {today.fresh > 0 && <Dot tone="sage">{today.fresh.toLocaleString()} new</Dot>}
-              {done > 0 && <span>{done.toLocaleString()} done today</span>}
-              {waiting === 0 && done === 0 && <span>Nothing is due. Practise freely with Ludus.</span>}
-            </p>
-          </div>
+      <p className="text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">Today</p>
+      <div className={cx('mt-3 flex gap-5', rail ? 'flex-col' : 'flex-col sm:flex-row sm:items-center')}>
+        <div className="flex min-w-0 flex-1 items-center gap-5">
+          <Ring totals={totals} waiting={waiting} />
+          <ul className="min-w-0 space-y-1.5 text-[13.5px]">
+            {waiting === 0 ? (
+              <li className="font-serif text-lg leading-tight font-semibold">All caught up</li>
+            ) : (
+              CARD_STATES.map((s) => (
+                <li key={s.key} className={cx('flex items-center gap-2', !totals[s.key] && 'opacity-45')}>
+                  <span className="size-2.5 shrink-0 rounded-full" style={{ background: s.color }} aria-hidden />
+                  <span className="font-bold tabular-nums">{totals[s.key].toLocaleString()}</span>
+                  <span className="text-ink-soft">{s.label}</span>
+                </li>
+              ))
+            )}
+            {done > 0 ? <li className="pt-0.5 text-[12.5px] text-ink-faint">{done.toLocaleString()} done today</li> : waiting === 0 && <li className="text-[12.5px] text-ink-soft">Nothing is due. Practise freely with Ludus.</li>}
+          </ul>
         </div>
         <div className="flex gap-2">
+          {waiting > 0 && (
+            <Link to="/thesaurus/study/all?mode=recall" className={cx(buttonClasses('primary', rail ? 'lg' : 'md'), rail && 'flex-1')}>
+              <Layers size={18} aria-hidden />
+              Study
+            </Link>
+          )}
           {ludusGate ? (
-            <button type="button" onClick={ludusGate} className={buttonClasses(waiting > 0 ? 'secondary' : 'primary', 'md')}>
+            <button type="button" onClick={ludusGate} className={ludusClass}>
               <Puzzle size={17} aria-hidden />
               Ludus
               <PlusChip feature="ludus" />
@@ -76,7 +79,7 @@ export function TodayCard({ lang, hasDecks, forecast, onDiscover }: { lang: stri
               label="Ludus"
               placement="bottom-end"
               trigger={(props) => (
-                <button type="button" {...props} className={buttonClasses(waiting > 0 ? 'secondary' : 'primary', 'md')}>
+                <button type="button" {...props} className={ludusClass}>
                   <Puzzle size={17} aria-hidden />
                   Ludus
                 </button>
@@ -97,12 +100,6 @@ export function TodayCard({ lang, hasDecks, forecast, onDiscover }: { lang: stri
               )}
             </Popover>
           )}
-          {waiting > 0 && (
-            <Link to="/thesaurus/study/all?mode=recall" className={buttonClasses('primary', 'md')}>
-              <Layers size={17} aria-hidden />
-              Review
-            </Link>
-          )}
         </div>
       </div>
       {ahead && <WeekAhead forecast={ahead} />}
@@ -110,38 +107,28 @@ export function TodayCard({ lang, hasDecks, forecast, onDiscover }: { lang: stri
   );
 }
 
-function Dot({ tone, children }: { tone: 'accent' | 'sage'; children: ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1.5">
-      <span className={tone === 'accent' ? 'size-2 rounded-full bg-accent' : 'size-2 rounded-full bg-sage'} aria-hidden />
-      {children}
-    </span>
-  );
-}
-
-/** Today's progress: the arc is the share of today's cards already done. */
-function Ring({ value, label }: { value: number; label: string }) {
-  const r = 28;
+/** Today's work as a ring in three colours, the count in the middle; a full sage ring once it's all done. */
+function Ring({ totals, waiting }: { totals: DeckCounts; waiting: number }) {
+  const r = 42;
   const c = 2 * Math.PI * r;
+  const parts = CARD_STATES.map((s) => ({ ...s, n: totals[s.key] })).filter((p) => p.n > 0);
+  const gap = parts.length > 1 ? 3 : 0;
+  let start = 0;
   return (
-    <span className="relative grid size-[68px] shrink-0 place-items-center">
-      <svg viewBox="0 0 68 68" className="absolute inset-0 -rotate-90" aria-hidden>
-        <circle cx="34" cy="34" r={r} fill="none" stroke="var(--line)" strokeWidth="5" />
-        {value > 0 && (
-          <circle
-            cx="34"
-            cy="34"
-            r={r}
-            fill="none"
-            stroke="var(--sage)"
-            strokeWidth="5"
-            strokeLinecap="round"
-            strokeDasharray={`${c * Math.min(1, value)} ${c}`}
-            className="transition-[stroke-dasharray] duration-700 ease-out"
-          />
-        )}
+    <span className="relative grid size-[104px] shrink-0 place-items-center">
+      <svg viewBox="0 0 104 104" className="absolute inset-0 -rotate-90" aria-hidden>
+        <circle cx="52" cy="52" r={r} fill="none" stroke={waiting ? 'var(--line)' : 'var(--sage)'} strokeWidth="9" />
+        {parts.map((p) => {
+          const len = (c * p.n) / waiting;
+          const arc = <circle key={p.key} cx="52" cy="52" r={r} fill="none" stroke={p.color} strokeWidth="9" strokeDasharray={`${Math.max(0.5, len - gap)} ${c}`} strokeDashoffset={-start} className="transition-[stroke-dasharray,stroke-dashoffset] duration-700 ease-out" />;
+          start += len;
+          return arc;
+        })}
       </svg>
-      <span className="font-serif text-[22px] leading-none font-semibold tabular-nums">{label}</span>
+      <span className="text-center">
+        <span className="block font-serif text-[26px] leading-none font-semibold tabular-nums">{waiting === 0 ? '✓' : waiting.toLocaleString()}</span>
+        <span className="mt-1 block text-[11px] font-bold tracking-[0.08em] text-ink-faint uppercase">{waiting === 0 ? 'done' : 'to do'}</span>
+      </span>
     </span>
   );
 }
@@ -149,14 +136,20 @@ function Ring({ value, label }: { value: number; label: string }) {
 /** Seven slim bars: reviews coming due on each of the next days. */
 function WeekAhead({ forecast }: { forecast: number[] }) {
   const peak = Math.max(1, ...forecast);
+  const total = forecast.reduce((a, b) => a + b, 0);
   const day = (i: number) => (i === 0 ? 'Tmrw' : new Date(Date.now() + (i + 1) * DAY).toLocaleDateString('en', { weekday: 'short' }));
   return (
-    <div className="mt-5 flex items-end gap-4 border-t border-line pt-4">
-      <p className="shrink-0 pb-0.5 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">Week ahead</p>
-      <div className="flex h-10 flex-1 items-end gap-1.5 sm:gap-2.5" role="img" aria-label={forecast.map((n, i) => `${day(i)} ${n}`).join(', ')}>
+    <div className="mt-5 border-t border-line pt-4">
+      <p className="mb-2 flex items-baseline justify-between text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">
+        Week ahead
+        <span className="font-semibold tracking-normal normal-case tabular-nums">
+          {total.toLocaleString()} {total === 1 ? 'review' : 'reviews'}
+        </span>
+      </p>
+      <div className="flex h-12 items-end gap-1.5" role="img" aria-label={forecast.map((n, i) => `${day(i)} ${n}`).join(', ')}>
         {forecast.map((n, i) => (
           <div key={i} className="flex h-full flex-1 flex-col items-center justify-end gap-1" title={`${day(i)}: ${n} ${n === 1 ? 'review' : 'reviews'}`}>
-            <span className="w-full max-w-7 rounded-[4px] bg-sage/60" style={{ height: `${Math.max(n ? 4 : 2, (n / peak) * 24)}px`, opacity: n ? 1 : 0.35 }} />
+            <span className="w-full max-w-7 rounded-[4px]" style={{ height: `${Math.max(n ? 4 : 2, (n / peak) * 30)}px`, opacity: n ? 0.75 : 0.3, background: REVIEW }} />
             <span className="text-[10.5px] font-semibold text-ink-faint">{day(i)}</span>
           </div>
         ))}
