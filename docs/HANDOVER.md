@@ -62,7 +62,7 @@ read that part before starting.
 | 6 | [x] | *Done 2026-10-21 (a, b and c).* **5.1-2 · Plans, the first start and Home,** one step in three parts, in order: a · Lingua+ and Lingua+ Max (Stripe in test mode, the licence server, plans, the MAX badge); b · onboarding, the map without dots and its language data, the twelve flags (it shows the plans); c · Home, the new layout (the old one a setting away). After 2. | 5.1-2a, b, c | XL |
 | 7 | — | *Merged into step 6 on 2026-10-21 (5.1 in four steps).* | — | — |
 | 8 | — | *Merged into step 6 on 2026-10-21.* | — | — |
-| 9 | [~] | *a done 2026-10-22; b part 1 of 4 done 2026-10-23; b parts 2–4 claimed 2026-10-24; c still free (where b stopped: section 6)* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
+| 9 | [~] | *a done 2026-10-22; b part 1 of 4 done 2026-10-23, part 2 done 2026-10-24; b parts 3–4 claimed 2026-10-24; c still free (where b stopped: section 6)* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
 | 10 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 11 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 12 | — | *Merged into step 20 on 2026-10-21 (typing goes with the design touch as 5.1-4).* | — | — |

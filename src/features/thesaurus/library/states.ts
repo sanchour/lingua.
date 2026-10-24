@@ -9,6 +9,14 @@ export const CARD_STATES = [
   { key: 'due', label: 'to review', color: REVIEW, pill: 'bg-[color-mix(in_oklab,#6a90b4_20%,transparent)] text-[color-mix(in_oklab,#6a90b4_62%,var(--ink))]' },
 ] as const;
 
+/** A card's stage in the deck's card grid: new, learning, then young and settled in the colour of review. */
+export const STAGES = {
+  new: { label: 'new', color: 'var(--sage)' },
+  learning: { label: 'learning', color: LEARNING },
+  young: { label: 'young', color: 'color-mix(in oklab, #6a90b4 50%, transparent)' },
+  mature: { label: 'known well', color: REVIEW },
+} as const;
+
 const DAY = 86_400_000;
 
 /** When a deck was last studied, the way a person says it. */

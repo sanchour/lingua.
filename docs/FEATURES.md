@@ -578,6 +578,11 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Today, in a rail:** on a wide window a sticky card beside the decks: a ring split into new,
   learning and to review, one big Study with Ludus beside it, and the week ahead.
 - **Your vocabulary journey** sits under My decks.
+- **A deck's cards** as a grid of small cards, five across: the word, its stage (new, learning,
+  young, known well) and when it's due; hover and it turns over to the meaning.
+- **Deck settings** in a panel on the right, with the deck's card drawn live at the top: Daily
+  limits; Order (direction, and new cards most common first or shuffled); Card look (front, width);
+  Ludus (leave exercises out of this deck's lessons); Danger zone (Forget progress, Delete deck).
 
 ## Codex, 5.1-3a (so far)
 

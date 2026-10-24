@@ -1936,9 +1936,15 @@ are free for the next account (HANDOVER.md, section 6).*
   rail), `JourneySection.tsx`, `states.ts` (the three state colours, "last studied"); the list or
   cards choice is `ui.deckView`, inside the sort menu as in Codex. Below 1024 px the Today card
   stays above the decks and RoomTabs keeps its tools beside the segmented tabs.
-- **Part 2 · a deck:** its settings as a right-hand panel in sections (Daily limits, Order, Card
+- **Part 2 · a deck** (done 2026-10-24)**:** its settings as a right-hand panel in sections (Daily limits, Order, Card
   look, Ludus, Danger zone) with a live card preview; its cards as a grid of small cards (word,
   meaning, a state dot, when it's due) that turn over on hover, five across on a wide screen.
+  *Built:* `deck/DeckSettings.tsx` (the slide-over, rebuilt); Order adds "New cards: most common
+  first or shuffled" (`config.newOrder`, written into the cards by `orderNewCards`); Ludus leaves
+  out exercises for this deck only (`config.ludusOff`, merged with the global list in the lesson);
+  the danger zone has Forget progress (`forgetDeck`: every card new again, history kept) and
+  Delete. `deck/DeckPage.tsx` `NoteCard`; the deck's stats use the same stage colours
+  (`library/states.ts` `STAGES`).
 - **Part 3 · Ludus:** even answer cards (one height, wrapping with hyphens in the language, smaller
   type only for very long answers, four short ones in a row); `planLesson` by weights: never the
   same kind twice running, no kind over about a third, gentle kinds for new cards, their second

@@ -7,15 +7,12 @@ import { db } from '@/data/db';
 import type { DeckCounts } from '@/data/decks';
 import type { Card } from '@/data/types';
 import { Card as Panel } from '@/design/primitives';
+import { REVIEW, STAGES } from '../library/states';
 
 const DAY = 86_400_000;
-const LABELS: Record<Maturity, string> = { new: 'New', learning: 'Learning', young: 'Young', mature: 'Mature' };
-const COLORS: Record<Maturity, string> = {
-  new: 'var(--line-strong)',
-  learning: 'var(--accent)',
-  young: 'color-mix(in oklab, var(--sage) 55%, var(--surface))',
-  mature: 'var(--sage)',
-};
+const LABELS: Record<Maturity, string> = { new: 'New', learning: 'Learning', young: 'Young', mature: 'Known well' };
+/** The same colours as the deck's cards and Thesaurus's pills (5.1-3b). */
+const COLORS: Record<Maturity, string> = { new: STAGES.new.color, learning: STAGES.learning.color, young: STAGES.young.color, mature: STAGES.mature.color };
 
 /** Today's counts, how settled the deck is (maturity), true retention and the week ahead. */
 export function DeckStats({ deckId, cards, counts }: { deckId: string; cards: Card[]; counts: DeckCounts | undefined }) {
@@ -58,7 +55,7 @@ export function DeckStats({ deckId, cards, counts }: { deckId: string; cards: Ca
       <Panel>
         <dl className="grid grid-cols-4 gap-2">
           {[
-            ['Due', (counts?.due ?? 0) + (counts?.learning ?? 0), 'text-accent-text'],
+            ['Due', (counts?.due ?? 0) + (counts?.learning ?? 0), 'text-[color-mix(in_oklab,#6a90b4_62%,var(--ink))]'],
             ['New today', counts?.new ?? 0, 'text-sage-text'],
             ['Cards', counts?.total ?? cards.length, ''],
             ['Retention', retention ? `${Math.round(retention.share * 100)}%` : '–', ''],
@@ -94,8 +91,8 @@ export function DeckStats({ deckId, cards, counts }: { deckId: string; cards: Ca
             <div key={i} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5" title={`${weekday(i)}: ${n} reviews`}>
               <span className="text-[11px] font-semibold text-ink-faint tabular-nums">{n || ''}</span>
               <span
-                className={i === 0 ? 'w-full rounded-md bg-accent' : 'w-full rounded-md bg-sage/70'}
-                style={{ height: `${Math.max(n ? 6 : 2, (n / peak) * 60)}px`, opacity: n ? 1 : 0.35 }}
+                className="w-full rounded-md"
+                style={{ height: `${Math.max(n ? 6 : 2, (n / peak) * 60)}px`, opacity: n ? (i === 0 ? 1 : 0.7) : 0.3, background: REVIEW }}
               />
               <span className="text-[11px] font-semibold text-ink-soft">{weekday(i)}</span>
             </div>

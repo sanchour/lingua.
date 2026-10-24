@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { localDateKey } from '@/lib/format';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
-import { addNote, createDeck, deckCounts, deleteDeck, updateDeck } from './decks';
+import { addNote, createDeck, deckCounts, deleteDeck, forgetDeck, orderNewCards, updateDeck } from './decks';
 import { completeOnboarding } from './languages';
 import { addStarterDeck, starterItems } from './starter';
 import { answerCard, dueSummary, loadStudySession, undoAnswer } from './study';
@@ -133,5 +133,49 @@ describe('studying', () => {
     await deleteDeck(deckId, db);
     expect((await deckCounts(deck, Date.now(), db)).total).toBe(0);
     expect(await dueSummary('es', Date.now(), db)).toMatchObject({ due: 0, fresh: 0, decks: 0 });
+  });
+});
+
+describe('forgetting a deck', () => {
+  it('puts every card back to new, most common first, and keeps the history', async () => {
+    const db = freshDb();
+    await withSpanish(db);
+    const deckId = await createDeck('es', { name: 'Mine' }, db);
+    for (const [term, freqRank] of [['tres', 30], ['uno', 10], ['dos', 20]] as const) await addNote(deckId, { term, meaning: term, freqRank }, db);
+    const session = await loadStudySession('es', deckId, Date.now(), db);
+    await answerCard(session.queue[0], 3, { lang: 'es', mode: 'classic', durationMs: 4000 }, db);
+    await answerCard(session.queue[1], 4, { lang: 'es', mode: 'classic', durationMs: 4000 }, db);
+
+    expect(await forgetDeck(deckId, db)).toBe(3);
+    const cards = (await db.cards.where('deckId').equals(deckId).toArray()).sort((a, b) => a.due - b.due);
+    expect(cards.map((c) => [c.state, c.reps, c.lapses])).toEqual([[0, 0, 0], [0, 0, 0], [0, 0, 0]]);
+    const notes = await db.notes.bulkGet(cards.map((c) => c.noteId));
+    expect(notes.map((n) => n?.term)).toEqual(['uno', 'dos', 'tres']);
+    expect(await db.reviewLogs.count()).toBe(2);
+  });
+});
+
+describe('the order of new cards', () => {
+  it('puts the most common words first, or shuffles them, and keeps the order once studied', async () => {
+    const db = freshDb();
+    await withSpanish(db);
+    const deckId = await createDeck('es', { name: 'Mine' }, db);
+    for (const [term, freqRank] of [['raro', 900], ['comer', 5], ['casa', 3], ['solo', undefined]] as const) await addNote(deckId, { term, meaning: term, freqRank }, db);
+    const terms = async () => {
+      const cards = (await db.cards.where('deckId').equals(deckId).toArray()).sort((a, b) => a.due - b.due);
+      return (await db.notes.bulkGet(cards.map((c) => c.noteId))).map((n) => n?.term);
+    };
+
+    await orderNewCards(deckId, 'ordered', Math.random, db);
+    expect(await terms()).toEqual(['casa', 'comer', 'raro', 'solo']);
+
+    let seed = 7;
+    await orderNewCards(deckId, 'shuffled', () => ((seed = (seed * 16807) % 2147483647) / 2147483647), db);
+    const shuffled = await terms();
+    expect([...shuffled].sort()).toEqual(['casa', 'comer', 'raro', 'solo']);
+    expect(shuffled).not.toEqual(['casa', 'comer', 'raro', 'solo']);
+
+    await orderNewCards(deckId, 'ordered', Math.random, db);
+    expect(await terms()).toEqual(['casa', 'comer', 'raro', 'solo']);
   });
 });

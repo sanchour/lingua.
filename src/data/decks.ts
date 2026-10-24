@@ -230,6 +230,45 @@ export async function setDeckDirections(deckId: string, directions: Card['direct
   });
 }
 
+/** Every card of a deck back to new, in the deck's order of new cards (5.1-3b, the settings' danger zone). The review history stays. */
+export async function forgetDeck(deckId: string, database: LinguaDB = db): Promise<number> {
+  const now = Date.now();
+  const cards = (await database.cards.where('[deckId+due]').between([deckId, Dexie.minKey], [deckId, Dexie.maxKey]).toArray()).filter((c) => !c.deletedAt).sort((a, b) => a.createdAt - b.createdAt);
+  await database.cards.bulkPut(
+    cards.map((c, i) => {
+      const { id: _id, noteId: _note, deckId: _deck, direction: _dir, createdAt: _made, suspended: _off, ...fresh } = newCard(c.noteId, deckId, now, c.direction);
+      return { ...c, ...fresh, lastReview: undefined, due: now + i, updatedAt: now };
+    }),
+  );
+  const deck = await database.decks.get(deckId);
+  await orderNewCards(deckId, deck?.config.newOrder ?? 'ordered', Math.random, database);
+  return cards.length;
+}
+
+/**
+ * Puts a deck's new cards in order, most common words first (then as they were added), or shuffles
+ * them (5.1-3b, the settings' Order). New cards come in the order of their due time.
+ */
+export async function orderNewCards(deckId: string, order: 'ordered' | 'shuffled', random: () => number = Math.random, database: LinguaDB = db): Promise<void> {
+  const fresh = (await database.cards.where('[deckId+due]').between([deckId, Dexie.minKey], [deckId, Dexie.maxKey]).toArray()).filter((c) => c.state === 0 && !c.deletedAt);
+  if (!fresh.length) return;
+  const notes = new Map((await database.notes.bulkGet([...new Set(fresh.map((c) => c.noteId))])).flatMap((n) => (n ? [[n.id, n] as const] : [])));
+  const rank = (c: Card) => notes.get(c.noteId)?.freqRank ?? Infinity;
+  const made = (c: Card) => notes.get(c.noteId)?.createdAt ?? c.createdAt;
+  let sorted: Card[];
+  if (order === 'ordered') sorted = fresh.sort((a, b) => rank(a) - rank(b) || made(a) - made(b) || a.direction.localeCompare(b.direction));
+  else {
+    sorted = [...fresh];
+    for (let i = sorted.length - 1; i > 0; i--) {
+      const j = Math.floor(random() * (i + 1));
+      [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
+    }
+  }
+  const start = Math.min(...fresh.map((c) => c.due));
+  const now = Date.now();
+  await database.cards.bulkPut(sorted.map((c, i) => ({ ...c, due: start + i, updatedAt: now })));
+}
+
 export async function setSuspended(noteId: string, suspended: boolean, database: LinguaDB = db): Promise<void> {
   await database.cards.where('noteId').equals(noteId).modify({ suspended: suspended ? 1 : 0, updatedAt: Date.now() });
 }

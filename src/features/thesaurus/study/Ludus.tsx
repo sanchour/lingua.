@@ -105,13 +105,15 @@ interface LudusProps {
   onSetup?: () => void;
   /** Lightning: a minute of quick choices; logged as practice, never moving a schedule. */
   lightning?: boolean;
+  /** Exercises the deck's own settings leave out. */
+  deckOff?: string[];
 }
 
 /**
  * A Duolingo-style lesson over the chosen cards. No hearts, no penalties: mistakes come back once.
  * Right answers in a row build a combo; Lightning races the clock instead.
  */
-export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive, onSetup, lightning = false }: LudusProps) {
+export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive, onSetup, lightning = false, deckOff }: LudusProps) {
   const look = useSettings()?.cards ?? DEFAULT_SETTINGS.cards;
   const feel = useLessonFeel();
   const { speaker } = useSpeaker(lang);
@@ -139,10 +141,10 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
               canHear: hearAtStart.current,
               canSpell: !NO_SPELL.has(lang),
               typing: setup.current.typing,
-              off: new Set(setup.current.ludusOff as ExerciseKind[]),
+              off: new Set([...setup.current.ludusOff, ...(deckOff ?? [])] as ExerciseKind[]),
             },
           ),
-    [entries, pool, random, lang, lightning],
+    [entries, pool, random, lang, lightning, deckOff],
   );
   const tracks = useRef<Map<string, Track> | null>(null);
   if (!tracks.current) {

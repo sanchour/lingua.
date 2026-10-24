@@ -38,7 +38,7 @@ function toItem(card: Card, note: Note, lang: string): LudusItem {
   return { id: card.id, term: note.term, meaning: note.meaning, pos: note.pos, gender: note.gender, example, isNew: card.state === 0 };
 }
 
-async function loadLudus(lang: string, deckId: string | null, affectSchedule: boolean, size: number): Promise<{ entries: LudusEntry[]; pool: LudusItem[] }> {
+async function loadLudus(lang: string, deckId: string | null, affectSchedule: boolean, size: number): Promise<{ entries: LudusEntry[]; pool: LudusItem[]; off: string[] }> {
   const session = await loadStudySession(lang, deckId);
   const entries: LudusEntry[] = [];
   const seen = new Set<string>();
@@ -57,10 +57,12 @@ async function loadLudus(lang: string, deckId: string | null, affectSchedule: bo
   const deckIds = [...session.decks.keys()];
   const notes = (await db.notes.where('deckId').anyOf(deckIds).limit(POOL * 2).toArray()).filter((n) => !n.deletedAt && n.meaning);
   const pool = notes.slice(0, POOL).map((n) => ({ id: `pool-${n.id}`, term: n.term, meaning: n.meaning, pos: n.pos, gender: n.gender, example: n.example, isNew: false }));
-  return { entries, pool };
+  // One deck's lesson also leaves out what that deck's settings turned off.
+  const off = deckId ? (session.decks.get(deckId)?.config.ludusOff ?? []) : [];
+  return { entries, pool, off };
 }
 
-type Loaded = { kind: 'recall'; session: StudySession; practice?: boolean } | { kind: 'ludus'; entries: LudusEntry[]; pool: LudusItem[] };
+type Loaded = { kind: 'recall'; session: StudySession; practice?: boolean } | { kind: 'ludus'; entries: LudusEntry[]; pool: LudusItem[]; off: string[] };
 
 /** The cards of a finished session, shuffled, for a practice pass that leaves their schedule alone. */
 async function loadPass(cardIds: string[]): Promise<StudySession> {
@@ -249,6 +251,7 @@ function CardStudy() {
         title={`${lightning ? 'Lightning' : 'Ludus'} · ${title}`}
         entries={loaded.entries}
         pool={loaded.pool}
+        deckOff={loaded.off}
         onFinish={(r) => void finishLudus(r)}
         onClose={back}
         onActive={onActive}

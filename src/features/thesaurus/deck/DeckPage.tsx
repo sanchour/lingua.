@@ -5,7 +5,7 @@ import { Ellipsis, FolderInput, Layers, Pencil, Plus, Puzzle, Search, Settings2,
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatInterval, maturityOf } from '@/core/srs/scheduler';
-import { deleteDeck, updateDeck, useDeck, useDeckCards, useDeckCounts, useDeckNotes, useFolders } from '@/data/decks';
+import { deleteDeck, forgetDeck, updateDeck, useDeck, useDeckCards, useDeckCounts, useDeckNotes, useFolders } from '@/data/decks';
 import type { Card, Note } from '@/data/types';
 import { Button, buttonClasses, EmptyState, MenuItem, Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
@@ -13,6 +13,7 @@ import { DeckGlyph } from '../common/DeckIcon';
 import { articleFor } from '../common/words';
 import { ConfirmDialog, MoveDialog, NameDialog } from '../library/dialogs';
 import type { ConfirmRequest, MoveRequest, NameRequest } from '../library/dialogs';
+import { STAGES } from '../library/states';
 import { DeckSettings } from './DeckSettings';
 import { PlusChip } from '@/features/plans/Locked';
 import { useGate } from '@/features/plans/PlanRoute';
@@ -21,7 +22,6 @@ import { NoteEditor } from './NoteEditor';
 import type { EditorTarget } from './NoteEditor';
 
 const PAGE = 120;
-const DOT: Record<string, string> = { new: 'bg-line-strong', learning: 'bg-accent', young: 'bg-sage/55', mature: 'bg-sage' };
 
 export default function DeckPage() {
   const { deckId } = useParams();
@@ -62,6 +62,23 @@ export default function DeckPage() {
   if (!deck || !notes || !cards) return <div className="min-h-[60dvh]" />;
 
   const due = (counts?.due ?? 0) + (counts?.learning ?? 0) + (counts?.new ?? 0);
+  const askDelete = () =>
+    setConfirming({
+      title: `Delete “${deck.name}”?`,
+      body: 'Its cards and their review history go. Words you know stay known in your books.',
+      confirm: 'Delete deck',
+      onConfirm: async () => {
+        await deleteDeck(deck.id);
+        navigate('/thesaurus', { replace: true });
+      },
+    });
+  const askForget = () =>
+    setConfirming({
+      title: `Forget your progress in “${deck.name}”?`,
+      body: 'Every card goes back to new and comes again as new cards do. What you studied stays in Ratio’s history.',
+      confirm: 'Forget progress',
+      onConfirm: () => forgetDeck(deck.id).then(() => undefined),
+    });
 
   return (
     <>
@@ -102,23 +119,7 @@ export default function DeckPage() {
                       setMoving({ title: `Move “${deck.name}”`, folders: folders ?? [], current: deck.folderId, onConfirm: (folderId) => updateDeck(deck.id, { folderId }) });
                     }}
                   />
-                  <MenuItem
-                    icon={Trash2}
-                    label="Delete deck"
-                    danger
-                    onClick={() => {
-                      close();
-                      setConfirming({
-                        title: `Delete “${deck.name}”?`,
-                        body: 'Its cards and their review history go. Words you know stay known in your books.',
-                        confirm: 'Delete deck',
-                        onConfirm: async () => {
-                          await deleteDeck(deck.id);
-                          navigate('/thesaurus', { replace: true });
-                        },
-                      });
-                    }}
-                  />
+                  <MenuItem icon={Trash2} label="Delete deck" danger onClick={() => (close(), askDelete())} />
                 </div>
               )}
             </Popover>
@@ -164,6 +165,16 @@ export default function DeckPage() {
           <h2 id="cards-title" className="flex-1 font-serif text-2xl font-semibold">
             Cards
           </h2>
+          {notes.length > 0 && (
+            <p className="hidden items-center gap-3 text-[12.5px] text-ink-soft lg:flex" aria-hidden>
+              {Object.values(STAGES).map((s) => (
+                <span key={s.label} className="inline-flex items-center gap-1.5">
+                  <span className="size-2 rounded-full" style={{ background: s.color }} />
+                  {s.label}
+                </span>
+              ))}
+            </p>
+          )}
           {notes.length > 8 && (
             <label className="relative">
               <span className="sr-only">Search cards</span>
@@ -187,11 +198,11 @@ export default function DeckPage() {
           </EmptyState>
         ) : (
           <>
-            <ul className="divide-y divide-line/60 rounded-3xl border border-line/70 bg-surface px-2">
+            <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {list.slice(0, shown).map((note) => (
-                <NoteRow key={note.id} note={note} cards={cardsByNote.get(note.id) ?? []} lang={deck.lang} onOpen={() => setEditor({ mode: 'edit', note, cards: cardsByNote.get(note.id) ?? [] })} />
+                <NoteCard key={note.id} note={note} cards={cardsByNote.get(note.id) ?? []} lang={deck.lang} onOpen={() => setEditor({ mode: 'edit', note, cards: cardsByNote.get(note.id) ?? [] })} />
               ))}
-              {list.length === 0 && <li className="py-6 text-center text-sm text-ink-soft">No cards match “{query}”.</li>}
+              {list.length === 0 && <li className="col-span-full py-6 text-center text-sm text-ink-soft">No cards match “{query}”.</li>}
             </ul>
             {list.length > shown && (
               <div className="mt-4 text-center">
@@ -205,7 +216,7 @@ export default function DeckPage() {
       </section>
 
       <NoteEditor lang={deck.lang} target={editor} onClose={() => setEditor(null)} />
-      <DeckSettings deck={deck} open={settings} onClose={() => setSettings(false)} />
+      <DeckSettings deck={deck} open={settings} onClose={() => setSettings(false)} samples={list.length ? list : notes} onForget={askForget} onDelete={askDelete} />
       <NameDialog request={naming} onClose={() => setNaming(null)} />
       <ConfirmDialog request={confirming} onClose={() => setConfirming(null)} />
       <MoveDialog request={moving} onClose={() => setMoving(null)} />
@@ -213,22 +224,36 @@ export default function DeckPage() {
   );
 }
 
-function NoteRow({ note, cards, lang, onOpen }: { note: Note; cards: Card[]; lang: string; onOpen: () => void }) {
+/** A small card in the deck's grid (5.1-3b): the word, its stage and when it's due; it turns over on hover to show the meaning. */
+function NoteCard({ note, cards, lang, onOpen }: { note: Note; cards: Card[]; lang: string; onOpen: () => void }) {
   const main = cards.find((c) => c.direction === 'recognition') ?? cards[0];
-  const stage = main ? maturityOf(main) : 'new';
+  const stage = STAGES[main ? maturityOf(main) : 'new'];
   const suspended = cards.length > 0 && cards.every((c) => c.suspended);
   const article = articleFor(lang, note.gender, note.term, note.pos);
-  const next = main && main.state !== 0 ? formatInterval(Math.max(0, main.due - Date.now())) : null;
+  const now = Date.now();
+  const when = suspended ? 'suspended' : !main || main.state === 0 ? 'new' : main.due <= now ? 'due now' : `in ${formatInterval(main.due - now)}`;
+  const face = 'absolute inset-0 rounded-2xl border border-line/70 p-3 [backface-visibility:hidden]';
   return (
-    <li>
-      <button type="button" onClick={onOpen} className={cx('no-callout flex w-full items-center gap-3 rounded-2xl px-2 py-2.5 text-left transition-colors hover:bg-raised/60', suspended && 'opacity-50')}>
-        <span className={cx('size-2 shrink-0 rounded-full', DOT[stage])} title={suspended ? 'suspended' : stage} aria-hidden />
-        <span lang={lang} className="min-w-0 basis-2/5 truncate font-serif text-[17px]">
-          {article && <span className="text-ink-faint">{article} </span>}
-          {note.term}
+    <li className="[perspective:900px]">
+      <button type="button" onClick={onOpen} aria-label={`${note.term}: ${note.meaning}`} className={cx('group/card no-callout block h-[120px] w-full text-left', suspended && 'opacity-50')}>
+        <span className="relative block size-full transition-transform duration-500 ease-out [transform-style:preserve-3d] group-hover/card:[transform:rotateY(180deg)] group-focus-visible/card:[transform:rotateY(180deg)] motion-reduce:transition-none">
+          <span className={cx(face, 'flex flex-col bg-surface')}>
+            <span className="flex items-center justify-between gap-2 text-[11.5px] font-semibold text-ink-faint">
+              <span className="inline-flex items-center gap-1.5" title={stage.label}>
+                <span className="size-2 rounded-full" style={{ background: stage.color }} aria-hidden />
+                {stage.label}
+              </span>
+              <span className="tabular-nums">{when}</span>
+            </span>
+            <span lang={lang} className="m-auto line-clamp-2 px-1 text-center font-serif text-[18px] leading-tight break-words">
+              {article && <span className="text-ink-faint">{article} </span>}
+              {note.term}
+            </span>
+          </span>
+          <span className={cx(face, 'grid place-items-center bg-raised text-center [transform:rotateY(180deg)]')}>
+            <span className="line-clamp-4 text-[14px] leading-snug text-ink-soft">{note.meaning || '—'}</span>
+          </span>
         </span>
-        <span className="min-w-0 flex-1 truncate text-sm text-ink-soft">{note.meaning}</span>
-        <span className="hidden shrink-0 text-[12px] font-semibold text-ink-faint tabular-nums sm:block">{suspended ? 'suspended' : next ? `in ${next}` : 'new'}</span>
       </button>
     </li>
   );

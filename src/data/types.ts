@@ -280,6 +280,10 @@ export interface DeckConfig {
   front?: 'word' | 'sentence';
   /** The deck's own card width; none: the width chosen for every card (5.2-1). */
   cardWidth?: 'thin' | 'normal' | 'wide';
+  /** The order new cards come in: most common words first (then as added), or shuffled (5.1-3b). */
+  newOrder?: 'ordered' | 'shuffled';
+  /** Ludus exercises this deck leaves out, on top of those turned off for every lesson (5.1-3b). */
+  ludusOff?: string[];
 }
 
 export interface Deck extends Synced {

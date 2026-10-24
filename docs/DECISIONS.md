@@ -1206,6 +1206,16 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-24 — A deck's settings and cards (5.1-3b, part 2)
+
+- **New-card order is written into the cards,** not read at study time: shuffling or ordering sets
+  the new cards' due times once, so the study queue stays as simple and fast as it was. Words added
+  later come after them.
+- **Forget progress keeps the history:** the cards start again as new, but the review log stays,
+  so Ratio's past days and streaks don't change.
+- **Per-deck Ludus exercises add to the global ones** (Ludus's own settings), and at least two kinds
+  always stay on.
+
 ## 2026-10-23 — The Thesaurus room (5.1-3b, part 1)
 
 - **Fixed colours for new, learning and to review** (sage, amber, blue), as Anki has, instead of the
