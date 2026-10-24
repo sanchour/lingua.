@@ -10,7 +10,7 @@ import type { RoomTab } from '@/app/RoomTabs';
 import { STARTER_THEMES } from '@/core/lang/starter';
 import { createDeck, createFolder, useDeckCounts, useDecks, useFolders } from '@/data/decks';
 import { patchSetting } from '@/data/settings';
-import type { DeckSort } from '@/data/settings';
+import type { DeckSort, DiscoverGroup, DiscoverSort } from '@/data/settings';
 import { starterKey, useStarterList } from '@/data/starter';
 import type { StarterSpec } from '@/data/starter';
 import { useStudyOutlook } from '@/data/study';
@@ -42,6 +42,16 @@ const SORTS: Array<{ value: DeckSort; label: string }> = [
   { value: 'size', label: 'Most cards' },
 ];
 
+const DISCOVER_SORTS: Array<{ value: DiscoverSort; label: string }> = [
+  { value: 'suggested', label: 'Suggested' },
+  { value: 'size', label: 'Most words' },
+  { value: 'easiest', label: 'Easiest first' },
+];
+const DISCOVER_GROUPS: Array<{ value: DiscoverGroup; label: string }> = [
+  { value: 'kind', label: 'Kind of deck' },
+  { value: 'level', label: 'Level' },
+];
+
 export default function ThesaurusPage() {
   const { language, settings } = useApp();
   const lang = language.id;
@@ -52,7 +62,7 @@ export default function ThesaurusPage() {
   const counts = useDeckCounts(decks);
   const outlook = useStudyOutlook(decks);
   const imports = useDeckImport(lang);
-  const { deckSort: sort, deckView: view } = settings.ui;
+  const { deckSort: sort, deckView: view, discoverSort, discoverGroup } = settings.ui;
   const totals = useMemo(() => counts && sumCounts([...counts.values()]), [counts]);
 
   const [params, setParams] = useSearchParams();
@@ -115,7 +125,15 @@ export default function ThesaurusPage() {
     <>
       {tab !== 'dictionary' &&
         (searching ? (
-          <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search decks, folders and themes" onClose={closeSearch} autoFocus className="h-10! w-72" />
+          <SearchInput
+            ref={searchRef}
+            value={query}
+            onChange={setQuery}
+            placeholder={tab === 'discover' ? 'Search ready-made decks and words' : 'Search decks, folders and themes'}
+            onClose={closeSearch}
+            autoFocus
+            className="h-10! w-72"
+          />
         ) : (
           <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />
         ))}
@@ -132,6 +150,14 @@ export default function ThesaurusPage() {
             ]}
           />
         </SortMenu>
+      )}
+      {tab === 'discover' && (
+        <SortMenu
+          value={discoverSort}
+          options={DISCOVER_SORTS}
+          onChange={(value) => void patchSetting('ui', { discoverSort: value })}
+          group={{ value: discoverGroup, options: DISCOVER_GROUPS, onChange: (value) => void patchSetting('ui', { discoverGroup: value }) }}
+        />
       )}
       <NewMenu busy={imports.apkgProgress !== null} onChoose={choose} />
     </>
@@ -161,7 +187,7 @@ export default function ThesaurusPage() {
       )}
 
       <AnimatePresence mode="wait" initial={false}>
-        {query.trim() ? (
+        {query.trim() && tab !== 'discover' ? (
           <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
             <SearchResults lang={lang} query={query} decks={decks ?? []} folders={folders ?? []} order={order.decks} onOpenStarter={openStarter}>
               {(found) => <DeckResults decks={found} folders={folders ?? []} counts={counts} lastStudied={outlook?.lastStudied} actions={actions} />}
@@ -199,7 +225,7 @@ export default function ThesaurusPage() {
           </motion.section>
         ) : (
           <motion.section key="discover" aria-label="Ready-made decks" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>
-            <StarterLibrary lang={lang} onOpen={openStarter} />
+            <StarterLibrary lang={lang} query={query} sort={discoverSort} group={discoverGroup} onOpen={openStarter} />
           </motion.section>
         )}
       </AnimatePresence>

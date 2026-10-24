@@ -78,6 +78,7 @@ node scripts/lang-data/fetch.ts           # all sources; re-running skips finish
 node scripts/lang-data/count.ts           # → counted-ja.txt, counted-zh.txt (about 20 min)
 node scripts/lang-data/translations.ts    # → scripts/.cache/en-translations.json
 node scripts/lang-data/themes.ts          # → scripts/.cache/themes.json
+node scripts/lang-data/retheme.ts         # new themed lists into the built packs, no rebuild (5.1-3b)
 node scripts/lang-data/build.ts ru el     # → public/packs/<code>.v1.json.gz (no codes: all)
 ```
 

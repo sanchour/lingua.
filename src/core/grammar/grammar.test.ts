@@ -3,6 +3,7 @@ import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { packFileName } from '../packs/format';
 import { plain, splitFocus, topicsOf } from './types';
 import type { Grammar } from './types';
 
@@ -15,7 +16,7 @@ for (const file of readdirSync(TOPICS).filter((f) => f.endsWith('.ts'))) {
 
 /** The pack's example sentences, read without parsing the whole pack. */
 function packSentences(lang: string): Set<string> {
-  const text = gunzipSync(readFileSync(join(process.cwd(), 'public', 'packs', `${lang}.v7.json.gz`))).toString('utf8');
+  const text = gunzipSync(readFileSync(join(process.cwd(), 'public', 'packs', packFileName(lang)))).toString('utf8');
   const start = text.indexOf('"examples":') + '"examples":'.length;
   const end = text.indexOf(',"themes":', start);
   const examples = JSON.parse(text.slice(start, end)) as Array<[number, string, string]>;

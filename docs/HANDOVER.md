@@ -62,7 +62,7 @@ read that part before starting.
 | 6 | [x] | *Done 2026-10-21 (a, b and c).* **5.1-2 · Plans, the first start and Home,** one step in three parts, in order: a · Lingua+ and Lingua+ Max (Stripe in test mode, the licence server, plans, the MAX badge); b · onboarding, the map without dots and its language data, the twelve flags (it shows the plans); c · Home, the new layout (the old one a setting away). After 2. | 5.1-2a, b, c | XL |
 | 7 | — | *Merged into step 6 on 2026-10-21 (5.1 in four steps).* | — | — |
 | 8 | — | *Merged into step 6 on 2026-10-21.* | — | — |
-| 9 | [~] | *a done 2026-10-22; b part 1 of 4 done 2026-10-23, parts 2 and 3 done 2026-10-24; b part 4 claimed 2026-10-24; c still free (where b stopped: section 6)* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
+| 9 | [~] | *a done 2026-10-22; b done 2026-10-24 (part 1 2026-10-23, parts 2–4 2026-10-24); c still free (section 6)* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
 | 10 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 11 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 12 | — | *Merged into step 20 on 2026-10-21 (typing goes with the design touch as 5.1-4).* | — | — |
@@ -140,7 +140,9 @@ row); `src/core/srs/ludus.ts` `planLesson` by weights (never the same kind twice
 over about a third, gentle kinds for new cards, their second round mixed in, gap sentences in the
 mix); a test over many seeded lessons. Check German and Russian with long words.
 
-**Then part 4 (Discover, with a pack rebuild):**
+**Part 4 (Discover) is done too (2026-10-24), so 5.1-3b is finished.** It didn't need the full
+rebuild: `node scripts/lang-data/themes.ts` then `node scripts/lang-data/retheme.ts` (about a
+second a pack) gave every pack its new lists as v8. What the plan said, for the record:
 - About 40 themes in groups Path, Everyday, Fun, Grammar and Computed (cognates; your words from
   songs and shows), as minimal cards with search, sort and group. Discover lost the frequency path
   to My decks in part 1: show it again there as the Path group.

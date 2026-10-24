@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
 import { useDockBottom } from '@/app/dock';
@@ -13,8 +14,9 @@ import { Button, Switch } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { toast } from '@/state/ui';
-import { THEME_ICONS } from './common/DeckIcon';
+import { THEME_HUES, THEME_ICONS } from './common/DeckIcon';
 import { articleFor, posName } from './common/words';
+import { AddStarterMenu } from './library/AddStarterMenu';
 
 const PAGE = 120;
 
@@ -102,7 +104,8 @@ function Booklet({ spec }: { spec: StarterSpec }) {
 
       <header className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
         <motion.span
-          className="grid size-24 shrink-0 place-items-center rounded-[28px] bg-sage-soft text-sage-text shadow-elev-1"
+          style={{ '--hue': (theme && THEME_HUES[theme.id]) || 'var(--sage)' } as CSSProperties}
+          className="grid size-24 shrink-0 place-items-center rounded-[28px] bg-[color-mix(in_oklab,var(--hue)_18%,var(--surface))] text-[color-mix(in_oklab,var(--hue)_70%,var(--ink))] shadow-elev-1"
           initial={{ scale: 0.9, rotate: -6, opacity: 0 }}
           animate={{ scale: 1, rotate: 0, opacity: 1 }}
           transition={spring.gentle}
@@ -192,21 +195,26 @@ function Booklet({ spec }: { spec: StarterSpec }) {
       </div>
 
       <div className="pointer-events-none fixed inset-x-0 z-20 flex justify-center px-4 lg:pl-[var(--sidebar-w,0px)]" style={{ bottom: barBottom }}>
-        <div className="pointer-events-auto flex w-full max-w-xl items-center gap-2 rounded-3xl border border-line/80 bg-raised/95 p-2 shadow-elev-3 backdrop-blur-xl">
+        <div className="pointer-events-auto flex w-full max-w-2xl items-center gap-2 rounded-3xl border border-line/80 bg-raised/95 p-2 shadow-elev-3 backdrop-blur-xl">
           {deck ? (
             <>
               <p className="min-w-0 flex-1 truncate pl-3 text-[14px] font-semibold text-sage-text">In your Thesaurus</p>
-              <Button variant="secondary" onClick={() => navigate(`/thesaurus/deck/${deck.id}`)}>
+              <AddStarterMenu lang={lang} spec={spec} skipKnown={skipKnown} trigger="button" />
+              <Button variant="secondary" size="lg" onClick={() => navigate(`/thesaurus/deck/${deck.id}`)}>
                 Open deck
               </Button>
-              <Button icon={Layers} onClick={() => navigate(`/thesaurus/study/${deck.id}?mode=recall`)}>
+              <Button size="lg" icon={Layers} onClick={() => navigate(`/thesaurus/study/${deck.id}?mode=recall`)}>
                 Study
               </Button>
             </>
           ) : (
-            <Button block size="lg" iconRight={ArrowRight} disabled={!items || toAdd <= 0} loading={busy} onClick={() => void add()} className={cx(toAdd <= 0 && 'opacity-60')}>
-              {!items ? 'Opening the booklet…' : toAdd > 0 ? `Add ${toAdd.toLocaleString()} ${toAdd === 1 ? 'card' : 'cards'}` : 'You know every word here'}
-            </Button>
+            <>
+              <Button block size="lg" iconRight={ArrowRight} disabled={!items || toAdd <= 0} loading={busy} onClick={() => void add()} className={cx('min-w-0 flex-1', toAdd <= 0 && 'opacity-60')}>
+                {!items ? 'Opening the booklet…' : toAdd > 0 ? `Add ${toAdd.toLocaleString()} ${toAdd === 1 ? 'card' : 'cards'} to My decks` : 'You know every word here'}
+              </Button>
+              {/* Or into a deck you already have, skipping the words it holds (5.1-3b). */}
+              {items && usable.length > 0 && <AddStarterMenu lang={lang} spec={spec} skipKnown={skipKnown} trigger="button" />}
+            </>
           )}
         </div>
       </div>

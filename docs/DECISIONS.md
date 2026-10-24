@@ -1206,6 +1206,26 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-24 — A much larger Discover (5.1-3b, part 4)
+
+- **New lists without the 2 GB rebuild:** a full rebuild of 35 packs (and an hour's count for
+  Japanese and Mandarin) only to add themed lists would also change everything else in them. The
+  new `retheme.ts` reads each built pack and picks the new lists by the pack's own words, the same
+  way `build.ts` does (`themePicks.ts`, shared); the 14 lists from the full build stay. A later
+  full build makes the same lists, so nothing is lost.
+- **Computed decks are worked out, not listed:** irregular verbs from each pack's own verb tables
+  (a verb is irregular when one of its forms leaves the regular stem: ser → soy, gehen → ging), only
+  for the 15 languages where learners study them; words that look like English by comparing each
+  common word (Russian, Greek and Georgian in Latin letters) with its first English meaning, so
+  false friends never count. "From songs and shows" comes from the words looked up there.
+- **Levels by how common the words are:** a deck's level is set by its middle word's frequency
+  rank (A1 to 600, A2 to 1,800, B1 to 5,000), so it differs by language and needs no hand labels.
+- **Discover searches itself:** on Discover, search looks through names and the words inside
+  (Hund finds Animals); on My decks it still searches decks, folders and themes.
+- **Hand fixes where Wiktionary's first pick is another sense** (the date you eat, a match you
+  strike): sense hints for every language, and checked overrides for Spanish and a few for French,
+  German and Mandarin; an override can hold for one part of speech (`es:book|verb`).
+
 ## 2026-10-24 — More varied Ludus lessons (5.1-3b, part 3)
 
 - **Rules over pure chance:** kinds are weighted (making the word and sentences more often than

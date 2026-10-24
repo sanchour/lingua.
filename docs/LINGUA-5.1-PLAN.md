@@ -493,16 +493,16 @@ in pages and scroll mode; the word panel fits a 1366×768 screen; Discover impor
 ### 5.1-3b · Thesaurus and Ludus
 
 **The user's points**
-- [ ] A better, better-placed My decks / Discover switch.
-- [ ] A better list of my decks.
-- [ ] "My vocabulary journey" under My decks.
-- [ ] Many more decks to discover (fun ones too), minimal, with search, sort and group.
-- [ ] From the journey and from decks: add to My decks, or to a deck you have.
-- [ ] A better deck settings panel.
-- [ ] The card list as cards.
-- [ ] A more aesthetic Today card.
-- [ ] Ludus: answer cards line up evenly, even with long words.
-- [ ] Ludus: more random, more varied exercises.
+- [x] A better, better-placed My decks / Discover switch.
+- [x] A better list of my decks.
+- [x] "My vocabulary journey" under My decks.
+- [x] Many more decks to discover (fun ones too), minimal, with search, sort and group.
+- [x] From the journey and from decks: add to My decks, or to a deck you have.
+- [x] A better deck settings panel.
+- [x] The card list as cards.
+- [x] A more aesthetic Today card.
+- [x] Ludus: answer cards line up evenly, even with long words.
+- [x] Ludus: more random, more varied exercises.
 
 **Layout**
 - Desktop: My decks and Discover become header tabs (as in Mundus, with 1/2 key hints); search,

@@ -568,7 +568,7 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   buying switches the plan on this device and charges nothing; Settings › Lab › Pretend a plan acts
   as Free, Lingua+ or Max. Installs from before the plans act as Max, so nothing disappears.
 
-## Thesaurus and Ludus, 5.1-3b (so far)
+## Thesaurus and Ludus, 5.1-3b
 
 - **The room:** My decks, Discover and Dictionary as header tabs (1 2 3); search (/), sort, and New
   at the right of the same row. Sort's menu also switches My decks between a list and cards.
@@ -590,6 +590,18 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Deck settings** in a panel on the right, with the deck's card drawn live at the top: Daily
   limits; Order (direction, and new cards most common first or shuffled); Card look (front, width);
   Ludus (leave exercises out of this deck's lessons); Danger zone (Forget progress, Delete deck).
+- **A much larger Discover:** 47 ready-made decks on five shelves: Path (the most common words,
+  band by band), Everyday (clothes, the city, shopping, health, sport, hobbies, technology, the
+  kitchen, directions, the restaurant, the hotel and the first fourteen), Fun (coffee shop, film
+  night, football, love and dating, compliments, exclamations, festivals, the sea, space, fairy
+  tales), Grammar (essential and irregular verbs, connectors, question words) and Made for you
+  (words that look like English; the words you looked up in songs and shows).
+- **Small cards:** each deck's picture in its colour, its name, its size and how much of it you
+  know. Search finds a deck by its name or by any word inside it; sort by suggested, most words or
+  easiest first; group by kind or by level.
+- **Add to…:** the + on a card (and "Add to…" in a deck's booklet, also for a stop on the journey)
+  adds it to My decks or to a deck you have; words already there are skipped, and it says how many
+  were added.
 
 ## Codex, 5.1-3a (so far)
 

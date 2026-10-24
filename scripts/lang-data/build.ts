@@ -22,10 +22,13 @@ import { baseCandidates } from '../../src/core/lang/inflect.ts';
 import { deinflect, hasKanji, JAPANESE_CHAR, readingOf, segmentJapanese, toHiragana } from '../../src/core/lang/japanese.ts';
 import type { JapaneseLexicon } from '../../src/core/lang/japanese.ts';
 import { PACK_FORMAT, PACK_VERSION, packFileName } from '../../src/core/packs/format.ts';
-import type { PackExample, PackFile, PackForm, PackLemma, PackParadigm, PackSense, PackThemeItem } from '../../src/core/packs/format.ts';
+import type { PackExample, PackFile, PackForm, PackLemma, PackParadigm, PackSense } from '../../src/core/packs/format.ts';
+import { computedThemes } from '../../src/core/lang/computedDecks.ts';
 import { GLOSS_FIXES, READING_FIXES } from './fixes.ts';
 import { CACHE_DIR, countedFile, frequencyFile, kaikkiFile, PACK_SOURCES, PACKS_DIR, unihanVariants } from './sources.ts';
 import type { PackSource } from './sources.ts';
+import { pickThemes } from './themePicks.ts';
+import type { ThemeCandidates } from './themePicks.ts';
 
 const FREQ_KEEP = 20_000;
 const FREQ_LOOKUP = 50_000;
@@ -279,9 +282,6 @@ interface LexicalData {
   /** 0 the word itself · 1 a capitalised entry · 2 an abbreviation (see entryPriority). */
   priority: number;
 }
-
-/** themes.ts output: [candidates as [word, gender tag, 0 · 1 regional · -1 hand-picked], meaning, pos] */
-type ThemeCandidates = [Array<[string, string, number]>, string, string];
 
 const hasLetter = /\p{L}/u;
 
@@ -1340,40 +1340,21 @@ async function build(source: PackSource): Promise<void> {
     }
   });
 
-  // Themed lists: of themes.ts' candidates take the first this dictionary knows; a rare first choice
-  // gives way to a common, non-regional alternative (chuño → patata). Gender comes from the dictionary.
+  // Themed lists, picked from themes.ts' candidates (themePicks.ts), and the decks worked out from the
+  // pack itself: irregular verbs and words that look like English (5.1-3b).
   const themesFile = new URL('themes.json', CACHE_DIR);
   const rawThemes = existsSync(themesFile) ? (JSON.parse(readFileSync(themesFile, 'utf8')) as Record<string, Record<string, ThemeCandidates[]>>)[lang] : undefined;
   if (!rawThemes) console.warn(`  ${lang}: no themed lists (run themes.ts first)`);
   const known = (phrase: string) => wordsOf(phrase, lang).every((w) => forms.has(w.norm) || lexical.has(w.norm));
   const rankOf = (phrase: string) => Math.max(...wordsOf(phrase, lang).map((w) => freqRank.get(w.norm) ?? Infinity));
-  const pickTheme = (candidates: ThemeCandidates[0]) => {
-    if (candidates[0]?.[2] === -1) return candidates[0];
-    const usable = candidates.filter(([w]) => known(w));
-    const list = usable.length ? usable : candidates;
-    if (rankOf(list[0][0]) > 20_000) {
-      const better = list
-        .slice(1)
-        .filter((c) => c[2] === 0 && rankOf(c[0]) <= 10_000)
-        .sort((a, b) => rankOf(a[0]) - rankOf(b[0]))[0];
-      if (better) return better;
-    }
-    return list[0];
+  const nounGender = (term: string) => {
+    const single = wordsOf(term, lang);
+    const own = single.length === 1 ? lexical.get(single[0].norm) : undefined;
+    return (own?.senses[0]?.[0] === 'noun' && own.gender) || undefined;
   };
-  const themes = rawThemes
-    ? Object.fromEntries(
-        Object.entries(rawThemes).map(([theme, items]) => [
-          theme,
-          items.map(([candidates, meaning, pos]): PackThemeItem => {
-            const [term, tagGender] = pickTheme(candidates);
-            const single = wordsOf(term, lang);
-            const own = single.length === 1 ? lexical.get(single[0].norm) : undefined;
-            const gender = pos === 'noun' ? (own?.senses[0]?.[0] === 'noun' && own.gender) || tagGender : '';
-            return [term, meaning, pos, gender];
-          }),
-        ]),
-      )
-    : undefined;
+  // Mandarin: a Traditional pick is respelled as the Simplified word it is a form of.
+  const respell = (term: string) => (lang === 'zh' && /^Traditional spelling of (.+)$/.exec(forms.get(term)?.[3] ?? '')?.[1]) || term;
+  const themes = { ...(rawThemes ? pickThemes(rawThemes, { known, rankOf, nounGender, respell }) : {}), ...computedThemes({ lang, lemmas, lemmaFreq, paradigms, forms: [...forms.values()] }) };
 
   const pack: PackFile = {
     format: PACK_FORMAT,

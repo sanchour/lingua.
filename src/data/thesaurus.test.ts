@@ -4,7 +4,7 @@ import { createDb } from './db';
 import type { LinguaDB } from './db';
 import { addNote, createDeck, deckCounts, deleteDeck, forgetDeck, orderNewCards, updateDeck } from './decks';
 import { completeOnboarding } from './languages';
-import { addStarterDeck, starterItems } from './starter';
+import { addStarterDeck, addStarterToDeck, starterItems } from './starter';
 import { answerCard, dueSummary, loadStudySession, undoAnswer } from './study';
 import { setWordState } from './words';
 
@@ -67,6 +67,35 @@ describe('ready-made decks', () => {
 
     const theme = await addStarterDeck('es', { kind: 'theme', id: 'animals' }, { skipKnown: false }, db);
     expect(theme.added).toBe(2); // perro is already in Top 100; the phrase "oso polar" stays
+  });
+
+  it('adds a ready-made deck to a deck you have, skipping the words already there (5.1-3b)', async () => {
+    const db = freshDb();
+    await withSpanish(db);
+    const deckId = await createDeck('es', { name: 'Holiday' }, db);
+    await addNote(deckId, { term: 'perro', meaning: 'dog' }, db);
+    const first = await addStarterToDeck('es', { kind: 'theme', id: 'animals' }, deckId, { skipKnown: false }, db);
+    expect(first).toMatchObject({ deckId, added: 2, skippedInDeck: 1 });
+    const again = await addStarterToDeck('es', { kind: 'theme', id: 'animals' }, deckId, { skipKnown: false }, db);
+    expect(again).toMatchObject({ added: 0, skippedInDeck: 3 });
+    const terms = (await db.notes.where('deckId').equals(deckId).toArray()).map((n) => n.term).sort();
+    expect(terms).toEqual(['gato', 'oso polar', 'perro']);
+  });
+
+  it('gathers the words looked up in songs and shows, the most met first (5.1-3b)', async () => {
+    const db = freshDb();
+    await withSpanish(db);
+    const now = Date.now();
+    const base = { lang: 'es', createdAt: now, updatedAt: now };
+    await db.sightings.bulkPut([
+      { ...base, id: 'es:casa:video:v1', norm: 'casa', lemma: 'casa', surface: 'casa', kind: 'video', sourceId: 'v1', title: 'A show', sentence: 'Mi casa es tu casa.', at: now, count: 1 },
+      { ...base, id: 'es:perros:song:s1', norm: 'perros', lemma: 'perro', surface: 'perros', kind: 'song', sourceId: 's1', title: 'A song', sentence: 'Los perros ladran.', at: now - 10, count: 3 },
+      { ...base, id: 'es:comer:book:b1', norm: 'comer', lemma: 'comer', surface: 'comer', kind: 'book', sourceId: 'b1', title: 'A book', at: now, count: 5 },
+    ]);
+    const items = await starterItems('es', { kind: 'theme', id: 'heard' }, db);
+    // Read in a book doesn't count; the song's word was met more often.
+    expect(items.map((i) => i.term)).toEqual(['perro', 'casa']);
+    expect(items[0]).toMatchObject({ meaning: 'dog', wordId: 'es:perro', example: { text: 'Los perros ladran.', cloze: [4, 10] } });
   });
 });
 

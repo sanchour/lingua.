@@ -1715,7 +1715,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
   - [x] c · Home: Today, Next up, the week, Cursus, Mundus, numbers, as a square grid (the old Home one setting away; 2026-10-21)
 - [ ] 5.1-3 · Reading, words and sound
   - [x] a · Codex (on top of what 4.0-2 built) (2026-10-22)
-  - [ ] b · Thesaurus and Ludus: deck list and cards, a much larger Discover, even and varied Ludus
+  - [x] b · Thesaurus and Ludus: deck list and cards, a much larger Discover, even and varied Ludus (2026-10-24)
   - [ ] c · Sound: human recordings and a natural on-device voice without a key
 - [ ] 5.1-4 · Typing, and the language in the design
   - [ ] a · Keyboard practice in Cursus (tier 1)
@@ -1919,13 +1919,13 @@ of the handover and runs in parallel with 5.1-1.*
       with a prompt in the language) and Diarium ("Talk about this"); the course's Speak lesson now
       ends with "Finish, and keep talking with an AI", opening Sermo on the unit's subject.
 
-**Cursus is done (2026-10-22).** Next, in the user's order: 5.1-3b and c. 5.1-3b part 1 is done (2026-10-23);
-parts 2–4 and 5.1-3c are next (HANDOVER.md, section 6).
+**Cursus is done (2026-10-22).** Next, in the user's order: 5.1-3b and c. 5.1-3b is done (part 1
+2026-10-23, parts 2–4 2026-10-24); 5.1-3c is next (HANDOVER.md, section 6).
 
 ### Thesaurus and Ludus (5.1-3b, handover step 9): how it is built
 *Planned 2026-10-23; the design is in LINGUA-5.1-PLAN.md "5.1-3b". The user asked (2026-10-23) for
-5.1-3b here and not 5.1-3c. Each part pushed. The user stopped it after part 1 (2026-10-23); parts 2–4
-are free for the next account (HANDOVER.md, section 6).*
+5.1-3b here and not 5.1-3c. Each part pushed. The user stopped it after part 1 (2026-10-23), then had
+parts 2–4 done in the same session (2026-10-24).*
 - **Part 1 · the room** (done 2026-10-23)**:** My decks · Discover · Dictionary as the room's header tabs (1 2 3), with
   search, sort, the list/cards view and New at the right of the row. My decks: a desktop list
   (picture, name, folder, cards, new · learning · review pills, last studied; Study, Ludus and ⋯ on
@@ -1955,9 +1955,22 @@ are free for the next account (HANDOVER.md, section 6).*
   `Options` (`auto-rows-fr`, the size set by the longest answer and the longest single word, since
   the app's browser has no German hyphenation); `data/sentences.ts` `lessonSentences` lends a
   dictionary sentence to cards without one, for that lesson only. Test: 300 seeded lessons.
-- **Part 4 · Discover:** themes from 14 to about 40 in groups (Path, Everyday, Fun, Grammar,
+- **Part 4 · Discover** (done 2026-10-24)**:** themes from 14 to about 40 in groups (Path, Everyday, Fun, Grammar,
   Computed: words that look like English, your words from songs and shows), as minimal cards with
   search, sort and group; "Add to My decks" or "Add to…" a deck you have, skipping words already
   there, on themes and journey stages. New concept lists in `scripts/lang-data/themes.ts`; packs
   rebuilt v7 → v8 one at a time (tier 1 and 2), the dev server stopped.
+  *Built:* 47 decks on five shelves: Path (the eight milestones again), Everyday 23, Fun 10,
+  Grammar 4, Made for you 2. 22 new concept lists in `themes.ts` (hints fixed where a word has
+  several senses; overrides can now hold for one part of speech, `es:book|verb`; Chinese picks
+  must be characters), `STARTER_THEMES` with a `group`, icons and hues in `DeckIcon.tsx`.
+  Irregular verbs (15 languages) and words that look like English (24) are worked out from each
+  pack in `core/lang/computedDecks.ts`; "From songs and shows" from the learner's sightings, in
+  `data/starter.ts`. Instead of the 2 GB rebuild, the new `scripts/lang-data/retheme.ts` gives
+  every pack its new lists in about a second each (the 14 built lists stay); `themePicks.ts` is the
+  picking that `build.ts` and it share. `PACK_VERSION` 8. Discover (`library/StarterLibrary.tsx`)
+  has its own search (names and the words inside), sort (suggested, most words, easiest first) and
+  group (kind or level, by how common a deck's words are); `library/AddStarterMenu.tsx` is the +
+  on each card and "Add to…" in the booklet (`addStarterToDeck`). Tests: `computedDecks.test.ts`,
+  two more in `thesaurus.test.ts`.
 

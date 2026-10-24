@@ -2,6 +2,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
+import { packFileName } from '../packs/format';
 import { FIXES, VERBS } from './commonGlosses';
 import { senseInContext } from './context';
 import { englishPlural, englishVerb, formGloss, fromParadigm, parseFormOf, planForm } from './formGloss';
@@ -12,7 +13,7 @@ type PackLemma = [lemma: string, ...rest: unknown[]];
 
 /** The meaning a reader gets for each form, as services/translate/gloss works it out. */
 function readerGlosses(lang: string) {
-  const pack = JSON.parse(gunzipSync(readFileSync(`public/packs/${lang}.v7.json.gz`)).toString()) as {
+  const pack = JSON.parse(gunzipSync(readFileSync(`public/packs/${packFileName(lang)}`)).toString()) as {
     freq: string[];
     forms: PackForm[];
     lemmas: PackLemma[];

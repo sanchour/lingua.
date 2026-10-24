@@ -5,7 +5,7 @@ Zustand, motion/react). It is live at https://sanchour.github.io/lingua./ and Gi
 deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [docs/SETUP.md](docs/SETUP.md).
 Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
 
-## Where the work stands (2026-10-23)
+## Where the work stands (2026-10-24)
 
 - **Start here: [docs/HANDOVER.md](docs/HANDOVER.md).** The work still open, in order, how to claim
   a step so two accounts never do the same one, what only the user can do, and the prompt to paste.
@@ -28,7 +28,7 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
   in HANDOVER.md's order. **5.1 is four steps and the check** (the user, 2026-10-21): 5.1-1 the
   frame (**done 2026-10-21**, with 5.2-1: Cursus, Sonus et Visio, Mentis, Settings), 5.1-2 plans,
   onboarding and Home (**done 2026-10-21**), 5.1-3 Codex (5.1-3a **done 2026-10-22**, then Cursus, the
-  course for the six core languages, **done 2026-10-22**; 5.1-3b part 1 done 2026-10-23, its parts 2–4 and 5.1-3c next: HANDOVER.md section 6), Thesaurus/Ludus and sound, 5.1-4 typing and the design touch.
+  course for the six core languages, **done 2026-10-22**; 5.1-3b **done 2026-10-24**, 5.1-3c next: HANDOVER.md section 6), Thesaurus/Ludus and sound, 5.1-4 typing and the design touch.
   The user asked (2026-10-21) for all of 5.1 and 5.2 to be done without needing them.
 - Other accounts and sessions push to `main` all the time: rebase onto `origin/main` before every
   push. Tier 2 stays cheap: only the features that cost little (automatic packs, decks, podcasts,

@@ -19,6 +19,9 @@ export const CARD_TINT_IDS = ['paper', 'cream', 'sage', 'rose', 'sky', 'lavender
 export type CardTintId = (typeof CARD_TINT_IDS)[number];
 export type LibrarySort = 'recent' | 'added' | 'title' | 'author' | 'progress' | 'known';
 export type DeckSort = 'due' | 'name' | 'recent' | 'size';
+/** Thesaurus › Discover (5.1-3b): the order of its decks, and the shelves they stand on. */
+export type DiscoverSort = 'suggested' | 'size' | 'easiest';
+export type DiscoverGroup = 'kind' | 'level';
 export type MediaSort = 'recent' | 'added' | 'title' | 'longest' | 'shortest';
 export type GoodreadsSort = 'added' | 'read' | 'rating' | 'author' | 'title' | 'year';
 export type GoodreadsGroup = 'none' | 'shelf' | 'author' | 'yearRead';
@@ -129,6 +132,8 @@ export interface Settings {
     deckSort: DeckSort;
     /** Thesaurus › My decks as a table or as cards (5.1-3b). */
     deckView: 'list' | 'cards';
+    discoverSort: DiscoverSort;
+    discoverGroup: DiscoverGroup;
     mediaSort: MediaSort;
     /** Home's "first steps" list, once put away. */
     firstStepsHidden: boolean;
@@ -220,7 +225,7 @@ export const DEFAULT_SETTINGS: Settings = {
   voice: { off: false, chosen: {} },
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today' },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today' },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null, plan: null },
   sync: { devices: [], includeApiKeys: false },
 };
