@@ -7,6 +7,7 @@ import { EXERCISE_KINDS, EXERCISE_NAME, shuffle } from '@/core/srs/ludus';
 import type { LudusItem } from '@/core/srs/ludus';
 import { recordSession } from '@/data/activity';
 import { db } from '@/data/db';
+import { lessonSentences } from '@/data/sentences';
 import { loadPracticeCards, loadStudySession } from '@/data/study';
 import { currentGrammarTopic } from '@/data/grammar';
 import type { StudySession } from '@/data/study';
@@ -42,9 +43,11 @@ async function loadLudus(lang: string, deckId: string | null, affectSchedule: bo
   const session = await loadStudySession(lang, deckId);
   const entries: LudusEntry[] = [];
   const seen = new Set<string>();
+  const lemmas = new Map<string, string | undefined>();
   const add = (card: Card, note: Note | undefined, schedule: boolean) => {
     if (!note?.meaning || seen.has(note.id) || entries.length >= size) return;
     seen.add(note.id);
+    lemmas.set(card.id, note.lemma);
     entries.push({ card, item: toItem(card, note, lang), schedule });
   };
   for (const card of session.queue) add(card, session.notes.get(card.noteId), affectSchedule);
@@ -53,6 +56,14 @@ async function loadLudus(lang: string, deckId: string | null, affectSchedule: bo
     if (entries.length >= size) break;
     const practice = await loadPracticeCards(deck.id, size);
     for (const card of practice.cards) add(card, practice.notes.get(card.noteId), false);
+  }
+  // Cards without a sentence of their own borrow one from the dictionary (5.1-3b), so gaps, word banks
+  // and translations come into the mix for them too.
+  const bare = entries.filter((e) => !e.item.example);
+  const lent = await lessonSentences(lang, bare.map((e) => ({ key: e.item.id, term: e.item.term, lemma: lemmas.get(e.item.id) })));
+  for (const e of bare) {
+    const example = lent.get(e.item.id);
+    if (example) e.item = { ...e.item, example };
   }
   const deckIds = [...session.decks.keys()];
   const notes = (await db.notes.where('deckId').anyOf(deckIds).limit(POOL * 2).toArray()).filter((n) => !n.deletedAt && n.meaning);

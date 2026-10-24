@@ -129,13 +129,16 @@ describe('ludus', () => {
     { id: '5', term: 'casa', meaning: 'house', pos: 'noun', isNew: false },
   ];
 
-  it('plans a lesson: a match round, an exercise per card, and a second one for new cards', () => {
+  it('plans a lesson: a match round, an exercise per card, and two looks at a new card', () => {
     const plan = planLesson(items, items, { random: seededRandom(7) });
     expect(plan[0].kind).toBe('match');
+    const matched = plan[0].kind === 'match' ? plan[0].items.map((i) => i.id) : [];
+    // The pairs round takes new cards first, and counts as a new card's first look.
+    expect(matched).toContain('2');
     const perCard = new Map<string, number>();
     for (const ex of plan.slice(1)) if ('item' in ex) perCard.set(ex.item.id, (perCard.get(ex.item.id) ?? 0) + 1);
-    expect(perCard.get('2')).toBe(2);
-    expect([...perCard.values()].reduce((a, b) => a + b, 0)).toBe(items.length + 1);
+    expect((perCard.get('2') ?? 0) + Number(matched.includes('2'))).toBe(2);
+    for (const id of ['1', '3', '4', '5']) expect(perCard.get(id)).toBe(1);
     for (const ex of plan) {
       if ('options' in ex) {
         expect(new Set(ex.options).size).toBe(ex.options.length);
@@ -240,6 +243,51 @@ describe('ludus, expanded (3.0-8)', () => {
     // Everything off still leaves a lesson.
     const all = new Set<ExerciseKind>(['choose-meaning', 'choose-term', 'truefalse', 'match', 'listen', 'cloze', 'type', 'spell', 'build', 'dictation', 'translate', 'article', 'speak']);
     expect(planLesson(items, items, { random: seededRandom(2), off: all }).length).toBeGreaterThan(0);
+  });
+
+  it('varies a lesson: no kind twice running, none over about a third, new cards met gently first (5.1-3b)', () => {
+    const ex = (t: string, tr: string, at: number, len: number) => ({ text: t, translation: tr, cloze: [at, at + len] as [number, number] });
+    const many: LudusItem[] = [
+      { id: 'a', term: 'perro', meaning: 'dog', pos: 'noun', isNew: false, example: ex('El perro duerme en casa.', 'The dog sleeps at home.', 3, 5) },
+      { id: 'b', term: 'gato', meaning: 'cat', pos: 'noun', isNew: true, example: ex('Mi gato come pescado.', 'My cat eats fish.', 3, 4) },
+      { id: 'c', term: 'comer', meaning: 'to eat', pos: 'verb', isNew: false },
+      { id: 'd', term: 'rojo', meaning: 'red', pos: 'adj', isNew: true },
+      { id: 'e', term: 'casa', meaning: 'house', pos: 'noun', isNew: false, example: ex('La casa es grande.', 'The house is big.', 3, 4) },
+      { id: 'f', term: 'libro', meaning: 'book', pos: 'noun', isNew: false },
+      { id: 'g', term: 'agua', meaning: 'water', pos: 'noun', isNew: true },
+      { id: 'h', term: 'leer', meaning: 'to read', pos: 'verb', isNew: false, example: ex('Me gusta leer por la noche.', 'I like to read at night.', 9, 4) },
+      { id: 'i', term: 'grande', meaning: 'big', pos: 'adj', isNew: false },
+      { id: 'j', term: 'mesa', meaning: 'table', pos: 'noun', isNew: false },
+    ];
+    const gentle = new Set<ExerciseKind>(['choose-meaning', 'truefalse', 'listen', 'match']);
+    let secondsAllAtEnd = 0;
+    const counts = new Map<ExerciseKind, number>();
+    for (let seed = 1; seed <= 300; seed++) {
+      const plan = planLesson(many, many, { random: seededRandom(seed), canHear: true, canSpell: true });
+      const kinds = plan.map((e) => e.kind);
+      for (let i = 1; i < kinds.length; i++) expect(kinds[i], `seed ${seed} at ${i}`).not.toBe(kinds[i - 1]);
+      const per = new Map<ExerciseKind, number>();
+      for (const k of kinds) per.set(k, (per.get(k) ?? 0) + 1);
+      for (const [k, c] of per) {
+        expect(c, `seed ${seed}: ${k}`).toBeLessThanOrEqual(Math.ceil(kinds.length / 3));
+        counts.set(k, (counts.get(k) ?? 0) + c);
+      }
+      // A new card's first look is gentle; its second comes later, not always at the very end.
+      const matched = plan[0].kind === 'match' ? plan[0].items.map((i) => i.id) : [];
+      const seconds: number[] = [];
+      for (const id of ['b', 'd', 'g']) {
+        const at = plan.flatMap((e, i) => ('item' in e && e.item.id === id ? [i] : []));
+        if (!matched.includes(id)) {
+          expect(gentle.has(plan[at[0]].kind), `seed ${seed}: first look at ${id}`).toBe(true);
+          expect(at).toHaveLength(2);
+        } else expect(at).toHaveLength(1);
+        seconds.push(at[at.length - 1]);
+      }
+      if (Math.min(...seconds) >= plan.length - 3) secondsAllAtEnd++;
+    }
+    expect(secondsAllAtEnd).toBeLessThan(30);
+    // Every kind that can be made turns up.
+    for (const k of ['type', 'cloze', 'choose-term', 'build', 'translate', 'dictation', 'spell', 'listen', 'truefalse', 'choose-meaning', 'match'] as const) expect(counts.get(k) ?? 0, k).toBeGreaterThan(0);
   });
 
   it('plans a Lightning round of quick choices', () => {

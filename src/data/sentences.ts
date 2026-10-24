@@ -147,3 +147,32 @@ export async function buildGapRound(lang: string, level: Level, gapLevel: GapLev
   const pool = round.map((r) => r.answer);
   return round.map((r, i) => ({ ...r, gloss: r.gloss ?? glosses[i]?.gloss, options: gapLevel === 'choose' ? shuffle([r.answer, ...distractors(r.answer, pool, lang)]) : undefined }));
 }
+
+/**
+ * A real sentence from the dictionary for each Ludus card that has none of its own (5.1-3b), so gaps,
+ * word banks and translations join a lesson's mix. The word in its own form first; a sentence of
+ * at most 110 characters whose gap is a single word.
+ */
+export async function lessonSentences(
+  lang: string,
+  words: Array<{ key: string; term: string; lemma?: string }>,
+  random = Math.random,
+  database: LinguaDB = db,
+): Promise<Map<string, { text: string; translation?: string; cloze: [number, number] }>> {
+  const pack = packId(lang);
+  const out = new Map<string, { text: string; translation?: string; cloze: [number, number] }>();
+  if (!words.length) return out;
+  const rows = await database.dictExamples.bulkGet(words.map((w) => [pack, w.lemma || w.term] as [string, string]));
+  words.forEach((w, i) => {
+    const fits = (rows[i]?.ex ?? []).flatMap(([text, translation, start, end]) => {
+      if (text.length > 110 || !cut(text, start, end)) return [];
+      const raw = text.slice(start, end);
+      const at = start + (raw.length - raw.trimStart().length);
+      return [{ text, translation: translation || undefined, cloze: [at, at + raw.trim().length] as [number, number] }];
+    });
+    const own = fits.filter((f) => f.text.slice(...f.cloze).toLocaleLowerCase(lang) === w.term.toLocaleLowerCase(lang));
+    const from = own.length ? own : fits;
+    if (from.length) out.set(w.key, from[Math.floor(random() * from.length)]);
+  });
+  return out;
+}

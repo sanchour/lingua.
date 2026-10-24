@@ -36,10 +36,19 @@ function TermText({ item, lang }: { item: LudusItem; lang: string }) {
 
 // ── Choice (meaning, word, listening, gap) ──────────────────────────────────
 
+/**
+ * The answers as even cards (5.1-3b): one height in every row, long words wrapping with hyphens in
+ * their own language, smaller type only for very long answers, and four short ones in a single row.
+ */
 function Options({ options, value, onChange, phase, answer, lang }: { options: string[]; value: number | null; onChange: (i: number) => void; phase: Phase; answer: number; lang?: string }) {
   const { pointer } = useLayout();
+  const longest = Math.max(...options.map((o) => o.length));
+  // A long compound (Geschwindigkeitsbegrenzung) can't wrap where the browser has no hyphenation for
+  // the language, so the longest single word sets the size too.
+  const word = Math.max(...options.flatMap((o) => o.split(/\s+/).map((w) => w.length)));
+  const size = longest > 48 || word > 22 ? 'text-[14px] leading-snug' : longest > 28 || word > 18 ? 'text-[15px] leading-snug' : 'text-[16px]';
   return (
-    <div role="radiogroup" className="grid gap-2.5 sm:grid-cols-2">
+    <div role="radiogroup" className={cx('grid auto-rows-fr gap-2.5 sm:grid-cols-2', options.length === 4 && longest <= 14 && 'lg:grid-cols-4')}>
       {options.map((o, i) => {
         const chosen = value === i;
         const reveal = phase !== 'answer';
@@ -54,10 +63,11 @@ function Options({ options, value, onChange, phase, answer, lang }: { options: s
             onClick={() => onChange(i)}
             animate={reveal && chosen && i !== answer ? { x: [0, -6, 6, -4, 4, 0] } : { x: 0 }}
             transition={{ duration: 0.32 }}
-            className={cx('no-callout flex min-h-14 items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left text-[16px] font-semibold transition-[background-color,border-color,transform] duration-150 active:scale-[0.98]', tone)}
+            className={cx('no-callout flex h-full min-h-14 items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left font-semibold transition-[background-color,border-color,transform] duration-150 active:scale-[0.98]', size, tone)}
           >
             {pointer === 'fine' && <Kbd>{i + 1}</Kbd>}
-            <span lang={lang} className="min-w-0 flex-1">
+            {/* Meanings are English; the language's own words hyphenate by its rules. */}
+            <span lang={lang ?? 'en'} className="min-w-0 flex-1 hyphens-auto break-words">
               {o}
             </span>
           </motion.button>

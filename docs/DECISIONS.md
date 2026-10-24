@@ -1206,6 +1206,19 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-24 — More varied Ludus lessons (5.1-3b, part 3)
+
+- **Rules over pure chance:** kinds are weighted (making the word and sentences more often than
+  plain recognition), but a lesson never repeats a kind back to back and keeps every kind under
+  about a third. The planner places one exercise at a time and tries again (up to nine times) when
+  a lesson would have to bend a rule; with very few cards or kinds it bends the fewest.
+- **The pairs round is a first look:** it takes new cards first, and a new card met there gets
+  only its second, harder round later, so a lesson isn't longer than before.
+- **Borrowed sentences aren't saved:** a dictionary sentence lent to a card is for that lesson only;
+  the card's own example stays as the learner left it.
+- **Long words get smaller, not broken:** the app's browser has no hyphenation for German, so a
+  long compound would break before its last letter; the longest word sets the type size instead.
+
 ## 2026-10-24 — A deck's settings and cards (5.1-3b, part 2)
 
 - **New-card order is written into the cards,** not read at study time: shuffling or ordering sets

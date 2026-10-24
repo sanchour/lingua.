@@ -580,6 +580,13 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Your vocabulary journey** sits under My decks.
 - **A deck's cards** as a grid of small cards, five across: the word, its stage (new, learning,
   young, known well) and when it's due; hover and it turns over to the meaning.
+- **Ludus, more varied:** each lesson mixes its exercises by weight, never the same kind twice in a
+  row and none for more than about a third of it; a new card is met gently first (meaning, right
+  or wrong, listening, or the pairs round) and comes back a few exercises later to be said or
+  typed. Cards without a sentence borrow one from the dictionary, so gaps, word banks and
+  translations come up for them too.
+- **Even answers:** Ludus's answer cards are all one height; long words get smaller type rather
+  than breaking, and four short answers sit in one row.
 - **Deck settings** in a panel on the right, with the deck's card drawn live at the top: Daily
   limits; Order (direction, and new cards most common first or shuffled); Card look (front, width);
   Ludus (leave exercises out of this deck's lessons); Danger zone (Forget progress, Delete deck).

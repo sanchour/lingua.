@@ -1945,10 +1945,16 @@ are free for the next account (HANDOVER.md, section 6).*
   the danger zone has Forget progress (`forgetDeck`: every card new again, history kept) and
   Delete. `deck/DeckPage.tsx` `NoteCard`; the deck's stats use the same stage colours
   (`library/states.ts` `STAGES`).
-- **Part 3 · Ludus:** even answer cards (one height, wrapping with hyphens in the language, smaller
+- **Part 3 · Ludus** (done 2026-10-24)**:** even answer cards (one height, wrapping with hyphens in the language, smaller
   type only for very long answers, four short ones in a row); `planLesson` by weights: never the
   same kind twice running, no kind over about a third, gentle kinds for new cards, their second
   round mixed in, gap sentences in the mix; a test over many seeded lessons.
+  *Built:* `core/srs/ludus.ts` `planLesson` (weights per kind, slots placed one by one with the
+  rules, up to nine tries for a plan that bends none; the pairs round takes new cards first and
+  counts as their first look; a second round at least three exercises later); `exercises.tsx`
+  `Options` (`auto-rows-fr`, the size set by the longest answer and the longest single word, since
+  the app's browser has no German hyphenation); `data/sentences.ts` `lessonSentences` lends a
+  dictionary sentence to cards without one, for that lesson only. Test: 300 seeded lessons.
 - **Part 4 · Discover:** themes from 14 to about 40 in groups (Path, Everyday, Fun, Grammar,
   Computed: words that look like English, your words from songs and shows), as minimal cards with
   search, sort and group; "Add to My decks" or "Add to…" a deck you have, skipping words already

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createDb, TABLE_NAMES } from './db';
 import type { LinguaDB } from './db';
 import { recordSighting, sightingsOf, sourceOf, wordMemory } from './memory';
-import { buildGapRound, cut, distractors, locate } from './sentences';
+import { buildGapRound, cut, distractors, lessonSentences, locate } from './sentences';
 import { setWordState } from './words';
 
 const open: LinguaDB[] = [];
@@ -95,5 +95,19 @@ describe('sentences with a gap', () => {
     expect(round.map((r) => [r.answer, r.from, r.gloss])).toEqual(expect.arrayContaining([['perro', 'deck', 'PERRO'], ['Gato', 'deck', 'GATO']]));
     expect(round.find((r) => r.answer === 'perro')?.translation).toBe('My dog sleeps.');
     expect(round.some((r) => r.lemma === 'luna' || r.lemma === 'sol')).toBe(false);
+  });
+});
+
+describe('sentences for a Ludus lesson (5.1-3b)', () => {
+  it('lends a dictionary sentence to a card without one, the word in its own form first', async () => {
+    const db = freshDb();
+    await db.dictExamples.bulkPut([
+      { pack: 'es-en', lemma: 'dormir', ex: [['Ellos duermen mucho.', 'They sleep a lot.', 6, 13], ['Quiero dormir ya.', 'I want to sleep now.', 7, 13]] },
+      { pack: 'es-en', lemma: 'casa', ex: [['Una frase demasiado larga sobre una casa, que sigue y sigue sin parar nunca, con muchas más palabras de las que caben aquí.', '', 36, 40]] },
+    ]);
+    const found = await lessonSentences('es', [{ key: 'c1', term: 'dormir' }, { key: 'c2', term: 'casa' }, { key: 'c3', term: 'nada' }], () => 0.99, db);
+    expect(found.get('c1')).toEqual({ text: 'Quiero dormir ya.', translation: 'I want to sleep now.', cloze: [7, 13] });
+    expect(found.has('c2')).toBe(false); // too long
+    expect(found.has('c3')).toBe(false); // no sentence
   });
 });
