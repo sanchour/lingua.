@@ -639,7 +639,11 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   do after it (say hello, talk about yourself … give your opinion), with six lessons: words,
   phrases, the grammar they need, speaking (the microphone compares what you said word by word),
   writing (AI corrections with a key, a model answer, "Ask a speaker"), and a unit check to pass
-  or to test out with. A path with where you are, and the next lesson on Home.
+  or to test out with. The course is an adventure trail (2026-10-25): round lessons winding down
+  the page in each unit's colour, a line that fills as you go, a banner opening each unit and a
+  trophy (its check) closing it, A1, A2 and B1 as landmarks, the next lesson bouncing where you
+  are (the page opens there). A click on a lesson says what it is and starts it; units ahead
+  look locked and offer their check to jump there. The next lesson is also on Home.
 - **Discover** (Codex › Discover): Wikipedia's most read today, the latest news, free classics from
   Project Gutenberg and Wikisource (search titles and authors), each one click into the library with
   its chapters; links to free picture-book and comic libraries.

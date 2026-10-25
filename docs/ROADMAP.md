@@ -2040,3 +2040,16 @@ own. With a Gemini key nothing changes: Gemini's voices come first, as today.*
       Checked in the built app (French, Siwis). Not heard: Spanish, German, Russian and Mandarin's
       voices (the pinyin step is tested, not listened to).
 
+
+### Cursus as an adventure path (the user, 2026-10-25, with handover step 9)
+*Asked during 5.1-3c: "put cursus in a HelloChinese, Duolingo format. Like an adventure, a clear
+progression line, fun format/look/feel." Pushed with 5.1-3c.*
+- [x] **The trail** (done 2026-10-25)**:** Cursus › Course as one winding trail of round lessons
+      (words, phrases, grammar, speak, write, and the unit check as a trophy), each unit in its own
+      colour with a banner (its can-do lines, progress) and a picture beside the trail; a dotted
+      line ahead, filled where you've been; A1, A2, B1 and the summit as landmarks; the next lesson
+      larger with a bouncing Start or Continue, and the page opens there. A click opens a small card
+      (what the lesson is, Start, Continue or Practise again); units ahead look locked and their
+      card offers the unit check to jump there. The right-hand card stays.
+      *Built:* `features/cursus/course/AdventurePath.tsx` (`UNIT_LOOK`, `Landmark`, `UnitBanner`,
+      `Trail` with its SVG line, `StopNode`, `StopCard`); `CourseTab.tsx` uses it instead of the list.

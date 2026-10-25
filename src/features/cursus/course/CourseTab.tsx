@@ -4,20 +4,17 @@ import { ArrowRight, Check, Flag, Route } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { getLanguage } from '@/core/lang/languages';
 import { LESSONS, OUTLINE } from '@/core/course/outline';
-import type { CourseLevel, LessonId, UnitOutline } from '@/core/course/outline';
 import { nextLesson, useCourseProgress } from '@/data/course';
 import type { NextLesson } from '@/data/course';
 import type { CourseProgressRow } from '@/data/types';
 import { buttonClasses, Card, EmptyState } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
-import { LESSON_ICON, lessonPath, useCourse } from './parts';
+import { AdventurePath } from './AdventurePath';
+import { lessonPath, useCourse } from './parts';
 import type { LoadedCourse } from './parts';
 
-const LEVEL_NAME: Record<CourseLevel, string> = { A1: 'Beginner', A2: 'Elementary', B1: 'Intermediate' };
-const LEVELS: CourseLevel[] = ['A1', 'A2', 'B1'];
-
-/** Cursus › Course: the path of units, where you are on it, and the next lesson a click away. */
+/** Cursus › Course: the course as a trail of lessons, where you are on it, and the next lesson a click away. */
 export function CourseTab() {
   const { language } = useApp();
   const lang = language.id;
@@ -38,75 +35,9 @@ export function CourseTab() {
 
   return (
     <div className="mt-8 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_330px]">
-      <div className="space-y-10">
-        {LEVELS.map((level) => (
-          <section key={level} aria-label={`${level}, ${LEVEL_NAME[level]}`}>
-            <header className="mb-4 flex items-baseline gap-2.5 border-b border-line pb-2">
-              <h2 className="font-serif text-xl font-semibold">{level}</h2>
-              <span className="text-sm font-semibold text-ink-faint">{LEVEL_NAME[level]}</span>
-            </header>
-            <ol className="relative space-y-3">
-              {OUTLINE.filter((u) => u.level === level).map((u) => (
-                <UnitRow key={u.id} unit={u} number={OUTLINE.indexOf(u) + 1} row={progress.get(u.id)} lessons={loaded.lessonsOf(u.id)} current={next?.unit === u.id ? next.lesson : undefined} />
-              ))}
-            </ol>
-          </section>
-        ))}
-      </div>
+      <AdventurePath progress={progress} lessonsOf={loaded.lessonsOf} next={next} />
       <WhereYouAre next={next} progress={progress} loaded={loaded} />
     </div>
-  );
-}
-
-function UnitRow({ unit, number, row, lessons, current }: { unit: UnitOutline; number: number; row?: CourseProgressRow; lessons: LessonId[]; current?: LessonId }) {
-  const done = Boolean(row?.doneAt);
-  const count = lessons.filter((l) => row?.lessons[l]).length;
-  return (
-    <li className={cx('relative flex gap-4 rounded-2xl p-3 transition-colors', current ? 'bg-surface shadow-elev-1' : 'hover:bg-surface/60')}>
-      <span
-        className={cx(
-          'grid size-10 shrink-0 place-items-center rounded-full font-serif text-[17px] font-semibold tabular-nums',
-          done ? 'bg-sage text-bg' : current ? 'bg-accent text-on-accent' : 'border border-line-strong text-ink-soft',
-        )}
-        aria-hidden
-      >
-        {done ? <Check size={19} strokeWidth={3} /> : number}
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-3">
-          <h3 className="min-w-0 flex-1 font-serif text-[18px] leading-snug font-semibold">{unit.title}</h3>
-          <span className="shrink-0 text-[12px] font-semibold text-ink-faint tabular-nums">{done ? 'Done' : `${count} of ${lessons.length}`}</span>
-        </div>
-        {current && (
-          <ul className="mt-1.5 space-y-0.5 text-[13.5px] text-ink-soft">
-            {unit.canDo.map((c) => (
-              <li key={c}>· {c}</li>
-            ))}
-          </ul>
-        )}
-        <div className="mt-2.5 flex flex-wrap gap-1.5">
-          {lessons.map((l) => {
-            const Icon = LESSON_ICON[l];
-            const finished = Boolean(row?.lessons[l]);
-            const isNext = current === l;
-            return (
-              <Link
-                key={l}
-                to={lessonPath(unit.id, l)}
-                title={`${LESSONS[l].title}: ${LESSONS[l].aim}`}
-                className={cx(
-                  'inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-[12.5px] font-semibold transition-colors',
-                  isNext ? 'bg-accent text-on-accent hover:brightness-105' : finished ? 'bg-sage-soft text-sage-text hover:brightness-95' : 'bg-sunken text-ink-soft hover:bg-surface hover:text-ink',
-                )}
-              >
-                {finished && !isNext ? <Check size={13} strokeWidth={3} aria-hidden /> : <Icon size={13} aria-hidden />}
-                {LESSONS[l].title}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </li>
   );
 }
 

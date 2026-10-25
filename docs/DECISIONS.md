@@ -1206,6 +1206,22 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-25 — Cursus as an adventure trail
+
+- **The user asked for the course "in a HelloChinese, Duolingo format": an adventure, a clear
+  progression line, a fun look and feel.** One trail of round lessons for all twelve units, swinging
+  left and right; each unit has its own colour and picture (`course/AdventurePath.tsx`
+  `UNIT_LOOK`), a banner with its can-do lines and progress, and its check as a trophy. The levels
+  are landmarks (a flag at A1, mountains at A2 and B1, the summit at the end).
+- **Pressable, not glossy:** each lesson is a coloured disc with a darker edge under it that it
+  sinks into when pressed, like Duolingo's; the rest of Lingua's calm look (paper, serif titles)
+  stays. Motion is transform-only (the bouncing "Continue", the cards), and none with reduced motion.
+- **Locked, with a way through:** units after the one you're in look locked, as in Duolingo, but a
+  click offers that unit's check to jump there (the course always allowed testing out). Lessons
+  inside the current unit stay open in any order, as before.
+- **Where you are** (the right-hand card, "What you can do") stays as it was; the page opens
+  scrolled to the next lesson.
+
 ## 2026-10-25 — Sound without a key (5.1-3c, parts 1 and 2)
 
 - **Real people for common words, from Wikimedia Commons.** Lingua Libre and Wiktionary speakers'
