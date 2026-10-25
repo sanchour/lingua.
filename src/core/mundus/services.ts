@@ -27,7 +27,7 @@ export const SERVICES: StreamingService[] = [
   { id: 'prime', name: 'Prime Video', mono: 'P', hue: '#1f6fb2', home: 'https://www.primevideo.com/', search: 'https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={q}', tmdb: /amazon prime video|^prime video/i },
   { id: 'disney', name: 'Disney+', mono: 'D+', hue: '#1d3b8f', home: 'https://www.disneyplus.com/', tmdb: /disney ?(plus|\+)/i },
   { id: 'max', name: 'HBO Max', mono: 'M', hue: '#5b2bc0', home: 'https://www.hbomax.com/', search: 'https://play.hbomax.com/search?q={q}', tmdb: /^(hbo )?max\b|^hbo/i },
-  { id: 'appletv', name: 'Apple TV+', mono: 'tv', hue: '#3a3a3c', home: 'https://tv.apple.com/', search: 'https://tv.apple.com/search?term={q}', tmdb: /apple tv( plus|\+)/i },
+  { id: 'appletv', name: 'Apple TV', mono: 'tv', hue: '#3a3a3c', home: 'https://tv.apple.com/', search: 'https://tv.apple.com/search?term={q}', tmdb: /apple tv( plus|\+)/i },
   {
     id: 'skyshowtime',
     name: 'SkyShowtime',

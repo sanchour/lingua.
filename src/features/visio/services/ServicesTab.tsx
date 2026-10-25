@@ -1,16 +1,14 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router';
 import { motion } from 'motion/react';
-import { ArrowRight, Check, ChevronDown, ExternalLink, Eye, EyeOff, KeyRound, Tv } from 'lucide-react';
+import { Check, ChevronDown, ExternalLink, Eye, EyeOff, KeyRound } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
-import { COUNTRIES, countryName, matchProviders, servicesFor } from '@/core/mundus/services';
+import { COUNTRIES, countryName, servicesFor } from '@/core/mundus/services';
 import type { StreamingService } from '@/core/mundus/services';
-import type { Pick } from '@/core/mundus/types';
 import { patchSetting } from '@/data/settings';
-import { Badge, Button, Card, Select } from '@/design/primitives';
+import { Button, Card, Select } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
-import { pickKey, usePickLookups, usePicks, useLiveLists, useStreaming } from '@/features/mundus/hooks';
+import { useLiveLists, useStreaming } from '@/features/mundus/hooks';
 import { ServiceMark } from '@/features/mundus/ServiceBadge';
 import { checkToken, isV3Key, posterUrl } from '@/services/mundus/tmdb';
 import type { TmdbTitle } from '@/services/mundus/tmdb';
@@ -44,7 +42,6 @@ export function ServicesTab({ lang }: { lang: string }) {
       ) : (
         <TmdbInvite />
       )}
-      <PicksOnServices lang={lang} services={services} country={country} token={token} onOpen={setSheet} />
       {token && <TmdbConnected />}
       <TitleSheet lang={lang} title={sheet} onClose={() => setSheet(null)} />
     </div>
@@ -164,63 +161,6 @@ function Poster({ title }: { title: TmdbTitle }) {
     <img src={src} alt="" loading="lazy" decoding="async" className="aspect-[2/3] w-full rounded-2xl object-cover shadow-elev-1 transition-transform duration-200 group-hover:-translate-y-0.5" />
   ) : (
     <span className="grid aspect-[2/3] w-full place-items-center rounded-2xl bg-sunken p-2 text-center font-serif text-[14px] font-semibold text-ink-soft">{title.title}</span>
-  );
-}
-
-/** Mundus's own series and films, with where they stream for you. */
-function PicksOnServices({ lang, services, country, token, onOpen }: { lang: string; services: string[]; country: string; token: string; onOpen: (t: SheetTitle) => void }) {
-  const picks = usePicks(lang);
-  const lookups = usePickLookups(lang, picks, country, services.length ? token : '');
-  if (!picks) return null;
-  const all: Array<{ pick: Pick; type: 'tv' | 'movie' }> = [...picks.series.map((pick) => ({ pick, type: 'tv' as const })), ...picks.films.map((pick) => ({ pick, type: 'movie' as const }))];
-  const mine = (pick: Pick) => {
-    const found = lookups.get(pickKey(pick));
-    if (found) return matchProviders(found.where.stream, services).length > 0;
-    return (pick.on ?? []).some((id) => services.includes(id));
-  };
-  const onYours = all.filter((x) => mine(x.pick));
-  return (
-    <section aria-label="Picks on your services">
-      <div className="mb-4 flex flex-wrap items-baseline gap-3">
-        <h2 className="font-serif text-[22px] font-semibold">From Mundus</h2>
-        <span className="text-[13px] font-semibold text-ink-faint">{services.length ? `${onYours.length} of the picks are on your services` : 'Choose your services to see which picks they carry'}</span>
-      </div>
-      {onYours.length > 0 && (
-        <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {onYours.map(({ pick, type }) => {
-            const found = lookups.get(pickKey(pick));
-            const poster = posterUrl(found?.title.posterPath, 'w185');
-            return (
-              <li key={pickKey(pick)}>
-                <button
-                  type="button"
-                  onClick={() => onOpen({ pick, type, tmdb: found?.title })}
-                  className="flex w-full items-center gap-3 rounded-2xl border border-line/70 bg-surface p-3 text-left transition-colors hover:border-line-strong"
-                >
-                  {poster ? (
-                    <img src={poster} alt="" loading="lazy" className="aspect-[2/3] w-10 shrink-0 rounded-lg object-cover" />
-                  ) : (
-                    <span className="grid aspect-[2/3] w-10 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent-text" aria-hidden>
-                      <Tv size={16} />
-                    </span>
-                  )}
-                  <span className="min-w-0 flex-1">
-                    <span lang={lang} className="block truncate text-[15px] font-semibold">
-                      {pick.title}
-                    </span>
-                    <span className="block truncate text-[12.5px] text-ink-soft">{pick.why}</span>
-                  </span>
-                  <Badge tone="sage">{pick.level}+</Badge>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-      <Link to="/mentis/picks?kind=series" className="hit mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-accent-text hover:underline">
-        All picks in Mundus <ArrowRight size={14} aria-hidden />
-      </Link>
-    </section>
   );
 }
 
