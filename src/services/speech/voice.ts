@@ -1,26 +1,49 @@
 // Which voice speaks a language on this device, and speaking with it. Gemini's library voice for
-// the flag's locale when there's a Gemini key; else a good device voice for exactly that locale;
-// else none (and no speaker button). What Gemini says is kept, so each text is generated once.
+// the flag's locale when there's a Gemini key; else, for a common word, a real person saying it
+// (recordings.ts), and the best device voice for exactly that locale for the rest (the robotic ones
+// last, never another language's); else none (and no speaker button). What Gemini says and the recordings are kept, so each is fetched once.
 import { sameLocale, voiceLocale } from '@/core/lang/voiceLocale';
 import { db } from '@/data/db';
 import { getAiSettings } from '@/data/plan';
 import { listVoices, pcmToWav, SpeechError, synthesize } from './gemini';
+import { findRecording, recordingBlob } from './recordings';
 
 export type Speaker =
   | { kind: 'gemini'; locale: string; voice: { id: string; name: string } }
-  | { kind: 'device'; locale: string; voice: SpeechSynthesisVoice }
+  | { kind: 'device'; locale: string; voice: SpeechSynthesisVoice; quality: VoiceQuality }
   | { kind: 'none'; locale: string | null; why: 'off' | 'no-locale' | 'no-voice' };
 
 type VoiceLike = Pick<SpeechSynthesisVoice, 'name' | 'voiceURI' | 'lang'>;
 
-/** Device voices worth hearing: the natural, neural, premium and enhanced ones (and Google's, Siri's). */
-const GOOD = /natural|neural|premium|enhanced|online|siri|google/i;
+/** natural: Edge's online natural voices, Apple's premium ones; good: Google's, enhanced, Siri's; robotic: the old system voices. */
+export type VoiceQuality = 'natural' | 'good' | 'robotic';
 
-/** The best device voice for exactly this locale, or none: a robotic voice is worse than none. */
-export function pickDeviceVoice<V extends VoiceLike>(voices: readonly V[], locale: string): V | undefined {
-  const label = (v: V) => `${v.name} ${v.voiceURI}`;
-  const rank = (v: V) => (/premium|natural|neural/i.test(label(v)) ? 0 : /enhanced|siri|online/i.test(label(v)) ? 1 : 2);
-  return voices.filter((v) => sameLocale(v.lang, locale) && GOOD.test(label(v))).sort((a, b) => rank(a) - rank(b))[0];
+/** How good a device voice sounds, 0 best: Edge's "Online (Natural)" voices, then premium, natural and neural ones, Google's, enhanced and Siri's, the old robotic ones last. */
+export function voiceRank(v: VoiceLike): number {
+  const label = `${v.name} ${v.voiceURI}`;
+  if (/online/i.test(label) && /natural/i.test(label)) return 0;
+  if (/premium|natural|neural/i.test(label)) return 1;
+  if (/google/i.test(label)) return 2;
+  if (/enhanced|siri|online/i.test(label)) return 3;
+  return 4;
+}
+
+export const voiceQuality = (v: VoiceLike): VoiceQuality => (voiceRank(v) <= 1 ? 'natural' : voiceRank(v) <= 3 ? 'good' : 'robotic');
+
+/** The device's voices for exactly this locale, the best first. */
+export function voicesForLocale<V extends VoiceLike>(voices: readonly V[], locale: string): V[] {
+  return voices.filter((v) => sameLocale(v.lang, locale)).sort((a, b) => voiceRank(a) - voiceRank(b));
+}
+
+/** The voice the learner chose for this locale if the device still has it, else the best one; never another locale's. */
+export function pickDeviceVoice<V extends VoiceLike>(voices: readonly V[], locale: string, chosen?: string): V | undefined {
+  const own = voicesForLocale(voices, locale);
+  return own.find((v) => v.voiceURI === chosen) ?? own[0];
+}
+
+/** The device's voices for a locale, the best first (for Settings). */
+export async function listDeviceVoices(locale: string): Promise<SpeechSynthesisVoice[]> {
+  return voicesForLocale(await deviceVoices(), locale);
 }
 
 async function deviceVoices(): Promise<SpeechSynthesisVoice[]> {
@@ -90,8 +113,8 @@ async function resolve(lang: string, flag?: string): Promise<Speaker> {
       // Offline or the key was refused: the device's voice, if it has a good one.
     }
   }
-  const device = pickDeviceVoice(await deviceVoices(), locale);
-  return device ? { kind: 'device', locale, voice: device } : { kind: 'none', locale, why: 'no-voice' };
+  const device = pickDeviceVoice(await deviceVoices(), locale, voice.device?.[locale]);
+  return device ? { kind: 'device', locale, voice: device, quality: voiceQuality(device) } : { kind: 'none', locale, why: 'no-voice' };
 }
 
 // One audio element, unlocked by the tap that asks for speech: iPhones only let an element play
@@ -150,23 +173,37 @@ export async function speak(lang: string, text: string, opts: { flag?: string; o
   const clean = text.replace(/\s+/g, ' ').trim();
   if (!clean) return;
   const speaker = await speakerFor(lang, opts.flag);
-  if (speaker.kind === 'none') throw new SpeechError('There’s no natural voice for this language on this device.', 'no-model');
-  if (speaker.kind === 'device') {
-    return new Promise((resolve) => {
-      const say = new SpeechSynthesisUtterance(clean);
-      say.voice = speaker.voice;
-      say.lang = speaker.locale;
-      say.rate = 0.95;
-      playing = { done: resolve };
-      say.onstart = () => opts.onStart?.();
-      say.onend = say.onerror = () => {
-        if (playing?.done === resolve) playing = null;
-        resolve();
-      };
-      speechSynthesis.speak(say);
-    });
+  if (speaker.kind !== 'gemini' && !(speaker.kind === 'none' && speaker.why === 'off')) {
+    const found = await findRecording(lang, clean, speaker.locale);
+    if (found) {
+      try {
+        return await play(await recordingBlob(lang, clean, found), opts.onStart);
+      } catch {
+        // Offline, or Commons didn't answer: the voice says it instead.
+      }
+    }
   }
+  if (speaker.kind === 'none') throw new SpeechError('There’s no natural voice for this language on this device.', 'no-model');
+  if (speaker.kind === 'device') return sayOnDevice(speaker.voice, clean, opts.onStart);
   return sayWith(speaker.voice.id, lang, clean, opts.onStart);
+}
+
+/** Says `text` with one of the device's voices (also to try one before choosing it). */
+export function sayOnDevice(voice: SpeechSynthesisVoice, text: string, onStart?: () => void): Promise<void> {
+  stopSpeaking();
+  return new Promise((resolve) => {
+    const say = new SpeechSynthesisUtterance(text);
+    say.voice = voice;
+    say.lang = voice.lang.replace('_', '-');
+    say.rate = 0.95;
+    playing = { done: resolve };
+    say.onstart = () => onStart?.();
+    say.onend = say.onerror = () => {
+      if (playing?.done === resolve) playing = null;
+      resolve();
+    };
+    speechSynthesis.speak(say);
+  });
 }
 
 /** Says `text` with one Gemini library voice (also to try a voice before choosing it). */

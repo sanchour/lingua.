@@ -5,7 +5,7 @@ needs is in this repository; Claude's memory doesn't travel, and [CLAUDE.md](../
 way of working and the rules. This file is the **work queue**: what is still open, in order, how to
 take a step without clashing with another account, and the prompts to paste.
 
-Last updated 2026-10-23 (5.1-3b part 1 done; parts 2–4 and 5.1-3c free to take, see section 6).
+Last updated 2026-10-25 (5.1-3b done; 5.1-3c parts 1 and 2 done, part 3 waits for the user, see section 6).
 
 ---
 
@@ -62,7 +62,7 @@ read that part before starting.
 | 6 | [x] | *Done 2026-10-21 (a, b and c).* **5.1-2 · Plans, the first start and Home,** one step in three parts, in order: a · Lingua+ and Lingua+ Max (Stripe in test mode, the licence server, plans, the MAX badge); b · onboarding, the map without dots and its language data, the twelve flags (it shows the plans); c · Home, the new layout (the old one a setting away). After 2. | 5.1-2a, b, c | XL |
 | 7 | — | *Merged into step 6 on 2026-10-21 (5.1 in four steps).* | — | — |
 | 8 | — | *Merged into step 6 on 2026-10-21.* | — | — |
-| 9 | [~] | *a done 2026-10-22; b done 2026-10-24 (part 1 2026-10-23, parts 2–4 2026-10-24); c claimed 2026-10-25* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
+| 9 | [~] | *a done 2026-10-22; b done 2026-10-24 (part 1 2026-10-23, parts 2–4 2026-10-24); c parts 1 and 2 done 2026-10-25, part 3 (Piper) waits for the user's answer on espeak-ng's GPL licence (ROADMAP "Sound without a key")* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
 | 10 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 11 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 12 | — | *Merged into step 20 on 2026-10-21 (typing goes with the design touch as 5.1-4).* | — | — |
@@ -159,8 +159,11 @@ second a pack) gave every pack its new lists as v8. What the plan said, for the 
 - `scripts/.cache` (2.3 GB) was fully downloaded on 2026-10-23, but only on the laptop that did
   part 1. On any other computer run `node scripts/lang-data/fetch.ts` first (SETUP.md, section 5).
 
-**Then 5.1-3c** (sound without a key), planned in LINGUA-5.1-PLAN.md "5.1-3c"; it isn't in the
-roadmap yet.
+**Then 5.1-3c** (sound without a key): planned in ROADMAP "Sound without a key (5.1-3c)". Parts
+1 (real people's recordings of common words, from Wikimedia Commons) and 2 (device voices ranked,
+chosen in Settings) are done (2026-10-25). Part 3, Piper in the browser, waits for the user:
+espeak-ng, which it needs, is GPL-3 (DECISIONS 2026-10-25). Until they answer, the next free steps
+are 13–18 and 22 (all parallel).
 
 **Things that cost time in part 1:**
 - Tailwind only sees class names written out in full: a class built in a template string

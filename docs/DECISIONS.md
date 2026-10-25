@@ -1206,6 +1206,40 @@ Short records of choices that are not obvious from the code. Newest last.
   dark), the "+" kept and a hairline beside the name ("Lingua+ │ MAX") and a hairline outline elsewhere, and one fade-in (opacity
   only, as PERFORMANCE.md asks; none with reduced motion).
 
+## 2026-10-25 — Sound without a key (5.1-3c, parts 1 and 2)
+
+- **Real people for common words, from Wikimedia Commons.** Lingua Libre and Wiktionary speakers'
+  recordings (free licences: mostly CC BY-SA, some CC0 or CC BY). Only an index is committed
+  (`public/sounds/<lang>.v1.json.gz`, 30–160 KB a language); each sound is Commons' mp3 (about 15 KB),
+  fetched the first time it's played and kept in `db.speech` with its speaker and licence, which
+  Commons' API gives. Commons allows any site to fetch both. Settings › Voice lists the
+  recordings heard with their credits and links, as CC BY-SA asks; the speaker button's tooltip
+  names the speaker.
+- **Two sources, because one wasn't enough.** The English Wiktionary's entries (kaikki.org) carry
+  the region each word was recorded in, but kaikki doesn't read the Spanish, Russian, Mandarin and
+  Arabic pronunciation templates (85 Spanish entries had audio). So the script also lists Commons'
+  categories: all of Lingua Libre for the language, and the Wiktionary speakers' "Ru-слово.ogg"
+  files. Of the 10,000 most common forms: French 85%, German 88%, Spanish 43%, Russian 35%,
+  Mandarin 33%, Arabic 19% (of the 1,000 most common: 46–98%). Mandarin only from recordings
+  marked Mandarin (Lingua Libre's "cmn"), never Cantonese or another Chinese language.
+- **The accent:** the flag's region first ("France", "Mexico" or "American Spanish" for Latin
+  American flags), then a recording with no region named, then any. Lingua Libre's category
+  listing doesn't say where its speakers are from, so most Spanish, Russian and Arabic recordings
+  have no region.
+- **Only for a word in the index, and only without a Gemini key** (Gemini's voice, with Max, stays
+  first). A sentence still needs a voice. When a recording can't be fetched (offline, Commons
+  busy), the device's voice says it instead.
+- **A robotic device voice is now the last resort, not never** (the plan's order). It is still
+  only exactly the flag's locale, and Voice says how to get a natural one (Edge's online natural
+  voices on Windows; a Premium or Enhanced voice on a Mac). The learner can pick any of the
+  device's voices for the locale (`voice.device`). Edge's "Online (Natural)" voices rank first.
+- **Part 3, a voice on the device (Piper), waits for the user.** Piper turns text into sounds with
+  espeak-ng, which is GPL-3; shipping it inside a paid app is a licence question only the user can
+  answer. The voices themselves are fine for a paid app except Arabic: fr_FR siwis (CC BY 4.0),
+  es_ES davefx (CC0), es_MX ald (Unlicense), de_DE thorsten (CC0), ru_RU denis and dmitri (CC0),
+  zh_CN chaowen (CC0); ar_JO kareem's dataset has no clear licence, and ru_RU ruslan's is
+  non-commercial (both left out).
+
 ## 2026-10-24 — A much larger Discover (5.1-3b, part 4)
 
 - **New lists without the 2 GB rebuild:** a full rebuild of 35 packs (and an hour's count for

@@ -1974,3 +1974,46 @@ parts 2–4 done in the same session (2026-10-24).*
   on each card and "Add to…" in the booklet (`addStarterToDeck`). Tests: `computedDecks.test.ts`,
   two more in `thesaurus.test.ts`.
 
+### Sound without a key (5.1-3c, handover step 9): how it is built
+*Planned 2026-10-25; the design is in LINGUA-5.1-PLAN.md "5.1-3c". Three parts, each pushed on its
+own. With a Gemini key nothing changes: Gemini's voices come first, as today.*
+- [x] **Part 1 · a real person saying the word** (done 2026-10-25)**:** `scripts/lang-data/recordings.ts` streams the
+      English Wiktionary's entries (kaikki.org, the same file the packs read) and keeps, for the
+      pack's 10,000 most common forms and its theme words, up to three recordings on Wikimedia
+      Commons (Lingua Libre and Wiktionary speakers), with their region ("France", "Mexico") so the
+      flag's accent comes first; Mandarin only from recordings marked Mandarin, never Cantonese.
+      One file per tier 1 language, `public/sounds/<lang>.v1.json.gz`; the script prints how many
+      of the 10,000 have one. In the app (`services/speech/recordings.ts`) a single word without a
+      key plays the recording (Commons' mp3), fetched when first played and kept in `db.speech`
+      with its speaker and licence (asked from Commons' API), so it plays offline afterwards; if
+      it can't be fetched, the voice says it instead. The speaker button shows for a recorded word
+      even with no voice on the device, and its tooltip credits the speaker. Settings › Languages ›
+      Voice lists the recordings heard, with their speakers, licences and links.
+      *Built:* `scripts/lang-data/recordings.ts`; kaikki alone gave 85 Spanish entries with audio,
+      so it also lists Commons' Lingua Libre category and the Wiktionary speakers' category of the
+      language (French takes a few minutes). Of the 10,000 most common forms: French 85%, German
+      88%, Spanish 43%, Russian 35%, Mandarin 33%, Arabic 19%; of the 1,000 most common 46–98%.
+      `core/audio/recordings.ts` (the format, `pickRecording` by region, the key, Commons' URLs; with
+      a test), `services/speech/recordings.ts`, `voice.ts` `speak`, `SpeakButton` (`useRecorded`),
+      `VoicePanel` `HeardRecordings`. `SpeechRow.credit` (no database version).
+- [x] **Part 2 · the best device voice, ranked better** (done 2026-10-25)**:** online natural voices first (Edge's
+      "Online (Natural)"), then Apple's premium, Google's, enhanced and Siri's, and the old robotic
+      ones last instead of never (still only exactly the locale). When only a robotic one is
+      there, Voice says how to get a better one (Windows' natural voices, or Edge). Voice shows
+      each kind this device has for the language, with a sample to hear and choose
+      (`voice.device[locale]`).
+      *Built:* `voice.ts` `voiceRank`, `voiceQuality`, `voicesForLocale`, `pickDeviceVoice` with the
+      chosen voice, `sayOnDevice`; `VoicePanel`: "Voices on this device" (natural, good or robotic;
+      on the device or online; hear it, Use) and the hint under a robotic voice. Tests in
+      `speech.test.ts`.
+- [ ] **Part 3 · a natural voice on the device:** Piper in the browser (WebAssembly), one voice per
+      language, downloaded once when asked (its size shown first, like the packs), for sentences
+      and words without a recording, before the device voices. Only voices whose licence allows
+      a paid app, checked per voice and written down in DECISIONS; the phonemizer's licence too.
+      Checked on a laptop: a short sentence in under 300 ms.
+      *Waits for the user (2026-10-25):* Piper needs espeak-ng (GPL-3) to turn text into
+      phonemes; whether a paid app may ship it is the user's call. Voices whose licence allows a
+      paid app: fr_FR siwis (CC BY 4.0), es_ES davefx (CC0), es_MX ald (Unlicense), de_DE thorsten
+      (CC0), ru_RU denis or dmitri (CC0), zh_CN chaowen (CC0). None for Arabic (ar_JO kareem: no
+      clear licence). DECISIONS 2026-10-25.
+

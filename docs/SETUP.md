@@ -94,6 +94,14 @@ node scripts/lang-data/dictionary-fetch.ts                          # → script
 node --max-old-space-size=3072 scripts/lang-data/dictionary.ts fr   # → public/dict/fr.v2.json.gz (no codes: all six)
 ```
 
+The recordings of common words (5.1-3c) read the same kaikki files (streamed from kaikki.org when
+they aren't in the cache) and Commons' Lingua Libre and Wiktionary categories (French takes a
+few minutes of API requests); each index is small and committed:
+
+```bash
+node scripts/lang-data/recordings.ts fr   # → public/sounds/fr.v1.json.gz (no codes: all six)
+```
+
 ## 6. Your learning data
 
 Words, progress, books and settings live in each browser, not on GitHub. To move them:

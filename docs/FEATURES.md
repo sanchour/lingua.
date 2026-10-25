@@ -360,9 +360,14 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Natural voices:** a speaker button on words (the word drawer), on selected phrases and on
   flashcards reads them aloud in the accent of the language's flag (Castilian or Mexican Spanish,
   Brazilian or European Portuguese). With a free Gemini key it's one of Gemini's natural voices,
-  each word made once and kept on the device; without one, the device's own voice if it's a good
-  one for that accent; otherwise no button. Ordo › Languages › Voice says which voice reads the
-  language, plays a sample, lets you try and pick another Gemini voice, and turns reading aloud off.
+  each word made once and kept on the device. Without one (5.1-3c), a common word in the six core
+  languages is said by a real person: a Lingua Libre or Wiktionary speaker's recording on Wikimedia
+  Commons, in the flag's accent when there is one, fetched the first time and kept on the device;
+  everything else by the best of the device's own voices for exactly that accent (Edge's online
+  natural voices first, the old robotic ones last); otherwise no button. Settings › Languages ›
+  Voice says which voice reads the language, plays a sample, lets you try and pick another Gemini
+  voice or another of the device's voices, says how to get a natural voice when only a robotic one
+  is there, credits the recordings heard (speaker, licence, link), and turns reading aloud off.
 - **Your devices:** pair the desktop app and the phone once (Ordo › Your data › Your devices: one
   shows a QR code and a code, the other scans or types it). Whenever both are open they sync
   directly, device to device: words, cards, reviews, books, songs, progress and settings (not

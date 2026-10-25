@@ -534,6 +534,8 @@ export interface SpeechRow {
   voice: string;
   blob: Blob;
   createdAt: number;
+  /** A recording from Wikimedia Commons (voice "commons"): who said it, under which licence, its page. */
+  credit?: { speaker: string; licence: string; page: string };
 }
 
 export interface BlobRow {

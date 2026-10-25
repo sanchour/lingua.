@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { accentName, otherLocales, voiceLocale } from '@/core/lang/voiceLocale';
 import { findAudio, listVoices, pcmToWav, readVoice, synthesize } from './gemini';
-import { pickDeviceVoice } from './voice';
+import { pickDeviceVoice, voiceQuality, voicesForLocale } from './voice';
 
 const KEY = 'test-not-a-real-key';
 
@@ -33,13 +33,23 @@ describe('device voices', () => {
     { name: 'Samantha (Premium)', voiceURI: 'com.apple.voice.premium.en-US.Samantha', lang: 'en-US' },
   ];
 
-  it('takes only a good voice for exactly that locale, the best first', () => {
+  it('takes the best voice for exactly that locale', () => {
     expect(pickDeviceVoice(voices, 'es-ES')?.name).toBe('Mónica (Premium)');
     expect(pickDeviceVoice(voices, 'es-MX')?.name).toBe('Paulina (Enhanced)');
   });
 
-  it('would rather have none than a robotic or wrong-accent voice', () => {
-    expect(pickDeviceVoice(voices.slice(0, 1), 'es-ES')).toBeUndefined();
+  it('ranks Edge’s online natural voices first and the robotic ones last, and keeps the learner’s choice', () => {
+    const edge = { name: 'Microsoft Elvira Online (Natural) - Spanish (Spain)', voiceURI: 'Microsoft Elvira Online (Natural) - Spanish (Spain)', lang: 'es-ES' };
+    expect(voicesForLocale([...voices, edge], 'es-ES').map((v) => v.voiceURI)).toEqual([edge.voiceURI, 'com.apple.voice.premium.es-ES.Monica', 'Google español', 'helena']);
+    expect(voiceQuality(edge)).toBe('natural');
+    expect(voiceQuality(voices[1])).toBe('good');
+    expect(voiceQuality(voices[0])).toBe('robotic');
+    expect(pickDeviceVoice(voices, 'es-ES', 'Google español')?.name).toBe('Google español');
+    expect(pickDeviceVoice(voices, 'es-ES', 'gone')?.name).toBe('Mónica (Premium)');
+  });
+
+  it('takes a robotic voice only as the last resort, and never another accent’s', () => {
+    expect(pickDeviceVoice(voices.slice(0, 1), 'es-ES')?.name).toBe('Microsoft Helena - Spanish (Spain)');
     expect(pickDeviceVoice(voices, 'es-AR')).toBeUndefined();
   });
 });

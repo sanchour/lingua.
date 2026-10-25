@@ -109,9 +109,10 @@ export interface Settings {
   visio: { native: 'show' | 'blur' | 'hide'; autoPause: boolean; subtitleScale: number };
   /**
    * Natural voices: off, or which voice speaks each locale (a Gemini voice-library id the learner
-   * picked; the first good one when unset).
+   * picked; the first good one when unset), and without a key which of the device's voices (its
+   * voiceURI; the best one when unset).
    */
-  voice: { off: boolean; chosen: Record<string, { id: string; name: string }> };
+  voice: { off: boolean; chosen: Record<string, { id: string; name: string }>; device?: Record<string, string> };
   /** Cantus: how a song's lines are translated underneath, and whether its page follows the song. */
   cantus: { translation: 'show' | 'blur' | 'hide' };
   /**
