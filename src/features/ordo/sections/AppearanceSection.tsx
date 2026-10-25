@@ -1,11 +1,13 @@
 import { History, LayoutDashboard, Monitor, Moon, Sparkles, SlidersHorizontal, Sun, Waves, Wind } from 'lucide-react';
+import { getLanguage } from '@/core/lang/languages';
+import { flavourOf } from '@/design/flavours';
 import { AnimatePresence, motion as m } from 'motion/react';
 import { patchSetting, setSetting } from '@/data/settings';
 import type { MotionPref, Settings, ThemePref } from '@/data/settings';
 import { NOCTURNE_PALETTES, PAPER_PALETTES } from '@/design/palettes';
 import type { Palette } from '@/design/palettes';
 import { cx } from '@/lib/cx';
-import { Segmented } from '@/design/primitives';
+import { Segmented, Switch } from '@/design/primitives';
 import { fade } from '@/design/motion';
 import { SettingsSection } from '../SettingsSection';
 
@@ -47,7 +49,8 @@ function PaletteRow({ title, palettes, value, onChange }: { title: string; palet
   );
 }
 
-export function AppearanceSection({ theme, motion, palette, homeLayout }: { theme: ThemePref; motion: MotionPref; palette: Settings['palette']; homeLayout: Settings['ui']['homeLayout'] }) {
+export function AppearanceSection({ theme, motion, palette, homeLayout, flavour, lang }: { theme: ThemePref; motion: MotionPref; palette: Settings['palette']; homeLayout: Settings['ui']['homeLayout']; flavour: boolean; lang: string }) {
+  const touch = flavourOf(lang);
   return (
     <SettingsSection id="appearance" icon={SlidersHorizontal} title="Preferences" description="How Lingua looks and moves.">
       <div>
@@ -103,6 +106,18 @@ export function AppearanceSection({ theme, motion, palette, homeLayout }: { them
           ]}
         />
         <p className="mt-2 text-[13px] text-ink-soft">Today puts the day's goal and what's next up first, beside the week and your numbers, with Cursus and Mundus below. Classic is Home as it was before Lingua 5.</p>
+      </div>
+
+      <div className="mt-6 flex items-start gap-4">
+        <div className="min-w-0 flex-1">
+          <p className="text-[15px] font-semibold">Language touches</p>
+          <p className="mt-1 text-[13px] text-ink-soft">
+            {touch
+              ? `A little of ${getLanguage(lang)?.name ?? lang} in the design: ${touch.touch}. Your theme and reading font stay as they are.`
+              : 'A little of the language in the design, for French, Spanish, German, Russian, Mandarin and Arabic. Your theme and reading font stay as they are.'}
+          </p>
+        </div>
+        <Switch label="Language touches" checked={flavour} onChange={(on) => void patchSetting('ui', { flavour: on })} />
       </div>
     </SettingsSection>
   );

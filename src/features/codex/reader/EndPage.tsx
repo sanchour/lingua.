@@ -73,7 +73,7 @@ export function EndPage({ lang, refId, title, author, stats, todayMs, goal, fini
           </motion.p>
         )}
 
-        <motion.div className="my-10 h-px w-16 bg-line-strong" initial={{ opacity: 0, scaleX: 0 }} animate={{ opacity: 1, scaleX: 1 }} transition={{ ...spring.soft, delay: 0.32 }} />
+        <motion.div className="flourish my-10 h-px w-16 bg-line-strong" aria-hidden initial={{ opacity: 0, scaleX: 0 }} animate={{ opacity: 1, scaleX: 1 }} transition={{ ...spring.soft, delay: 0.32 }} />
 
         <dl className="grid w-full grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4">
           {numbers.map((n, i) => (

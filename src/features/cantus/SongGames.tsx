@@ -17,6 +17,7 @@ import { getWordStates, setWordState } from '@/data/words';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { Button } from '@/design/primitives';
 import { spring } from '@/design/motion';
+import { quote } from '@/design/flavours';
 import { cx } from '@/lib/cx';
 import { translateLyrics } from '@/services/cantus/translate';
 import { lookupGlosses } from '@/services/translate/gloss';
@@ -263,7 +264,7 @@ function RoundView({ song, round, translation, onDone }: { song: Song; round: Le
   switch (round.kind) {
     case 'meaning':
       return (
-        <Choice prompt="What does it mean?" options={round.options} answer={round.answer} onDone={onDone} note={`From “${song.lines[round.word.line]?.text ?? ''}”`} noteLang={song.lang}>
+        <Choice prompt="What does it mean?" options={round.options} answer={round.answer} onDone={onDone} note={`From ${quote(song.lang, song.lines[round.word.line]?.text ?? '')}`} noteLang={song.lang}>
           <p lang={song.lang} className="font-serif text-[40px] leading-tight font-semibold">
             {shown(round.word, song.lang)}
           </p>

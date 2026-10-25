@@ -673,6 +673,13 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   for beginners in a script of their own) and Mundus's suggestion.
 - **Home layout: Today / Classic** in Settings › Look and feel brings back Home as it was before
   Lingua 5.
+- **Language touches** (Settings › Look and feel, on): a little of the studied language in the
+  design, for the six core languages. Room titles, Home's greeting and empty states in a face of
+  the language (Garamond for French, Alegreya for Spanish, a clean grotesque for German, PT Serif
+  for Russian, a Song face for Mandarin, Amiri for Arabic); one ornament (a fleuron, a tile strip,
+  a straight rule, a thin red rule, a vermilion seal, an eight-point star) on the end page and in
+  empty states; the accent leaning a little toward the language's colour; quotes in the
+  language's own marks (« », „ “); ¿ in Spanish titles that ask. Your theme and reading font stay.
 
 ## The first start (5.1-2b)
 

@@ -1717,9 +1717,9 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
   - [x] a · Codex (on top of what 4.0-2 built) (2026-10-22)
   - [x] b · Thesaurus and Ludus: deck list and cards, a much larger Discover, even and varied Ludus (2026-10-24)
   - [x] c · Sound: human recordings and a natural on-device voice without a key (2026-10-25)
-- [ ] 5.1-4 · Typing, and the language in the design
+- [x] 5.1-4 · Typing, and the language in the design
   - [x] a · Keyboard practice in Cursus (tier 1) (2026-10-25)
-  - [ ] b · A touch of the language in the design
+  - [x] b · A touch of the language in the design (2026-10-25)
 - [ ] 5.1-5 · Lingua 5.1 complete: the full check (one check with 5.2-10)
 - [x] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
 - [ ] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries
@@ -2079,3 +2079,21 @@ progression line, fun format/look/feel." Pushed with 5.1-3c.*
       letters arrive in their frequency place rather than as separate lessons, each with its card.
       Checked in the app: French on AZERTY (lines, the seventh letter unlocking, sessions recorded),
       Arabic (right to left, joined) and Mandarin (both modes). Russian and German not typed through.
+- [x] **b · A touch of the language** (done 2026-10-25)**:** `design/flavours.ts` puts
+      `data-flavour` on the page for the six core languages, and `styles/flavours.css` hangs the
+      touches off it: a heading face (French EB Garamond, Spanish Alegreya, German Hanken Grotesk,
+      Russian PT Serif, Mandarin Noto Serif SC, Arabic Amiri, all OFL, each loaded the first time
+      its language shows) on room titles, Home's greeting and empty states (`font-display`); one
+      ornament (a fleuron, a strip of terracotta and ochre tiles, a straight rule, a thin red rule,
+      a vermilion seal 学, an eight-point star) on the end page's divider (`.flourish`) and under
+      empty states' titles (`.flourish-quiet`, nothing without a touch); the accent leaning a
+      little toward the language's colour with its lightness kept, for every palette, and the
+      accent text and fills never below 4.5 : 1 (or the palette's own); the language's quotation
+      marks where a quote is in the language (`quote()`: the sample text, a song line, Diarium's
+      mark); ¿ before Spanish empty-state titles that ask. Settings › Look and feel › Language
+      touches (on). *Changed from the plan:* Mandarin quotes use “ ” (mainland usage; 「」 stays for
+      Japanese and traditional Chinese); the vermilion seal is the ornament rather than a separate
+      done mark; onboarding and the loading screen get no touch (the language isn't active yet
+      during onboarding; there is no loading screen to speak of). Checked in the app: all six
+      ornaments and faces on Paper and Nocturne, the switch off and on. The French and Arabic lean
+      was halved after looking (blue or teal pulled terracotta toward grey).

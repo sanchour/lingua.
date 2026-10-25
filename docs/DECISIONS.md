@@ -1502,3 +1502,18 @@ Short records of choices that are not obvious from the code. Newest last.
   session with refId 'typing', so Ratio and Home count it without a new session type.
 - **The data is built, not fetched:** `scripts/typing/build.ts` writes about 30–60 kB of JSON per
   language from the committed packs, loaded only when the tab opens.
+
+## 2026-10-25 — A touch of the language (5.1-4b)
+
+- **One attribute, mostly CSS.** `<html data-flavour>` (set in Root from the studied language,
+  unless Settings turns it off) drives the heading face, the ornaments and the ornament colour from
+  `styles/flavours.css`; with no flavour every page is as before, so turning it off is exact.
+- **The accent leans, it isn't replaced.** Palettes are the learner's: each palette's accent moves
+  a fraction toward the language's colour in OKLab with its lightness kept, generated per palette
+  (`flavourCss()`); a text or fill colour that would read worse than 4.5 : 1 (or than before) stays
+  as it was, which a test checks for every palette and language. German doesn't lean (its touch is
+  the grotesque and the rule); French and Arabic lean least, since blue and teal grey terracotta.
+- **Headings only, never the reading text.** `font-display` is used on room titles, Home's
+  greeting and empty states; book titles, lessons and reading keep the reading font.
+- **Mandarin's quotation marks are “ ”,** as mainland texts use; 「」 for Japanese and Traditional
+  Chinese.

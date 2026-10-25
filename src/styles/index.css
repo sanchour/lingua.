@@ -4,6 +4,7 @@
 @import './cards.css';
 @import './cantus.css';
 @import './cantus-room.css';
+@import './flavours.css';
 
 @custom-variant dark (&:where([data-theme='nocturne'], [data-theme='nocturne'] *));
 
@@ -35,6 +36,8 @@
 
   --font-sans: 'Plus Jakarta Sans Variable', 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-serif: 'Literata Variable', 'Noto Serif Variable', Georgia, serif;
+  /* Headings: the serif, or the studied language's face when its touch is on (styles/flavours.css). */
+  --font-display: var(--flavour-font, 'Literata Variable', 'Noto Serif Variable', Georgia, serif);
 }
 
 @utility pt-safe {

@@ -49,8 +49,8 @@ function LargeTitle({ title, eyebrow, actions }: PageHeaderProps) {
           ref={titleRef}
           className={
             wide
-              ? 'font-serif text-[42px] leading-[1.1] font-semibold tracking-tight'
-              : 'font-serif text-[32px] leading-[1.15] font-semibold tracking-tight'
+              ? 'font-display text-[42px] leading-[1.1] font-semibold tracking-tight'
+              : 'font-display text-[32px] leading-[1.15] font-semibold tracking-tight'
           }
         >
           {title}

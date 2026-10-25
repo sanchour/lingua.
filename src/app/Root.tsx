@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { MotionConfig } from 'motion/react';
 import { AppContext } from '@/app/context';
 import { useThemeController } from '@/app/theme';
+import { applyFlavour } from '@/design/flavours';
 import { UpdatePrompt } from '@/app/UpdatePrompt';
 import { preloadSections } from '@/app/pages';
 import { useActiveLanguage } from '@/data/languages';
@@ -36,6 +37,10 @@ export function Root() {
   }, []);
 
   const onboarded = Boolean(settings?.meta.onboardedAt && language);
+
+  // The studied language's touch in the design (5.1-4b), unless it's turned off.
+  const flavourLang = onboarded && settings?.ui.flavour !== false ? language?.id : null;
+  useLayoutEffect(() => applyFlavour(flavourLang), [flavourLang]);
 
   useEffect(() => {
     if (onboarded) return preloadSections();

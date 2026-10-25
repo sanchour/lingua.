@@ -17,6 +17,7 @@ import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Button, buttonClasses, Card, IconButton, SearchInput, searchKey, Segmented, SortMenu } from '@/design/primitives';
 import { fade, spring } from '@/design/motion';
+import { quote } from '@/design/flavours';
 import { attachEpub } from '@/services/import/importers';
 import { pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
@@ -321,7 +322,7 @@ function EmptyLibrary({ lang, busy, onSample }: { lang: string; busy: boolean; o
           <Plus size={17} aria-hidden /> Add a book or text
         </Link>
         <Button variant="secondary" icon={Sparkles} onClick={onSample} loading={busy}>
-          Read “{SAMPLES[lang]?.title ?? SAMPLES.en.title}”
+          Read {quote(SAMPLES[lang] ? lang : 'en', SAMPLES[lang]?.title ?? SAMPLES.en.title)}
         </Button>
       </div>
     </Card>

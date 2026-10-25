@@ -144,6 +144,8 @@ export interface Settings {
     sonusShow: MediaShow;
     /** Home's layout: Today (5.1-2c) or the one before it. */
     homeLayout: 'today' | 'classic';
+    /** A touch of the studied language in the design (5.1-4b, design/flavours.ts). */
+    flavour: boolean;
   };
   /** Device-only. */
   meta: {
@@ -226,7 +228,7 @@ export const DEFAULT_SETTINGS: Settings = {
   voice: { off: false, chosen: {} },
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today' },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today', flavour: true },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null, plan: null },
   sync: { devices: [], includeApiKeys: false },
 };

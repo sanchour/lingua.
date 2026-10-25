@@ -11,6 +11,7 @@ import { gradeColor, Ring } from '@/design/charts/Ring';
 import { aiBlock } from '@/data/plan';
 import { Button, Card } from '@/design/primitives';
 import { spring } from '@/design/motion';
+import { quote } from '@/design/flavours';
 import { localDateKey } from '@/lib/format';
 import { aiPrompt } from '@/services/llm/journal';
 
@@ -101,7 +102,7 @@ export function DiariumHome() {
       {/* Today */}
       <Card className="relative overflow-hidden p-6 sm:p-8">
         <span aria-hidden className="pointer-events-none absolute -top-6 right-5 font-serif text-[160px] leading-none text-sage/15 select-none">
-          “
+          {quote(lang, '').trim().charAt(0)}
         </span>
         <p className="text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">
           {new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
