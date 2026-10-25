@@ -1,19 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Check, ChevronDown, ExternalLink, Loader2, Volume2 } from 'lucide-react';
+import { Check, ChevronDown, Download, ExternalLink, Loader2, Trash2, Volume2 } from 'lucide-react';
+import { piperVoicesFor } from '@/core/audio/piper';
+import type { PiperVoice } from '@/core/audio/piper';
 import { SOUNDS_LANGS } from '@/core/audio/recordings';
 import { getLanguage } from '@/core/lang/languages';
 import { accentName, otherLocales, voiceLocale } from '@/core/lang/voiceLocale';
 import { aiBlock, aiKeys } from '@/data/plan';
 import { setSetting, useSettings } from '@/data/settings';
+import type { Settings } from '@/data/settings';
 import type { LanguageProfile } from '@/data/types';
 import { Button, Switch } from '@/design/primitives';
 import { useSpeaker } from '@/features/speech/SpeakButton';
 import { cx } from '@/lib/cx';
 import { listVoices } from '@/services/speech/gemini';
+import { downloadPiperVoice, installedPiperVoices, removePiperVoice } from '@/services/speech/piper';
 import { heardRecordings } from '@/services/speech/recordings';
 import type { GeminiVoice } from '@/services/speech/gemini';
-import { listDeviceVoices, resetSpeakers, sayOnDevice, sayWith, speak, voiceQuality } from '@/services/speech/voice';
+import { listDeviceVoices, PIPER, resetSpeakers, sayOnDevice, sayWith, sayWithPiper, speak, voiceQuality } from '@/services/speech/voice';
 import type { VoiceQuality } from '@/services/speech/voice';
 import { toast } from '@/state/ui';
 
@@ -49,7 +53,9 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
     ? 'Finding a voice…'
     : speaker.kind === 'gemini'
       ? `Gemini’s voice ${speaker.voice.name}, ${accentName(speaker.locale)}. Each word is made once and kept on this device.`
-      : speaker.kind === 'device'
+      : speaker.kind === 'piper'
+        ? `${speaker.voice.name}, a natural voice made on this device (${accentName(speaker.locale)}), without the internet.${people}${key ? '' : addKey}`
+        : speaker.kind === 'device'
         ? `This device’s voice ${speaker.voice.name} (${accentName(speaker.locale)}).${people}${key ? '' : addKey}`
         : speaker.why === 'off'
           ? 'Reading aloud is off.'
@@ -108,7 +114,7 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
         <div className="min-w-0 flex-1">
           <p className="text-[14px] font-semibold">Voice</p>
           <p className="mt-0.5 text-[13px] leading-snug text-ink-soft">{status}</p>
-          {speaker?.kind === 'device' && speaker.quality === 'robotic' && <p className="mt-1.5 text-[13px] leading-snug text-ink-soft">It sounds robotic: it’s the only voice for {accentName(speaker.locale)} this device has. {BETTER_VOICE}</p>}
+          {speaker?.kind === 'device' && speaker.quality === 'robotic' && <p className="mt-1.5 text-[13px] leading-snug text-ink-soft">It sounds robotic: it’s the only voice for {accentName(speaker.locale)} this device has. {locale && piperVoicesFor(locale).length ? 'Or download a natural voice for Lingua below.' : BETTER_VOICE}</p>}
         </div>
         <Switch
           label="Read aloud"
@@ -130,16 +136,16 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
             {loading ? 'Looking for voices…' : voices ? 'Look again' : 'Choose another voice'}
           </Button>
         )}
-        {speaker?.kind === 'device' && (
+        {(speaker?.kind === 'device' || speaker?.kind === 'piper') && (
           <Button variant="ghost" size="sm" onClick={() => void findDeviceVoices()}>
             {onDevice ? 'Look again' : 'Voices on this device'}
           </Button>
         )}
       </div>
-      {onDevice && speaker?.kind === 'device' && (
+      {onDevice && (speaker?.kind === 'device' || speaker?.kind === 'piper') && (
         <ul className="mt-3 max-h-80 divide-y divide-line overflow-y-auto rounded-2xl border border-line bg-raised">
           {onDevice.map((v) => {
-            const current = speaker.voice.voiceURI === v.voiceURI;
+            const current = speaker.kind === 'device' && speaker.voice.voiceURI === v.voiceURI;
             return (
               <li key={v.voiceURI} className="flex items-center gap-3 px-4 py-2.5">
                 <button type="button" onClick={() => tryOnDevice(v)} aria-label={`Hear ${v.name}`} className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-ink-soft hover:text-ink">
@@ -166,6 +172,9 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
             );
           })}
         </ul>
+      )}
+      {locale && settings && !voice.off && speaker?.kind !== 'gemini' && piperVoicesFor(locale).length > 0 && (
+        <PiperVoices lang={active.id} locale={locale} voice={voice} sample={sample} current={speaker?.kind === 'piper' ? speaker.voice.id : null} />
       )}
       {recorded && <HeardRecordings lang={active.id} />}
       {voices && (
@@ -230,5 +239,114 @@ function HeardRecordings({ lang }: { lang: string }) {
         ))}
       </ul>
     </details>
+  );
+}
+
+const MB = (bytes: number) => `${Math.round(bytes / 1_000_000)} MB`;
+
+/** Piper's open voices for this accent: downloaded once, then made on this device, offline too. */
+function PiperVoices({ lang, locale, voice, sample, current }: { lang: string; locale: string; voice: Settings['voice']; sample: string; current: string | null }) {
+  const [installed, setInstalled] = useState<Set<string> | null>(null);
+  const [progress, setProgress] = useState<Record<string, number>>({});
+  const [trying, setTrying] = useState<string | null>(null);
+  const refresh = () => void installedPiperVoices().then(setInstalled);
+  useEffect(refresh, []);
+
+  /** Writing the setting (a new object each time) makes every speaker button look again. */
+  const use = (id: string | null) => {
+    const device = { ...voice.device };
+    if (id) device[locale] = PIPER + id;
+    else delete device[locale];
+    resetSpeakers();
+    return setSetting('voice', { ...voice, device });
+  };
+
+  const download = async (v: PiperVoice) => {
+    setProgress((p) => ({ ...p, [v.id]: 0 }));
+    try {
+      await downloadPiperVoice(v.id, (pct) => setProgress((p) => ({ ...p, [v.id]: pct })));
+      await use(v.id);
+      toast(`${v.name} is on this device and now reads it.`, { tone: 'success' });
+    } catch (e) {
+      fail(e);
+    } finally {
+      setProgress(({ [v.id]: _, ...rest }) => rest);
+      refresh();
+    }
+  };
+
+  const remove = async (v: PiperVoice) => {
+    await removePiperVoice(v.id);
+    await use(voice.device?.[locale] === PIPER + v.id ? null : (voice.device?.[locale]?.slice(PIPER.length) ?? null));
+    refresh();
+  };
+
+  const hear = (v: PiperVoice) => {
+    setTrying(v.id);
+    sayWithPiper(v.id, lang, sample)
+      .catch(fail)
+      .finally(() => setTrying(null));
+  };
+
+  return (
+    <div className="mt-4 rounded-2xl border border-line bg-raised">
+      <div className="px-4 pt-3 pb-2">
+        <p className="text-[13.5px] font-semibold">A natural voice made on this device</p>
+        <p className="mt-0.5 text-[12.5px] leading-snug text-ink-soft">
+          Piper’s open voices run inside Lingua: downloaded once from Hugging Face, then they speak without the internet. A sentence takes a moment to start on most laptops.
+        </p>
+      </div>
+      <ul className="divide-y divide-line border-t border-line">
+        {piperVoicesFor(locale).map((v) => {
+          const have = installed?.has(v.id) ?? false;
+          const pct = progress[v.id];
+          return (
+            <li key={v.id} className="flex items-center gap-3 px-4 py-2.5">
+              {have ? (
+                <button type="button" onClick={() => hear(v)} aria-label={`Hear ${v.name}`} className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-ink-soft hover:text-ink">
+                  {trying === v.id ? <Loader2 size={16} className="animate-spin" aria-hidden /> : <Volume2 size={16} aria-hidden />}
+                </button>
+              ) : (
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-ink-faint">
+                  <Download size={16} aria-hidden />
+                </span>
+              )}
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[14px] font-semibold">{v.name}</span>
+                <span className="block truncate text-[12.5px] text-ink-soft" title={`Voice data: ${v.credit} (${v.licence})`}>
+                  {[accentName(v.locale), MB(v.size), `${v.credit} · ${v.licence}`].join(' · ')}
+                </span>
+              </span>
+              {pct !== undefined ? (
+                <span className="w-24 shrink-0 text-right text-[13px] font-semibold tabular-nums text-ink-soft">{Math.round(pct * 100)}%</span>
+              ) : have ? (
+                <>
+                  <button type="button" onClick={() => void remove(v)} aria-label={`Remove ${v.name} from this device`} title="Remove from this device" className="grid size-9 shrink-0 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
+                    <Trash2 size={15} aria-hidden />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void use(v.id).then(() => toast(`${v.name} now reads it.`))}
+                    className={cx('inline-flex h-9 items-center gap-1 rounded-full px-3 text-[13px] font-semibold', current === v.id ? 'bg-accent-soft text-accent-text' : 'border border-line hover:bg-sunken')}
+                  >
+                    {current === v.id ? (
+                      <>
+                        <Check size={14} aria-hidden /> In use
+                      </>
+                    ) : (
+                      'Use'
+                    )}
+                  </button>
+                </>
+              ) : (
+                <button type="button" onClick={() => void download(v)} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-line px-3 text-[13px] font-semibold hover:bg-sunken">
+                  <Download size={14} aria-hidden /> Download · {MB(v.size)}
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

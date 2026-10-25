@@ -368,6 +368,10 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   Voice says which voice reads the language, plays a sample, lets you try and pick another Gemini
   voice or another of the device's voices, says how to get a natural voice when only a robotic one
   is there, credits the recordings heard (speaker, licence, link), and turns reading aloud off.
+- **A natural voice made on the device (5.1-3c):** for French, Spanish (Spain or Mexico), German,
+  Russian and Mandarin, Settings › Languages › Voice offers Piper's open voices (63 MB each, the
+  size said first). Once downloaded they speak sentences and words without the internet; long
+  text starts after its first part is made, and what was said is kept. Hear, Use or Remove each.
 - **Your devices:** pair the desktop app and the phone once (Ordo › Your data › Your devices: one
   shows a QR code and a code, the other scans or types it). Whenever both are open they sync
   directly, device to device: words, cards, reviews, books, songs, progress and settings (not

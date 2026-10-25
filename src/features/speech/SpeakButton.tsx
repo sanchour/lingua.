@@ -67,7 +67,7 @@ export function SpeakButton({ lang, text, size = 18, className, label = 'Listen'
         say();
       }}
       aria-label={state === 'idle' ? label : 'Stop'}
-      title={speaker.kind === 'gemini' ? `${label} (${speaker.voice.name})` : recorded ? `${label} (recorded by ${recorded}, Wikimedia Commons)` : label}
+      title={speaker.kind === 'gemini' ? `${label} (${speaker.voice.name})` : recorded ? `${label} (recorded by ${recorded}, Wikimedia Commons)` : speaker.kind === 'piper' ? `${label} (${speaker.voice.name}, made on this device)` : label}
       className={cx('inline-grid shrink-0 place-items-center rounded-full transition-colors', state === 'playing' && 'text-accent-text', className)}
     >
       {state === 'loading' ? <Loader2 size={size} className="animate-spin" aria-hidden /> : <Volume2 size={size} aria-hidden />}

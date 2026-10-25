@@ -1,16 +1,22 @@
 // Which voice speaks a language on this device, and speaking with it. Gemini's library voice for
 // the flag's locale when there's a Gemini key; else, for a common word, a real person saying it
-// (recordings.ts), and the best device voice for exactly that locale for the rest (the robotic ones
-// last, never another language's); else none (and no speaker button). What Gemini says and the recordings are kept, so each is fetched once.
+// (recordings.ts), and for the rest a natural device voice (Edge's online ones, Apple's premium),
+// else a Piper voice downloaded in Settings (piper.ts), else the best device voice for exactly that
+// locale (the robotic ones last, never another language's); else none (and no speaker button).
+// What Gemini and Piper say and the recordings are kept, so each is made or fetched once.
 import { sameLocale, voiceLocale } from '@/core/lang/voiceLocale';
 import { db } from '@/data/db';
 import { getAiSettings } from '@/data/plan';
 import { listVoices, pcmToWav, SpeechError, synthesize } from './gemini';
+import { installedPiperFor, piperSpeech, warmPiper } from './piper';
 import { findRecording, recordingBlob } from './recordings';
+import { speechParts } from '@/core/audio/piper';
+import type { PiperVoice } from '@/core/audio/piper';
 
 export type Speaker =
   | { kind: 'gemini'; locale: string; voice: { id: string; name: string } }
   | { kind: 'device'; locale: string; voice: SpeechSynthesisVoice; quality: VoiceQuality }
+  | { kind: 'piper'; locale: string; voice: PiperVoice }
   | { kind: 'none'; locale: string | null; why: 'off' | 'no-locale' | 'no-voice' };
 
 type VoiceLike = Pick<SpeechSynthesisVoice, 'name' | 'voiceURI' | 'lang'>;
@@ -113,7 +119,15 @@ async function resolve(lang: string, flag?: string): Promise<Speaker> {
       // Offline or the key was refused: the device's voice, if it has a good one.
     }
   }
-  const device = pickDeviceVoice(await deviceVoices(), locale, voice.device?.[locale]);
+  const chosen = voice.device?.[locale];
+  const choseDevice = Boolean(chosen && !chosen.startsWith(PIPER));
+  const device = pickDeviceVoice(await deviceVoices(), locale, chosen);
+  const piper = await installedPiperFor(locale, chosen?.startsWith(PIPER) ? chosen.slice(PIPER.length) : undefined).catch(() => undefined);
+  // Piper is slower to start than Edge's or Apple's natural voices, so those stay first unless chosen.
+  if (piper && (chosen?.startsWith(PIPER) || !device || (!choseDevice && voiceQuality(device) !== 'natural'))) {
+    warmPiper(piper.id);
+    return { kind: 'piper', locale, voice: piper };
+  }
   return device ? { kind: 'device', locale, voice: device, quality: voiceQuality(device) } : { kind: 'none', locale, why: 'no-voice' };
 }
 
@@ -121,6 +135,11 @@ async function resolve(lang: string, flag?: string): Promise<Speaker> {
 // after a tap, and Gemini's answer arrives a moment later.
 let player: HTMLAudioElement | null = null;
 let playing: { url?: string; done: () => void } | null = null;
+/** Counts the times speech was asked or stopped, so a voice saying a text in parts knows to stop. */
+let turn = 0;
+
+/** `voice.device[locale]` for a Piper voice: "piper:fr_FR-siwis-medium". */
+export const PIPER = 'piper:';
 const SILENCE = typeof URL !== 'undefined' && typeof Blob !== 'undefined' ? URL.createObjectURL(new Blob([pcmToWav(new Uint8Array(480)) as Uint8Array<ArrayBuffer>], { type: 'audio/wav' })) : '';
 
 function unlock(): HTMLAudioElement {
@@ -134,6 +153,11 @@ function unlock(): HTMLAudioElement {
 
 /** Stops whatever is being said. */
 export function stopSpeaking() {
+  turn++;
+  endPlaying();
+}
+
+function endPlaying() {
   if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
   if (player && playing) player.pause();
   const was = playing;
@@ -148,7 +172,7 @@ function play(blob: Blob, onStart?: () => void): Promise<void> {
     const url = URL.createObjectURL(blob);
     playing = { url, done: resolve };
     audio.onended = () => {
-      if (playing?.url === url) stopSpeaking();
+      if (playing?.url === url) endPlaying();
     };
     audio.onerror = () => {
       stopSpeaking();
@@ -185,7 +209,24 @@ export async function speak(lang: string, text: string, opts: { flag?: string; o
   }
   if (speaker.kind === 'none') throw new SpeechError('There’s no natural voice for this language on this device.', 'no-model');
   if (speaker.kind === 'device') return sayOnDevice(speaker.voice, clean, opts.onStart);
+  if (speaker.kind === 'piper') return sayWithPiper(speaker.voice.id, lang, clean, opts.onStart);
   return sayWith(speaker.voice.id, lang, clean, opts.onStart);
+}
+
+/** Says `text` with a Piper voice, part by part: each part is made while the one before it plays. */
+export async function sayWithPiper(voice: string, lang: string, text: string, onStart?: () => void): Promise<void> {
+  if (typeof Audio !== 'undefined') unlock();
+  stopSpeaking();
+  const mine = turn;
+  const parts = speechParts(text);
+  let next: Promise<Blob> | null = parts.length ? piperSpeech(voice, lang, parts[0]) : null;
+  for (let i = 0; next; i++) {
+    const blob = await next;
+    if (turn !== mine) return;
+    next = i + 1 < parts.length ? piperSpeech(voice, lang, parts[i + 1]) : null;
+    await play(blob, i === 0 ? onStart : undefined);
+    if (turn !== mine) return;
+  }
 }
 
 /** Says `text` with one of the device's voices (also to try one before choosing it). */

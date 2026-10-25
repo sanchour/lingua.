@@ -2006,14 +2006,37 @@ own. With a Gemini key nothing changes: Gemini's voices come first, as today.*
       chosen voice, `sayOnDevice`; `VoicePanel`: "Voices on this device" (natural, good or robotic;
       on the device or online; hear it, Use) and the hint under a robotic voice. Tests in
       `speech.test.ts`.
-- [ ] **Part 3 · a natural voice on the device:** Piper in the browser (WebAssembly), one voice per
+- [x] **Part 3 · a natural voice on the device** (done 2026-10-25)**:** Piper in the browser (WebAssembly), one voice per
       language, downloaded once when asked (its size shown first, like the packs), for sentences
       and words without a recording, before the device voices. Only voices whose licence allows
       a paid app, checked per voice and written down in DECISIONS; the phonemizer's licence too.
       Checked on a laptop: a short sentence in under 300 ms.
-      *Waits for the user (2026-10-25):* Piper needs espeak-ng (GPL-3) to turn text into
-      phonemes; whether a paid app may ship it is the user's call. Voices whose licence allows a
-      paid app: fr_FR siwis (CC BY 4.0), es_ES davefx (CC0), es_MX ald (Unlicense), de_DE thorsten
-      (CC0), ru_RU denis or dmitri (CC0), zh_CN chaowen (CC0). None for Arabic (ar_JO kareem: no
-      clear licence). DECISIONS 2026-10-25.
+      *The user said yes to espeak-ng (GPL-3) on 2026-10-25.* How: onnxruntime-web (MIT) runs the
+      voice and espeak-ng (`@diffusionstudio/piper-wasm`) turns text into phonemes, both in a
+      worker (`workers/piper.worker.ts`), their files bundled into Lingua's own assets and cached
+      when first used. Mandarin's voice (chaowen) takes pinyin, not espeak's phonemes: `pinyin-pro`
+      (MIT) gives the readings, split into initial, final and tone as piper's own Chinese
+      phonemizer does (`core/audio/piper.ts`, with a test). The voices: fr-FR siwis (CC BY 4.0,
+      credited), es-ES davefx, es-MX ald, de-DE thorsten, ru-RU denis or dmitri, zh-CN chaowen (all
+      CC0 or Unlicense); none for Arabic. Each model (63 MB) comes from Hugging Face
+      (rhasspy/piper-voices) when the learner asks in Settings › Voice (its size shown first) and is
+      kept in the browser's cache; Remove frees it. Once there it speaks sentences and words without
+      a recording, before the device's voices, unless the learner chose a device voice; what it says
+      is kept in `db.speech`. Only exactly the flag's locale (es-MX's voice isn't used for Argentina).
+      *Built:* `core/audio/piper.ts` (the voices, pinyin to ids, `speechParts`; test),
+      `workers/piper.worker.ts` (one espeak-ng module kept: rebuilding it cost 300 ms a sentence),
+      `services/speech/piper.ts` (download into the cache `lingua-piper-voices`, remove, make and
+      keep, `warmPiper` loads the voice when the page is idle), `voice.ts` (speaker `piper`;
+      `sayWithPiper` says long text part by part, the next part made while one plays; `voice.device`
+      holds "piper:<id>" when chosen), `VoicePanel` `PiperVoices` (Download with its size and
+      progress, Hear, Use, Remove, the credit). A device voice of natural quality (Edge's online
+      ones, Apple's premium) stays first unless Piper is chosen: Piper starts slower. The service
+      worker caches the worker and espeak-ng's 18 MB of data when first used, not at install.
+      *The 300 ms aim failed:* on this laptop, onnxruntime's WebAssembly runs a medium voice at
+      about real time on one thread (measured in Node as well as the browser): a word in about
+      0.4–0.9 s, a short sentence 1–2.5 s, the voice's first load 3–8 s. Threads would halve it but
+      need cross-origin isolation, which GitHub Pages can't give; WebGPU ran a warm sentence in
+      about 550 ms but its first took 15 s. Parts, the warm-up and keeping what was said soften it.
+      Checked in the built app (French, Siwis). Not heard: Spanish, German, Russian and Mandarin's
+      voices (the pinyin step is tested, not listened to).
 

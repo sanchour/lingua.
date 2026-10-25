@@ -1233,12 +1233,24 @@ Short records of choices that are not obvious from the code. Newest last.
   only exactly the flag's locale, and Voice says how to get a natural one (Edge's online natural
   voices on Windows; a Premium or Enhanced voice on a Mac). The learner can pick any of the
   device's voices for the locale (`voice.device`). Edge's "Online (Natural)" voices rank first.
-- **Part 3, a voice on the device (Piper), waits for the user.** Piper turns text into sounds with
-  espeak-ng, which is GPL-3; shipping it inside a paid app is a licence question only the user can
-  answer. The voices themselves are fine for a paid app except Arabic: fr_FR siwis (CC BY 4.0),
-  es_ES davefx (CC0), es_MX ald (Unlicense), de_DE thorsten (CC0), ru_RU denis and dmitri (CC0),
-  zh_CN chaowen (CC0); ar_JO kareem's dataset has no clear licence, and ru_RU ruslan's is
-  non-commercial (both left out).
+- **Part 3, a voice made on the device (Piper), with espeak-ng (GPL-3): the user said yes**
+  (2026-10-25). Piper needs espeak-ng to turn text into phonemes; whether a paid app may ship it
+  was the user's call. The voices whose licence allows a paid app: fr_FR siwis (CC BY 4.0,
+  credited in Settings), es_ES davefx (CC0), es_MX ald (Unlicense), de_DE thorsten (CC0), ru_RU
+  denis and dmitri (CC0), zh_CN chaowen (CC0). Left out: ar_JO kareem (no clear licence, so Arabic
+  has none), ru_RU ruslan (non-commercial), zh_CN huayan (unknown), fr_FR tom (AGPL).
+- **Our own small runtime, not a wrapper package.** The npm wrappers only know their own list of
+  voices (no chaowen) and load their engines from CDNs. Lingua runs onnxruntime-web and
+  espeak-ng's WebAssembly build in a worker, served as its own assets; each 63 MB model comes from
+  Hugging Face only when the learner downloads it, and stays in the browser's cache.
+- **Mandarin through pinyin.** Piper's new Chinese voices take pinyin (initial, final, tone), not
+  espeak's phonemes. `pinyin-pro` (MIT) reads the characters in the browser; piper itself uses
+  g2pW, a 600 MB model, too big to download for this.
+- **Slower than hoped, so not first.** On a laptop a sentence takes 1–2.5 s to make (WebAssembly on
+  one thread; GitHub Pages can't give the isolation threads need, and WebGPU's first sentence
+  took 15 s). So natural device voices (Edge's online ones, Apple's premium) stay first unless
+  the learner picks Piper; Piper comes before the merely good and robotic ones. Long text is said
+  in parts, made while the part before plays, and everything said is kept.
 
 ## 2026-10-24 — A much larger Discover (5.1-3b, part 4)
 

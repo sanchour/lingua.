@@ -62,7 +62,7 @@ read that part before starting.
 | 6 | [x] | *Done 2026-10-21 (a, b and c).* **5.1-2 · Plans, the first start and Home,** one step in three parts, in order: a · Lingua+ and Lingua+ Max (Stripe in test mode, the licence server, plans, the MAX badge); b · onboarding, the map without dots and its language data, the twelve flags (it shows the plans); c · Home, the new layout (the old one a setting away). After 2. | 5.1-2a, b, c | XL |
 | 7 | — | *Merged into step 6 on 2026-10-21 (5.1 in four steps).* | — | — |
 | 8 | — | *Merged into step 6 on 2026-10-21.* | — | — |
-| 9 | [~] | *a done 2026-10-22; b done 2026-10-24 (part 1 2026-10-23, parts 2–4 2026-10-24); c parts 1 and 2 done 2026-10-25, part 3 (Piper) waits for the user's answer on espeak-ng's GPL licence (ROADMAP "Sound without a key")* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
+| 9 | [~] | *a done 2026-10-22; b done 2026-10-24 (part 1 2026-10-23, parts 2–4 2026-10-24); c done 2026-10-25 (recordings, device voices, Piper on the device: ROADMAP "Sound without a key"); the user added Cursus as an adventure path to this step on 2026-10-25, in progress* **5.1-3 · Reading, words and sound,** one step in three parts: a · Codex, on top of what 4.0-2 built; b · Thesaurus and Ludus, including the larger Discover (pack rebuild); c · sound without a key (recordings, an on-device voice). **Parallel** with 6. | 5.1-3a, b, c | XL |
 | 10 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 11 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 12 | — | *Merged into step 20 on 2026-10-21 (typing goes with the design touch as 5.1-4).* | — | — |
@@ -73,7 +73,7 @@ read that part before starting.
 | 17 | [ ] | **Grammatica's guided path** and full-width lessons. **Parallel** after 1 and 2. | 5.2-8 | L |
 | 18 | [ ] | **Ratio** (one language, compact, goals in Tabula, more numbers). **Parallel.** | 5.2-9 | M |
 | 19 | [x] | **Grammatica part 6: topic maps for every language** (3.0-8). *Done 2026-10-21:* short grammars for twelve tier 2 languages, the Georgian alphabet; the rest named in ROADMAP "3.0-8". **Parallel.** | ROADMAP "3.0-8" | L |
-| 20 | [ ] | **5.1-4 · Typing, and the language in the design,** one step in two parts: a · typing practice in Cursus; b · a touch of the language in the design. After the room steps above (b touches every room lightly). | 5.1-4a, b | L |
+| 20 | [~] | *claimed 2026-10-25, with step 9* **5.1-4 · Typing, and the language in the design,** one step in two parts: a · typing practice in Cursus; b · a touch of the language in the design. After the room steps above (b touches every room lightly). | 5.1-4a, b | L |
 | 21 | [ ] | **Lingua 5 complete:** the full check; the version says 5.0. Last, after 22. | 5.1-5 and 5.2-10 | S |
 | 22 | [ ] | **Visio, as Lingua 5.2-4:** YouTube inside Lingua with two subtitle lines; the streaming services' subtitles beside the show playing in its own app, with the same taps and translations; a Lingua browser extension for them (decided yes); the services' real marks. **Parallel** after 2. | 5.2-4 | L |
 
@@ -161,9 +161,9 @@ second a pack) gave every pack its new lists as v8. What the plan said, for the 
 
 **Then 5.1-3c** (sound without a key): planned in ROADMAP "Sound without a key (5.1-3c)". Parts
 1 (real people's recordings of common words, from Wikimedia Commons) and 2 (device voices ranked,
-chosen in Settings) are done (2026-10-25). Part 3, Piper in the browser, waits for the user:
-espeak-ng, which it needs, is GPL-3 (DECISIONS 2026-10-25). Until they answer, the next free steps
-are 13–18 and 22 (all parallel).
+chosen in Settings) and 3 (Piper's voices made on the device; the user said yes to espeak-ng's
+GPL on 2026-10-25) are done. The user then asked, in the same step, for Cursus's course as an
+adventure path like Duolingo's and HelloChinese's (ROADMAP "Cursus as an adventure path").
 
 **Things that cost time in part 1:**
 - Tailwind only sees class names written out in full: a class built in a template string

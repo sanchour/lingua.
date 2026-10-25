@@ -57,8 +57,8 @@ export default defineConfig({
           '**/inter-{cyrillic,greek}-wght-normal-*.woff2',
           '**/literata-{latin,latin-ext,cyrillic,greek}-wght-normal-*.woff2',
         ],
-        // Whisper on this device, the PDF reader and the comics' OCR are optional and large: they are cached when first used.
-        globIgnores: ['**/apple-splash-*', '**/whisper.worker-*.js', '**/pdf-*.js', '**/pdf.worker.min-*', '**/tesseract-core-*', '**/worker.min-*.js'],
+        // Whisper and Piper on this device, the PDF reader and the comics' OCR are optional and large: they are cached when first used.
+        globIgnores: ['**/apple-splash-*', '**/whisper.worker-*.js', '**/piper.worker-*.js', '**/pdf-*.js', '**/pdf.worker.min-*', '**/tesseract-core-*', '**/worker.min-*.js'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -73,6 +73,12 @@ export default defineConfig({
             urlPattern: ({ url, sameOrigin }) => sameOrigin && (url.pathname.endsWith('.wasm') || url.pathname.includes('/whisper.worker-')),
             handler: 'CacheFirst',
             options: { cacheName: 'lingua-wasm', expiration: { maxEntries: 6 } },
+          },
+          {
+            // Piper's worker and espeak-ng's language data (18 MB), the first time a voice made on the device speaks.
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && (url.pathname.includes('/piper.worker-') || /\/assets\/piper_phonemize-[\w-]+\.data$/.test(url.pathname)),
+            handler: 'CacheFirst',
+            options: { cacheName: 'lingua-piper', expiration: { maxEntries: 4 } },
           },
           {
             // pdf.js (about 400 kB) and its worker (1.2 MB) load the first time a PDF is added.
