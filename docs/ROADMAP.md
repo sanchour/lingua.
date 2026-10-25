@@ -2157,3 +2157,31 @@ mobile layout (not needed).
       difficulty, sources, the room's light, explicit songs, chart country); sections in LibriVox's
       list; Mandarin and Arabic FSI audio (no single archive.org item); importing the FSI textbook
       into Codex. Not checked by playing: the FSI audio and the radio stations.
+
+### Visio (5.2-4, handover step 22): how it is built
+*Planned 2026-10-25; the design is LINGUA-5.2-PLAN.md "5.2-4". The user: "Continue then with 5.2-4
+and push, finish".*
+- [ ] **Real marks** (`core/mundus/marks.ts`, `ServiceMark`): Simple Icons' open drawings where it
+      has the service (Netflix, HBO Max, Apple TV, MUBI, YouTube, Viaplay, ZDF, Crunchyroll), the
+      service's App Store icon for the others (looked up in Apple's directory, each checked to be
+      the service's own app), the letters as before when an icon can't load. Apple TV+ is "Apple TV".
+      A test: every service has a mark.
+- [ ] **"From Mundus" removed** from the bottom of Services.
+- [ ] **YouTube inside Visio:** Add › YouTube video takes a link; its title, channel and picture come
+      from YouTube's oEmbed. The player is YouTube's official embed behind `YouTubeVideo`, a small
+      stand-in with the parts of a `<video>` Visio uses (time, play, pause, speed, events), so the
+      clock, the two lines, auto-pause, hover-to-pause, the line keys and the scrubber work as for a
+      file. Subtitles, in order: the Lingua extension (YouTube's captions and its English
+      translation), Gemini with Max (a timed transcript from the link, then the English line as
+      today), a subtitle file, else YouTube's own captions in its player.
+- [ ] **Following a show beside its own app:** a subtitles-only item gets a follow clock
+      (`TimerVideo`, the same stand-in on a timer): play, pause, nudge ±0.5 s, the lines in time,
+      with the same hovering, lookups and saving as a video.
+- [ ] **The Lingua extension** (`extension/`, Chrome and Edge, Manifest V3, loaded unpacked until
+      the user has a Web Store account): on Netflix, Prime Video, Disney+, HBO Max, YouTube and the
+      free broadcasters it reads the subtitle files the player loads (WebVTT, TTML, YouTube's
+      json3), never the video, and draws two lines over the player; hovering pauses, words look up
+      through an open Lingua tab (`services/visio/bridge.ts`), a click saves a word to the deck, ←
+      and → step by line. For YouTube it also hands the captions to Lingua.
+- **Can't be checked here:** the extension on the streaming services (it needs the user's accounts
+      and an unpacked install); Gemini's transcript needs a Max key.
