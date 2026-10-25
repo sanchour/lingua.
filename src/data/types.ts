@@ -820,6 +820,21 @@ export interface CourseProgressRow extends Synced {
   doneAt?: number;
 }
 
+/** Typing practice (5.1-4a), one row per language: the letters unlocked and how each is typed. */
+export interface TypingRow extends Synced {
+  /** The language. */
+  id: string;
+  lang: Lang;
+  unlocked: number;
+  stats: Record<string, { hits: number; misses: number; ms: number; acc: number }>;
+  /** Words a minute every letter must reach (30 unless changed). */
+  target: number;
+  /** Typing with the layout installed on the computer instead of Lingua's own map of the keys. */
+  ownLayout: boolean;
+  /** Mandarin: typing pinyin, or picking characters with the practice input method. */
+  zhMode?: 'pinyin' | 'chars';
+}
+
 /** Where a learner stands in a topic: the step being worked on (1–5), 6 once it is learned. */
 export interface GrammarProgressRow extends Synced {
   /** `${lang}:${topic}` */

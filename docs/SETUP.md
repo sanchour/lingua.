@@ -102,6 +102,12 @@ few minutes of API requests); each index is small and committed:
 node scripts/lang-data/recordings.ts fr   # → public/sounds/fr.v1.json.gz (no codes: all six)
 ```
 
+Typing practice's letters and words (5.1-4a) come from the committed packs in seconds:
+
+```bash
+node scripts/typing/build.ts              # → src/core/typing/data/<lang>.json (the six core languages)
+```
+
 ## 6. Your learning data
 
 Words, progress, books and settings live in each browser, not on GitHub. To move them:

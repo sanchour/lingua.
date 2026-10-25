@@ -1484,3 +1484,21 @@ Short records of choices that are not obvious from the code. Newest last.
 - **The plans page in onboarding is its own pitch** (`features/plans/PlanPitch`), sharing the buy
   logic with the plan cards (`useBuy`). It promises only what is true. Max shows monthly first, here
   and in Settings (the user).
+
+## 2026-10-25 — Typing practice (5.1-4a)
+
+- **keybr's method, per language.** Letters unlock in frequency order (pack words weighted by
+  rank, 1/(rank+20)), and practice lines are made-up words from a trigram model, because real
+  words of only six letters are too few to practise on. Twelve presses at the target speed and
+  95% accuracy per letter unlock the next; the slowest letter is the focus.
+- **The physical key, not the character.** `KeyboardEvent.code` is mapped to the language's
+  standard layout (dead keys included), so a learner with an English keyboard practises the real
+  layout before installing it. "I have this layout" switches to `e.key` for those who have.
+- **Mandarin types pinyin.** Typing Chinese is typing pinyin and picking, so its letters are
+  pinyin letters (ü on V, as pinyin keyboards do) over the syllables of common characters, and a
+  second mode is a small practice input method with the candidates from the most common
+  characters. No tones: real input methods don't ask for them.
+- **Its own table** (`db.typing`, Dexie v17, last write wins in backups); the time is a 'write'
+  session with refId 'typing', so Ratio and Home count it without a new session type.
+- **The data is built, not fetched:** `scripts/typing/build.ts` writes about 30–60 kB of JSON per
+  language from the committed packs, loaded only when the tab opens.

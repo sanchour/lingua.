@@ -15,7 +15,7 @@ export interface ResetCounts {
 export async function resetLanguageProgress(lang: string, database: LinguaDB = db): Promise<ResetCounts> {
   return database.transaction(
     'rw',
-    [database.words, database.decks, database.folders, database.notes, database.cards, database.reviewLogs, database.readingProgress, database.texts, database.sessions, database.dailyStats, database.journeyEvents, database.studyLogs, database.goals, database.languages, database.playbackProgress, database.media, database.grammarItems, database.grammarProgress, database.courseProgress],
+    [database.words, database.decks, database.folders, database.notes, database.cards, database.reviewLogs, database.readingProgress, database.texts, database.sessions, database.dailyStats, database.journeyEvents, database.studyLogs, database.goals, database.languages, database.playbackProgress, database.media, database.grammarItems, database.grammarProgress, database.courseProgress, database.typing],
     async () => {
       const deckIds = (await database.decks.where('lang').equals(lang).toArray()).map((d) => d.id);
       const noteIds = deckIds.length ? ((await database.notes.where('deckId').anyOf(deckIds).primaryKeys()) as string[]) : [];
@@ -45,6 +45,7 @@ export async function resetLanguageProgress(lang: string, database: LinguaDB = d
       await database.grammarItems.where('[lang+topic]').between([lang, ''], [lang, '\uffff']).delete();
       await database.grammarProgress.where('lang').equals(lang).delete();
       await database.courseProgress.where('lang').equals(lang).delete();
+      await database.typing.where('lang').equals(lang).delete();
       await database.reviewLogs.where('[deckId+reviewedAt]').between([`grammar:${lang}`, 0], [`grammar:${lang}`, Infinity]).delete();
       // Ready-made "known" seeding can be applied again from Settings › Languages.
       await database.languages.update(lang, { seedAppliedAt: undefined, updatedAt: Date.now() });

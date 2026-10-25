@@ -539,7 +539,14 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 
 - **Cursus** (`/cursus`): Course · Grammatica · Alphabets · Typing, a tab strip with 1–4, opening
   on the tab used last (first time: Course for the six core languages, Grammatica otherwise). The
-  course and typing say they're coming until handover steps 4 and 12 fill them.
+  course is the trail below; typing is the next point.
+- **Typing** (Cursus › Typing, the six core languages): keybr-style practice in the language's
+  letters. Six letters to start, lines of pronounceable made-up words, the next letter when every
+  letter is fast and accurate enough (30 words a minute by default, adjustable), the slowest one
+  practised most. Your keys type the language's layout (AZERTY, QWERTZ, Spanish, ЙЦУКЕН, Arabic)
+  without installing it, or your own with "I have this layout"; a keyboard on screen shows the
+  next key and the finger; a card for each new letter says how to type it. Mandarin: pinyin
+  letter by letter, then characters (type the pinyin, pick 1–5). The time counts as writing.
 - **Sonus et Visio** (`/sonus`): + Listen and + Watch side by side; Library · Audiobooks · Radio ·
   Streaming and Sonus+ at the end of the strip. The library: a sticky rail with All · Listen · Watch
   and the categories (Songs, Podcasts, Episodes, Audiobooks, Stations, Your audio, Films & series,

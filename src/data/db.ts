@@ -20,6 +20,7 @@ import type {
   GrammarItemRow,
   GrammarProgressRow,
   CourseProgressRow,
+  TypingRow,
   Feed,
   Folder,
   FrequencyRow,
@@ -152,7 +153,12 @@ export const SCHEMA_V16 = {
   courseProgress: 'id, lang, updatedAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16 };
+/** Version 17 (Lingua 5.1-4a): typing practice, one row per language. */
+export const SCHEMA_V17 = {
+  typing: 'id, lang, updatedAt',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16, ...SCHEMA_V17 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -200,6 +206,7 @@ export type LinguaDB = Dexie & {
   sightings: EntityTable<Sighting, 'id'>;
   fullDict: Table<FullDictRow, [string, string]>;
   courseProgress: EntityTable<CourseProgressRow, 'id'>;
+  typing: EntityTable<TypingRow, 'id'>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -219,6 +226,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(14).stores(SCHEMA_V14);
   db.version(15).stores(SCHEMA_V15);
   db.version(16).stores(SCHEMA_V16);
+  db.version(17).stores(SCHEMA_V17);
   return db;
 }
 

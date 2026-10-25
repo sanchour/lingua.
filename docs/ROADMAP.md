@@ -1713,12 +1713,12 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
   - [x] a · Lingua+ (€24.99 once) and Lingua+ Max (in test mode until the user sets up Stripe: server/licence/README.md)
   - [x] b · Onboarding: your name and a welcome, a big map without dots, accurate language data, twelve new flags, the new screens, the plans as a pitch (2026-10-21)
   - [x] c · Home: Today, Next up, the week, Cursus, Mundus, numbers, as a square grid (the old Home one setting away; 2026-10-21)
-- [ ] 5.1-3 · Reading, words and sound
+- [x] 5.1-3 · Reading, words and sound
   - [x] a · Codex (on top of what 4.0-2 built) (2026-10-22)
   - [x] b · Thesaurus and Ludus: deck list and cards, a much larger Discover, even and varied Ludus (2026-10-24)
-  - [ ] c · Sound: human recordings and a natural on-device voice without a key
+  - [x] c · Sound: human recordings and a natural on-device voice without a key (2026-10-25)
 - [ ] 5.1-4 · Typing, and the language in the design
-  - [ ] a · Keyboard practice in Cursus (tier 1)
+  - [x] a · Keyboard practice in Cursus (tier 1) (2026-10-25)
   - [ ] b · A touch of the language in the design
 - [ ] 5.1-5 · Lingua 5.1 complete: the full check (one check with 5.2-10)
 - [x] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
@@ -2053,3 +2053,29 @@ progression line, fun format/look/feel." Pushed with 5.1-3c.*
       card offers the unit check to jump there. The right-hand card stays.
       *Built:* `features/cursus/course/AdventurePath.tsx` (`UNIT_LOOK`, `Landmark`, `UnitBanner`,
       `Trail` with its SVG line, `StopNode`, `StopCard`); `CourseTab.tsx` uses it instead of the list.
+
+### Typing, and the language in the design (5.1-4, handover step 20)
+*Planned 2026-10-25; the design is in LINGUA-5.1-PLAN.md "5.1-4a" and "5.1-4b". The user, during
+5.1-3c: "also do 4a and 4b here, have regular checkpoint pushes". Part a pushed on its own.*
+- [x] **a · Keyboard practice** (done 2026-10-25)**:** Cursus › Typing for the six core languages,
+      the keybr way. The letters in the order they're met in real text (each pack word weighted by
+      how common it is); the six most common to start; lines of made-up but pronounceable words
+      from a letter-trigram model of the language's 3,000 most common words, using only unlocked
+      letters, with real words mixed in once enough exist; the weakest letter is the focus and
+      turns up more. The next letter unlocks when every letter has 12 presses at the target speed
+      (30 words a minute, adjustable) and 95% accuracy, with a card saying how to type it (the key,
+      Shift, or the dead key: AZERTY ^ and ¨, Spanish ´ and ¨). The physical key is read
+      (`KeyboardEvent.code`) and mapped to AZERTY, QWERTZ, Spanish, ЙЦУКЕН or Arabic 101, so nothing
+      needs installing; "I have this layout" uses the system's own. The keyboard on screen tints each
+      finger's keys and lights the next one; per letter, speed and accuracy bars. A wrong key counts
+      against the letter and the right one is still needed. Mandarin: pinyin syllables of the most
+      common characters (ü on V), then a practice input method (a common word in characters: type
+      its pinyin, pick with 1–5 or Space, pinyin shown on request). Progress per language in
+      `db.typing` (Dexie v17, in backups); each line's time counts as writing in Ratio and Home.
+      *Built:* `scripts/typing/build.ts` → `src/core/typing/data/<lang>.json`;
+      `core/typing/` (`layouts.ts`, `lesson.ts`, tests); `data/typing.ts`;
+      `features/cursus/typing/` (`TypingPractice`, `Keyboard`, `CharacterPractice`).
+      *Left out:* sentences from the pack at the end (real words are the last stage); accented
+      letters arrive in their frequency place rather than as separate lessons, each with its card.
+      Checked in the app: French on AZERTY (lines, the seventh letter unlocking, sessions recorded),
+      Arabic (right to left, joined) and Mandarin (both modes). Russian and German not typed through.
