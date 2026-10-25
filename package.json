@@ -1,7 +1,7 @@
 {
   "name": "lingua",
   "private": true,
-  "version": "3.0.0",
+  "version": "5.1.0",
   "type": "module",
   "description": "Lingua: a local-first language-learning studio (reader, flashcards, audio, video).",
   "scripts": {

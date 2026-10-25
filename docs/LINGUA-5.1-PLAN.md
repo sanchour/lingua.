@@ -555,8 +555,8 @@ and Russian with long words.
 ### 5.1-3c · Sound: good pronunciation without a key
 
 **The user's points**
-- [ ] AI sound with an AI key (exists: Gemini's voices, 3.0-4).
-- [ ] Without a key, still a good pronunciation: "not a cheap American sound".
+- [x] AI sound with an AI key (exists: Gemini's voices, 3.0-4).
+- [x] Without a key, still a good pronunciation: "not a cheap American sound".
 
 **What happens today:** with a Gemini key, Gemini's voice for the locale; without one, the best
 device voice of exactly that locale (never another language's voice), else no sound button. The
@@ -590,7 +590,7 @@ word plays a human recording and a sentence a natural voice, on Windows (Chrome 
 ### 5.1-4a · Keyboard practice (Cursus › Typing)
 
 **The user's points**
-- [ ] Typing practice like keybr.com: simple, step by step, effective, for other alphabets
+- [x] Typing practice like keybr.com: simple, step by step, effective, for other alphabets
   (Russian, Chinese, Arabic…). Tier 1 only.
 
 **How it works** (`core/typing/` for the engine, `features/cursus/typing/` for the room)
@@ -622,7 +622,7 @@ without installing anything, and the seventh letter unlocks at target speed.
 ### 5.1-4b · A touch of the language in the design
 
 **The user's point**
-- [ ] Slight, minimal touches that fit the language throughout the app (French aesthetics when
+- [x] Slight, minimal touches that fit the language throughout the app (French aesthetics when
   learning French).
 
 **How:** `design/flavours.ts` gives each language a few small things, applied with `data-flavour`
@@ -651,10 +651,10 @@ nothing else; light and dark both pass contrast.
 
 ### 5.1-5 · Lingua 5.1 complete: the full check
 
-- [ ] Every point above checked in the app: on desktop (1280, 1440, 1366×768);
+- [x] Every point above checked in the app: on desktop (1280, 1440, 1366×768);
   light and dark; each pretend plan.
-- [ ] The second half of Lingua 5 (when the user pastes it) is planned as 5.2.
-- [ ] Docs (ROADMAP, DECISIONS, FEATURES, QA-ios, ARCHITECTURE for the room/folder map), the version
+- [x] The second half of Lingua 5 (when the user pastes it) is planned as 5.2.
+- [x] Docs (ROADMAP, DECISIONS, FEATURES, QA-ios, ARCHITECTURE for the room/folder map), the version
   says 5.1, commit, push, the live site checked.
 
 ---

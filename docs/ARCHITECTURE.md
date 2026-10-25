@@ -172,7 +172,7 @@ lingua/
    ├─ services/          storage/ · files/ · perf/ · packs/ · translate/ · llm/ (+ transcribe/ audio/)
    ├─ workers/           packs.worker.ts
    ├─ state/             ui.ts · reader.ts (+ player/ study/ visio later)
-   ├─ design/            tokens.css · motion.ts · fonts.ts · primitives/ · hooks/
+   ├─ design/            tokens.css · motion.ts · fonts.ts · flavours.ts (the language touches, 5.1-4b) · primitives/ · hooks/
    ├─ features/          home/ cursus/ codex/ thesaurus/ sonus/ visio/ mentis/ mundus/ colloquium/ grammatica/ ratio/ ordo/ lab/ (Product map: which room each is)
    └─ test/              setup.ts
 ```

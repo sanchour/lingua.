@@ -1720,7 +1720,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [x] 5.1-4 · Typing, and the language in the design
   - [x] a · Keyboard practice in Cursus (tier 1) (2026-10-25)
   - [x] b · A touch of the language in the design (2026-10-25)
-- [ ] 5.1-5 · Lingua 5.1 complete: the full check (one check with 5.2-10)
+- [x] 5.1-5 · Lingua 5.1 complete: the full check (done on its own 2026-10-25, the user's ask; version 5.1.0; section "Lingua 5.1's check" below)
 - [x] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
 - [ ] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries
 - [ ] 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings
@@ -2097,3 +2097,24 @@ progression line, fun format/look/feel." Pushed with 5.1-3c.*
       during onboarding; there is no loading screen to speak of). Checked in the app: all six
       ornaments and faces on Paper and Nocturne, the switch off and on. The French and Arabic lean
       was halved after looking (blue or teal pulled terracotta toward grey).
+
+### Lingua 5.1's check (5.1-5, 2026-10-25)
+*The user asked for it with 5.1-4, "token efficient and quick", rather than waiting for 5.2's
+check: one scripted sweep, a few looks, the pretend plans.*
+- [x] **Every room and tab** (Home, Cursus's four tabs, Codex's library, Discover, Goodreads and
+      Add, Thesaurus, Sonus et Visio, Commute, Mentis with Sermo and Diarium, Ratio, Settings' Look
+      and feel and Lingua+) at 1280×800, 1440×900 and 1366×768, Paper and Nocturne: 108 page views
+      with no errors in the console and no sideways scroll. The only element past the edge is the
+      vocabulary journey in Thesaurus at 1280, inside its own sideways strip by design.
+- [x] **The pretend plans:** free locks the course, typing and Sermo (with their "+" chips);
+      Lingua+ opens the course and typing; Max opens everything, and the badge reads Lingua+ /
+      Lingua+ MAX.
+- [x] **The newest points looked at by hand:** typing (French on AZERTY, Arabic, Mandarin's two
+      modes), the language touches for all six languages in light and dark, the switch, the Cursus
+      trail, Piper's French voice, the recordings (5.1-3c's checks).
+- [x] Each earlier point was checked when its step was built (its ROADMAP section says how); this
+      check didn't redo them one by one.
+- [x] Version 5.1.0 (Settings › About says "Lingua 5.1"). QA-ios is the phone's list and the phone
+      isn't needed any more (the user, 2026-10-20): it gets no 5.1 pass.
+*Not covered:* a person going through onboarding again; sound heard in every language; the
+mobile layout (not needed).

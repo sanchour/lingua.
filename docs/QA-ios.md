@@ -1,5 +1,8 @@
 # iPhone QA checklist
 
+*Since 2026-10-20 Lingua is made for the desktop only (the user: "Phone is not needed anymore"), so
+Lingua 5.1 got no pass on the iPhone; this list stays for what was built before.*
+
 Run on a real iPhone with Lingua installed from Safari (Share → Add to Home Screen) and opened from
 the home-screen icon. Paste the Device lab report back into the chat after each phase.
 

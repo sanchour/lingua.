@@ -1517,3 +1517,11 @@ Short records of choices that are not obvious from the code. Newest last.
   greeting and empty states; book titles, lessons and reading keep the reading font.
 - **Mandarin's quotation marks are “ ”,** as mainland texts use; 「」 for Japanese and Traditional
   Chinese.
+
+## 2026-10-25 — Lingua 5.1's check on its own, version 5.1.0
+
+- The user asked for 5.1-5 now, with 5.1-4, instead of one check with 5.2's at the end. It was a
+  scripted sweep (every room and tab, three desktop sizes, light and dark, in a sized frame inside
+  the app, counting console errors and anything past the page's edge), the pretend plans, and
+  looks at what 5.1-3c and 5.1-4 added. The version is 5.1.0, as the 5.1 plan says; step 21 now
+  holds only 5.2's check and takes the version to 5.2.
