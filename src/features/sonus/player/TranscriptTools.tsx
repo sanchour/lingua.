@@ -35,8 +35,30 @@ async function addFile(media: Media) {
   }
 }
 
+/**
+ * The desktop player without a transcript (5.2-3): "Read along as you listen" as a small button under
+ * the controls, its options in a popover, so the player itself can sit centred.
+ */
+export function ReadAlongButton({ media }: { media: Media }) {
+  const progress = useJobs((s) => s.transcribing[media.id]);
+  return (
+    <Popover
+      label="Read along as you listen"
+      placement="top"
+      className="w-[380px]"
+      trigger={(props) => (
+        <button {...props} type="button" className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-ink-soft transition-colors hover:bg-surface hover:text-ink">
+          <Captions size={15} aria-hidden /> {progress !== undefined ? `Writing the transcript… ${Math.round(progress * 100)}%` : 'Read along as you listen'}
+        </button>
+      )}
+    >
+      {() => <NoTranscript media={media} bare />}
+    </Popover>
+  );
+}
+
 /** When there's no transcript yet: make one with Whisper, or add a file. */
-export function NoTranscript({ media }: { media: Media }) {
+export function NoTranscript({ media, bare = false }: { media: Media; bare?: boolean }) {
   const { settings } = useApp();
   const navigate = useNavigate();
   const progress = useJobs((s) => s.transcribing[media.id]);
@@ -46,11 +68,14 @@ export function NoTranscript({ media }: { media: Media }) {
   const hasKey = !block;
   const spotify = media.kind === 'spotify';
 
+  const Box = bare ? 'div' : Card;
   return (
-    <Card className="flex flex-col items-center px-6 py-10 text-center">
-      <span className="mb-4 grid size-14 place-items-center rounded-2xl bg-sage-soft text-sage-text">
-        <Captions size={24} aria-hidden />
-      </span>
+    <Box className={bare ? 'flex flex-col items-center px-2 py-3 text-center' : 'flex flex-col items-center px-6 py-10 text-center'}>
+      {!bare && (
+        <span className="mb-4 grid size-14 place-items-center rounded-2xl bg-sage-soft text-sage-text">
+          <Captions size={24} aria-hidden />
+        </span>
+      )}
       {progress !== undefined ? (
         <>
           <p className="font-serif text-xl font-semibold">Listening closely…</p>
@@ -92,7 +117,7 @@ export function NoTranscript({ media }: { media: Media }) {
           {!spotify && onDevice && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Made on this device: private and free, slower than Groq.</p>}
         </>
       )}
-    </Card>
+    </Box>
   );
 }
 

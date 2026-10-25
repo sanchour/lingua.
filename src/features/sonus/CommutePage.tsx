@@ -76,7 +76,7 @@ export default function CommutePage() {
 
   const close = () => (window.history.length > 1 ? navigate(-1) : navigate(sonusHome()));
   const header = (
-    <header className="flex items-center gap-2 px-3 pt-2">
+    <header className="relative flex items-center gap-2 px-3 pt-2">
       <button type="button" aria-label="Leave commute mode" onClick={close} className="grid size-12 place-items-center rounded-2xl text-ink-soft">
         <ChevronDown size={26} aria-hidden />
       </button>
@@ -130,10 +130,11 @@ export default function CommutePage() {
   const nextRate = RATES[(RATES.indexOf(rate) + 1) % RATES.length] ?? 1;
 
   return (
-    <div className="no-callout flex min-h-dvh flex-col bg-bg" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
+    <div className="no-callout relative isolate flex min-h-dvh flex-col overflow-hidden bg-bg" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
+      <Backdrop coverUrl={media.coverUrl} />
       {header}
 
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-7 py-6">
+      <main className="relative mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-7 py-6">
         {hasCues && sentence ? (
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={index} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={fade}>
@@ -158,7 +159,7 @@ export default function CommutePage() {
         )}
       </main>
 
-      <div className="mx-auto w-full max-w-xl px-5">
+      <div className="glass relative mx-auto w-[calc(100%-2.5rem)] max-w-xl rounded-[36px] p-4">
         <div className="grid grid-cols-3 items-center gap-3">
           <BigButton label={hasCues ? 'Previous sentence' : `Back ${back} seconds`} onClick={() => (hasCues ? previousSentence() : skip(-back))}>
             {hasCues ? <Undo2 size={30} aria-hidden /> : <RotateCcw size={30} aria-hidden />}
@@ -167,7 +168,7 @@ export default function CommutePage() {
             type="button"
             aria-label={playing ? 'Pause' : 'Play'}
             onClick={toggle}
-            className="mx-auto grid size-[104px] place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-3 transition-transform duration-150 active:scale-90"
+            className="mx-auto grid size-[104px] place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-3 ring-1 ring-white/30 transition-transform duration-200 hover:scale-105 active:scale-90"
           >
             {playing ? <Pause size={42} className="fill-current" aria-hidden /> : <Play size={42} className="translate-x-1 fill-current" aria-hidden />}
           </button>
@@ -216,9 +217,10 @@ function RadioCommute({ header }: { header: ReactNode }) {
   useHotkeys({ arrowleft: () => step(-1), arrowright: () => step(1) });
   const playing = status === 'playing';
   return (
-    <div className="no-callout flex min-h-dvh flex-col bg-bg" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
+    <div className="no-callout relative isolate flex min-h-dvh flex-col overflow-hidden bg-bg" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
+      <Backdrop coverUrl={media.coverUrl} />
       {header}
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-7 py-6 text-center">
+      <main className="relative mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-7 py-6 text-center">
         <Artwork title={media.title} coverUrl={media.coverUrl} className="w-[min(36vw,160px)] shadow-elev-2" rounded="rounded-3xl" />
         <p className="mt-5 font-serif text-[clamp(24px,6.4vw,36px)] leading-tight font-semibold">{media.title}</p>
         <p className="mt-1 text-[15px] text-ink-soft">{status === 'loading' ? 'Tuning in…' : (nowPlaying ?? media.artist)}</p>
@@ -230,7 +232,7 @@ function RadioCommute({ header }: { header: ReactNode }) {
           )}
         </AnimatePresence>
       </main>
-      <div className="mx-auto w-full max-w-xl px-5">
+      <div className="glass relative mx-auto w-[calc(100%-2.5rem)] max-w-xl rounded-[36px] p-4">
         <div className="grid grid-cols-3 items-center gap-3">
           <BigButton label="Your previous station" onClick={() => step(-1)} disabled={stations.length < 2}>
             <SkipBack size={30} aria-hidden />
@@ -239,7 +241,7 @@ function RadioCommute({ header }: { header: ReactNode }) {
             type="button"
             aria-label={playing ? 'Pause' : 'Play'}
             onClick={toggle}
-            className="mx-auto grid size-[104px] place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-3 transition-transform duration-150 active:scale-90"
+            className="mx-auto grid size-[104px] place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-3 ring-1 ring-white/30 transition-transform duration-200 hover:scale-105 active:scale-90"
           >
             {status === 'loading' ? <LoaderCircle size={40} className="animate-spin" aria-hidden /> : playing ? <Pause size={42} className="fill-current" aria-hidden /> : <Play size={42} className="translate-x-1 fill-current" aria-hidden />}
           </button>
@@ -262,6 +264,11 @@ function RadioCommute({ header }: { header: ReactNode }) {
   );
 }
 
+/** The playing cover, blurred large and soft, behind the whole screen. */
+function Backdrop({ coverUrl }: { coverUrl?: string }) {
+  return <div aria-hidden className="commute-backdrop" style={{ backgroundImage: coverUrl ? `url("${coverUrl}")` : 'radial-gradient(circle at 30% 30%, var(--accent), transparent 60%), radial-gradient(circle at 70% 70%, var(--sage), transparent 60%)' }} />;
+}
+
 function BigButton({ label, onClick, children, disabled, active, small }: { label: string; onClick: () => void; children: ReactNode; disabled?: boolean; active?: boolean; small?: boolean }) {
   return (
     <button
@@ -269,11 +276,7 @@ function BigButton({ label, onClick, children, disabled, active, small }: { labe
       aria-label={label}
       onClick={onClick}
       disabled={disabled}
-      className={cx(
-        'flex items-center justify-center gap-2 rounded-3xl border transition-[transform,background-color] duration-150 active:scale-95 disabled:opacity-35',
-        small ? 'h-16' : 'h-[88px]',
-        active ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-surface text-ink',
-      )}
+      className={cx('glass-button flex items-center justify-center gap-2 rounded-full disabled:opacity-35', small ? 'h-16' : 'h-[88px]', active ? 'text-accent-text ring-2 ring-accent/40' : 'text-ink')}
     >
       {children}
     </button>

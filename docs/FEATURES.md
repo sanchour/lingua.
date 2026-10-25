@@ -217,6 +217,13 @@ Practise writing in the target language; get corrected, explained and graded.
 
 ## Audiobooks and courses in Sonus (3.0-6)
 
+- **Since 5.2-3:** Audiobooks has three tabs: Your shelf, Free audiobooks (LibriVox) and Free
+  courses, a catalogue to search and filter by level and kind. Podcast courses and the FSI
+  courses' audio (Spanish, French, German, Russian) are added with one click; the rest open on
+  their own sites. A book's page keeps its cover and Continue in a sticky column beside the parts.
+  The player without a transcript is one centred column; Commute sits on a blurred copy of the
+  cover with frosted controls. Sonus+ has its own settings behind a gear in the room's header.
+
 - **The Audiobooks tab** (Sonus, between Podcasts and Radio; "Books" on a phone): your
   audiobooks and courses as covers, each with the part you're on (or the lessons done) and a
   thin bar for how much is heard; then LibriVox's free books in the language, searchable by

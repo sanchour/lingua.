@@ -1723,7 +1723,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [x] 5.1-5 · Lingua 5.1 complete: the full check (done on its own 2026-10-25, the user's ask; version 5.1.0; section "Lingua 5.1's check" below)
 - [x] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
 - [x] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries (2026-10-25)
-- [ ] 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings
+- [x] 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings
 - [ ] 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks (Lingua 5's own step; Lingua 4.0-3 was removed)
 - [ ] 5.2-5 · Diarium: writing tools, a calendar, search, in the language
 - [ ] 5.2-6 · Sermo: a guided path into your AI app, many more scenes
@@ -2138,3 +2138,22 @@ mobile layout (not needed).
       dial's spacing), See all with kind chips and a sort; tiles off screen aren't drawn
       (`content-visibility`). Tests in `filter.test.ts`. *Not done:* playing the top twenty of each
       language to listen for wrong ones (the filter was checked on the directory's tags and names).
+- [x] **5.2-3 · Listening** (done 2026-10-25)**:** Sonus › Audiobooks has three tabs (Your shelf,
+      Free audiobooks, Free courses; it opens on Free audiobooks while the shelf is empty). Free
+      courses is a catalogue (`services/sonus/courses.ts`) with search and level and kind chips, of
+      three kinds: courses published as podcasts (two each for Spanish, French, German, Russian and
+      Mandarin, one for Arabic; only feeds whose hosts let a web app read them), added to the shelf
+      with one click; the FSI courses whose audio archive.org keeps as one item (Spanish, French,
+      German, Russian), added as a course (`openArchiveCourse` in `librivox.ts`) with the
+      textbook as a link to its page; and links (Language Transfer, the other FSI courses,
+      LibriVox's catalogue). The book page has a sticky left column (cover, a large Continue, read
+      along, the description) and parts with a thin progress line, a tick when finished and bars
+      while playing. The player without a transcript is one centred column, with "Read along as you
+      listen" as a small button (`ReadAlongButton`). Commute sits on a blurred copy of the cover
+      with its controls in a frosted panel (`.glass`, plain under reduced transparency). Sonus+ has
+      a gear in the room's header (`RoomSettings.tsx`): speed and skips for episodes and books, and
+      the songs' English line shown, blurred or hidden. *Left out:* settings with nothing behind them
+      yet (next episode, a sleep default, romanisation, lyric size, "From songs" by itself, game
+      difficulty, sources, the room's light, explicit songs, chart country); sections in LibriVox's
+      list; Mandarin and Arabic FSI audio (no single archive.org item); importing the FSI textbook
+      into Codex. Not checked by playing: the FSI audio and the radio stations.

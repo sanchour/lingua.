@@ -1539,3 +1539,15 @@ Short records of choices that are not obvious from the code. Newest last.
   name: a name in three or more countries is one station.
 - **Tiles without virtual scrolling:** `content-visibility: auto` skips drawing tiles off screen,
   enough for 400 stations without a windowing library.
+
+## Listening (5.2-3)
+
+- **Only podcast courses a web app can read.** Lingua has no server, so a feed whose host sends no
+  CORS headers (Acast's Coffee Break, Slow German, RussianPod101) can't be added in the app; the
+  catalogue lists only feeds checked to allow it, rather than ones that fail on Add.
+- **FSI: the audio in Sonus, the textbook on its page.** archive.org keeps the public-domain
+  audio as one item per course, which becomes a course on the shelf; the textbook stays a link
+  (yojik.eu), since importing a scanned PDF into Codex is its own job. archive.org's thumbnails
+  for these items are blank, so they have no cover.
+- **Sonus+ settings are only real ones.** The plan's list had settings with nothing behind them
+  yet; the gear holds only what changes something in the room today.

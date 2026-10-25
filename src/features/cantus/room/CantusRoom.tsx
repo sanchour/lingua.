@@ -21,6 +21,7 @@ import { keptPlace, useCantusNow } from './now';
 import { PodcastsTab } from './listen';
 import { MusicPage, TodayPage } from './pages';
 import { SearchPage } from './search';
+import { RoomSettings } from './RoomSettings';
 import { useRoomTheme } from './useRoomTheme';
 
 const TAB_ICON: Record<RoomTab, LucideIcon> = { today: Sun, music: Music2, podcasts: Podcast, search: Search };
@@ -146,6 +147,7 @@ function TopBar({ tab }: { tab: RoomTab }) {
         <Link to="/cantus/search" aria-current={tab === 'search' ? 'page' : undefined} className={cx('ml-auto flex h-10 w-[300px] items-center gap-2.5 rounded-full px-4 text-[14px] transition-colors', tab === 'search' ? 'bg-[var(--room-fill-strong)] text-[var(--room-ink)]' : 'bg-[var(--room-fill)] text-[var(--room-muted)] hover:bg-[var(--room-fill-strong)]')}>
           <Search size={16} aria-hidden /> Songs and artists
         </Link>
+        <RoomSettings />
         <CloseRoom />
       </div>
     </header>

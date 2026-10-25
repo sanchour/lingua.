@@ -59,25 +59,31 @@ export default function BookPage() {
     navigate(`${sonusBase()}/play/${part.id}`);
   };
 
+  // "Continue part 7 at 12:30" when there's a place to go back to.
+  const nextAt = playback?.get(next.id);
+  const resumeMs = nextAt && !nextAt.completed && nextAt.positionMs > 5000 ? nextAt.positionMs : 0;
+  const continueLabel = started ? `Continue ${unit.toLowerCase()} ${book.parts.indexOf(next) + 1}${resumeMs ? ` at ${formatClock(resumeMs)}` : ''}` : 'Start';
+
   return (
     <>
       <BackLink to="/sonus?tab=books">Audiobooks</BackLink>
 
-      <header className="flex flex-col gap-5 sm:flex-row sm:items-end">
-        <Artwork title={book.title} coverBlobId={book.coverBlobId} coverUrl={book.coverUrl} className="w-36 sm:w-44" rounded="rounded-3xl" />
-        <div className="min-w-0 flex-1">
+      <div className="grid items-start gap-10 lg:grid-cols-[320px_minmax(0,1fr)] xl:gap-14">
+      <header className="flex flex-col gap-5 lg:sticky lg:top-6">
+        <Artwork title={book.title} coverBlobId={book.coverBlobId} coverUrl={book.coverUrl} className="w-48 shadow-elev-2 lg:w-full" rounded="rounded-3xl" />
+        <div className="min-w-0">
           <p className="flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">
             {course ? <GraduationCap size={14} aria-hidden /> : <Headphones size={14} aria-hidden />} {course ? 'Course' : 'Audiobook'}
           </p>
-          <h1 lang={book.lang} className="mt-1 font-serif text-[30px] leading-tight font-semibold tracking-tight sm:text-[38px]">
+          <h1 lang={book.lang} className="mt-1 font-serif text-[28px] leading-tight font-semibold tracking-tight text-balance">
             {book.title}
           </h1>
           {book.author && <p className="mt-1 text-ink-soft">{book.author}</p>}
           <p className="mt-1 text-[13px] font-semibold text-ink-faint">{summary.join(' · ')}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button icon={Play} className="flex-1 sm:flex-none" onClick={() => play(next)}>
-            {started ? `Continue: ${unit} ${book.parts.indexOf(next) + 1}` : 'Start'}
+          <Button icon={Play} size="lg" className="flex-1" onClick={() => play(next, resumeMs || undefined)}>
+            {continueLabel}
           </Button>
           <Popover
             label="Book options"
@@ -103,12 +109,15 @@ export default function BookPage() {
             )}
           </Popover>
         </div>
+        {book.readAlongTextId && <ReadingAlong book={book} />}
+        {description && <p className="line-clamp-6 text-[14px] leading-relaxed whitespace-pre-line text-ink-soft">{description}</p>}
       </header>
 
-      {book.readAlongTextId && <ReadingAlong book={book} />}
-      {description && <p className="mt-6 line-clamp-4 max-w-3xl text-[14.5px] leading-relaxed whitespace-pre-line text-ink-soft">{description}</p>}
-
-      <h2 className="mt-10 mb-3 border-b border-line pb-2 font-serif text-xl font-semibold">{chapters ? 'Chapters' : course ? 'Lessons' : 'Parts'}</h2>
+      <section aria-label={chapters ? 'Chapters' : course ? 'Lessons' : 'Parts'} className="min-w-0">
+      <h2 className="mb-3 flex items-baseline gap-3 border-b border-line pb-2 font-serif text-xl font-semibold">
+        {chapters ? 'Chapters' : course ? 'Lessons' : 'Parts'}
+        <span className="font-sans text-[13px] font-semibold text-ink-faint">{chapters ? chapters.length : book.parts.length}</span>
+      </h2>
       <div className="-mx-2 flex flex-col">
         {chapters && single
           ? chapters.map((c, i) => (
@@ -121,6 +130,8 @@ export default function BookPage() {
               </button>
             ))
           : book.parts.map((part, i) => <PartRow key={part.id} part={part} n={i + 1} course={course} progress={playback?.get(part.id)} onPlay={() => play(part)} />)}
+      </div>
+      </section>
       </div>
 
       <RenameDrawer book={book} open={sheet === 'rename'} onClose={() => setSheet(null)} />
@@ -153,12 +164,14 @@ export default function BookPage() {
   );
 }
 
+/** A part: its number (or a tick once finished, bars while playing), title, length, a thin line for how far you got, play on hover. */
 function PartRow({ part, n, course, progress, onPlay }: { part: Media; n: number; course: boolean; progress?: PlaybackProgress; onPlay: () => void }) {
   const playing = usePlayer((s) => s.media?.id === part.id && s.status === 'playing');
   const fraction = progress?.completed ? 1 : progress && part.durationMs ? Math.min(1, progress.positionMs / part.durationMs) : 0;
   const done = Boolean(part.doneAt);
+  const finished = Boolean(progress?.completed);
   return (
-    <div className={cx('group flex items-center gap-3 rounded-2xl px-2 py-2 transition-colors hover:bg-surface/70', course && done && 'opacity-60')}>
+    <div className={cx('group relative flex items-center gap-3 rounded-2xl px-2 py-2 transition-colors hover:bg-surface/70', course && done && 'opacity-60', playing && 'bg-accent-soft hover:bg-accent-soft')}>
       {course && (
         <button
           type="button"
@@ -171,27 +184,44 @@ function PartRow({ part, n, course, progress, onPlay }: { part: Media; n: number
         </button>
       )}
       <Link to={`${sonusBase()}/play/${part.id}`} className="flex min-w-0 flex-1 items-center gap-3">
-        {!course && <span className="w-7 shrink-0 text-center text-[13px] font-bold text-ink-faint tabular-nums">{n}</span>}
+        {!course && (
+          <span className={cx('grid w-7 shrink-0 place-items-center text-[13px] font-bold tabular-nums', playing ? 'text-accent-text' : finished ? 'text-sage-text' : 'text-ink-faint')}>
+            {playing ? (
+              <span className="flex h-3.5 items-end gap-[2px]" aria-label="Playing">
+                {[0, 1, 2].map((b) => (
+                  <span key={b} className="radio-bar h-full w-[2.5px] origin-bottom rounded-full bg-current" style={{ animationDelay: `${b * -0.3}s` }} />
+                ))}
+              </span>
+            ) : finished ? (
+              <Check size={15} strokeWidth={2.6} aria-label="Finished" />
+            ) : (
+              n
+            )}
+          </span>
+        )}
         <span className="min-w-0 flex-1">
-          <span lang={part.lang} className="line-clamp-2 text-[15px] leading-snug font-semibold">
+          <span lang={part.lang} className={cx('line-clamp-2 text-[15px] leading-snug font-semibold', playing && 'text-accent-text')}>
             {part.title}
           </span>
-          <span className="mt-1 flex items-center gap-2 text-[12.5px] text-ink-faint">
+          <span className="mt-0.5 flex items-center gap-2 text-[12.5px] text-ink-faint tabular-nums">
             {part.durationMs ? formatDuration(part.durationMs) : null}
-            {progress?.completed ? <Check size={13} className="text-sage-text" aria-label="Played" /> : null}
-            {fraction > 0 && fraction < 1 && (
-              <span className="h-1 w-16 overflow-hidden rounded-full bg-sunken" aria-hidden>
-                <span className="block h-full rounded-full bg-accent" style={{ width: `${fraction * 100}%` }} />
-              </span>
-            )}
+            {fraction > 0 && fraction < 1 && progress ? <span>· {formatClock(progress.positionMs)} in</span> : null}
           </span>
         </span>
       </Link>
+      {fraction > 0 && fraction < 1 && (
+        <span className="pointer-events-none absolute inset-x-3 bottom-0.5 h-0.5 overflow-hidden rounded-full bg-sunken" aria-hidden>
+          <span className="block h-full rounded-full bg-accent" style={{ width: `${fraction * 100}%` }} />
+        </span>
+      )}
       <button
         type="button"
         aria-label={`Play ${part.title}`}
         onClick={onPlay}
-        className="grid size-10 shrink-0 place-items-center rounded-full bg-surface text-ink transition-[transform,background-color] duration-150 hover:bg-sunken active:scale-90"
+        className={cx(
+          'grid size-10 shrink-0 place-items-center rounded-full bg-surface text-ink transition-[transform,background-color,opacity] duration-150 hover:bg-sunken focus-visible:opacity-100 active:scale-90',
+          playing ? 'opacity-100' : 'opacity-0 group-hover:opacity-100',
+        )}
       >
         {playing ? <Pause size={17} className="fill-current" aria-hidden /> : <Play size={17} className="translate-x-px fill-current" aria-hidden />}
       </button>

@@ -28,7 +28,7 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
   in HANDOVER.md's order. **5.1 is four steps and the check** (the user, 2026-10-21): 5.1-1 the
   frame (**done 2026-10-21**, with 5.2-1: Cursus, Sonus et Visio, Mentis, Settings), 5.1-2 plans,
   onboarding and Home (**done 2026-10-21**), 5.1-3 Codex (5.1-3a **done 2026-10-22**, then Cursus, the
-  course for the six core languages, **done 2026-10-22**; 5.1-3b **done 2026-10-24**, 5.1-3c **done 2026-10-25** (recordings, device voices, Piper), then Cursus as an adventure path in the same step: HANDOVER.md section 6), Thesaurus/Ludus and sound, 5.1-4 typing and the design touch (**done 2026-10-25**: typing practice in Cursus, language touches). **Lingua 5.1 is done and checked (5.1-5, version 5.1.0, 2026-10-25).** Next are 5.2's room steps, then 5.2's check.
+  course for the six core languages, **done 2026-10-22**; 5.1-3b **done 2026-10-24**, 5.1-3c **done 2026-10-25** (recordings, device voices, Piper), then Cursus as an adventure path in the same step: HANDOVER.md section 6), Thesaurus/Ludus and sound, 5.1-4 typing and the design touch (**done 2026-10-25**: typing practice in Cursus, language touches). **Lingua 5.1 is done and checked (5.1-5, version 5.1.0, 2026-10-25).** Radio and listening (5.2-2 and 5.2-3, handover step 13) are **done 2026-10-25**. Next are 5.2's other room steps (handover 14–18 and 22), then 5.2's check (21).
   The user asked (2026-10-21) for all of 5.1 and 5.2 to be done without needing them.
 - Other accounts and sessions push to `main` all the time: rebase onto `origin/main` before every
   push. Tier 2 stays cheap: only the features that cost little (automatic packs, decks, podcasts,

@@ -18,7 +18,7 @@ import { KaraokeTranscript } from './KaraokeTranscript';
 import { hasBookBar, partLabel } from './labels';
 import { Scrubber } from './Scrubber';
 import { createSpotifyClock, SpotifyEmbed } from './SpotifyEmbed';
-import { NoTranscript, TranscriptBar } from './TranscriptTools';
+import { NoTranscript, ReadAlongButton, TranscriptBar } from './TranscriptTools';
 import { Transport } from './Transport';
 import { sonusBase, sonusHome } from '@/features/sonus/paths';
 import { OwnWordsButton } from '@/features/production/OwnWords';
@@ -138,20 +138,47 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
     </button>
   );
 
-  // Desktop: one screen that stays put. The artwork takes the room that's left in its column, and
-  // only the transcript scrolls.
+  const back = media.bookId ? (
+    <Link to={`${sonusBase()}/book/${media.bookId}`} className="mb-6 inline-flex max-w-full shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
+      <ChevronLeft size={16} className="shrink-0" aria-hidden /> <span className="truncate">{bookTitle}</span>
+    </Link>
+  ) : (
+    <Link to={media.feedId ? `${sonusBase()}/podcast/${media.feedId}` : '/cantus/podcasts'} className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
+      <ChevronLeft size={16} aria-hidden /> {media.feedId ? media.collection : 'Sonus'}
+    </Link>
+  );
+
+  // Desktop without a transcript (5.2-3): one centred column, the cover, the details, the controls,
+  // and "Read along as you listen" as a small button under them.
+  if (wide && !cues?.length) {
+    return (
+      <div className="flex flex-col">
+        {back}
+        <div className="mx-auto flex w-full max-w-[440px] flex-col items-center pb-10">
+          <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="block w-[min(340px,42vh)] shadow-elev-2" rounded="rounded-3xl" />
+          <div className="mt-6 flex w-full items-start gap-2">
+            <div className="min-w-0 flex-1 text-center">
+              <Details media={media} book={book} live={isLoaded} large />
+            </div>
+            <MediaOptions media={media} hasTranscript={false} />
+          </div>
+          {bar && <div className="mt-4 w-full">{bar}</div>}
+          <div className="mt-6 w-full">{controls}</div>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-1">
+            <ReadAlongButton media={media} />
+            <OwnWordsButton lang={media.lang} lane="listen" title={media.title} refId={media.id} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop with a transcript: one screen that stays put. The artwork takes the room that's left in
+  // its column, and only the transcript scrolls.
   if (wide) {
     return (
       <div className="flex h-[calc(100dvh-8rem)] min-h-[520px] flex-col">
-        {media.bookId ? (
-          <Link to={`${sonusBase()}/book/${media.bookId}`} className="mb-6 inline-flex max-w-full shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
-            <ChevronLeft size={16} className="shrink-0" aria-hidden /> <span className="truncate">{bookTitle}</span>
-          </Link>
-        ) : (
-          <Link to={media.feedId ? `${sonusBase()}/podcast/${media.feedId}` : '/cantus/podcasts'} className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
-            <ChevronLeft size={16} aria-hidden /> {media.feedId ? media.collection : 'Sonus'}
-          </Link>
-        )}
+        {back}
         <div className="grid min-h-0 flex-1 grid-cols-[minmax(260px,320px)_minmax(0,1fr)] gap-12">
           <aside className="flex min-h-0 flex-col">
             <div className="min-h-[96px] flex-1 [container-type:size]">

@@ -250,6 +250,28 @@ export async function openLibrivoxBook(lang: string, identifier: string, databas
   );
 }
 
+/**
+ * Adds a course whose audio is one archive.org item (the FSI courses, 5.2-3) to Sonus as a course:
+ * its lessons play in order and are marked done. Returns the book's id.
+ */
+export async function openArchiveCourse(lang: string, identifier: string, title?: string, database?: LinguaDB): Promise<string> {
+  const bookId = `archive-${identifier}`;
+  if (await getBook(bookId, database)) return bookId;
+  const book = await librivoxBook(identifier);
+  // archive.org's thumbnails of these items are mostly blank pages: the course gets a drawn cover.
+  // "FSI - French Basic Course (Revised) - Volume 1 - Unit 01 01.01": the course's name goes once, above.
+  const prefix = book.parts.length > 1 ? commonPrefix(book.parts.map((p) => p.title)) : '';
+  const parts = book.parts.map((p) => ({ ...p, title: p.title.slice(prefix.length).replace(/^[\s\-–:]+/, '') || p.title }));
+  return saveRemoteBook({ lang, bookId, kind: 'course', title: title ?? book.title, author: book.author, description: book.description, parts }, database);
+}
+
+function commonPrefix(titles: string[]): string {
+  let prefix = titles[0] ?? '';
+  for (const t of titles) while (prefix && !t.startsWith(prefix)) prefix = prefix.slice(0, -1);
+  // Only up to a word's end, so "Unit 0" doesn't eat the lesson's own number.
+  return prefix.replace(/\S*$/, '');
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 async function getJson<T>(url: string, timeoutMs: number): Promise<T> {
