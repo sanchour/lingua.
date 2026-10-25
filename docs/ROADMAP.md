@@ -1722,7 +1722,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
   - [x] b · A touch of the language in the design (2026-10-25)
 - [x] 5.1-5 · Lingua 5.1 complete: the full check (done on its own 2026-10-25, the user's ask; version 5.1.0; section "Lingua 5.1's check" below)
 - [x] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
-- [ ] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries
+- [x] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries (2026-10-25)
 - [ ] 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings
 - [ ] 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks (Lingua 5's own step; Lingua 4.0-3 was removed)
 - [ ] 5.2-5 · Diarium: writing tools, a calendar, search, in the language
@@ -2118,3 +2118,23 @@ check: one scripted sweep, a few looks, the pretend plans.*
       isn't needed any more (the user, 2026-10-20): it gets no 5.1 pass.
 *Not covered:* a person going through onboarding again; sound heard in every language; the
 mobile layout (not needed).
+
+### Radio and listening (5.2-2 and 5.2-3, handover step 13): how it is built
+*Planned 2026-10-25; the design is LINGUA-5.2-PLAN.md "5.2-2" and "5.2-3". The user, after 5.1-5:
+"continue with 5.2-2 and 5.2-3, push it and stop". Each part pushed.*
+- [x] **5.2-2 · Radio** (done 2026-10-25)**:** `services/radio/filter.ts` keeps a station when the
+      language is its only or first one (other spellings and dialects, "castellano", "русский",
+      "swiss german", count as the language; "american english" and "english" as one other), in a
+      country where the language is official, regional or widely spoken (5.1-2b's territories), or
+      with the language as its only one abroad, if its name is in the language's script or Latin;
+      `corrections.ts` holds hand-found wrong stations (empty: the rules caught what the check
+      found). `cleanStations` keeps a name filed in three or more countries once (one Quran
+      reciter was under about a hundred flags). Measured on the directory's 400 most listened:
+      French 33 → 22 countries, Spanish 44 → 34, German 11 → 7, Russian 30 → 15, Mandarin 21 → 16;
+      Arabic's 117 came mostly from those copies. Lists cached before the filter are fetched again
+      (`lingua.radio.v2.*`). "Not in Spanish" on a tile hides a station on this device. The list:
+      the map and `Tuner.tsx` sticky on the left, tiles in sections on the right
+      (`services/radio/kinds.ts`: kinds from tags in the core languages, sections, sorts, the
+      dial's spacing), See all with kind chips and a sort; tiles off screen aren't drawn
+      (`content-visibility`). Tests in `filter.test.ts`. *Not done:* playing the top twenty of each
+      language to listen for wrong ones (the filter was checked on the directory's tags and names).

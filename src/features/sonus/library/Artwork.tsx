@@ -1,4 +1,5 @@
 import { memo, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { AudioLines } from 'lucide-react';
 import { hashString } from '@/core/hash';
 import { blobUrl } from '@/data/library';
@@ -14,10 +15,12 @@ interface ArtworkProps {
   className?: string;
   /** Rounded corners scale with the tile. */
   rounded?: string;
+  /** What a tile without artwork shows (sound bars by default; a station its initials). */
+  fallback?: ReactNode;
 }
 
 /** Square artwork: stored cover, web cover, or a quiet generated tile. */
-export const Artwork = memo(function Artwork({ title, coverBlobId, coverUrl, className, rounded = 'rounded-xl' }: ArtworkProps) {
+export const Artwork = memo(function Artwork({ title, coverBlobId, coverUrl, className, rounded = 'rounded-xl', fallback }: ArtworkProps) {
   const [url, setUrl] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -51,7 +54,7 @@ export const Artwork = memo(function Artwork({ title, coverBlobId, coverUrl, cla
   const bg = CLOTH[parseInt(hashString(title), 36) % CLOTH.length];
   return (
     <span className={cx(frame, 'grid place-items-center text-[#faf3e6]')} style={{ backgroundColor: bg }}>
-      <AudioLines className="size-[42%] opacity-80" strokeWidth={1.6} aria-hidden />
+      {fallback ?? <AudioLines className="size-[42%] opacity-80" strokeWidth={1.6} aria-hidden />}
     </span>
   );
 });

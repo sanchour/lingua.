@@ -1,8 +1,12 @@
 // Radio stations from radio-browser.info, an open directory kept by its community. Stations are
 // found by the language's names there (matched exactly); only https streams this browser can play
-// are kept. A language's list is kept for half a day, on the device.
+// are kept, and only stations really in the language (filter.ts, Lingua 5.2-2). A language's list is
+// kept for half a day, on the device.
 import { getLanguage } from '@/core/lang/languages';
+import { placesOf as territoriesOf } from '@/data/territories';
 import type { RadioStation } from '@/data/types';
+import { inLanguage } from './filter';
+import type { FilterContext } from './filter';
 
 /** The language's names in radio-browser.info, where they differ from the English name. */
 export const RADIO_NAMES: Record<string, string[]> = {
@@ -51,6 +55,8 @@ export interface RawStation {
   homepage?: string;
   favicon?: string;
   tags?: string;
+  /** The languages its owner typed, comma separated. */
+  language?: string;
   country?: string;
   countrycode?: string;
   state?: string;
@@ -133,16 +139,30 @@ export function playable(s: RadioStation, canPlay: (type: string) => boolean): b
 
 const canPlayHere = (type: string) => typeof document !== 'undefined' && document.createElement('audio').canPlayType(type) !== '';
 
-/** Playable stations, each once (the same stream or the same name in the same country), most listened first. */
-export function cleanStations(raws: RawStation[], canPlay: (type: string) => boolean = canPlayHere): RadioStation[] {
+/** What the filter needs to know about a language: its names, its countries, its script. */
+export function filterContext(lang: string): FilterContext {
+  const home = new Set(territoriesOf(lang).filter((p) => p.status === 'official' || p.status === 'regional' || p.status === 'widely').map((p) => p.country));
+  return { lang, names: radioNames(lang), home, script: getLanguage(lang)?.script };
+}
+
+/**
+ * Playable stations, each once (the same stream or the same name in the same country), most listened
+ * first; with a language, only those really in it. A name filed in three or more countries is one
+ * station copied around the directory (a reciter under a hundred flags): it is kept once.
+ */
+export function cleanStations(raws: RawStation[], canPlay: (type: string) => boolean = canPlayHere, ctx?: FilterContext): RadioStation[] {
   const seen = new Set<string>();
+  const spread = new Map<string, number>();
   const out: RadioStation[] = [];
   for (const raw of [...raws].sort((a, b) => (b.clickcount ?? 0) - (a.clickcount ?? 0) || (b.votes ?? 0) - (a.votes ?? 0))) {
+    if (ctx && !inLanguage(raw, ctx)) continue;
     const s = toStation(raw);
     if (!s || !playable(s, canPlay)) continue;
-    const keys = [s.id, s.url.replace(/^https:\/\//i, '').replace(/\/+$/, '').toLowerCase(), `${s.name.toLowerCase()}|${s.countryCode ?? ''}`];
-    if (keys.some((k) => seen.has(k))) continue;
+    const plain = s.name.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+    const keys = [s.id, s.url.replace(/^https:\/\//i, '').replace(/\/+$/, '').toLowerCase(), `${plain}|${s.countryCode ?? ''}`];
+    if (keys.some((k) => seen.has(k)) || (spread.get(plain) ?? 0) >= 2) continue;
     for (const k of keys) seen.add(k);
+    spread.set(plain, (spread.get(plain) ?? 0) + 1);
     out.push(s);
   }
   return out;
@@ -152,11 +172,12 @@ const SEARCH = { languageExact: true, is_https: true, hidebroken: true, order: '
 
 async function byLanguage(lang: string, extra: Record<string, string | number>, limit: number): Promise<RadioStation[]> {
   const lists = await Promise.all(radioNames(lang).map((language) => api<RawStation[]>('stations/search', { ...SEARCH, ...extra, language, limit })));
-  return cleanStations(lists.flat());
+  return cleanStations(lists.flat(), canPlayHere, filterContext(lang));
 }
 
 const KEEP_MS = 12 * 3600_000;
-const cacheKey = (lang: string) => `lingua.radio.${lang}`;
+// v2: lists from before the language filter (5.2-2) are fetched again.
+const cacheKey = (lang: string) => `lingua.radio.v2.${lang}`;
 const memory = new Map<string, Promise<RadioStation[]>>();
 
 function readCache(lang: string): { at: number; stations: RadioStation[] } | null {
@@ -208,6 +229,27 @@ export async function searchStations(lang: string, query: string): Promise<Radio
   const [named, tagged] = await Promise.all([byLanguage(lang, { name: q }, 60), byLanguage(lang, { tag: q.toLowerCase() }, 40)]);
   const ids = new Set(named.map((s) => s.id));
   return [...named, ...tagged.filter((s) => !ids.has(s.id))];
+}
+
+// ── "Not in Spanish" ──────────────────────────────────────────────────────────
+
+const hiddenKey = (lang: string) => `lingua.radio.hidden.${lang}`;
+
+/** Stations the learner said aren't in the language, hidden on this device. */
+export function hiddenStations(lang: string): Set<string> {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(hiddenKey(lang)) ?? '[]') as string[]);
+  } catch {
+    return new Set();
+  }
+}
+
+export function hideStation(lang: string, id: string): void {
+  try {
+    localStorage.setItem(hiddenKey(lang), JSON.stringify([...hiddenStations(lang), id]));
+  } catch {
+    // Storage blocked: it stays hidden for this visit only.
+  }
 }
 
 /** Tells radio-browser a station was played, as its API asks (it orders stations by this). */

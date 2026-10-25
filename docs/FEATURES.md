@@ -335,6 +335,18 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Live stations in the language** from radio-browser.info, an open directory kept by listeners:
   the most listened first, a search by name or style ("jazz", "news", a city), and the countries
   where the language is on air (the flag's country first). Only secure streams this device plays.
+- **Only stations really in the language** (5.2-2): a station stays when the language is its only
+  or first one, in a country where the language is spoken (a station whose only language it is
+  stays abroad too), and its name fits; one station copied under many flags shows once. Spanish
+  went from 44 countries to 34, Russian from 30 to 15, German from 11 to 7. **Not in Spanish** on a
+  tile hides a station on this device.
+- **Laid out for the desktop** (5.2-2): the map and a **tuner** sticky on the left (a dial like an
+  old radio's, the countries along it with flags and station counts; drag it, turn the wheel or
+  use the arrow keys and it snaps to each country while the map flies there), the stations on the
+  right as **tiles** (the logo large, or the initials on a colour of their own; the town; up to two
+  kinds; moving bars on the one playing) in **sections**: Your stations, Talk and news, Music,
+  Regional, Everything, each a row of eight with **See all** (kind chips, sorted by most listened,
+  name or sound quality).
 - **A real map** (3.0-6): the world's countries in the app's colours, light and dark. Where the
   language is on air the countries are tinted, each with a node and its number of stations, sending
   out rings like a signal; nodes close together join (tap to fly in until they part). Tap a

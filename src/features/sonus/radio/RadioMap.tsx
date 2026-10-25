@@ -662,7 +662,7 @@ export function RadioMap({ stations, places, countries, country, place, playing,
 
   const button = 'grid size-9 place-items-center rounded-full border border-line/70 bg-raised/90 text-ink-soft shadow-elev-1 backdrop-blur hover:text-ink active:scale-95';
   return (
-    <div ref={boxRef} className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-line/70 bg-sunken sm:aspect-[2/1]">
+    <div ref={boxRef} className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-line/70 bg-sunken">
       <canvas
         ref={canvasRef}
         role="img"

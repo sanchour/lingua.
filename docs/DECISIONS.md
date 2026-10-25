@@ -1525,3 +1525,17 @@ Short records of choices that are not obvious from the code. Newest last.
   the app, counting console errors and anything past the page's edge), the pretend plans, and
   looks at what 5.1-3c and 5.1-4 added. The version is 5.1.0, as the 5.1 plan says; step 21 now
   holds only 5.2's check and takes the version to 5.2.
+
+## 2026-10-25 — Radio only in the language (5.2-2)
+
+- **Rules over a list.** radio-browser's language tags are typed by owners, so a station is kept
+  by rules (only or first language; spoken in its country; its name's script) and a short
+  hand-kept list catches the rest. The rules alone took Spanish from 44 countries to 34 and
+  Russian from 30 to 15; the list is empty for now.
+- **Aliases and bases.** Owners write "castellano", "rus", "язык: русский" or "swiss german":
+  these count as the language. Other languages are counted by base, so "american english,
+  english, english uk" is one other language, not three.
+- **Copies under many flags** (the same reciter filed in a hundred countries) are kept once, by
+  name: a name in three or more countries is one station.
+- **Tiles without virtual scrolling:** `content-visibility: auto` skips drawing tiles off screen,
+  enough for 400 stations without a windowing library.
