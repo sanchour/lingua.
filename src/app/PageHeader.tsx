@@ -42,9 +42,9 @@ function LargeTitle({ title, eyebrow, actions }: PageHeaderProps) {
 
   const wide = layout === 'wide';
   return (
-    <header className={wide ? 'mb-9 flex items-end gap-4' : 'mt-1 mb-6 flex items-end gap-3'}>
+    <header className={wide ? 'mb-5 flex items-end gap-4' : 'mt-1 mb-6 flex items-end gap-3'}>
       <div className="min-w-0 flex-1">
-        {eyebrow && <p className="mb-1.5 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{eyebrow}</p>}
+        {eyebrow && <p className="mb-1 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{eyebrow}</p>}
         <h1
           ref={titleRef}
           className={

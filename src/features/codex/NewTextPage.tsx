@@ -225,7 +225,7 @@ function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; l
       }}
       onDrop={onDrop}
       className={cx(
-        'flex min-h-[26rem] flex-col items-center justify-center rounded-3xl border-2 border-dashed px-6 py-12 text-center transition-colors',
+        'flex min-h-[20rem] flex-col items-center justify-center rounded-3xl border-2 border-dashed px-6 py-8 text-center transition-colors sm:min-h-[22rem] sm:py-10',
         over ? 'border-accent bg-accent-soft/60' : 'border-line-strong/70 bg-surface',
       )}
     >

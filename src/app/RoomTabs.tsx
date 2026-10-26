@@ -44,7 +44,7 @@ export function RoomTabs<T extends string>({ label, tabs, active, end, keys = tr
     );
   }
   return (
-    <nav aria-label={label} className="mb-9 flex items-center gap-1 border-b border-line">
+    <nav aria-label={label} className="mb-5 flex items-center gap-1 border-b border-line">
       {tabs.map((t, i) => (
         <Link
           key={t.id}

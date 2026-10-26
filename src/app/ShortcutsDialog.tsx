@@ -88,13 +88,14 @@ export function ShortcutsDialog() {
       open={open}
       onClose={() => setOpen(false)}
       title="Keyboard shortcuts"
+      maxWidth="max-w-2xl"
       actions={
         <Button variant="secondary" onClick={() => setOpen(false)} data-autofocus>
           Done
         </Button>
       }
     >
-      <div className="mt-3">
+      <div className="mt-3 max-h-[calc(100dvh-10rem)] overflow-y-auto pr-1">
         <ShortcutList />
       </div>
     </Dialog>

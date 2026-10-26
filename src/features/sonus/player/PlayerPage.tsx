@@ -154,16 +154,16 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
     return (
       <div className="flex flex-col">
         {back}
-        <div className="mx-auto flex w-full max-w-[440px] flex-col items-center pb-10">
-          <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="block w-[min(340px,42vh)] shadow-elev-2" rounded="rounded-3xl" />
-          <div className="mt-6 flex w-full items-start gap-2">
+        <div className="mx-auto flex w-full max-w-[440px] flex-col items-center pb-4">
+          <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="block w-[min(300px,36vh)] shadow-elev-2" rounded="rounded-3xl" />
+          <div className="mt-4 flex w-full items-start gap-2">
             <div className="min-w-0 flex-1 text-center">
               <Details media={media} book={book} live={isLoaded} large />
             </div>
             <MediaOptions media={media} hasTranscript={false} />
           </div>
           {bar && <div className="mt-4 w-full">{bar}</div>}
-          <div className="mt-6 w-full">{controls}</div>
+          <div className="mt-4 w-full">{controls}</div>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-1">
             <ReadAlongButton media={media} />
             <OwnWordsButton lang={media.lang} lane="listen" title={media.title} refId={media.id} />
@@ -177,7 +177,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
   // its column, and only the transcript scrolls.
   if (wide) {
     return (
-      <div className="flex h-[calc(100dvh-8rem)] min-h-[520px] flex-col">
+      <div className="flex h-[calc(100dvh-3.5rem)] min-h-[460px] flex-col">
         {back}
         <div className="grid min-h-0 flex-1 grid-cols-[minmax(260px,320px)_minmax(0,1fr)] gap-12">
           <aside className="flex min-h-0 flex-col">

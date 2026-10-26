@@ -310,7 +310,7 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
       </StudyBar>
       <main
         className="mx-auto flex min-h-dvh max-w-2xl flex-col px-5"
-        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 84px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 150px)', ...cardLookProps(look).style }}
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 104px)', ...cardLookProps(look).style }}
       >
         <AnimatePresence mode="popLayout" initial={false}>
           {ex && (

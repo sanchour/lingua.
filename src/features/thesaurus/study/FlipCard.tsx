@@ -24,7 +24,7 @@ function Face({ back, look, children, onClick }: { back?: boolean; look: CardLoo
       data-look={props['data-look']}
       data-tint={props['data-tint']}
       className={cx(
-        'flashcard no-callout flex min-h-[min(52dvh,420px)] flex-col overflow-hidden rounded-[28px] border border-line px-6 py-6 shadow-elev-2 [backface-visibility:hidden] [grid-area:1/1] sm:px-10',
+        'flashcard no-callout flex min-h-[min(48dvh,400px)] flex-col overflow-hidden rounded-[28px] border border-line px-6 py-5 shadow-elev-2 [backface-visibility:hidden] [grid-area:1/1] sm:px-10 sm:py-6',
         onClick && 'cursor-pointer',
       )}
       style={{ ...props.style, transform: back ? 'rotateY(180deg)' : undefined }}

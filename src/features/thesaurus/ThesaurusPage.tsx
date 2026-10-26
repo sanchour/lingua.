@@ -181,7 +181,7 @@ export default function ThesaurusPage() {
       )}
 
       {hasDecks && !rail && (
-        <div className="mb-8">
+        <div className="mb-5">
           <TodayCard lang={lang} totals={totals} forecast={outlook?.forecast} />
         </div>
       )}
@@ -200,7 +200,7 @@ export default function ThesaurusPage() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             transition={spring.snappy}
-            className={rail ? 'grid grid-cols-[minmax(0,1fr)_296px] items-start gap-7' : undefined}
+            className={rail ? 'grid grid-cols-[minmax(0,1fr)_296px] items-start gap-6' : undefined}
           >
             <section aria-label="My decks" className="min-w-0">
               {hasDecks &&
@@ -241,7 +241,7 @@ export default function ThesaurusPage() {
 /** My decks, before there are any: the three ways to start. */
 function NoDecks({ onBrowse, onNew, onImport }: { onBrowse: () => void; onNew: () => void; onImport: (kind: 'apkg' | 'csv') => void }) {
   return (
-    <Card className="flex flex-col items-center px-6 py-10 text-center">
+    <Card className="flex flex-col items-center px-6 py-7 text-center sm:py-8">
       <span className="mb-4 grid size-14 place-items-center rounded-2xl bg-sage-soft text-sage-text">
         <Layers size={24} aria-hidden />
       </span>

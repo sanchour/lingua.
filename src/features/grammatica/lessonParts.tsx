@@ -22,7 +22,7 @@ export function SeeIt({ topic, lang, full, onStart }: { topic: Topic; lang: stri
   return (
     <motion.main
       className={cx('mx-auto px-5', wide ? 'max-w-5xl' : 'max-w-2xl')}
-      style={{ paddingTop: 'calc(env(safe-area-inset-top) + 84px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 120px)' }}
+      style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 96px)' }}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={spring.soft}

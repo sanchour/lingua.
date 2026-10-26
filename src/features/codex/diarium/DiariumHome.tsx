@@ -98,9 +98,9 @@ export function DiariumHome() {
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 sm:space-y-8">
       {/* Today */}
-      <Card className="relative overflow-hidden p-6 sm:p-8">
+      <Card className="relative overflow-hidden p-5 sm:p-6">
         <span aria-hidden className="pointer-events-none absolute -top-6 right-5 font-serif text-[160px] leading-none text-sage/15 select-none">
           {quote(lang, '').trim().charAt(0)}
         </span>
@@ -113,7 +113,7 @@ export function DiariumHome() {
             <p lang={lang} className="mt-2 line-clamp-2 max-w-xl font-serif text-[17px] leading-relaxed text-ink-soft">
               {today.text}
             </p>
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               <Link to={`/mentis/diarium/${today.id}`} className="inline-flex h-10 items-center gap-2 rounded-xl bg-inverse px-4 text-sm font-semibold text-on-inverse shadow-elev-1">
                 <PenLine size={16} aria-hidden /> Open today’s entry
               </Link>
@@ -128,7 +128,7 @@ export function DiariumHome() {
               {prompt.text}
             </motion.p>
             {prompt.en && <p className="relative mt-2 text-[14px] text-ink-faint italic">{prompt.en}</p>}
-            <div className="relative mt-6 flex flex-wrap items-center gap-2">
+            <div className="relative mt-4 sm:mt-5 flex flex-wrap items-center gap-2">
               <Button icon={PenLine} onClick={() => void start(true)} loading={starting}>
                 {today ? 'Continue writing' : 'Write about this'}
               </Button>

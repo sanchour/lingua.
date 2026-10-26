@@ -36,7 +36,7 @@ export function DesktopShell({ children }: { children: ReactNode }) {
         style={{ marginLeft: width }}
         className="min-h-dvh"
       >
-        <div className="mx-auto w-full max-w-6xl px-10 pt-12 pb-20">{children}</div>
+        <div className="mx-auto w-full max-w-6xl px-10 pt-6 pb-8">{children}</div>
       </motion.main>
     </div>
   );

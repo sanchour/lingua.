@@ -34,7 +34,7 @@ export function CourseTab() {
   const next = nextLesson(progress, loaded.lessonsOf);
 
   return (
-    <div className="mt-8 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_330px]">
+    <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_330px]">
       <AdventurePath progress={progress} lessonsOf={loaded.lessonsOf} next={next} />
       <WhereYouAre next={next} progress={progress} loaded={loaded} />
     </div>

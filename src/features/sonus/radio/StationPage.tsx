@@ -79,7 +79,7 @@ function Station({ station, lang, favorite }: { station: RadioStation; lang: str
 
   if (wide) {
     return (
-      <div className="flex h-[calc(100dvh-8rem)] min-h-[520px] flex-col">
+      <div className="flex h-[calc(100dvh-3.5rem)] min-h-[460px] flex-col">
         <Link to="/sonus?tab=radio" className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
           <ChevronLeft size={16} aria-hidden /> Radio
         </Link>

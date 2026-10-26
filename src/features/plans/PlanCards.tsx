@@ -124,12 +124,12 @@ export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps
 
 function Column({ title, price, note, items, lifted, badge, children }: { title: ReactNode; price: string; note: string; items: string[]; lifted: boolean; badge?: string; children: ReactNode }) {
   return (
-    <section className={cx('relative flex flex-col rounded-3xl border p-5 transition-colors', lifted ? 'border-accent/45 bg-raised shadow-elev-2' : 'border-line bg-surface')}>
+    <section className={cx('relative flex flex-col rounded-3xl border p-4 sm:p-5 transition-colors', lifted ? 'border-accent/45 bg-raised shadow-elev-2' : 'border-line bg-surface')}>
       {badge && <span className="absolute -top-2.5 left-5 rounded-full bg-accent-fill px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-on-accent">{badge}</span>}
       <h3 className="font-serif text-[22px] leading-tight font-semibold">{title}</h3>
       <p className="mt-3 font-serif text-[30px] leading-none font-semibold tabular-nums">{price}</p>
       <p className="mt-1 text-[12.5px] text-ink-faint">{note}</p>
-      <ul className="mt-4 flex-1 space-y-2">
+      <ul className="mt-3.5 flex-1 space-y-1.5">
         {items.map((item) => (
           <li key={item} className="flex gap-2 text-[13.5px] leading-snug text-ink-soft">
             <Check size={15} className="mt-0.5 shrink-0 text-sage-text" aria-hidden />
@@ -137,7 +137,7 @@ function Column({ title, price, note, items, lifted, badge, children }: { title:
           </li>
         ))}
       </ul>
-      <div className="mt-5">{children}</div>
+      <div className="mt-4">{children}</div>
     </section>
   );
 }

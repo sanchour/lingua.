@@ -343,7 +343,7 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
         {lightning && endsAt ? <LightningClock endsAt={endsAt} onEnd={finish} onTick={() => feel.cue('tick')} /> : <ComboBadge combo={feel.combo} burst={feel.burst} onBurstEnd={feel.clearBurst} />}
         {!lightning && <IconButton icon={Settings2} label="Lesson settings" size="sm" onClick={onSetup} />}
       </StudyBar>
-      <main className="mx-auto flex min-h-dvh max-w-2xl flex-col px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 84px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 190px)' }}>
+      <main className="mx-auto flex min-h-dvh max-w-2xl flex-col px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 104px)' }}>
         <AnimatePresence mode="popLayout" initial={false}>
           {d && (
             <motion.section

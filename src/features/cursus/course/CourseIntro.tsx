@@ -24,7 +24,7 @@ export function CourseIntro({ part, unit, content, lang, onStart }: { part: 'wor
   return (
     <motion.main
       className="mx-auto max-w-5xl px-5"
-      style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 120px)' }}
+      style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 96px)' }}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={spring.soft}

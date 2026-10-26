@@ -139,7 +139,7 @@ export function SpeakLesson({ unit, content, lang, onClose, onActive, onFinish }
   return (
     <>
       <StudyBar title={`${unit.short} · Speak`} progress={Math.min(1, index / (phrases.length + 1))} onClose={onClose} />
-      <main className="mx-auto max-w-2xl px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 84px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 140px)' }}>
+      <main className="mx-auto max-w-2xl px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 104px)' }}>
         <AnimatePresence mode="wait">
           {open ? (
             <OpenTurn key="open" unit={unit} lang={lang} canListen={canListen} onDone={finish} />

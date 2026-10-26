@@ -76,11 +76,11 @@ export function HomeToday() {
         }
       />
       {/* A square grid: every row's cards share one height, and whatever is shorter stretches inside its card. */}
-      <div className="grid grid-cols-12 gap-5">
+      <div className="grid grid-cols-12 gap-4 sm:gap-5">
         <motion.div {...enter(0)} className="col-span-12 min-w-0 lg:col-span-8">
           <TodayCard lang={language.id} level={language.level} goal={goal} enjoys={settings.learner.enjoys} />
         </motion.div>
-        <div className="col-span-12 flex min-w-0 flex-col gap-5 lg:col-span-4">
+        <div className="col-span-12 flex min-w-0 flex-col gap-4 sm:gap-5 lg:col-span-4">
           <motion.div {...enter(1)}>
             <Link to="/ratio" aria-label="This week, in Ratio" className="block rounded-3xl transition-transform hover:-translate-y-0.5">
               <WeekCard facts={facts} goal={goal} />
@@ -168,7 +168,7 @@ function TodayCard({ lang, level, goal, enjoys }: { lang: string; level: Paramet
   const parts = ROOMS.map((r) => ({ ...r, minutes: (today?.[r.key] ?? 0) / 60_000 })).filter((r) => r.minutes >= 0.5);
 
   return (
-    <Card className="flex h-full flex-col p-6 sm:p-7">
+    <Card className="flex h-full flex-col p-5 sm:p-6">
       <div className="flex items-baseline justify-between gap-4">
         <p className={label}>Today</p>
         <p className="text-[13.5px] font-semibold text-ink-soft">{minutes === 0 ? 'A fresh page.' : left === 0 ? 'Goal reached. Lovely.' : `${left} ${left === 1 ? 'minute' : 'minutes'} to go`}</p>
@@ -204,12 +204,12 @@ function TodayCard({ lang, level, goal, enjoys }: { lang: string; level: Paramet
         {today?.reviews ? <span>{today.reviews} {today.reviews === 1 ? 'card' : 'cards'} reviewed</span> : null}
       </p>
 
-      <div className="mt-6 flex-1 border-t border-line pt-4">
+      <div className="mt-4 flex-1 border-t border-line pt-3">
         <p className={cx(label, 'mb-1')}>Next up</p>
         <ul className="-mx-2">
           {(steps ?? []).map((s) => (
             <li key={s.key}>
-              <Link to={s.to} className="group flex items-center gap-3.5 rounded-2xl px-2 py-2 transition-colors hover:bg-surface">
+              <Link to={s.to} className="group flex items-center gap-3.5 rounded-2xl px-2 py-1.5 transition-colors hover:bg-surface">
                 {s.art ?? (
                   <span className={cx('grid size-9 shrink-0 place-items-center rounded-xl', TONE[s.tone])}>
                     <s.icon size={18} aria-hidden />

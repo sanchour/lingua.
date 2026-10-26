@@ -309,7 +309,7 @@ function ContinueCard({ text, progress }: { text: Text; progress: ReadingProgres
 
 function EmptyLibrary({ lang, busy, onSample }: { lang: string; busy: boolean; onSample: () => void }) {
   return (
-    <Card className="flex flex-col items-center px-6 py-12 text-center">
+    <Card className="flex flex-col items-center px-6 py-8 text-center sm:py-10">
       <div className="mb-5 grid size-16 place-items-center rounded-2xl bg-sage-soft text-sage-text">
         <BookOpenText size={28} aria-hidden />
       </div>

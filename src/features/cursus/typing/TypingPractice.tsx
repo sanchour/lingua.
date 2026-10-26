@@ -144,7 +144,7 @@ export function TypingPractice({ lang, data, saved }: { lang: string; data: Typi
 
   return (
     <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_280px]">
-      <div className="min-w-0 space-y-5">
+      <div className="min-w-0 space-y-4">
         <LetterStrip data={data} row={row} focus={focus} />
         {zh && (
           <Segmented
@@ -181,7 +181,7 @@ export function TypingPractice({ lang, data, saved }: { lang: string; data: Typi
           <CharacterPractice data={data} lang={lang} />
         ) : (
           <>
-            <Card className="px-6 py-7">
+            <Card className="px-6 py-5 sm:py-6">
               <motion.p
                 key={miss}
                 lang={lang}
@@ -222,7 +222,7 @@ export function TypingPractice({ lang, data, saved }: { lang: string; data: Typi
                   });
                 })()}
               </motion.p>
-              <p className="mt-6 text-[13px] text-ink-faint">
+              <p className="mt-4 text-[13px] text-ink-faint">
                 {expected === ' ' ? 'Space' : `Next: ${expected}`}
                 {nextKey && !row.ownLayout ? ` · ${fingerFor(nextKey.code)} finger${nextKey.shift ? ', with shift' : ''}${keys.length > 1 && !r.dead ? ' (two keys: the accent first)' : ''}` : ''}
                 {last ? ` · last line ${last.wpm} wpm, ${last.acc}% right` : ' · just start typing'}

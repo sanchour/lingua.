@@ -151,7 +151,7 @@ export default function ColloquiumPage() {
       </p>
 
       {about && (
-        <Card className="mt-8 flex items-center gap-3 p-4 sm:p-5">
+        <Card className="mt-5 flex items-center gap-3 p-4 sm:p-5">
           <MessageCircle size={20} className="shrink-0 text-accent-text" aria-hidden />
           <span className="min-w-0 flex-1">
             <span className="block text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase">Talking about</span>
@@ -163,7 +163,7 @@ export default function ColloquiumPage() {
         </Card>
       )}
 
-      <h2 className={cx(label, 'mt-8 mb-3', about && 'hidden')}>The scene</h2>
+      <h2 className={cx(label, 'mt-5 sm:mt-6 mb-2.5', about && 'hidden')}>The scene</h2>
       <ul hidden={Boolean(about)} className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         {SCENES.map((id) => {
           const info = SCENE_INFO[id];
@@ -187,7 +187,7 @@ export default function ColloquiumPage() {
         })}
       </ul>
 
-      <h2 className={cx(label, 'mt-8 mb-3')}>How it goes</h2>
+      <h2 className={cx(label, 'mt-5 sm:mt-6 mb-2.5')}>How it goes</h2>
       <div className="flex flex-wrap items-center gap-2">
         <Segmented<'voice' | 'text'>
           label="Voice or text"
@@ -204,7 +204,7 @@ export default function ColloquiumPage() {
         {grammar && toggle(useTopic, setUseTopic, `Practise ${grammar.topic.title}`)}
       </div>
 
-      <Card className="mt-6 p-4 sm:p-5">
+      <Card className="mt-4 sm:mt-5 p-4 sm:p-5">
         <div className="flex items-center gap-2">
           <h2 className={cx(label, 'flex-1')}>The prompt{promptInLanguage(lang) ? ` · in ${name}` : ''}</h2>
           <Button variant="ghost" size="sm" icon={copied ? Check : Copy} onClick={() => void copy()}>
@@ -216,7 +216,7 @@ export default function ColloquiumPage() {
         </p>
       </Card>
 
-      <h2 className={cx(label, 'mt-8 mb-3')}>Open it in</h2>
+      <h2 className={cx(label, 'mt-5 sm:mt-6 mb-2.5')}>Open it in</h2>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {AIS.map((ai) => (
           <button
@@ -234,7 +234,7 @@ export default function ColloquiumPage() {
         {mode === 'voice' ? ', then switch to voice there' : ''}. Nothing is sent from Lingua.
       </p>
 
-      <section aria-label="Chat here" className="mt-10 pb-10">
+      <section aria-label="Chat here" className="mt-6 pb-6">
         <h2 className={cx(label, 'mb-3')}>Chat here</h2>
         {hasKey ? (
           <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:p-5">

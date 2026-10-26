@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { fade, spring } from '@/design/motion';
+import { cx } from '@/lib/cx';
 import { trapTab, useOverlay } from './overlay';
 import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 
@@ -12,6 +13,7 @@ export interface DialogProps {
   title: string;
   children?: ReactNode;
   actions?: ReactNode;
+  maxWidth?: string;
 }
 
 /** Centered modal for short decisions (confirmations, choices). */
@@ -20,7 +22,7 @@ export function Dialog(props: DialogProps) {
   return createPortal(<AnimatePresence>{props.open && <DialogPanel {...props} />}</AnimatePresence>, portalRoot);
 }
 
-function DialogPanel({ onClose, title, children, actions }: DialogProps) {
+function DialogPanel({ onClose, title, children, actions, maxWidth = 'max-w-md' }: DialogProps) {
   const ref = useRef<HTMLDivElement>(null);
   const titleId = useId();
   useOverlay(ref, onClose);
@@ -42,7 +44,7 @@ function DialogPanel({ onClose, title, children, actions }: DialogProps) {
         aria-labelledby={titleId}
         tabIndex={-1}
         onKeyDown={trapTab}
-        className="relative w-full max-w-md rounded-3xl border border-line bg-raised p-6 shadow-elev-3 outline-none"
+        className={cx('relative w-full rounded-3xl border border-line bg-raised p-6 shadow-elev-3 outline-none', maxWidth)}
         initial={{ opacity: 0, scale: 0.95, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.12 } }}

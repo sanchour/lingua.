@@ -95,7 +95,7 @@ function Tabs({ tab }: { tab: Tab }) {
   const navigate = useNavigate();
   const { layout } = useLayout();
   return (
-    <div className="-mt-2 mb-8">
+    <div className="-mt-1 mb-5">
       <Segmented<Tab>
         block={layout !== 'wide'}
         label="Mundus"
@@ -113,7 +113,7 @@ function GuideTab({ guide, level, lookups, onOpen }: { guide: Guide; level: Para
   return (
     // In Mentis the room's rail takes the right; the week and things to try follow below.
     <div className={cx('grid gap-12', !inRoom && 'xl:grid-cols-[minmax(0,1fr)_340px] xl:gap-10')}>
-      <div className="min-w-0 space-y-12">
+      <div className="min-w-0 space-y-8">
         <Hero guide={guide} level={level} />
         <section aria-labelledby="next-title">
           <h2 id="next-title" className="mb-4 font-serif text-[24px] leading-tight font-semibold">
@@ -178,7 +178,7 @@ function Hero({ guide, level }: { guide: Guide; level: Parameters<typeof stageIn
     <motion.section
       {...rise(0)}
       aria-label="Your week"
-      className="relative overflow-hidden rounded-[28px] border border-line/60 p-5 sm:p-8"
+      className="relative overflow-hidden rounded-[28px] border border-line/60 p-5 sm:p-6"
       style={{ background: `radial-gradient(120% 90% at 0% 0%, color-mix(in oklab, ${MUNDUS} 22%, transparent), transparent 60%), radial-gradient(90% 80% at 100% 100%, color-mix(in oklab, #d49b54 16%, transparent), transparent 65%), var(--color-surface)` }}
     >
       <Contours />
@@ -188,7 +188,7 @@ function Hero({ guide, level }: { guide: Guide; level: Parameters<typeof stageIn
             Mundus says
           </p>
           <p className="mt-2 font-serif text-[21px] leading-snug font-semibold text-ink sm:text-[25px]">{guide.note}</p>
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap gap-2">
             <Chip>
               {stage.name} · {level === 'A0' ? 'beginner' : level}
             </Chip>

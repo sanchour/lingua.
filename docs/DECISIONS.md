@@ -1551,3 +1551,13 @@ Short records of choices that are not obvious from the code. Newest last.
   for these items are blank, so they have no cover.
 - **Sonus+ settings are only real ones.** The plan's list had settings with nothing behind them
   yet; the gear holds only what changes something in the room today.
+
+
+## 2026-10-26 — Desktop screen single-page sweep (no tiny scroll)
+
+- **Root causes of tiny scroll eliminated:**
+  - `DesktopShell` padding reduced from `pt-12 pb-20` (128px vertical padding) to `pt-6 pb-8` (56px). On desktop there is no mobile tab bar, so 80px bottom padding pushed moderate-height screens just over 100vh.
+  - `PageHeader` & `RoomTabs`: Bottom margins reduced from `mb-9` to `mb-5`.
+  - Exercise & Lesson views (`GrammarLesson`, `LettersLesson`, `Ludus`, `SpeakLesson`): Hardcoded `paddingBottom` reduced from 140–190px (mobile insets) to 96–104px (desktop horizontal bar).
+  - Dialogs & Sheets (`ShortcutsDialog`, `PlansSheet`, `PlanCards`): Added responsive max-height and tightened padding so modal dialogues fit without vertical scroll on standard 1366×768 laptop displays.
+  - Sonus / Radio / Visio player views: Recalculated fixed viewport heights (`100dvh-3.5rem` min 460px) and tightened dropzones, empty states, and section gaps across Codex, Colloquium, Diarium, and Mundus.

@@ -477,7 +477,7 @@ function AddFiles({ lang, className }: { lang: string; className?: string }) {
 /** Nothing yet: one calm card with the two ways in, and what each brings. */
 function EmptyLibrary({ lang, onDiscover }: { lang: string; onDiscover: () => void }) {
   return (
-    <Card className="flex flex-col items-center px-6 py-14 text-center">
+    <Card className="flex flex-col items-center px-6 py-8 text-center sm:py-10">
       <div className="mb-5 flex gap-2">
         <span className="grid size-14 place-items-center rounded-2xl bg-sage-soft text-sage-text">
           <Headphones size={26} aria-hidden />
@@ -504,7 +504,7 @@ function EmptyLibrary({ lang, onDiscover }: { lang: string; onDiscover: () => vo
 /** Watch, with nothing to watch yet. */
 function EmptyWatch({ lang }: { lang: string }) {
   return (
-    <Card className="flex flex-col items-center px-6 py-12 text-center">
+    <Card className="flex flex-col items-center px-6 py-8 text-center sm:py-10">
       <div className="mb-5 grid size-14 place-items-center rounded-2xl bg-accent-soft text-accent-text">
         <Clapperboard size={26} aria-hidden />
       </div>

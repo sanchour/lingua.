@@ -209,8 +209,8 @@ export function LettersLesson({ script, title, drills, random, practice, onFinis
       <main
         className="mx-auto flex min-h-dvh max-w-2xl flex-col px-5"
         style={{
-          paddingTop: 'calc(env(safe-area-inset-top) + 84px)',
-          paddingBottom: 'calc(env(safe-area-inset-bottom) + 190px)',
+          paddingTop: 'calc(env(safe-area-inset-top) + 72px)',
+          paddingBottom: 'calc(env(safe-area-inset-bottom) + 104px)',
         }}
       >
         <AnimatePresence mode="popLayout" initial={false}>

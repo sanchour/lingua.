@@ -216,7 +216,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
         <IconButton icon={Pencil} label="Edit card" shortcut="E" size="sm" disabled={!note} onClick={() => card && note && setEditor({ mode: 'edit', note, cards: [card] })} />
       </StudyBar>
 
-      <main className="mx-auto flex min-h-dvh w-full flex-col px-4 sm:px-6" style={{ maxWidth: Math.max(768, width + 48), paddingTop: 'calc(env(safe-area-inset-top) + 76px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)' }}>
+      <main className="mx-auto flex min-h-dvh w-full flex-col px-4 sm:px-6" style={{ maxWidth: Math.max(768, width + 48), paddingTop: 'calc(env(safe-area-inset-top) + 64px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)' }}>
         <p className="mb-4 flex justify-center gap-3 text-[13px] font-bold tabular-nums" aria-label={`${counts.new} new, ${counts.learning} learning, ${counts.review} to review`}>
           <span className="text-sage-text">{counts.new}</span>
           <span className="text-accent-text">{counts.learning}</span>
@@ -242,7 +242,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
           </AnimatePresence>
         </div>
 
-        <div className="mx-auto mt-6 w-full" style={{ maxWidth: Math.min(width, 576) }}>
+        <div className="mx-auto mt-4 w-full sm:mt-5" style={{ maxWidth: Math.min(width, 576) }}>
           {flipped && (intervals || practice) ? (
             <motion.div className="grid grid-cols-4 gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>
               {GRADES.map((g) => (

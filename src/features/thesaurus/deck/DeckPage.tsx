@@ -127,13 +127,13 @@ export default function DeckPage() {
         }
       />
 
-      <div className="-mt-4 mb-6 flex items-center gap-3">
+      <div className="mb-5 flex items-center gap-3">
         <DeckGlyph deck={deck} />
         <p className="text-[15px] text-ink-soft">{deck.description ?? `${notes.length.toLocaleString()} ${notes.length === 1 ? 'word' : 'words'}`}</p>
       </div>
 
       {notes.length > 0 && (
-        <div className="mb-6 flex flex-wrap gap-2">
+        <div className="mb-5 flex flex-wrap gap-2">
           <Link
             to={`/thesaurus/study/${deck.id}?mode=recall`}
             className={cx(buttonClasses('primary', 'lg'), !due && 'pointer-events-none opacity-45')}
