@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>The Lingua Handbook</title>
+<meta name="description" content="A small handbook for designing each page of Lingua. Lingua 6 · Design.">
+<!--
+  The Lingua Handbook. Source of docs/handbook/Lingua-Design-Handbook.pdf.
+  Print it with `node scripts/handbook-pdf.ts` (from the repository's root, after `npm install`, so the fonts are there).
+  Every <section class="page"> is one A5 page; the script at the bottom numbers them, sets the running heads,
+  fills the contents' page numbers and marks a page that overflows. Keep each page to what fits.
+  In the text column: prose. In <aside> (the outer margin): the exact things. Write it the way the docs are written.
+-->
+<style>
+@font-face { font-family: 'Literata'; font-style: normal; font-weight: 200 900; src: url('../../node_modules/@fontsource-variable/literata/files/literata-latin-opsz-normal.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Literata'; font-style: normal; font-weight: 200 900; src: url('../../node_modules/@fontsource-variable/literata/files/literata-latin-ext-opsz-normal.woff2') format('woff2'); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Literata'; font-style: normal; font-weight: 200 900; src: url('../../node_modules/@fontsource-variable/literata/files/literata-cyrillic-opsz-normal.woff2') format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: 'Literata'; font-style: italic; font-weight: 200 900; src: url('../../node_modules/@fontsource-variable/literata/files/literata-latin-opsz-italic.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Literata'; font-style: italic; font-weight: 200 900; src: url('../../node_modules/@fontsource-variable/literata/files/literata-latin-ext-opsz-italic.woff2') format('woff2'); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Jakarta'; font-style: normal; font-weight: 200 800; src: url('../../node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Jakarta'; font-style: normal; font-weight: 200 800; src: url('../../node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-wght-normal.woff2') format('woff2'); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+@page { size: 148mm 210mm; margin: 0; }
+:root {
+  --paper: #faf6f0; --surface: #efe7d9; --raised: #fffbf4; --sunken: #e8dfcf;
+  --ink: #262220; --soft: #5e554e; --faint: #776c63; --line: #e1d6c4; --line2: #cec0a9;
+  --accent: #c86d51; --accent-t: #a5533b; --sage: #6b8e78; --sage-t: #4f6f5b;
+  --serif: 'Literata', 'Noto Serif', Georgia, serif;
+  --sans: 'Jakarta', 'Segoe UI', system-ui, sans-serif;
+  --note: 30mm; --gap: 5mm;
+}
+* { box-sizing: border-box; }
+html { background: #ddd5c8; }
+body { margin: 0; font-family: var(--serif); font-size: 9.3pt; line-height: 13.4pt; color: var(--ink); font-optical-sizing: auto;
+  font-variant-numeric: oldstyle-nums proportional-nums; hyphens: auto; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+@media screen { .page { margin: 10mm auto; box-shadow: 0 2px 10px rgb(38 34 32 / .18); } }
+
+.page { width: 148mm; height: 210mm; position: relative; overflow: hidden; background: var(--paper); break-after: page; padding: 17mm 12mm 19mm 16mm; }
+.page.verso { padding: 17mm 16mm 19mm 12mm; }
+.page:last-child { break-after: auto; }
+.rh { position: absolute; top: 8.6mm; font: 600 5.9pt/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--faint); }
+.recto .rh { right: 12mm; } .verso .rh { left: 12mm; }
+.folio { position: absolute; bottom: 9mm; left: 0; right: 0; text-align: center; font-style: italic; font-size: 8.4pt; color: var(--faint); }
+.bare .rh, .bare .folio { display: none; }
+
+/* The text column, and the outer margin for the fine print. */
+.recto .sheet > :not(.row):not(.wide) { margin-right: calc(var(--note) + var(--gap)); }
+.verso .sheet > :not(.row):not(.wide) { margin-left: calc(var(--note) + var(--gap)); }
+.row { display: grid; column-gap: var(--gap); align-items: start; }
+.recto .row { grid-template-columns: 1fr var(--note); grid-template-areas: 't n'; }
+.verso .row { grid-template-columns: var(--note) 1fr; grid-template-areas: 'n t'; }
+.row > :first-child { grid-area: t; } .row > aside { grid-area: n; }
+aside { font: 400 6.5pt/9pt var(--sans); color: var(--soft); padding-top: 1.2pt; font-variant-numeric: lining-nums tabular-nums; }
+aside b { font-weight: 700; color: var(--ink); }
+aside .k { display: block; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 5.4pt; color: var(--accent-t); margin-bottom: 1pt; }
+aside p + p { margin-top: 3pt; }
+aside svg { display: block; }
+code { font-family: Consolas, 'Cascadia Mono', monospace; font-size: .92em; color: var(--ink); }
+aside code { font-size: 6.1pt; }
+
+p { margin: 0 0 5.2pt; }
+p.lead { font-size: 10.4pt; line-height: 15pt; color: var(--ink); }
+p.first::first-letter { float: left; font-size: 30pt; line-height: 25pt; padding: 2.4pt 3pt 0 0; color: var(--accent-t); font-weight: 500; }
+em, i { font-style: italic; }
+b, strong { font-weight: 640; }
+.sc { font: 650 6.2pt/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+.muted { color: var(--soft); }
+.small { font-size: 8.3pt; line-height: 11.8pt; }
+.center { text-align: center; }
+.acc { color: var(--accent-t); }
+.lingua { font-style: italic; }
+s, .gone { text-decoration: line-through; text-decoration-color: var(--accent); text-decoration-thickness: .8pt; color: var(--faint); }
+
+h1, h2, h3 { font-weight: 600; margin: 0; letter-spacing: -.005em; }
+.kicker { display: block; font: 650 6.2pt/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--accent-t); margin-bottom: 4.5pt; }
+h2 { font-size: 19pt; line-height: 22pt; margin-bottom: 3pt; }
+.role { font-style: italic; color: var(--soft); font-size: 10pt; margin-bottom: 7pt; }
+.rule { width: 16mm; height: 0; border-top: .7pt solid var(--accent); margin: 6pt 0 9pt; }
+h3 { font-size: 10.2pt; line-height: 13pt; margin: 9pt 0 3pt; }
+h3 .num { color: var(--accent-t); font-weight: 500; margin-right: 3pt; }
+.lede-sc { font-variant: small-caps; letter-spacing: .03em; font-weight: 600; }
+
+ul.plain { list-style: none; margin: 0 0 6pt; padding: 0; }
+ul.plain li { padding-left: 9pt; position: relative; margin-bottom: 2.6pt; }
+ul.plain li::before { content: ''; position: absolute; left: 1.5pt; top: 5.6pt; width: 2.6pt; height: 2.6pt; border-radius: 50%; background: var(--accent); }
+
+table { border-collapse: collapse; width: 100%; font-size: 8.2pt; line-height: 11pt; margin: 2pt 0 7pt; }
+th { font: 650 5.8pt/1.2 var(--sans); letter-spacing: .13em; text-transform: uppercase; color: var(--faint); text-align: left; padding: 3pt 4pt 3pt 0; border-bottom: .6pt solid var(--line2); }
+td { padding: 3.2pt 6pt 3.2pt 0; border-bottom: .4pt solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: .6pt solid var(--line2); }
+td.k { font-style: italic; color: var(--soft); white-space: nowrap; }
+table.spec td, table.spec th { font-variant-numeric: lining-nums tabular-nums; }
+table.spec td { font-size: 7.4pt; line-height: 10pt; padding-top: 2.4pt; padding-bottom: 2.4pt; }
+.sw { display: inline-block; width: 7pt; height: 7pt; border-radius: 1.5pt; vertical-align: -1pt; margin-right: 3pt; border: .4pt solid rgb(38 34 32 / .18); }
+
+/* Room chapters: three lines, like an index card. */
+.card3 { border-top: .7pt solid var(--line2); border-bottom: .7pt solid var(--line2); margin: 4pt 0 8pt; }
+.card3 > div { display: grid; grid-template-columns: 21mm 1fr; gap: 3mm; padding: 4pt 0; border-bottom: .4pt dashed var(--line2); }
+.card3 > div:last-child { border-bottom: 0; }
+.card3 .l { font: 650 5.8pt/12pt var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+ol.ask { margin: 0; padding: 0; list-style: none; counter-reset: q; }
+ol.ask li { counter-increment: q; position: relative; padding-left: 11pt; margin-bottom: 3.4pt; font-style: italic; }
+ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style: normal; font-weight: 600; color: var(--accent-t); }
+
+/* Drawings: one fine line, one terracotta detail. */
+.ln { fill: none; stroke: var(--soft); stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
+.ln .a, .ln.a { stroke: var(--accent); }
+.ln .s, .ln.s { stroke: var(--sage); }
+.ln .f { fill: var(--paper); }
+.ln .fa { fill: var(--accent); stroke: none; }
+.draw { display: block; margin: 0 auto; }
+
+.pencil { font-style: italic; color: var(--accent-t); font-size: 8.4pt; }
+.ck { padding-left: 11.7pt; text-indent: -11.7pt; }
+.box { display: inline-block; width: 7.2pt; height: 7.2pt; border: .75pt solid var(--soft); border-radius: 1.2pt; vertical-align: -1pt; margin-right: 4.5pt; }
+.fleuron { text-align: center; margin: 8pt 0; }
+.fleuron svg { display: inline-block; }
+
+/* Contents */
+.toc { list-style: none; margin: 0; padding: 0; font-size: 9pt; line-height: 13.2pt; }
+.toc li { display: flex; align-items: baseline; gap: 3pt; }
+.toc li .dots { flex: 1; border-bottom: .7pt dotted var(--line2); transform: translateY(-2.4pt); }
+.toc li a { color: var(--ink); text-decoration: none; }
+.toc li .pn { color: var(--soft); font-style: italic; min-width: 9pt; text-align: right; }
+.toc .part { font: 650 6pt/1 var(--sans); letter-spacing: .15em; text-transform: uppercase; color: var(--accent-t); margin: 9pt 0 3pt; display: block; }
+.toc .n { color: var(--faint); width: 12pt; display: inline-block; font-variant-numeric: lining-nums; }
+
+/* Part openers */
+.opener { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.opener .sc { margin-bottom: 8pt; color: var(--accent-t); }
+.opener h1 { font-size: 30pt; line-height: 34pt; font-weight: 500; letter-spacing: -.01em; }
+.opener p { font-style: italic; color: var(--soft); margin-top: 8pt; max-width: 80mm; }
+
+/* Paint chips */
+.chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3.2mm; margin: 4pt 0 9pt; }
+.chip { background: #fffdf9; border: .5pt solid var(--line2); border-radius: 1.6mm; padding: 1.3mm 1.3mm 1.6mm; box-shadow: 0 .6pt 1.4pt rgb(38 34 32 / .08); }
+.chip i { display: block; height: 13mm; border-radius: 1mm; border: .4pt solid rgb(38 34 32 / .12); }
+.chip b { display: block; font: 650 6pt/1.25 var(--sans); margin-top: 1.4mm; color: var(--ink); }
+.chip span { display: block; font: 400 5.6pt/1.25 var(--sans); color: var(--faint); font-variant-numeric: lining-nums; }
+.chips .chip:nth-child(odd) { transform: rotate(-.6deg); } .chips .chip:nth-child(3n) { transform: rotate(.7deg); }
+.dots6 { display: flex; gap: 2.4mm; margin: 2pt 0 2pt; }
+.dots6 div { text-align: center; font: 500 5.6pt/1.2 var(--sans); color: var(--soft); width: 13mm; }
+.dots6 i { display: block; width: 9mm; height: 9mm; border-radius: 50%; margin: 0 auto 1.2mm; border: .5pt solid rgb(38 34 32 / .15); position: relative; }
+.dots6 i::after { content: ''; position: absolute; width: 3mm; height: 3mm; border-radius: 50%; right: .6mm; bottom: .6mm; background: var(--c); }
+
+/* Notes pages */
+.lined { position: absolute; left: 16mm; right: 16mm; top: 30mm; bottom: 24mm; }
+.ruled > i { display: block; height: var(--h, 7mm); border-bottom: .45pt solid var(--line2); }
+.lined.margin::before { content: ''; position: absolute; top: 0; bottom: 0; left: 9mm; border-left: .5pt solid rgb(200 109 81 / .35); }
+
+/* Cover */
+.cover { padding: 0; }
+.cover .ribbon { position: absolute; top: 0; right: 24mm; width: 6.5mm; height: 70mm; background: var(--accent); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 91%, 0 100%); }
+.cover .inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 20mm; }
+.cover h1 { font-size: 42pt; line-height: 46pt; font-weight: 500; letter-spacing: -.02em; margin-top: 10mm; }
+.cover .sub { font-style: italic; font-size: 11.5pt; color: var(--soft); margin-top: 4pt; }
+.cover .ed { position: absolute; bottom: 16mm; left: 0; right: 0; text-align: center; }
+.frame { position: absolute; inset: 7mm; border: .6pt solid var(--line2); border-radius: 2mm; pointer-events: none; }
+.frame::after { content: ''; position: absolute; inset: 1.4mm; border: .4pt solid var(--line); border-radius: 1.4mm; }
+
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 1.4mm 1mm; margin: 4pt 0 8pt; font: 600 6.4pt/1 var(--sans); }
+.flow span.st { padding: 2.4pt 4.4pt; border: .6pt solid var(--line2); border-radius: 99pt; background: var(--raised); color: var(--ink); }
+.flow span.st.on { border-color: var(--accent); }
+.flow span.st.gone { background: transparent; border-style: dashed; }
+.flow .to { color: var(--line2); }
+.sig { margin-top: 10pt; font-style: italic; color: var(--soft); }
+[data-overflow] { outline: 2px solid red; }
+</style>
+</head>
+<body>
+
+<!-- Drawings, used by reference. Stroke 1.15 at this size is the app's 1.3. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="d-book" viewBox="0 0 240 130"><g class="ln"><path d="M120 30C96 16 58 14 22 22V114C58 106 96 108 120 122C144 108 182 106 218 114V22C182 14 144 16 120 30Z"/><path d="M120 30V122"/><g opacity=".55"><path d="M38 38C60 34 84 35 104 42M136 42C156 35 180 34 202 38M38 50C60 46 84 47 104 53.8M136 53.8C156 47 180 46 202 50M38 62C60 58 84 59 104 65.6M136 65.6C156 59 180 58 202 62M38 74C60 70 84 71 104 77.4M136 77.4C156 71 180 70 202 74M38 86C60 82 84 83 104 89.2M136 89.2C156 83 180 82 202 86"/></g><path class="a" d="M170 4V40L178 34L186 40V6"/></g></symbol>
+    <symbol id="d-cup" viewBox="0 0 80 70"><g class="ln"><path d="M8 59Q40 67 72 59"/><path d="M18 30H58V40Q58 56 38 56Q18 56 18 40Z"/><path d="M58 33Q69 33 68 41Q67 48 57 47"/><path class="a" d="M31 23q-4-5 0-9t0-9M42 23q-4-5 0-9t0-9"/></g></symbol>
+    <symbol id="d-pencil" viewBox="0 0 100 30"><g class="ln"><path d="M14 21L72 7L76 15L18 29Z"/><path d="M72 7L88 9L76 15"/><path class="a" d="M14 21L7 23L10 30L18 29"/><path d="M20 22L74 9" opacity=".5"/></g></symbol>
+    <symbol id="d-sprig" viewBox="0 0 64 22"><g class="ln s"><path d="M4 18Q30 13 60 5"/><path d="M17 16q-1-8 7-9q0 7-7 9M30 13q1-8 9-8q-2 7-9 8M43 10q3-7 10-5q-4 6-10 5M24 15q4 6 11 4q-4-6-11-4M38 12q4 5 11 3q-4-5-11-3"/></g></symbol>
+    <symbol id="d-snail" viewBox="0 0 100 52"><g class="ln"><path d="M6 46H74Q83 46 85 38V33"/><circle class="f" cx="44" cy="30" r="15"/><path class="a" d="M44 30m-3 0a3 3 0 1 1 6 0a6 6 0 1 1-12 0a9 9 0 1 1 18 0a12 12 0 1 1-24 0"/><path d="M85 34L87 23M86 35L94 26"/><circle cx="87" cy="22" r="1.3"/><circle cx="95" cy="25" r="1.3"/></g></symbol>
+    <symbol id="d-ink" viewBox="0 0 70 70"><g class="ln"><path d="M18 34H50V58Q50 63 45 63H23Q18 63 18 58Z"/><path d="M25 34V28H43V34"/><path class="a" d="M42 30L62 5Q67 10 61 17Q55 24 42 30"/><path class="a" d="M42 30L59 10" opacity=".6"/><path d="M24 44H44" opacity=".4"/></g></symbol>
+    <symbol id="d-window" viewBox="0 0 120 80"><g class="ln"><rect x="4" y="4" width="112" height="72" rx="6"/><path d="M30 4V76"/><path d="M10 14H24M10 22H22M10 30H24" opacity=".5"/><path d="M40 16H74"/><path d="M40 22H66" opacity=".5"/><rect class="a" x="86" y="13" width="22" height="8" rx="4"/><path d="M40 36H106M40 44H100M40 52H104M40 60H88" opacity=".45"/></g></symbol>
+    <symbol id="d-tick" viewBox="0 0 60 60"><g class="ln"><rect x="12" y="14" width="34" height="34" rx="6"/><path class="a" d="M20 31l7 7 18-21"/></g></symbol>
+    <symbol id="r-home" viewBox="0 0 48 48"><g class="ln"><path d="M7 22L24 9L41 22V40H7Z"/><path d="M20 40V30H28V40"/><path d="M32 14V8H36V17"/><path class="a" d="M34 6q-3-2 0-4.5"/></g></symbol>
+    <symbol id="r-cursus" viewBox="0 0 48 48"><g class="ln"><path d="M3 18L24 9L45 18L24 27Z"/><path d="M12 22V31Q24 37 36 31V22"/><path class="a" d="M43 19V29M41 33L43 28L45 33Z"/></g></symbol>
+    <symbol id="r-codex" viewBox="0 0 48 48"><g class="ln"><path d="M24 15Q16 9 5 11V37Q16 35 24 40Q32 35 43 37V11Q32 9 24 15Z"/><path d="M24 15V40"/><path class="a" d="M33 9V21L35.5 19L38 21V9.5"/></g></symbol>
+    <symbol id="r-thes" viewBox="0 0 72 68"><g class="ln"><rect x="22" y="10" width="36" height="48" rx="5" transform="rotate(10 40 34)" opacity=".45"/><rect x="18" y="10" width="36" height="48" rx="5" transform="rotate(-4 36 34)"/><path d="M26 30H46M28 38H44" opacity=".55" transform="rotate(-4 36 34)"/><path class="a" d="M30 22l3 3 6-6" transform="rotate(-4 36 34)"/></g></symbol>
+    <symbol id="r-sonus" viewBox="0 0 72 68"><g class="ln"><rect x="30" y="14" width="34" height="26" rx="3" opacity=".6"/><path d="M43 22v10l8-5z" opacity=".6"/><path d="M10 48V40C10 28 18 20 28 20S46 28 46 40V48"/><rect x="7" y="44" width="9" height="14" rx="3"/><rect x="40" y="44" width="9" height="14" rx="3"/><path class="a" d="M54 50c3-2 3-6 0-8M58 53c6-4 6-12 0-16"/></g></symbol>
+    <symbol id="r-mentis" viewBox="0 0 48 48"><g class="ln"><path d="M13 42H35"/><path d="M24 42V27"/><path d="M14 27L18 11H30L34 27Z"/><path class="a" d="M19 31l-3 4M29 31l3 4M24 32v4"/></g></symbol>
+    <symbol id="r-ratio" viewBox="0 0 48 48"><g class="ln"><path d="M6 41H42"/><path d="M11 41V29M19 41V21M27 41V25"/><path class="a" d="M35 41V12"/></g></symbol>
+    <symbol id="r-settings" viewBox="0 0 48 48"><g class="ln"><path d="M7 14H41M7 24H41M7 34H41"/><circle class="f" cx="16" cy="14" r="3.4"/><circle class="f a" cx="31" cy="24" r="3.4"/><circle class="f" cx="22" cy="34" r="3.4"/></g></symbol>
+    <symbol id="d-stairs" viewBox="0 0 160 70"><g class="ln"><path d="M4 64H24V56H44V48H64V40H84V32H104V24H124V16H144" /><path d="M4 64H150" opacity=".35"/><g class="a"><rect x="66" y="2" width="56" height="20" rx="4" class="f"/><path d="M92 22l3 4 3-4"/><path d="M73 9H108M73 15H98" opacity=".7"/></g></g></symbol>
+    <symbol id="d-cover" viewBox="0 0 60 70"><g class="ln"><rect x="8" y="6" width="44" height="58" rx="3"/><path d="M14 6V64" opacity=".45"/><path class="a" d="M40 6V22L43 19.5L46 22V6"/><path d="M20 36H44M20 42H38" opacity=".6"/></g></symbol>
+  </defs>
+</svg>
+
+<!-- 1 · Cover -->
+<section class="page cover bare">
+  <div class="frame"></div>
+  <div class="ribbon"></div>
+  <div class="inner">
+    <svg class="draw" width="62mm" height="34mm"><use href="#d-book"/></svg>
+    <h1>The Lingua Handbook</h1>
+    <p class="sub">A small book for designing each page</p>
+    <div class="rule" style="margin:12pt auto 0"></div>
+  </div>
+  <div class="ed"><span class="sc">Lingua 6 · Design</span><p class="small muted" style="margin-top:5pt;font-style:italic">First edition, October 2026</p></div>
+</section>
+
+<!-- 2 · Inside -->
+<section class="page bare">
+  <div class="sheet" style="height:100%;display:flex;flex-direction:column;justify-content:space-between">
+    <div class="wide center" style="margin-top:38mm">
+      <p style="font-style:italic;font-size:14pt;line-height:19pt">Learn a language<br>by living in it.</p>
+      <p class="sc" style="margin-top:8pt">Lingua</p>
+    </div>
+    <div class="wide small muted" style="max-width:88mm;margin:0 auto 6mm;text-align:center">
+      <p>This book is for whoever designs Lingua next: you, a friend, or a Claude on another account. It says what Lingua is like, so that every page can become a little more like it.</p>
+      <p>It lives in the repository at <code>docs/<wbr>handbook</code>. Print it, scribble in it, and change it when Lingua changes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · How to use this book -->
+<section class="page" data-rh="How to use this book">
+  <div class="sheet">
+    <span class="kicker">Before you begin</span>
+    <h2 id="howto">How to use this book</h2>
+    <div class="rule"></div>
+    <p class="lead first">Read Part One once. It is short, and everything else follows from it.</p>
+    <div class="row"><p>When you sit down to design a page, open its chapter in Part Three. Every room fits on one page: what the room is for, what it shows first, what it keeps quiet, the one thing to do there, and three questions to ask yourself.</p>
+      <aside><span class="k">Like this</span>The exact things live out here, small, beside the sentence they belong to.</aside></div>
+    <p>The exact things live in the margins. Colours, sizes, file names, springs and dates are written small, beside the sentence they belong to. You can read the book without them, and you can build from them without reading the book.</p>
+    <p>Before you call a page done, go through Part Four. Its review sheet is meant to be printed and ticked, one sheet per page.</p>
+    <p>At the back are every number in one place, the Latin names and what they mean, Lingua 6 at a glance, and a page for your own notes.</p>
+    <h3>A few marks</h3>
+    <table style="width:auto">
+      <tr><td class="k">in the margin</td><td>the fine print: exact values and where they live</td></tr>
+      <tr><td class="k"><s>struck through</s></td><td>something Lingua had and took out, kept so we remember why</td></tr>
+      <tr><td class="k"><span class="box"></span></td><td>something to check</td></tr>
+      <tr><td class="k"><svg width="12mm" height="4mm" style="vertical-align:-2pt"><use href="#d-sprig"/></svg></td><td>a pause</td></tr>
+    </table>
+    <svg class="draw" width="30mm" height="9mm" style="margin:10mm 0 0 auto"><use href="#d-pencil"/></svg>
+  </div>
+</section>
+
+<!-- 4 · Contents -->
+<section class="page" data-rh="Contents">
+  <div class="sheet">
+    <span class="kicker">The whole book</span>
+    <h2 id="contents">Contents</h2>
+    <div class="rule"></div>
+    <ul class="toc">
+      <li><a href="#howto">How to use this book</a><span class="dots"></span><span class="pn" data-for="howto"></span></li>
+      <span class="part">Part One · The spirit</span>
+      <li><span class="n">1</span><a href="#ch1">What Lingua is</a><span class="dots"></span><span class="pn" data-for="ch1"></span></li>
+      <li><span class="n">2</span><a href="#ch2">Six habits of a Lingua page</a><span class="dots"></span><span class="pn" data-for="ch2"></span></li>
+      <li><span class="n">3</span><a href="#ch3">The voice</a><span class="dots"></span><span class="pn" data-for="ch3"></span></li>
+      <span class="part">Part Two · The materials</span>
+      <li><span class="n">4</span><a href="#ch4">Paper and ink</a><span class="dots"></span><span class="pn" data-for="ch4"></span></li>
+      <li><span class="n">5</span><a href="#ch5">Type</a><span class="dots"></span><span class="pn" data-for="ch5"></span></li>
+      <li><span class="n">6</span><a href="#ch6">Space, corners and light</a><span class="dots"></span><span class="pn" data-for="ch6"></span></li>
+      <li><span class="n">7</span><a href="#ch7">Motion</a><span class="dots"></span><span class="pn" data-for="ch7"></span></li>
+      <li><span class="n">8</span><a href="#ch8">Drawings, icons and flags</a><span class="dots"></span><span class="pn" data-for="ch8"></span></li>
+      <span class="part">Part Three · Page by page</span>
+      <li><span class="n">9</span><a href="#ch9">The anatomy of a page</a><span class="dots"></span><span class="pn" data-for="ch9"></span></li>
+      <li><span class="n">10</span><a href="#ch10">The first start <i class="acc">· Lingua 6 begins here</i></a><span class="dots"></span><span class="pn" data-for="ch10"></span></li>
+      <li><span class="n">11</span><a href="#ch11">Home</a><span class="dots"></span><span class="pn" data-for="ch11"></span></li>
+      <li><span class="n">12</span><a href="#ch12">Cursus</a><span class="dots"></span><span class="pn" data-for="ch12"></span></li>
+      <li><span class="n">13</span><a href="#ch13">Codex</a><span class="dots"></span><span class="pn" data-for="ch13"></span></li>
+      <li><span class="n">14</span><a href="#ch14">Thesaurus and Ludus</a><span class="dots"></span><span class="pn" data-for="ch14"></span></li>
+      <li><span class="n">15</span><a href="#ch15">Sonus et Visio</a><span class="dots"></span><span class="pn" data-for="ch15"></span></li>
+      <li><span class="n">16</span><a href="#ch16">Mentis</a><span class="dots"></span><span class="pn" data-for="ch16"></span></li>
+      <li><span class="n">17</span><a href="#ch17">Ratio</a><span class="dots"></span><span class="pn" data-for="ch17"></span></li>
+      <li><span class="n">18</span><a href="#ch18">Settings and the plans</a><span class="dots"></span><span class="pn" data-for="ch18"></span></li>
+      <span class="part">Part Four · Before you call it done</span>
+      <li><span class="n">19</span><a href="#ch19">Every page’s states</a><span class="dots"></span><span class="pn" data-for="ch19"></span></li>
+      <li><span class="n">20</span><a href="#ch20">The check</a><span class="dots"></span><span class="pn" data-for="ch20"></span></li>
+      <li><span class="n">21</span><a href="#ch21">The review sheet</a><span class="dots"></span><span class="pn" data-for="ch21"></span></li>
+      <span class="part">At the back</span>
+      <li><span class="n">A</span><a href="#apA">The numbers</a><span class="dots"></span><span class="pn" data-for="apA"></span></li>
+      <li><span class="n">B</span><a href="#apB">Words Lingua uses</a><span class="dots"></span><span class="pn" data-for="apB"></span></li>
+      <li><span class="n">C</span><a href="#apC">Lingua 6 at a glance</a><span class="dots"></span><span class="pn" data-for="apC"></span></li>
+      <li><span class="n"></span><a href="#notes">Notes</a><span class="dots"></span><span class="pn" data-for="notes"></span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 5 · Part One -->
+<section class="page bare">
+  <div class="opener">
+    <span class="sc">Part One</span>
+    <h1 id="part1">The spirit</h1>
+    <p>What Lingua is, how it behaves, and how it talks.</p>
+    <svg class="draw" width="44mm" height="24mm" style="margin-top:16mm"><use href="#d-book"/></svg>
+  </div>
+</section>
+
+<!-- 6 · Chapter 1 -->
+<section class="page" data-rh="What Lingua is">
+  <div class="sheet">
+    <span class="kicker">Chapter 1</span>
+    <h2 id="ch1">What Lingua is</h2>
+    <div class="rule"></div>
+    <p class="lead first">Lingua is a place to live in a language for a while. You read in it, listen to it, watch it, talk and write in it, and every word you meet is kept, so it comes back just before you would have forgotten it.</p>
+    <div class="row"><p>It is not a game and it is not a school. It is closer to a study at home: a desk by the window, a shelf of books, a pot of tea going cold because the chapter got good. That is why its design is called the Cozy Scriptorium.</p>
+      <aside><span class="k">The tokens</span><code>src/<wbr>design/<wbr>tokens.css</code>, “Cozy Scriptorium design tokens”.</aside></div>
+    <div class="row"><p>The rooms have Latin names, because a scriptorium would have used them, and because it is a little bit fun. Each room keeps one kind of work:</p>
+      <aside><span class="k">Order</span><code>src/<wbr>app/<wbr>sections.ts</code>. Alt 1 to 8 opens them in this order. Ratio and Settings sit apart at the bottom of the sidebar.</aside></div>
+    <table style="width:86mm">
+      <tr><td class="k">Home</td><td>your hearth: today, and what’s next</td></tr>
+      <tr><td class="k">Cursus</td><td>the course, grammar, alphabets and typing</td></tr>
+      <tr><td class="k">Codex</td><td>reading: books, articles, comics</td></tr>
+      <tr><td class="k">Thesaurus</td><td>every word you keep, and Ludus, the games</td></tr>
+      <tr><td class="k">Sonus et Visio</td><td>listening and watching</td></tr>
+      <tr><td class="k">Mentis</td><td>the guide, talking and writing</td></tr>
+      <tr><td class="k">Ratio</td><td>how it’s going</td></tr>
+      <tr><td class="k">Settings</td><td>everything you can change</td></tr>
+    </table>
+    <div class="row"><p>Lingua is made for the desktop. It uses a wide window the way you use a desk: things side by side, nothing stacked that could sit next to each other.</p>
+      <aside><span class="k">Desktop only</span>Since 2026-10-20. The user: “Phone is not needed anymore.” What exists for the phone stays; nothing new is made for it.</aside></div>
+  </div>
+</section>
+
+<!-- 7 · Chapter 2a -->
+<section class="page" data-rh="Six habits of a Lingua page">
+  <div class="sheet">
+    <span class="kicker">Chapter 2</span>
+    <h2 id="ch2">Six habits of a Lingua page</h2>
+    <div class="rule"></div>
+    <p class="lead">Six habits, more than rules. A page that has all six usually needs nothing else.</p>
+    <h3><span class="num">I.</span>The language comes first</h3>
+    <div class="row"><p>On every page, the language is the biggest, best-set thing there is. A sentence in German gets the serif, the space and the light; the buttons around it step back. If a page has nothing in the language on it, ask whether it should.</p>
+      <aside><span class="k">Set in</span>Titles in Literata. Reading text in the learner’s own reading font, one of six.</aside></div>
+    <h3><span class="num">II.</span>Quiet until asked</h3>
+    <div class="row"><p>Show the one thing that matters and keep the rest a click away: details in a drawer, numbers on hover, options under More. Control is never taken away, only folded. Whoever wants every setting finds it; whoever doesn’t never has to see it.</p>
+      <aside><span class="k">But</span>Nothing important lives only on hover. Whatever a hover shows, a click or a key shows too.</aside></div>
+    <h3><span class="num">III.</span>One word, everywhere</h3>
+    <div class="row"><p>A word saved while reading is the same word in Thesaurus, in Ludus, in a talk in Sermo and in Ratio’s counts. Design as if each word were a small thing the learner carries from room to room, and let it remember where it was found.</p>
+      <aside><span class="k">Where words live</span>The word memory and the dictionary, Thesaurus › Dictionary (4.0-2).</aside></div>
+    <div class="fleuron"><svg width="16mm" height="5.5mm"><use href="#d-sprig"/></svg></div>
+  </div>
+</section>
+
+<!-- 8 · Chapter 2b -->
+<section class="page" data-rh="Six habits of a Lingua page">
+  <div class="sheet">
+    <h3 style="margin-top:0"><span class="num">IV.</span>Honest, never hopeful</h3>
+    <div class="row"><p>Say only what is true and built. No forecasts Lingua can’t keep, no scores that look precise and aren’t, no features promised before they exist. When Lingua doesn’t know, it says so plainly, or says nothing at all.</p>
+      <aside><span class="k">Taken out</span>2026-10-26: the first start’s “B1 in about 7 months” and its pace verdicts. Not accurate enough to say.</aside></div>
+    <h3><span class="num">V.</span>The learner holds the pen</h3>
+    <div class="row"><p>Whatever Lingua decides for you can be undone: a word marked known can be unmarked, a level changed, a card edited. Nothing large happens behind the learner’s back. Saving a word is not the same as scheduling it, and one click never quietly grows a deck of fifty.</p>
+      <aside><span class="k">Borrowed</span>From the Lingyu blueprint (2026-10-25): “saving is not scheduling”; anything generated is editable and can be dismissed.</aside></div>
+    <h3><span class="num">VI.</span>Wide and calm</h3>
+    <div class="row"><p>Use the width: columns, side panels, sticky rails, a list beside its detail instead of a page after it. Every page fits a 1366 × 768 laptop with no little scroll bar sneaking in. The reader and long lists are the only things that scroll, and they do it on purpose.</p>
+      <aside><span class="k">Sizes</span>Check at 1280, 1440 and 1366 × 768. Shortcuts: Alt 1–8 for the rooms; the rest in the Shortcuts dialog.</aside></div>
+    <div class="row"><p class="muted" style="font-style:italic;margin-top:8pt">If you only remember one: the language first, everything else quiet.</p><aside></aside></div>
+    <svg class="draw" width="24mm" height="8.5mm" style="margin-top:12mm"><use href="#d-sprig"/></svg>
+  </div>
+</section>
+
+<!-- 9 · Chapter 3a -->
+<section class="page" data-rh="The voice">
+  <div class="sheet">
+    <span class="kicker">Chapter 3</span>
+    <h2 id="ch3">The voice</h2>
+    <div class="rule"></div>
+    <p class="lead first">Lingua talks like a friend who reads a lot: informal, warm, a little dry. It likes to make you smile, but never at the cost of being clear.</p>
+    <div class="row"><p><span class="lede-sc">One smile per page.</span> A funny subtitle is a gift; three of them are a stand-up set. The joke goes where nobody has to read it to act: a subtitle, a quiet line under a field. Never inside an instruction.</p>
+      <aside><span class="k">The user’s outline</span>For the first start: “minimal, informal, bookish, building up the excitement, with funny subtitles” (5.1-2b).</aside></div>
+    <p><span class="lede-sc">Titles ask or name.</span> “What language will it be?” “So, how far along are you?” “Choose your study light.” Short enough to take in at a glance, and a real question when there is one.</p>
+    <p><span class="lede-sc">Buttons say what happens.</span> “Continue with Deutsch” says more than “Next”. One main button per page.</p>
+    <div class="row"><p><span class="lede-sc">Plain where it matters.</span> Money, privacy, errors and deleting get the plainest words in the app. “Could not save your choices. Please try again.”</p>
+      <aside><span class="k">Real lines</span>From <code>Onboarding.tsx</code>: the error above, and the welcome toast, “Welcome to Lingua, {name}. Happy reading!”</aside></div>
+    <div class="row"><p><span class="lede-sc">Small manners.</span> British spelling, as in colour and favourite. Curly quotes, and the language’s own quotation marks when its touches are on. No exclamation marks in the interface; the welcome toast may keep its one.</p>
+      <aside><span class="k">Marks</span>«&nbsp;French&nbsp;» · „German“ · 「Japanese」</aside></div>
+    <svg class="draw" width="20mm" height="17.5mm" style="margin:8mm 0 0 8mm"><use href="#d-cup"/></svg>
+  </div>
+</section>
+
+<!-- 10 · Chapter 3b -->
+<section class="page" data-rh="The voice">
+  <div class="sheet">
+    <h3 style="margin-top:0">Said, and rather not</h3>
+    <p class="muted small">Lingua’s own lines on the left. The struck-through ones were in Lingua and were taken out.</p>
+    <table class="wide" style="font-size:8pt">
+      <tr><th style="width:52%">We say</th><th>We’d rather not</th></tr>
+      <tr><td>What language will it be?</td><td>Select your target language</td></tr>
+      <tr><td>Continue with Deutsch</td><td>Next</td></tr>
+      <tr><td>8 of 15 minutes</td><td>53% of your daily goal complete!</td></tr>
+      <tr><td>It stays on this device. We just like to be polite.</td><td>We value your privacy.</td></tr>
+      <tr><td>Click a country to see what’s spoken there, or scroll down for all of them.</td><td><s>… Commitment issues welcome: you can add more later.</s> <span class="small muted">A joke inside an instruction.</span></td></tr>
+      <tr><td><i class="muted">(nothing, when Lingua can’t know)</i></td><td><s>At 15 minutes a day, B1 in about 7 months.</s> <span class="small muted">A forecast it couldn’t keep.</span></td></tr>
+      <tr><td>Your shelf is empty. Import a book, or take one from the library.</td><td>No items found.</td></tr>
+      <tr><td>None of Lingua’s languages is spoken in {country} yet.</td><td>No results.</td></tr>
+    </table>
+    <div class="row"><p>Read your page aloud in the voice of someone who likes you. If a sentence would sound strange said to a friend across a table, change it.</p>
+      <aside><span class="k">For example</span>“Your shelf is empty …” is an example of the voice, not a line in the app.</aside></div>
+    <div class="fleuron"><svg width="16mm" height="5.5mm"><use href="#d-sprig"/></svg></div>
+  </div>
+</section>
+
+<!-- 11 · Part Two -->
+<section class="page bare">
+  <div class="opener">
+    <span class="sc">Part Two</span>
+    <h1 id="part2">The materials</h1>
+    <p>Paper, ink, type, space, motion, and the little drawings.</p>
+    <svg class="draw" width="24mm" height="24mm" style="margin-top:16mm"><use href="#d-ink"/></svg>
+  </div>
+</section>
+
+<!-- 12 · Chapter 4a -->
+<section class="page" data-rh="Paper and ink">
+  <div class="sheet">
+    <span class="kicker">Chapter 4</span>
+    <h2 id="ch4">Paper and ink</h2>
+    <div class="rule"></div>
+    <p class="lead first">Lingua’s light is called Paper and its dark is Nocturne. Neither is the other turned inside out: Paper is cream with espresso ink, Nocturne a warm charcoal with ivory, so nothing is ever pure white or pure black.</p>
+    <div class="chips wide">
+      <div class="chip"><i style="background:#faf6f0"></i><b>Cream</b><span>page · #faf6f0</span></div>
+      <div class="chip"><i style="background:#efe7d9"></i><b>Parchment</b><span>surface · #efe7d9</span></div>
+      <div class="chip"><i style="background:#262220"></i><b>Espresso</b><span>ink · #262220</span></div>
+      <div class="chip"><i style="background:#c86d51"></i><b>Terracotta</b><span>accent · #c86d51</span></div>
+      <div class="chip"><i style="background:#1f1c1a"></i><b>Charcoal</b><span>night page · #1f1c1a</span></div>
+      <div class="chip"><i style="background:#2b2724"></i><b>Mocha</b><span>night surface · #2b2724</span></div>
+      <div class="chip"><i style="background:#ebe0cc"></i><b>Ivory</b><span>night ink · #ebe0cc</span></div>
+      <div class="chip"><i style="background:#d49b54"></i><b>Amber</b><span>night accent · #d49b54</span></div>
+    </div>
+    <div class="row"><p><span class="lede-sc">The accent is a bookmark, not a highlighter.</span> One terracotta thing per area: the chosen language, the next step, the new word. If two things on one card are terracotta, one of them is wrong.</p>
+      <aside><span class="k">Text in the accent</span>Use <code>--accent-text</code> (#a5533b), which keeps 4.5 : 1 on cream. <code>--accent</code> itself is for decoration in Paper.</aside></div>
+    <div class="row"><p><span class="lede-sc">Sage means known, done or growing:</span> a ticked step, a word you know, a finished chapter.</p>
+      <aside><span class="k">Sage</span>#6b8e78; its text #4f6f5b. At night #93b39e.</aside></div>
+    <div class="row"><p><span class="lede-sc">Tooltips, toasts and main buttons are inverse:</span> espresso with cream by day, old-paper cream with espresso at night. Never black, never white.</p>
+      <aside><span class="k">Inverse</span>#3b302a on #f8efe0; at night #e8d8bb with #2b231e.</aside></div>
+  </div>
+</section>
+
+<!-- 13 · Chapter 4b -->
+<section class="page" data-rh="Paper and ink">
+  <div class="sheet">
+    <h3 style="margin-top:0">Palettes and reading papers</h3>
+    <div class="row"><p>The learner picks a palette for each light, and a paper for reading in Codex. Design in Cream and Charcoal, then look at one more of each before you call it done. A page that only works in Cream isn’t done.</p>
+      <aside><span class="k">Where</span><code>src/<wbr>design/<wbr>palettes.ts</code>, <code>src/<wbr>design/<wbr>papers.ts</code>. The first of each list is the original look.</aside></div>
+    <p class="sc" style="margin:6pt 0 4pt">Paper</p>
+    <div class="dots6">
+      <div><i style="background:#faf6f0;--c:#c86d51"></i>Cream</div><div><i style="background:#fbf3f2;--c:#b85c74"></i>Rose</div><div><i style="background:#f4f6f0;--c:#5e8a6c"></i>Sage</div><div><i style="background:#f7f0e3;--c:#b0802f"></i>Sand</div><div><i style="background:#f5f5f2;--c:#4f6d9a"></i>Linen</div><div><i style="background:#f6f3f8;--c:#7d63a3"></i>Lavender</div>
+    </div>
+    <p class="sc" style="margin:7pt 0 4pt">Nocturne</p>
+    <div class="dots6">
+      <div><i style="background:#1f1c1a;--c:#d49b54"></i>Charcoal</div><div><i style="background:#161a22;--c:#7fa8d8"></i>Ink</div><div><i style="background:#1e1820;--c:#d08bb0"></i>Plum</div><div><i style="background:#161d19;--c:#a8c77a"></i>Forest</div><div><i style="background:#1c1e20;--c:#7fbcb5"></i>Slate</div><div><i style="background:#221a17;--c:#e07a5f"></i>Ember</div>
+    </div>
+    <div class="row" style="margin-top:9pt"><p>Reading papers, by day: Cream, Ivory, Parchment, Sepia, Sage, Blush and Stone. By night: Charcoal, Espresso, Sepia night, Ink, Forest, Plum and Midnight. The paper turns with the light, in the same transition.</p>
+      <aside><span class="k">Contrast</span>Each palette’s accent text is chosen to keep 4.5 : 1 on its own page. Ink keeps the theme’s own.</aside></div>
+    <div class="row"><p><span class="lede-sc">Use the tokens, never a colour by hand.</span> A palette swaps the page, the surfaces and the accent. A colour typed in by hand is right in one palette and wrong in eleven.</p>
+      <aside><span class="k">Tokens</span><code>--bg --surface --raised --sunken --ink --ink-soft --ink-faint --line --line-strong --accent --accent-text --accent-fill --sage</code></aside></div>
+  </div>
+</section>
+
+<!-- 14 · Chapter 5 -->
+<section class="page" data-rh="Type">
+  <div class="sheet">
+    <span class="kicker">Chapter 5</span>
+    <h2 id="ch5">Type</h2>
+    <div class="rule"></div>
+    <p class="lead first">Two voices. Literata is the book: the titles, the language, and the numbers that matter. Plus Jakarta Sans is the helper: labels, buttons, explanations. When in doubt, ask who is speaking.</p>
+    <div style="border-top:.6pt solid var(--line2);border-bottom:.6pt solid var(--line2);padding:6pt 0 7pt;margin:4pt 0 8pt">
+      <p class="sc" style="margin-bottom:4pt">Literata</p>
+      <p lang="de" style="font-size:13pt;line-height:18pt;margin:0">Am Abend lasen wir am Fenster, während draußen leise Schnee fiel.</p>
+      <p class="sc" style="margin:8pt 0 4pt">Plus Jakarta Sans</p>
+      <p style="font-family:var(--sans);font-size:10pt;margin:0">Continue with Deutsch &nbsp;·&nbsp; <span style="font-size:8pt;color:var(--soft)">Click a country to see what’s spoken there.</span></p>
+    </div>
+    <table class="spec" style="width:86mm">
+      <tr><th>Where</th><th>Face</th><th>Size</th></tr>
+      <tr><td>Big moments (your name, the welcome)</td><td>Literata 600</td><td>40–44 px</td></tr>
+      <tr><td>A page’s title</td><td>Literata 600, tight</td><td>30–36 px</td></tr>
+      <tr><td>A line in the language</td><td>Literata</td><td>19 px</td></tr>
+      <tr><td>Body and buttons</td><td>Jakarta</td><td>15 px</td></tr>
+      <tr><td>Small lines under things</td><td>Jakarta</td><td>12.5 px</td></tr>
+      <tr><td>Labels, in capitals</td><td>Jakarta 700, +0.08 em</td><td>11.5–12 px</td></tr>
+    </table>
+    <div class="row"><p>The learner picks the reading font, so design for all six: Literata, Lora, Newsreader, Merriweather, Atkinson Hyperlegible and Comfortaa. Scripts they don’t cover fall back to Noto Serif SC, JP and KR, Noto Naskh Arabic, or the device’s own faces.</p>
+      <aside><span class="k">Where</span><code>--font-serif</code>, <code>--font-sans</code> in <code>src/<wbr>styles/<wbr>index.css</code>; reading fonts in <code>src/<wbr>design/<wbr>fonts.ts</code>.</aside></div>
+    <p>Numbers in a table line up (tabular). Numbers in a sentence are the book’s own, set in the serif: “8 of 15 minutes”.</p>
+  </div>
+</section>
+
+<!-- 15 · Chapter 6 -->
+<section class="page" data-rh="Space, corners and light">
+  <div class="sheet">
+    <span class="kicker">Chapter 6</span>
+    <h2 id="ch6">Space, corners and light</h2>
+    <div class="rule"></div>
+    <p class="lead first">A Lingua page breathes like a well-set book: generous margins, one clear column, and things grouped by space before they are grouped by boxes.</p>
+    <div class="row"><p><span class="lede-sc">Lines before shadows.</span> A hairline separates; a shadow lifts. Most things only need the line. When something does float, one shadow is enough, and it is warm, never grey.</p>
+      <aside><span class="k">Light</span><b>elev-1</b> a card at rest · <b>elev-2</b> something floating: the map, a popover · <b>elev-3</b> dialogs and drawers. All tinted espresso.</aside></div>
+    <svg class="wide" viewBox="0 0 300 60" style="width:100%;height:auto;margin:2pt 0 8pt">
+      <g class="ln">
+        <rect x="4" y="16" width="40" height="18" rx="9"/><rect x="62" y="12" width="44" height="26" rx="3"/><rect x="124" y="8" width="50" height="34" rx="6"/><rect x="192" y="4" width="50" height="42" rx="10"/><rect class="a" x="258" y="4" width="38" height="42" rx="12"/>
+      </g>
+      <g font-family="Jakarta" font-size="6.2" fill="#776c63" text-anchor="middle"><text x="24" y="44">pills</text><text x="84" y="49">buttons 8–16</text><text x="149" y="50">panels 16</text><text x="217" y="52">cards 24</text><text x="277" y="52">dialogs 24</text></g>
+    </svg>
+    <div class="row"><p><span class="lede-sc">Round, not bubbly.</span> Pills for small choices, generous corners for cards and dialogs, gentler ones inside them. An inner corner is always smaller than the one around it.</p>
+      <aside><span class="k">Tailwind</span>Buttons <code>rounded-lg/<wbr>xl/<wbr>2xl</code> by size; cards and dialogs <code>rounded-3xl</code>; empty states <code>rounded-2xl</code>.</aside></div>
+    <div class="row"><p><span class="lede-sc">One screen.</span> A desktop page fits 1366 × 768 without a scroll bar. If it doesn’t fit, take something away before making something smaller.</p>
+      <aside><span class="k">Since</span>2026-10-25, <code>5c044f9</code>: desktop screens on one screen, no tiny scroll.</aside></div>
+    <p><span class="lede-sc">Columns over stacks.</span> A sticky rail for filters, a panel beside a list, two cards side by side that end on the same line.</p>
+  </div>
+</section>
+
+<!-- 16 · Chapter 7 -->
+<section class="page" data-rh="Motion">
+  <div class="sheet">
+    <span class="kicker">Chapter 7</span>
+    <h2 id="ch7">Motion</h2>
+    <div class="rule"></div>
+    <p class="lead first">Things in Lingua settle like paper: they move a little, then they are still. Motion says where something came from. It never performs.</p>
+    <table class="spec" style="width:86mm">
+      <tr><th>Spring</th><th>For</th><th>Stiffness · damping</th></tr>
+      <tr><td>snappy</td><td>pills, toggles, indicators</td><td>560 · 42</td></tr>
+      <tr><td>soft</td><td>cards and page content</td><td>320 · 34</td></tr>
+      <tr><td>sheet</td><td>drawers and sheets</td><td>400 · 40</td></tr>
+      <tr><td>gentle</td><td>the first start’s pages</td><td>200 · 28</td></tr>
+      <tr><td>fluid</td><td>full motion: pages, reordering</td><td>210 · 26</td></tr>
+    </table>
+    <div class="row"><p><span class="lede-sc">Only transform and opacity move.</span> Never a width, a height or a top: the reader has to stay at sixty frames a second.</p>
+      <aside><span class="k">Where</span><code>src/<wbr>design/<wbr>motion.ts</code>; the rules in <code>docs/<wbr>PERFORMANCE.md</code>.</aside></div>
+    <div class="row"><p><span class="lede-sc">The first start turns its pages,</span> 48 pixels sideways with a six-degree tilt. Elsewhere, pages rise 8 pixels as they appear.</p>
+      <aside><span class="k">Full motion</span>A setting: pages rise 18 px and settle on <i>fluid</i>.</aside></div>
+    <p><span class="lede-sc">Reduced motion means none,</span> not less.</p>
+    <p><span class="lede-sc">Nothing is slower than the learner.</span> If they click again before something has finished moving, the second click wins.</p>
+    <div class="row"><div><svg class="draw" width="30mm" height="15.6mm" style="margin:4mm 0 0 6mm"><use href="#d-snail"/></svg><p class="pencil" style="margin:2pt 0 0 14mm">not this slow</p></div><aside></aside></div>
+  </div>
+</section>
+
+<!-- 17 · Chapter 8a -->
+<section class="page" data-rh="Drawings, icons and flags">
+  <div class="sheet">
+    <span class="kicker">Chapter 8</span>
+    <h2 id="ch8">Drawings, icons and flags</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Drawings are one fine line in the colour of soft ink, with one small thing in terracotta: a bookmark, a tick, a wisp of sound. They are small, and they never explain what the words already say.</p>
+      <aside><span class="k">The line</span>Stroke 1.3, round caps and joins, <code>currentColor</code> in <code>ink-soft</code>. See the open book and the three vignettes in <code>IntroPages.tsx</code>.</aside></div>
+    <div class="wide" style="display:flex;justify-content:space-between;align-items:end;margin:4pt 0 10pt;padding:0 2mm">
+      <svg width="13mm" height="13mm"><use href="#r-home"/></svg><svg width="13mm" height="13mm"><use href="#r-cursus"/></svg><svg width="13mm" height="13mm"><use href="#r-codex"/></svg><svg width="14mm" height="13mm"><use href="#r-thes"/></svg><svg width="14mm" height="13mm"><use href="#r-sonus"/></svg><svg width="13mm" height="13mm"><use href="#r-mentis"/></svg><svg width="13mm" height="13mm"><use href="#r-ratio"/></svg><svg width="13mm" height="13mm"><use href="#r-settings"/></svg>
+    </div>
+    <div class="row"><p><span class="lede-sc">Icons are Lucide, as lines.</span> A room keeps its icon wherever it appears: the sidebar, Home, a link from another room.</p>
+      <aside><span class="k">This book</span>The little room drawings here are for the book only. In the app, the rooms use their Lucide icons.</aside></div>
+    <div class="row"><p><span class="lede-sc">Flags are drawn,</span> all the same size and corner. Where one country’s flag would be wrong for a language, it gets its own emblem (the Senyera for Catalan, the Ikurriña for Basque, the Frisian flag) or a badge with its script on soft paper: ਪੰ for Punjabi, Š / Ћ for Serbo-Croatian, सं for Sanskrit, ᚱ for Old Norse.</p>
+      <aside><span class="k">Where</span><code>src/<wbr>design/<wbr>flags.tsx</code>. Script badges set the glyph in the reading font on a paper square, so they sit calmly beside real flags.</aside></div>
+    <p>An empty page may have a drawing. A full page doesn’t need one.</p>
+  </div>
+</section>
+
+<!-- 18 · Chapter 8b -->
+<section class="page" data-rh="Drawings, icons and flags">
+  <div class="sheet">
+    <h3 style="margin-top:0">A touch of the language</h3>
+    <div class="row"><p>When you learn French, Lingua looks a little French. Each core language lends the app a heading face, one ornament and a lean of the accent. It is a touch, not a costume: the reading text and the learner’s palette never change.</p>
+      <aside><span class="k">Where</span><code>src/<wbr>design/<wbr>flavours.ts</code>, on by default: Settings › Look and feel › Language touches.</aside></div>
+    <table style="width:86mm">
+      <tr><th>Language</th><th>Headings</th><th>Ornament, and more</th></tr>
+      <tr><td>French</td><td>Garamond</td><td>a fleuron, a hint of bleu de France</td></tr>
+      <tr><td>Spanish</td><td>Alegreya</td><td>a tile strip; ¿ in titles that ask</td></tr>
+      <tr><td>German</td><td>a clean grotesque</td><td>a straight rule</td></tr>
+      <tr><td>Russian</td><td>PT Serif</td><td>a thin red rule</td></tr>
+      <tr><td>Mandarin</td><td>a Song face</td><td>a vermilion seal for “done”</td></tr>
+      <tr><td>Arabic</td><td>Amiri</td><td>an eight-point star</td></tr>
+    </table>
+    <div class="row"><p>Where the touch shows: room titles, Home’s greeting, dividers, empty states, the end of a book, the loading screen, and the first start once a language is chosen. Never in the text being read.</p>
+      <aside><span class="k">Quotes</span>In the language’s own marks: « » for French, „ “ for German, 「」 for Chinese and Japanese.</aside></div>
+    <div class="row"><p>When you design a page, switch through the six. If the touch makes anything harder to read, the touch is wrong, not the page.</p><aside></aside></div>
+    <svg class="draw" width="24mm" height="8.5mm" style="margin-top:14mm"><use href="#d-sprig"/></svg>
+  </div>
+</section>
+
+<!-- 19 · Part Three -->
+<section class="page bare">
+  <div class="opener">
+    <span class="sc">Part Three</span>
+    <h1 id="part3">Page by page</h1>
+    <p>The anatomy of a page, the first start, and every room, one page each.</p>
+    <svg class="draw" width="40mm" height="26.6mm" style="margin-top:16mm"><use href="#d-window"/></svg>
+  </div>
+</section>
+
+<!-- 20 · Chapter 9 -->
+<section class="page" data-rh="The anatomy of a page">
+  <div class="sheet">
+    <span class="kicker">Chapter 9</span>
+    <h2 id="ch9">The anatomy of a page</h2>
+    <div class="rule"></div>
+    <p class="lead">Most Lingua pages are made of the same five parts. Get these right and the page is nearly done.</p>
+    <svg class="wide" viewBox="0 0 330 168" style="width:100%;height:auto;margin:2pt 0 6pt">
+      <g class="ln">
+        <rect x="70" y="6" width="252" height="156" rx="8"/><path d="M118 6V162"/>
+        <path d="M80 22H108M80 32H104M80 42H108M80 52H102" opacity=".5"/><rect x="77" y="28" width="34" height="9" rx="4.5" class="a"/>
+        <path d="M130 24H206" stroke-width="2.2"/><path d="M130 33H192" opacity=".55"/>
+        <rect class="a" x="268" y="20" width="44" height="13" rx="6.5"/>
+        <path d="M130 56H246M130 68H240M130 80H244M130 92H226M130 104H238M130 116H214" stroke-width="1.5"/>
+        <rect x="256" y="50" width="56" height="78" rx="6" opacity=".7"/><path d="M264 62H302M264 72H296M264 82H300" opacity=".45"/>
+        <path d="M130 146H200" opacity=".35"/><circle cx="300" cy="146" r="3" opacity=".5"/>
+      </g>
+      <g font-family="Literata" font-style="italic" font-size="7.6" fill="#a5533b">
+        <text x="2" y="34">1 · the room</text><path class="ln a" d="M50 32Q62 32 74 32" />
+        <text x="148" y="16">2 · a title and one line</text>
+        <text x="312" y="45" text-anchor="end">3 · the one thing</text>
+        <text x="130" y="133">4 · the work: the language, big</text>
+        <text x="256" y="140">5 · beside it</text>
+      </g>
+    </svg>
+    <div class="row"><ol class="ask" style="font-style:normal">
+      <li><b>The room,</b> lit in the sidebar. Nothing else tells you where you are.</li>
+      <li><b>A title and one line.</b> The title in Literata; the line under it in the helper’s voice, and that’s where a smile goes.</li>
+      <li><b>The one thing to do,</b> in the accent fill, top right or under the work. One per page.</li>
+      <li><b>The work.</b> The language, a list, a player: the biggest, calmest thing.</li>
+      <li><b>What’s beside it, and the quiet edges:</b> a panel or rail; counts, More, settings.</li>
+    </ol>
+      <aside><span class="k">Use these first</span>Button, Card, Dialog, Drawer, EmptyState, Popover, SearchInput, Segmented, Select, Slider, Switch, Tooltip: <code>src/<wbr>design/<wbr>primitives</code>.</aside></div>
+  </div>
+</section>
+
+<!-- 21 · Chapter 10a -->
+<section class="page" data-rh="The first start">
+  <div class="sheet">
+    <span class="kicker">Chapter 10 · Lingua 6 begins here</span>
+    <h2 id="ch10">The first start</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">The first start is the first page of the book. It should feel like opening one: unhurried, a little exciting, and over before it gets long.</p>
+      <aside><span class="k">The plan</span>Lingua 6-1 in <code>docs/<wbr>LINGUA-6-PLAN.md</code>, from the user’s notes of 2026-10-26. Code: <code>src/<wbr>app/<wbr>onboarding</code>.</aside></div>
+    <div class="flow wide"><span class="st">Your name</span><span class="to">·</span><span class="st">Welcome</span><span class="to">·</span><span class="st">What Lingua can do</span><span class="to">·</span><span class="st on">Language</span><span class="to">·</span><span class="st on">Level</span><span class="to">·</span><span class="st gone">You speak</span><span class="to">·</span><span class="st gone">Why</span><span class="to">·</span><span class="st on">Goal</span><span class="to">·</span><span class="st on">Study light</span><span class="to">·</span><span class="st on">Plans</span></div>
+    <div class="row"><p>Three pages to say hello, then four steps to set up, and the plans. “You speak” and “Why” were taken out: the fewer questions before the first page of reading, the better.</p>
+      <aside><span class="k">Dots</span>Only the steps get dots, not the hello pages. Every page fits 1366 × 768, except the language page, where the list peeks in on purpose.</aside></div>
+    <h3>Your name</h3>
+    <div class="row"><p>“First things first.” One field for a first name, and Continue waits until there is one. No skip. The quiet line stays: “It stays on this device. We just like to be polite.”</p>
+      <aside><span class="k">Out</span>“Skip for now”, and the Lingua mark above the title: the header already has the wordmark.</aside></div>
+    <h3>The language</h3>
+    <div class="row"><p>The world first, wide. Click a country, and a panel opens with the country itself as its title, its flag and its name, set properly, then the languages you can learn there. No tabs. Under the map, the six core languages as small book covers, each wearing a touch of its language; under them every other language, larger than before, by tier. Each tier says plainly what it has and what it doesn’t have yet.</p>
+      <aside><span class="k">Tiers</span>Core · Full · Beta · Basics · Experimental. One table, <code>TIERS</code> in <code>src/<wbr>core/<wbr>lang/<wbr>languages.ts</code>, with <i>has</i> and <i>not yet</i>.<svg width="12mm" height="14mm" style="margin-top:4pt"><use href="#d-cover"/></svg></aside></div>
+  </div>
+</section>
+
+<!-- 22 · Chapter 10b -->
+<section class="page" data-rh="The first start">
+  <div class="sheet">
+    <h3 style="margin-top:0">The level</h3>
+    <div class="row"><p>Seven steps, A0 to C2, like a staircase. Hover one or choose it, and a small card pops up with what that level could mean: what you can read, follow and say there, and what Lingua will do about it. No example sentences, no test.</p>
+      <aside><span class="k">The card</span>Springs in on <i>snappy</i>; arrow keys move along the steps. From A2 up it says the most common words start as known.</aside></div>
+    <svg class="draw" width="58mm" height="25.4mm" style="margin:2pt 0 8pt 6mm"><use href="#d-stairs"/></svg>
+    <h3>The goal</h3>
+    <div class="row"><p>A level to aim for, and minutes a day. Nothing forecasts. Instead each choice says what it means: the goal in the level card’s words, the minutes in what they hold in Lingua: “Cards, a few pages and a song.”</p>
+      <aside><span class="k">Out</span><s>“B1 in about 7 months”</s>, <s>“Ambitious. We like it.”</s> Not accurate enough.</aside></div>
+    <h3>Study light, and the plans</h3>
+    <div class="row"><p>Every palette as a small page of the app, with Follow my device first. Then the plans, which promise only what is true, with Continue free as clear as the rest.</p>
+      <aside><span class="k">Plans</span><code>features/<wbr>plans/<wbr>PlanPitch</code>. Max shows monthly first.</aside></div>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Can someone reach the map in under a minute?</li>
+      <li>Does any page promise something Lingua can’t measure?</li>
+      <li>Is there more than one joke on a page, or one inside an instruction?</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 23 · Home -->
+<section class="page" data-rh="Home">
+  <div class="sheet">
+    <div class="row"><div><span class="kicker">Chapter 11</span><h2 id="ch11">Home</h2><p class="role">Your hearth</p></div><aside><svg width="14mm" height="14mm"><use href="#r-home"/></svg></aside></div>
+    <p class="lead">Coming home to the language: what you did today, and the one thing to do next.</p>
+    <div class="card3">
+      <div><span class="l">Show first</span><span>The greeting by name, today’s minutes against the goal, and Next up.</span></div>
+      <div><span class="l">Keep quiet</span><span>The week and its numbers, the Lingua+ button (free plan only), first steps once they’re done.</span></div>
+      <div><span class="l">The one thing</span><span>The first row of Next up.</span></div>
+    </div>
+    <div class="row"><p>Home is a page you glance at, not one you study. A returning learner should be back in their book within a click, without reading a word of the interface.</p>
+      <aside><span class="k">Today</span>“Good evening, {name}”; minutes in serif numerals, “8 of 15 minutes”, over a ribbon split by room. Next up: at most four rows. <code>features/<wbr>home/<wbr>HomeToday.tsx</code>.</aside></div>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Can a returning learner start in one click, without reading?</li>
+      <li>Is anything below fighting Next up for attention?</li>
+      <li>Does a brand-new learner see a way in, rather than empty numbers?</li>
+    </ol>
+    <div class="row"><p></p><aside><span class="k">Also</span>Home layout Today / Classic in Settings › Look and feel. Both columns end on the same line.</aside></div>
+  </div>
+</section>
+
+<!-- 24 · Cursus -->
+<section class="page" data-rh="Cursus">
+  <div class="sheet">
+    <div class="row"><div><span class="kicker">Chapter 12</span><h2 id="ch12">Cursus</h2><p class="role">The course, grammar, alphabets and typing</p></div><aside><svg width="14mm" height="14mm"><use href="#r-cursus"/></svg></aside></div>
+    <p class="lead">Learning in order, for those who like a path: it leads, and everything stays open.</p>
+    <div class="card3">
+      <div><span class="l">Show first</span><span>The next point on the trail.</span></div>
+      <div><span class="l">Keep quiet</span><span>Everything past the next few steps. Any topic can still be opened; it just isn’t pushed.</span></div>
+      <div><span class="l">The one thing</span><span>Continue.</span></div>
+    </div>
+    <div class="row"><p>A grammar rule is easiest to keep when it comes with a sentence you have already met. Wherever Cursus can, it borrows from what the learner read or heard.</p>
+      <aside><span class="k">Tabs</span>Course · Grammatica · Alphabets · Typing, keys 1–4, opening on the tab used last. The course is for the six core languages; the path became an adventure in 5.1-3.</aside></div>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Is the next step obvious, and is everything else still within reach?</li>
+      <li>Does a rule show a sentence the learner has actually met?</li>
+      <li>Does a lesson end by pointing back into reading or listening?</li>
+    </ol>
+    <div class="row"><p></p><aside><span class="k">Decided</span>D10 of the 5.1 plan: “It leads, everything stays open.”</aside></div>
+  </div>
+</section>
+
+<!-- 25 · Codex -->
+<section class="page" data-rh="Codex">
+  <div class="sheet">
+    <div class="row"><div><span class="kicker">Chapter 13</span><h2 id="ch13">Codex</h2><p class="role">Reading</p></div><aside><svg width="14mm" height="14mm"><use href="#r-codex"/></svg></aside></div>
+    <p class="lead">Reading real things in the language, with every word a tap away. The heart of Lingua.</p>
+    <div class="card3">
+      <div><span class="l">Show first</span><span>The book you’re reading. In the reader, the page and nothing else.</span></div>
+      <div><span class="l">Keep quiet</span><span>Translations, grammar and the dictionary, in the word drawer, once a word is tapped.</span></div>
+      <div><span class="l">The one thing</span><span>Keep reading.</span></div>
+    </div>
+    <div class="row"><p>The reader is the one page that should feel like paper and nothing more. Words you are learning are marked kindly, not like mistakes; words you know are not marked at all.</p>
+      <aside><span class="k">Marks</span>New words on <code>--learning-bg</code> with <code>--learning-line</code>; unseen ones a sage line. Styles in <code>src/<wbr>styles/<wbr>reader.css</code>; papers per light.</aside></div>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Is the text the biggest, calmest thing on the screen?</li>
+      <li>Does closing the drawer put you back on the very word you tapped?</li>
+      <li>Does the end of a book feel like the end of a book?</li>
+    </ol>
+    <div class="row"><p></p><aside><span class="k">Also here</span>Import a book or a comic; the end page with its ornament; the reading goal’s note.</aside></div>
+  </div>
+</section>
+
+<!-- 26 · Thesaurus and Ludus -->
+<section class="page" data-rh="Thesaurus and Ludus">
+  <div class="sheet">
+    <div class="row"><div><span class="kicker">Chapter 14</span><h2 id="ch14">Thesaurus and Ludus</h2><p class="role">Your words, and games with them</p></div><aside><svg width="15mm" height="14mm"><use href="#r-thes"/></svg></aside></div>
+    <p class="lead">Every word you keep, and the practice that brings it back just in time.</p>
+    <div class="card3">
+      <div><span class="l">Show first</span><span>The cards due today, and the words you met most recently.</span></div>
+      <div><span class="l">Keep quiet</span><span>The scheduling: intervals, ease, forecasts. There for those who look.</span></div>
+      <div><span class="l">The one thing</span><span>Study what’s due.</span></div>
+    </div>
+    <div class="row"><p>A word is more than its card. Wherever it shows, let it say where it was found: the book and the sentence, the song and the line.</p>
+      <aside><span class="k">Cards</span>Width Thin · Normal · Wide, per deck if wanted. Discover; sentences with a gap as a Ludus mode; the word memory and the dictionary.</aside></div>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Does every word show where it came from?</li>
+      <li>Is a card’s answer hidden until the learner has tried?</li>
+      <li>Does practice end with a calm summary rather than a score to beat?</li>
+    </ol>
+    <div class="row"><p></p><aside><span class="k">Careful</span>A saved word is not a known word. Count them separately, everywhere.</aside></div>
+  </div>
+</section>
+
+<!-- 27 · Sonus et Visio -->
+<section class="page" data-rh="Sonus et Visio">
+  <div class="sheet">
+    <div class="row"><div><span class="kicker">Chapter 15</span><h2 id="ch15">Sonus et Visio</h2><p class="role">Listening and watching</p></div><aside><svg width="15mm" height="14mm"><use href="#r-sonus"/></svg></aside></div>
+    <p class="lead">Podcasts, radio, audiobooks, songs, films and shows, with the text following along.</p>
+    <div class="card3">
+      <div><span class="l">Show first</span><span>Continue: what’s half-played or half-watched, and how much is left.</span></div>
+      <div><span class="l">Keep quiet</span><span>Sources and services and their limits, until they matter. Then say them plainly.</span></div>
+      <div><span class="l">The one thing</span><span>Press play.</span></div>
+    </div>
+    <div class="row"><p>Only one thing plays at a time. A word looked up mid-song pauses the following, not the song, and the learner can find their line again with one click.</p>
+      <aside><span class="k">Strip</span>+ Listen and + Watch; Library · Audiobooks · Radio · Streaming, and Sonus+ at the end. A sticky rail of categories in the library.</aside></div>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Can you look up a word without losing your place?</li>
+      <li>When a service can’t do something, does the page say so instead of showing a dead button?</li>
+      <li>Is an empty library one calm card, not a wall of empty shelves?</li>
+    </ol>
+    <div class="row"><p></p><aside><span class="k">Honest</span>Never imply Lingua includes someone else’s subscription.</aside></div>
+  </div>
+</section>
+
+<!-- 28 · Mentis -->
+<section class="page" data-rh="Mentis">
+  <div class="sheet">
+    <div class="row"><div><span class="kicker">Chapter 16</span><h2 id="ch16">Mentis</h2><p class="role">The guide, talking and writing</p></div><aside><svg width="14mm" height="14mm"><use href="#r-mentis"/></svg></aside></div>
+    <p class="lead">Using the language: Mundus suggests, Sermo talks, Diarium writes.</p>
+    <div class="card3">
+      <div><span class="l">Show first</span><span>Today’s prompt: one thing to write, one thing to talk about.</span></div>
+      <div><span class="l">Keep quiet</span><span>Scores and corrections, until the learner asks for them.</span></div>
+      <div><span class="l">The one thing</span><span>Start today’s prompt.</span></div>
+    </div>
+    <div class="row"><p>What the learner writes or says is theirs. Corrections sit beside the original, never over it, and each one can be taken or left.</p>
+      <aside><span class="k">AI</span>With the learner’s own key (Groq, Gemini), and only with Max. A privacy note sits next to Check.</aside></div>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Are the learner’s own words still visible next to the corrections?</li>
+      <li>Is it clear what is sent away, and to whom, before anything is sent?</li>
+      <li>Can a talk or an entry be left half-done and found again?</li>
+    </ol>
+    <div class="row"><p></p><aside><span class="k">Tabs</span>Mundus · Sermo · Diarium, with Today’s prompt on the right of each.</aside></div>
+  </div>
+</section>
+
+<!-- 29 · Ratio -->
+<section class="page" data-rh="Ratio">
+  <div class="sheet">
+    <div class="row"><div><span class="kicker">Chapter 17</span><h2 id="ch17">Ratio</h2><p class="role">How it’s going</p></div><aside><svg width="14mm" height="14mm"><use href="#r-ratio"/></svg></aside></div>
+    <p class="lead">An honest look back: time, words, reading, listening, and the journey so far.</p>
+    <div class="card3">
+      <div><span class="l">Show first</span><span>This week, in a few numbers anyone understands.</span></div>
+      <div><span class="l">Keep quiet</span><span>Every chart behind a tab or a hover.</span></div>
+      <div><span class="l">The one thing</span><span>None. Ratio is for looking; a goal can be changed from here.</span></div>
+    </div>
+    <div class="row"><p>Numbers are evidence, not grades. Each says what it counts and over how long. Where there isn’t enough to say anything, Ratio says that kindly instead of drawing a flat line.</p>
+      <aside><span class="k">Tabs</span>Overview · Tabula · Iter, with a language filter. Charts in <code>src/<wbr>design/<wbr>charts</code>, each with a popover.</aside></div>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Does every number say what it counts, and since when?</li>
+      <li>Is a saved word ever called a known one?</li>
+      <li>Is any estimate labelled as one?</li>
+    </ol>
+    <div class="row"><p></p><aside><span class="k">Tabula</span>The languages you speak, with level and notes; certificates can be added later.</aside></div>
+  </div>
+</section>
+
+<!-- 30 · Settings -->
+<section class="page" data-rh="Settings and the plans">
+  <div class="sheet">
+    <div class="row"><div><span class="kicker">Chapter 18</span><h2 id="ch18">Settings and the plans</h2><p class="role">Everything you can change</p></div><aside><svg width="14mm" height="14mm"><use href="#r-settings"/></svg></aside></div>
+    <p class="lead">Everything adjustable, in groups, with search, and the plans told straight.</p>
+    <div class="card3">
+      <div><span class="l">Show first</span><span>The groups, and the search.</span></div>
+      <div><span class="l">Keep quiet</span><span>The fine options inside their group.</span></div>
+      <div><span class="l">The one thing</span><span>Find the setting.</span></div>
+    </div>
+    <div class="row"><p>Things with consequences are named for what they do. Cancelling a renewal, disconnecting a service and deleting everything are three different things, and they never share a button called Remove.</p>
+      <aside><span class="k">Plans</span>Lingua+ €24.99 once, every update included. Max €5.99 a month or €49.99 a year: AI with your own key. Through Stripe.</aside></div>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Can someone export, delete or manage a subscription without help?</li>
+      <li>Does each plan say its price, what it includes and when it renews, next to its button?</li>
+      <li>Is “Continue free” as easy to see as the rest?</li>
+    </ol>
+    <div class="row"><p></p><aside><span class="k">Name</span>Settings was called Ordo until 5.2-1.</aside></div>
+  </div>
+</section>
+
+<!-- 31 · Part Four -->
+<section class="page bare">
+  <div class="opener">
+    <span class="sc">Part Four</span>
+    <h1 id="part4">Before you call it done</h1>
+    <p>The states a page can be in, Lingua’s check, and a sheet to tick.</p>
+    <svg class="draw" width="20mm" height="20mm" style="margin-top:16mm"><use href="#d-tick"/></svg>
+  </div>
+</section>
+
+<!-- 32 · Chapter 19 -->
+<section class="page" data-rh="Every page's states">
+  <div class="sheet">
+    <span class="kicker">Chapter 19</span>
+    <h2 id="ch19">Every page’s states</h2>
+    <div class="rule"></div>
+    <p class="lead">A page is not done when it looks right full. It is done when it also looks right empty, slow, wrong and offline.</p>
+    <table style="width:86mm">
+      <tr><td class="k">The first time</td><td>Say why it’s empty, and give one way in.</td></tr>
+      <tr><td class="k">Loading</td><td>Keep the page’s shape. If it takes more than a moment, say what’s happening.</td></tr>
+      <tr><td class="k">Nothing found</td><td>Show what was searched for, and a way to clear it.</td></tr>
+      <tr><td class="k">Went wrong</td><td>Keep what the learner typed, say what failed, and offer to try again.</td></tr>
+      <tr><td class="k">Offline</td><td>Say what still works. Most of Lingua does.</td></tr>
+      <tr><td class="k">Not in this plan</td><td>Say what it is and what it costs, and that saying no loses nothing.</td></tr>
+      <tr><td class="k">Coming</td><td>Dimmed, with a word on hover. Never a button that does nothing.</td></tr>
+      <tr><td class="k">A lot</td><td>Five hundred books, ten thousand words: does it still breathe?</td></tr>
+    </table>
+    <div class="row"><p>A toast is a whisper, not a record. Anything the learner must know stays on the page after the toast has gone.</p>
+      <aside><span class="k">Primitives</span><code>EmptyState</code> for the first time and nothing found; <code>Toaster</code> for whispers.</aside></div>
+    <div class="row"><p>Never show a stack trace, a key or someone else’s anything.</p><aside><span class="k">Keys</span>Stay on the device, travel only in request headers, never in a URL.</aside></div>
+  </div>
+</section>
+
+<!-- 33 · Chapter 20 -->
+<section class="page" data-rh="The check">
+  <div class="sheet">
+    <span class="kicker">Chapter 20</span>
+    <h2 id="ch20">The check</h2>
+    <div class="rule"></div>
+    <p class="lead">Lingua’s own check, for every page you touch. It takes ten minutes and saves the user an evening.</p>
+    <div class="row"><div style="font-size:8.4pt;line-height:13pt"><div class="ck"><span class="box"></span><code>npm run typecheck</code></div><div class="ck"><span class="box"></span><code>npm test</code></div><div class="ck"><span class="box"></span><code>npm run build</code></div></div>
+      <aside><span class="k">From</span><code>CLAUDE.md</code>, “How the user wants each prompt handled”.</aside></div>
+    <h3>Then look at it</h3>
+    <div style="line-height:14pt;margin-bottom:6pt"><div class="ck"><span class="box"></span>at 1280, 1440 and a 1366 × 768 laptop</div><div class="ck"><span class="box"></span>in Paper and in Nocturne, two palettes each</div><div class="ck"><span class="box"></span>with the language touches on and off</div><div class="ck"><span class="box"></span>with reduced motion on</div><div class="ck"><span class="box"></span>with the keyboard only: can you reach everything, and see where you are?</div><div class="ck"><span class="box"></span>with a long word, a long name, Arabic from right to left, and Japanese without spaces</div><div class="ck"><span class="box"></span>at Windows’ 125% scaling</div></div>
+    <div class="row"><h3>Then finish it</h3><aside></aside></div>
+    <div class="row"><p>Update the docs it touches (the roadmap, decisions, features), tick the step in the handover, give the push its version, rebase, push, and check the site went live.</p>
+      <aside><span class="k">Version</span><code>node scripts/<wbr>version.ts "…"</code>; Lingua 6 is <code>0.6.0-alpha.N</code>. See <code>docs/<wbr>VERSIONS.md</code>.</aside></div>
+  </div>
+</section>
+
+<!-- 34 · Chapter 21 -->
+<section class="page" data-rh="The review sheet">
+  <div class="sheet">
+    <span class="kicker wide">Chapter 21</span>
+    <h2 id="ch21" class="wide">The review sheet</h2>
+    <p class="small muted wide" style="margin:3pt 0 7pt">Page <span style="display:inline-block;width:34mm;border-bottom:.5pt solid var(--line2)"></span> &nbsp; Date <span style="display:inline-block;width:20mm;border-bottom:.5pt solid var(--line2)"></span></p>
+    <div class="wide" style="display:grid;grid-template-columns:1fr 1fr;gap:0 7mm;font-size:8pt;line-height:12.4pt">
+      <div>
+        <p class="sc" style="margin:2pt 0 3pt">The spirit</p>
+        <div class="ck"><span class="box"></span>The language is the biggest thing</div>
+        <div class="ck"><span class="box"></span>One main thing to do</div>
+        <div class="ck"><span class="box"></span>The rest folded, not taken away</div>
+        <div class="ck"><span class="box"></span>Nothing promised that isn’t built</div>
+        <div class="ck"><span class="box"></span>Nothing added behind the learner’s back</div>
+        <p class="sc" style="margin:7pt 0 3pt">The look</p>
+        <div class="ck"><span class="box"></span>Tokens only; no colour by hand</div>
+        <div class="ck"><span class="box"></span>One terracotta thing per area</div>
+        <div class="ck"><span class="box"></span>Literata for the language and titles</div>
+        <div class="ck"><span class="box"></span>Lines before shadows</div>
+        <div class="ck"><span class="box"></span>Fits 1366 × 768, no tiny scroll</div>
+        <div class="ck"><span class="box"></span>Only transform and opacity move</div>
+        <p class="sc" style="margin:7pt 0 3pt">The words</p>
+        <div class="ck"><span class="box"></span>The title asks or names</div>
+        <div class="ck"><span class="box"></span>At most one smile, never in an instruction</div>
+        <div class="ck"><span class="box"></span>Buttons say what happens</div>
+        <div class="ck"><span class="box"></span>Plain words for money, privacy, errors</div>
+      </div>
+      <div>
+        <p class="sc" style="margin:2pt 0 3pt">The states</p>
+        <div class="ck"><span class="box"></span>The first time</div>
+        <div class="ck"><span class="box"></span>Loading keeps the shape</div>
+        <div class="ck"><span class="box"></span>Nothing found, with a way back</div>
+        <div class="ck"><span class="box"></span>An error keeps what was typed</div>
+        <div class="ck"><span class="box"></span>Offline says what works</div>
+        <div class="ck"><span class="box"></span>Coming is dimmed, not dead</div>
+        <p class="sc" style="margin:7pt 0 3pt">The check</p>
+        <div class="ck"><span class="box"></span>Typecheck, tests, build</div>
+        <div class="ck"><span class="box"></span>Paper and Nocturne, two palettes each</div>
+        <div class="ck"><span class="box"></span>Language touches on and off</div>
+        <div class="ck"><span class="box"></span>Reduced motion</div>
+        <div class="ck"><span class="box"></span>Keyboard only</div>
+        <div class="ck"><span class="box"></span>Right to left, and no spaces</div>
+        <p class="sc" style="margin:7pt 0 3pt">Notes</p>
+        <div class="ruled" data-lines="4" style="--h:6mm"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 35 · Appendix A, colours -->
+<section class="page" data-rh="The numbers">
+  <div class="sheet">
+    <span class="kicker">Appendix A</span>
+    <h2 id="apA">The numbers</h2>
+    <div class="rule"></div>
+    <p class="small muted">Every value in one place, from <code>src/design/tokens.css</code>. The palettes change some of them; see <code>palettes.ts</code>.</p>
+    <table class="spec wide">
+      <tr><th>Token</th><th>Paper</th><th>Nocturne</th><th>Used for</th></tr>
+      <tr><td>--bg</td><td><span class="sw" style="background:#faf6f0"></span>#faf6f0</td><td><span class="sw" style="background:#1f1c1a"></span>#1f1c1a</td><td>the page</td></tr>
+      <tr><td>--surface</td><td><span class="sw" style="background:#efe7d9"></span>#efe7d9</td><td><span class="sw" style="background:#2b2724"></span>#2b2724</td><td>cards, fields</td></tr>
+      <tr><td>--raised</td><td><span class="sw" style="background:#fffbf4"></span>#fffbf4</td><td><span class="sw" style="background:#35302c"></span>#35302c</td><td>things that float</td></tr>
+      <tr><td>--sunken</td><td><span class="sw" style="background:#e8dfcf"></span>#e8dfcf</td><td><span class="sw" style="background:#191715"></span>#191715</td><td>wells, tracks</td></tr>
+      <tr><td>--ink</td><td><span class="sw" style="background:#262220"></span>#262220</td><td><span class="sw" style="background:#ebe0cc"></span>#ebe0cc</td><td>text</td></tr>
+      <tr><td>--ink-soft</td><td><span class="sw" style="background:#5e554e"></span>#5e554e</td><td><span class="sw" style="background:#bdb19f"></span>#bdb19f</td><td>second text, drawings</td></tr>
+      <tr><td>--ink-faint</td><td><span class="sw" style="background:#776c63"></span>#776c63</td><td><span class="sw" style="background:#918779"></span>#918779</td><td>labels, hints</td></tr>
+      <tr><td>--line</td><td><span class="sw" style="background:#e1d6c4"></span>#e1d6c4</td><td><span class="sw" style="background:#3b3532"></span>#3b3532</td><td>hairlines</td></tr>
+      <tr><td>--line-strong</td><td><span class="sw" style="background:#cec0a9"></span>#cec0a9</td><td><span class="sw" style="background:#514944"></span>#514944</td><td>field edges</td></tr>
+      <tr><td>--accent</td><td><span class="sw" style="background:#c86d51"></span>#c86d51</td><td><span class="sw" style="background:#d49b54"></span>#d49b54</td><td>the bookmark</td></tr>
+      <tr><td>--accent-text</td><td><span class="sw" style="background:#a5533b"></span>#a5533b</td><td><span class="sw" style="background:#dba765"></span>#dba765</td><td>text in the accent</td></tr>
+      <tr><td>--sage</td><td><span class="sw" style="background:#6b8e78"></span>#6b8e78</td><td><span class="sw" style="background:#93b39e"></span>#93b39e</td><td>known, done</td></tr>
+      <tr><td>--sage-text</td><td><span class="sw" style="background:#4f6f5b"></span>#4f6f5b</td><td><span class="sw" style="background:#93b39e"></span>#93b39e</td><td>text in sage</td></tr>
+      <tr><td>--inverse</td><td><span class="sw" style="background:#3b302a"></span>#3b302a</td><td><span class="sw" style="background:#e8d8bb"></span>#e8d8bb</td><td>toasts, tooltips</td></tr>
+      <tr><td>--on-inverse</td><td><span class="sw" style="background:#f8efe0"></span>#f8efe0</td><td><span class="sw" style="background:#2b231e"></span>#2b231e</td><td>their text</td></tr>
+      <tr><td>--learning-bg</td><td>accent at 14%</td><td>accent at 17%</td><td>a word being learned</td></tr>
+      <tr><td>--scrim</td><td>ink at 28%</td><td>near-black at 45%</td><td>behind dialogs</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 36 · Appendix A, the rest -->
+<section class="page" data-rh="The numbers">
+  <div class="sheet">
+    <h3 class="wide" style="margin-top:0">Type</h3>
+    <table class="spec wide">
+      <tr><td>Serif</td><td>Literata Variable, Noto Serif Variable, Georgia</td><td><code>--font-serif</code></td></tr>
+      <tr><td>Sans</td><td>Plus Jakarta Sans Variable, Inter Variable, system-ui</td><td><code>--font-sans</code></td></tr>
+      <tr><td>Display</td><td>the language’s heading face, else Literata</td><td><code>--font-display</code></td></tr>
+      <tr><td>Sizes</td><td colspan="2">44 · 40 · 36 · 30 · 22 · 19 · 15 · 13.5 · 12.5 · 11.5 px</td></tr>
+    </table>
+    <h3 class="wide">Corners and light</h3>
+    <table class="spec wide">
+      <tr><td>Corners</td><td colspan="2">8 · 12 · 16 (buttons by size, small panels) · 20 (side panels) · 24 (cards, dialogs, the map) · full (pills)</td></tr>
+      <tr><td>elev-1</td><td colspan="2">0 1 2 ink/6%, 0 2 8 ink/5%</td></tr>
+      <tr><td>elev-2</td><td colspan="2">0 2 6 ink/7%, 0 12 32 ink/10%</td></tr>
+      <tr><td>elev-3</td><td colspan="2">0 8 24 ink/11%, 0 28 72 ink/17%</td></tr>
+    </table>
+    <h3 class="wide">Motion</h3>
+    <table class="spec wide">
+      <tr><td>snappy</td><td>560 · 42 · mass 0.8</td><td>soft</td><td>320 · 34</td></tr>
+      <tr><td>sheet</td><td>400 · 40 · mass 0.9</td><td>gentle</td><td>200 · 28</td></tr>
+      <tr><td>fluid</td><td>210 · 26 · mass 1</td><td>fade</td><td>0.16 s, ease 0.2 0 0 1</td></tr>
+      <tr><td>page</td><td>y 8 → 0 on soft</td><td>full</td><td>y 18, scale 0.985, on fluid</td></tr>
+    </table>
+    <h3 class="wide">Screens and keys</h3>
+    <table class="spec wide">
+      <tr><td>Check at</td><td>1280 · 1440 · 1366 × 768, light and dark</td></tr>
+      <tr><td>Rooms</td><td>Alt 1–8, in the sidebar’s order</td></tr>
+      <tr><td>Cursus tabs</td><td>1–4</td></tr>
+      <tr><td>Contrast</td><td>4.5 : 1 for text; accent and sage text use their <code>-text</code> tokens</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 37 · Appendix B -->
+<section class="page" data-rh="Words Lingua uses">
+  <div class="sheet">
+    <span class="kicker">Appendix B</span>
+    <h2 id="apB">Words Lingua uses</h2>
+    <div class="rule"></div>
+    <table class="wide" style="font-size:7.9pt;line-height:10.6pt">
+      <tr><td class="k">Cursus</td><td>a course, a running. The course, grammar, alphabets, typing.</td></tr>
+      <tr><td class="k">Codex</td><td>a bound book. Reading.</td></tr>
+      <tr><td class="k">Thesaurus</td><td>a treasury. Your words and decks.</td></tr>
+      <tr><td class="k">Ludus</td><td>a game, and a school. The games with your words.</td></tr>
+      <tr><td class="k">Sonus et Visio</td><td>sound and sight. Listening and watching.</td></tr>
+      <tr><td class="k">Mentis</td><td>of the mind. Mundus (the world: the guide), Sermo (talk), Diarium (a daily record).</td></tr>
+      <tr><td class="k">Grammatica</td><td>grammar, in Cursus.</td></tr>
+      <tr><td class="k">Ratio</td><td>a reckoning. Overview, Tabula (a writing tablet: the languages you speak), Iter (a journey).</td></tr>
+      <tr><td class="k">Ordo</td><td>order. Settings’ old name.</td></tr>
+      <tr><td class="k">Paper, Nocturne</td><td>the light and the dark.</td></tr>
+      <tr><td class="k">Palette, paper</td><td>a colour set for each light; a page colour for reading.</td></tr>
+      <tr><td class="k">Language touch</td><td>a flavour: a heading face, an ornament, a lean of the accent.</td></tr>
+      <tr><td class="k">Tiers</td><td>Core, Full, Beta, Basics, Experimental: how much Lingua has for a language.</td></tr>
+      <tr><td class="k">Lingua+</td><td>everything, once, €24.99.</td></tr>
+      <tr><td class="k">Max</td><td>the AI features, with your own key, €5.99 a month or €49.99 a year.</td></tr>
+      <tr><td class="k">Next up</td><td>Home’s list of one-click ways back in.</td></tr>
+      <tr><td class="k">The word drawer</td><td>what opens when you tap a word.</td></tr>
+      <tr><td class="k">A0 to C2</td><td>the levels; A0 is “starting out”.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 38 · Appendix C -->
+<section class="page" data-rh="Lingua 6 at a glance">
+  <div class="sheet">
+    <span class="kicker">Appendix C</span>
+    <h2 id="apC">Lingua 6 at a glance</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead">A design update, one room at a time. Each step is planned from the user’s notes, then built, then checked against this book.</p>
+      <aside><span class="k">The plan</span><code>docs/<wbr>LINGUA-6-PLAN.md</code>. The queue: <code>docs/<wbr>HANDOVER.md</code>.</aside></div>
+    <table style="width:86mm">
+      <tr><th>Step</th><th>What</th><th>Where it stands</th></tr>
+      <tr><td>6-0</td><td>This handbook</td><td class="k" style="color:var(--sage-t)">done</td></tr>
+      <tr><td>6-1</td><td>The first start</td><td class="k">planned</td></tr>
+      <tr><td>6-2</td><td>Home</td><td class="k">waits for notes</td></tr>
+      <tr><td>6-3</td><td>Cursus</td><td class="k">waits for notes</td></tr>
+      <tr><td>6-4</td><td>Codex</td><td class="k">waits for notes</td></tr>
+      <tr><td>6-5</td><td>Thesaurus and Ludus</td><td class="k">waits for notes</td></tr>
+      <tr><td>6-6</td><td>Sonus et Visio</td><td class="k">waits for notes</td></tr>
+      <tr><td>6-7</td><td>Mentis</td><td class="k">waits for notes</td></tr>
+      <tr><td>6-8</td><td>Ratio</td><td class="k">waits for notes</td></tr>
+      <tr><td>6-9</td><td>Settings and the plans</td><td class="k">waits for notes</td></tr>
+      <tr><td>6-10</td><td>The states, everywhere</td><td class="k">waits for notes</td></tr>
+      <tr><td>6-11</td><td>The check; version 0.6.0</td><td class="k">last</td></tr>
+    </table>
+    <div class="row"><p>When a step changes a rule in this book, the book changes in the same commit. Then print it again.</p>
+      <aside><span class="k">Print</span><code>node scripts/<wbr>handbook-pdf.ts</code></aside></div>
+  </div>
+</section>
+
+<!-- 39 · Notes -->
+<section class="page" data-rh="Notes">
+  <span class="kicker" style="position:absolute;top:19mm;left:16mm" id="notes">For your notes and sketches</span>
+  <div class="lined margin ruled" data-lines="22"></div>
+</section>
+
+<!-- 40 · Colophon -->
+<section class="page bare">
+  <div class="opener">
+    <svg class="draw" width="24mm" height="8.5mm"><use href="#d-sprig"/></svg>
+    <p style="font-style:italic;color:var(--soft);margin-top:10pt;max-width:84mm">Set in Literata and Plus Jakarta Sans, the faces Lingua is set in, on Lingua’s own Cream. Drawn with one fine line.</p>
+    <p class="sc" style="margin-top:12pt">Lingua · docs/handbook</p>
+  </div>
+</section>
+
+<script>
+// Number the pages, set recto and verso, the running heads, the contents' page numbers, and mark overflow.
+(function () {
+  const pages = [...document.querySelectorAll('section.page')];
+  let chapter = '';
+  pages.forEach((page, i) => {
+    const n = i + 1;
+    page.classList.add(n % 2 ? 'recto' : 'verso');
+    if (page.dataset.rh) chapter = page.dataset.rh;
+    if (page.classList.contains('bare')) return;
+    const rh = document.createElement('div');
+    rh.className = 'rh';
+    rh.textContent = n % 2 ? chapter : 'The Lingua Handbook';
+    const folio = document.createElement('div');
+    folio.className = 'folio';
+    folio.textContent = n;
+    page.append(rh, folio);
+  });
+  document.querySelectorAll('.ruled[data-lines]').forEach((el) => {
+    for (let k = 0; k < Number(el.dataset.lines); k++) el.append(document.createElement('i'));
+  });
+  document.querySelectorAll('.pn[data-for]').forEach((pn) => {
+    const target = document.getElementById(pn.dataset.for);
+    const page = target && target.closest('section.page');
+    pn.textContent = page ? pages.indexOf(page) + 1 : '?';
+  });
+  // The overflow check waits for the fonts, since they set every line's length.
+  window.__handbookReady = document.fonts.ready.then(() => {
+  const over = [];
+  pages.forEach((page, i) => {
+    const box = page.getBoundingClientRect();
+    const sheet = page.querySelector('.sheet');
+    if (!sheet) return;
+    const bottom = box.bottom - parseFloat(getComputedStyle(page).paddingBottom) + 2;
+    const last = [...sheet.querySelectorAll('*')].reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
+    if (last > bottom) { page.setAttribute('data-overflow', ''); over.push(i + 1); }
+  });
+  window.__handbook = { pages: pages.length, overflow: over };
+  return window.__handbook;
+  });
+})();
+</script>
+</body>
+</html>

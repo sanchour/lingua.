@@ -2185,3 +2185,23 @@ and push, finish".*
       and → step by line. For YouTube it also hands the captions to Lingua.
 - **Can't be checked here:** the extension on the streaming services (it needs the user's accounts
       and an unpacked install); Gemini's transcript needs a Max key.
+
+## Lingua 6 · Design
+
+Planned 2026-10-26 in [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md): a design update, page by page, from the
+user's notes, with the handbook ([handbook/Lingua-Design-Handbook.pdf](handbook/Lingua-Design-Handbook.pdf))
+as its guide. It starts after Lingua 5's check (handover step 21), unless the user says sooner.
+
+- [x] **6-0 · The handbook** (2026-10-26): a small A5 book, forty pages, on designing or improving each
+      page in Lingua's own spirit: the spirit, the materials, every room on one page, the states, the
+      check and a review sheet, and every number in an appendix. Source `docs/handbook/handbook.html`;
+      `node scripts/handbook-pdf.ts` prints it with any Chromium on the computer.
+- [ ] **6-1 · The first start, quieter and shorter** (handover step 23): a first name before Continue,
+      no skip; on the language page no "Commitment issues" line, tiers that say what they have and
+      what they don't yet, the core six as small book covers and every other language larger, and a
+      country panel without tabs; the level redone as seven steps with a card that pops up with what
+      each could mean; "You speak" and "Why" out of the first start; the goal without a pace or a
+      forecast, with what the minutes hold instead. Three bare "remove" notes are read as section 4 of
+      the plan says, until the user says otherwise.
+- [ ] **6-2 to 6-10 · The rooms and the shared pieces,** each planned when the user's notes for it come.
+- [ ] **6-11 · Lingua 6's check;** the version becomes 0.6.0.

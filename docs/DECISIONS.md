@@ -1561,3 +1561,30 @@ Short records of choices that are not obvious from the code. Newest last.
   - Exercise & Lesson views (`GrammarLesson`, `LettersLesson`, `Ludus`, `SpeakLesson`): Hardcoded `paddingBottom` reduced from 140–190px (mobile insets) to 96–104px (desktop horizontal bar).
   - Dialogs & Sheets (`ShortcutsDialog`, `PlansSheet`, `PlanCards`): Added responsive max-height and tightened padding so modal dialogues fit without vertical scroll on standard 1366×768 laptop displays.
   - Sonus / Radio / Visio player views: Recalculated fixed viewport heights (`100dvh-3.5rem` min 460px) and tightened dropzones, empty states, and section gaps across Codex, Colloquium, Diarium, and Mundus.
+
+## 2026-10-26 — Lingua 6 · Design: the plan and the handbook
+
+- **Lingua 6 is a design update, one room at a time, from the user's notes.** The user went through
+  the first start and left notes ("this is just onboarding, but Lingua 6 will focus on design, so
+  much more will come"). The first start is step 6-1; each room is planned when its notes come, so
+  nothing is redesigned on a guess.
+- **Three of the notes were a bare "remove".** They are read by their place in the flow (the mark
+  above the name, the common-words switch, the "You speak" page) and written down as questions in
+  the plan's section 4, so the user can correct a reading before 6-1 is built.
+- **No forecast on the goal page.** "B1 in about 7 months" came from Cambridge's guided learning
+  hours and said it was rough, but it read as a promise; the user found it not accurate. What stays
+  is a true connection: the goal says what the level means, the minutes say what they hold in Lingua.
+- **The handbook is a printed book, not a page in the app.** A5, set in Lingua's own Literata and
+  Plus Jakarta Sans on its Cream, with prose in the column and the exact values in the outer margin:
+  simple to read, with the control there for whoever looks. Every room gets one page, so the whole
+  of it can be seen at once. The user asked for it to look made by a person: bookish, minimal, a
+  little cute.
+- **It prints without a new dependency.** `scripts/handbook-pdf.ts` drives any Chromium on the
+  computer over the DevTools protocol with Node's own WebSocket, and refuses to write the PDF while a
+  page overflows. Playwright's full Chromium on this computer doesn't start (a Windows side-by-side
+  error), so the script tries Playwright's headless shell first.
+- **From the "Lingyu" design package, only what fits.** The user shared a reconstructed UX blueprint
+  for a music-learning app under a temporary name (2026-10-25). The handbook takes its principles
+  (content before dashboards, details on demand, one word everywhere, saving isn't scheduling,
+  honest numbers, every page's states, closing returns to where you were) and leaves its indigo
+  tokens, its four tabs, its phone layouts and its feature catalogue.
