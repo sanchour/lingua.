@@ -2205,3 +2205,23 @@ as its guide. It starts after Lingua 5's check (handover step 21), unless the us
       the plan says, until the user says otherwise.
 - [ ] **6-2 to 6-10 · The rooms and the shared pieces,** each planned when the user's notes for it come.
 - [ ] **6-11 · Lingua 6's check;** the version becomes 0.6.0.
+
+## Lingua 7 · Features
+
+Planned 2026-10-26 in [LINGUA-7-PLAN.md](LINGUA-7-PLAN.md), from the audit
+[LINGUA-7-FEATURES.md](LINGUA-7-FEATURES.md): the Lingyu feature catalogue's 1,618 entries checked against Lingua
+(437 there, 262 partly, 834 missing, 38 already in Lingua 5.2, 47 needing the user's word). Built after Lingua 6 by
+default, in another session; each step is claimed in the plan's own table.
+
+- [x] **The audit and the plan** (2026-10-26).
+- [ ] **Part A · Foundations:** 7-1 the word record · 7-2 the inbox and the deck workshop · 7-3 cards and memory ·
+      7-4 one exercise engine · 7-5 the learner's record · 7-6 generated materials, checked.
+- [ ] **Part B · The skills:** 7-7 grammar · 7-8 reading · 7-9 listening · 7-10 sounds and pronunciation · 7-11
+      speaking · 7-12 writing · 7-13 translating and comparing languages.
+- [ ] **Part C · Paths and guidance:** 7-14 courses and lessons · 7-15 the tutor, in context · 7-16 personal and
+      adaptive · 7-17 goals, habits and progress · 7-18 exams and levels.
+- [ ] **Part D · More of the language:** 7-19 immersion and culture · 7-20 phrasebook, notebook and the word map ·
+      7-21 games and projects · 7-22 dictionary tools · 7-23 tools for each language.
+- [ ] **Part E · Around the app:** 7-24 import, export and integrations · 7-25 accessibility and the desktop.
+- [ ] **Part F · Further out, with the user's word:** 7-26 experiments · 7-27 together, and beyond the desk.
+- [ ] **7-28 · Lingua 7's check;** version 0.7.0.

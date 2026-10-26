@@ -36,6 +36,10 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
   [docs/handbook/Lingua-Design-Handbook.pdf](docs/handbook/Lingua-Design-Handbook.pdf) (source
   `docs/handbook/handbook.html`, printed with `node scripts/handbook-pdf.ts`): read its Part One before
   any design work, and the room's chapter before changing a room.
+- **Lingua 7 · Features** is planned (2026-10-26): [docs/LINGUA-7-PLAN.md](docs/LINGUA-7-PLAN.md), 28 steps that add
+  what the Lingyu feature catalogue has and Lingua doesn't, checked entry by entry in
+  [docs/LINGUA-7-FEATURES.md](docs/LINGUA-7-FEATURES.md) (handover step 24, after Lingua 6). Its steps are claimed in
+  the plan's own table; tick the audit's entries as they are built.
 - Other accounts and sessions push to `main` all the time: rebase onto `origin/main` before every
   push. Tier 2 stays cheap: only the features that cost little (automatic packs, decks, podcasts,
   music search).

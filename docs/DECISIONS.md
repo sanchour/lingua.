@@ -1588,3 +1588,26 @@ Short records of choices that are not obvious from the code. Newest last.
   (content before dashboards, details on demand, one word everywhere, saving isn't scheduling,
   honest numbers, every page's states, closing returns to where you were) and leaves its indigo
   tokens, its four tabs, its phone layouts and its feature catalogue.
+
+## 2026-10-26 — Lingua 7 · Features: the audit and the plan
+
+- **Every entry checked, not sampled.** The user pasted the Lingyu catalogue (1,618 entries) and asked which Lingua
+  has and a plan for all the rest. Each entry got a status (there, partly there, missing, already in an open 5.2
+  step, or needing the user's word) from the docs and the code, and the result is a checklist in the repo,
+  LINGUA-7-FEATURES.md, ticked as steps are built, so any session can see what is left.
+- **"Partly there" rather than ticked** whenever Lingua does a simpler version of what the entry means (sorting
+  decks but not cards, dictation only where a natural voice speaks): the steps finish them instead of skipping them.
+- **Foundations first.** Many entries are one thing seen from several rooms (synonym cards, synonym races, synonym
+  maps and a synonym finder are one data source), so Part A builds six shared pieces (the word record, the inbox
+  and decks, cards and memory, one exercise engine, the learner's record, checked AI generation) and the room steps
+  build on them. This keeps 1,143 entries from becoming 1,143 separate features.
+- **New tabs only where a room needs one** (Cursus › Sounds and Exams, Thesaurus › Phrases and Map, Mentis ›
+  Notebook, Ludus › Translate); everything else is a panel, mode or setting in a room that exists.
+- **The tutor stays contextual.** 5.2-6 takes the chat out of Sermo; Lingua 7's tutor is an Ask button where the
+  learning is, and conversation feedback comes from pasting the AI app's conversation back. A live chat would be the
+  user's call (Q3).
+- **Generated material is checked before it is shown** (schema, dictionary look-ups, a measured level, a label and
+  Report), because the catalogue itself warns that learners absorb confident mistakes.
+- **47 entries wait for the user:** community, public profiles, leaderboards, phone apps, widgets, cloud accounts.
+  They go against D1, D6 and Lingua being private; step 7-27 proposes sharing by files and links instead, and says
+  what a server would cost.
