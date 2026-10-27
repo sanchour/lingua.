@@ -1724,3 +1724,14 @@ Short records of choices that are not obvious from the code. Newest last.
 - **The user's Home redesign** (branch `home-redesign`, 0.5.2-alpha.17): Home, Cursus, Explora and Bibliotheca as the
   main rooms, Codex, Thesaurus, Sonus, Visio and Mentis under Tools, Ratio and Settings at the bottom; Sonus and Visio
   are separate rooms again (`/visio` is Visio's page, no longer a redirect). Lingua 5's remaining steps build on this.
+
+## 2026-10-27 — Sandesigner 1.1, Design Notes bar collapse, and Mac/Windows command options
+
+- **Renamed to Sandesigner 1.1:** The canvas and layout design suite `sandesigning` was renamed to `Sandesigner` 1.1.
+  The build outputs to both `public/sandesigner/` and `public/sandesigning/` to maintain 100% backward compatibility for existing bookmarks and integrations.
+  Command line script `npm run sandesigner` added alongside legacy `npm run sandesigning`.
+- **Floating bar collapse and expand on hover:** The Design Notes bar in Lingua and the embedded Sandesigner launcher can now be collapsed to a single pen icon button.
+  An "expand on hover" option toggle lets the user hover over the icon to temporarily reveal the full toolbar without permanently uncollapsing it. Preferences are saved to localStorage (`lingua.designNotes.collapsed` and `lingua.designNotes.expandOnHover`).
+- **Mac and Windows keyboard command symbols:** Both Sandesigner (`sandesigner.keyboard`) and Lingua (`settings.ui.keyboardStyle: 'auto' | 'mac' | 'windows'`) now provide an option to switch shortcut modifier symbols.
+  Auto detects the platform via `navigator`. Mac renders symbols `⌘`, `⌥`, `⇧`, `⎋`, `⏎`, `⌫`, `⌦`, while Windows renders `Ctrl`, `Alt`, `Shift`, `Esc`, `Enter`, `Backspace`, `Del`.
+  In Lingua, users can toggle this in Settings > Keyboard (`KeyboardSection`) or directly in the `?` shortcuts modal dialog (`ShortcutsDialog`).

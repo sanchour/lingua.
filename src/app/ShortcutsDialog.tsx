@@ -1,6 +1,33 @@
 import { sectionKey, SECTIONS } from '@/app/sections';
-import { Button, Dialog, Kbd } from '@/design/primitives';
+import { useApp } from '@/app/context';
+import { patchSetting } from '@/data/settings';
+import { Button, Dialog, Kbd, Segmented } from '@/design/primitives';
 import { useUI } from '@/state/ui';
+
+export type KeyboardStyle = 'auto' | 'mac' | 'windows';
+
+export function isMacKeyboard(style: KeyboardStyle = 'auto'): boolean {
+  if (style === 'mac') return true;
+  if (style === 'windows') return false;
+  if (typeof navigator !== 'undefined') {
+    const nav = navigator as Navigator & { userAgentData?: { platform?: string } };
+    const p = (nav.userAgentData?.platform || nav.platform || '').toLowerCase();
+    return p.includes('mac') || p.includes('iphone') || p.includes('ipad');
+  }
+  return false;
+}
+
+export function formatKeySymbol(key: string, isMac: boolean): string {
+  const lower = key.toLowerCase();
+  if (lower === 'alt' || lower === 'opt' || lower === 'option') return isMac ? '⌥' : 'Alt';
+  if (lower === 'ctrl' || lower === 'control' || lower === 'cmd' || lower === 'command' || lower === 'mod') return isMac ? '⌘' : 'Ctrl';
+  if (lower === 'shift') return isMac ? '⇧' : 'Shift';
+  if (lower === 'esc' || lower === 'escape') return isMac ? '⎋' : 'Esc';
+  if (lower === 'enter' || lower === 'return') return isMac ? '⏎' : 'Enter';
+  if (lower === 'backspace') return isMac ? '⌫' : 'Backspace';
+  if (lower === 'del' || lower === 'delete') return isMac ? '⌦' : 'Del';
+  return key;
+}
 
 const GENERAL: Array<[string[], string]> = [
   [['['], 'Collapse or expand the sidebar'],
@@ -48,19 +75,28 @@ export const WATCHING_SHORTCUTS: Array<[string[], string]> = [
 ];
 
 /** Every desktop shortcut, grouped. Shown in Settings and in the `?` dialog. */
-export function ShortcutList() {
+export function ShortcutList({ style }: { style?: KeyboardStyle }) {
+  let appStyle: KeyboardStyle = 'auto';
+  try {
+    const app = useApp();
+    appStyle = app.settings.ui.keyboardStyle ?? 'auto';
+  } catch {
+    // Outside App context
+  }
+  const isMac = isMacKeyboard(style ?? appStyle);
+
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      <Group title="Navigate" rows={[...SECTIONS.slice(0, 10).map((s, i): [string[], string] => [['Alt', String(sectionKey(i))], s.name]), ...GENERAL]} />
-      <Group title="Reading" rows={READER_SHORTCUTS} />
-      <Group title="Studying" rows={STUDY_SHORTCUTS} />
-      <Group title="Listening" rows={LISTENING_SHORTCUTS} />
-      <Group title="Watching" rows={WATCHING_SHORTCUTS} />
+      <Group isMac={isMac} title="Navigate" rows={[...SECTIONS.slice(0, 10).map((s, i): [string[], string] => [['Alt', String(sectionKey(i))], s.name]), ...GENERAL]} />
+      <Group isMac={isMac} title="Reading" rows={READER_SHORTCUTS} />
+      <Group isMac={isMac} title="Studying" rows={STUDY_SHORTCUTS} />
+      <Group isMac={isMac} title="Listening" rows={LISTENING_SHORTCUTS} />
+      <Group isMac={isMac} title="Watching" rows={WATCHING_SHORTCUTS} />
     </div>
   );
 }
 
-function Group({ title, rows }: { title: string; rows: Array<[string[], string]> }) {
+function Group({ title, rows, isMac }: { title: string; rows: Array<[string[], string]>; isMac: boolean }) {
   return (
     <div>
       <h3 className="mb-2.5 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">{title}</h3>
@@ -69,7 +105,7 @@ function Group({ title, rows }: { title: string; rows: Array<[string[], string]>
           <div key={label} className="contents">
             <dt className="flex gap-1">
               {keys.map((k) => (
-                <Kbd key={k}>{k}</Kbd>
+                <Kbd key={k}>{formatKeySymbol(k, isMac)}</Kbd>
               ))}
             </dt>
             <dd className="text-sm">{label}</dd>
@@ -83,6 +119,14 @@ function Group({ title, rows }: { title: string; rows: Array<[string[], string]>
 export function ShortcutsDialog() {
   const open = useUI((s) => s.shortcutsOpen);
   const setOpen = useUI((s) => s.setShortcutsOpen);
+  let keyboardStyle: KeyboardStyle = 'auto';
+  try {
+    const app = useApp();
+    keyboardStyle = app.settings.ui.keyboardStyle ?? 'auto';
+  } catch {
+    // Outside App context
+  }
+
   return (
     <Dialog
       open={open}
@@ -90,13 +134,25 @@ export function ShortcutsDialog() {
       title="Keyboard shortcuts"
       maxWidth="max-w-2xl"
       actions={
-        <Button variant="secondary" onClick={() => setOpen(false)} data-autofocus>
-          Done
-        </Button>
+        <div className="flex w-full flex-wrap items-center justify-between gap-3 sm:w-auto">
+          <Segmented<KeyboardStyle>
+            label="Command symbols"
+            value={keyboardStyle}
+            onChange={(val) => void patchSetting('ui', { keyboardStyle: val })}
+            options={[
+              { value: 'auto', label: 'Auto' },
+              { value: 'mac', label: 'Mac (⌘ ⌥)' },
+              { value: 'windows', label: 'Win (Ctrl Alt)' },
+            ]}
+          />
+          <Button variant="secondary" onClick={() => setOpen(false)} data-autofocus>
+            Done
+          </Button>
+        </div>
       }
     >
-      <div className="mt-3 max-h-[calc(100dvh-10rem)] overflow-y-auto pr-1">
-        <ShortcutList />
+      <div className="mt-3 max-h-[calc(100dvh-12rem)] overflow-y-auto pr-1">
+        <ShortcutList style={keyboardStyle} />
       </div>
     </Dialog>
   );

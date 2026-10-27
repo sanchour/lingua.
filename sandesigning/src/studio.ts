@@ -6,7 +6,7 @@ import type { Capture } from './capture';
 import { Editor } from './editor';
 import type { Tool } from './editor';
 import { ICONS, ICON_GROUPS } from './iconData';
-import { comboOf, kbd } from './keys';
+import { comboOf, getKeyboardPlatform, isMac, kbd, setKeyboardPlatform } from './keys';
 import { DEVICES, SYSTEM_FONTS, TEMPLATES, WEB_FONTS, WIDGETS, loadFont } from './library';
 import { KINDS, PRIORITIES, VERSION, bounds, cloneNodes, descendants, domAt, domBox, isDoc, label, newDoc, overlaps, uid, union } from './model';
 import type { Doc, DomBox, FrameNode, ImageNode, PinNode, Priority, SNode, Target, TextNode } from './model';
@@ -409,6 +409,12 @@ export class Studio {
       { id: 'notes-text', label: 'Show or hide the notes’ words', group: 'View', keys: ['shift+n'], run: () => this.setting('notesText') },
       { id: 'panels', label: 'Hide or show the panels', group: 'View', keys: ['mod+\\'], run: () => this.el.classList.toggle('bare') },
       { id: 'theme', label: 'Light, dark or as the system', group: 'View', run: () => this.cycleTheme() },
+      { id: 'keyboard-style', label: 'Command symbols: Mac (⌘/⌥) or Windows (Ctrl/Alt)', group: 'View', run: () => {
+        const next = isMac() ? 'windows' : 'mac';
+        setKeyboardPlatform(next);
+        this.toast(`Command symbols: ${next === 'mac' ? 'Mac (⌘ / ⌥)' : 'Windows (Ctrl / Alt)'}`);
+        this.drawRight();
+      } },
       { id: 'palette', label: 'Find an action', group: 'Help', keys: ['mod+k', 'mod+/'], run: () => this.palette() },
       { id: 'keys', label: 'Every shortcut', group: 'Help', keys: ['shift+/'], run: () => this.shortcuts() },
       { id: 'setup', label: 'Use Sandesigner in other projects', group: 'Help', run: () => this.setup() },
@@ -1462,10 +1468,21 @@ export class Studio {
       ['Canvas', 'See a screenshot’s elements', 'alt'],
       ['Arrange', 'Opacity 10% … 100%', '1'],
     ];
+    const kb = getKeyboardPlatform();
     const rows = (list: { label: string; keys: string[] }[]) => list.map((a) => `<div class="kr"><span>${esc(a.label)}</span><span>${a.keys.map((k) => kbd(k)).join('<span style="color:var(--faint)">/</span>')}</span></div>`).join('');
     const canvas = extra.map(([, l, k]) => ({ label: l + (k === 'mod' ? ' (with the wheel)' : k === 'space' ? ' (hold and drag)' : k === '1' ? ' (1 … 9, 0)' : ' (hold)'), keys: [k] }));
-    const body = `<div class="body keys">${[...groups].map(([g, list]) => `<section><h4>${g}</h4>${rows(list.map((a) => ({ label: a.id.startsWith('nudge-') ? a.label.replace('1 px', '1 px (⇧ 10 px)') : a.label, keys: a.keys! })))}</section>`).join('')}<section><h4>Canvas</h4>${rows(canvas)}</section></div>`;
-    this.dialog('Shortcuts', body);
+    const header = `<div class="row" style="margin-bottom:12px;padding:6px 10px;background:var(--bg);border-radius:10px;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--soft)">Command symbols</span><div class="chips" style="margin:0"><button class="chip" data-kb="auto" aria-pressed="${kb === 'auto'}">Auto</button><button class="chip" data-kb="mac" aria-pressed="${kb === 'mac'}">Mac (⌘ / ⌥)</button><button class="chip" data-kb="windows" aria-pressed="${kb === 'windows'}">Windows (Ctrl / Alt)</button></div></div>`;
+    const body = `<div class="body keys">${header}${[...groups].map(([g, list]) => `<section><h4>${g}</h4>${rows(list.map((a) => ({ label: a.id.startsWith('nudge-') ? a.label.replace('1 px', '1 px (⇧ 10 px)') : a.label, keys: a.keys! })))}</section>`).join('')}<section><h4>Canvas</h4>${rows(canvas)}</section></div>`;
+    const v = this.dialog('Shortcuts', body);
+    v.addEventListener('click', (e) => {
+      const chip = (e.target as Element).closest<HTMLElement>('[data-kb]');
+      if (chip?.dataset.kb) {
+        setKeyboardPlatform(chip.dataset.kb as any);
+        this.closeDialog();
+        this.shortcuts();
+        this.drawRight();
+      }
+    });
   }
 
   private briefDialog() {
@@ -1568,4 +1585,7 @@ export class Studio {
 
 }
 
-const comboTitle = (c: string) => c.replace('mod', /Mac/.test(navigator.platform) ? '⌘' : 'Ctrl').replace(/\+/g, ' ').toUpperCase();
+const comboTitle = (c: string) => {
+  const mac = isMac();
+  return c.replace('mod', mac ? '⌘' : 'Ctrl').replace('alt', mac ? '⌥' : 'Alt').replace('shift', mac ? '⇧' : 'Shift').replace(/\+/g, ' ').toUpperCase();
+};

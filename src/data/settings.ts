@@ -156,6 +156,8 @@ export interface Settings {
     hints: boolean;
     /** Settings as a calm page of the essentials, or every group and option. */
     settingsMode: 'simple' | 'full';
+    /** Command symbols in shortcuts: auto-detect from platform, or force mac / windows. */
+    keyboardStyle: 'auto' | 'mac' | 'windows';
   };
   /** Device-only. */
   meta: {
@@ -241,7 +243,7 @@ export const DEFAULT_SETTINGS: Settings = {
   voice: { off: false, chosen: {} },
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today', flavour: true, designNotes: false, hints: true, settingsMode: 'simple' },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today', flavour: true, designNotes: false, hints: true, settingsMode: 'simple', keyboardStyle: 'auto' },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null, plan: null },
   sync: { devices: [], includeApiKeys: false },
 };

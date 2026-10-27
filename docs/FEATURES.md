@@ -783,9 +783,9 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **What it is:** a fold-out with the tag, the React component around it (dev server only), classes, size, type,
   colours with their token names, border, padding, margin, gap and corners. All of it goes into the Markdown.
 
-## Sandesigning (7-0e): a design canvas for every app
+## Sandesigner 1.1 (7-0e): a design canvas for every app
 
-Its own tool in `sandesigning/` (no React, no dependencies), served beside Lingua at `/lingua./sandesigning/`.
+Its own tool in `sandesigning/` (no React, no dependencies), served beside Lingua at `/lingua./sandesigner/` (with `/lingua./sandesigning/` preserved).
 [sandesigning/README.md](../sandesigning/README.md) has everything; in short:
 
 - **The canvas:** frames in device sizes, rectangles, ellipses, lines and arrows, pen, highlighter and eraser, text in
@@ -795,15 +795,17 @@ Its own tool in `sandesigning/` (no React, no dependencies), served beside Lingu
 - **Screenshots and templates:** paste or drop any app's screenshot (phones too); in a web app, the camera captures
   the page with every element's box: a note knows which element it's on, and Alt-click lifts an element out of the
   screenshot to move it. Seven starter templates; your own templates and pictures in the library.
-- **Keys for everything:** one key per tool, Ctrl K finds any action, ? lists them all, tooltips show them.
+- **Keys for everything & Mac/Windows symbols:** one key per tool, Ctrl/⌘ K finds any action, ? lists them all, tooltips show them.
+  Both Sandesigner and Lingua Settings allow choosing between Auto, Mac (`⌘ / ⌥ / ⎋ / ⏎`), or Windows (`Ctrl / Alt / Esc / Enter`) command representations.
 - **Export and import:** the brief for AI (Markdown: notes by priority with what they're on, and every frame's layout
   in numbers), a picture (copied or PNG, each frame, SVG), the `.sandesign` file; open `.sandesign` files and paste
   between canvases. Canvases are kept in the browser (IndexedDB).
-- **Everywhere:** the hosted page or the downloaded `sandesigning.html` (offline); `sandesigning.js` for any web app
-  (a Design button and Alt Shift D) or as a bookmark; `SANDESIGNING.md` to drop into any project with one prompt, so
+- **Everywhere:** the hosted page or the downloaded `sandesigner.html` (offline); `sandesigner.js` (and `sandesigning.js`) for any web app
+  (a Design button and Alt Shift D) or as a bookmark; `SANDESIGNER.md` to drop into any project with one prompt, so
   the AI there sets it up and learns to read briefs; `FORMAT.md` for any model.
 - **In Lingua:** the design notes bar has **Canvas** (Alt Shift D): the page is captured onto a canvas with its notes
-  pinned where they are, priorities, kinds and elements included.
+  pinned where they are, priorities, kinds and elements included. The bar can collapse into a single pen icon button
+  and supports an optional "expand on hover" behavior. Settings > Keyboard also offers the Mac/Windows command symbols toggle.
 
 ## Device lab (Settings › Developer, restructured in 7-0d)
 
