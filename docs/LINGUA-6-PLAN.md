@@ -12,8 +12,8 @@ before any Lingua 6 step, and the room's chapter before working on that room. It
 [handbook/handbook.html](handbook/handbook.html); `node scripts/handbook-pdf.ts` prints it again.
 
 Read first: [CLAUDE.md](../CLAUDE.md), then [HANDOVER.md](HANDOVER.md) for the queue. Lingua 5
-(LINGUA-5.1-PLAN.md, LINGUA-5.2-PLAN.md) stays as planned: Lingua 6 starts after 5.2's check
-(handover step 21), unless the user says to start sooner.
+(LINGUA-5.1-PLAN.md, LINGUA-5.2-PLAN.md) stays as planned. **Lingua 6 comes after Lingua 7 · Features**
+(the user, 2026-10-26: "Do Lingua Features first, then Lingua Design"): after 5.2's check (handover step 21), then Lingua 7 (step 24), then this plan (step 23).
 
 ---
 
@@ -66,10 +66,11 @@ feature catalogue (an option library, not a list to build).
 
 1. **6-0 · The handbook.** Done 2026-10-26 with this plan.
 2. **6-1 · The onboarding** (section 3). The first step to build; the version line becomes
-   `0.6.0-alpha.1` with its first push (`node scripts/version.ts --line 0.6.0 "…"`).
+   `0.8.0-alpha.1` with its first push (`node scripts/version.ts --line 0.8.0 "…"`): Lingua 7 (`0.7.x`) is built
+   first, and versions only go up.
 3. **6-2 to 6-10 · The rooms and the shared pieces,** each when the user's notes for it come. They
    don't depend on each other, so they can run in parallel once planned.
-4. **6-11 · Lingua 6's check:** every room against the handbook's review sheet; version `0.6.0`.
+4. **6-11 · Lingua 6's check:** every room against the handbook's review sheet; version `0.8.0`.
 
 ---
 
@@ -86,6 +87,12 @@ feature catalogue (an option library, not a list to build).
 - [x] `scripts/handbook-pdf.ts` prints it with the Chromium on the computer (Chrome, Edge or
   Playwright's), with clickable contents and PDF bookmarks, to `docs/handbook/Lingua-Design-Handbook.pdf`.
 - When a room's step changes a rule, the handbook changes with it, in the same commit.
+- [x] **The second edition** (2026-10-27, at the user's ask: "a full Lingua handbook, helping me with everything from
+  start to finish"): 80 pages. Added Part Two the product (what Lingua does, languages and tiers, plans and prices,
+  where it is going, Lingua 7), the new tabs of Lingua 7, Part Six the people it's for, Part Seven telling people
+  (the story, words for selling, the website, channels, content, the launch, counting without spying), Part Eight
+  running it (money, privacy and the law, support, shipping, working with Claude) and Part Nine start to finish (the
+  whole road, what only the user can do, two checklists). Chapters number themselves; refer to them by name.
 
 ### 6-1 · The onboarding, quieter and shorter
 
@@ -205,20 +212,20 @@ built. Start each from the handbook's chapter for the room.
 
 | Step | Room or piece | The handbook's chapter |
 | --- | --- | --- |
-| 6-2 | Home (Today and Classic) | III · Home |
-| 6-3 | Cursus (Course, Grammatica, Alphabets, Typing) | III · Cursus |
-| 6-4 | Codex (the library, the reader, the word drawer, Diarium's editor where it sits) | III · Codex |
-| 6-5 | Thesaurus and Ludus (words, decks, the study screen, games) | III · Thesaurus and Ludus |
-| 6-6 | Sonus et Visio (library, players, radio, Sonus+, streaming) | III · Sonus et Visio |
-| 6-7 | Mentis (Mundus, Sermo, Diarium) | III · Mentis |
-| 6-8 | Ratio (Overview, Tabula, Iter) | III · Ratio |
-| 6-9 | Settings and the plans | III · Settings and plans |
-| 6-10 | Shared pieces: empty, loading and error states, dialogs, toasts, the sidebar | IV · States |
+| 6-2 | Home (Today and Classic) | Page by page · Home |
+| 6-3 | Cursus (Course, Grammatica, Alphabets, Typing) | Page by page · Cursus |
+| 6-4 | Codex (the library, the reader, the word drawer, Diarium's editor where it sits) | Page by page · Codex |
+| 6-5 | Thesaurus and Ludus (words, decks, the study screen, games) | Page by page · Thesaurus and Ludus |
+| 6-6 | Sonus et Visio (library, players, radio, Sonus+, streaming) | Page by page · Sonus et Visio |
+| 6-7 | Mentis (Mundus, Sermo, Diarium) | Page by page · Mentis |
+| 6-8 | Ratio (Overview, Tabula, Iter) | Page by page · Ratio |
+| 6-9 | Settings and the plans | Page by page · Settings and the plans |
+| 6-10 | Shared pieces: empty, loading and error states, dialogs, toasts, the sidebar | Before you call it done · Every page's states |
 
 ### 6-11 · Lingua 6 complete: the check
 
 Every room against the handbook's review sheet, at 1280, 1440 and 1366×768, light and dark, two
-palettes each, with reduced motion; the version becomes `0.6.0` (`node scripts/version.ts --release`).
+palettes each, with reduced motion; the version becomes `0.8.0` (`node scripts/version.ts --release`).
 
 ---
 

@@ -52,8 +52,8 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 
 ## 2. Where Lingua 7 fits, and the order
 
-- **After Lingua 5's check (handover step 21) and, by default, after Lingua 6 · Design**, so new screens are built
-  into the redesigned rooms. Part A has almost no screens: if the user wants speed, it can run beside Lingua 6 (Q1).
+- **Next after Lingua 5's check (handover step 21), and before Lingua 6 · Design** (the user, 2026-10-26: "Do Lingua Features first, then Lingua Design"). New screens follow
+  the handbook as it stands; Lingua 6 then redesigns rooms that already have Lingua 7's features in them.
 - **Versions:** `0.7.0-alpha.N` from its first push (`node scripts/version.ts --line 0.7.0 "…"`), `0.7.0` at 7-28.
 - **Desktop only**, as always. **Plans** follow the rooms (D4 of the 5.1 plan): what Thesaurus, Codex, the
   dictionary, Diarium, the notebook and Ratio gain is free; what Ludus, Cursus (Grammatica, the course, Sounds,
@@ -341,7 +341,7 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
   expressions; mistakes and expressions to cards through a preview; the transcript kept in Diarium.
 - **Speaking alone:** 30-second prompts, one-minute talks, storytelling, describing a picture, explaining something,
   a quick debate, challenges made from your week; recorded, written out, reviewed the same way.
-- If the user wants a live voice conversation inside Lingua again, that is Q3.
+- No live voice conversation inside Lingua: the user said no (Q3, 2026-10-26). Feedback comes from the pasted conversation.
 **Entries (46 new · 5 to finish):** F0260, F0487, F0520, F0536, F0540, F0548–F0560, F0562–F0576, F0578–F0579, F0581–F0584, F0602–F0603, F0607–F0613, F0975, F0978, F1126
 
 #### 7-12 · Writing (Mentis › Diarium, after 5.2-5)
@@ -461,7 +461,7 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
   languages; "Explain this reference" with Max anywhere.
 - **Lingua in the language** (Settings › Look and feel): the app's own words in the language being learned, for the
   six core languages, with the English on hover; translated once and checked. It needs every interface string in one
-  place first, so it is the biggest piece of this step (Q4).
+  place first, so it is the biggest piece of this step. The user said yes to it (Q4, 2026-10-26).
 - **Every day:** describe your surroundings, narrate your day, a shopping list in the language, signs and menus read
   from a photo (Codex's OCR), playlists of media by level, short videos and live streams through YouTube (5.2-4).
 **Entries (23 new · 7 to finish):** F0158, F0406, F0773, F0807, F0811, F0813, F0819, F0821, F0826–F0827, F0829, F0832, F0841–F0847, F0849–F0852, F0856–F0862
@@ -553,7 +553,7 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
 #### 7-26 · Experiments
 
 Each is proposed to the user in a few lines before it is built, and starts in Settings › Lab. Ideas: interactive
-novels and audio dramas (7-6 and voices); characters who remember (needs a chat, Q3); generated roleplay worlds,
+novels and audio dramas (7-6 and voices); characters who remember (would need a chat, which the user declined: Q3); generated roleplay worlds,
 shops, cafés and stations to walk through; a tutor that follows your word map; meaning maps across languages; a map
 of grammar; a morphology explorer; books and your own writing analysed (vocabulary profile, difficulty curve, your
 corpus); authors compared; language across periods and how words evolved (etymology chains); dialect maps; a
@@ -647,13 +647,13 @@ Methods aren't features: this is where Lingua already teaches with each, and wha
 - **Pictures for cards** come from open-licence sources with their credit, never scraped from search engines.
 - **Community and phone apps:** 7-27.
 
-## 6. Questions for the user
+## 6. The user's answers (2026-10-26)
 
-| # | Question | Until answered |
+| # | Question | The user's answer, and what follows |
 | --- | --- | --- |
-| Q1 | Lingua 7 after Lingua 6, or Part A (no screens) beside Lingua 6? | After Lingua 6. |
-| Q2 | Sharing and community: files and links only, or a server with accounts? | Files and links only (7-27). |
-| Q3 | Sermo opens your AI app since 5.2-6; feedback comes from pasting the conversation back. A live voice conversation inside Lingua again? | No: paste it back (7-11). |
-| Q4 | Lingua in the language you learn (the interface translated) for the six core languages: worth the size? | Yes, as the last part of 7-19. |
-| Q5 | Streaks optional, stamps instead of points, reminders off by default: right for Lingua? | Yes. |
-| Q6 | Phone apps and widgets: still decided against (D6)? | Yes: 7-27 waits. |
+| Q1 | Lingua 7 after Lingua 6, or before? | **"Do Lingua Features first, then Lingua Design."** Lingua 7 is next after Lingua 5's check; Lingua 6 follows. Versions: Lingua 7 is `0.7.x`, Lingua 6 then `0.8.x`, so they only go up (VERSIONS.md). |
+| Q2 | Sharing and community: files and links only, or a server with accounts? | **"Still to be considered."** Open: nothing in 7-27 is built until the user decides. |
+| Q3 | A live voice conversation inside Lingua again? | **No.** Sermo keeps opening the learner's AI app; 7-11's feedback comes from the pasted conversation. |
+| Q4 | The interface in the language being learned, for the six core languages? | **Yes**, as the last part of 7-19. |
+| Q5 | Streaks optional, stamps instead of points, reminders off by default? | **Yes.** |
+| Q6 | Phone apps and widgets: still decided against (D6)? | **"Can be."** Not ruled out any more; still not scheduled. Until the user schedules them, desktop only (D6) holds for everything built. |

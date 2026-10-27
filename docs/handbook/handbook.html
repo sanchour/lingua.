@@ -165,6 +165,23 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 .flow .to { color: var(--line2); }
 .sig { margin-top: 10pt; font-style: italic; color: var(--soft); }
 [data-overflow] { outline: 2px solid red; }
+/* Learners, as index cards. */
+.persona { position: relative; background: #fffdf9; border: .5pt solid var(--line2); border-radius: 1.6mm; padding: 2.6mm 3.4mm 2.2mm; margin: 6pt 0; box-shadow: 0 .6pt 1.4pt rgb(38 34 32 / .08); }
+.persona .ph { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 2mm; margin-bottom: 2mm; border-bottom: .6pt solid rgb(200 109 81 / .45); }
+.persona .ph b { font-size: 10.4pt; }
+.persona .ph span { font: 600 5.8pt/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+.persona p { margin: 0 0 1.8pt; font-size: 8.3pt; line-height: 11.4pt; padding-left: 19mm; text-indent: -19mm; }
+.persona .pl { display: inline-block; width: 19mm; text-indent: 0; font: 650 5.6pt/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+/* The road: stations on a line. */
+.station { position: relative; padding: 0 0 8pt 7mm; border-left: .8pt solid var(--line2); }
+.station::before { content: ''; position: absolute; left: -2pt; top: 1.6pt; width: 9pt; height: 9pt; margin-left: -3.5pt; border-radius: 50%; background: var(--paper); border: .9pt solid var(--outline, #cec0a9); }
+.station.done::before { background: var(--sage); border-color: var(--sage); }
+.station.now::before { background: var(--accent); border-color: var(--accent); }
+.station.side::before { border-style: dashed; }
+.station b { display: block; font-size: 9.8pt; line-height: 13pt; }
+.station span { display: block; color: var(--soft); font-size: 8.5pt; line-height: 12pt; }
+.toc.compact { line-height: 12.4pt; }
+.toc.compact .part { margin: 7pt 0 2pt; }
 </style>
 </head>
 <body>
@@ -200,10 +217,10 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   <div class="inner">
     <svg class="draw" width="62mm" height="34mm"><use href="#d-book"/></svg>
     <h1>The Lingua Handbook</h1>
-    <p class="sub">A small book for designing each page</p>
+    <p class="sub">Everything Lingua, from start to finish</p>
     <div class="rule" style="margin:12pt auto 0"></div>
   </div>
-  <div class="ed"><span class="sc">Lingua 6 · Design</span><p class="small muted" style="margin-top:5pt;font-style:italic">First edition, October 2026</p></div>
+  <div class="ed"><span class="sc">Design · product · people · launch · running it</span><p class="small muted" style="margin-top:5pt;font-style:italic">Second edition, October 2026</p></div>
 </section>
 
 <!-- 2 · Inside -->
@@ -214,7 +231,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <p class="sc" style="margin-top:8pt">Lingua</p>
     </div>
     <div class="wide small muted" style="max-width:88mm;margin:0 auto 6mm;text-align:center">
-      <p>This book is for whoever designs Lingua next: you, a friend, or a Claude on another account. It says what Lingua is like, so that every page can become a little more like it.</p>
+      <p>This book is for whoever works on Lingua next: you, a friend, or a Claude on another account. It says what Lingua is like, what it does, who it is for, how to tell people about it and how to run it, so that every page and every step can become a little more like it.</p>
       <p>It lives in the repository at <code>docs/<wbr>handbook</code>. Print it, scribble in it, and change it when Lingua changes.</p>
     </div>
   </div>
@@ -227,10 +244,11 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     <h2 id="howto">How to use this book</h2>
     <div class="rule"></div>
     <p class="lead first">Read Part One once. It is short, and everything else follows from it.</p>
-    <div class="row"><p>When you sit down to design a page, open its chapter in Part Three. Every room fits on one page: what the room is for, what it shows first, what it keeps quiet, the one thing to do there, and three questions to ask yourself.</p>
+    <div class="row"><p>When you sit down to design a page, open its chapter in Part Four. Every room fits on one page: what the room is for, what it shows first, what it keeps quiet, the one thing to do there, and three questions to ask yourself.</p>
       <aside><span class="k">Like this</span>The exact things live out here, small, beside the sentence they belong to.</aside></div>
     <p>The exact things live in the margins. Colours, sizes, file names, springs and dates are written small, beside the sentence they belong to. You can read the book without them, and you can build from them without reading the book.</p>
-    <p>Before you call a page done, go through Part Four. Its review sheet is meant to be printed and ticked, one sheet per page.</p>
+    <p>Before you call a page done, go through Part Five. Its review sheet is meant to be printed and ticked, one sheet per page.</p>
+    <p>Parts Two and Six to Nine are the rest of the work: what Lingua does and where it is going, who it is for, telling people, running it, and the whole road from here to version 1.0.</p>
     <p>At the back are every number in one place, the Latin names and what they mean, Lingua 6 at a glance, and a page for your own notes.</p>
     <h3>A few marks</h3>
     <table style="width:auto">
@@ -239,8 +257,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <tr><td class="k"><span class="box"></span></td><td>something to check</td></tr>
       <tr><td class="k"><svg width="12mm" height="4mm" style="vertical-align:-2pt"><use href="#d-sprig"/></svg></td><td>a pause</td></tr>
     </table>
-    <svg class="draw" width="30mm" height="9mm" style="margin:10mm 0 0 auto"><use href="#d-pencil"/></svg>
-  </div>
+    </div>
 </section>
 
 <!-- 4 · Contents -->
@@ -252,35 +269,72 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     <ul class="toc">
       <li><a href="#howto">How to use this book</a><span class="dots"></span><span class="pn" data-for="howto"></span></li>
       <span class="part">Part One · The spirit</span>
-      <li><span class="n">1</span><a href="#ch1">What Lingua is</a><span class="dots"></span><span class="pn" data-for="ch1"></span></li>
-      <li><span class="n">2</span><a href="#ch2">Six habits of a Lingua page</a><span class="dots"></span><span class="pn" data-for="ch2"></span></li>
-      <li><span class="n">3</span><a href="#ch3">The voice</a><span class="dots"></span><span class="pn" data-for="ch3"></span></li>
-      <span class="part">Part Two · The materials</span>
-      <li><span class="n">4</span><a href="#ch4">Paper and ink</a><span class="dots"></span><span class="pn" data-for="ch4"></span></li>
-      <li><span class="n">5</span><a href="#ch5">Type</a><span class="dots"></span><span class="pn" data-for="ch5"></span></li>
-      <li><span class="n">6</span><a href="#ch6">Space, corners and light</a><span class="dots"></span><span class="pn" data-for="ch6"></span></li>
-      <li><span class="n">7</span><a href="#ch7">Motion</a><span class="dots"></span><span class="pn" data-for="ch7"></span></li>
-      <li><span class="n">8</span><a href="#ch8">Drawings, icons and flags</a><span class="dots"></span><span class="pn" data-for="ch8"></span></li>
-      <span class="part">Part Three · Page by page</span>
-      <li><span class="n">9</span><a href="#ch9">The anatomy of a page</a><span class="dots"></span><span class="pn" data-for="ch9"></span></li>
-      <li><span class="n">10</span><a href="#ch10">The first start <i class="acc">· Lingua 6 begins here</i></a><span class="dots"></span><span class="pn" data-for="ch10"></span></li>
-      <li><span class="n">11</span><a href="#ch11">Home</a><span class="dots"></span><span class="pn" data-for="ch11"></span></li>
-      <li><span class="n">12</span><a href="#ch12">Cursus</a><span class="dots"></span><span class="pn" data-for="ch12"></span></li>
-      <li><span class="n">13</span><a href="#ch13">Codex</a><span class="dots"></span><span class="pn" data-for="ch13"></span></li>
-      <li><span class="n">14</span><a href="#ch14">Thesaurus and Ludus</a><span class="dots"></span><span class="pn" data-for="ch14"></span></li>
-      <li><span class="n">15</span><a href="#ch15">Sonus et Visio</a><span class="dots"></span><span class="pn" data-for="ch15"></span></li>
-      <li><span class="n">16</span><a href="#ch16">Mentis</a><span class="dots"></span><span class="pn" data-for="ch16"></span></li>
-      <li><span class="n">17</span><a href="#ch17">Ratio</a><span class="dots"></span><span class="pn" data-for="ch17"></span></li>
-      <li><span class="n">18</span><a href="#ch18">Settings and the plans</a><span class="dots"></span><span class="pn" data-for="ch18"></span></li>
-      <span class="part">Part Four · Before you call it done</span>
-      <li><span class="n">19</span><a href="#ch19">Every page’s states</a><span class="dots"></span><span class="pn" data-for="ch19"></span></li>
-      <li><span class="n">20</span><a href="#ch20">The check</a><span class="dots"></span><span class="pn" data-for="ch20"></span></li>
-      <li><span class="n">21</span><a href="#ch21">The review sheet</a><span class="dots"></span><span class="pn" data-for="ch21"></span></li>
+      <li><span class="n" data-n-for="ch1"></span><a href="#ch1">What Lingua is</a><span class="dots"></span><span class="pn" data-for="ch1"></span></li>
+      <li><span class="n" data-n-for="ch2"></span><a href="#ch2">Six habits of a Lingua page</a><span class="dots"></span><span class="pn" data-for="ch2"></span></li>
+      <li><span class="n" data-n-for="ch3"></span><a href="#ch3">The voice</a><span class="dots"></span><span class="pn" data-for="ch3"></span></li>
+      <span class="part">Part Two · The product</span>
+      <li><span class="n" data-n-for="p-rooms"></span><a href="#p-rooms">What Lingua does today</a><span class="dots"></span><span class="pn" data-for="p-rooms"></span></li>
+      <li><span class="n" data-n-for="p-langs"></span><a href="#p-langs">Languages and tiers</a><span class="dots"></span><span class="pn" data-for="p-langs"></span></li>
+      <li><span class="n" data-n-for="p-plans"></span><a href="#p-plans">Plans and prices</a><span class="dots"></span><span class="pn" data-for="p-plans"></span></li>
+      <li><span class="n" data-n-for="p-road"></span><a href="#p-road">Where Lingua is going</a><span class="dots"></span><span class="pn" data-for="p-road"></span></li>
+      <li><span class="n" data-n-for="p-l7"></span><a href="#p-l7">Lingua 7 · Features</a><span class="dots"></span><span class="pn" data-for="p-l7"></span></li>
+      <span class="part">Part Three · The materials</span>
+      <li><span class="n" data-n-for="ch4"></span><a href="#ch4">Paper and ink</a><span class="dots"></span><span class="pn" data-for="ch4"></span></li>
+      <li><span class="n" data-n-for="ch5"></span><a href="#ch5">Type</a><span class="dots"></span><span class="pn" data-for="ch5"></span></li>
+      <li><span class="n" data-n-for="ch6"></span><a href="#ch6">Space, corners and light</a><span class="dots"></span><span class="pn" data-for="ch6"></span></li>
+      <li><span class="n" data-n-for="ch7"></span><a href="#ch7">Motion</a><span class="dots"></span><span class="pn" data-for="ch7"></span></li>
+      <li><span class="n" data-n-for="ch8"></span><a href="#ch8">Drawings, icons and flags</a><span class="dots"></span><span class="pn" data-for="ch8"></span></li>
+      <span class="part">Part Four · Page by page</span>
+      <li><span class="n" data-n-for="ch9"></span><a href="#ch9">The anatomy of a page</a><span class="dots"></span><span class="pn" data-for="ch9"></span></li>
+      <li><span class="n" data-n-for="ch10"></span><a href="#ch10">The first start <i class="acc">· Lingua 6 begins here</i></a><span class="dots"></span><span class="pn" data-for="ch10"></span></li>
+      <li><span class="n" data-n-for="ch11"></span><a href="#ch11">Home</a><span class="dots"></span><span class="pn" data-for="ch11"></span></li>
+      <li><span class="n" data-n-for="ch12"></span><a href="#ch12">Cursus</a><span class="dots"></span><span class="pn" data-for="ch12"></span></li>
+      <li><span class="n" data-n-for="ch13"></span><a href="#ch13">Codex</a><span class="dots"></span><span class="pn" data-for="ch13"></span></li>
+      <li><span class="n" data-n-for="ch14"></span><a href="#ch14">Thesaurus and Ludus</a><span class="dots"></span><span class="pn" data-for="ch14"></span></li>
+      <li><span class="n" data-n-for="ch15"></span><a href="#ch15">Sonus et Visio</a><span class="dots"></span><span class="pn" data-for="ch15"></span></li>
+      <li><span class="n" data-n-for="ch16"></span><a href="#ch16">Mentis</a><span class="dots"></span><span class="pn" data-for="ch16"></span></li>
+      <li><span class="n" data-n-for="ch17"></span><a href="#ch17">Ratio</a><span class="dots"></span><span class="pn" data-for="ch17"></span></li>
+      <li><span class="n" data-n-for="ch18"></span><a href="#ch18">Settings and the plans</a><span class="dots"></span><span class="pn" data-for="ch18"></span></li>
+      <li><span class="n" data-n-for="newtabs"></span><a href="#newtabs">The new tabs of Lingua 7</a><span class="dots"></span><span class="pn" data-for="newtabs"></span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="page" data-rh="Contents">
+  <div class="sheet">
+    <ul class="toc compact">
+      <span class="part">Part Five · Before you call it done</span>
+      <li><span class="n" data-n-for="ch19"></span><a href="#ch19">Every page’s states</a><span class="dots"></span><span class="pn" data-for="ch19"></span></li>
+      <li><span class="n" data-n-for="ch20"></span><a href="#ch20">The check</a><span class="dots"></span><span class="pn" data-for="ch20"></span></li>
+      <li><span class="n" data-n-for="ch21"></span><a href="#ch21">The review sheet</a><span class="dots"></span><span class="pn" data-for="ch21"></span></li>
+      <span class="part">Part Six · The people it’s for</span>
+      <li><span class="n" data-n-for="who"></span><a href="#who">Who Lingua is for</a><span class="dots"></span><span class="pn" data-for="who"></span></li>
+      <li><span class="n" data-n-for="notfor"></span><a href="#notfor">Who it isn’t for, honestly</a><span class="dots"></span><span class="pn" data-for="notfor"></span></li>
+      <li><span class="n" data-n-for="others"></span><a href="#others">What else they use</a><span class="dots"></span><span class="pn" data-for="others"></span></li>
+      <li><span class="n" data-n-for="listen"></span><a href="#listen">Listening to learners</a><span class="dots"></span><span class="pn" data-for="listen"></span></li>
+      <span class="part">Part Seven · Telling people</span>
+      <li><span class="n" data-n-for="story"></span><a href="#story">The story in one line</a><span class="dots"></span><span class="pn" data-for="story"></span></li>
+      <li><span class="n" data-n-for="sellwords"></span><a href="#sellwords">Words for selling</a><span class="dots"></span><span class="pn" data-for="sellwords"></span></li>
+      <li><span class="n" data-n-for="site"></span><a href="#site">The website</a><span class="dots"></span><span class="pn" data-for="site"></span></li>
+      <li><span class="n" data-n-for="channels"></span><a href="#channels">Where to find learners</a><span class="dots"></span><span class="pn" data-for="channels"></span></li>
+      <li><span class="n" data-n-for="content"></span><a href="#content">Content that teaches</a><span class="dots"></span><span class="pn" data-for="content"></span></li>
+      <li><span class="n" data-n-for="launch"></span><a href="#launch">The launch</a><span class="dots"></span><span class="pn" data-for="launch"></span></li>
+      <li><span class="n" data-n-for="count"></span><a href="#count">Counting without spying</a><span class="dots"></span><span class="pn" data-for="count"></span></li>
+      <span class="part">Part Eight · Running it</span>
+      <li><span class="n" data-n-for="money"></span><a href="#money">Money</a><span class="dots"></span><span class="pn" data-for="money"></span></li>
+      <li><span class="n" data-n-for="law"></span><a href="#law">Privacy, licences and the law</a><span class="dots"></span><span class="pn" data-for="law"></span></li>
+      <li><span class="n" data-n-for="support"></span><a href="#support">Support</a><span class="dots"></span><span class="pn" data-for="support"></span></li>
+      <li><span class="n" data-n-for="ship"></span><a href="#ship">Shipping</a><span class="dots"></span><span class="pn" data-for="ship"></span></li>
+      <li><span class="n" data-n-for="claude"></span><a href="#claude">Working with Claude</a><span class="dots"></span><span class="pn" data-for="claude"></span></li>
+      <span class="part">Part Nine · Start to finish</span>
+      <li><span class="n" data-n-for="road"></span><a href="#road">The whole road</a><span class="dots"></span><span class="pn" data-for="road"></span></li>
+      <li><span class="n" data-n-for="only"></span><a href="#only">What only you can do</a><span class="dots"></span><span class="pn" data-for="only"></span></li>
+      <li><span class="n" data-n-for="checklists"></span><a href="#checklists">Two checklists</a><span class="dots"></span><span class="pn" data-for="checklists"></span></li>
       <span class="part">At the back</span>
-      <li><span class="n">A</span><a href="#apA">The numbers</a><span class="dots"></span><span class="pn" data-for="apA"></span></li>
-      <li><span class="n">B</span><a href="#apB">Words Lingua uses</a><span class="dots"></span><span class="pn" data-for="apB"></span></li>
-      <li><span class="n">C</span><a href="#apC">Lingua 6 at a glance</a><span class="dots"></span><span class="pn" data-for="apC"></span></li>
-      <li><span class="n"></span><a href="#notes">Notes</a><span class="dots"></span><span class="pn" data-for="notes"></span></li>
+      <li><span class="n" data-n-for="apA">A</span><a href="#apA">The numbers</a><span class="dots"></span><span class="pn" data-for="apA"></span></li>
+      <li><span class="n" data-n-for="apB">B</span><a href="#apB">Words Lingua uses</a><span class="dots"></span><span class="pn" data-for="apB"></span></li>
+      <li><span class="n" data-n-for="apC">C</span><a href="#apC">Lingua 7 and 6 at a glance</a><span class="dots"></span><span class="pn" data-for="apC"></span></li>
+      <li><span class="n" data-n-for="notes"></span><a href="#notes">Notes</a><span class="dots"></span><span class="pn" data-for="notes"></span></li>
     </ul>
   </div>
 </section>
@@ -298,8 +352,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 6 · Chapter 1 -->
 <section class="page" data-rh="What Lingua is">
   <div class="sheet">
-    <span class="kicker">Chapter 1</span>
-    <h2 id="ch1">What Lingua is</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch1" data-ch>What Lingua is</h2>
     <div class="rule"></div>
     <p class="lead first">Lingua is a place to live in a language for a while. You read in it, listen to it, watch it, talk and write in it, and every word you meet is kept, so it comes back just before you would have forgotten it.</p>
     <div class="row"><p>It is not a game and it is not a school. It is closer to a study at home: a desk by the window, a shelf of books, a pot of tea going cold because the chapter got good. That is why its design is called the Cozy Scriptorium.</p>
@@ -324,8 +378,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 7 · Chapter 2a -->
 <section class="page" data-rh="Six habits of a Lingua page">
   <div class="sheet">
-    <span class="kicker">Chapter 2</span>
-    <h2 id="ch2">Six habits of a Lingua page</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch2" data-ch>Six habits of a Lingua page</h2>
     <div class="rule"></div>
     <p class="lead">Six habits, more than rules. A page that has all six usually needs nothing else.</p>
     <h3><span class="num">I.</span>The language comes first</h3>
@@ -361,8 +415,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 9 · Chapter 3a -->
 <section class="page" data-rh="The voice">
   <div class="sheet">
-    <span class="kicker">Chapter 3</span>
-    <h2 id="ch3">The voice</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch3" data-ch>The voice</h2>
     <div class="rule"></div>
     <p class="lead first">Lingua talks like a friend who reads a lot: informal, warm, a little dry. It likes to make you smile, but never at the cost of being clear.</p>
     <div class="row"><p><span class="lede-sc">One smile per page.</span> A funny subtitle is a gift; three of them are a stand-up set. The joke goes where nobody has to read it to act: a subtitle, a quiet line under a field. Never inside an instruction.</p>
@@ -399,10 +453,192 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   </div>
 </section>
 
-<!-- 11 · Part Two -->
+<!-- Part Two · The product -->
 <section class="page bare">
   <div class="opener">
     <span class="sc">Part Two</span>
+    <h1 id="part-product">The product</h1>
+    <p>What Lingua does today, in which languages, for what price, and where it is going.</p>
+    <svg class="draw" width="40mm" height="26.6mm" style="margin-top:16mm"><use href="#d-window"/></svg>
+  </div>
+</section>
+
+<section class="page" data-rh="What Lingua does today">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="p-rooms" data-ch>What Lingua does today</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead">Room by room, what a learner can do in Lingua now (version 0.5.2, October 2026). The details are in FEATURES.md; this is the shelf, not the books.</p>
+      <aside><span class="k">Source</span><code>docs/FEATURES.md</code>, kept up to date with every step.</aside></div>
+    <table class="wide" style="font-size:7.9pt;line-height:10.8pt">
+      <tr><th style="width:22%">Room</th><th>What is there</th></tr>
+      <tr><td class="k">Home</td><td>Good evening by name; today’s minutes against the goal on a ribbon by room; Next up, one click each; the week; first steps for new learners; the next grammar topic and Mundus’s suggestion. A Classic layout a setting away.</td></tr>
+      <tr><td class="k">Cursus</td><td>The course for the six core languages: twelve units A1–B1 as an adventure trail, each with words, phrases, grammar, speaking, writing and a check. Grammatica (topics A1–B2 for the core six, short grammars for twelve more), Alphabets for seven scripts with writing, and keybr-style typing in the language’s layout.</td></tr>
+      <tr><td class="k">Codex</td><td>Read anything: EPUB, PDF, text, comics with speech bubbles read on the device, photos of printed pages, news, Wikipedia, Gutenberg and Wikisource, Goodreads shelves. Every word a click away, phrases by dragging, sentences translated ahead, the word panel, typography and papers, the end page, Check yourself.</td></tr>
+      <tr><td class="k">Thesaurus and Ludus</td><td>Decks in folders, FSRS scheduling, 47 ready-made decks, Anki and CSV import, the offline dictionary for the core six (forms, recordings, etymology, Tatoeba), the word memory with every place a word was met. Ludus: choices, pairs, gaps, word banks, typing, speaking, letter tiles, listening and dictation, Lightning.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="What Lingua does today">
+  <div class="sheet">
+    <table class="wide" style="font-size:7.9pt;line-height:10.8pt">
+      <tr><th style="width:22%">Room</th><th>What is there</th></tr>
+      <tr><td class="k">Sonus et Visio</td><td>The library (songs, podcasts, episodes, audiobooks, stations, your files, films and videos); LibriVox and free courses; radio in the language with a tuner and live text; Sonus+ for music with timed lyrics, song lessons and podcasts; Visio for films and series with two interactive subtitle lines; Commute mode.</td></tr>
+      <tr><td class="k">Mentis</td><td>Mundus, the guide (a note on your week, three next steps, Explore, Things to try); Sermo (scenes that open your own AI app); Diarium, the journal, checked by AI with Max, with a word diff and corrections to cards.</td></tr>
+      <tr><td class="k">Ratio</td><td>Statistics for words, reading, listening, cards, writing, time and habit; Tabula, the table of every language you speak.</td></tr>
+      <tr><td class="k">Settings</td><td>Eight groups with search: reading, cards, listening, languages, look and feel, AI and translation, your data, about.</td></tr>
+    </table>
+    <h3>Across the whole app</h3>
+    <ul class="plain">
+      <li>Works offline as an installed desktop app, and updates itself at a quiet moment.</li>
+      <li>Your devices sync directly, device to device, with no account and no server; backups as files.</li>
+      <li>Natural voices: real speakers’ recordings, Piper voices on the device, Gemini with a key.</li>
+      <li>Paper and Nocturne, twelve palettes, six reading fonts, and a touch of each core language in the design.</li>
+      <li>Keyboard first: Alt 1–8 for the rooms, letters for words, a shortcut sheet.</li>
+    </ul>
+    <div class="row"><p class="muted small">What it doesn’t do yet is the rest of this part: Lingua 5.2’s open rooms, Lingua 6’s design pass and Lingua 7’s features.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Languages and tiers">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="p-langs" data-ch>Languages and tiers</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Seventy languages, in five tiers that say honestly how much Lingua has for each. A tier is a promise: nothing on the page may claim more.</p>
+      <aside><span class="k">Where</span><code>TIERS</code> and <code>LANGUAGES</code> in <code>src/<wbr>core/<wbr>lang/<wbr>languages.ts</code>.</aside></div>
+    <table style="width:86mm">
+      <tr><th>Tier</th><th>Languages</th><th>What they get</th></tr>
+      <tr><td><b>Core</b></td><td>6</td><td>Everything: the course, grammar, the alphabet, typing, the full dictionary, natural voices, every room</td></tr>
+      <tr><td><b>Full</b></td><td>14</td><td>Every room, grammar and the alphabet; no course</td></tr>
+      <tr><td><b>Beta</b></td><td>20</td><td>What builds itself: the reader, a dictionary, cards and Ludus, podcasts, radio, music search</td></tr>
+      <tr><td><b>Basics</b></td><td>20</td><td>Reading with tap-to-translate, your own words and decks, radio and podcasts</td></tr>
+      <tr><td><b>Experimental</b></td><td>10</td><td>Reading with machine translation where it exists</td></tr>
+    </table>
+    <div class="row"><p>The core six are Spanish, French, German, Russian, Arabic and Mandarin. Languages not built yet are shown with Soon and can’t be chosen.</p>
+      <aside><span class="k">Rule</span>Tier 2 stays cheap: only features that cost little to keep (automatic packs, decks, podcasts, music search). CLAUDE.md.</aside></div>
+    <div class="row"><p><span class="lede-sc">For marketing:</span> say “six languages with everything, and sixty-four more to read and listen in”. Never “70 languages” alone: it sounds like seventy courses.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Plans and prices">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="p-plans" data-ch>Plans and prices</h2>
+    <div class="rule"></div>
+    <p class="lead">Free is generous, Lingua+ is bought once, Max is AI with your own key. Never pushy.</p>
+    <table class="wide" style="font-size:7.6pt;line-height:10.2pt">
+      <tr><th style="width:17%"></th><th style="width:28%">Free</th><th style="width:27%">Lingua+ · €24.99 once</th><th>Max · €5.99 a month, €49.99 a year</th></tr>
+      <tr><td class="k">Codex</td><td>Everything: reading, look-ups, imports, Discover</td><td>—</td><td>AI sentence translation, Explain in context</td></tr>
+      <tr><td class="k">Thesaurus</td><td>Unlimited decks and cards, Discover</td><td>Ludus</td><td>—</td></tr>
+      <tr><td class="k">Sonus et Visio</td><td>Library, audiobooks, radio, your files</td><td>Sonus+, streaming and subtitles</td><td>Automatic dictation</td></tr>
+      <tr><td class="k">Cursus</td><td>Alphabets</td><td>The course, Grammatica, typing</td><td>Feedback on writing and speaking</td></tr>
+      <tr><td class="k">Mentis</td><td>Mundus, Diarium</td><td>Sermo</td><td>Diary checking, natural AI voices</td></tr>
+      <tr><td class="k">Ratio, Settings</td><td>Everything</td><td>—</td><td>—</td></tr>
+    </table>
+    <div class="row"><p>Max includes all of Lingua+ while it runs; whoever bought Lingua+ keeps it forever. Max’s AI runs on the learner’s own free key (Groq or Gemini), so Lingua has no AI server and no AI bill.</p>
+      <aside><span class="k">Decided</span>D1–D4 and D8 of the 5.1 plan (2026-10-20). Stripe; prices as above.</aside></div>
+    <div class="row"><p><span class="lede-sc">The honest bit to explain:</span> Max asks for a monthly price and the learner’s own key. Its page must say plainly what Max adds, that the key is free from its provider, and that the provider is separate from Lingua.</p>
+      <aside><span class="k">Until Stripe is live</span>Test mode: buying switches the plan and charges nothing. Installs from before the plans act as Max.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Where Lingua is going">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="p-road" data-ch>Where Lingua is going</h2>
+    <div class="rule"></div>
+    <p class="lead">Each Lingua is a plan of its own, built step by step, each step pushed with a version.</p>
+    <svg class="wide" viewBox="0 0 300 92" style="width:100%;height:auto;margin:2pt 0 8pt">
+      <g class="ln"><path d="M10 40H290" opacity=".5"/>
+        <circle cx="22" cy="40" r="5" class="fa" style="fill:#6b8e78"/><circle cx="72" cy="40" r="5" class="fa" style="fill:#6b8e78"/><circle cx="122" cy="40" r="5" class="fa" style="fill:#6b8e78"/>
+        <circle cx="172" cy="40" r="6" class="f a"/><circle cx="222" cy="40" r="5" class="f"/><circle cx="272" cy="40" r="5" class="f"/>
+      </g>
+      <g font-family="Jakarta" font-size="6.6" fill="#262220" text-anchor="middle" font-weight="650">
+        <text x="22" y="24">2.0–4.0</text><text x="72" y="24">5.1</text><text x="122" y="24">5.2</text><text x="172" y="24">7 · Features</text><text x="222" y="24">6 · Design</text><text x="272" y="24">1.0</text>
+      </g>
+      <g font-family="Literata" font-style="italic" font-size="6.4" fill="#776c63" text-anchor="middle">
+        <text x="22" y="56">done</text><text x="72" y="56">done, 0.5.1</text><text x="122" y="56">rooms open</text><text x="172" y="56">planned</text><text x="222" y="56">planned</text><text x="272" y="56">when you say</text>
+        <text x="122" y="66">then its check</text><text x="172" y="66">28 steps, next</text><text x="222" y="66">the first start</text><text x="272" y="66">public release</text>
+      </g>
+    </svg>
+    <div class="row"><p><span class="lede-sc">Lingua 5.2</span> still has its rooms open: Visio (claimed), Diarium, Sermo, Mundus, Grammatica’s guided path and Ratio, then its check, which makes version 0.5.2.</p>
+      <aside><span class="k">Queue</span><code>docs/HANDOVER.md</code>, steps 14–18, 22 and 21.</aside></div>
+    <div class="row"><p><span class="lede-sc">Lingua 7 · Features</span> comes next (your call, 26 October): it adds what the Lingyu catalogue has and Lingua doesn’t, foundations first. The next chapter is its summary.</p>
+      <aside><span class="k">Plan</span><code>docs/LINGUA-7-PLAN.md</code> and the audit <code>LINGUA-7-FEATURES.md</code>; step 24. Versions 0.7.x.</aside></div>
+    <div class="row"><p><span class="lede-sc">Lingua 6 · Design</span> follows, room by room from your notes, starting with the first start. This book is its guide.</p>
+      <aside><span class="k">Plan</span><code>docs/LINGUA-6-PLAN.md</code>; step 23. Versions 0.8.x, so they only go up.</aside></div>
+    <div class="row"><p><span class="lede-sc">1.0</span> is the first public release. The version leaves alpha (0.x) only when you say so.</p>
+      <aside><span class="k">Versions</span><code>docs/VERSIONS.md</code>.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Lingua 7 · Features">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="p-l7" data-ch>Lingua 7 · Features</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">On 26 October 2026 every entry of the Lingyu catalogue, all 1,618, was checked against Lingua. Most of the core is there; the gaps are deep rather than wide.</p>
+      <aside><span class="k">The audit</span><code>docs/<wbr>LINGUA-7-FEATURES.md</code>: each entry ticked or given the step that builds it.</aside></div>
+    <svg class="wide" viewBox="0 0 300 40" style="width:100%;height:auto;margin:4pt 0 2pt">
+      <rect x="0" y="6" width="81" height="14" fill="#6b8e78"/><rect x="81" y="6" width="48.6" height="14" fill="#a8c2b1"/><rect x="129.6" y="6" width="154.6" height="14" fill="#c86d51"/><rect x="284.2" y="6" width="7" height="14" fill="#d9b9a8"/><rect x="291.2" y="6" width="8.8" height="14" fill="#cec0a9"/>
+      <g font-family="Jakarta" font-size="6" fill="#5e554e"><text x="0" y="32">437 there</text><text x="84" y="32">262 partly</text><text x="133" y="32">834 missing</text><text x="300" y="32" text-anchor="end">38 in 5.2 · 47 to decide</text></g>
+    </svg>
+    <h3>Foundations first</h3>
+    <div class="row"><p>Many entries are one thing seen from several rooms: synonym cards, synonym races, synonym maps and a synonym finder while writing all come from one source. So Lingua 7 builds six shared pieces first, and the rooms grow on them. That keeps 1,143 entries from becoming 1,143 separate features.</p>
+      <aside><span class="k">Part A</span>The word record · the inbox and decks · cards and memory · one exercise engine · the learner’s record · generated materials, checked.</aside></div>
+    <h3>The same rules as always</h3>
+    <ul class="plain">
+      <li>Every feature lands in a room that exists; new tabs only where a room needs one.</li>
+      <li>Local first; AI only with Max and the learner’s key; estimates labelled.</li>
+      <li>Hand-made content for the core six; what builds itself for the rest.</li>
+      <li>Everything generated is checked before it is shown, and labelled.</li>
+      <li>Saving is not scheduling: previews before a deck grows.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="page" data-rh="Lingua 7 · Features">
+  <div class="sheet">
+    <h3 class="wide" style="margin-top:0">The 28 steps, in seven parts</h3>
+    <div class="wide" style="display:grid;grid-template-columns:1fr 1fr;gap:0 6mm;font-size:8pt;line-height:11.6pt">
+      <div>
+        <p class="sc" style="margin:4pt 0 3pt">A · Foundations</p>
+        <div>7-1 The word record</div><div>7-2 The inbox and the deck workshop</div><div>7-3 Cards and memory</div><div>7-4 One exercise engine</div><div>7-5 The learner’s record</div><div>7-6 Generated materials, checked</div>
+        <p class="sc" style="margin:7pt 0 3pt">B · The skills</p>
+        <div>7-7 Grammar</div><div>7-8 Reading</div><div>7-9 Listening</div><div>7-10 Sounds and pronunciation</div><div>7-11 Speaking</div><div>7-12 Writing</div><div>7-13 Translating and comparing</div>
+        <p class="sc" style="margin:7pt 0 3pt">C · Paths and guidance</p>
+        <div>7-14 Courses and lessons</div><div>7-15 The tutor, in context</div><div>7-16 Personal and adaptive</div><div>7-17 Goals, habits and progress</div><div>7-18 Exams and levels</div>
+      </div>
+      <div>
+        <p class="sc" style="margin:4pt 0 3pt">D · More of the language</p>
+        <div>7-19 Immersion and culture</div><div>7-20 Phrasebook, notebook, word map</div><div>7-21 Games and projects</div><div>7-22 Dictionary tools</div><div>7-23 Tools for each language</div>
+        <p class="sc" style="margin:7pt 0 3pt">E · Around the app</p>
+        <div>7-24 Import, export, integrations</div><div>7-25 Accessibility and the desktop</div>
+        <p class="sc" style="margin:7pt 0 3pt">F · With your word only</p>
+        <div>7-26 Experiments</div><div>7-27 Together, and beyond the desk</div>
+        <p class="sc" style="margin:7pt 0 3pt">G</p>
+        <div>7-28 The check; version 0.7.0</div>
+      </div>
+    </div>
+    <h3 class="wide">Your answers (26 October 2026)</h3>
+    <table class="wide" style="font-size:7.8pt;line-height:10.6pt">
+      <tr><td class="k">Q1</td><td>Which first, Lingua 6 or Lingua 7?</td><td><b>Lingua 7 first</b>, then Lingua 6</td></tr>
+      <tr><td class="k">Q2</td><td>Sharing by files and links, or a server with accounts?</td><td><b>Still to be considered</b></td></tr>
+      <tr><td class="k">Q3</td><td>A live voice conversation inside Lingua again?</td><td><b>No</b></td></tr>
+      <tr><td class="k">Q4</td><td>The interface in the language you learn?</td><td><b>Yes</b></td></tr>
+      <tr><td class="k">Q5</td><td>Streaks optional, stamps not points, reminders off by default?</td><td><b>Yes</b></td></tr>
+      <tr><td class="k">Q6</td><td>Phone apps and widgets still decided against?</td><td><b>Can be</b>: not ruled out</td></tr>
+    </table>
+    <p class="small muted wide">Q2 and Q6 stay open: nothing in step 7-27 is built until you schedule it.</p>
+  </div>
+</section>
+
+<!-- 11 · Part Two -->
+<section class="page bare">
+  <div class="opener">
+    <span class="sc">Part Three</span>
     <h1 id="part2">The materials</h1>
     <p>Paper, ink, type, space, motion, and the little drawings.</p>
     <svg class="draw" width="24mm" height="24mm" style="margin-top:16mm"><use href="#d-ink"/></svg>
@@ -412,8 +648,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 12 · Chapter 4a -->
 <section class="page" data-rh="Paper and ink">
   <div class="sheet">
-    <span class="kicker">Chapter 4</span>
-    <h2 id="ch4">Paper and ink</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch4" data-ch>Paper and ink</h2>
     <div class="rule"></div>
     <p class="lead first">Lingua’s light is called Paper and its dark is Nocturne. Neither is the other turned inside out: Paper is cream with espresso ink, Nocturne a warm charcoal with ivory, so nothing is ever pure white or pure black.</p>
     <div class="chips wide">
@@ -459,8 +695,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 14 · Chapter 5 -->
 <section class="page" data-rh="Type">
   <div class="sheet">
-    <span class="kicker">Chapter 5</span>
-    <h2 id="ch5">Type</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch5" data-ch>Type</h2>
     <div class="rule"></div>
     <p class="lead first">Two voices. Literata is the book: the titles, the language, and the numbers that matter. Plus Jakarta Sans is the helper: labels, buttons, explanations. When in doubt, ask who is speaking.</p>
     <div style="border-top:.6pt solid var(--line2);border-bottom:.6pt solid var(--line2);padding:6pt 0 7pt;margin:4pt 0 8pt">
@@ -487,8 +723,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 15 · Chapter 6 -->
 <section class="page" data-rh="Space, corners and light">
   <div class="sheet">
-    <span class="kicker">Chapter 6</span>
-    <h2 id="ch6">Space, corners and light</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch6" data-ch>Space, corners and light</h2>
     <div class="rule"></div>
     <p class="lead first">A Lingua page breathes like a well-set book: generous margins, one clear column, and things grouped by space before they are grouped by boxes.</p>
     <div class="row"><p><span class="lede-sc">Lines before shadows.</span> A hairline separates; a shadow lifts. Most things only need the line. When something does float, one shadow is enough, and it is warm, never grey.</p>
@@ -510,8 +746,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 16 · Chapter 7 -->
 <section class="page" data-rh="Motion">
   <div class="sheet">
-    <span class="kicker">Chapter 7</span>
-    <h2 id="ch7">Motion</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch7" data-ch>Motion</h2>
     <div class="rule"></div>
     <p class="lead first">Things in Lingua settle like paper: they move a little, then they are still. Motion says where something came from. It never performs.</p>
     <table class="spec" style="width:86mm">
@@ -535,8 +771,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 17 · Chapter 8a -->
 <section class="page" data-rh="Drawings, icons and flags">
   <div class="sheet">
-    <span class="kicker">Chapter 8</span>
-    <h2 id="ch8">Drawings, icons and flags</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch8" data-ch>Drawings, icons and flags</h2>
     <div class="rule"></div>
     <div class="row"><p class="lead first">Drawings are one fine line in the colour of soft ink, with one small thing in terracotta: a bookmark, a tick, a wisp of sound. They are small, and they never explain what the words already say.</p>
       <aside><span class="k">The line</span>Stroke 1.3, round caps and joins, <code>currentColor</code> in <code>ink-soft</code>. See the open book and the three vignettes in <code>IntroPages.tsx</code>.</aside></div>
@@ -576,7 +812,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 19 · Part Three -->
 <section class="page bare">
   <div class="opener">
-    <span class="sc">Part Three</span>
+    <span class="sc">Part Four</span>
     <h1 id="part3">Page by page</h1>
     <p>The anatomy of a page, the first start, and every room, one page each.</p>
     <svg class="draw" width="40mm" height="26.6mm" style="margin-top:16mm"><use href="#d-window"/></svg>
@@ -586,8 +822,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 20 · Chapter 9 -->
 <section class="page" data-rh="The anatomy of a page">
   <div class="sheet">
-    <span class="kicker">Chapter 9</span>
-    <h2 id="ch9">The anatomy of a page</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch9" data-ch>The anatomy of a page</h2>
     <div class="rule"></div>
     <p class="lead">Most Lingua pages are made of the same five parts. Get these right and the page is nearly done.</p>
     <svg class="wide" viewBox="0 0 330 168" style="width:100%;height:auto;margin:2pt 0 6pt">
@@ -622,8 +858,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 21 · Chapter 10a -->
 <section class="page" data-rh="The first start">
   <div class="sheet">
-    <span class="kicker">Chapter 10 · Lingua 6 begins here</span>
-    <h2 id="ch10">The first start</h2>
+    <span class="kicker">Chapter <span class="chn"></span> · Lingua 6 begins here</span>
+    <h2 id="ch10" data-ch>The first start</h2>
     <div class="rule"></div>
     <div class="row"><p class="lead first">The first start is the first page of the book. It should feel like opening one: unhurried, a little exciting, and over before it gets long.</p>
       <aside><span class="k">The plan</span>Lingua 6-1 in <code>docs/<wbr>LINGUA-6-PLAN.md</code>, from the user’s notes of 2026-10-26. Code: <code>src/<wbr>app/<wbr>onboarding</code>.</aside></div>
@@ -664,7 +900,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 23 · Home -->
 <section class="page" data-rh="Home">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter 11</span><h2 id="ch11">Home</h2><p class="role">Your hearth</p></div><aside><svg width="14mm" height="14mm"><use href="#r-home"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch11" data-ch>Home</h2><p class="role">Your hearth</p></div><aside><svg width="14mm" height="14mm"><use href="#r-home"/></svg></aside></div>
     <p class="lead">Coming home to the language: what you did today, and the one thing to do next.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>The greeting by name, today’s minutes against the goal, and Next up.</span></div>
@@ -686,7 +922,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 24 · Cursus -->
 <section class="page" data-rh="Cursus">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter 12</span><h2 id="ch12">Cursus</h2><p class="role">The course, grammar, alphabets and typing</p></div><aside><svg width="14mm" height="14mm"><use href="#r-cursus"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch12" data-ch>Cursus</h2><p class="role">The course, grammar, alphabets and typing</p></div><aside><svg width="14mm" height="14mm"><use href="#r-cursus"/></svg></aside></div>
     <p class="lead">Learning in order, for those who like a path: it leads, and everything stays open.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>The next point on the trail.</span></div>
@@ -708,7 +944,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 25 · Codex -->
 <section class="page" data-rh="Codex">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter 13</span><h2 id="ch13">Codex</h2><p class="role">Reading</p></div><aside><svg width="14mm" height="14mm"><use href="#r-codex"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch13" data-ch>Codex</h2><p class="role">Reading</p></div><aside><svg width="14mm" height="14mm"><use href="#r-codex"/></svg></aside></div>
     <p class="lead">Reading real things in the language, with every word a tap away. The heart of Lingua.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>The book you’re reading. In the reader, the page and nothing else.</span></div>
@@ -730,7 +966,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 26 · Thesaurus and Ludus -->
 <section class="page" data-rh="Thesaurus and Ludus">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter 14</span><h2 id="ch14">Thesaurus and Ludus</h2><p class="role">Your words, and games with them</p></div><aside><svg width="15mm" height="14mm"><use href="#r-thes"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch14" data-ch>Thesaurus and Ludus</h2><p class="role">Your words, and games with them</p></div><aside><svg width="15mm" height="14mm"><use href="#r-thes"/></svg></aside></div>
     <p class="lead">Every word you keep, and the practice that brings it back just in time.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>The cards due today, and the words you met most recently.</span></div>
@@ -752,7 +988,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 27 · Sonus et Visio -->
 <section class="page" data-rh="Sonus et Visio">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter 15</span><h2 id="ch15">Sonus et Visio</h2><p class="role">Listening and watching</p></div><aside><svg width="15mm" height="14mm"><use href="#r-sonus"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch15" data-ch>Sonus et Visio</h2><p class="role">Listening and watching</p></div><aside><svg width="15mm" height="14mm"><use href="#r-sonus"/></svg></aside></div>
     <p class="lead">Podcasts, radio, audiobooks, songs, films and shows, with the text following along.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>Continue: what’s half-played or half-watched, and how much is left.</span></div>
@@ -774,7 +1010,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 28 · Mentis -->
 <section class="page" data-rh="Mentis">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter 16</span><h2 id="ch16">Mentis</h2><p class="role">The guide, talking and writing</p></div><aside><svg width="14mm" height="14mm"><use href="#r-mentis"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch16" data-ch>Mentis</h2><p class="role">The guide, talking and writing</p></div><aside><svg width="14mm" height="14mm"><use href="#r-mentis"/></svg></aside></div>
     <p class="lead">Using the language: Mundus suggests, Sermo talks, Diarium writes.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>Today’s prompt: one thing to write, one thing to talk about.</span></div>
@@ -796,7 +1032,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 29 · Ratio -->
 <section class="page" data-rh="Ratio">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter 17</span><h2 id="ch17">Ratio</h2><p class="role">How it’s going</p></div><aside><svg width="14mm" height="14mm"><use href="#r-ratio"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch17" data-ch>Ratio</h2><p class="role">How it’s going</p></div><aside><svg width="14mm" height="14mm"><use href="#r-ratio"/></svg></aside></div>
     <p class="lead">An honest look back: time, words, reading, listening, and the journey so far.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>This week, in a few numbers anyone understands.</span></div>
@@ -818,7 +1054,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 30 · Settings -->
 <section class="page" data-rh="Settings and the plans">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter 18</span><h2 id="ch18">Settings and the plans</h2><p class="role">Everything you can change</p></div><aside><svg width="14mm" height="14mm"><use href="#r-settings"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch18" data-ch>Settings and the plans</h2><p class="role">Everything you can change</p></div><aside><svg width="14mm" height="14mm"><use href="#r-settings"/></svg></aside></div>
     <p class="lead">Everything adjustable, in groups, with search, and the plans told straight.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>The groups, and the search.</span></div>
@@ -837,10 +1073,38 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   </div>
 </section>
 
+<!-- Page by page: Lingua 7's new tabs -->
+<section class="page" data-rh="The new tabs of Lingua 7">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="newtabs" data-ch>The new tabs of Lingua 7</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead">Lingua 7 adds a few tabs to rooms that exist, and one button that appears everywhere. Each gets the same care as a room.</p>
+      <aside><span class="k">Plan</span><code>docs/<wbr>LINGUA-7-PLAN.md</code>, the step named beside each.</aside></div>
+    <table class="wide" style="font-size:7.7pt;line-height:10.4pt">
+      <tr><th style="width:19%">Tab</th><th style="width:38%">Show first</th><th>Keep quiet</th></tr>
+      <tr><td class="k">Cursus › Sounds<br><span class="small">7-10</span></td><td>The sound you’re on, its drawing and recording, and Record</td><td>The full IPA charts; the waveform until you’ve recorded</td></tr>
+      <tr><td class="k">Cursus › Exams<br><span class="small">7-18</span></td><td>Your exam, the days left, the next task</td><td>Score ranges until a mock is done; past mocks</td></tr>
+      <tr><td class="k">Thesaurus › Phrases<br><span class="small">7-20</span></td><td>Phrases by situation, with sound</td><td>Templates and variants, until a phrase is opened</td></tr>
+      <tr><td class="k">Thesaurus › Map<br><span class="small">7-20</span></td><td>The word you came from, and its nearest neighbours</td><td>The whole map; filters in a rail</td></tr>
+      <tr><td class="k">Mentis › Notebook<br><span class="small">7-20</span></td><td>Your latest note, and a new one</td><td>Folders and tags in a rail; the error log a tab away</td></tr>
+      <tr><td class="k">Ludus › Translate<br><span class="small">7-13</span></td><td>The sentence to translate, large</td><td>Hints, references and the alignment view until asked</td></tr>
+      <tr><td class="k">The inbox<br><span class="small">7-2</span></td><td>Each word with its sentence, and three choices</td><td>Bulk actions until something is selected</td></tr>
+      <tr><td class="k">Ask<br><span class="small">7-15</span></td><td>A small button where the learning is</td><td>Everything: it opens a side panel, and closes back to the exact place</td></tr>
+    </table>
+    <h3>Ask yourself</h3>
+    <ol class="ask">
+      <li>Is the new tab a place you’d go, or a feature that belongs inside another one?</li>
+      <li>Does anything generated say so, and can it be reported?</li>
+      <li>Does a word here open the same word’s page as everywhere else?</li>
+    </ol>
+  </div>
+</section>
+
 <!-- 31 · Part Four -->
 <section class="page bare">
   <div class="opener">
-    <span class="sc">Part Four</span>
+    <span class="sc">Part Five</span>
     <h1 id="part4">Before you call it done</h1>
     <p>The states a page can be in, Lingua’s check, and a sheet to tick.</p>
     <svg class="draw" width="20mm" height="20mm" style="margin-top:16mm"><use href="#d-tick"/></svg>
@@ -850,8 +1114,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 32 · Chapter 19 -->
 <section class="page" data-rh="Every page's states">
   <div class="sheet">
-    <span class="kicker">Chapter 19</span>
-    <h2 id="ch19">Every page’s states</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch19" data-ch>Every page’s states</h2>
     <div class="rule"></div>
     <p class="lead">A page is not done when it looks right full. It is done when it also looks right empty, slow, wrong and offline.</p>
     <table style="width:86mm">
@@ -873,8 +1137,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <!-- 33 · Chapter 20 -->
 <section class="page" data-rh="The check">
   <div class="sheet">
-    <span class="kicker">Chapter 20</span>
-    <h2 id="ch20">The check</h2>
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ch20" data-ch>The check</h2>
     <div class="rule"></div>
     <p class="lead">Lingua’s own check, for every page you touch. It takes ten minutes and saves the user an evening.</p>
     <div class="row"><div style="font-size:8.4pt;line-height:13pt"><div class="ck"><span class="box"></span><code>npm run typecheck</code></div><div class="ck"><span class="box"></span><code>npm test</code></div><div class="ck"><span class="box"></span><code>npm run build</code></div></div>
@@ -883,15 +1147,15 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     <div style="line-height:14pt;margin-bottom:6pt"><div class="ck"><span class="box"></span>at 1280, 1440 and a 1366 × 768 laptop</div><div class="ck"><span class="box"></span>in Paper and in Nocturne, two palettes each</div><div class="ck"><span class="box"></span>with the language touches on and off</div><div class="ck"><span class="box"></span>with reduced motion on</div><div class="ck"><span class="box"></span>with the keyboard only: can you reach everything, and see where you are?</div><div class="ck"><span class="box"></span>with a long word, a long name, Arabic from right to left, and Japanese without spaces</div><div class="ck"><span class="box"></span>at Windows’ 125% scaling</div></div>
     <div class="row"><h3>Then finish it</h3><aside></aside></div>
     <div class="row"><p>Update the docs it touches (the roadmap, decisions, features), tick the step in the handover, give the push its version, rebase, push, and check the site went live.</p>
-      <aside><span class="k">Version</span><code>node scripts/<wbr>version.ts "…"</code>; Lingua 6 is <code>0.6.0-alpha.N</code>. See <code>docs/<wbr>VERSIONS.md</code>.</aside></div>
+      <aside><span class="k">Version</span><code>node scripts/<wbr>version.ts "…"</code>; Lingua 7 is <code>0.7.0-alpha.N</code>, then Lingua 6 <code>0.8.0-alpha.N</code>. See <code>docs/<wbr>VERSIONS.md</code>.</aside></div>
   </div>
 </section>
 
 <!-- 34 · Chapter 21 -->
 <section class="page" data-rh="The review sheet">
   <div class="sheet">
-    <span class="kicker wide">Chapter 21</span>
-    <h2 id="ch21" class="wide">The review sheet</h2>
+    <span class="kicker wide">Chapter <span class="chn"></span></span>
+    <h2 id="ch21" data-ch class="wide">The review sheet</h2>
     <p class="small muted wide" style="margin:3pt 0 7pt">Page <span style="display:inline-block;width:34mm;border-bottom:.5pt solid var(--line2)"></span> &nbsp; Date <span style="display:inline-block;width:20mm;border-bottom:.5pt solid var(--line2)"></span></p>
     <div class="wide" style="display:grid;grid-template-columns:1fr 1fr;gap:0 7mm;font-size:8pt;line-height:12.4pt">
       <div>
@@ -933,6 +1197,579 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
         <div class="ruled" data-lines="4" style="--h:6mm"></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- Part Six · The people it's for -->
+<section class="page bare">
+  <div class="opener">
+    <span class="sc">Part Six</span>
+    <h1 id="part-people">The people it’s for</h1>
+    <p>Who Lingua is for, who it isn’t for, what else they use, and how to keep listening to them.</p>
+    <svg class="draw" width="20mm" height="17.5mm" style="margin-top:16mm"><use href="#d-cup"/></svg>
+  </div>
+</section>
+
+<section class="page" data-rh="Who Lingua is for">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="who" data-ch>Who Lingua is for</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Adults who learn a language by living in it: reading, listening and watching real things, at a desk, in the evening, on purpose.</p>
+      <aside><span class="k">Sketches, not research</span>These five are the people Lingua is built for, written down so they can be tested. The private beta (Part Seven) checks them against real learners; change them when it does.</aside></div>
+    <div class="persona">
+      <div class="ph"><b>Mara, the reader</b><span>B1 in Spanish</span></div>
+      <p><span class="pl">Wants</span>To read a whole novel, and keep the words she looks up.</p>
+      <p><span class="pl">Tired of</span>Apps that teach “the apple is red” for the hundredth time.</p>
+      <p><span class="pl">In Lingua</span>Codex, the word panel, the inbox; Discover’s classics.</p>
+      <p><span class="pl">Pays for</span>Lingua+ once, for Ludus and the course’s grammar.</p>
+    </div>
+    <div class="persona">
+      <div class="ph"><b>Tomás, the watcher</b><span>A2 in French</span></div>
+      <p><span class="pl">Wants</span>To follow series and songs without pausing every line.</p>
+      <p><span class="pl">Tired of</span>Juggling a subtitle add-on, a dictionary and a flashcard app.</p>
+      <p><span class="pl">In Lingua</span>Visio’s two lines, Sonus+ lyrics, lines saved as cards that replay their clip.</p>
+      <p><span class="pl">Pays for</span>Lingua+ for Sonus+ and streaming; Max for transcripts.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" data-rh="Who Lingua is for">
+  <div class="sheet">
+    <div class="persona" style="margin-top:0">
+      <div class="ph"><b>Ines, the polyglot</b><span>four languages, two dormant</span></div>
+      <p><span class="pl">Wants</span>To keep several languages alive and see them side by side.</p>
+      <p><span class="pl">Tired of</span>One app per language, and streaks that punish a week off.</p>
+      <p><span class="pl">In Lingua</span>Tabula, switching languages, Ratio, the radio while cooking.</p>
+      <p><span class="pl">Pays for</span>Lingua+ once; it covers every language.</p>
+    </div>
+    <div class="persona">
+      <div class="ph"><b>Jonas, the serious beginner</b><span>A0 in Russian</span></div>
+      <p><span class="pl">Wants</span>A path that leads, a new alphabet, real progress by summer.</p>
+      <p><span class="pl">Tired of</span>Games that feel like learning and aren’t.</p>
+      <p><span class="pl">In Lingua</span>Alphabets, the course trail, Grammatica, typing practice.</p>
+      <p><span class="pl">Pays for</span>Lingua+ for the course.</p>
+    </div>
+    <div class="persona">
+      <div class="ph"><b>Lea, the student</b><span>B2 goal in German, an exam in June</span></div>
+      <p><span class="pl">Wants</span>To pass the Goethe exam, and write and speak with confidence.</p>
+      <p><span class="pl">Tired of</span>Practice tests with no feedback.</p>
+      <p><span class="pl">In Lingua</span>Diarium checked, Sermo’s scenes; Exams when Lingua 7 brings them.</p>
+      <p><span class="pl">Pays for</span>Max during the months before the exam.</p>
+    </div>
+    <div class="row"><p class="muted small" style="margin-top:6pt">What they share: a laptop, a little time most days, a dislike of noise, and a wish to own their learning rather than rent it.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Who it isn't for">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="notfor" data-ch>Who it isn’t for, honestly</h2>
+    <div class="rule"></div>
+    <p class="lead">Saying who Lingua isn’t for keeps it good for the people it is for, and keeps the marketing honest.</p>
+    <table style="width:86mm">
+      <tr><td class="k">Five minutes on the bus</td><td>Lingua is a desk app. Phone apps “can be” (your answer, 26 October), but not now.</td></tr>
+      <tr><td class="k">Children</td><td>The voice, the content and the AI are made for adults.</td></tr>
+      <tr><td class="k">Streak hunters</td><td>No hearts, no leagues, no guilt. Some people want those; they have good options.</td></tr>
+      <tr><td class="k">A certificate</td><td>Lingua estimates levels; it doesn’t certify them.</td></tr>
+      <tr><td class="k">A human teacher</td><td>Lingua helps between lessons. “Ask a speaker” points to people; it isn’t one.</td></tr>
+      <tr><td class="k">A course in any language</td><td>The course is for the six core languages. Others read, listen and keep words.</td></tr>
+    </table>
+    <div class="row"><p>When someone writes that Lingua isn’t for them, thank them and point them to something that is. Being useful when you lose a customer is how you keep a name.</p>
+      <aside><span class="k">In the FAQ</span>“Is Lingua for me?” with this list, kindly worded.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="What else they use">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="others" data-ch>What else they use</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Most learners use three or four tools at once. Lingua’s place is the quiet desk where those tools’ best parts live together.</p>
+      <aside><span class="k">Kinds, not names</span>Products change their features and prices often. Compare by kind here; check the real ones on the day you write about them.</aside></div>
+    <svg class="wide" viewBox="0 0 300 150" style="width:100%;height:auto;margin:2pt 0 4pt">
+      <g class="ln"><path d="M20 75H285M150 8V142" opacity=".55"/></g>
+      <g font-family="Jakarta" font-size="6" fill="#776c63">
+        <text x="20" y="71">made-up exercises</text><text x="285" y="71" text-anchor="end">real books, songs, shows</text>
+        <text x="154" y="14">a game</text><text x="154" y="140">a study</text>
+      </g>
+      <g font-family="Literata" font-size="7" fill="#262220">
+        <text x="40" y="34">gamified courses</text>
+        <text x="40" y="104">flashcard tools</text><text x="58" y="122">grammar books</text>
+        <text x="190" y="42">subtitle add-ons</text><text x="168" y="56">AI chat apps</text>
+        <text x="174" y="96">reading tools</text><text x="208" y="112">tutor sites</text>
+      </g>
+      <circle cx="248" cy="128" r="9" fill="#c86d51" opacity=".16"/><text x="248" y="131" font-family="Literata" font-weight="650" font-size="8" fill="#a5533b" text-anchor="middle">Lingua</text>
+    </svg>
+    <div class="row"><p>Lingua sits low and right: a study, built on real material. Its difference is not one feature but the joining up: the word met in a song is the card, the gap in a lesson and the line in your journal.</p>
+      <aside><span class="k">Comparisons</span>In the EU, comparative advertising must be accurate and verifiable. Never name a competitor’s weakness you can’t show.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="What else they use">
+  <div class="sheet">
+    <table class="wide" style="font-size:7.8pt;line-height:10.6pt">
+      <tr><th style="width:20%">Kind</th><th style="width:40%">Why learners love it</th><th>Where Lingua is different</th></tr>
+      <tr><td class="k">Gamified courses</td><td>Easy to start, a little every day</td><td>Real material from the first weeks; no streak pressure</td></tr>
+      <tr><td class="k">Flashcard tools</td><td>Powerful memory, endlessly flexible</td><td>Cards made from what you read and hear, with their sentence and sound</td></tr>
+      <tr><td class="k">Reading tools</td><td>Import anything, look up everything</td><td>Bought once; also listening, watching, grammar and a course</td></tr>
+      <tr><td class="k">Subtitle add-ons</td><td>Learn from the shows you watch</td><td>The same words then live in your decks and dictionary</td></tr>
+      <tr><td class="k">AI chat apps</td><td>A patient partner at any hour</td><td>Lingua opens your own AI with the right scene and your words</td></tr>
+      <tr><td class="k">Tutor sites</td><td>Real people, real conversation</td><td>Lingua is for the hours between lessons</td></tr>
+    </table>
+    <h3>Why someone would choose Lingua</h3>
+    <ul class="plain">
+      <li>Everything in one calm place, joined by the words.</li>
+      <li>Bought once; the free part is generous and stays free.</li>
+      <li>Private: on your device, no account, your own AI key.</li>
+      <li>It looks and feels like a good book, not a slot machine.</li>
+    </ul>
+    <h3>Why they wouldn’t, yet</h3>
+    <ul class="plain">
+      <li>No phone app; no friends or leagues; courses for six languages only.</li>
+      <li>A new name from one maker: trust has to be earned in public.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="page" data-rh="Listening to learners">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="listen" data-ch>Listening to learners</h2>
+    <div class="rule"></div>
+    <p class="lead">Lingua collects nothing about how it’s used, so learning about learners is done the old way: by asking, and by reading what they write.</p>
+    <h3>Five questions for a beta learner</h3>
+    <ol class="ask">
+      <li>Tell me about the last time you studied your language. What did you do?</li>
+      <li>What did you open Lingua for this week, and what happened?</li>
+      <li>Where did you get stuck or lost?</li>
+      <li>What would you miss if Lingua disappeared tomorrow?</li>
+      <li>Who do you know who should try it, and why them?</li>
+    </ol>
+    <div class="row"><p>Ask about what people did, not what they would do. “Would you pay for …” gets polite yeses; “what did you pay for last” gets the truth.</p>
+      <aside><span class="k">Keep notes</span>One page per conversation in the notebook (or a folder): who, when, the five answers, one thing to change. Read them all before planning a step.</aside></div>
+    <div class="row"><p>Every support email and review is a short interview. Keep a running list of what people ask for, with how many asked; it is the honest version of a feature vote.</p><aside></aside></div>
+  </div>
+</section>
+
+<!-- Part Seven · Telling people -->
+<section class="page bare">
+  <div class="opener">
+    <span class="sc">Part Seven</span>
+    <h1 id="part-telling">Telling people</h1>
+    <p>The story, the words, the website, where to find learners, the launch, and counting without spying.</p>
+    <svg class="draw" width="30mm" height="9mm" style="margin-top:16mm"><use href="#d-pencil"/></svg>
+  </div>
+</section>
+
+<section class="page" data-rh="The story in one line">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="story" data-ch>The story in one line</h2>
+    <div class="rule"></div>
+    <p class="lead" style="font-style:italic;font-size:13pt;line-height:17pt">Learn a language by living in it.</p>
+    <div class="row"><p><span class="lede-sc">In a sentence:</span> Lingua is a quiet study on your computer where you read, listen and watch real things in a language, and every word you meet is kept and comes back just before you’d forget it.</p>
+      <aside><span class="k">Use it</span>The line on the cover of the website, in the app’s first page, and at the end of every post.</aside></div>
+    <h3>In thirty seconds</h3>
+    <p>Most apps teach you made-up sentences. Lingua lets you learn from the real thing: a novel, a podcast, a song, a series. Tap any word and it’s explained; keep it, and Lingua brings it back as a card, in a game, in a lesson, in your journal. For six languages there’s a full course too. It runs on your computer, keeps your data there, and Lingua+ is bought once.</p>
+    <h3>Four things to say again and again</h3>
+    <table style="width:86mm">
+      <tr><td class="k">Live in it</td><td>Real books, songs, radio and shows, from the first weeks.</td></tr>
+      <tr><td class="k">Keep every word</td><td>One word, everywhere: met once, never lost.</td></tr>
+      <tr><td class="k">A calm desk</td><td>No ads, no streak guilt, no noise. It looks like a good book.</td></tr>
+      <tr><td class="k">Yours</td><td>On your device, no account, bought once, your own AI key.</td></tr>
+    </table>
+    <div class="row"><p><span class="lede-sc">The positioning,</span> for your own notes: for adults who learn by reading, listening and watching, Lingua is the desktop study that joins every immersion tool around one record of your words, bought once and private, unlike streak games and subscription readers.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Words for selling">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="sellwords" data-ch>Words for selling</h2>
+    <div class="rule"></div>
+    <p class="lead">Marketing speaks in the app’s own voice (see “The voice”), with one more rule: every claim must be true on the day it’s read.</p>
+    <table class="wide" style="font-size:8pt">
+      <tr><th style="width:50%">We may say</th><th>We never say</th></tr>
+      <tr><td>Read real books with every word a click away</td><td>Fluent in three months</td></tr>
+      <tr><td>Six languages with a full course</td><td>Seventy languages (alone)</td></tr>
+      <tr><td>Bought once, every update while Lingua is made</td><td>Lifetime access, forever, guaranteed</td></tr>
+      <tr><td>Your data stays on your device</td><td>100% secure</td></tr>
+      <tr><td>AI with your own free key, through Max</td><td>Free AI tutor; replaces teachers</td></tr>
+      <tr><td>Try everything free; buy when you’re sure</td><td>Only today! Last chance!</td></tr>
+      <tr><td>Built by one person who learns languages too</td><td>A team of experts</td></tr>
+    </table>
+    <div class="row"><p><span class="lede-sc">Screenshots and videos</span> show the app as it is, with real text from public-domain books, never a mock-up of a feature that isn’t built.</p>
+      <aside><span class="k">Watch</span>“Lifetime” and “updates for life” are promises a buyer can hold you to. Say what you can keep.</aside></div>
+    <div class="row"><p><span class="lede-sc">Gifts are said:</span> a creator who got a free licence says so in the review. That is the law in the EU and simple decency anywhere.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="The website">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="site" data-ch>The website</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">One calm page that shows the reader working, says what it costs, and gets Lingua installed in a minute.</p>
+      <aside><span class="k">Where</span>A page of its own on a domain of yours; the app stays at its address (today <code>sanchour.<wbr>github.io/<wbr>lingua.</code>). The domain is your decision.</aside></div>
+    <h3>The home page, top to bottom</h3>
+    <ol class="ask" style="font-style:normal">
+      <li><b>The line and the reader,</b> moving: a page of a real book, a word clicked, its panel, saved.</li>
+      <li><b>Three things,</b> in the fine drawings: read anything, keep every word, listen and watch.</li>
+      <li><b>The rooms,</b> one line each, with a still of each.</li>
+      <li><b>Languages:</b> the core six, then “and 64 more to read and listen in”.</li>
+      <li><b>Plans:</b> the table from “Plans and prices”, as on the plans sheet; Continue free as clear as Buy.</li>
+      <li><b>Private by design:</b> what stays on the device, what goes where.</li>
+      <li><b>Questions:</b> is it for me, phones, my data, refunds, the AI key.</li>
+      <li><b>Install:</b> one button, and the two steps for Chrome and Edge.</li>
+    </ol>
+    <div class="row"><p><span class="lede-sc">Pages that find people:</span> one per core language (“Read in Spanish with every word explained”) and one per way of learning (“Learn French from songs”), each true and useful on its own.</p>
+      <aside><span class="k">Also</span>A credits page (every open source Lingua uses), the privacy policy, terms of sale, contact.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Where to find learners">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="channels" data-ch>Where to find learners</h2>
+    <div class="rule"></div>
+    <p class="lead">For one maker with no budget: places where learners already gather, and things worth sharing there.</p>
+    <table class="wide" style="font-size:7.8pt;line-height:10.6pt">
+      <tr><th style="width:24%">Where</th><th style="width:44%">How</th><th>Careful</th></tr>
+      <tr><td class="k">Learner communities</td><td>Language-learning forums and subreddits, a language’s own communities and Discord servers. Share something useful (a method, a free deck), mention Lingua when it fits.</td><td>Each place’s rules on self-promotion</td></tr>
+      <tr><td class="k">Creators</td><td>Learners who make videos about immersion and reading. A free Lingua+ licence, no script, an honest review.</td><td>The gift disclosed</td></tr>
+      <tr><td class="k">Launch sites</td><td>A launch on a product site and a “show” post on a developer forum: the local-first, bought-once, private angle.</td><td>One day, be there all day</td></tr>
+      <tr><td class="k">Teachers and tutors</td><td>Lingua for the hours between lessons; a teacher’s note and a free licence for their own use.</td><td>Never ask them to sell</td></tr>
+      <tr><td class="k">Universities</td><td>Language centres and student societies.</td><td>Slow; worth it</td></tr>
+      <tr><td class="k">A desktop store</td><td>The Microsoft Store can list a PWA (PWABuilder packages it).</td><td>An account; your decision</td></tr>
+      <tr><td class="k">Word of mouth</td><td>The generous free part; a “Tell a friend” that copies a line.</td><td>No referral nagging</td></tr>
+    </table>
+    <div class="row"><p><span class="lede-sc">Not yet:</span> paid advertising. Until the beta says who Lingua is truly for, ads would pay to find the wrong people.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Content that teaches">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="content" data-ch>Content that teaches</h2>
+    <div class="rule"></div>
+    <p class="lead">The best marketing for a learning app is learning. Write and film things a learner is glad to find, whether or not they ever install Lingua.</p>
+    <h3>Ideas that come from Lingua itself</h3>
+    <ul class="plain">
+      <li>The thirty-one methods (section 4 of the Lingua 7 plan), one short guide each.</li>
+      <li>“Your first novel in Spanish”: which book, how, in what order, from a public-domain shelf.</li>
+      <li>Songs to learn French with, by level; radio stations worth a morning.</li>
+      <li>How a word stays: spaced repetition explained without the jargon.</li>
+      <li>What’s new in Lingua: every version, in the changelog’s plain words.</li>
+      <li>Screen recordings, a minute each: a comic’s bubbles read, a song’s lines saved, a book becoming a deck.</li>
+    </ul>
+    <h3>A monthly rhythm</h3>
+    <table style="width:86mm">
+      <tr><td class="k">Week 1</td><td>One guide</td></tr>
+      <tr><td class="k">Week 2</td><td>One short video</td></tr>
+      <tr><td class="k">Week 3</td><td>One useful thing shared in a community</td></tr>
+      <tr><td class="k">Week 4</td><td>A letter to learners: what’s new, one tip, one thank-you</td></tr>
+    </table>
+    <div class="row"><p class="muted small">Small and steady beats loud and rare. If a month is too full, keep only the letter.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="The launch">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="launch" data-ch>The launch</h2>
+    <div class="rule"></div>
+    <p class="lead">Three stages, each ending when it has taught what it can.</p>
+    <h3>1 · Quietly (now)</h3>
+    <div class="row"><p>The alpha: you and a few friends. Lingua 5 finished and checked; Lingua 7’s foundations; the business set up (Part Eight). Ends when you’d hand it to a stranger without apologising.</p>
+      <aside><span class="k">Version</span>0.x, alpha.</aside></div>
+    <h3>2 · A private beta</h3>
+    <div class="row"><p>Twenty to fifty learners from the communities in “Where to find learners”, chosen to match the five sketches. Free Lingua+ for them. A short letter each week; two conversations a week with the five questions. Fix what stops people; note what delights them.</p>
+      <aside><span class="k">Ends when</span>Most still open Lingua after three weeks, and you can say in their words why.</aside></div>
+    <h3>3 · Version 1.0</h3>
+    <div class="row"><p>The public release, when you say so: the website, Stripe live, the launch week on the next page. Then listen, fix fast, and thank people by name.</p>
+      <aside><span class="k">Version</span>1.0.0 (VERSIONS.md: alpha ends at the first public release).</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="The launch">
+  <div class="sheet">
+    <h3 style="margin-top:0">Launch week</h3>
+    <table style="width:86mm">
+      <tr><td class="k">The week before</td><td>Website, plans and install page checked; Stripe live with a real purchase and a refund tested; support inbox and FAQ ready; the beta learners told first.</td></tr>
+      <tr><td class="k">Day 1</td><td>The letter to everyone who asked; the launch-site post; be there all day to answer.</td></tr>
+      <tr><td class="k">Day 2</td><td>The developer-forum post, on the local-first angle.</td></tr>
+      <tr><td class="k">Day 3–4</td><td>One useful post in each learner community that welcomes it.</td></tr>
+      <tr><td class="k">Day 5</td><td>Creators’ reviews go live (licences sent two weeks before).</td></tr>
+      <tr><td class="k">Day 6–7</td><td>Answer everything; write down every request; fix what broke.</td></tr>
+      <tr><td class="k">The week after</td><td>A thank-you letter with what changed because of them.</td></tr>
+    </table>
+    <div class="row"><p><span class="lede-sc">If it goes quietly,</span> that is normal. Most good small apps grow by being kept, not by launching loudly. Keep the monthly rhythm.</p>
+      <aside><span class="k">Launch offer</span>If any, honest: a real end date said from the start, never a fake countdown.</aside></div>
+    <div class="fleuron"><svg width="16mm" height="5.5mm"><use href="#d-sprig"/></svg></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Counting without spying">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="count" data-ch>Counting without spying</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Lingua sends nothing about how it’s used, and that is a promise worth keeping. You can still know how it’s going.</p>
+      <aside><span class="k">Decision</span>Any measuring inside the app would change the privacy promise: only with your word, opt-in, and said on the privacy page.</aside></div>
+    <table class="wide" style="font-size:8pt">
+      <tr><th style="width:34%">Number</th><th style="width:30%">From</th><th>Tells you</th></tr>
+      <tr><td>Visitors and where from</td><td>Cookie-free site statistics (an option to choose)</td><td>Which channels work</td></tr>
+      <tr><td>Lingua+ sold, Max started</td><td>Stripe</td><td>Whether the free part leads somewhere</td></tr>
+      <tr><td>Max kept, cancelled</td><td>Stripe’s portal</td><td>Whether AI is worth its price</td></tr>
+      <tr><td>Refunds and their reasons</td><td>Stripe, emails</td><td>Who Lingua disappointed</td></tr>
+      <tr><td>Licences claimed</td><td>The licence server</td><td>Paying learners, roughly</td></tr>
+      <tr><td>Questions and requests</td><td>The support inbox</td><td>What to build and fix</td></tr>
+      <tr><td>How it’s going</td><td>Opt-in “How’s Lingua?” once, after two weeks</td><td>The feeling, in their words</td></tr>
+    </table>
+    <div class="row"><p>Look once a week, on the same day, in one small table. A number moving once is noise; three weeks in a row is a story.</p><aside></aside></div>
+  </div>
+</section>
+
+<!-- Part Eight · Running it -->
+<section class="page bare">
+  <div class="opener">
+    <span class="sc">Part Eight</span>
+    <h1 id="part-running">Running it</h1>
+    <p>Money, privacy and the law, support, shipping, and working with Claude across accounts.</p>
+    <svg class="draw" width="24mm" height="24mm" style="margin-top:16mm"><use href="#d-ink"/></svg>
+  </div>
+</section>
+
+<section class="page" data-rh="Money">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="money" data-ch>Money</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">The learner pays on Stripe’s own page; a tiny server turns the payment into a signed licence; the app checks it offline. No AI and no learning data pass through.</p>
+      <aside><span class="k">Setup</span><code>server/<wbr>licence/<wbr>README.md</code>, step by step, test mode first.</aside></div>
+    <svg class="wide" viewBox="0 0 300 54" style="width:100%;height:auto;margin:2pt 0 8pt">
+      <g class="ln"><rect x="4" y="14" width="58" height="24" rx="6"/><rect x="84" y="14" width="62" height="24" rx="6"/><rect x="168" y="14" width="62" height="24" rx="6"/><rect class="a" x="252" y="14" width="44" height="24" rx="6"/>
+        <path d="M62 26H82M146 26H166M230 26H250"/><path d="M78 23l4 3-4 3M162 23l4 3-4 3M246 23l4 3-4 3"/></g>
+      <g font-family="Jakarta" font-size="6.2" fill="#262220" text-anchor="middle"><text x="33" y="29">the learner</text><text x="115" y="29">Stripe + Tax</text><text x="199" y="29">licence server</text><text x="274" y="29">the app</text></g>
+      <g font-family="Literata" font-style="italic" font-size="5.8" fill="#776c63" text-anchor="middle"><text x="115" y="48">VAT worked out</text><text x="199" y="48">a signed licence</text><text x="274" y="48">checked offline</text></g>
+    </svg>
+    <h3>What has to be set up (by you)</h3>
+    <ul class="plain">
+      <li>A business where you live, and a bank account for it.</li>
+      <li>Stripe, with Stripe Tax on, and the EU’s VAT one-stop shop (Stripe works the VAT out; the return is yours, each quarter).</li>
+      <li>Three Payment Links, the customer portal, the key pair, the Cloudflare Worker.</li>
+      <li>An accountant, even a small one, for the first year.</li>
+    </ul>
+    <div class="row"><p><span class="lede-sc">Costs today</span> are close to none: GitHub Pages and Cloudflare’s free tier host everything; a domain costs a few euros a year; Stripe takes a fee per payment.</p>
+      <aside><span class="k">Check</span>Stripe’s current fees on its pricing page before doing sums; they differ by card and country.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Money">
+  <div class="sheet">
+    <h3 style="margin-top:0">What one Lingua+ leaves you</h3>
+    <div class="row"><p>Prices include VAT, which belongs to the buyer’s country. A worked example, with the numbers as assumptions to replace:</p>
+      <aside><span class="k">Only an illustration</span>Your VAT rate, Stripe’s fee and taxes on profit are yours to check.</aside></div>
+    <table style="width:86mm" class="spec">
+      <tr><td>Price paid</td><td>€24.99</td></tr>
+      <tr><td>VAT inside it, at 21 % (e.g. the Netherlands)</td><td>− €4.34</td></tr>
+      <tr><td>Net price</td><td>€20.65</td></tr>
+      <tr><td>Stripe’s fee, assumed 1.5 % + €0.25 of the price paid</td><td>− €0.62</td></tr>
+      <tr><td>Left, before income tax</td><td><b>about €20.03</b></td></tr>
+    </table>
+    <div class="row"><p><span class="lede-sc">The sum, for any price:</span> left = price ÷ (1 + VAT) − fee(price). Do it once for Lingua+, Max monthly and Max yearly, and keep the table beside your prices.</p><aside></aside></div>
+    <h3>Refunds</h3>
+    <div class="row"><p>A suggestion: refund Lingua+ within fourteen days, no questions asked, and say so on the plans page. It costs little, earns trust, and buyers in the EU often have a right to withdraw anyway.</p>
+      <aside><span class="k">Your decision</span>The rule, and its words in the terms of sale.</aside></div>
+    <h3>Honest limits of the licence</h3>
+    <p>An app that runs on the device can be unlocked by someone determined. The licence stops casual sharing, not that. Spend no time fighting it; spend it on the people who pay.</p>
+  </div>
+</section>
+
+<section class="page" data-rh="Privacy, licences and the law">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="law" data-ch>Privacy, licences and the law</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead">What to have in writing before strangers pay. Not legal advice: have it read once by someone who knows.</p>
+      <aside><span class="k">EU</span>Lingua is sold from the EU, so the GDPR, consumer law and VAT rules apply.</aside></div>
+    <table class="wide" style="font-size:7.8pt;line-height:10.6pt">
+      <tr><td class="k" style="width:23%">Privacy policy</td><td>What stays on the device (all learning data); what goes where (Stripe for payments; the licence server: the checkout and the email; AI and translation providers with the learner’s own key; look-ups and media from the open services Lingua names); no analytics, no ads, no selling.</td></tr>
+      <tr><td class="k">Terms of sale</td><td>What Lingua+ and Max are, how Max renews and is cancelled, refunds, what “updates” means, the licence’s limits.</td></tr>
+      <tr><td class="k">Business details</td><td>Name, address and registration on the website, as EU law expects of a seller.</td></tr>
+      <tr><td class="k">The name</td><td>“Lingua” is a common word used by many apps: search the EU’s trademark register (TMview) before printing it on anything, and consider a distinctive mark.</td></tr>
+      <tr><td class="k">Open content</td><td>Credits and licences for every source (Wiktionary and Lingua Libre CC BY-SA, Tatoeba CC BY, fonts under the OFL, Piper’s voices each with its own licence, CLDR, LibriVox and Gutenberg’s terms); Settings › About lists them: keep it complete.</td></tr>
+      <tr><td class="k">Accessibility</td><td>The EU’s accessibility rules exempt the smallest businesses for services, but step 7-25 is worth doing anyway.</td></tr>
+      <tr><td class="k">Keys</td><td>API keys stay on the device and travel only in headers (CLAUDE.md); say so on the privacy page.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Support">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="support" data-ch>Support</h2>
+    <div class="rule"></div>
+    <p class="lead">One inbox, answered by a person, in Lingua’s voice. Promise a reply within two working days, and keep it.</p>
+    <h3>The questions that will come</h3>
+    <ul class="plain">
+      <li>Installing on Windows and Mac; why there’s no phone app (yet).</li>
+      <li>Moving to a new computer: device pairing, or a backup file.</li>
+      <li>A licence lost: Settings › Lingua+ › Restore, with the licence key.</li>
+      <li>Max and the AI key: where to get a free key, why Lingua asks for one.</li>
+      <li>Refunds, and cancelling Max in the customer portal.</li>
+      <li>A word with the wrong meaning; a station that doesn’t play.</li>
+    </ul>
+    <div class="row"><p>Each answered twice becomes a line in the FAQ. Each bug gets a note in the known-issues list on the website until it’s fixed.</p>
+      <aside><span class="k">Worth adding</span>A “Report a problem” that opens an email with the version and the room filled in (the Lab’s reports already know them).</aside></div>
+    <h3>A reply, for example</h3>
+    <p class="muted" style="font-style:italic">Thanks for writing, and sorry the radio went quiet. That station changed its address yesterday; the fix is in version 0.7.0-alpha.12, which your Lingua will install by itself the next time it’s closed. Happy listening.</p>
+  </div>
+</section>
+
+<section class="page" data-rh="Shipping">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="ship" data-ch>Shipping</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Every push to main is a release: GitHub Pages builds it, and installed apps update themselves at a quiet moment, never while someone is studying.</p>
+      <aside><span class="k">Where</span><code>docs/<wbr>DEPLOY.md</code>, <code>docs/<wbr>VERSIONS.md</code>, <code>.github/<wbr>workflows/<wbr>deploy.yml</code>.</aside></div>
+    <h3>Every push</h3>
+    <ol class="ask" style="font-style:normal">
+      <li>The check: typecheck, tests, build; a look at desktop sizes, light and dark.</li>
+      <li>The docs it touches: roadmap, decisions, features; the step ticked in the handover.</li>
+      <li><code>node scripts/version.ts "what this push is"</code>: the version and the changelog line.</li>
+      <li>Commit as sanchour; rebase onto origin’s main (other accounts push all the time).</li>
+      <li>Tag the version; push main and the tag; check the deploy went live.</li>
+    </ol>
+    <h3>The order of the versions</h3>
+    <table style="width:86mm">
+      <tr><td class="k">0.5.2-alpha.N</td><td>Lingua 5.2 being built; 0.5.2 at its check</td></tr>
+      <tr><td class="k">0.7.0-alpha.N</td><td>Lingua 7 · Features, next (your answer); 0.7.0 at its check</td></tr>
+      <tr><td class="k">0.8.0-alpha.N</td><td>Lingua 6 · Design, after it, so versions only go up</td></tr>
+      <tr><td class="k">1.0.0</td><td>The first public release, when you say so</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Working with Claude">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="claude" data-ch>Working with Claude</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Lingua is built across several accounts and computers. Memory doesn’t travel; the repository does. Everything a session needs is written down there.</p>
+      <aside><span class="k">Start here</span><code>CLAUDE.md</code>, then <code>docs/<wbr>HANDOVER.md</code>.</aside></div>
+    <table style="width:86mm">
+      <tr><td class="k">CLAUDE.md</td><td>The way of working and the rules that always hold</td></tr>
+      <tr><td class="k">HANDOVER.md</td><td>The queue in order, how to claim a step, the prompt to paste</td></tr>
+      <tr><td class="k">The plans</td><td>Lingua 5.1, 5.2, 6 and 7, each step planned before it’s built</td></tr>
+      <tr><td class="k">DECISIONS.md</td><td>Why things are the way they are</td></tr>
+      <tr><td class="k">This book</td><td>How every page should look, read and feel</td></tr>
+    </table>
+    <h3>The prompt to paste, on any account</h3>
+    <pre style="font:7pt/10pt Consolas,monospace;background:var(--surface);padding:7pt 8pt;border-radius:2mm;white-space:pre-wrap;margin:3pt 0 8pt">Continue Lingua. Read CLAUDE.md and docs/HANDOVER.md, take the first free step in the queue (claim it first), and do it the way CLAUDE.md describes: plan it, build it, check it at desktop sizes, update the docs, commit and push to main, check the deploy, and give me end notes.</pre>
+    <div class="row"><p><span class="lede-sc">Sessions never</span> sign in to your accounts, create accounts, put a key in a URL, or touch anything outside the repository. Those are yours (Part Nine).</p><aside></aside></div>
+  </div>
+</section>
+
+<!-- Part Nine · Start to finish -->
+<section class="page bare">
+  <div class="opener">
+    <span class="sc">Part Nine</span>
+    <h1 id="part-road">Start to finish</h1>
+    <p>The whole road from here to a public Lingua and beyond, what only you can do, and the two checklists that matter most.</p>
+    <svg class="draw" width="44mm" height="24mm" style="margin-top:16mm"><use href="#d-book"/></svg>
+  </div>
+</section>
+
+<section class="page" data-rh="The whole road">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="road" data-ch>The whole road</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead">Ten stations. The first three are behind you; the rest is in order, and some of it can run side by side.</p>
+      <aside><span class="k">As of</span>27 October 2026, version 0.5.2-alpha.4.</aside></div>
+    <div class="station done"><b>1 · The first builds</b><span>Lingua 1 to 3: the reader, cards, rooms, twenty languages, Grammatica and alphabets.</span></div>
+    <div class="station done"><b>2 · Lingua 4.0</b><span>Tiers and seventy languages, the full dictionary, comics, the end page.</span></div>
+    <div class="station done"><b>3 · Lingua 5.1</b><span>Plans and Stripe in test mode, the first start, Home, the course, typing, natural voices. Version 0.5.1.</span></div>
+    <div class="station now"><b>4 · Lingua 5.2</b><span>The rooms still open (Visio, Diarium, Sermo, Mundus, Grammatica’s path, Ratio), then its check. Version 0.5.2.</span></div>
+    <div class="station"><b>5 · Lingua 7 · Features</b><span>Foundations first, then the skills, paths, more of the language, around the app. Version 0.7.0. Next, by your choice.</span></div>
+  </div>
+</section>
+
+<section class="page" data-rh="The whole road">
+  <div class="sheet">
+    <div class="station" style="margin-top:0"><b>6 · Lingua 6 · Design</b><span>Room by room from your notes, starting with the first start, with this book as the guide. Version 0.8.0.</span></div>
+    <div class="station side"><b>7 · Ready to sell</b><span>Your part, and it can run beside 5 and 6: the business, Stripe live, the licence server, a domain, the website, the legal texts, a support inbox (Part Eight).</span></div>
+    <div class="station"><b>8 · A private beta</b><span>Twenty to fifty learners, three weeks or more, the five questions (chapter “Listening to learners”).</span></div>
+    <div class="station"><b>9 · Version 1.0</b><span>The public release and its launch week, when you say so.</span></div>
+    <div class="station"><b>10 · Growing</b><span>The monthly rhythm; what learners ask for; the open questions (sharing, phone apps) decided when the time is right.</span></div>
+    <div class="row" style="margin-top:8pt"><p><span class="lede-sc">A suggestion to weigh:</span> the beta doesn’t have to wait for all of Lingua 7. After its foundations and the skills (Parts A and B), Lingua is more than enough to hand to strangers, and their answers are the best guide to the order of everything after.</p>
+      <aside><span class="k">Your call</span>The order of 7, 6 and the beta is yours; the handover follows it.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="What only you can do">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="only" data-ch>What only you can do</h2>
+    <div class="rule"></div>
+    <p class="lead">Sessions build, check and write; they never sign in, create accounts or decide for you. These are yours.</p>
+    <div style="font-size:8.4pt;line-height:13pt">
+      <p class="sc" style="margin:4pt 0 3pt">Accounts</p>
+      <div class="ck"><span class="box"></span>Stripe, with Stripe Tax and the EU’s VAT one-stop shop</div>
+      <div class="ck"><span class="box"></span>Cloudflare, for the licence server (free tier)</div>
+      <div class="ck"><span class="box"></span>A domain for the website</div>
+      <div class="ck"><span class="box"></span>The Chrome Web Store, for the browser extension (5.2-4)</div>
+      <div class="ck"><span class="box"></span>Optional: the Microsoft Store, to list Lingua there</div>
+      <p class="sc" style="margin:7pt 0 3pt">The business</p>
+      <div class="ck"><span class="box"></span>Register it where you live; a bank account; an accountant</div>
+      <div class="ck"><span class="box"></span>A trademark search for the name</div>
+      <div class="ck"><span class="box"></span>The privacy policy and terms of sale, read by someone who knows</div>
+      <div class="ck"><span class="box"></span>A support inbox, and the refund rule</div>
+      <p class="sc" style="margin:7pt 0 3pt">Decisions still open</p>
+      <div class="ck"><span class="box"></span>Sharing and community: files and links, or a server (Lingua 7, Q2)</div>
+      <div class="ck"><span class="box"></span>Phone apps and widgets: “can be”, but when (Q6)</div>
+      <div class="ck"><span class="box"></span>The three “remove” notes read in Lingua 6’s plan (its Q1–Q3)</div>
+      <div class="ck"><span class="box"></span>When the beta starts, and when 1.0 is</div>
+    </div>
+  </div>
+</section>
+
+<section class="page" data-rh="Two checklists">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="checklists" data-ch>Two checklists</h2>
+    <div class="rule"></div>
+    <div class="wide" style="display:grid;grid-template-columns:1fr 1fr;gap:0 7mm;font-size:8pt;line-height:12.2pt">
+      <div>
+        <p class="sc" style="margin:2pt 0 4pt">Before the beta</p>
+        <div class="ck"><span class="box"></span>Lingua 5’s check passed (0.5.2)</div>
+        <div class="ck"><span class="box"></span>The first start works for a stranger, start to finish</div>
+        <div class="ck"><span class="box"></span>Backups and moving to a new computer tested</div>
+        <div class="ck"><span class="box"></span>“Report a problem” and an inbox that’s read</div>
+        <div class="ck"><span class="box"></span>Known issues written down</div>
+        <div class="ck"><span class="box"></span>Free licences ready for the beta learners</div>
+        <div class="ck"><span class="box"></span>A short welcome letter and the five questions</div>
+        <div class="ck"><span class="box"></span>The privacy page says what Lingua sends where</div>
+        <div class="ck"><span class="box"></span>The credits page is complete</div>
+      </div>
+      <div>
+        <p class="sc" style="margin:2pt 0 4pt">Before 1.0</p>
+        <div class="ck"><span class="box"></span>The beta’s stoppers fixed</div>
+        <div class="ck"><span class="box"></span>Stripe live: a real purchase and a refund tested</div>
+        <div class="ck"><span class="box"></span>The licence server live; test mode off by itself</div>
+        <div class="ck"><span class="box"></span>The website, plans, install and FAQ pages</div>
+        <div class="ck"><span class="box"></span>Terms, privacy, business details online</div>
+        <div class="ck"><span class="box"></span>The name checked; the domain live</div>
+        <div class="ck"><span class="box"></span>Every screen through the review sheet</div>
+        <div class="ck"><span class="box"></span>Launch week written down, day by day</div>
+        <div class="ck"><span class="box"></span><code>version.ts --line 1.0.0</code> when you say so</div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:10pt"><p class="muted" style="font-style:italic">And then: thank the people who helped, by name.</p><aside></aside></div>
+    <svg class="draw" width="24mm" height="8.5mm" style="margin-top:8mm"><use href="#d-sprig"/></svg>
   </div>
 </section>
 
@@ -1024,33 +1861,56 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <tr><td class="k">Max</td><td>the AI features, with your own key, €5.99 a month or €49.99 a year.</td></tr>
       <tr><td class="k">Next up</td><td>Home’s list of one-click ways back in.</td></tr>
       <tr><td class="k">The word drawer</td><td>what opens when you tap a word.</td></tr>
+      <tr><td class="k">The inbox</td><td>where words wait before they become cards (Lingua 7).</td></tr>
+      <tr><td class="k">The word record</td><td>one record per word: the language’s half and yours (7-1).</td></tr>
+      <tr><td class="k">The learner’s record</td><td>the evidence of what you know and where you slip (7-5).</td></tr>
+      <tr><td class="k">Ask</td><td>the tutor, a button where the learning is (7-15).</td></tr>
+      <tr><td class="k">Lingyu</td><td>the design package’s temporary name; its catalogue fed Lingua 7.</td></tr>
       <tr><td class="k">A0 to C2</td><td>the levels; A0 is “starting out”.</td></tr>
     </table>
   </div>
 </section>
 
-<!-- 38 · Appendix C -->
-<section class="page" data-rh="Lingua 6 at a glance">
+<!-- Appendix C · Lingua 7 and 6 at a glance -->
+<section class="page" data-rh="Lingua 7 and 6 at a glance">
   <div class="sheet">
     <span class="kicker">Appendix C</span>
-    <h2 id="apC">Lingua 6 at a glance</h2>
+    <h2 id="apC">Lingua 7 and 6 at a glance</h2>
     <div class="rule"></div>
-    <div class="row"><p class="lead">A design update, one room at a time. Each step is planned from the user’s notes, then built, then checked against this book.</p>
-      <aside><span class="k">The plan</span><code>docs/<wbr>LINGUA-6-PLAN.md</code>. The queue: <code>docs/<wbr>HANDOVER.md</code>.</aside></div>
-    <table style="width:86mm">
-      <tr><th>Step</th><th>What</th><th>Where it stands</th></tr>
-      <tr><td>6-0</td><td>This handbook</td><td class="k" style="color:var(--sage-t)">done</td></tr>
-      <tr><td>6-1</td><td>The first start</td><td class="k">planned</td></tr>
-      <tr><td>6-2</td><td>Home</td><td class="k">waits for notes</td></tr>
-      <tr><td>6-3</td><td>Cursus</td><td class="k">waits for notes</td></tr>
-      <tr><td>6-4</td><td>Codex</td><td class="k">waits for notes</td></tr>
-      <tr><td>6-5</td><td>Thesaurus and Ludus</td><td class="k">waits for notes</td></tr>
-      <tr><td>6-6</td><td>Sonus et Visio</td><td class="k">waits for notes</td></tr>
-      <tr><td>6-7</td><td>Mentis</td><td class="k">waits for notes</td></tr>
-      <tr><td>6-8</td><td>Ratio</td><td class="k">waits for notes</td></tr>
-      <tr><td>6-9</td><td>Settings and the plans</td><td class="k">waits for notes</td></tr>
-      <tr><td>6-10</td><td>The states, everywhere</td><td class="k">waits for notes</td></tr>
-      <tr><td>6-11</td><td>The check; version 0.6.0</td><td class="k">last</td></tr>
+    <div class="row"><p class="lead">Lingua 7 · Features first, then Lingua 6 · Design (your answer, 26 October). Each step is planned in detail before it is built, and checked against this book.</p>
+      <aside><span class="k">Plans</span><code>docs/<wbr>LINGUA-7-PLAN.md</code> (step 24), <code>docs/<wbr>LINGUA-6-PLAN.md</code> (step 23); the queue in <code>HANDOVER.md</code>.</aside></div>
+    <table class="wide" style="font-size:7.8pt;line-height:10.4pt">
+      <tr><th style="width:15%">Lingua 7</th><th style="width:60%">Steps</th><th>Where it stands</th></tr>
+      <tr><td>Audit</td><td>1,618 entries checked; the plan written</td><td class="k" style="color:var(--sage-t)">done</td></tr>
+      <tr><td>A</td><td>7-1 word record · 7-2 inbox and decks · 7-3 cards and memory · 7-4 exercise engine · 7-5 learner’s record · 7-6 checked generation</td><td class="k">first</td></tr>
+      <tr><td>B</td><td>7-7 grammar · 7-8 reading · 7-9 listening · 7-10 sounds · 7-11 speaking · 7-12 writing · 7-13 translating</td><td class="k">after A</td></tr>
+      <tr><td>C</td><td>7-14 courses · 7-15 the tutor · 7-16 adaptive · 7-17 goals and progress · 7-18 exams</td><td class="k">after B</td></tr>
+      <tr><td>D</td><td>7-19 culture and the interface in the language · 7-20 phrasebook, notebook, map · 7-21 games and projects · 7-22 dictionary tools · 7-23 each language’s tools</td><td class="k">after A</td></tr>
+      <tr><td>E</td><td>7-24 import and export · 7-25 accessibility and the desktop</td><td class="k">any time after A</td></tr>
+      <tr><td>F</td><td>7-26 experiments · 7-27 together, and beyond the desk</td><td class="k">your word</td></tr>
+      <tr><td>G</td><td>7-28 the check; version 0.7.0</td><td class="k">last</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Lingua 7 and 6 at a glance">
+  <div class="sheet">
+    <table class="wide" style="font-size:7.8pt;line-height:10.4pt;margin-top:0">
+      <tr><th style="width:15%">Lingua 6</th><th style="width:60%">What</th><th>Where it stands</th></tr>
+      <tr><td>6-0</td><td>This handbook (first edition; this second edition adds Parts Two and Six to Nine)</td><td class="k" style="color:var(--sage-t)">done</td></tr>
+      <tr><td>6-1</td><td>The first start, quieter and shorter</td><td class="k">planned</td></tr>
+      <tr><td>6-2 – 6-9</td><td>Home, Cursus, Codex, Thesaurus and Ludus, Sonus et Visio, Mentis, Ratio, Settings and the plans</td><td class="k">waits for your notes</td></tr>
+      <tr><td>6-10</td><td>The states, everywhere</td><td class="k">waits for your notes</td></tr>
+      <tr><td>6-11</td><td>The check; version 0.8.0</td><td class="k">last</td></tr>
+    </table>
+    <h3 class="wide">Your answers to Lingua 7’s questions</h3>
+    <table class="wide" style="font-size:7.8pt;line-height:10.4pt">
+      <tr><td class="k" style="width:9%">Q1</td><td>Lingua 7 first, then Lingua 6</td></tr>
+      <tr><td class="k">Q2</td><td>Sharing and community: still to be considered</td></tr>
+      <tr><td class="k">Q3</td><td>No live voice conversation inside Lingua</td></tr>
+      <tr><td class="k">Q4</td><td>Yes: the interface in the language you learn</td></tr>
+      <tr><td class="k">Q5</td><td>Yes: streaks optional, stamps not points, reminders off by default</td></tr>
+      <tr><td class="k">Q6</td><td>Phone apps and widgets: can be, not ruled out</td></tr>
     </table>
     <div class="row"><p>When a step changes a rule in this book, the book changes in the same commit. Then print it again.</p>
       <aside><span class="k">Print</span><code>node scripts/<wbr>handbook-pdf.ts</code></aside></div>
@@ -1061,6 +1921,10 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 <section class="page" data-rh="Notes">
   <span class="kicker" style="position:absolute;top:19mm;left:16mm" id="notes">For your notes and sketches</span>
   <div class="lined margin ruled" data-lines="22"></div>
+</section>
+
+<section class="page" data-rh="Notes">
+  <div class="lined margin ruled" data-lines="24" style="top:20mm"></div>
 </section>
 
 <!-- 40 · Colophon -->
@@ -1089,6 +1953,16 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     folio.className = 'folio';
     folio.textContent = n;
     page.append(rh, folio);
+  });
+  const chapterNo = {};
+  let count = 0;
+  document.querySelectorAll('h2[data-ch]').forEach((h) => {
+    chapterNo[h.id] = ++count;
+    const n = h.parentElement.querySelector('.chn');
+    if (n) n.textContent = count;
+  });
+  document.querySelectorAll('[data-n-for]').forEach((el) => {
+    if (!el.textContent) el.textContent = chapterNo[el.dataset.nFor] ?? '';
   });
   document.querySelectorAll('.ruled[data-lines]').forEach((el) => {
     for (let k = 0; k < Number(el.dataset.lines); k++) el.append(document.createElement('i'));

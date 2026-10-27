@@ -1611,3 +1611,23 @@ Short records of choices that are not obvious from the code. Newest last.
 - **47 entries wait for the user:** community, public profiles, leaderboards, phone apps, widgets, cloud accounts.
   They go against D1, D6 and Lingua being private; step 7-27 proposes sharing by files and links instead, and says
   what a server would cost.
+
+## 2026-10-27 — Lingua 7 before Lingua 6; the full handbook
+
+- **The order is the user's:** "Do Lingua Features first, then Lingua Design." Lingua 7 comes right after Lingua 5's
+  check; Lingua 6 then redesigns rooms that already hold Lingua 7's features, so each room is redesigned once.
+- **Versions only go up.** Lingua 7 builds as 0.7.x; Lingua 6, built after it, takes 0.8.x. The plans keep their
+  names, since everything refers to them (VERSIONS.md).
+- **The user's other answers** (LINGUA-7-PLAN.md section 6): sharing and community still to be considered; no live
+  voice conversation in Lingua; yes to the interface in the language being learned; yes to optional streaks, stamps
+  rather than points and reminders off by default; phone apps and widgets "can be": not ruled out, not scheduled,
+  so desktop only (D6) still holds for what is built.
+- **The handbook became the whole Lingua handbook** (second edition, 80 pages), at the user's ask: the design parts
+  as before, plus the product and roadmap, the people Lingua is for (five learners written as sketches to test, not
+  research), telling people (honest claims, channels for one maker, a launch in three stages, counting without
+  analytics), running it (Stripe, VAT, the licence's limits, privacy and licences, support, shipping) and the road
+  to 1.0. Competitors appear by kind, never by name, because their features and prices change and EU comparative
+  advertising must be verifiable. Money examples are labelled illustrations with their assumptions.
+- **Chapters number themselves** in the book (the script counts them), so other docs cite chapters by name.
+- **The PDF keeps its file name** (`Lingua-Design-Handbook.pdf`) so every link to it still works; its title is
+  "The Lingua Handbook".

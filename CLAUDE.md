@@ -32,13 +32,16 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
   The user asked (2026-10-21) for all of 5.1 and 5.2 to be done without needing them.
 - **Lingua 6 · Design** is planned (2026-10-26): [docs/LINGUA-6-PLAN.md](docs/LINGUA-6-PLAN.md), a
   design update page by page from the user's notes, starting with the first start (6-1, handover step
-  23, after Lingua 5's check). Its guide is the handbook,
+  23, **after Lingua 7**, the user's order, 2026-10-26; versions 0.8.x). Its guide is the handbook,
   [docs/handbook/Lingua-Design-Handbook.pdf](docs/handbook/Lingua-Design-Handbook.pdf) (source
   `docs/handbook/handbook.html`, printed with `node scripts/handbook-pdf.ts`): read its Part One before
-  any design work, and the room's chapter before changing a room.
+  any design work, and the room's chapter before changing a room. Since 2026-10-27 the handbook is the full
+  Lingua handbook (80 pages): also the product, the people it's for, marketing and the launch, running it
+  (money, the law, support, shipping) and the whole road from start to finish; chapters are cited by name.
 - **Lingua 7 · Features** is planned (2026-10-26): [docs/LINGUA-7-PLAN.md](docs/LINGUA-7-PLAN.md), 28 steps that add
   what the Lingyu feature catalogue has and Lingua doesn't, checked entry by entry in
-  [docs/LINGUA-7-FEATURES.md](docs/LINGUA-7-FEATURES.md) (handover step 24, after Lingua 6). Its steps are claimed in
+  [docs/LINGUA-7-FEATURES.md](docs/LINGUA-7-FEATURES.md) (handover step 24, **next after Lingua 5's check, before Lingua 6**; versions 0.7.x; the user's answers to its
+  questions are in its section 6). Its steps are claimed in
   the plan's own table; tick the audit's entries as they are built.
 - Other accounts and sessions push to `main` all the time: rebase onto `origin/main` before every
   push. Tier 2 stays cheap: only the features that cost little (automatic packs, decks, podcasts,

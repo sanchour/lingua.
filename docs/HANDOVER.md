@@ -5,7 +5,7 @@ needs is in this repository; Claude's memory doesn't travel, and [CLAUDE.md](../
 way of working and the rules. This file is the **work queue**: what is still open, in order, how to
 take a step without clashing with another account, and the prompts to paste.
 
-Last updated 2026-10-26 (Lingua 6 · Design planned, step 23; Lingua 7 · Features planned, step 24: LINGUA-7-PLAN.md).
+Last updated 2026-10-27 (order: Lingua 5 → Lingua 7 · Features, step 24 → Lingua 6 · Design, step 23; the handbook's second edition).
 
 ---
 
@@ -78,8 +78,8 @@ read that part before starting.
 | 20 | [x] | *done 2026-10-25, with step 9 (a · typing, b · language touches: ROADMAP "Typing, and the language in the design")* **5.1-4 · Typing, and the language in the design,** one step in two parts: a · typing practice in Cursus; b · a touch of the language in the design. After the room steps above (b touches every room lightly). | 5.1-4a, b | L |
 | 21 | [ ] | **Lingua 5 complete:** the full check; the version becomes 0.5.2 (`node scripts/version.ts --release`, docs/VERSIONS.md; 5.1-5, 5.1's own check, was done on 2026-10-25 at the user's ask: 0.5.1). Last, after 22. | 5.2-10 | S |
 | 22 | [~] | *claimed 2026-10-25* **Visio, as Lingua 5.2-4:** YouTube inside Lingua with two subtitle lines; the streaming services' subtitles beside the show playing in its own app, with the same taps and translations; a Lingua browser extension for them (decided yes); the services' real marks. **Parallel** after 2. | 5.2-4 | L |
-| 23 | [ ] | **Lingua 6-1 · The first start, quieter and shorter** (Lingua 6 · Design's first step): a first name, no skip; clearer tiers, the core six as book covers, a country panel without tabs; the level as seven steps with a card that pops up; "You speak" and "Why" out; the goal without a forecast. Read the plan's section 0 (the user's notes) and section 4 (three readings to confirm) first, and the handbook's Part One and chapter 10. **After 21.** | LINGUA-6-PLAN 6-1 | M |
-| 24 | [ ] | **Lingua 7 · Features** (planned 2026-10-26; the user will most likely build it in other sessions): 28 steps in seven parts, from the word record and one exercise engine to exams, pronunciation and games. **Claim each step in the plan's own table** (LINGUA-7-PLAN.md section 2), as section 2 here says; tick its entries in LINGUA-7-FEATURES.md when done. Part A first. **After Lingua 6** unless the user says otherwise (the plan's Q1). | LINGUA-7-PLAN | XL |
+| 23 | [ ] | **Lingua 6-1 · The first start, quieter and shorter** (Lingua 6 · Design's first step): a first name, no skip; clearer tiers, the core six as book covers, a country panel without tabs; the level as seven steps with a card that pops up; "You speak" and "Why" out; the goal without a forecast. Read the plan's section 0 (the user's notes) and section 4 (three readings to confirm) first, and the handbook's Part One and its chapter "The first start". **After 24** (Lingua 7 first, the user 2026-10-26). | LINGUA-6-PLAN 6-1 | M |
+| 24 | [ ] | **Lingua 7 · Features** (planned 2026-10-26; the user will most likely build it in other sessions): 28 steps in seven parts, from the word record and one exercise engine to exams, pronunciation and games. **Claim each step in the plan's own table** (LINGUA-7-PLAN.md section 2), as section 2 here says; tick its entries in LINGUA-7-FEATURES.md when done. Part A first. **Next after 21, before 23** (the user, 2026-10-26: "Do Lingua Features first, then Lingua Design"; the plan's section 6 has all six answers). | LINGUA-7-PLAN | XL |
 
 
 **Lingua 5.1 is four steps and the check** (the user, 2026-10-21): 2 (5.1-1, done), 6 (5.1-2), 9 (5.1-3)
@@ -91,9 +91,9 @@ course, for all six core languages**, then 5.1-3b and c (the rest of step 9). **
 (2026-10-22, ROADMAP "Codex (5.1-3a)"), and Cursus (2026-10-22, ROADMAP "Cursus"). 5.1-3b part 1 is
 done (2026-10-23); next are 5.1-3b parts 2, 3 and 4, then 5.1-3c (section 6).** **Since 2026-10-25 all
 of 5.1's steps are done (2, 6, 9 and 20); next are 5.2's room steps (13–18 and 22, each on its own
-and in parallel), then 21, the check.** **Then Lingua 6 · Design** (planned 2026-10-26): step 23,
-the first start, is its first step; the rooms join the queue one by one, as the user's notes for each
-come (LINGUA-6-PLAN.md, section 3). **Then Lingua 7 · Features** (step 24), part by part.
+and in parallel), then 21, the check.** **Then Lingua 7 · Features** (step 24), part by part, **then
+Lingua 6 · Design** (step 23, the first start, as its first step; the rooms join the queue one by one, as
+the user's notes for each come: LINGUA-6-PLAN.md, section 3). The order is the user's (2026-10-26).
 
 ---
 
