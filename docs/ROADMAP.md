@@ -2186,6 +2186,86 @@ and push, finish".*
 - **Can't be checked here:** the extension on the streaming services (it needs the user's accounts
       and an unpacked install); Gemini's transcript needs a Max key.
 
+### Finishing Lingua 5: the plan (2026-10-27)
+*The user (2026-10-27): "create the plan on doing Lingua 5 completely here, claim it". One session builds every
+step left, in this order; each step is its own push with a version (0.5.2-alpha.N) and its tick in HANDOVER. The
+design of each is LINGUA-5.2-PLAN.md's section; below is how it is built and how it is checked. Real marks and
+"From Mundus" (5.2-4) are already done (0.5.2-alpha.1).*
+
+1. [ ] **Diarium (5.2-5, handover 14).**
+   - **The editor:** Tiptap (`@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extensions`), loaded only in Diarium.
+     Its keys already cover the plan's list (Ctrl B/I/U, Ctrl Alt 1–3 and 0, Ctrl Shift 7/8, `# ` `- ` `1. ` `> `);
+     a toolbar over the selection. Entries stay Markdown in `text`: a small converter of our own
+     (`core/journal/markdown.ts`: headings, lists, quotes, bold, italic, `<u>` for underline) both ways, tested,
+     so sync, export and word counts keep working. The AI check gets the plain text; "Use the corrected text"
+     puts the corrections back paragraph by paragraph, keeping each paragraph's heading or list marker.
+   - **Text:** "A few sentences…" goes on both pages; the empty page says "Today…" in the language. Without AI
+     the bottom bar goes; the word count, Saved and dictation move to the header, and the ⋯ menu has one quiet
+     line about corrections with Max.
+   - **"Dear diary"** per language (`core/journal/salutations.ts`) where the habit exists (Cher journal, Querido
+     diario, Liebes Tagebuch, Caro diario, Querido diário, Lief dagboek, Дорогой дневник, Drogi pamiętniku, Kära
+     dagbok, Kedves naplóm, Αγαπητό μου ημερολόγιο, Sevgili günlük, 亲爱的日记 and the like); elsewhere the date in
+     that language. A title set by Rename comes first.
+   - **Search and sort** in the header (`/` focuses; newest, oldest, longest, most corrected); **⋯ on each row**
+     and on right-click: Rename in place, Delete with Undo (a toast for a few seconds).
+   - **List · Calendar:** month grids like Home's week card, days inked by length, a tick for corrected days, a
+     line joining runs, a click opens the day's entry, a year strip to jump months; beside it the month's
+     entries, words, days written, longest run, words corrected.
+   - **Checked:** headings and every key in French, Russian and Arabic; the salutation follows the language;
+     search, sort, rename, delete and undo; the calendar inks the right days.
+2. [ ] **Sermo (5.2-6, handover 15).**
+   - Three screens with Back, choices remembered: the scene (large cards in groups, levels, search, Surprise me),
+     how you'll talk (Voice or Text, corrections at the end or as I go, help when stuck, 5/10/20 minutes), the
+     prompt (a reading card, Copy, and ChatGPT · Claude · Gemini · Copilot · Grok with their marks).
+   - Each AI's link checked when built: filled in where the link takes a prompt, else copied with "Paste with
+     Ctrl+V". The link carries only the prompt.
+   - The chat inside Lingua goes (page and route); old chats stay in the database and old links open Sermo.
+   - About 80 scenes in `core/colloquium/scenes/` in the plan's groups, each with a level range, roles, three to
+     five goals and words from the pack; a test builds every scene's prompt in every tier 1 and 2 language.
+   - **Checked:** start to the AI's site with the prompt filled in or copied; no chat left; the scene test.
+3. [ ] **Mundus (5.2-7, handover 16).**
+   - Mundus says with two or three replies (Something shorter, I'd rather listen/watch/read, Why this?, Not
+     today) that change the three steps, kept for the day, no AI; with Max a small box to say it in your words.
+   - One Explore: kinds and level on the left, picture tiles with the level large, three bands (at your level, a
+     stretch, easier), a side bar on click (description, why that level, where to watch with real marks, Add its
+     subtitles, trailer, open in Lingua, Save). The "Something for every room…" line goes; old links redirect.
+   - Things to try: a dense grid, Deal me one, tick done (counted this week), filters by time and room, "Try this
+     one today".
+   - **Checked:** each reply changes the steps; Explore's bands and side bar; dealing, ticking and filters.
+4. [ ] **Grammatica (5.2-8, handover 17).**
+   - The page: one next step large with its reason and Start, a level ladder, your level as a path (done,
+     current, next, later), on the right reviews due, weak spots and the placement test; All topics one click
+     away; Next after a lesson goes to the next step on the path.
+   - Lessons, reviews, the placement test and topic pages on a wide stage with a sticky right column (steps,
+     the rule, its words); Enter continues, 1–4 choose. The narrow `max-w-2xl` column goes.
+   - **Checked:** a French learner placed at A2 lands on their next step with its reason; every lesson view uses
+     the full width at 1280, 1366 and 1440.
+5. [ ] **Ratio (5.2-9, handover 18).**
+   - Only the current language outside Tabula; everything more compact, even-width figures.
+   - Iter's tab and pages go (its data stays); a goal on each Tabula row (level by a date, hours a week) with a
+     slim bar and on track / behind; an Iter goal with a level and a date moves into it.
+   - New cards: words over time and coverage, reading speed and look-ups per 1,000 words, listening by kind,
+     practice (retention after a day, Ludus accuracy, grammar mastered, typing speed), a year heat map, time
+     per room and of day, an estimated level said plainly as an estimate. A daily known-word record is added
+     if missing.
+   - **Checked:** no other language outside Tabula; Iter gone, goals in Tabula; real numbers for a test profile.
+6. [ ] **Visio, the rest (5.2-4, handover 22; taken over, the claim was free).**
+   - YouTube inside Visio (link, oEmbed details, the official embed behind `YouTubeVideo` so the two lines, keys,
+     hover-pause and scrubber work as for a file); subtitles from the extension, Gemini with Max, a file, else
+     YouTube's own.
+   - Following a show beside its own app: `TimerVideo`, a follow clock for a subtitles-only item.
+   - The Lingua extension in `extension/` (Manifest V3, Chrome and Edge), as planned above.
+   - **Checked here:** YouTube with a subtitle file, the follow clock, the extension on YouTube loaded unpacked
+     in a local Chromium if possible. **Needs the user:** the streaming services (their accounts), a Max key for
+     Gemini's transcript, a Web Store account to publish.
+7. [ ] **Lingua 5 complete (5.2-10, handover 21).** Every point of 5.1 and 5.2 in the app at 1280, 1440 and
+   1366×768, light and dark, as Free, Lingua+ and Max; the docs (ROADMAP, DECISIONS, FEATURES, ARCHITECTURE);
+   `node scripts/version.ts --release` makes it 0.5.2; pushed and the live site checked.
+
+**For every step:** typecheck, tests and build pass; looked at in the app's browser; DECISIONS and FEATURES
+updated; ticked here and in HANDOVER; versioned, rebased onto `origin/main`, tagged, pushed, and the Pages deploy
+checked. What couldn't be checked is said in the step's tick.
+
 ## Lingua 6 · Features
 
 Planned 2026-10-26 in [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md), from the audit
