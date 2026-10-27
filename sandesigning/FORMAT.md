@@ -1,10 +1,10 @@
-# The Sandesigning file format
+# The Sandesigner file format
 
-For people and AI models reading what Sandesigning exports. Version 1.
+For people and AI models reading what Sandesigner exports. Version 1.1.
 
-Sandesigning exports a canvas three ways:
+Sandesigner exports a canvas three ways:
 
-- **`name.sandesign`** — the whole canvas as JSON, pictures included. It opens again in Sandesigning anywhere.
+- **`name.sandesign`** — the whole canvas as JSON, pictures included. It opens again in Sandesigner anywhere.
 - **`name.md`** — the brief: the notes and the layout written out in Markdown. This is usually what an AI should read.
 - **`name.png` / `name.svg`** — a picture of the canvas. The numbered circles on it are the brief's notes.
 

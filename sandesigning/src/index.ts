@@ -1,5 +1,5 @@
-// Sandesigning's one door: open the studio over any page (or as the page), optionally capturing it first with notes
-// already pinned. Used by the standalone app, by sandesigning.js in any web app, and by Lingua's design notes.
+// Sandesigner's one door: open the studio over any page (or as the page), optionally capturing it first with notes
+// already pinned. Used by the standalone app, by sandesigner.js in any web app, and by Lingua's design notes.
 import type { Doc } from './model';
 import { Studio } from './studio';
 import type { PinInput } from './studio';
@@ -15,9 +15,9 @@ export interface OpenOptions {
   pins?: PinInput[];
   /** Open this canvas instead of the last one. */
   doc?: Doc;
-  /** Sandesigning is the page itself: no close button. */
+  /** Sandesigner is the page itself: no close button. */
   standalone?: boolean;
-  /** Where sandesigning.html and SANDESIGNING.md are served from, ending in '/'. */
+  /** Where sandesigner.html and SANDESIGNER.md are served from, ending in '/'. */
   base?: string;
   onClose?: () => void;
 }
@@ -29,6 +29,7 @@ export const isOpen = () => current !== null;
 export async function open(opts: OpenOptions = {}): Promise<Studio> {
   if (!current) {
     const host = document.createElement('div');
+    host.setAttribute('data-sandesigner', '');
     host.setAttribute('data-sandesigning', '');
     host.style.cssText = 'position:fixed;inset:0;z-index:2147483000;';
     const root = host.attachShadow({ mode: 'open' });

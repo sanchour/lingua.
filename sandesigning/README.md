@@ -1,4 +1,4 @@
-# Sandesigning
+# Sandesigner 1.1
 
 A design canvas for every app you work on. Use it to:
 
@@ -6,10 +6,10 @@ A design canvas for every app you work on. Use it to:
 - build on screenshots of your app, other apps or templates, with numbered design notes;
 - hand the result to any AI model as a brief it can build from.
 
-- **Use it:** https://sanchour.github.io/lingua./sandesigning/
-- **Download:** the same page, File › Use it in other projects › Download `sandesigning.html`. It's one file and works offline.
-- **In a web app:** `<script src="https://sanchour.github.io/lingua./sandesigning/sandesigning.js" defer></script>`, in development only. It adds a **Design** button and Alt Shift D; the camera beside the button captures the page.
-- **In any project, through its AI:** put [SANDESIGNING.md](SANDESIGNING.md) in the project and say *"Read SANDESIGNING.md and set up Sandesigning in this project."*
+- **Use it:** https://sanchour.github.io/lingua./sandesigning/ (or `/sandesigner/`)
+- **Download:** the same page, File › Use it in other projects › Download `sandesigner.html`. It's one file and works offline.
+- **In a web app:** `<script src="https://sanchour.github.io/lingua./sandesigning/sandesigner.js" defer></script>`, in development only. It adds a **Design** button and Alt Shift D; the camera beside the button captures the page. Collapses to just one icon or expands on hover.
+- **In any project, through its AI:** put [SANDESIGNER.md](SANDESIGNER.md) in the project and say *"Read SANDESIGNER.md and set up Sandesigner in this project."*
 - **For AI models:** [FORMAT.md](FORMAT.md) describes the brief and the `.sandesign` file.
 
 ## What it does

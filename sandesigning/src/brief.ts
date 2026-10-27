@@ -65,7 +65,7 @@ export function toBrief(doc: Doc, picture?: string): string {
   const lines: string[] = [];
   const counted = priorityCount(pins);
   lines.push(`# ${doc.title}: design brief`, '');
-  lines.push(`Made with Sandesigning ${VERSION} on ${new Date().toISOString().slice(0, 10)}. ${open.length} open ${open.length === 1 ? 'note' : 'notes'}${counted ? ` (${counted})` : ''}.`);
+  lines.push(`Made with Sandesigner ${VERSION} on ${new Date().toISOString().slice(0, 10)}. ${open.length} open ${open.length === 1 ? 'note' : 'notes'}${counted ? ` (${counted})` : ''}.`);
   if (picture) lines.push(`The picture \`${picture}\` shows the canvas; the numbered circles are the notes below.`);
   lines.push('', 'How to read this: positions are x, y from the top-left of the frame they are in, then width × height, in CSS pixels. Screenshots show the app as it is now; what is drawn on top of them shows what is wanted. Outlines (“button outline”, “card outline” …) are placeholders for real components.', '');
 

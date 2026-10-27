@@ -309,7 +309,7 @@ export class Studio {
     e.preventDefault();
     const text = JSON.stringify(this.copyPayload());
     e.clipboardData?.setData('text/plain', text);
-    this.toast(`Copied ${this.ed.sel.size === 1 ? 'it' : `${this.ed.sel.size} things`}. Paste here or in any Sandesigning canvas.`);
+    this.toast(`Copied ${this.ed.sel.size === 1 ? 'it' : `${this.ed.sel.size} things`}. Paste here or in any Sandesigner canvas.`);
   };
 
   private onCut = (e: ClipboardEvent) => {
@@ -411,7 +411,7 @@ export class Studio {
       { id: 'theme', label: 'Light, dark or as the system', group: 'View', run: () => this.cycleTheme() },
       { id: 'palette', label: 'Find an action', group: 'Help', keys: ['mod+k', 'mod+/'], run: () => this.palette() },
       { id: 'keys', label: 'Every shortcut', group: 'Help', keys: ['shift+/'], run: () => this.shortcuts() },
-      { id: 'setup', label: 'Use Sandesigning in other projects', group: 'Help', run: () => this.setup() },
+      { id: 'setup', label: 'Use Sandesigner in other projects', group: 'Help', run: () => this.setup() },
       { id: 'new', label: 'New canvas', group: 'File', keys: ['mod+alt+n'], run: () => void this.newCanvas() },
       { id: 'open', label: 'Open a canvas…', group: 'File', keys: ['mod+o'], run: () => void this.openDocs() },
       { id: 'import', label: 'Open a .sandesign file…', group: 'File', keys: ['mod+shift+o'], run: () => this.pickFiles('.sandesign,.json,application/json', false) },
@@ -425,7 +425,7 @@ export class Studio {
       { id: 'brief', label: 'Brief for AI…', group: 'Export', keys: ['mod+b'], run: () => this.briefDialog() },
       { id: 'copy-brief', label: 'Copy the brief for AI', group: 'Export', keys: ['mod+shift+c'], run: () => void this.copyBrief() },
       { id: 'brief-files', label: 'Download the brief and its picture', group: 'Export', run: () => void this.briefFiles() },
-      { id: 'close', label: 'Close Sandesigning', group: 'File', run: () => this.opts.onClose?.(), when: () => !this.opts.standalone },
+      { id: 'close', label: 'Close Sandesigner', group: 'File', run: () => this.opts.onClose?.(), when: () => !this.opts.standalone },
     ];
   }
 
@@ -966,8 +966,8 @@ export class Studio {
           host.style.display = 'none';
           return () => (host.style.display = was);
         },
-        // Sandesigning's own parts (the walk doesn't go inside what it skips).
-        (el) => el === host || el.hasAttribute('data-sandesigning'),
+        // Sandesigner's own parts (the walk doesn't go inside what it skips).
+        (el) => el === host || el.hasAttribute('data-sandesigner') || el.hasAttribute('data-sandesigning'),
       );
     } catch (err) {
       const msg = (err as Error).name === 'NotAllowedError' ? 'Capture was cancelled.' : (err as Error).message;
@@ -1232,7 +1232,7 @@ export class Studio {
       this.ed.load(v);
       this.toast(`Opened “${v.title}”. It’s kept in this browser now too.`);
     } catch {
-      this.toast(`${f.name} isn’t a Sandesigning file.`);
+      this.toast(`${f.name} isn’t a Sandesigner file.`);
     }
   }
 
@@ -1329,9 +1329,9 @@ export class Studio {
     };
     let html = '';
     if (which === 'file')
-      html = [item('new', 'New canvas', 'file-plus'), item('open', 'Open a canvas…', 'folder-open'), item('import', 'Open a .sandesign file…', 'upload'), '<hr>', item('save', 'Save a copy (.sandesign)', 'save'), item('template', undefined, 'library'), item('picture', 'Add a picture…', 'image'), '<hr>', `<button data-run="delete-doc">${icon('trash-2', 15)}<span>Delete this canvas…</span></button>`, '<hr>', item('setup', 'Use it in other projects…', 'sparkles'), item('keys', undefined, 'keyboard'), `<div class="lbl">Sandesigning ${VERSION}</div>`].join('');
+      html = [item('new', 'New canvas', 'file-plus'), item('open', 'Open a canvas…', 'folder-open'), item('import', 'Open a .sandesign file…', 'upload'), '<hr>', item('save', 'Save a copy (.sandesign)', 'save'), item('template', undefined, 'library'), item('picture', 'Add a picture…', 'image'), '<hr>', `<button data-run="delete-doc">${icon('trash-2', 15)}<span>Delete this canvas…</span></button>`, '<hr>', item('setup', 'Use it in other projects…', 'sparkles'), item('keys', undefined, 'keyboard'), `<div class="lbl">Sandesigner ${VERSION}</div>`].join('');
     else if (which === 'export')
-      html = [`<div class="lbl">For AI</div>`, item('brief', 'Brief for AI…', 'sparkles'), item('copy-brief', undefined, 'copy'), item('copy-png', undefined, 'image'), item('brief-files', undefined, 'download'), '<hr><div class="lbl">Pictures</div>', item('png', 'PNG of everything', 'image'), item('png-sel', 'PNG of the selection'), item('png-frames'), item('svg', this.ed.sel.size ? 'SVG of the selection' : 'SVG of everything'), '<hr><div class="lbl">The canvas</div>', item('save', 'Sandesigning file (.sandesign)', 'save')].join('');
+      html = [`<div class="lbl">For AI</div>`, item('brief', 'Brief for AI…', 'sparkles'), item('copy-brief', undefined, 'copy'), item('copy-png', undefined, 'image'), item('brief-files', undefined, 'download'), '<hr><div class="lbl">Pictures</div>', item('png', 'PNG of everything', 'image'), item('png-sel', 'PNG of the selection'), item('png-frames'), item('svg', this.ed.sel.size ? 'SVG of the selection' : 'SVG of everything'), '<hr><div class="lbl">The canvas</div>', item('save', 'Sandesigner file (.sandesign)', 'save')].join('');
     else if (which === 'zoom') html = [item('zoom-in'), item('zoom-out'), item('zoom-100'), item('fit'), item('fit-sel'), '<hr>', item('grid'), item('snap'), item('notes-text'), item('panels')].join('');
     else if (which === 'frame') html = `<div class="lbl">Frame size</div>` + DEVICES.map((d) => `<button data-device="${d.id}" class="${this.ed.device === d.id ? 'on' : ''}">${icon(d.w < 500 ? 'smartphone' : d.w < 1000 ? 'tablet' : d.id === 'laptop' ? 'laptop' : 'monitor', 15)}<span>${d.name}</span><span class="k">${d.w} × ${d.h}</span></button>`).join('');
     else if (which === 'widget') html = `<div class="lbl">Widget outline</div>` + WIDGETS.map((w) => `<button data-widget-pick="${w.id}" class="${this.ed.widget === w.id ? 'on' : ''}"><span>${w.name}</span><span class="k">${w.w} × ${w.h}</span></button>`).join('');
@@ -1526,14 +1526,14 @@ export class Studio {
   private setup() {
     const base = this.opts.base ?? './';
     const abs = new URL(base, location.href).href;
-    const script = `<script src="${abs}sandesigning.js" defer></script>`;
-    const bookmark = `javascript:(()=>{if(window.sandesigning)return sandesigning.open();const s=document.createElement('script');s.src='${abs}sandesigning.js';s.dataset.open='';document.body.appendChild(s)})()`;
-    const prompt = 'Read SANDESIGNING.md and set up Sandesigning in this project, the way it says.';
-    const v = this.dialog('Use Sandesigning in other projects', `<div class="body">
-      <div class="sec" style="padding-left:0;padding-right:0"><h3>On its own</h3><p style="margin:0 0 8px">One file that works in any browser, offline too.</p><a class="btn primary" href="${base}sandesigning.html" download="sandesigning.html" style="text-decoration:none;width:max-content">${icon('download', 14)} Download sandesigning.html</a></div>
-      <div class="sec" style="padding-left:0;padding-right:0"><h3>In any project, through its AI</h3><p style="margin:0 0 8px">Put <b>SANDESIGNING.md</b> in the project and give the AI there (Claude, ChatGPT, Gemini, Copilot …) this prompt. It sets everything up and knows how to read your briefs and files from then on.</p><div class="row"><a class="btn" href="${base}SANDESIGNING.md" download="SANDESIGNING.md" style="text-decoration:none;flex:none">${icon('download', 14)} SANDESIGNING.md</a><button class="btn" data-copy="${esc(prompt)}" style="flex:none">${icon('copy', 14)} Copy the prompt</button></div></div>
-      <div class="sec" style="padding-left:0;padding-right:0"><h3>In a web app, by hand</h3><p style="margin:0 0 8px">One line in the page while you develop it adds a Sandesigning button (and ${kbd('alt+shift+d')}).</p><div class="row"><code style="flex:3;font-size:11px;word-break:break-all;background:var(--bg);padding:8px;border-radius:8px">${esc(script)}</code><button class="btn" data-copy="${esc(script)}" style="flex:none">${icon('copy', 14)} Copy</button></div></div>
-      <div class="sec" style="padding-left:0;padding-right:0;border:0"><h3>On any page, as a bookmark</h3><p style="margin:0 0 8px">Drag this to the bookmarks bar, then click it on any site you’re working on. (Some sites block it; the line above always works.)</p><a class="btn" href="${esc(bookmark)}" style="text-decoration:none;width:max-content">${icon('bookmark', 14)} Sandesigning</a></div>
+    const script = `<script src="${abs}sandesigner.js" defer></script>`;
+    const bookmark = `javascript:(()=>{if(window.sandesigner)return sandesigner.open();if(window.sandesigning)return sandesigning.open();const s=document.createElement('script');s.src='${abs}sandesigner.js';s.dataset.open='';document.body.appendChild(s)})()`;
+    const prompt = 'Read SANDESIGNER.md and set up Sandesigner in this project, the way it says.';
+    const v = this.dialog('Use Sandesigner in other projects', `<div class="body">
+      <div class="sec" style="padding-left:0;padding-right:0"><h3>On its own</h3><p style="margin:0 0 8px">One file that works in any browser, offline too.</p><a class="btn primary" href="${base}sandesigner.html" download="sandesigner.html" style="text-decoration:none;width:max-content">${icon('download', 14)} Download sandesigner.html</a></div>
+      <div class="sec" style="padding-left:0;padding-right:0"><h3>In any project, through its AI</h3><p style="margin:0 0 8px">Put <b>SANDESIGNER.md</b> in the project and give the AI there (Claude, ChatGPT, Gemini, Copilot …) this prompt. It sets everything up and knows how to read your briefs and files from then on.</p><div class="row"><a class="btn" href="${base}SANDESIGNER.md" download="SANDESIGNER.md" style="text-decoration:none;flex:none">${icon('download', 14)} SANDESIGNER.md</a><button class="btn" data-copy="${esc(prompt)}" style="flex:none">${icon('copy', 14)} Copy the prompt</button></div></div>
+      <div class="sec" style="padding-left:0;padding-right:0"><h3>In a web app, by hand</h3><p style="margin:0 0 8px">One line in the page while you develop it adds a Sandesigner button (and ${kbd('alt+shift+d')}).</p><div class="row"><code style="flex:3;font-size:11px;word-break:break-all;background:var(--bg);padding:8px;border-radius:8px">${esc(script)}</code><button class="btn" data-copy="${esc(script)}" style="flex:none">${icon('copy', 14)} Copy</button></div></div>
+      <div class="sec" style="padding-left:0;padding-right:0;border:0"><h3>On any page, as a bookmark</h3><p style="margin:0 0 8px">Drag this to the bookmarks bar, then click it on any site you’re working on. (Some sites block it; the line above always works.)</p><a class="btn" href="${esc(bookmark)}" style="text-decoration:none;width:max-content">${icon('bookmark', 14)} Sandesigner</a></div>
       <p style="color:var(--faint)">Phone apps: take screenshots on the phone and paste or drop them here. Canvases move between computers, browsers and AI models as .sandesign files (FORMAT.md describes them).</p></div>`);
     v.addEventListener('click', (e) => {
       const c = (e.target as Element).closest<HTMLElement>('[data-copy]')?.dataset.copy;

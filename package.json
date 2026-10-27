@@ -9,6 +9,7 @@
     "build": "npm run typecheck && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json && tsc -p sandesigning/tsconfig.json",
+    "sandesigner": "node sandesigning/build.ts",
     "sandesigning": "node sandesigning/build.ts",
     "test": "vitest run",
     "test:watch": "vitest",

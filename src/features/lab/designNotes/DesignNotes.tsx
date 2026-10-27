@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { Check, ClipboardCopy, Frame, List, MousePointerClick, Move, PenLine } from 'lucide-react';
+import { Check, ClipboardCopy, Frame, List, Minimize2, MousePointerClick, Move, PenLine, Sparkles } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
 import { useActiveLanguage } from '@/data/languages';
 import { useSettings } from '@/data/settings';
@@ -35,6 +35,24 @@ function savedCorner(): Corner {
     return value && value in CORNERS ? (value as Corner) : 'br';
   } catch {
     return 'br';
+  }
+}
+
+const COLLAPSED_KEY = 'lingua.designNotes.collapsed';
+function savedCollapsed(): boolean {
+  try {
+    return localStorage.getItem(COLLAPSED_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+const HOVER_EXPAND_KEY = 'lingua.designNotes.expandOnHover';
+function savedHoverExpand(): boolean {
+  try {
+    return localStorage.getItem(HOVER_EXPAND_KEY) !== 'false';
+  } catch {
+    return true;
   }
 }
 
@@ -101,6 +119,25 @@ export default function DesignNotes() {
   const [editor, setEditor] = useState<Editor | null>(null);
   const [shown, setShown] = useState<string | null>(null);
   const [corner, setCorner] = useState<Corner>(savedCorner);
+  const [collapsed, setCollapsedState] = useState<boolean>(savedCollapsed);
+  const [expandOnHover, setExpandOnHoverState] = useState<boolean>(savedHoverExpand);
+  const [hovered, setHovered] = useState(false);
+
+  const setCollapsed = (val: boolean) => {
+    setCollapsedState(val);
+    try {
+      localStorage.setItem(COLLAPSED_KEY, String(val));
+    } catch {}
+  };
+
+  const setExpandOnHover = (val: boolean) => {
+    setExpandOnHoverState(val);
+    try {
+      localStorage.setItem(HOVER_EXPAND_KEY, String(val));
+    } catch {}
+  };
+
+  const isExpanded = !collapsed || (expandOnHover && hovered) || picking || panel !== null;
   const [chosen, setChosen] = useState<{ el: Element; area?: Rect } | null>(null);
   const corners = CORNERS[corner];
   const moveCorner = () => {
@@ -130,7 +167,7 @@ export default function DesignNotes() {
   };
   const onElement = useCallback((el: Element | null, area?: Rect) => setChosen(el ? { el, area } : null), []);
 
-  // Sandesigning (7-0e): the page captured onto a canvas, with this page's notes pinned where their pins are now.
+  // Sandesigner (7-0e): the page captured onto a canvas, with this page's notes pinned where their pins are now.
   const openCanvas = async () => {
     setPicking(false);
     setEditor(null);
@@ -141,9 +178,13 @@ export default function DesignNotes() {
       return [{ x: r.x + r.width / 2, y: r.y + r.height / 2, text: note.text, kinds: note.kinds, priority: note.priority, done: note.done, target: { name: note.element, selector: note.selector, component: note.facts?.component, page: note.path } }];
     });
     const html = document.documentElement;
+    html.setAttribute('data-sandesigner', '');
     html.setAttribute('data-sandesigning', '');
     const { open } = await import('../../../../sandesigning/src/index');
-    await open({ capture: true, pins: marks, base: `${import.meta.env.BASE_URL}sandesigning/`, onClose: () => html.removeAttribute('data-sandesigning') });
+    await open({ capture: true, pins: marks, base: `${import.meta.env.BASE_URL}sandesigning/`, onClose: () => {
+      html.removeAttribute('data-sandesigner');
+      html.removeAttribute('data-sandesigning');
+    }});
   };
 
   // Alt N picks (by the physical key, so any layout and a Mac's Option work), even from a text field, except on a
@@ -151,8 +192,8 @@ export default function DesignNotes() {
   useEffect(() => {
     const mac = /mac/i.test(navigator.platform);
     const onKey = (e: KeyboardEvent) => {
-      // Sandesigning's canvas is open over the page: its keys are its own.
-      if (document.documentElement.hasAttribute('data-sandesigning')) return;
+      // Sandesigner's canvas is open over the page: its keys are its own.
+      if (document.documentElement.hasAttribute('data-sandesigner') || document.documentElement.hasAttribute('data-sandesigning')) return;
       if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey && e.code === 'KeyD') {
         e.preventDefault();
         e.stopPropagation();
@@ -547,26 +588,79 @@ export default function DesignNotes() {
         </div>
       )}
 
-      <div {...{ [MARK]: '' }} className={cx('fixed z-[120] flex items-center gap-0.5 rounded-full bg-inverse p-1 pl-3 text-on-inverse shadow-elev-3', corners.bar)}>
-        <PenLine size={14} aria-hidden />
-        <span className="mr-1 ml-1 text-[12px] font-semibold tabular-nums opacity-80">{pageNotes.length} here</span>
-        {picking && <span className="mr-1 text-[11.5px] opacity-70">↑ ↓ around or inside · Shift drag an area</span>}
-        <button type="button" aria-pressed={picking} onClick={() => setPicking((on) => !on)} title="Pick an element to note (Alt N)" className={cx(pill, picking ? 'bg-accent-fill text-on-accent' : 'hover:bg-on-inverse/10')}>
-          <MousePointerClick size={15} aria-hidden /> Pick <kbd className="font-sans text-[10.5px] opacity-70">Alt N</kbd>
-        </button>
-        <button type="button" aria-pressed={panel !== null} onClick={() => setPanel((p) => (p ? null : 'page'))} className={cx(pill, panel ? 'bg-on-inverse/15' : 'hover:bg-on-inverse/10')}>
-          <List size={15} aria-hidden /> Notes
-        </button>
-        <button type="button" onClick={() => void openCanvas()} title="Capture this page onto a Sandesigning canvas, with its notes (Alt Shift D)" className={cx(pill, 'hover:bg-on-inverse/10')}>
-          <Frame size={15} aria-hidden /> Canvas
-        </button>
-        <button type="button" onClick={() => void copy(notes)} title="Copy every note as Markdown for Claude" className={cx(pill, 'hover:bg-on-inverse/10')}>
-          <ClipboardCopy size={15} aria-hidden /> Copy
-        </button>
-        <button type="button" onClick={moveCorner} title="Move to another corner" aria-label="Move the bar to another corner" className="grid size-8 place-items-center rounded-full opacity-70 transition-colors hover:bg-on-inverse/10 hover:opacity-100">
-          <Move size={14} aria-hidden />
-        </button>
-      </div>
+      {!isExpanded ? (
+        <div
+          {...{ [MARK]: '' }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          className={cx('fixed z-[120]', corners.bar)}
+        >
+          <button
+            type="button"
+            onClick={() => setCollapsed(false)}
+            title={`Design notes (${pageNotes.length} on this page) · Click to expand${expandOnHover ? ' or hover' : ''}`}
+            aria-label={`Design notes (${pageNotes.length} on this page)`}
+            className="relative grid size-9 place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-3 transition-transform hover:scale-105 active:scale-95"
+          >
+            <PenLine size={15} aria-hidden />
+            {pageNotes.length > 0 && (
+              <span className="absolute -top-1 -right-1 grid min-w-[18px] h-[18px] px-1 place-items-center rounded-full bg-accent-fill text-[10.5px] font-bold text-on-accent shadow-sm">
+                {pageNotes.length}
+              </span>
+            )}
+          </button>
+        </div>
+      ) : (
+        <div
+          {...{ [MARK]: '' }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          className={cx('fixed z-[120] flex items-center gap-0.5 rounded-full bg-inverse p-1 pl-3 text-on-inverse shadow-elev-3 transition-all duration-150', corners.bar)}
+        >
+          <PenLine size={14} aria-hidden />
+          <span className="mr-1 ml-1 text-[12px] font-semibold tabular-nums opacity-80">{pageNotes.length} here</span>
+          {picking && <span className="mr-1 text-[11.5px] opacity-70">↑ ↓ around or inside · Shift drag an area</span>}
+          <button type="button" aria-pressed={picking} onClick={() => setPicking((on) => !on)} title="Pick an element to note (Alt N)" className={cx(pill, picking ? 'bg-accent-fill text-on-accent' : 'hover:bg-on-inverse/10')}>
+            <MousePointerClick size={15} aria-hidden /> Pick <kbd className="font-sans text-[10.5px] opacity-70">Alt N</kbd>
+          </button>
+          <button type="button" aria-pressed={panel !== null} onClick={() => setPanel((p) => (p ? null : 'page'))} className={cx(pill, panel ? 'bg-on-inverse/15' : 'hover:bg-on-inverse/10')}>
+            <List size={15} aria-hidden /> Notes
+          </button>
+          <button type="button" onClick={() => void openCanvas()} title="Capture this page onto a Sandesigner canvas, with its notes (Alt Shift D)" className={cx(pill, 'hover:bg-on-inverse/10')}>
+            <Frame size={15} aria-hidden /> Canvas
+          </button>
+          <button type="button" onClick={() => void copy(notes)} title="Copy every note as Markdown for Claude" className={cx(pill, 'hover:bg-on-inverse/10')}>
+            <ClipboardCopy size={15} aria-hidden /> Copy
+          </button>
+          <button
+            type="button"
+            onClick={() => setExpandOnHover(!expandOnHover)}
+            title={expandOnHover ? 'Expand on hover: ON (click to switch to click-only)' : 'Expand on hover: OFF (click to enable)'}
+            aria-label="Toggle expand on hover"
+            className={cx(
+              'grid size-8 place-items-center rounded-full transition-colors hover:bg-on-inverse/10',
+              expandOnHover ? 'text-accent-fill opacity-100' : 'opacity-60 hover:opacity-100'
+            )}
+          >
+            <Sparkles size={14} aria-hidden />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setCollapsed(true);
+              setHovered(false);
+            }}
+            title="Collapse to icon"
+            aria-label="Collapse to icon"
+            className="grid size-8 place-items-center rounded-full opacity-70 transition-colors hover:bg-on-inverse/10 hover:opacity-100"
+          >
+            <Minimize2 size={14} aria-hidden />
+          </button>
+          <button type="button" onClick={moveCorner} title="Move to another corner" aria-label="Move the bar to another corner" className="grid size-8 place-items-center rounded-full opacity-70 transition-colors hover:bg-on-inverse/10 hover:opacity-100">
+            <Move size={14} aria-hidden />
+          </button>
+        </div>
+      )}
     </>
   );
 }

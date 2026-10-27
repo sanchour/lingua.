@@ -1,10 +1,10 @@
-# Sandesigning: set-up file for any project
+# Sandesigner 1.1: set-up file for any project
 
 Put this file in a project's root and say to the AI working there (Claude, ChatGPT, Gemini, Copilot, Cursor …):
 
-> Read SANDESIGNING.md and set up Sandesigning in this project, the way it says.
+> Read SANDESIGNER.md (or SANDESIGNING.md) and set up Sandesigner in this project, the way it says.
 
-## What Sandesigning is
+## What Sandesigner is
 
 A design canvas for working on an app's look with an AI. You get:
 
@@ -14,8 +14,8 @@ A design canvas for working on an app's look with an AI. You get:
 
 It exports a **brief**: Markdown that lists every note by priority, with what each note is on and the layout in numbers. It also exports a picture, and a `.sandesign` file of the whole canvas.
 
-- **App:** https://sanchour.github.io/lingua./sandesigning/ (or the downloaded `sandesigning.html`, which works offline)
-- **Script for web apps:** https://sanchour.github.io/lingua./sandesigning/sandesigning.js
+- **App:** https://sanchour.github.io/lingua./sandesigning/ (or the downloaded `sandesigner.html`, which works offline)
+- **Script for web apps:** https://sanchour.github.io/lingua./sandesigning/sandesigner.js
 - **File format:** https://sanchour.github.io/lingua./sandesigning/FORMAT.md
 
 ## For the AI: setting it up

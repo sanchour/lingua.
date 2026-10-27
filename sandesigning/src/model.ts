@@ -1,7 +1,7 @@
-// Sandesigning's document: a flat list of nodes (frames hold their children through `parent`), pictures kept once in
+// Sandesigner's document: a flat list of nodes (frames hold their children through `parent`), pictures kept once in
 // `assets`, and nothing else. FORMAT.md describes it for people and AI models; keep the two in step.
 
-export const VERSION = '1.0.0';
+export const VERSION = '1.1';
 
 export const KINDS = ['Layout', 'Spacing', 'Size', 'Colour', 'Type', 'Words', 'Remove', 'Add', 'Behaviour', 'Question'] as const;
 export const PRIORITIES = ['Must', 'Should', 'Could'] as const;
