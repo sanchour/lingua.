@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.16** · 2026-10-27 · when the browser can't open Lingua's storage, say what helps
 - **0.5.2-alpha.15** · 2026-10-27 · a stuck start says what it waits for
 - **0.5.2-alpha.14** · 2026-10-27 · the start screen shows errors and can clear the cached app
 - **0.5.2-alpha.13** · 2026-10-27 · a splash while Lingua starts, never a blank page

@@ -40,18 +40,32 @@ export function StartingUp({ waitingFor }: { waitingFor: string }) {
   const [dexie, setDexie] = useState<string | null>(null);
 
   useEffect(() => {
-    const t = window.setTimeout(() => {
-      setSlow(true);
-      void probeDatabase().then(setProbe);
-      db.open().then(
-        () => setDexie(`open (version ${db.verno})`),
-        (error: unknown) => setDexie(error instanceof Error ? `${error.name}: ${error.message}` : String(error)),
-      );
-    }, 4000);
-    return () => window.clearTimeout(t);
+    let alive = true;
+    // A failed open is shown at once; a slow one after four seconds.
+    db.open().then(
+      () => alive && setDexie(`open (version ${db.verno})`),
+      (error: unknown) => {
+        if (!alive) return;
+        setDexie(error instanceof Error ? `${error.name}: ${error.message}` : String(error));
+        setSlow(true);
+      },
+    );
+    const t = window.setTimeout(() => alive && setSlow(true), 4000);
+    return () => {
+      alive = false;
+      window.clearTimeout(t);
+    };
   }, []);
 
+  useEffect(() => {
+    if (slow) void probeDatabase().then(setProbe);
+  }, [slow]);
+
   if (!slow) return null;
+  // The browser itself can't open the site's storage ("UnknownError: Internal error"): a stuck lock or damaged files.
+  if ((probe?.state === 'error' && /internal|unknown|backing store/i.test(probe.message)) || (dexie && /UnknownError|Internal error|backing store/i.test(dexie))) {
+    return <StorageBroken details={[`Waiting for: ${waitingFor}`, `The database: ${probe?.state === 'error' ? probe.message : (probe?.state ?? 'asking…')}`, `Lingua’s connection: ${dexie ?? 'opening…'}`]} />;
+  }
   const said =
     !probe ? 'asking…'
     : probe.state === 'open' ? `opens (version ${probe.version / 10}, ${probe.stores} tables)`
@@ -80,6 +94,90 @@ export function StartingUp({ waitingFor }: { waitingFor: string }) {
             <dd className="inline">{dexie ?? 'opening…'}</dd>
           </div>
         </dl>
+        <button type="button" onClick={() => location.reload()} className="mt-5 inline-flex h-11 items-center rounded-xl bg-inverse px-5 text-sm font-semibold text-on-inverse">
+          Reload
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Deletes this browser's Lingua database; resolves whether the browser managed to. */
+function deleteDatabase(): Promise<boolean> {
+  db.close();
+  return new Promise((resolve) => {
+    const timer = window.setTimeout(() => resolve(false), 8000);
+    const req = indexedDB.deleteDatabase(db.name);
+    req.onsuccess = () => {
+      window.clearTimeout(timer);
+      resolve(true);
+    };
+    req.onerror = () => {
+      window.clearTimeout(timer);
+      resolve(false);
+    };
+  });
+}
+
+/**
+ * The browser reports an internal error opening Lingua's storage. Nothing in Lingua can read past that, so this says
+ * what helps, safest first; starting fresh is last, asks twice, and says what it costs.
+ */
+function StorageBroken({ details }: { details: string[] }) {
+  const [step, setStep] = useState<'idle' | 'confirm' | 'deleting' | 'failed'>('idle');
+  const fresh = async () => {
+    setStep('deleting');
+    if (await deleteDatabase()) location.reload();
+    else setStep('failed');
+  };
+  return (
+    <div className="grid min-h-dvh place-items-center bg-bg px-6 py-10 text-ink">
+      <div className="max-w-xl">
+        <p className="font-serif text-2xl font-semibold">The browser can’t open Lingua’s storage</p>
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
+          Your settings and learning live in this browser’s database for this site, and the browser answers with an internal error when Lingua asks for it. That happens when the browser’s files
+          are locked (often by the browser still running in the background, or by antivirus software) or damaged.
+        </p>
+        <ol className="mt-4 list-decimal space-y-2 pl-5 text-[15px] leading-relaxed">
+          <li>
+            <strong>Quit the browser completely</strong> (every window, and its icon by the clock: Brave and Chrome keep running in the background), then open Lingua again.
+          </li>
+          <li>
+            If that doesn’t help, <strong>restart the computer</strong>, or pause the antivirus for a moment and reload.
+          </li>
+          <li>
+            Still not? The browser’s copy is damaged. Your learning may still be in <strong>the installed Lingua app</strong> if it was installed from another browser, on a <strong>paired device</strong>, or
+            in a <strong>backup file</strong> (Settings › Backup).
+          </li>
+          <li>
+            Then start fresh here, and restore that backup in Settings › Backup.
+            <div className="mt-2">
+              {step === 'idle' && (
+                <button type="button" onClick={() => setStep('confirm')} className="text-[14px] font-semibold text-accent-text underline">
+                  Start fresh in this browser…
+                </button>
+              )}
+              {step === 'confirm' && (
+                <span className="inline-flex flex-wrap items-center gap-2 text-[14px]">
+                  This deletes everything Lingua kept in this browser.
+                  <button type="button" onClick={() => void fresh()} className="rounded-lg bg-accent-fill px-3 py-1.5 font-semibold text-on-accent">
+                    Delete and start fresh
+                  </button>
+                  <button type="button" onClick={() => setStep('idle')} className="px-2 py-1.5 font-semibold text-ink-soft">
+                    Keep it
+                  </button>
+                </span>
+              )}
+              {step === 'deleting' && <span className="text-[14px] text-ink-soft">Deleting…</span>}
+              {step === 'failed' && (
+                <span className="text-[14px] text-ink-soft">
+                  The browser couldn’t delete it either. In the browser’s settings, open Privacy › Site data, find sanchour.github.io and clear it, then reload.
+                </span>
+              )}
+            </div>
+          </li>
+        </ol>
+        <p className="mt-5 font-mono text-[12px] leading-relaxed break-words text-ink-faint">{details.join(' · ')}</p>
         <button type="button" onClick={() => location.reload()} className="mt-5 inline-flex h-11 items-center rounded-xl bg-inverse px-5 text-sm font-semibold text-on-inverse">
           Reload
         </button>
