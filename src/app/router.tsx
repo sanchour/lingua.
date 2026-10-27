@@ -1,7 +1,39 @@
 import type { ReactNode } from 'react';
 import { createBrowserRouter, Navigate, useLocation, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
-import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, CursusPage, DeckPage, LabPage, MentisPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, WatchPage, ChatPage, GrammarTopicPage, GrammarLessonPage, LettersLessonPage, CourseLessonPage } from './pages';
+import {
+  BibliothecaPage,
+  BookDetailsPage,
+  CantusPage,
+  ChatPage,
+  CodexPage,
+  CommutePage,
+  CourseLessonPage,
+  CursusPage,
+  DeckPage,
+  ExploraPage,
+  GrammarLessonPage,
+  GrammarTopicPage,
+  JournalEntryPage,
+  LabPage,
+  LettersLessonPage,
+  MentisPage,
+  NewTextPage,
+  OrdoPage,
+  RatioPage,
+  ReaderPage,
+  SonusBookPage,
+  SonusFeedPage,
+  SonusPage,
+  SonusPlayerPage,
+  SpotifyCallbackPage,
+  StarterPage,
+  StationPage,
+  StudyPage,
+  ThesaurusPage,
+  VisioPage,
+  WatchPage,
+} from './pages';
 import { PlanRoute } from '@/features/plans/PlanRoute';
 import { AppError } from './AppError';
 import { movedPath } from './redirects';
@@ -52,6 +84,9 @@ export const router = createBrowserRouter(
         { path: 'cursus/grammatica/:topicId/lesson', element: grammar(<GrammarLessonPage />) },
         { path: 'cursus/alphabets/review', element: <LettersLessonPage review /> },
         { path: 'cursus/alphabets/:groupId/lesson', element: <LettersLessonPage /> },
+        // Explora & Bibliotheca: discovery and unified library across every tool.
+        { path: 'explora', element: <ExploraPage /> },
+        { path: 'bibliotheca', element: <BibliothecaPage /> },
         { path: 'codex', element: <CodexPage /> },
         { path: 'codex/discover', element: <CodexPage /> },
         { path: 'codex/goodreads', element: <CodexPage /> },
@@ -62,7 +97,7 @@ export const router = createBrowserRouter(
         { path: 'thesaurus/deck/:deckId', element: <DeckPage /> },
         { path: 'thesaurus/ready/:key', element: <StarterPage /> },
         { path: 'thesaurus/study/:deckId', element: <StudyPage /> },
-        // Sonus et Visio: one library for listening and watching; the players keep their addresses.
+        // Sonus & Visio: separate rooms for listening and watching.
         { path: 'sonus', element: <SonusPage /> },
         { path: 'sonus/play/:mediaId', element: <SonusPlayerPage /> },
         { path: 'sonus/podcast/:feedId', element: <SonusFeedPage /> },
@@ -83,6 +118,7 @@ export const router = createBrowserRouter(
         },
         // Kept as it is: learners entered this address in their own Spotify app.
         { path: 'cantus/spotify', element: <SpotifyCallbackPage /> },
+        { path: 'visio', element: <VisioPage /> },
         { path: 'visio/watch/:mediaId', element: <WatchPage /> },
         // Mentis: Mundus (with its own tabs), Sermo and Diarium; a chat and an entry are pages of their own.
         { path: 'mentis/*', element: <MentisPage /> },
@@ -100,7 +136,7 @@ export const router = createBrowserRouter(
         { path: 'settings/lab', element: <LabPage /> },
         { path: 'settings/:group', element: <OrdoPage /> },
         // Addresses from before Lingua 5.
-        ...['grammatica/*', 'visio', 'mundus/*', 'colloquium/*', 'codex/diarium/:entryId', 'ordo/*'].map((path) => ({ path, element: <Moved /> })),
+        ...['grammatica/*', 'mundus/*', 'colloquium/*', 'codex/diarium/:entryId', 'ordo/*'].map((path) => ({ path, element: <Moved /> })),
         { path: '*', element: <Navigate to="/" replace /> },
       ],
     },

@@ -49,7 +49,7 @@ export function MiniPlayer() {
               ? 'fixed right-6 bottom-6 z-30 w-[360px] overflow-hidden rounded-2xl border border-line/80 bg-raised/95 shadow-elev-3 backdrop-blur-xl'
               : 'fixed inset-x-3 z-30 overflow-hidden rounded-2xl border border-line/80 bg-raised/95 shadow-elev-2 backdrop-blur-xl'
           }
-          style={wide ? undefined : { bottom: 'calc(max(10px, env(safe-area-inset-bottom) - 10px) + 76px)' }}
+          style={wide ? undefined : { bottom: 'max(12px, env(safe-area-inset-bottom))' }}
         >
           <div className="flex items-center gap-3 p-2 pr-2.5">
             <Link to={live ? `${sonusBase()}/station/${media.id.replace(/^radio:/, '')}` : `${sonusBase()}/play/${media.id}`} className="flex min-w-0 flex-1 items-center gap-3" aria-label={`Open ${media.title}`}>

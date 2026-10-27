@@ -57,7 +57,7 @@ interface LibraryHomeProps {
   view: LibraryView | null;
   onView: (view: LibraryView | null) => void;
   show: MediaShow;
-  onShow: (show: MediaShow) => void;
+  onShow?: (show: MediaShow) => void;
   /** The bar above the shelves (title, search, sort), and search results in their place. */
   toolbar: ReactNode;
   results: ReactNode | null;
@@ -149,7 +149,8 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
   );
 
   if (!saved || !recentSongs) return null;
-  if (!saved.length && !feeds.length && !media.length && !books?.length && !stations.length) return <EmptyLibrary lang={lang} onDiscover={onPodcasts} />;
+  const relevantMedia = show === 'listen' ? listened : show === 'watch' ? videos : media;
+  if (!saved.length && !feeds.length && !relevantMedia.length && !books?.length && !stations.length) return <EmptyLibrary lang={lang} onDiscover={onPodcasts} />;
 
   const openEpisode = async (feed: Feed, episode: FeedEpisode) => navigate(`${sonusBase()}/play/${await episodeMedia(feed, episode)}`);
   const rows = (list: Media[]) => (
@@ -268,49 +269,53 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[212px_minmax(0,1fr)] lg:gap-10">
-      <aside className="space-y-5 lg:sticky lg:top-12 lg:self-start">
-        <Segmented<MediaShow>
-          block
-          label="Show"
-          value={show}
-          onChange={onShow}
-          options={[
-            { value: 'all', label: 'All' },
-            { value: 'listen', label: 'Listen' },
-            { value: 'watch', label: 'Watch' },
-          ]}
-        />
-        {shown.length > 0 && (
-          <nav aria-label="Your library by kind">
-            <p className={cx(label, 'mb-2 hidden px-2 lg:block')}>Your library</p>
-            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1 lg:gap-0.5">
-              {shown.map((k, i) => {
-                const active = Boolean(k.view) && view === k.view;
-                return (
-                  <motion.li key={k.name} {...enter(i)}>
-                    <button
-                      type="button"
-                      aria-current={active ? 'page' : undefined}
-                      onClick={active ? () => onView(null) : k.open}
-                      className={cx(
-                        'group flex w-full items-center gap-2.5 rounded-2xl border p-2.5 text-left transition-colors lg:rounded-xl lg:border-transparent lg:px-2 lg:py-1.5',
-                        active ? 'border-line-strong bg-raised shadow-elev-1' : 'border-line/70 bg-surface hover:border-line-strong lg:bg-transparent lg:hover:bg-raised/70',
-                      )}
-                    >
-                      <span className={cx('grid size-9 shrink-0 place-items-center rounded-xl lg:size-8 lg:rounded-lg', TONE[k.tone])}>
-                        <k.icon size={17} aria-hidden />
-                      </span>
-                      <span className="min-w-0 flex-1 truncate text-[14.5px] font-semibold">{k.name}</span>
-                      <span className="text-[12.5px] text-ink-faint tabular-nums">{k.count}</span>
-                    </button>
-                  </motion.li>
-                );
-              })}
-            </ul>
-          </nav>
-        )}
-      </aside>
+    <div className={cx('grid gap-8', (onShow || shown.length > 0) && 'lg:grid-cols-[212px_minmax(0,1fr)] lg:gap-10')}>
+      {(onShow || shown.length > 0) && (
+        <aside className="space-y-5 lg:sticky lg:top-12 lg:self-start">
+          {onShow && (
+            <Segmented<MediaShow>
+              block
+              label="Show"
+              value={show}
+              onChange={onShow}
+              options={[
+                { value: 'all', label: 'All' },
+                { value: 'listen', label: 'Listen' },
+                { value: 'watch', label: 'Watch' },
+              ]}
+            />
+          )}
+          {shown.length > 0 && (
+            <nav aria-label="Your library by kind">
+              <p className={cx(label, 'mb-2 hidden px-2 lg:block')}>Your library</p>
+              <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1 lg:gap-0.5">
+                {shown.map((k, i) => {
+                  const active = Boolean(k.view) && view === k.view;
+                  return (
+                    <motion.li key={k.name} {...enter(i)}>
+                      <button
+                        type="button"
+                        aria-current={active ? 'page' : undefined}
+                        onClick={active ? () => onView(null) : k.open}
+                        className={cx(
+                          'group flex w-full items-center gap-2.5 rounded-2xl border p-2.5 text-left transition-colors lg:rounded-xl lg:border-transparent lg:px-2 lg:py-1.5',
+                          active ? 'border-line-strong bg-raised shadow-elev-1' : 'border-line/70 bg-surface hover:border-line-strong lg:bg-transparent lg:hover:bg-raised/70',
+                        )}
+                      >
+                        <span className={cx('grid size-9 shrink-0 place-items-center rounded-xl lg:size-8 lg:rounded-lg', TONE[k.tone])}>
+                          <k.icon size={17} aria-hidden />
+                        </span>
+                        <span className="min-w-0 flex-1 truncate text-[14.5px] font-semibold">{k.name}</span>
+                        <span className="text-[12.5px] text-ink-faint tabular-nums">{k.count}</span>
+                      </button>
+                    </motion.li>
+                  );
+                })}
+              </ul>
+            </nav>
+          )}
+        </aside>
+      )}
       <div className="min-w-0">
         {toolbar}
         {results ?? main}

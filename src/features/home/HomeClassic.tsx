@@ -45,6 +45,68 @@ export function greeting(hour: number): string {
   return 'Burning the midnight oil';
 }
 
+interface GreetingContext {
+  name?: string;
+  langName?: string;
+}
+
+const MORNING_EARLY: Array<(c: GreetingContext) => string> = [
+  ({ name }) => (name ? `Good morning, ${name}` : 'Good morning'),
+  ({ name }) => (name ? `Coffee and a chapter, ${name}?` : 'Coffee and a chapter?'),
+  ({ name }) => (name ? `A fresh page this morning, ${name}` : 'A fresh page this morning'),
+  ({ name }) => (name ? `Early at the desk, ${name}` : 'Early at the reading desk'),
+  ({ name, langName }) => (name ? `Morning light and a little ${langName ?? 'reading'}, ${name}` : `Morning light and a little ${langName ?? 'reading'}`),
+];
+
+const MORNING_LATE: Array<(c: GreetingContext) => string> = [
+  ({ name }) => (name ? `Good morning, ${name}` : 'Good morning'),
+  ({ name }) => (name ? `Back at the desk, ${name}` : 'Back at the desk'),
+  ({ name }) => (name ? `What shall we read today, ${name}?` : 'What shall we read today?'),
+  ({ name }) => (name ? `Ready for a page or two, ${name}?` : 'Ready for a page or two?'),
+  ({ name, langName }) => (name ? `Your ${langName ?? ''} shelves are waiting, ${name}`.replace('  ', ' ') : `Your ${langName ?? ''} shelves are waiting`.replace('  ', ' ')),
+];
+
+const AFTERNOON: Array<(c: GreetingContext) => string> = [
+  ({ name }) => (name ? `Good afternoon, ${name}` : 'Good afternoon'),
+  ({ name }) => (name ? `Pick up where you left off, ${name}?` : 'Pick up where you left off?'),
+  ({ name, langName }) => (name ? `A quiet break with ${langName ?? 'a good book'}, ${name}?` : `A quiet break with ${langName ?? 'a good book'}?`),
+  ({ name }) => (name ? `Afternoon at the scriptorium, ${name}` : 'Afternoon at the scriptorium'),
+  ({ name }) => (name ? `Room for one more chapter, ${name}?` : 'Room for one more chapter?'),
+];
+
+const EVENING: Array<(c: GreetingContext) => string> = [
+  ({ name }) => (name ? `Good evening, ${name}` : 'Good evening'),
+  ({ name }) => (name ? `The reading lamp is lit, ${name}` : 'The reading lamp is lit'),
+  ({ name, langName }) => (name ? `Unwinding with ${langName ?? 'a story'}, ${name}?` : `Unwinding with ${langName ?? 'a story'}?`),
+  ({ name }) => (name ? `Settling in for the evening, ${name}` : 'Settling in for the evening'),
+  ({ name }) => (name ? `One last story for the day, ${name}?` : 'One last story for the day?'),
+];
+
+const LATE_NIGHT: Array<(c: GreetingContext) => string> = [
+  ({ name }) => (name ? `Burning the midnight oil, ${name}?` : 'Burning the midnight oil?'),
+  ({ name }) => (name ? `Night owl hours, ${name}` : 'Night owl hours'),
+  ({ name }) => (name ? `Quiet house, open book, ${name}` : 'Quiet house, open book'),
+  ({ name }) => (name ? `Just one more page, ${name}?` : 'Just one more page?'),
+  ({ name, langName }) => (name ? `Late-night ${langName ?? 'reading'}, ${name}?` : `Late-night ${langName ?? 'reading'}?`),
+];
+
+/** Time-of-day bookish greeting, Claude-style, with deterministic or cycled pick. */
+export function homeGreeting(hour: number, name?: string, langName?: string, offset = 0): string {
+  const pool =
+    hour >= 5 && hour < 9
+      ? MORNING_EARLY
+      : hour >= 9 && hour < 12
+        ? MORNING_LATE
+        : hour >= 12 && hour < 17
+          ? AFTERNOON
+          : hour >= 17 && hour < 22
+            ? EVENING
+            : LATE_NIGHT;
+  const daySeed = Math.floor(Date.now() / 86_400_000) + hour;
+  const fn = pool[(daySeed + offset) % pool.length];
+  return fn({ name: name?.trim() || undefined, langName });
+}
+
 export const enter = (i: number) => ({
   initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0 },
@@ -232,7 +294,7 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
     steps.push({ key: 'find-song', to: '/sonus?tab=music', icon: Music2, tone: 'accent', title: 'Find a song to learn', detail: 'Lyrics that light up as they’re sung, every word a tap away' });
   }
   if (!video && enjoys.includes('watching')) {
-    steps.push({ key: 'find-watch', to: '/sonus?show=watch', icon: Clapperboard, tone: 'accent', title: 'Watch something', detail: 'A film or an episode with subtitles in both languages' });
+    steps.push({ key: 'find-watch', to: '/visio', icon: Clapperboard, tone: 'accent', title: 'Watch something', detail: 'A film or an episode with subtitles in both languages' });
   }
   return orderSteps(steps, enjoys).slice(0, limit);
 }

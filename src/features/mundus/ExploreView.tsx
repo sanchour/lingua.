@@ -130,7 +130,7 @@ export function ExploreView({ lang, picks, level }: { lang: string; picks: Picks
 
 
       <div className="mt-10 space-y-10">
-        <Shelf id="watch" title="Watch" room="Sonus et Visio" icon={Clapperboard} more={picks ? '/mentis/picks?kind=series' : undefined}>
+        <Shelf id="watch" title="Watch" room="Visio" icon={Clapperboard} more={picks ? '/mentis/picks?kind=series' : undefined}>
           {list('series').map(pickTile('series'))}
           {list('films').map(pickTile('films'))}
           {list('youtube').map(pickTile('youtube'))}
@@ -288,7 +288,7 @@ function ListenShelf({ lang, podcasts, tile }: { lang: string; podcasts: Pick[];
     }
   };
   return (
-    <Shelf id="listen" title="Listen" room="Sonus et Visio" icon={Headphones} more={podcasts.length ? '/mentis/picks?kind=podcasts' : undefined}>
+    <Shelf id="listen" title="Listen" room="Sonus" icon={Headphones} more={podcasts.length ? '/mentis/picks?kind=podcasts' : undefined}>
       {podcasts.map(tile)}
       {books.map((b) => (
         <Tile
@@ -312,7 +312,7 @@ function RadioShelf({ lang, level, reach }: { lang: string; level: Level; reach:
   const stations = useRadioPicks(lang);
   const artists = (discoverFor(lang)?.artists ?? []).filter((a) => reach === 'all' || withinReach(a.ease === 'clear' ? 'A2' : a.ease === 'medium' ? 'B1' : 'B2', level));
   return (
-    <Shelf id="radio" title="Radio and music" room="Sonus et Visio" icon={Radio}>
+    <Shelf id="radio" title="Radio and music" room="Sonus" icon={Radio}>
       {stations.map((s) => (
         <Tile
           key={s.id}

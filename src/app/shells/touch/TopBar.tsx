@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router';
-import { motion } from 'motion/react';
-import { ChevronLeft } from 'lucide-react';
-import { HEADER_SECTIONS, SECTIONS } from '@/app/sections';
+import { AnimatePresence, motion } from 'motion/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { HEADER_SECTIONS, PRIMARY_SECTIONS, SECTIONS, TOOL_SECTIONS } from '@/app/sections';
 import { IconButton } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
@@ -27,6 +27,12 @@ export function TopBar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const ref = useRef<HTMLElement>(null);
+  const inTool = TOOL_SECTIONS.some((s) => pathname === s.path || pathname.startsWith(`${s.path}/`));
+  const [toolsOpen, setToolsOpen] = useState(false);
+
+  useEffect(() => {
+    setToolsOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const el = ref.current;
@@ -48,21 +54,25 @@ export function TopBar() {
     <header ref={ref} className="no-callout sticky top-0 z-30 pt-safe">
       <div
         className={cx(
-          'absolute inset-0 border-b bg-bg/85 backdrop-blur-xl transition-colors duration-200',
-          titleHidden ? 'border-line' : 'border-transparent',
+          'absolute inset-0 border-b bg-bg/90 backdrop-blur-xl transition-colors duration-200',
+          titleHidden || toolsOpen ? 'border-line' : 'border-line/50',
         )}
         aria-hidden
       />
-      <div className="relative flex h-12 items-center gap-1 px-2" style={{ paddingLeft: 'max(8px, env(safe-area-inset-left))', paddingRight: 'max(8px, env(safe-area-inset-right))' }}>
+      <div
+        className="relative flex h-12 items-center gap-1.5 px-2"
+        style={{ paddingLeft: 'max(10px, env(safe-area-inset-left))', paddingRight: 'max(10px, env(safe-area-inset-right))' }}
+      >
         {parent ? (
           <IconButton icon={ChevronLeft} label="Back" showTooltip={false} onClick={() => navigate(parent)} />
         ) : (
-          <>
-            <span className="px-2">
-              <LogoMark size={26} />
+          <div className="flex items-center gap-1.5">
+            <span className="pl-1">
+              <LogoMark size={25} />
             </span>
+            <span className="font-serif text-[19px] font-semibold tracking-tight">Lingua</span>
             <LanguageChip compact placement="bottom-start" />
-          </>
+          </div>
         )}
 
         <motion.div
@@ -75,7 +85,7 @@ export function TopBar() {
           {title}
         </motion.div>
 
-        <nav aria-label="More sections" className="ml-auto flex items-center gap-0.5">
+        <nav aria-label="Statistics and settings" className="ml-auto flex items-center gap-1">
           {HEADER_SECTIONS.map(({ id, path, name, role, icon: Icon }) => (
             <NavLink
               key={id}
@@ -83,16 +93,83 @@ export function TopBar() {
               aria-label={`${name} · ${role}`}
               className={({ isActive }) =>
                 cx(
-                  'grid size-10 place-items-center rounded-xl transition-[transform,background-color,color] duration-150 active:scale-[0.92]',
-                  isActive ? 'bg-accent-soft text-accent-text' : 'text-ink-soft',
+                  'inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] font-semibold transition-colors',
+                  isActive ? 'bg-accent-soft text-accent-text' : 'text-ink-soft hover:bg-raised hover:text-ink',
                 )
               }
             >
-              <Icon size={21} aria-hidden />
+              <Icon size={16} aria-hidden />
+              <span className="hidden min-[380px]:inline">{name}</span>
             </NavLink>
           ))}
         </nav>
       </div>
+
+      {/* Horizontal navigation strip for narrow/touch viewports (Home, Cursus, Explora, Bibliotheca, Tools >) */}
+      <div
+        className="relative flex items-center gap-1 overflow-x-auto border-t border-line/40 px-2 py-1.5 [scrollbar-width:none]"
+        style={{ paddingLeft: 'max(10px, env(safe-area-inset-left))', paddingRight: 'max(10px, env(safe-area-inset-right))' }}
+      >
+        {PRIMARY_SECTIONS.map(({ id, path, name }) => (
+          <NavLink
+            key={id}
+            to={path}
+            end={path === '/'}
+            className={({ isActive }) =>
+              cx(
+                'shrink-0 rounded-lg px-2.5 py-1 font-serif text-[14px] font-semibold transition-colors',
+                isActive ? 'bg-raised text-accent-text shadow-elev-1' : 'text-ink-soft hover:text-ink',
+              )
+            }
+          >
+            {name}
+          </NavLink>
+        ))}
+        <button
+          type="button"
+          aria-expanded={toolsOpen}
+          onClick={() => setToolsOpen((o) => !o)}
+          className={cx(
+            'ml-auto inline-flex shrink-0 items-center gap-0.5 rounded-lg px-2.5 py-1 font-serif text-[14px] font-semibold transition-colors',
+            inTool || toolsOpen ? 'bg-raised text-accent-text shadow-elev-1' : 'text-ink-soft hover:text-ink',
+          )}
+        >
+          Tools
+          <ChevronRight size={14} className={cx('transition-transform duration-150', toolsOpen && 'rotate-90')} aria-hidden />
+        </button>
+      </div>
+
+      <AnimatePresence initial={false}>
+        {toolsOpen && (
+          <motion.nav
+            key="touch-tools"
+            aria-label="Tools"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={spring.snappy}
+            className="relative overflow-hidden border-t border-line/50 bg-surface/95 backdrop-blur-xl"
+          >
+            <div className="flex flex-wrap items-center gap-1.5 px-3 py-2">
+              {TOOL_SECTIONS.map(({ id, path, name, icon: Icon }) => (
+                <NavLink
+                  key={id}
+                  to={path}
+                  className={({ isActive }) =>
+                    cx(
+                      'inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-[13.5px] font-semibold transition-colors',
+                      isActive ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line/70 bg-raised text-ink-soft hover:text-ink',
+                    )
+                  }
+                >
+                  <Icon size={15} aria-hidden />
+                  {name}
+                </NavLink>
+              ))}
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
