@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.18** · 2026-10-27 · Diarium: an editor with headings and lists, Dear diary in the language, search, rename, delete with undo, a calendar
 - **0.5.2-alpha.17** · 2026-10-27 · Home redesign, new navigation, and the Bibliotheca, Explora and Visio rooms
 - **0.5.2-alpha.16** · 2026-10-27 · when the browser can't open Lingua's storage, say what helps
 - **0.5.2-alpha.15** · 2026-10-27 · a stuck start says what it waits for

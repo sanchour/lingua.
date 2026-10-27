@@ -1705,3 +1705,22 @@ Short records of choices that are not obvious from the code. Newest last.
   canvas notes as they are.
 - **Canvases stay in each site's browser storage**; `.sandesign` files and copy-paste (JSON with its pictures) carry
   them anywhere else. Nothing is uploaded.
+
+## 2026-10-27 — Diarium's editor, and starting when storage fails
+
+- **Tiptap, entries kept as Markdown:** Tiptap gives the keys and lists a writer expects without our own editor, and
+  loads only on an entry page. The entry stays a Markdown string with our own small converter (no Markdown library):
+  only what the editor can make (headings 1–3, lists, quotes, bold, italic, `<u>`), escapes for text that looks like
+  Markdown, and plain old entries read unchanged. Sync, backup and word counts didn't have to change.
+- **Corrections go back paragraph by paragraph:** the AI sees plain text (one blank line per paragraph, heading or
+  list item); when its answer has the same number of paragraphs, each replaces its own and keeps its marker, else the
+  corrected text replaces the entry as paragraphs.
+- **"Dear diary" only where people write it;** elsewhere the date in the language, which is how those diaries begin.
+- **A blank page is never the answer:** Brave once answered opening IndexedDB with "UnknownError: Internal error" (its
+  files locked by a background Brave), and Lingua waited forever with nothing on screen. Now index.html shows a splash
+  and any error before the app draws; the router has an error screen (a stale update reloads once); a slow or failed
+  database read says so, asks the database directly, and lists what helps, safest first (quit the browser, restart,
+  find the data elsewhere, start fresh only last and after asking twice).
+- **The user's Home redesign** (branch `home-redesign`, 0.5.2-alpha.17): Home, Cursus, Explora and Bibliotheca as the
+  main rooms, Codex, Thesaurus, Sonus, Visio and Mentis under Tools, Ratio and Settings at the bottom; Sonus and Visio
+  are separate rooms again (`/visio` is Visio's page, no longer a redirect). Lingua 5's remaining steps build on this.

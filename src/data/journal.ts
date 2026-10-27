@@ -1,5 +1,6 @@
 // Diarium entries: writing, saving as you type, and keeping each AI review with the text it read.
 import { useLiveQuery } from 'dexie-react-hooks';
+import { mergeCorrected, toPlain } from '@/core/journal/markdown';
 import { countWords } from '@/core/text/tokenizer';
 import { localDateKey } from '@/lib/format';
 import { db } from './db';
@@ -29,8 +30,11 @@ export async function createEntry(lang: string, prompt?: { text: string; en?: st
   return entry.id;
 }
 
+/** Words in an entry, counted in its plain text (entries are Markdown since 5.2-5). */
+export const entryWords = (text: string, lang: string) => countWords(toPlain(text), lang);
+
 export async function saveEntryText(id: string, text: string, lang: string, database: LinguaDB = db): Promise<void> {
-  await database.journalEntries.update(id, { text, words: countWords(text, lang), updatedAt: Date.now() });
+  await database.journalEntries.update(id, { text, words: entryWords(text, lang), updatedAt: Date.now() });
 }
 
 export async function updateEntry(id: string, patch: Partial<Pick<JournalEntry, 'title' | 'prompt' | 'date'>>, database: LinguaDB = db): Promise<void> {
@@ -48,16 +52,26 @@ export async function saveReview(id: string, review: JournalReview, database: Li
   });
 }
 
-/** Adopts the corrected text as the entry (the review stays, so the changes can still be seen). */
-export async function acceptCorrections(id: string, lang: string, database: LinguaDB = db): Promise<void> {
+/**
+ * Adopts the corrected text as the entry, paragraph by paragraph so headings and lists stay (the review stays, so
+ * the changes can still be seen). Returns the new text.
+ */
+export async function acceptCorrections(id: string, lang: string, database: LinguaDB = db): Promise<string | undefined> {
   const entry = await database.journalEntries.get(id);
   if (!entry?.review) return;
+  const text = mergeCorrected(entry.text, entry.review.corrected);
   const versions = [...(entry.versions ?? []), { text: entry.text, at: Date.now() }].slice(-10);
-  await database.journalEntries.update(id, { text: entry.review.corrected, words: countWords(entry.review.corrected, lang), versions, updatedAt: Date.now() });
+  await database.journalEntries.update(id, { text, words: entryWords(text, lang), versions, updatedAt: Date.now() });
+  return text;
 }
 
 export async function deleteEntry(id: string, database: LinguaDB = db): Promise<void> {
   await database.journalEntries.update(id, { deletedAt: Date.now(), updatedAt: Date.now() });
+}
+
+/** Undoes a delete. */
+export async function restoreEntry(id: string, database: LinguaDB = db): Promise<void> {
+  await database.journalEntries.update(id, { deletedAt: undefined, updatedAt: Date.now() });
 }
 
 /** The Thesaurus deck that corrections and words from the journal go to. */

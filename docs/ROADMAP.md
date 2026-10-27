@@ -2192,7 +2192,10 @@ step left, in this order; each step is its own push with a version (0.5.2-alpha.
 design of each is LINGUA-5.2-PLAN.md's section; below is how it is built and how it is checked. Real marks and
 "From Mundus" (5.2-4) are already done (0.5.2-alpha.1).*
 
-1. [ ] **Diarium (5.2-5, handover 14).**
+1. [x] **Diarium (5.2-5, handover 14)** — done 2026-10-27 (0.5.2-alpha.18). Checked in the app: the editor's headings and
+   lists typed with `## ` and `- `, the toolbar over a selection, "Cher journal", search with `/` (accent-blind), rename and
+   delete with Undo from ⋯ and right-click, the calendar's inked days; not checked: the AI check and "Use the corrected text"
+   with a real key (covered by tests), Russian and Arabic typed by hand.
    - **The editor:** Tiptap (`@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extensions`), loaded only in Diarium.
      Its keys already cover the plan's list (Ctrl B/I/U, Ctrl Alt 1–3 and 0, Ctrl Shift 7/8, `# ` `- ` `1. ` `> `);
      a toolbar over the selection. Entries stay Markdown in `text`: a small converter of our own

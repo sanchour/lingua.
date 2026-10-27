@@ -121,6 +121,25 @@ Tracks the learner's path per language and across all of them.
 
 ---
 
+## Diarium in Lingua 5 (5.2-5)
+
+- **The editor** is Tiptap (`features/codex/diarium/DiaryEditor.tsx`, loaded only with an entry): Ctrl B/I/U, Ctrl Alt 1–3
+  and 0, Ctrl Shift 7/8 and B, `# ` `- ` `1. ` `> ` at the start of a line, and a small toolbar over a selection. Entries
+  stay Markdown in `text` (`core/journal/markdown.ts`, tested both ways), so sync, export and word counts keep working;
+  plain entries from before read as paragraphs. Words are counted in the plain text.
+- **The AI check** reads the plain text; "Use the corrected text" puts the corrections back paragraph by paragraph,
+  each keeping its heading or list marker (and its marks where it didn't change).
+- **The heading:** a title from Rename, else the day's prompt, else "Dear diary" in the language
+  (`core/journal/salutations.ts`: Cher journal, Liebes Tagebuch, Дорогой дневник, 亲爱的日记 …) or the date in it where
+  diaries aren't addressed that way. An empty page says "Today…" in the language.
+- **Without AI** the bottom bar goes: words, Saved and dictation sit under the heading, and ⋯ has one quiet line about
+  corrections (Max, or a key in Settings).
+- **Entries:** search (`/` focuses, accent-blind, title, prompt and text), sort (newest, oldest, longest, most
+  corrected), ⋯ on each row and right-click: Rename in place, Delete with Undo.
+- **List · Calendar:** month grids with days inked by words written, a tick on corrected days, a line joining runs,
+  a click opens the day; a year strip to jump months; beside it the month's entries, words, days written, longest run
+  and corrections, with its entries.
+
 ## Diarium — language journal with corrections and grading (Codex › Diarium, Phase 5)
 
 Practise writing in the target language; get corrected, explained and graded.

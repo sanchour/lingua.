@@ -1,18 +1,20 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { Ellipsis, MessagesSquare, PenLine, RotateCcw, Sparkles, Trash2, Wand2 } from 'lucide-react';
+import { Ellipsis, MessagesSquare, PenLine, RotateCcw, Sparkles, TextCursorInput, Trash2, Wand2 } from 'lucide-react';
 import { BackLink } from '@/app/BackLink';
 import { useDockBottom } from '@/app/dock';
 import { useApp } from '@/app/context';
-import { countWords } from '@/core/text/tokenizer';
+import { toPlain } from '@/core/journal/markdown';
+import { emptyPage, salutation } from '@/core/journal/salutations';
+import { getLanguage } from '@/core/lang/languages';
 import { bumpDaily, recordSession } from '@/data/activity';
-import { acceptCorrections, deleteEntry, saveEntryText, saveReview, useJournalEntry } from '@/data/journal';
+import { acceptCorrections, deleteEntry, entryWords, restoreEntry, saveEntryText, saveReview, updateEntry, useJournalEntry } from '@/data/journal';
 import type { JournalEntry } from '@/data/types';
 import { useLayout } from '@/design/hooks/useLayout';
 import { getReaderFont, readerFontStack } from '@/design/fonts';
-import { Button, buttonClasses, Dialog, MenuItem, Popover, Segmented } from '@/design/primitives';
+import { Button, buttonClasses, MenuItem, Popover, Segmented } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { LlmError, PROVIDERS } from '@/services/llm/client';
 import { checkEntry } from '@/services/llm/journal';
@@ -21,6 +23,8 @@ import { cx } from '@/lib/cx';
 import { aiBlock } from '@/data/plan';
 import { MaxLink } from '@/features/plans/Locked';
 import { toast, useUI } from '@/state/ui';
+import { DiaryEditor } from './DiaryEditor';
+import type { DiaryEditorHandle } from './DiaryEditor';
 import { DictateButton } from './Dictate';
 import { CorrectionList, ReviewSummary, ReviewText } from './Review';
 
@@ -57,12 +61,13 @@ function Entry({ entry }: { entry: JournalEntry }) {
   const [text, setText] = useState(entry.text);
   const [saved, setSaved] = useState(true);
   const [checking, setChecking] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const review = entry.review;
-  const stale = Boolean(review && review.text.trim() !== text.trim());
+  const plain = toPlain(text);
+  const stale = Boolean(review && review.text.trim() !== plain.trim());
   const [mode, setMode] = useState<Mode>(review && !stale ? 'review' : 'write');
-  const areaRef = useRef<HTMLTextAreaElement>(null);
-  const words = countWords(text, lang);
+  const editorRef = useRef<DiaryEditorHandle>(null);
+  const words = entryWords(text, lang);
   const provider = PROVIDERS[settings.llm.provider].name;
   const block = aiBlock(settings, settings.llm.provider);
   const hasAi = !block && Boolean(settings.llm.model);
@@ -79,6 +84,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
   }, [entry.id, lang]);
   const onChange = (value: string) => {
     setText(value);
+    latest.current = value;
     setSaved(false);
     window.clearTimeout(pending.current);
     pending.current = window.setTimeout(flush, SAVE_DELAY);
@@ -89,17 +95,17 @@ function Entry({ entry }: { entry: JournalEntry }) {
   };
 
   // Writing time and words written count towards today (statistics, goal and streak).
-  const activity = useRef({ ms: 0, last: 0, startedAt: Date.now(), startWords: countWords(entry.text, lang) });
+  const activity = useRef({ ms: 0, last: 0, startedAt: Date.now(), startWords: entryWords(entry.text, lang) });
   useEffect(() => {
     const a = activity.current;
     const record = () => {
       if (pending.current !== undefined) flush();
-      const added = countWords(latest.current, lang) - a.startWords;
+      const added = entryWords(latest.current, lang) - a.startWords;
       if (added > 0) void bumpDaily(lang, { wordsWritten: added });
       void recordSession({ lang, type: 'write', refId: entry.id, startedAt: a.startedAt, endedAt: Date.now(), activeMs: Math.round(a.ms) });
       a.ms = 0;
       a.last = 0;
-      a.startWords = countWords(latest.current, lang);
+      a.startWords = entryWords(latest.current, lang);
       a.startedAt = Date.now();
     };
     const onHide = () => document.visibilityState === 'hidden' && record();
@@ -110,23 +116,15 @@ function Entry({ entry }: { entry: JournalEntry }) {
     };
   }, [entry.id, lang, flush]);
 
-  // The page grows with the text, like paper.
-  useLayoutEffect(() => {
-    const el = areaRef.current;
-    if (!el) return;
-    el.style.height = 'auto';
-    el.style.height = `${Math.max(el.scrollHeight, wide ? 360 : 260)}px`;
-  }, [text, mode, wide]);
-
   useEffect(() => {
-    if (mode === 'write' && !entry.text) window.setTimeout(() => areaRef.current?.focus(), 150);
+    if (mode === 'write' && !entry.text) window.setTimeout(() => editorRef.current?.focus(), 150);
   }, [mode, entry.text]);
 
   const check = async () => {
     if (pending.current !== undefined) flush();
     setChecking(true);
     try {
-      const result = await checkEntry(lang, language.level, text.trim(), entry.prompt);
+      const result = await checkEntry(lang, language.level, plain.trim(), entry.prompt);
       await saveReview(entry.id, result);
       setMode('review');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -143,41 +141,74 @@ function Entry({ entry }: { entry: JournalEntry }) {
 
   // What was said goes after what is written, counts as writing time, and the caret waits at its end to correct it.
   const speak = (spoken: string, ms: number) => {
-    onChange(appendSpoken(latest.current, spoken, lang));
+    const next = appendSpoken(latest.current, spoken, lang);
+    onChange(next);
+    editorRef.current?.setText(next);
     activity.current.ms += ms;
-    window.setTimeout(() => {
-      const el = areaRef.current;
-      el?.focus();
-      el?.setSelectionRange(el.value.length, el.value.length);
-    }, 50);
   };
 
+  // Corrections go back paragraph by paragraph, so headings and lists stay.
   const useCorrected = async () => {
-    await acceptCorrections(entry.id, lang);
-    setText(entry.review!.corrected);
+    const next = await acceptCorrections(entry.id, lang);
+    if (next === undefined) return;
+    setText(next);
     toast('The corrected text is now your entry. The changes stay visible here.', { tone: 'success' });
+  };
+
+  const remove = () => {
+    void deleteEntry(entry.id);
+    navigate('/mentis/diarium', { replace: true });
+    toast('Entry deleted.', { action: { label: 'Undo', onClick: () => void restoreEntry(entry.id).then(() => navigate(`/mentis/diarium/${entry.id}`)) } });
   };
 
   const date = new Date(`${entry.date}T12:00:00`);
   // "Talk about this" opens Sermo with the entry's prompt, or its first sentence, as the topic.
-  const talkTopic = (entry.prompt ?? entry.text.split(/(?<=[.!?。！？])\s*/)[0] ?? '').trim().slice(0, 80);
+  const talkTopic = (entry.prompt ?? plain.split(/(?<=[.!?。！？])\s*/)[0] ?? '').trim().slice(0, 80);
   const fontStyle = { '--entry-font': readerFontStack(getReaderFont(settings.reader.font), lang) } as CSSProperties;
+  const rtl = Boolean(getLanguage(lang)?.rtl);
+  // A title from Rename comes first, then the day's prompt, then "Dear diary" in the language (or the date in it).
+  const heading = entry.title || entry.prompt || salutation(lang, date);
+  const saving = (
+    <span className="text-[13px] text-ink-faint">
+      <span className="font-semibold text-ink-soft tabular-nums">
+        {words} {words === 1 ? 'word' : 'words'}
+      </span>
+      <span className="ml-2">{saved ? 'Saved' : 'Saving…'}</span>
+    </span>
+  );
 
   return (
-    <div className="pb-36" style={fontStyle}>
+    <div className={hasAi ? 'pb-36' : 'pb-16'} style={fontStyle}>
       <BackLink to="/mentis/diarium">Diarium</BackLink>
       <header className="mb-7 flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
-          {entry.prompt ? (
-            <>
-              <h1 lang={lang} className="mt-2 font-serif text-[26px] leading-snug font-semibold sm:text-[30px]">
-                {entry.prompt}
-              </h1>
-              {entry.promptEn && <p className="mt-1.5 text-[14px] text-ink-faint italic">{entry.promptEn}</p>}
-            </>
+          {renaming ? (
+            <RenameField
+              value={entry.title ?? ''}
+              placeholder={entry.prompt || salutation(lang, date)}
+              onDone={(title) => {
+                setRenaming(false);
+                if (title !== undefined && title !== (entry.title ?? '')) void updateEntry(entry.id, { title: title || undefined });
+              }}
+            />
           ) : (
-            <h1 className="mt-2 font-serif text-[30px] leading-tight font-semibold">Dear diary</h1>
+            <h1 lang={entry.title ? undefined : lang} onDoubleClick={() => setRenaming(true)} className="mt-2 font-serif text-[26px] leading-snug font-semibold sm:text-[30px]">
+              {heading}
+            </h1>
+          )}
+          {entry.prompt && entry.title && (
+            <p lang={lang} className="mt-1.5 text-[15px] text-ink-soft">
+              {entry.prompt}
+            </p>
+          )}
+          {entry.promptEn && !entry.title && <p className="mt-1.5 text-[14px] text-ink-faint italic">{entry.promptEn}</p>}
+          <p className="mt-1.5 text-[13px] text-ink-faint">A few sentences a day is plenty.</p>
+          {!hasAi && mode === 'write' && (
+            <div className="mt-3 flex items-center gap-3">
+              {saving}
+              <DictateButton lang={lang} onSpoken={speak} />
+            </div>
           )}
         </div>
         {talkTopic && (
@@ -195,16 +226,41 @@ function Entry({ entry }: { entry: JournalEntry }) {
           )}
         >
           {(close) => (
-            <div className="w-56 p-1.5">
+            <div className="w-64 p-1.5">
+              <MenuItem
+                icon={TextCursorInput}
+                label="Rename"
+                onClick={() => {
+                  close();
+                  setRenaming(true);
+                }}
+              />
               <MenuItem
                 icon={Trash2}
                 danger
                 label="Delete entry"
                 onClick={() => {
                   close();
-                  setConfirmDelete(true);
+                  remove();
                 }}
               />
+              {!hasAi && (
+                <p className="mt-1 border-t border-line px-3 pt-2.5 pb-1.5 text-[12.5px] leading-snug text-ink-faint">
+                  {block === 'max' ? (
+                    <>
+                      Corrections and explanations come with <MaxLink className="font-semibold text-accent-text">Lingua+ Max</MaxLink>.
+                    </>
+                  ) : (
+                    <>
+                      For corrections, add an AI key in{' '}
+                      <Link to="/settings/ai" className="font-semibold text-accent-text">
+                        Settings
+                      </Link>
+                      .
+                    </>
+                  )}
+                </p>
+              )}
             </div>
           )}
         </Popover>
@@ -227,17 +283,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
       <AnimatePresence mode="wait" initial={false}>
         {mode === 'write' || !review ? (
           <motion.div key="write" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.soft}>
-            <textarea
-              ref={areaRef}
-              lang={lang}
-              value={text}
-              onChange={(e) => onChange(e.target.value)}
-              onBlur={() => pending.current !== undefined && flush()}
-              placeholder="Start writing. A few sentences are plenty."
-              aria-label="Your entry"
-              spellCheck={false}
-              className="block w-full resize-none overflow-hidden bg-transparent text-[19px] leading-[1.85] outline-none placeholder:text-ink-faint [font-family:var(--entry-font)]"
-            />
+            <DiaryEditor ref={editorRef} value={text} lang={lang} rtl={rtl} placeholder={emptyPage(lang)} onChange={onChange} onBlur={() => pending.current !== undefined && flush()} />
           </motion.div>
         ) : (
           <motion.div
@@ -252,7 +298,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
             <div className="min-w-0 space-y-9">
               <ReviewText review={review} lang={lang} />
               <div className="flex flex-wrap gap-2">
-                {review.corrected.trim() !== text.trim() && (
+                {review.corrected.trim() !== plain.trim() && (
                   <Button variant="secondary" icon={Wand2} onClick={() => void useCorrected()}>
                     Use the corrected text
                   </Button>
@@ -273,16 +319,13 @@ function Entry({ entry }: { entry: JournalEntry }) {
         )}
       </AnimatePresence>
 
-      {/* Floating bar: words, saving, and the check */}
-      {(mode === 'write' || !review) && (
+      {/* Floating bar with AI: words, saving, dictation and the check. Without AI these sit in the header. */}
+      {hasAi && (mode === 'write' || !review) && (
         <div className="pointer-events-none fixed inset-x-0 z-20 flex justify-center px-4 lg:pl-[var(--sidebar-w,0px)]" style={{ bottom: dockBottom }}>
           <div className="pointer-events-auto flex w-full max-w-2xl items-center gap-3 rounded-3xl border border-line/80 bg-raised/95 p-2 pl-4 shadow-elev-3 backdrop-blur-xl">
-            <div className="min-w-0 flex-1 text-[13px] leading-tight text-ink-faint">
-              <span className="font-semibold text-ink-soft tabular-nums">
-                {words} {words === 1 ? 'word' : 'words'}
-              </span>
-              <span className="ml-2">{saved ? 'Saved' : 'Saving…'}</span>
-              <p className="hidden truncate sm:block">{hasAi ? `Checking sends this entry to ${provider}.` : block === 'max' ? 'Corrections come with Lingua+ Max.' : 'Add a free AI key in Settings to get corrections.'}</p>
+            <div className="min-w-0 flex-1 leading-tight">
+              {saving}
+              <p className="hidden truncate text-[13px] text-ink-faint sm:block">Checking sends this entry to {provider}.</p>
             </div>
             {stale && review && (
               <button type="button" onClick={() => setMode('review')} className="hidden px-2 text-[13px] font-semibold text-ink-soft hover:text-ink sm:block">
@@ -290,44 +333,39 @@ function Entry({ entry }: { entry: JournalEntry }) {
               </button>
             )}
             <DictateButton lang={lang} onSpoken={speak} />
-            {hasAi ? (
-              <Button icon={review && stale ? RotateCcw : Sparkles} onClick={() => void check()} loading={checking} disabled={words < 3 || (Boolean(review) && !stale)}>
-                {review && stale ? 'Check again' : 'Check my writing'}
-              </Button>
-            ) : block === 'max' ? (
-              <MaxLink className={buttonClasses('secondary', 'md')}>Lingua+ Max</MaxLink>
-            ) : (
-              <Link to="/settings/ai" className={buttonClasses('secondary', 'md')}>
-                Set up AI
-              </Link>
-            )}
+            <Button icon={review && stale ? RotateCcw : Sparkles} onClick={() => void check()} loading={checking} disabled={words < 3 || (Boolean(review) && !stale)}>
+              {review && stale ? 'Check again' : 'Check my writing'}
+            </Button>
           </div>
         </div>
       )}
-
-      <Dialog
-        open={confirmDelete}
-        onClose={() => setConfirmDelete(false)}
-        title="Delete this entry?"
-        actions={
-          <>
-            <Button variant="ghost" onClick={() => setConfirmDelete(false)}>
-              Keep it
-            </Button>
-            <Button
-              variant="danger"
-              onClick={() => {
-                void deleteEntry(entry.id);
-                navigate('/mentis/diarium', { replace: true });
-              }}
-            >
-              Delete
-            </Button>
-          </>
-        }
-      >
-        Its text and corrections will be removed. Cards already added to the Journal deck stay.
-      </Dialog>
     </div>
+  );
+}
+
+/** The entry's title, edited in place: Enter keeps it, Escape leaves it as it was, empty goes back to the heading. */
+function RenameField({ value, placeholder, onDone }: { value: string; placeholder: string; onDone: (title?: string) => void }) {
+  const [title, setTitle] = useState(value);
+  const done = useRef(false);
+  const finish = (result?: string) => {
+    if (done.current) return;
+    done.current = true;
+    onDone(result);
+  };
+  return (
+    <input
+      autoFocus
+      value={title}
+      placeholder={placeholder}
+      aria-label="Title"
+      onChange={(e) => setTitle(e.target.value)}
+      onFocus={(e) => e.target.select()}
+      onBlur={() => finish(title.trim())}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') finish(title.trim());
+        if (e.key === 'Escape') finish();
+      }}
+      className="mt-2 -ml-2 w-full rounded-lg bg-surface px-2 py-0.5 font-serif text-[26px] leading-snug font-semibold ring-2 ring-accent/40 outline-none sm:text-[30px]"
+    />
   );
 }

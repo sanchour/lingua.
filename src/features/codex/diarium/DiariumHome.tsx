@@ -1,19 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
-import { ArrowRight, PenLine, Shuffle, Sparkles } from 'lucide-react';
+import { PenLine, Shuffle, Sparkles } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { curatedPrompt, otherPrompt } from '@/core/lang/prompts';
 import type { WritingPrompt } from '@/core/lang/prompts';
 import { createEntry, useJournal } from '@/data/journal';
 import type { JournalEntry } from '@/data/types';
-import { gradeColor, Ring } from '@/design/charts/Ring';
 import { aiBlock } from '@/data/plan';
 import { Button, Card } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { quote } from '@/design/flavours';
 import { localDateKey } from '@/lib/format';
 import { aiPrompt } from '@/services/llm/journal';
+import { toPlain } from '@/core/journal/markdown';
+import { Entries } from './Entries';
 
 const DAY = 86_400_000;
 
@@ -79,15 +80,6 @@ export function DiariumHome() {
     };
   }, [entries]);
 
-  const months = useMemo(() => {
-    const out = new Map<string, JournalEntry[]>();
-    for (const e of entries ?? []) {
-      const key = e.date.slice(0, 7);
-      if (!out.has(key)) out.set(key, []);
-      out.get(key)!.push(e);
-    }
-    return [...out];
-  }, [entries]);
 
   const start = async (withPrompt: boolean) => {
     // An empty entry from earlier today is picked up rather than duplicated.
@@ -111,7 +103,7 @@ export function DiariumHome() {
           <>
             <h2 className="mt-2 font-serif text-2xl font-semibold">You wrote today</h2>
             <p lang={lang} className="mt-2 line-clamp-2 max-w-xl font-serif text-[17px] leading-relaxed text-ink-soft">
-              {today.text}
+              {toPlain(today.text).replace(/\s*\n+\s*/g, ' · ')}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Link to={`/mentis/diarium/${today.id}`} className="inline-flex h-10 items-center gap-2 rounded-xl bg-inverse px-4 text-sm font-semibold text-on-inverse shadow-elev-1">
@@ -128,6 +120,7 @@ export function DiariumHome() {
               {prompt.text}
             </motion.p>
             {prompt.en && <p className="relative mt-2 text-[14px] text-ink-faint italic">{prompt.en}</p>}
+            <p className="relative mt-2 text-[13px] text-ink-faint">A few sentences a day is plenty.</p>
             <div className="relative mt-4 sm:mt-5 flex flex-wrap items-center gap-2">
               <Button icon={PenLine} onClick={() => void start(true)} loading={starting}>
                 {today ? 'Continue writing' : 'Write about this'}
@@ -169,55 +162,7 @@ export function DiariumHome() {
           </p>
         </div>
       )}
-      {months.map(([month, list]) => (
-        <section key={month} aria-label={month}>
-          <h2 className="mb-3 border-b border-line pb-2 font-serif text-xl font-semibold">
-            {new Date(`${month}-01T12:00:00`).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
-          </h2>
-          <ul className="-mx-2">
-            {list.map((e) => (
-              <li key={e.id}>
-                <EntryRow entry={e} lang={lang} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+      {entries && <Entries entries={entries} lang={lang} />}
     </div>
-  );
-}
-
-function EntryRow({ entry, lang }: { entry: JournalEntry; lang: string }) {
-  const date = new Date(`${entry.date}T12:00:00`);
-  const first = entry.text.trim().split('\n')[0];
-  const review = entry.review;
-  return (
-    <Link to={`/mentis/diarium/${entry.id}`} className="group flex items-center gap-4 rounded-2xl px-2 py-3 transition-colors hover:bg-surface">
-      <div className="w-12 shrink-0 text-center">
-        <p className="font-serif text-2xl leading-none font-semibold tabular-nums">{date.getDate()}</p>
-        <p className="mt-1 text-[11px] font-bold tracking-wide text-ink-faint uppercase">{date.toLocaleDateString(undefined, { weekday: 'short' })}</p>
-      </div>
-      <div className="min-w-0 flex-1">
-        {first ? (
-          <p lang={lang} className="line-clamp-2 font-serif text-[16.5px] leading-snug">
-            {first}
-          </p>
-        ) : (
-          <p className="text-[15px] text-ink-faint italic">{entry.prompt ? `“${entry.prompt}”` : 'Not written yet'}</p>
-        )}
-        <p className="mt-1 text-[12.5px] text-ink-faint">
-          {entry.words} {entry.words === 1 ? 'word' : 'words'}
-          {review ? ` · ${review.corrections.length} ${review.corrections.length === 1 ? 'correction' : 'corrections'}` : ''}
-          {review?.cefr ? ` · ${review.cefr}` : ''}
-        </p>
-      </div>
-      {review ? (
-        <Ring value={review.scores.overall / 100} size={42} stroke={4} color={gradeColor(review.scores.overall)} label={`Grade ${review.scores.overall}`}>
-          <span className="text-[12px] font-bold tabular-nums">{review.scores.overall}</span>
-        </Ring>
-      ) : (
-        <ArrowRight size={16} className="shrink-0 text-ink-faint opacity-0 transition-opacity group-hover:opacity-100" aria-hidden />
-      )}
-    </Link>
   );
 }

@@ -401,3 +401,16 @@ html[data-motion='reduced'] .plan-max-in {
     backdrop-filter: none;
   }
 }
+
+/* Diarium's editor (5.2-5): headings, lists and quotes in the entry, and the empty page's "Today…". */
+.diary-prose > * + * { margin-top: 0.7em; }
+.diary-prose h1 { font-family: var(--font-serif); font-size: 1.55em; line-height: 1.3; font-weight: 600; margin-top: 1.1em; }
+.diary-prose h2 { font-family: var(--font-serif); font-size: 1.3em; line-height: 1.35; font-weight: 600; margin-top: 1em; }
+.diary-prose h3 { font-size: 1.05em; font-weight: 700; margin-top: 0.9em; }
+.diary-prose > :first-child { margin-top: 0; }
+.diary-prose ul { list-style: disc; padding-inline-start: 1.4em; }
+.diary-prose ol { list-style: decimal; padding-inline-start: 1.5em; }
+.diary-prose li > p { margin: 0; }
+.diary-prose li::marker { color: var(--ink-faint); }
+.diary-prose blockquote { border-inline-start: 3px solid var(--sage); padding-inline-start: 1em; color: var(--ink-soft); font-style: italic; }
+.diary-prose p.is-editor-empty:first-child::before { content: attr(data-placeholder); float: inline-start; height: 0; color: var(--ink-faint); pointer-events: none; }
