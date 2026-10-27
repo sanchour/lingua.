@@ -69,7 +69,7 @@ read that part before starting.
 | 11 | — | *Merged into step 9 on 2026-10-21.* | — | — |
 | 12 | — | *Merged into step 20 on 2026-10-21 (typing goes with the design touch as 5.1-4).* | — | — |
 | 13 | [x] | *done 2026-10-25* **Radio and listening** (stations in the language, the tuner, audiobooks and courses, the player, Commute, Sonus+ settings). **Parallel** after 2. | 5.2-2 and 5.2-3 | L |
-| 14 | [ ] | **Diarium.** **Parallel** after 2. | 5.2-5 | M |
+| 14 | [~] | *claimed 2026-10-27* **Diarium.** **Parallel** after 2. | 5.2-5 | M |
 | 15 | [ ] | **Sermo.** **Parallel** after 2. | 5.2-6 | M |
 | 16 | [ ] | **Mundus** (the interactive guide, one Explore, Things to try). **Parallel** after 2. | 5.2-7 | M |
 | 17 | [ ] | **Grammatica's guided path** and full-width lessons. **Parallel** after 1 and 2. | 5.2-8 | L |

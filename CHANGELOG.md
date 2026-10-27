@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.9** · 2026-10-27 · claim: Diarium (5.2-5)
 - **0.5.2-alpha.8** · 2026-10-27 · design notes in detail (7-0c), the Device lab as a developer's tool (7-0d), Simple and Everything settings, tips switch
 - **0.5.2-alpha.7** · 2026-10-27 · Design notes in the Lab (7-0b): click anything, pin a note, Copy for Claude
 - **0.5.2-alpha.6** · 2026-10-27 · Lingua 6 is Features and Lingua 7 is Design; the handbook's missing chapters and an index
