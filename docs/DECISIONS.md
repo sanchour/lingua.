@@ -1678,3 +1678,30 @@ Short records of choices that are not obvious from the code. Newest last.
   developer's tools stand apart in their own group, last.
 - **Tips and explanations hide by an attribute** (`data-hint` on the explaining line, `html[data-hints=off]` in CSS):
   one switch for every primitive and Settings, no prop threading. Lines that report a state or warn stay untagged.
+
+## 2026-10-27 — Sandesigning, a design canvas for every app (7-0e)
+
+- **Its own folder, not a Lingua room** (the user: "standalone, downloadable … for all my apps … all sessions, accounts,
+  and different ai models"): `sandesigning/` has no React and no dependencies (vanilla TypeScript, bundled by the
+  rolldown Vite already brings), so the same code is the hosted page, one offline HTML file, a script for any web app
+  and a lazy chunk in Lingua, and it can move to its own repository unchanged.
+- **Served from Lingua's Pages** (`public/sandesigning/`, built files committed like the packs): one deploy, a stable
+  address for the script tag and the setup file, nothing new to run.
+- **Inside a shadow root:** the studio and the launcher can't be touched by an app's CSS or touch it; keys, typing and
+  the clipboard stop at the host so the app underneath doesn't react.
+- **SVG for the canvas, HTML text in `foreignObject`:** shapes, pictures and icons export to SVG and PNG with the same
+  drawing code; text wraps and takes any font. Google Fonts are added to the page on first use (a shadow root can't
+  declare fonts), only when online.
+- **Capture through the browser's screen sharing** (`getDisplayMedia`, one frame, stopped at once), not a DOM-to-picture
+  library: it is the real pixels, asks first, and needs nothing installed. The page's element boxes are read at the
+  same moment and kept once per screenshot (`doc.dom`), so undo stays light; if another tab was shared (the picture's
+  shape doesn't match), the boxes are dropped rather than pointing at the wrong things.
+- **Cut-outs share the picture** (a crop box, no new pixels), so lifting elements out of a screenshot costs nothing.
+- **The brief is the hand-over to any model:** Markdown that explains itself (positions relative to each frame, outlines
+  as placeholders, notes by priority with selectors and components), plus the picture. `SANDESIGNING.md` is the
+  user's "file with a prompt": it tells any project's AI how to add the script in development only, make `design/`,
+  and teach future sessions to work from briefs.
+- **Notes keep design notes' words:** the same kinds and priorities (Must, Should, Could), so Lingua's notes become
+  canvas notes as they are.
+- **Canvases stay in each site's browser storage**; `.sandesign` files and copy-paste (JSON with its pictures) carry
+  them anywhere else. Nothing is uploaded.

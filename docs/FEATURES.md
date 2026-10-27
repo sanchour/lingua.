@@ -764,6 +764,28 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **What it is:** a fold-out with the tag, the React component around it (dev server only), classes, size, type,
   colours with their token names, border, padding, margin, gap and corners. All of it goes into the Markdown.
 
+## Sandesigning (7-0e): a design canvas for every app
+
+Its own tool in `sandesigning/` (no React, no dependencies), served beside Lingua at `/lingua./sandesigning/`.
+[sandesigning/README.md](../sandesigning/README.md) has everything; in short:
+
+- **The canvas:** frames in device sizes, rectangles, ellipses, lines and arrows, pen, highlighter and eraser, text in
+  any font (system, 27 Google Fonts, or one on the computer), sticky notes, numbered design notes, widget outlines
+  (22 kinds, for laying out a screen), 153 icons, pictures and cut-outs. Select, Shift, marquee, Alt-drag to copy,
+  resize with handles, snapping with guides, a grid, layers you can drag, hide and lock, align and space out, undo.
+- **Screenshots and templates:** paste or drop any app's screenshot (phones too); in a web app, the camera captures
+  the page with every element's box: a note knows which element it's on, and Alt-click lifts an element out of the
+  screenshot to move it. Seven starter templates; your own templates and pictures in the library.
+- **Keys for everything:** one key per tool, Ctrl K finds any action, ? lists them all, tooltips show them.
+- **Export and import:** the brief for AI (Markdown: notes by priority with what they're on, and every frame's layout
+  in numbers), a picture (copied or PNG, each frame, SVG), the `.sandesign` file; open `.sandesign` files and paste
+  between canvases. Canvases are kept in the browser (IndexedDB).
+- **Everywhere:** the hosted page or the downloaded `sandesigning.html` (offline); `sandesigning.js` for any web app
+  (a Design button and Alt Shift D) or as a bookmark; `SANDESIGNING.md` to drop into any project with one prompt, so
+  the AI there sets it up and learns to read briefs; `FORMAT.md` for any model.
+- **In Lingua:** the design notes bar has **Canvas** (Alt Shift D): the page is captured onto a canvas with its notes
+  pinned where they are, priorities, kinds and elements included.
+
 ## Device lab (Settings › Developer, restructured in 7-0d)
 
 - **A developer's tool:** a status strip (version, build, language, plan, light, what's on) and six parts on a rail:

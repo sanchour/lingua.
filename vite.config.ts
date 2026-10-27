@@ -103,7 +103,7 @@ export default defineConfig({
   worker: { format: 'es' },
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'sandesigning/src/**/*.test.ts'],
     setupFiles: ['src/test/setup.ts'],
   },
 });

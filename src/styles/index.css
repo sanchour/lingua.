@@ -152,6 +152,11 @@
   display: none !important;
 }
 
+/* Sandesigning's canvas is open over the page (7-0e): the design notes' bar and pins stay out of its screenshot. */
+:root[data-sandesigning] [data-design-notes] {
+  display: none !important;
+}
+
 /* Motion preference (Settings → Preferences). Reduced: CSS transitions become instant (springs are
    handled by MotionConfig). Full: in-page jumps glide, and the theme cross-fade lingers a little. */
 :root[data-motion='reduced'] *,

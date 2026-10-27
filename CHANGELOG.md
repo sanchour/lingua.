@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.11** · 2026-10-27 · Sandesigning: a design canvas for every app (7-0e)
 - **0.5.2-alpha.10** · 2026-10-27 · plan and claim: finishing Lingua 5
 - **0.5.2-alpha.9** · 2026-10-27 · claim: Diarium (5.2-5)
 - **0.5.2-alpha.8** · 2026-10-27 · design notes in detail (7-0c), the Device lab as a developer's tool (7-0d), Simple and Everything settings, tips switch

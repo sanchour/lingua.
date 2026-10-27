@@ -121,6 +121,9 @@ the user's notes for each come: LINGUA-7-PLAN.md, section 3). The order is the u
 - **Design notes:** the user may paste Markdown from Settings › Lab › Design notes (7-0b): notes by room and page,
   each with the element's CSS path, where it was, the window size and the light. Read them as the user's notes for
   the room in question (Lingua 7 · Design plans each room from such notes).
+- **Sandesigning (7-0e):** the user may paste a brief from Sandesigning (Markdown, often with a picture) or put
+  `.sandesign` files in the repo. `sandesigning/FORMAT.md` explains both; work through the notes by priority. The tool
+  itself is `sandesigning/` (README there); after changing it, `npm run sandesigning` rebuilds `public/sandesigning/`.
 - **Learning data** lives in each browser, not in the repo; device sync (SETUP.md, section 6)
   moves it.
 

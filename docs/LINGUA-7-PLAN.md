@@ -163,6 +163,41 @@ like replaying the onboarding flow".
 - [x] **Try the pieces:** a toast of each kind, and clearing the translation and AI caches (learning data stays).
 - These are for this session only (not saved), except the look, which is the real setting.
 
+### 7-0e · Sandesigning: a design canvas for every app — done 2026-10-27
+
+**The user's ask** (2026-10-27): "build upon this design notes thing … a button to open a canvas, where you have some
+basic figma tools like easily choosing, swiping, dragging forms over each other, or outline widgets/elements on a
+canvas for layout, choose fonts, icons, pics, both text etc. … add screenshots of other apps and templates, build upon
+them with notes, drawings, texts … better, more easy shortcuts for each. Export and import of these … standalone,
+downloadable … for all my apps … all sessions, accounts, and different ai models. Also mobile apps and websites. Call it:
+sandesigning." And: "for other products it could work as … a plan with a prompt so for each project, I just upload a
+file with a prompt and the ai builds the sandesigning for me."
+
+It lives in `sandesigning/` in this repository, apart from Lingua's code (no React, no dependencies), so it can move to
+its own repository later. Built with `node sandesigning/build.ts` into `public/sandesigning/`, so Pages hosts it at
+`/lingua./sandesigning/`.
+
+- [x] **The canvas:** an endless board with pan (Space, the wheel, the middle button) and zoom (Ctrl and the wheel,
+  pinch); select, Shift-select, marquee; move, resize, duplicate with Alt-drag; snapping to other shapes' edges and
+  centres with guides, and a grid; undo and redo; layers, front and back.
+- [x] **The tools:** frame (device sizes: desktop, laptop, tablet, phone, browser), rectangle, ellipse, line, arrow,
+  pen and highlighter, eraser, text, sticky note, note pin, widget outlines (button, input, card, nav bar, tab bar,
+  list, image, toggle … for laying out), icons (a searchable set), pictures, cut-out.
+- [x] **The look of each thing:** fill, stroke, width, corners, opacity; fonts (system, Google Fonts, or any font on
+  the computer), size, weight, line height, alignment; align and distribute.
+- [x] **Screenshots and templates:** paste, drop or open pictures; capture the page you're on (with every element's
+  box, so a note knows what it points at and Alt-click lifts an element out of the screenshot to move it); starter
+  templates (desktop app, dashboard, settings, landing page, phone app, sign-in) and your own saved to a library.
+- [x] **Notes like design notes:** numbered pins with kinds and priority, pointing at what is under them.
+- [x] **Shortcuts for everything:** one key per tool, a command palette (Ctrl K) that finds every action with its
+  key, and a sheet of all of them (?).
+- [x] **Export and import:** the `.sandesign` file (everything, pictures included), PNG, SVG, and a Markdown brief an
+  AI can build from (each note, and the layout in numbers); copy and paste between canvases; open `.sandesign` files.
+- [x] **Everywhere:** the hosted page and one downloadable HTML file (works offline); `sandesigning.js` for any web
+  app (one script tag or a bookmark); for phone apps, their screenshots on the canvas; `FORMAT.md` so any AI model
+  reads the files; `SANDESIGNING.md`, one file to drop into any project with a prompt, so the AI there sets it up.
+- [x] **In Lingua:** a Canvas button on the design notes bar captures the page with its notes as pins.
+
 ### 7-1 · The onboarding, quieter and shorter
 
 **The user's points** (2026-10-26; section 0 has the notes word for word)

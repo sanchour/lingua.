@@ -43,6 +43,10 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
   any design work, and the room's chapter before changing a room. Since 2026-10-27 the handbook is the full
   Lingua handbook (90 pages, with an index): also the product, the people it's for, marketing and the launch, running it
   (money, the law, support, shipping) and the whole road from start to finish; chapters are cited by name.
+- **Sandesigning** (7-0e, 2026-10-27, the user's own tool for all their apps): a design canvas in `sandesigning/`, apart
+  from Lingua's code (no React, no dependencies), hosted at `/lingua./sandesigning/`. Briefs and `.sandesign` files the
+  user pastes are explained in `sandesigning/FORMAT.md`; after changing the tool, `npm run sandesigning` rebuilds
+  `public/sandesigning/` (commit both). Lingua's design notes bar opens it (Canvas, Alt Shift D).
 - Other accounts and sessions push to `main` all the time: rebase onto `origin/main` before every
   push. Tier 2 stays cheap: only the features that cost little (automatic packs, decks, podcasts,
   music search).

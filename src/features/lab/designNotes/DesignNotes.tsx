@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { Check, ClipboardCopy, List, MousePointerClick, Move, PenLine } from 'lucide-react';
+import { Check, ClipboardCopy, Frame, List, MousePointerClick, Move, PenLine } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
 import { useActiveLanguage } from '@/data/languages';
 import { useSettings } from '@/data/settings';
@@ -130,11 +130,35 @@ export default function DesignNotes() {
   };
   const onElement = useCallback((el: Element | null, area?: Rect) => setChosen(el ? { el, area } : null), []);
 
+  // Sandesigning (7-0e): the page captured onto a canvas, with this page's notes pinned where their pins are now.
+  const openCanvas = async () => {
+    setPicking(false);
+    setEditor(null);
+    setPanel(null);
+    const marks = pageNotes.flatMap((note) => {
+      const r = pins.current.get(note.id)?.getBoundingClientRect();
+      if (!r || r.bottom < 0 || r.right < 0 || r.top > innerHeight || r.left > innerWidth) return [];
+      return [{ x: r.x + r.width / 2, y: r.y + r.height / 2, text: note.text, kinds: note.kinds, priority: note.priority, done: note.done, target: { name: note.element, selector: note.selector, component: note.facts?.component, page: note.path } }];
+    });
+    const html = document.documentElement;
+    html.setAttribute('data-sandesigning', '');
+    const { open } = await import('../../../../sandesigning/src/index');
+    await open({ capture: true, pins: marks, base: `${import.meta.env.BASE_URL}sandesigning/`, onClose: () => html.removeAttribute('data-sandesigning') });
+  };
+
   // Alt N picks (by the physical key, so any layout and a Mac's Option work), even from a text field, except on a
   // Mac, where Option N types the tilde of ñ. Esc closes one thing at a time.
   useEffect(() => {
     const mac = /mac/i.test(navigator.platform);
     const onKey = (e: KeyboardEvent) => {
+      // Sandesigning's canvas is open over the page: its keys are its own.
+      if (document.documentElement.hasAttribute('data-sandesigning')) return;
+      if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey && e.code === 'KeyD') {
+        e.preventDefault();
+        e.stopPropagation();
+        void openCanvas();
+        return;
+      }
       if (e.altKey && !e.ctrlKey && !e.metaKey && e.code === 'KeyN' && !(mac && isEditable(e.target)) && !inTool(e.target)) {
         e.preventDefault();
         e.stopPropagation();
@@ -532,6 +556,9 @@ export default function DesignNotes() {
         </button>
         <button type="button" aria-pressed={panel !== null} onClick={() => setPanel((p) => (p ? null : 'page'))} className={cx(pill, panel ? 'bg-on-inverse/15' : 'hover:bg-on-inverse/10')}>
           <List size={15} aria-hidden /> Notes
+        </button>
+        <button type="button" onClick={() => void openCanvas()} title="Capture this page onto a Sandesigning canvas, with its notes (Alt Shift D)" className={cx(pill, 'hover:bg-on-inverse/10')}>
+          <Frame size={15} aria-hidden /> Canvas
         </button>
         <button type="button" onClick={() => void copy(notes)} title="Copy every note as Markdown for Claude" className={cx(pill, 'hover:bg-on-inverse/10')}>
           <ClipboardCopy size={15} aria-hidden /> Copy

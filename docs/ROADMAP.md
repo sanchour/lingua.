@@ -2303,6 +2303,11 @@ as its guide. It comes after Lingua 6 · Features (the user, 2026-10-26).
       the Markdown. Plan: LINGUA-7-PLAN.md.
 - [x] **7-0d · More in the Device lab** (2026-10-27): restructured as a developer's tool (a rail of six parts and a
       status strip): replay the first start, the look, grid and outlines, check sizes, toasts, caches.
+- [x] **7-0e · Sandesigning** (2026-10-27, the user's ask; live at /lingua./sandesigning/): a design canvas with Figma's basic tools (frames, shapes,
+      text, pens, widget outlines, icons, fonts, pictures), screenshots and templates to build on with notes and
+      drawings, a key for everything, export and import (.sandesign, PNG, SVG, a brief for AI), standalone and
+      downloadable, a script for any web app and a setup file for any project. Lingua's design notes open it.
+      Plan: LINGUA-7-PLAN.md.
 - [x] **Settings: Simple and Everything** (2026-10-27, the user's ask): a calm page of essentials by default, every
       option in Everything (with new end-of-text options), Developer apart, and a switch for tips and explanations.
 - [ ] **7-1 · The first start, quieter and shorter** (handover step 24): a first name before Continue,
