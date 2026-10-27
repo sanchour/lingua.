@@ -41,11 +41,38 @@
         #boot span { opacity: 0.55; animation: boot 1.6s ease-in-out infinite alternate; }
         #boot p { display: none; margin: 14px 0 0; font: 400 14px/1.5 system-ui, sans-serif; text-align: center; opacity: 0.7; }
         #boot.slow p { display: block; }
+        #boot-error { font-family: ui-monospace, monospace !important; font-size: 12px !important; max-width: 560px; overflow-wrap: anywhere; }
         #boot button { font: inherit; text-decoration: underline; background: none; border: 0; color: inherit; cursor: pointer; padding: 0; }
         @keyframes boot { to { opacity: 1; } }
       </style>
-      <div id="boot"><div><span>Lingua</span><p>Taking longer than usual. <button type="button" onclick="location.reload()">Reload</button></p></div></div>
-      <script>setTimeout(function () { var b = document.getElementById('boot'); if (b) b.className = 'slow'; }, 15000);</script>
+      <div id="boot">
+        <div>
+          <span>Lingua</span>
+          <p>Taking longer than usual. <button type="button" onclick="location.reload()">Reload</button> · <button type="button" onclick="lingaFresh()">Clear the cached app and reload</button></p>
+          <p id="boot-error"></p>
+        </div>
+      </div>
+      <script>
+        // Until the app draws: after 15 seconds offer a reload, and a fresh copy of the app (the cached files and the
+        // service worker go; learning data in IndexedDB stays). An error before the first draw is shown, not hidden.
+        function lingaFresh() {
+          var done = function () { location.reload(); };
+          var jobs = [];
+          if (navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }));
+          if (window.caches) jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }));
+          Promise.all(jobs).then(done, done);
+        }
+        setTimeout(function () { var b = document.getElementById('boot'); if (b) b.className = 'slow'; }, 15000);
+        function bootError(message) {
+          var b = document.getElementById('boot');
+          var e = document.getElementById('boot-error');
+          if (!b || !e || !message) return;
+          b.className = 'slow';
+          e.textContent = 'Lingua couldn’t start: ' + message;
+        }
+        window.addEventListener('error', function (e) { bootError(e.message || (e.target && e.target.tagName === 'SCRIPT' ? 'couldn’t load ' + e.target.src : '')); }, true);
+        window.addEventListener('unhandledrejection', function (e) { bootError(String((e.reason && e.reason.message) || e.reason)); });
+      </script>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
