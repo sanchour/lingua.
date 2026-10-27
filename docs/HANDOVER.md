@@ -118,6 +118,9 @@ the user's notes for each come: LINGUA-7-PLAN.md, section 3). The order is the u
 - **Other accounts push to `main` all the time:** rebase onto `origin/main` before every push.
   Git stores the files with LF line endings; on Windows they are checked out with CRLF, so patch
   scripts must keep whatever the file has.
+- **Design notes:** the user may paste Markdown from Settings › Lab › Design notes (7-0b): notes by room and page,
+  each with the element's CSS path, where it was, the window size and the light. Read them as the user's notes for
+  the room in question (Lingua 7 · Design plans each room from such notes).
 - **Learning data** lives in each browser, not in the repo; device sync (SETUP.md, section 6)
   moves it.
 

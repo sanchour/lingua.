@@ -20,6 +20,7 @@ import { AppShell } from './shells/AppShell';
 
 const Onboarding = lazy(() => import('@/app/onboarding/Onboarding'));
 const PerfHud = lazy(() => import('@/features/lab/PerfHud'));
+const DesignNotes = lazy(() => import('@/features/lab/designNotes/DesignNotes'));
 
 export function Root() {
   const settings = useSettings();
@@ -110,6 +111,11 @@ export function Root() {
       {settings.ui.perfHud && (
         <Suspense fallback={null}>
           <PerfHud />
+        </Suspense>
+      )}
+      {settings.ui.designNotes && (
+        <Suspense fallback={null}>
+          <DesignNotes />
         </Suspense>
       )}
     </MotionConfig>

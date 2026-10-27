@@ -100,6 +100,35 @@ feature catalogue (an option library, not a list to build).
   running it (money, privacy and the law, support, shipping, working with Claude) and Part Nine start to finish (the
   whole road, what only the user can do, two checklists). Chapters number themselves; refer to them by name.
 
+### 7-0b · Design notes in the Lab — done 2026-10-27
+
+**The user's ask** (2026-10-27): "an app or something … where I can have the Lingua open, and click elements and things,
+and quickly add notes, comments, to improve design", then "build the design notes tool into Lingua (Settings › Lab):
+click any element to pin a note, notes kept on the device, and Copy for Claude as Markdown."
+
+- [x] **Off unless switched on:** Settings › Lab › Design notes (`ui.designNotes`, device-only, off by default), so
+  learners never meet it.
+- [x] **Alt N** (the physical key, any layout, a Mac's Option too) or the small pill at the bottom right turns on
+  **pick mode**: the element under the pointer gets a thin terracotta outline and a label (what it is and its text);
+  a click opens a small note card beside it instead of doing what the element does. Esc leaves pick mode.
+- [x] **Pins:** each note on the page shows as a numbered dot on its element, following it as the page scrolls; a
+  click opens the note to edit, tick done or delete. A note whose element has gone stays at its last place, marked.
+- [x] **The notes panel:** this page's notes (or every page's), each with its element, room and text; done ones
+  faded; Copy for Claude; clear the done ones.
+- [x] **Copy for Claude:** Markdown grouped by room and page, each note with its element (a description and a CSS
+  path), where it was on screen, the window size, the light and palette, the language and the version, ready to
+  paste into any session on any account.
+- [x] **Kept on this device** (`localStorage`, `lingua.designNotes`): never synced, never in backups, cleared by
+  Reset. Pick mode, the outline and the pins move by transform only (PERFORMANCE.md).
+- [x] **Found in the check:** Alt N works from a text field too (the first start focuses one), except on a Mac where
+  Option N types ñ's tilde; a pin sits where the click was, as a share of the element, so it follows it; the first start's
+  notes are its own (it shares "/" with Home); the bar moves between the four corners (the mini player and downloads
+  use the bottom right), remembered on the device; when the clipboard refuses, the Markdown is shown to select.
+- **Where:** `src/features/lab/designNotes/` (notes and Markdown, the selector, the overlay, tests),
+  `features/lab/DesignNotesCard.tsx`, mounted lazily in `app/Root.tsx` like the FPS monitor.
+- **Done when:** a note pinned on Home, Codex and Settings survives a reload, follows its element when the page
+  scrolls, and comes out as clean Markdown; the app's own clicks never fire in pick mode; light and dark.
+
 ### 7-1 · The onboarding, quieter and shorter
 
 **The user's points** (2026-10-26; section 0 has the notes word for word)

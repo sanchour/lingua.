@@ -6,6 +6,7 @@ import { PageHeader } from '@/app/PageHeader';
 import { Button } from '@/design/primitives';
 import { toast } from '@/state/ui';
 import { AudioTest } from './AudioTest';
+import { DesignNotesCard } from './DesignNotesCard';
 import { FlagsCard } from './FlagsCard';
 import { PretendCard } from './PretendCard';
 import { EnvironmentCard, LongPressCard, ShareCard, SheetCard, StorageCard, WordsCard } from './LabTests';
@@ -40,6 +41,7 @@ export default function LabPage() {
         }
       />
       <div className="grid gap-4 lg:grid-cols-2">
+        <DesignNotesCard on={settings.ui.designNotes} />
         <PretendCard />
         <EnvironmentCard />
         <AudioTest />

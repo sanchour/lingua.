@@ -2216,6 +2216,8 @@ as its guide. It comes after Lingua 6 · Features (the user, 2026-10-26).
       page in Lingua's own spirit: the spirit, the materials, every room on one page, the states, the
       check and a review sheet, and every number in an appendix. Source `docs/handbook/handbook.html`;
       `node scripts/handbook-pdf.ts` prints it with any Chromium on the computer.
+- [x] **7-0b · Design notes in the Lab** (2026-10-27): Settings › Lab › Design notes; Alt N, click anything, pin a note;
+      pins follow their elements; a panel per page; Copy for Claude as Markdown; kept on this device only.
 - [ ] **7-1 · The first start, quieter and shorter** (handover step 24): a first name before Continue,
       no skip; on the language page no "Commitment issues" line, tiers that say what they have and
       what they don't yet, the core six as small book covers and every other language larger, and a

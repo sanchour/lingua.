@@ -1644,3 +1644,19 @@ Short records of choices that are not obvious from the code. Newest last.
   before Core, reports become fixes), the mark and the press kit, how Lingua is built, keeping learners' data safe,
   when something breaks (an order of severity and of steps), choosing what's next, your own rhythm, and an index the
   print script makes from the pages themselves. 90 pages.
+
+## 2026-10-27 — Design notes in the Lab (7-0b)
+
+- **Inside Lingua, not a separate app.** The user wanted to click elements in the running app and leave design notes.
+  Nothing in Claude pins comments to a running local app, so the tool is part of Lingua: a lazy chunk (about 15 KB)
+  that loads only when Settings › Lab turns it on, like the FPS monitor.
+- **Notes stay on the device** in localStorage: they are working notes for one person, not learning data, so they
+  are not in Dexie, backups or sync, and Reset clears them. Copy for Claude is how they travel: Markdown that any
+  session, on any account, can read.
+- **A note finds its element again** by a short CSS path (an id, a test id or an aria-label, else tags with
+  :nth-of-type, at most six steps, stopping at a landmark), and its pin sits where the click was, as a share of the
+  element's size, so it follows the element. When the element is gone, the pin stays where it was, dashed.
+- **Pick mode holds the page's own clicks** (pointer and mouse events stopped in the capture phase), so picking a
+  button never presses it. Alt N is matched by the physical key; it works in text fields except on a Mac, where
+  Option N types the tilde of ñ.
+- **The bar moves between corners** because the bottom right is shared with the mini player and download progress.

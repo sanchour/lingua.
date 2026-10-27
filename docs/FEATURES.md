@@ -730,3 +730,20 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   palettes under it, and "Follow my device" opens both.
 - **Unlock all of Lingua.** Lingua+ and Max as two big cards with what each opens (Max dark with the
   gold MAX, monthly first), free as one clear line with "Continue free".
+
+## Design notes (Settings › Lab, 7-0b)
+
+- **For reviewing the design, off for learners.** Settings › Lab › Design notes › "Show the notes tool" puts a small
+  bar in a corner of the window: how many notes are on this page, Pick (Alt N), Notes, Copy, and a button that moves
+  the bar to the next corner.
+- **Pick:** the element under the pointer gets a thin terracotta outline and a label naming it ("button “Continue
+  reading”"); a click opens a note card beside it instead of doing what the element does. Ctrl Enter saves, Esc
+  cancels; picking carries on after a save until Esc or Alt N.
+- **Pins:** each note on the page is a numbered dot where the click was; it follows its element on scroll and resize,
+  dashed when the element has gone. A click opens it to edit, mark done or delete.
+- **The panel:** this page's notes, or all of them by room and page (with "Go there"); Copy for Claude; Clear done.
+- **Copy for Claude:** Markdown by room and page; each note with the element's name and CSS path, the note, where it
+  was, the window size, the light and palette, the language; the version and date at the top. If the clipboard
+  refuses, the Markdown is shown to select.
+- **Kept on this device** (`lingua.designNotes` in localStorage): never synced or backed up; Reset clears them. The
+  first start's notes stay its own, though it shares "/" with Home.
