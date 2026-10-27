@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate, useLocation, useParams } from 'react-rou
 import HomePage from '@/features/home/HomePage';
 import { BookDetailsPage, CantusPage, CodexPage, JournalEntryPage, CommutePage, CursusPage, DeckPage, LabPage, MentisPage, NewTextPage, OrdoPage, RatioPage, ReaderPage, SonusBookPage, SonusFeedPage, SonusPage, SonusPlayerPage, SpotifyCallbackPage, StarterPage, StationPage, StudyPage, ThesaurusPage, WatchPage, ChatPage, GrammarTopicPage, GrammarLessonPage, LettersLessonPage, CourseLessonPage } from './pages';
 import { PlanRoute } from '@/features/plans/PlanRoute';
+import { AppError } from './AppError';
 import { movedPath } from './redirects';
 import { Root } from './Root';
 
@@ -38,6 +39,7 @@ export const router = createBrowserRouter(
     {
       path: '/',
       element: <Root />,
+      errorElement: <AppError />,
       children: [
         { index: true, element: <HomePage /> },
         // Cursus: the course, Grammatica, alphabets and typing as tabs; lessons and topics as pages of their own.

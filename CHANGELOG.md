@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.12** · 2026-10-27 · an error screen instead of a blank page, and a reload into a new version
 - **0.5.2-alpha.11** · 2026-10-27 · Sandesigning: a design canvas for every app (7-0e)
 - **0.5.2-alpha.10** · 2026-10-27 · plan and claim: finishing Lingua 5
 - **0.5.2-alpha.9** · 2026-10-27 · claim: Diarium (5.2-5)

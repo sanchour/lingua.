@@ -15,11 +15,18 @@ import '@fontsource/atkinson-hyperlegible/400.css';
 import '@fontsource/atkinson-hyperlegible/700.css';
 import './styles/index.css';
 
+import { reloadForUpdate, settleReload } from './app/AppError';
 import { router } from './app/router';
 import { installPaletteStyles } from './design/palettes';
 
 // The chosen theme's colours before the first render (index.html already set data-palette).
 installPaletteStyles();
+
+// After an update, a part of the old version the open page asks for may be gone: reload once into the new one.
+window.addEventListener('vite:preloadError', (e) => {
+  if (reloadForUpdate()) e.preventDefault();
+});
+settleReload();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
