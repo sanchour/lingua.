@@ -1,4 +1,4 @@
-// Lingua 5 moved rooms (Cursus, Sonus et Visio, Mentis, Settings). Every old address keeps working:
+// Lingua 5/6 moved rooms (Cursus, Mentis, Settings). Every old address keeps working:
 // links in notes, bookmarks, other sessions' work and the installed app's history land on the new one.
 
 /**
@@ -13,9 +13,6 @@ export function movedPath(pathname: string, search = ''): string | null {
   // Grammatica and its alphabets live in Cursus.
   if (path === '/grammatica/letters' || path.startsWith('/grammatica/letters/')) return keep(`/cursus/alphabets${path.slice('/grammatica/letters'.length)}`);
   if (path === '/grammatica' || path.startsWith('/grammatica/')) return keep(`/cursus${path}`);
-
-  // Visio's library is part of Sonus et Visio; its services are the Streaming tab. The player keeps its address.
-  if (path === '/visio') return params.get('tab') === 'services' ? '/sonus?tab=streaming' : '/sonus?show=watch';
 
   // Mundus, Colloquium (now Sermo) and Diarium are the three tabs of Mentis.
   if (path === '/mundus' || path.startsWith('/mundus/')) return keep(`/mentis${path.slice('/mundus'.length)}`);

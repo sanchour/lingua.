@@ -1,9 +1,19 @@
-import { BookOpen, ChartNoAxesColumn, GraduationCap, House, Lamp, Settings2 } from 'lucide-react';
+import { BookOpen, ChartNoAxesColumn, Clapperboard, Compass, GraduationCap, Headphones, House, Lamp, Library, Settings2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { DeckIcon } from './DeckIcon';
-import { SonusVisioIcon } from './RoomIcons';
 
-export type SectionId = 'home' | 'cursus' | 'codex' | 'thesaurus' | 'sonus' | 'mentis' | 'ratio' | 'ordo';
+export type SectionId =
+  | 'home'
+  | 'cursus'
+  | 'explora'
+  | 'bibliotheca'
+  | 'codex'
+  | 'thesaurus'
+  | 'sonus'
+  | 'visio'
+  | 'mentis'
+  | 'ratio'
+  | 'ordo';
 
 export interface Section {
   id: SectionId;
@@ -11,24 +21,36 @@ export interface Section {
   name: string;
   role: string;
   icon: LucideIcon;
-  /** iPhone placement: the core sections live in the tab bar, the rest in the header; a 'side' room
-   *  is in the desktop sidebar only and opens from Home on a phone (the header has no room left). */
+  /** Group in the sidebar: primary top-level pages, collapsible tools, or bottom utility links. */
+  group: 'primary' | 'tool' | 'bottom';
+  /** Touch placement: 'tab' in the main navigation bar, 'header' in the top right header. */
   placement: 'tab' | 'header' | 'side';
   /** A colour of its own when active; others use the accent. */
   tint?: string;
 }
 
-/** Lingua 5's rooms, in the sidebar's order (Alt 1…8). Ratio and Settings sit apart at the bottom. */
+/**
+ * Lingua 6's rooms and tools in sidebar order:
+ * Home, Cursus, Explora, Bibliotheca, then Tools (Codex, Thesaurus, Sonus, Visio, Mentis),
+ * with Ratio and Settings pinned at the bottom.
+ */
 export const SECTIONS: Section[] = [
-  { id: 'home', path: '/', name: 'Home', role: 'Your hearth', icon: House, placement: 'tab' },
-  { id: 'cursus', path: '/cursus', name: 'Cursus', role: 'Course & grammar', icon: GraduationCap, placement: 'header' },
-  { id: 'codex', path: '/codex', name: 'Codex', role: 'Read', icon: BookOpen, placement: 'tab' },
-  { id: 'thesaurus', path: '/thesaurus', name: 'Thesaurus', role: 'Vocabulary', icon: DeckIcon, placement: 'tab' },
-  { id: 'sonus', path: '/sonus', name: 'Sonus et Visio', role: 'Listen & watch', icon: SonusVisioIcon, placement: 'tab' },
-  { id: 'mentis', path: '/mentis', name: 'Mentis', role: 'Guide, talk & write', icon: Lamp, placement: 'tab' },
-  { id: 'ratio', path: '/ratio', name: 'Ratio', role: 'Stats', icon: ChartNoAxesColumn, placement: 'header' },
-  { id: 'ordo', path: '/settings', name: 'Settings', role: 'Settings', icon: Settings2, placement: 'header' },
+  { id: 'home', path: '/', name: 'Home', role: 'Your hearth', icon: House, group: 'primary', placement: 'tab' },
+  { id: 'cursus', path: '/cursus', name: 'Cursus', role: 'Course & grammar', icon: GraduationCap, group: 'primary', placement: 'tab' },
+  { id: 'explora', path: '/explora', name: 'Explora', role: 'Discover content', icon: Compass, group: 'primary', placement: 'tab' },
+  { id: 'bibliotheca', path: '/bibliotheca', name: 'Bibliotheca', role: 'Your library', icon: Library, group: 'primary', placement: 'tab' },
+  { id: 'codex', path: '/codex', name: 'Codex', role: 'Read', icon: BookOpen, group: 'tool', placement: 'side' },
+  { id: 'thesaurus', path: '/thesaurus', name: 'Thesaurus', role: 'Vocabulary', icon: DeckIcon, group: 'tool', placement: 'side' },
+  { id: 'sonus', path: '/sonus', name: 'Sonus', role: 'Listen', icon: Headphones, group: 'tool', placement: 'side' },
+  { id: 'visio', path: '/visio', name: 'Visio', role: 'Watch', icon: Clapperboard, group: 'tool', placement: 'side' },
+  { id: 'mentis', path: '/mentis', name: 'Mentis', role: 'Guide, talk & write', icon: Lamp, group: 'tool', placement: 'side' },
+  { id: 'ratio', path: '/ratio', name: 'Ratio', role: 'Stats', icon: ChartNoAxesColumn, group: 'bottom', placement: 'header' },
+  { id: 'ordo', path: '/settings', name: 'Settings', role: 'Settings', icon: Settings2, group: 'bottom', placement: 'header' },
 ];
+
+export const PRIMARY_SECTIONS = SECTIONS.filter((s) => s.group === 'primary');
+export const TOOL_SECTIONS = SECTIONS.filter((s) => s.group === 'tool');
+export const BOTTOM_SECTIONS = SECTIONS.filter((s) => s.group === 'bottom');
 
 export const TAB_SECTIONS = SECTIONS.filter((s) => s.placement === 'tab');
 export const HEADER_SECTIONS = SECTIONS.filter((s) => s.placement === 'header');

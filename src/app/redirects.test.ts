@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { movedPath, roomKey } from './redirects';
-import { SECTIONS, sectionKey } from './sections';
+import { PRIMARY_SECTIONS, SECTIONS, TOOL_SECTIONS, sectionKey } from './sections';
 
 describe('movedPath', () => {
   it.each([
@@ -13,8 +13,6 @@ describe('movedPath', () => {
     ['/grammatica/letters', '', '/cursus/alphabets'],
     ['/grammatica/letters/review', '', '/cursus/alphabets/review'],
     ['/grammatica/letters/ru-vowels/lesson', '?mode=practice', '/cursus/alphabets/ru-vowels/lesson?mode=practice'],
-    ['/visio', '', '/sonus?show=watch'],
-    ['/visio', '?tab=services', '/sonus?tab=streaming'],
     ['/mundus', '', '/mentis'],
     ['/mundus', '?kind=games', '/mentis?kind=games'],
     ['/mundus/explore', '?shelf=watch', '/mentis/explore?shelf=watch'],
@@ -32,16 +30,43 @@ describe('movedPath', () => {
     expect(movedPath(path, search)).toBe(to);
   });
 
-  it.each([['/'], ['/codex'], ['/sonus'], ['/visio/watch/v1'], ['/sonus/play/m1'], ['/cantus/music'], ['/cursus/grammatica'], ['/mentis/sermo'], ['/settings/ai']])('%s stays', (path) => {
+  it.each([
+    ['/'],
+    ['/cursus'],
+    ['/explora'],
+    ['/bibliotheca'],
+    ['/codex'],
+    ['/sonus'],
+    ['/visio'],
+    ['/visio/watch/v1'],
+    ['/sonus/play/m1'],
+    ['/cantus/music'],
+    ['/cursus/grammatica'],
+    ['/mentis/sermo'],
+    ['/settings/ai'],
+  ])('%s stays', (path) => {
     expect(movedPath(path)).toBeNull();
   });
 });
 
 describe('rooms', () => {
-  it('lists the rooms in the Lingua 5 order, Alt 1…8', () => {
-    expect(SECTIONS.map((s) => s.id)).toEqual(['home', 'cursus', 'codex', 'thesaurus', 'sonus', 'mentis', 'ratio', 'ordo']);
-    expect(SECTIONS.map((s) => s.name)).toEqual(['Home', 'Cursus', 'Codex', 'Thesaurus', 'Sonus et Visio', 'Mentis', 'Ratio', 'Settings']);
-    expect(SECTIONS.map((_, i) => sectionKey(i))).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+  it('lists the primary sections, tools (with Sonus and Visio separate), and bottom links', () => {
+    expect(PRIMARY_SECTIONS.map((s) => s.id)).toEqual(['home', 'cursus', 'explora', 'bibliotheca']);
+    expect(TOOL_SECTIONS.map((s) => s.id)).toEqual(['codex', 'thesaurus', 'sonus', 'visio', 'mentis']);
+    expect(SECTIONS.map((s) => s.name)).toEqual([
+      'Home',
+      'Cursus',
+      'Explora',
+      'Bibliotheca',
+      'Codex',
+      'Thesaurus',
+      'Sonus',
+      'Visio',
+      'Mentis',
+      'Ratio',
+      'Settings',
+    ]);
+    expect(SECTIONS.slice(0, 10).map((_, i) => sectionKey(i))).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
   });
 
   it('gives a room’s tabs one page key, and its detail pages their own', () => {
