@@ -7,7 +7,7 @@ import type { MotionPref, Settings, ThemePref } from '@/data/settings';
 import { NOCTURNE_PALETTES, PAPER_PALETTES } from '@/design/palettes';
 import type { Palette } from '@/design/palettes';
 import { cx } from '@/lib/cx';
-import { Segmented, Switch } from '@/design/primitives';
+import { Segmented, Switch, ToggleRow } from '@/design/primitives';
 import { fade } from '@/design/motion';
 import { SettingsSection } from '../SettingsSection';
 
@@ -18,7 +18,7 @@ const MOTION_NOTES: Record<MotionPref, string> = {
 };
 
 /** A row of theme swatches: the page colour with its accent, and the name below. */
-function PaletteRow({ title, palettes, value, onChange }: { title: string; palettes: Palette[]; value: string; onChange: (id: string) => void }) {
+export function PaletteRow({ title, palettes, value, onChange }: { title: string; palettes: Palette[]; value: string; onChange: (id: string) => void }) {
   return (
     <div className="mt-4">
       <p className="mb-2 text-[13px] font-semibold text-ink-soft">{title}</p>
@@ -49,7 +49,7 @@ function PaletteRow({ title, palettes, value, onChange }: { title: string; palet
   );
 }
 
-export function AppearanceSection({ theme, motion, palette, homeLayout, flavour, lang }: { theme: ThemePref; motion: MotionPref; palette: Settings['palette']; homeLayout: Settings['ui']['homeLayout']; flavour: boolean; lang: string }) {
+export function AppearanceSection({ theme, motion, palette, homeLayout, flavour, hints, lang }: { theme: ThemePref; motion: MotionPref; palette: Settings['palette']; homeLayout: Settings['ui']['homeLayout']; flavour: boolean; hints: boolean; lang: string }) {
   const touch = flavourOf(lang);
   return (
     <SettingsSection id="appearance" icon={SlidersHorizontal} title="Preferences" description="How Lingua looks and moves.">
@@ -66,7 +66,7 @@ export function AppearanceSection({ theme, motion, palette, homeLayout, flavour,
             { value: 'system', label: 'Device', icon: Monitor },
           ]}
         />
-        <p className="mt-2 text-[13px] text-ink-soft">Paper for daylight, Nocturne for the evening. On iPhone, the status bar colour updates the next time you open Lingua.</p>
+        <p data-hint="" className="mt-2 text-[13px] text-ink-soft">Paper for daylight, Nocturne for the evening. On iPhone, the status bar colour updates the next time you open Lingua.</p>
         <PaletteRow title="Paper" palettes={PAPER_PALETTES} value={palette.paper} onChange={(id) => void patchSetting('palette', { paper: id as Settings['palette']['paper'] })} />
         <PaletteRow title="Nocturne" palettes={NOCTURNE_PALETTES} value={palette.nocturne} onChange={(id) => void patchSetting('palette', { nocturne: id as Settings['palette']['nocturne'] })} />
       </div>
@@ -84,7 +84,7 @@ export function AppearanceSection({ theme, motion, palette, homeLayout, flavour,
             { value: 'full', label: 'Full', icon: Sparkles },
           ]}
         />
-        <div className="relative mt-2 min-h-[2.6em] text-[13px] text-ink-soft">
+        <div data-hint="" className="relative mt-2 min-h-[2.6em] text-[13px] text-ink-soft">
           <AnimatePresence mode="wait" initial={false}>
             <m.p key={motion} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
               {MOTION_NOTES[motion]}
@@ -105,19 +105,28 @@ export function AppearanceSection({ theme, motion, palette, homeLayout, flavour,
             { value: 'classic', label: 'Classic', icon: History },
           ]}
         />
-        <p className="mt-2 text-[13px] text-ink-soft">Today puts the day's goal and what's next up first, beside the week and your numbers, with Cursus and Mundus below. Classic is Home as it was before Lingua 5.</p>
+        <p data-hint="" className="mt-2 text-[13px] text-ink-soft">Today puts the day's goal and what's next up first, beside the week and your numbers, with Cursus and Mundus below. Classic is Home as it was before Lingua 5.</p>
       </div>
 
       <div className="mt-6 flex items-start gap-4">
         <div className="min-w-0 flex-1">
           <p className="text-[15px] font-semibold">Language touches</p>
-          <p className="mt-1 text-[13px] text-ink-soft">
+          <p data-hint="" className="mt-1 text-[13px] text-ink-soft">
             {touch
               ? `A little of ${getLanguage(lang)?.name ?? lang} in the design: ${touch.touch}. Your theme and reading font stay as they are.`
               : 'A little of the language in the design, for French, Spanish, German, Russian, Mandarin and Arabic. Your theme and reading font stay as they are.'}
           </p>
         </div>
         <Switch label="Language touches" checked={flavour} onChange={(on) => void patchSetting('ui', { flavour: on })} />
+      </div>
+
+      <div className="mt-6">
+        <ToggleRow
+          title="Tips and explanations"
+          description="The small lines under a setting or a card that say what it is and what it does. Off keeps the pages quieter."
+          checked={hints}
+          onChange={(on) => void patchSetting('ui', { hints: on })}
+        />
       </div>
     </SettingsSection>
   );

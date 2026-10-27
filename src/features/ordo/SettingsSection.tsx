@@ -28,7 +28,11 @@ export function SettingsSection({
             <h2 id={`${id}-title`} className="sr-only">
               {title}
             </h2>
-            {description && <p className="text-sm leading-snug text-ink-soft">{description}</p>}
+            {description && (
+              <p data-hint="" className="text-sm leading-snug text-ink-soft">
+                {description}
+              </p>
+            )}
           </header>
         ) : (
           <header className="mb-4 flex items-start gap-3">
@@ -39,7 +43,11 @@ export function SettingsSection({
               <h2 id={`${id}-title`} className="font-serif text-xl leading-tight font-semibold">
                 {title}
               </h2>
-              {description && <p className="mt-1 text-sm leading-snug text-ink-soft">{description}</p>}
+              {description && (
+                <p data-hint="" className="mt-1 text-sm leading-snug text-ink-soft">
+                  {description}
+                </p>
+              )}
             </div>
           </header>
         )}

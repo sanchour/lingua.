@@ -3,6 +3,38 @@
 import { create } from 'zustand';
 import { SECTIONS } from '@/app/sections';
 
+/** What kind of change a note asks for (7-0c). */
+export const KINDS = ['Layout', 'Spacing', 'Size', 'Colour', 'Type', 'Words', 'Remove', 'Add', 'Behaviour', 'Question'] as const;
+export type NoteKind = (typeof KINDS)[number];
+export const PRIORITIES = ['Must', 'Should', 'Could'] as const;
+export type Priority = (typeof PRIORITIES)[number];
+
+/** A property to change, as it is now and as it is wanted (7-0c). */
+export interface Tweak {
+  /** The tweak's name in TWEAKS (inspect.ts), e.g. "type size". */
+  prop: string;
+  now: string;
+  want: string;
+}
+
+/** What the element is, written down when the note was made (inspect.ts). */
+export interface ElementFacts {
+  tag: string;
+  /** The React component around it, in the dev server only. */
+  component?: string;
+  classes: string;
+  size: string;
+  type: string;
+  /** Text and background colours, each "#hex (`--token`)" when it is one. */
+  colour: string;
+  background: string;
+  border?: string;
+  padding: string;
+  margin: string;
+  gap?: string;
+  corners: string;
+}
+
 export interface DesignNote {
   id: string;
   /** The page: pathname and query, e.g. "/ratio?tab=iter". */
@@ -17,6 +49,14 @@ export interface DesignNote {
   rect: { x: number; y: number; w: number; h: number };
   /** Where on the element the click was, as fractions of its width and height: the pin sits there. */
   at?: { x: number; y: number };
+  /** An area marked with Shift and drag, as fractions of the element around it (the selector's). */
+  area?: { x: number; y: number; w: number; h: number };
+  kinds?: NoteKind[];
+  priority?: Priority;
+  /** The element's words, and what they should say. */
+  words?: { from: string; to: string };
+  tweaks?: Tweak[];
+  facts?: ElementFacts;
   window: { w: number; h: number };
   /** "Paper, Cream" or "Nocturne, Charcoal". */
   light: string;
@@ -28,6 +68,8 @@ export interface DesignNote {
 }
 
 export type NewDesignNote = Omit<DesignNote, 'id' | 'createdAt' | 'updatedAt' | 'done'>;
+/** What the note card can change; Bigger and Smaller move a note to another element. */
+export type NotePatch = Partial<Pick<DesignNote, 'text' | 'done' | 'kinds' | 'priority' | 'words' | 'tweaks' | 'selector' | 'element' | 'rect' | 'facts' | 'area' | 'at'>>;
 
 const KEY = 'lingua.designNotes';
 
@@ -51,7 +93,7 @@ function save(notes: DesignNote[]): void {
 interface DesignNotesStore {
   notes: DesignNote[];
   add: (note: NewDesignNote) => DesignNote;
-  update: (id: string, patch: Partial<Pick<DesignNote, 'text' | 'done'>>) => void;
+  update: (id: string, patch: NotePatch) => void;
   remove: (id: string) => void;
   clearDone: () => void;
   clearAll: () => void;
@@ -103,9 +145,31 @@ const indent = (text: string) =>
     .map((line) => `   ${line}`)
     .join('\n');
 
+const px = (n: number) => Math.round(n);
+const oneLine = (text: string) => text.replace(/\s+/g, ' ').trim();
+
+/** What the element is, as indented list lines under a note. */
+function factLines(f: ElementFacts): string[] {
+  const lines = [`   - Element: \`<${f.tag}>\`${f.component ? ` in \`${f.component}\`` : ''}, ${f.size}`];
+  if (f.classes) lines.push(`     - classes: \`${f.classes}\``);
+  lines.push(`     - type: ${f.type}`);
+  lines.push(`     - colour: ${f.colour} on ${f.background}${f.border ? ` · border ${f.border}` : ''}`);
+  lines.push(`     - box: padding ${f.padding} · margin ${f.margin}${f.gap ? ` · gap ${f.gap}` : ''} · corners ${f.corners}`);
+  return lines;
+}
+
+/** Open notes by priority, e.g. "Must 2 · Should 1 · Could 0 · none 1". */
+export function priorityCount(notes: DesignNote[]): string {
+  const open = notes.filter((n) => !n.done);
+  const parts = PRIORITIES.map((p) => `${p} ${open.filter((n) => n.priority === p).length}`);
+  const none = open.filter((n) => !n.priority).length;
+  return [...parts, ...(none ? [`none ${none}`] : [])].join(' · ');
+}
+
 /**
- * The notes as Markdown for Claude: grouped by room and page in the order they were made, each with the element
- * (named and as a CSS path), where it was, the window, the light and the language.
+ * The notes as Markdown for Claude: a count by priority, then grouped by room and page in the order they were made,
+ * each with its priority and kinds, the element (named and as a CSS path), the note, new words, tweaks, the area,
+ * what the element is, where it was, the window, the light and the language.
  */
 export function toMarkdown(notes: DesignNote[], meta: { version: string; at: number }): string {
   const open = notes.filter((n) => !n.done).length;
@@ -113,6 +177,7 @@ export function toMarkdown(notes: DesignNote[], meta: { version: string; at: num
     '# Lingua · design notes',
     '',
     `Version ${meta.version} · ${DAY.format(meta.at)} · ${notes.length} ${notes.length === 1 ? 'note' : 'notes'}${open !== notes.length ? ` (${open} open)` : ''}`,
+    `Open by priority: ${priorityCount(notes)}`,
   ];
   const rooms = new Map<string, Map<string, DesignNote[]>>();
   for (const note of [...notes].sort((a, b) => a.createdAt - b.createdAt)) {
@@ -123,8 +188,16 @@ export function toMarkdown(notes: DesignNote[], meta: { version: string; at: num
     for (const [path, list] of pages) {
       lines.push('', `## ${room} · \`${path}\``, '');
       list.forEach((n, i) => {
-        lines.push(`${i + 1}. ${n.done ? '(done) ' : ''}**${n.element}** · \`${n.selector}\``);
+        const tags = [n.priority && `**[${n.priority}]**`, n.kinds?.length && n.kinds.join(', ')].filter(Boolean).join(' ');
+        lines.push(`${i + 1}. ${n.done ? '(done) ' : ''}${tags ? `${tags} · ` : ''}**${n.element}** · \`${n.selector}\``);
         lines.push(indent(n.text || '(no text)'));
+        if (n.words) lines.push(`   - Words: “${oneLine(n.words.from)}” → “${oneLine(n.words.to)}”`);
+        for (const t of n.tweaks ?? []) lines.push(`   - ${t.prop}: ${t.now || '(none)'} → ${t.want || '(unchanged)'}`);
+        if (n.area) {
+          const a = { x: n.area.x * n.rect.w, y: n.area.y * n.rect.h, w: n.area.w * n.rect.w, h: n.area.h * n.rect.h };
+          lines.push(`   - Area (not the whole element): ${px(a.w)} × ${px(a.h)}, from ${px(a.x)}, ${px(a.y)} inside it`);
+        }
+        if (n.facts) lines.push(...factLines(n.facts));
         lines.push(
           `   *at ${Math.round(n.rect.x)}, ${Math.round(n.rect.y)} · ${Math.round(n.rect.w)} × ${Math.round(n.rect.h)} · window ${n.window.w} × ${n.window.h} · ${n.light}${n.language ? ` · ${n.language}` : ''}*`,
         );

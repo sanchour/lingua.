@@ -25,7 +25,7 @@ const PROMPT: Record<CheckItem['kind'], string> = {
  */
 export function CheckYourself({ lang, refId, words, source }: { lang: string; refId: string; words: CheckItem[]; source: string }) {
   const { settings } = useApp();
-  const ai = aiBlock(settings, settings.llm.provider) === null;
+  const ai = settings.reader.endStory && aiBlock(settings, settings.llm.provider) === null;
   const [open, setOpen] = useState(false);
   const [story, setStory] = useState<CheckItem[]>([]);
   const items = useMemo(() => [...words, ...story], [words, story]);

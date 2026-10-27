@@ -1,5 +1,6 @@
 import { describe as group, expect, it } from 'vitest';
-import { notesOn, roomFor, toMarkdown } from './notes';
+import { sides } from './inspect';
+import { notesOn, priorityCount, roomFor, toMarkdown } from './notes';
 import type { DesignNote } from './notes';
 import { cssPath, describe } from './selector';
 import type { NodeLike } from './selector';
@@ -61,6 +62,43 @@ group('design notes', () => {
     expect(md).toContain('## Codex · `/codex`');
     expect(md).toContain('1. (done) **button “Continue”**');
     expect(md).toContain('   Two\n   lines');
+  });
+
+  it('writes priority, kinds, words, tweaks, the area and the element’s details', () => {
+    const md = toMarkdown(
+      [
+        note({
+          priority: 'Must',
+          kinds: ['Spacing', 'Words'],
+          words: { from: 'Continue  reading', to: 'Read on' },
+          tweaks: [{ prop: 'type size', now: '15px', want: '17px' }],
+          area: { x: 0.1, y: 0.25, w: 0.5, h: 0.5 },
+          facts: { tag: 'button', component: 'Home › Next', classes: 'rounded-full px-4', size: '100 × 40', type: 'Inter 15px / 21px, weight 600', colour: '#ffffff (`--on-accent`)', background: '#c86d51 (`--accent`)', padding: '8px 16px', margin: '0', gap: '6px', corners: 'round (pill)' },
+        }),
+        note({ id: 'b', priority: 'Could', createdAt: 2 }),
+        note({ id: 'c', createdAt: 3, done: true, priority: 'Must' }),
+      ],
+      { version: '0.5.2-alpha.8', at: Date.UTC(2026, 9, 27) },
+    );
+    expect(md).toContain('Open by priority: Must 1 · Should 0 · Could 1');
+    expect(md).toContain('1. **[Must]** Spacing, Words · **button “Continue”** · `main > button`');
+    expect(md).toContain('   - Words: “Continue reading” → “Read on”');
+    expect(md).toContain('   - type size: 15px → 17px');
+    expect(md).toContain('   - Area (not the whole element): 50 × 20, from 10, 10 inside it');
+    expect(md).toContain('   - Element: `<button>` in `Home › Next`, 100 × 40');
+    expect(md).toContain('     - colour: #ffffff (`--on-accent`) on #c86d51 (`--accent`)');
+    expect(md).toContain('     - box: padding 8px 16px · margin 0 · gap 6px · corners round (pill)');
+  });
+
+  it('counts open notes by priority, and those without one', () => {
+    expect(priorityCount([note({ priority: 'Should' }), note({ id: 'b' })])).toBe('Must 0 · Should 1 · Could 0 · none 1');
+  });
+
+  it('writes four sides the short way', () => {
+    expect(sides('0px', '0px', '0px', '0px')).toBe('0');
+    expect(sides('8px', '16px', '8px', '16px')).toBe('8px 16px');
+    expect(sides('12px', '12px', '12px', '12px')).toBe('12px');
+    expect(sides('1px', '2px', '3px', '4.26px')).toBe('1px 2px 3px 4.5px');
   });
 
   it('finds an element by a short CSS path', () => {

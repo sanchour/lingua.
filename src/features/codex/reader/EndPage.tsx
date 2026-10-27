@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { useApp } from '@/app/context';
 import { Button } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import type { CheckItem } from '@/core/text/checks';
@@ -33,7 +34,10 @@ const duration = (ms: number) => {
 };
 
 /** After the last page of a book or a text: a quiet page with what this sitting came to. */
-export function EndPage({ lang, refId, title, author, stats, todayMs, goal, finished, checks, source, onFinish, onKeepReading }: EndPageProps) {
+export function EndPage({ lang, refId, title, author, stats, todayMs, goal, finished, checks: offered, source, onFinish, onKeepReading }: EndPageProps) {
+  // Settings › Reading › At the end of a text.
+  const { endCheck, endOwnWords } = useApp().settings.reader;
+  const checks = endCheck ? offered : [];
   const time = duration(stats.activeMs);
   const numbers = [
     { value: time.value, label: time.unit === 'hours' ? 'hours read' : `${time.unit} read` },
@@ -100,9 +104,11 @@ export function EndPage({ lang, refId, title, author, stats, todayMs, goal, fini
           </motion.div>
         )}
 
-        <motion.div className="w-full max-w-xl" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.82 }}>
-          <OwnWordsFold lang={lang} title={title} refId={refId} className={checks.length > 0 ? 'mt-4' : 'mt-10'} />
-        </motion.div>
+        {endOwnWords && (
+          <motion.div className="w-full max-w-xl" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.82 }}>
+            <OwnWordsFold lang={lang} title={title} refId={refId} className={checks.length > 0 ? 'mt-4' : 'mt-10'} />
+          </motion.div>
+        )}
 
         <motion.div className="mt-10 flex w-full max-w-xs flex-col gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.85 }}>
           <Button size="lg" onClick={onFinish} block>

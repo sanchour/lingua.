@@ -6,7 +6,8 @@ import { Wordmark } from '@/app/shells/Wordmark';
 import { getLanguage, LANGUAGES } from '@/core/lang/languages';
 import type { Level } from '@/core/lang/levels';
 import { codeForLanguage } from '@/core/parsers/notion';
-import { completeOnboarding } from '@/data/languages';
+import { completeOnboarding, useActiveLanguage } from '@/data/languages';
+import { useDevLab } from '@/features/lab/devLab';
 import { planOf } from '@/data/plan';
 import { patchSetting, useSettings } from '@/data/settings';
 import type { LearningReason, ThemePref } from '@/data/settings';
@@ -24,17 +25,16 @@ import { defaultGoal, GoalStep } from './GoalStep';
 import { AboutPage, NamePage, WelcomePage } from './IntroPages';
 import { LanguageStep } from './LanguageStep';
 import { LevelStep } from './LevelStep';
+import { FIRST } from './pages';
+import type { Page } from './pages';
 import { SpeakStep, spokenName } from './SpeakStep';
 import type { Spoken } from './SpeakStep';
 import { WhyStep } from './WhyStep';
-
-type Page = 'name' | 'welcome' | 'about' | 'language' | 'level' | 'speak' | 'why' | 'goal' | 'light' | 'plans';
 
 /**
  * The first start (5.1-2b): your name, a welcome and what Lingua does, then seven steps that build up
  * to the plans. Adding another language: its language, level and goal.
  */
-const FIRST: Page[] = ['name', 'welcome', 'about', 'language', 'level', 'speak', 'why', 'goal', 'light', 'plans'];
 const ANOTHER: Page[] = ['language', 'level', 'goal'];
 const INTRO = new Set<Page>(['name', 'welcome', 'about']);
 const ORDER: CefrLevel[] = ['A0', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
@@ -59,16 +59,19 @@ const turn = {
 
 /**
  * First-run setup, also reused to start another language.
- * `canCancel` is true when a language already exists (adding a second one).
+ * `canCancel` is true when a language already exists (adding a second one). `replay` is the Device lab's replay of
+ * the first start (7-0d) from that page: the language already chosen, and nothing saved at the end.
  */
-export default function Onboarding({ canCancel = false }: { canCancel?: boolean }) {
+export default function Onboarding({ canCancel = false, replay }: { canCancel?: boolean; replay?: number }) {
   const navigate = useNavigate();
   const settings = useSettings();
-  const pages = canCancel ? ANOTHER : FIRST;
-  const [index, setIndex] = useState(0);
+  const active = useActiveLanguage();
+  const replaying = replay !== undefined;
+  const pages = canCancel && !replaying ? ANOTHER : FIRST;
+  const [index, setIndex] = useState(replay ?? 0);
   const [dir, setDir] = useState(1);
   const [name, setName] = useState<string | null>(null);
-  const [target, setTarget] = useState<string | null>(null);
+  const [target, setTarget] = useState<string | null>(replaying ? (active?.id ?? null) : null);
   const [level, setLevel] = useState<Level>('A0');
   const [seedKnown, setSeedKnown] = useState(true);
   const [spoken, setSpoken] = useState<Spoken[]>(() => [{ code: deviceLanguage(), level: 'native' }]);
@@ -95,8 +98,15 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
     window.scrollTo({ top: 0 });
   };
 
+  const leaveReplay = () => void useDevLab.getState().endReplay();
+
   const finish = async () => {
     if (!target || busy) return;
+    if (replaying) {
+      leaveReplay();
+      toast('The replay is over. Nothing was saved, and your light is as it was.');
+      return;
+    }
     setBusy(true);
     try {
       await completeOnboarding({
@@ -128,8 +138,8 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
     else void finish();
   };
 
-  const cancel = () => void patchSetting('meta', { onboardedAt: Date.now() });
-  useHotkeys({ escape: cancel }, canCancel);
+  const cancel = () => (replaying ? leaveReplay() : void patchSetting('meta', { onboardedAt: Date.now() }));
+  useHotkeys({ escape: cancel }, canCancel || replaying);
 
   const width = page === 'language' ? 'max-w-7xl' : page === 'about' || page === 'light' || page === 'plans' ? 'max-w-6xl' : 'max-w-3xl';
   const label =
@@ -151,10 +161,16 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
     <div className="flex min-h-dvh flex-col overflow-x-clip">
       <header className={cx('mx-auto flex w-full items-center justify-between gap-4 px-8 pt-6', width)}>
         <Wordmark />
-        {canCancel && (
-          <Button variant="ghost" size="sm" onClick={cancel} className="mr-auto">
-            Cancel
+        {replaying ? (
+          <Button variant="secondary" size="sm" onClick={cancel} className="mr-auto">
+            Leave the replay <kbd className="ml-1 font-sans text-[11px] opacity-60">Esc</kbd>
           </Button>
+        ) : (
+          canCancel && (
+            <Button variant="ghost" size="sm" onClick={cancel} className="mr-auto">
+              Cancel
+            </Button>
+          )
         )}
         {!INTRO.has(page) && (
           <ol className="flex items-center gap-1.5" aria-label={`Step ${steps.indexOf(page) + 1} of ${steps.length}`}>
@@ -188,7 +204,7 @@ export default function Onboarding({ canCancel = false }: { canCancel?: boolean 
               {page === 'why' && <WhyStep language={languageName} reasons={reasonsNow} onReasons={setReasons} />}
               {page === 'goal' && <GoalStep level={level} goal={goalNow} minutes={minutes} onGoal={setGoal} onMinutes={setMinutes} />}
               {page === 'light' && settings && <AestheticStep pref={theme} palette={settings.palette} sample={getLanguage(target ?? 'en')?.sample || LANGUAGES[0].sample} lang={target ?? 'en'} />}
-              {page === 'plans' && settings && <PlanPitch current={planOf(settings.meta)} onFree={() => void finish()} />}
+              {page === 'plans' && settings && <PlanPitch current={planOf(settings.meta)} onFree={() => void finish()} replay={replaying} />}
             </motion.section>
           </AnimatePresence>
         </div>

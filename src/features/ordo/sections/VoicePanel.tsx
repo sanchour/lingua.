@@ -113,8 +113,8 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-[14px] font-semibold">Voice</p>
-          <p className="mt-0.5 text-[13px] leading-snug text-ink-soft">{status}</p>
-          {speaker?.kind === 'device' && speaker.quality === 'robotic' && <p className="mt-1.5 text-[13px] leading-snug text-ink-soft">It sounds robotic: it’s the only voice for {accentName(speaker.locale)} this device has. {locale && piperVoicesFor(locale).length ? 'Or download a natural voice for Lingua below.' : BETTER_VOICE}</p>}
+          <p data-hint="" className="mt-0.5 text-[13px] leading-snug text-ink-soft">{status}</p>
+          {speaker?.kind === 'device' && speaker.quality === 'robotic' && <p data-hint="" className="mt-1.5 text-[13px] leading-snug text-ink-soft">It sounds robotic: it’s the only voice for {accentName(speaker.locale)} this device has. {locale && piperVoicesFor(locale).length ? 'Or download a natural voice for Lingua below.' : BETTER_VOICE}</p>}
         </div>
         <Switch
           label="Read aloud"

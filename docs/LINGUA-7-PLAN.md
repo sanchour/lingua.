@@ -129,6 +129,40 @@ click any element to pin a note, notes kept on the device, and Copy for Claude a
 - **Done when:** a note pinned on Home, Codex and Settings survives a reload, follows its element when the page
   scrolls, and comes out as clean Markdown; the app's own clicks never fire in pick mode; light and dark.
 
+### 7-0c · Design notes in more detail
+
+**The user's ask** (2026-10-27): "improve the design notes tool so I can be more detailed".
+
+- [x] **What kind, how much:** chips for the kind of change (Layout, Spacing, Size, Colour, Type, Words, Remove, Add,
+  Behaviour, Question) and a priority (Must, Should, Could).
+- [x] **The right element:** while picking, ↑ and ↓ choose the element around or inside the one under the pointer; in
+  the note card, Bigger and Smaller do the same. The chosen element stays outlined while the card is open.
+- [x] **An area, not an element:** Shift and drag while picking marks a rectangle (for spacing, alignment, empty room);
+  it is kept relative to the smallest element around it, so it follows the page; drawn dashed.
+- [x] **New words:** for an element with text, its words to edit, written out as old → new.
+- [x] **Tweaks with a preview:** add a property (type size, weight, line height, letter spacing, typeface, colour,
+  background, padding, margin, gap, corners, width, height, opacity, shadow): its value now is filled in, the wanted
+  value is typed, and Preview shows it live on the element until the card closes.
+- [x] **What the element is, written down by itself:** its tag, the component around it (in the dev server), its
+  classes, its size, its type, colours (with the token's name when it is one, e.g. `--ink`), padding, margin, gap and
+  corners, in a fold-out in the card and in the Markdown.
+- [x] **The Markdown says all of it:** priority and kinds, the note, new words, tweaks (now → wanted), the area, the
+  element's details; a count by priority at the top. The panel shows each note's priority and kinds.
+
+### 7-0d · More in the Device lab
+
+**The user's ask** (2026-10-27): "add in device lab a bunch more settings to test, check, and do stuff for the app,
+like replaying the onboarding flow".
+
+- [x] **Replay the first start** from the beginning or any step, with the language already chosen; nothing is saved,
+  the light chosen in it is put back, and Esc or "Leave the replay" ends it. Home's first steps can be shown again.
+- [x] **The look at a click:** the light (device, Paper, Nocturne), every palette as a swatch, motion (system, full,
+  reduced) and the language touches, without leaving the Lab.
+- [x] **Check the layout:** a 4 px grid with an 8 px beat and the 720 px reading measure, outlines on every box, and
+  the three check sizes (1280 × 800, 1366 × 768, 1440 × 900) for the installed app's window.
+- [x] **Try the pieces:** a toast of each kind, and clearing the translation and AI caches (learning data stays).
+- These are for this session only (not saved), except the look, which is the real setting.
+
 ### 7-1 · The onboarding, quieter and shorter
 
 **The user's points** (2026-10-26; section 0 has the notes word for word)

@@ -147,6 +147,11 @@
   animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
+/* Tips and explanations (Settings › Look and feel): off hides the small lines that explain a setting or a card. */
+:root[data-hints='off'] [data-hint] {
+  display: none !important;
+}
+
 /* Motion preference (Settings → Preferences). Reduced: CSS transitions become instant (springs are
    handled by MotionConfig). Full: in-page jumps glide, and the theme cross-fade lingers a little. */
 :root[data-motion='reduced'] *,

@@ -1,28 +1,24 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { Check, ClipboardCopy, List, MousePointerClick, Move, PenLine, Trash2, X } from 'lucide-react';
+import { Check, ClipboardCopy, List, MousePointerClick, Move, PenLine } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
 import { useActiveLanguage } from '@/data/languages';
 import { useSettings } from '@/data/settings';
 import { isEditable } from '@/design/hooks/useHotkeys';
 import { Button } from '@/design/primitives';
 import { cx } from '@/lib/cx';
+import { useDevLab } from '../devLab';
 import { copyNotes } from './copy';
-import { notesOn, roomFor, useDesignNotes } from './notes';
+import { climb } from './inspect';
+import { NoteCard } from './NoteCard';
+import type { Editor, Rect, Saved } from './NoteCard';
+import { notesOn, priorityCount, roomFor, useDesignNotes } from './notes';
 import type { DesignNote } from './notes';
-import { cssPath, describe } from './selector';
+import { describe } from './selector';
 
 /** Everything the tool draws carries this attribute, so picking never picks the tool itself. */
 const MARK = 'data-design-notes';
 const inTool = (target: EventTarget | null) => target instanceof Element && Boolean(target.closest(`[${MARK}]`));
-
-interface Rect {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-type Editor = { kind: 'new'; rect: Rect; at: { x: number; y: number }; element: string; selector: string } | { kind: 'edit'; rect: Rect; note: DesignNote };
 
 /** The bar's corner, the panel's side and the Markdown box's place: the mini player and downloads use corners too. */
 const CORNERS = {
@@ -57,30 +53,36 @@ function find(note: DesignNote): Element | null {
   }
 }
 
+/** The smallest element (not the tool's) holding the whole rectangle: an area is kept relative to it. */
+function around(box: Rect): Element {
+  const cx = box.x + box.w / 2;
+  const cy = box.y + box.h / 2;
+  let el: Element | null = document.elementsFromPoint(cx, cy).find((e) => !inTool(e)) ?? null;
+  while (el && el.tagName !== 'BODY') {
+    const r = el.getBoundingClientRect();
+    if (r.left <= box.x + 1 && r.top <= box.y + 1 && r.right >= box.x + box.w - 1 && r.bottom >= box.y + box.h - 1) return el;
+    el = el.parentElement;
+  }
+  return document.querySelector('main') ?? document.body;
+}
+
 function lightNow(): string {
   const { theme, palette } = document.documentElement.dataset;
   const name = palette ? palette[0].toUpperCase() + palette.slice(1) : '';
   return `${theme === 'nocturne' ? 'Nocturne' : 'Paper'}${name ? `, ${name}` : ''}`;
 }
 
-/** A card beside the element when there's room, else below or above it, always inside the window. */
-function cardPlace(rect: Rect, width = 320, height = 236): { left: number; top: number } {
-  const gap = 12;
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  let left = rect.x + rect.w + gap;
-  let top = rect.y;
-  if (left + width > vw - gap) {
-    left = Math.min(Math.max(rect.x, gap), vw - width - gap);
-    top = rect.y + rect.h + gap + height < vh ? rect.y + rect.h + gap : rect.y - height - gap;
-  }
-  return { left: Math.max(gap, left), top: Math.min(Math.max(gap, top), vh - height - gap) };
-}
+const place = (box: HTMLElement, r: Rect) => {
+  box.style.width = `${r.w}px`;
+  box.style.height = `${r.h}px`;
+  box.style.transform = `translate(${r.x}px, ${r.y}px)`;
+};
 
 /**
- * Settings › Lab › Design notes (7-0b): Alt N (or Pick) outlines the element under the pointer; a click pins a note
- * to it instead of doing what it does. Pins follow their elements, moved by transform only. Notes stay on this
- * device and are copied for Claude as Markdown.
+ * Settings › Lab › Design notes (7-0b, 7-0c): Alt N (or Pick) outlines the element under the pointer; ↑ and ↓ choose
+ * the element around or inside it; a click pins a note to it instead of doing what it does; Shift and drag marks an
+ * area. Pins and areas follow their elements, moved by transform only. Notes stay on this device and are copied for
+ * Claude as Markdown.
  */
 export default function DesignNotes() {
   const location = useLocation();
@@ -88,8 +90,9 @@ export default function DesignNotes() {
   const path = location.pathname + location.search;
   const language = useActiveLanguage();
   const settings = useSettings();
-  // The first start lives at "/" too: its notes belong to it, not to Home.
-  const room = settings?.meta.onboardedAt && language ? roomFor(path) : 'First start';
+  const replaying = useDevLab((s) => s.replay !== null);
+  // The first start lives at "/" too: its notes belong to it, not to Home (also while the Lab replays it).
+  const room = settings?.meta.onboardedAt && language && !replaying ? roomFor(path) : 'First start';
   const notes = useDesignNotes((s) => s.notes);
   const { add, update, remove, clearDone } = useDesignNotes.getState();
   const pageNotes = useMemo(() => notesOn(notes, path, room), [notes, path, room]);
@@ -98,7 +101,8 @@ export default function DesignNotes() {
   const [editor, setEditor] = useState<Editor | null>(null);
   const [shown, setShown] = useState<string | null>(null);
   const [corner, setCorner] = useState<Corner>(savedCorner);
-  const place = CORNERS[corner];
+  const [chosen, setChosen] = useState<{ el: Element; area?: Rect } | null>(null);
+  const corners = CORNERS[corner];
   const moveCorner = () => {
     const order = Object.keys(CORNERS) as Corner[];
     const next = order[(order.indexOf(corner) + 1) % order.length];
@@ -113,7 +117,9 @@ export default function DesignNotes() {
   const resume = useRef(false);
   const outline = useRef<HTMLDivElement>(null);
   const label = useRef<HTMLDivElement>(null);
+  const areaBox = useRef<HTMLDivElement>(null);
   const pins = useRef(new Map<string, HTMLButtonElement>());
+  const areas = useRef(new Map<string, HTMLDivElement>());
 
   const closeEditor = () => {
     setEditor(null);
@@ -122,6 +128,7 @@ export default function DesignNotes() {
       setPicking(true);
     }
   };
+  const onElement = useCallback((el: Element | null, area?: Rect) => setChosen(el ? { el, area } : null), []);
 
   // Alt N picks (by the physical key, so any layout and a Mac's Option work), even from a text field, except on a
   // Mac, where Option N types the tilde of ñ. Esc closes one thing at a time.
@@ -149,33 +156,51 @@ export default function DesignNotes() {
     return () => window.removeEventListener('keydown', onKey, true);
   });
 
-  // Picking: the outline follows the pointer; the page's own presses and clicks are held back.
+  // Picking: the outline follows the pointer, ↑ and ↓ move it out and in; Shift and drag draws an area. The page's
+  // own presses and clicks are held back.
   useEffect(() => {
     if (!picking) return;
-    let hovered: Element | null = null;
+    let pointed: Element | null = null;
+    let chain: { trail: Element[]; level: number } = { trail: [], level: 0 };
+    let point = { x: 0, y: 0 };
+    let drag: { x: number; y: number; box: Rect } | null = null;
+    let swallowClick = false;
     let frame = 0;
+    const current = () => chain.trail[chain.level] ?? null;
     const draw = () => {
       frame = 0;
       const box = outline.current;
       const tag = label.current;
-      if (!box || !tag) return;
-      if (!hovered) {
+      const dashed = areaBox.current;
+      if (!box || !tag || !dashed) return;
+      dashed.style.opacity = drag && drag.box.w > 2 ? '1' : '0';
+      if (drag) place(dashed, drag.box);
+      const el = current();
+      if (!el || drag) {
         box.style.opacity = tag.style.opacity = '0';
         return;
       }
-      const r = hovered.getBoundingClientRect();
-      box.style.width = `${r.width}px`;
-      box.style.height = `${r.height}px`;
-      box.style.transform = `translate(${r.left}px, ${r.top}px)`;
-      tag.textContent = describe(hovered);
-      tag.style.transform = `translate(${Math.max(4, Math.min(r.left, window.innerWidth - 270))}px, ${r.top > 30 ? r.top - 28 : r.bottom + 6}px)`;
+      const r = el.getBoundingClientRect();
+      place(box, { x: r.left, y: r.top, w: r.width, h: r.height });
+      tag.textContent = `${describe(el)} · ${Math.round(r.width)} × ${Math.round(r.height)}${chain.level ? ` · ↑${chain.level}` : ''}`;
+      tag.style.transform = `translate(${Math.max(4, Math.min(r.left, window.innerWidth - 330))}px, ${r.top > 30 ? r.top - 28 : r.bottom + 6}px)`;
       box.style.opacity = tag.style.opacity = '1';
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(draw);
     };
     const onMove = (e: PointerEvent) => {
-      hovered = e.target instanceof Element && !inTool(e.target) ? e.target : null;
+      point = { x: e.clientX, y: e.clientY };
+      if (drag) {
+        drag.box = { x: Math.min(drag.x, e.clientX), y: Math.min(drag.y, e.clientY), w: Math.abs(e.clientX - drag.x), h: Math.abs(e.clientY - drag.y) };
+        schedule();
+        return;
+      }
+      const target = e.target instanceof Element && !inTool(e.target) ? e.target : null;
+      if (target !== pointed) {
+        pointed = target;
+        chain = { trail: target ? [target] : [], level: 0 };
+      }
       schedule();
     };
     const hold = (e: Event) => {
@@ -183,34 +208,108 @@ export default function DesignNotes() {
       e.preventDefault();
       e.stopPropagation();
     };
+    const onDown = (e: PointerEvent) => {
+      if (inTool(e.target)) return;
+      hold(e);
+      if (e.shiftKey && e.button === 0) drag = { x: e.clientX, y: e.clientY, box: { x: e.clientX, y: e.clientY, w: 0, h: 0 } };
+    };
+    const open = (editor: Editor) => {
+      resume.current = true;
+      setPicking(false);
+      setEditor(editor);
+    };
+    const onUp = (e: PointerEvent) => {
+      if (inTool(e.target)) return;
+      hold(e);
+      if (!drag) return;
+      const box = drag.box;
+      drag = null;
+      schedule();
+      if (box.w < 6 || box.h < 6) return;
+      swallowClick = true;
+      const el = around(box);
+      const r = rectOf(el);
+      const area = { x: (box.x - r.x) / (r.w || 1), y: (box.y - r.y) / (r.h || 1), w: box.w / (r.w || 1), h: box.h / (r.h || 1) };
+      open({ kind: 'new', rect: box, trail: [el], level: 0, at: { x: area.x + area.w, y: area.y }, area });
+    };
     const onClick = (e: MouseEvent) => {
       if (inTool(e.target) || !(e.target instanceof Element)) return;
       hold(e);
-      resume.current = true;
-      setPicking(false);
-      const rect = rectOf(e.target);
+      if (swallowClick) {
+        swallowClick = false;
+        return;
+      }
+      const el = current() ?? e.target;
+      const rect = rectOf(el);
       const at = { x: rect.w ? (e.clientX - rect.x) / rect.w : 1, y: rect.h ? (e.clientY - rect.y) / rect.h : 0 };
-      setEditor({ kind: 'new', rect, at, element: describe(e.target), selector: cssPath(e.target) });
+      open({ kind: 'new', rect, trail: chain.trail.length ? chain.trail : [el], level: chain.trail.length ? chain.level : 0, at });
     };
-    const held = ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'dblclick', 'auxclick', 'contextmenu'];
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.key !== 'ArrowUp' && e.key !== 'ArrowDown') || isEditable(e.target) || !chain.trail.length) return;
+      e.preventDefault();
+      e.stopPropagation();
+      chain = climb(chain.trail, chain.level, e.key === 'ArrowUp' ? 'up' : 'down', point) ?? chain;
+      schedule();
+    };
+    const held = ['mousedown', 'mouseup', 'dblclick', 'auxclick', 'contextmenu'];
     document.addEventListener('pointermove', onMove, true);
+    document.addEventListener('pointerdown', onDown, true);
+    document.addEventListener('pointerup', onUp, true);
+    window.addEventListener('keydown', onKey, true);
     window.addEventListener('scroll', schedule, true);
     for (const type of held) document.addEventListener(type, hold, true);
     document.addEventListener('click', onClick, true);
     document.documentElement.setAttribute('data-design-picking', '');
     return () => {
       document.removeEventListener('pointermove', onMove, true);
+      document.removeEventListener('pointerdown', onDown, true);
+      document.removeEventListener('pointerup', onUp, true);
+      window.removeEventListener('keydown', onKey, true);
       window.removeEventListener('scroll', schedule, true);
       for (const type of held) document.removeEventListener(type, hold, true);
       document.removeEventListener('click', onClick, true);
       document.documentElement.removeAttribute('data-design-picking');
       cancelAnimationFrame(frame);
-      if (outline.current) outline.current.style.opacity = '0';
-      if (label.current) label.current.style.opacity = '0';
+      for (const ref of [outline, label, areaBox]) if (ref.current) ref.current.style.opacity = '0';
     };
   }, [picking]);
 
-  // Pins sit on their elements' top right corners and follow them: on scroll, on resize, and now and then.
+  // While a card is open its element stays outlined (and its area dashed), following the page.
+  useEffect(() => {
+    if (!chosen) return;
+    let frame = 0;
+    const draw = () => {
+      frame = 0;
+      const box = outline.current;
+      const dashed = areaBox.current;
+      if (!box || !dashed) return;
+      const r = rectOf(chosen.el);
+      place(box, r);
+      box.style.opacity = '1';
+      if (chosen.area) {
+        place(dashed, { x: r.x + chosen.area.x * r.w, y: r.y + chosen.area.y * r.h, w: chosen.area.w * r.w, h: chosen.area.h * r.h });
+        dashed.style.opacity = '1';
+      } else dashed.style.opacity = '0';
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(draw);
+    };
+    draw();
+    window.addEventListener('scroll', schedule, true);
+    window.addEventListener('resize', schedule);
+    const timer = window.setInterval(schedule, 300);
+    return () => {
+      window.removeEventListener('scroll', schedule, true);
+      window.removeEventListener('resize', schedule);
+      window.clearInterval(timer);
+      cancelAnimationFrame(frame);
+      if (outline.current) outline.current.style.opacity = '0';
+      if (areaBox.current) areaBox.current.style.opacity = '0';
+    };
+  }, [chosen]);
+
+  // Pins sit where they were clicked (an area's at its top right corner) and follow their elements, as do the areas:
+  // on scroll, on resize, and now and then.
   useEffect(() => {
     if (!pageNotes.length) return;
     let frame = 0;
@@ -224,9 +323,15 @@ export default function DesignNotes() {
         const at = note.at ?? { x: 1, y: 0 };
         const x = Math.min(Math.max(r.x + r.w * at.x - 11, 4), window.innerWidth - 26);
         const y = Math.min(Math.max(r.y + r.h * at.y - 11, 4), window.innerHeight - 26);
+        const hidden = Boolean(el) && r.w === 0 && r.h === 0;
         pin.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
-        pin.style.opacity = el && r.w === 0 && r.h === 0 ? '0' : '1';
+        pin.style.opacity = hidden ? '0' : '1';
         pin.dataset.lost = el ? 'false' : 'true';
+        const box = areas.current.get(note.id);
+        if (box && note.area) {
+          place(box, { x: r.x + note.area.x * r.w, y: r.y + note.area.y * r.h, w: note.area.w * r.w, h: note.area.h * r.h });
+          box.style.opacity = hidden || !el ? '0' : '1';
+        }
       }
     };
     const schedule = () => {
@@ -248,26 +353,22 @@ export default function DesignNotes() {
     const el = find(note);
     resume.current = false;
     setPicking(false);
-    setEditor({ kind: 'edit', rect: el ? rectOf(el) : note.rect, note });
+    setEditor({ kind: 'edit', rect: el ? rectOf(el) : note.rect, trail: el ? [el] : [], level: 0, note });
   };
 
-  const save = (text: string) => {
+  const save = (saved: Saved) => {
     if (!editor) return;
     if (editor.kind === 'new') {
       add({
+        ...saved,
         path,
         room,
-        selector: editor.selector,
-        element: editor.element,
-        text,
-        rect: editor.rect,
-        at: editor.at,
         window: { w: window.innerWidth, h: window.innerHeight },
         light: lightNow(),
         language: getLanguage(language?.id ?? '')?.name ?? '',
         version: __APP_VERSION__,
       });
-    } else update(editor.note.id, { text });
+    } else update(editor.note.id, saved);
     closeEditor();
   };
 
@@ -280,7 +381,22 @@ export default function DesignNotes() {
         <style>{`[data-design-picking] *{cursor:crosshair!important}[data-design-picking] [${MARK}],[data-design-picking] [${MARK}] *{cursor:default!important}`}</style>
       )}
       <div ref={outline} className="pointer-events-none fixed top-0 left-0 z-[119] rounded-md border-2 border-accent bg-accent/5 opacity-0" aria-hidden />
-      <div ref={label} className="pointer-events-none fixed top-0 left-0 z-[121] max-w-[260px] truncate rounded-md bg-inverse px-2 py-1 text-[11.5px] font-semibold text-on-inverse opacity-0 shadow-elev-2" aria-hidden />
+      <div ref={areaBox} className="pointer-events-none fixed top-0 left-0 z-[119] rounded-sm border-2 border-dashed border-accent bg-accent/10 opacity-0" aria-hidden />
+      <div ref={label} className="pointer-events-none fixed top-0 left-0 z-[121] max-w-[320px] truncate rounded-md bg-inverse px-2 py-1 text-[11.5px] font-semibold text-on-inverse opacity-0 shadow-elev-2" aria-hidden />
+
+      {pageNotes
+        .filter((note) => note.area)
+        .map((note) => (
+          <div
+            key={note.id}
+            ref={(el) => {
+              if (el) areas.current.set(note.id, el);
+              else areas.current.delete(note.id);
+            }}
+            aria-hidden
+            className={cx('pointer-events-none fixed top-0 left-0 z-[118] rounded-sm border-[1.5px] border-dashed opacity-0', note.done ? 'border-sage' : 'border-accent bg-accent/5')}
+          />
+        ))}
 
       {pageNotes.map((note, i) => (
         <button
@@ -292,11 +408,12 @@ export default function DesignNotes() {
             else pins.current.delete(note.id);
           }}
           onClick={() => openNote(note)}
-          title={note.text}
+          title={[note.priority, note.kinds?.join(', '), note.text].filter(Boolean).join(' · ')}
           aria-label={`Design note ${i + 1}: ${note.text}`}
           className={cx(
             'fixed top-0 left-0 z-[120] grid size-[22px] place-items-center rounded-full border-2 text-[11px] font-bold tabular-nums shadow-elev-2 data-[lost=true]:border-dashed',
-            note.done ? 'border-sage bg-sage-soft text-sage-text' : 'border-raised bg-accent-fill text-on-accent',
+            note.done ? 'border-sage bg-sage-soft text-sage-text' : note.priority === 'Could' ? 'border-raised bg-sage text-on-accent' : 'border-raised bg-accent-fill text-on-accent',
+            !note.done && note.priority === 'Must' && 'ring-2 ring-accent/40',
           )}
           style={{ transform: `translate(${Math.round(note.rect.x + note.rect.w * (note.at?.x ?? 1) - 11)}px, ${Math.round(note.rect.y + note.rect.h * (note.at?.y ?? 0) - 11)}px)` }}
         >
@@ -304,10 +421,22 @@ export default function DesignNotes() {
         </button>
       ))}
 
-      {editor && <NoteCard key={editor.kind === 'edit' ? editor.note.id : editor.selector} editor={editor} path={path} room={room} onSave={save} onCancel={closeEditor} onDone={(id, done) => (update(id, { done }), closeEditor())} onDelete={(id) => (remove(id), closeEditor())} />}
+      {editor && (
+        <NoteCard
+          key={editor.kind === 'edit' ? editor.note.id : `${editor.rect.x},${editor.rect.y},${editor.rect.w}`}
+          editor={editor}
+          path={path}
+          room={room}
+          onElement={onElement}
+          onSave={save}
+          onCancel={closeEditor}
+          onDone={(id, done) => (update(id, { done }), closeEditor())}
+          onDelete={(id) => (remove(id), closeEditor())}
+        />
+      )}
 
       {panel && (
-        <aside {...{ [MARK]: '' }} aria-label="Design notes" className={cx('fixed z-[120] flex w-[340px] flex-col', place.panel, 'overflow-hidden rounded-3xl border border-line bg-raised shadow-elev-3')}>
+        <aside {...{ [MARK]: '' }} aria-label="Design notes" className={cx('fixed z-[120] flex w-[340px] flex-col', corners.panel, 'overflow-hidden rounded-3xl border border-line bg-raised shadow-elev-3')}>
           <div className="flex items-center gap-2 border-b border-line px-4 pt-3 pb-2">
             <h2 className="font-serif text-[17px] font-semibold">Design notes</h2>
             <div className="ml-auto flex rounded-full bg-surface p-0.5 text-[12px] font-semibold">
@@ -318,9 +447,10 @@ export default function DesignNotes() {
               ))}
             </div>
             <button type="button" onClick={() => setPanel(null)} aria-label="Close" className="grid size-7 place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink">
-              <X size={16} aria-hidden />
+              <span aria-hidden>×</span>
             </button>
           </div>
+          {listed.length > 0 && <p className="border-b border-line px-4 py-1.5 text-[11.5px] text-ink-faint">Open: {priorityCount(listed)}</p>}
           <ol className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-3">
             {!listed.length && <li className="px-2 py-8 text-center text-[13.5px] text-ink-soft">{panel === 'page' ? 'No notes on this page yet. Press Alt N, then click anything.' : 'No notes yet.'}</li>}
             {listed.map((note) => {
@@ -331,9 +461,28 @@ export default function DesignNotes() {
                   <div className="flex items-start gap-2">
                     <span className={cx('mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[10.5px] font-bold', note.done ? 'bg-sage-soft text-sage-text' : 'bg-accent-fill text-on-accent')}>{number}</span>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[12.5px] font-semibold">{note.element}</p>
+                      <p className="truncate text-[12.5px] font-semibold">
+                        {note.area && <span className="mr-1 text-accent-text">Area in</span>}
+                        {note.element}
+                      </p>
                       {panel === 'all' && <p className="truncate text-[11.5px] text-ink-faint">{note.room} · {note.path}</p>}
-                      <p className="mt-1 text-[13.5px] leading-snug whitespace-pre-wrap">{note.text}</p>
+                      {(note.priority || note.kinds?.length) && (
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {note.priority && <span className={cx('rounded-full px-1.5 py-px text-[10.5px] font-bold', note.priority === 'Must' ? 'bg-accent-fill text-on-accent' : note.priority === 'Should' ? 'bg-accent-soft text-accent-text' : 'bg-sage-soft text-sage-text')}>{note.priority}</span>}
+                          {note.kinds?.map((k) => (
+                            <span key={k} className="rounded-full border border-line px-1.5 py-px text-[10.5px] font-semibold text-ink-soft">
+                              {k}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {note.text && <p className="mt-1 text-[13.5px] leading-snug whitespace-pre-wrap">{note.text}</p>}
+                      {note.words && <p className="mt-1 text-[12px] text-ink-soft">“{note.words.from}” → “{note.words.to}”</p>}
+                      {note.tweaks?.map((t) => (
+                        <p key={t.prop} className="mt-0.5 font-mono text-[11.5px] text-ink-soft">
+                          {t.prop}: {t.now.replace(/`/g, '')} → {t.want}
+                        </p>
+                      ))}
                     </div>
                   </div>
                   <div className="mt-2 flex items-center gap-1 pl-7 text-[12px] font-semibold">
@@ -363,7 +512,7 @@ export default function DesignNotes() {
       )}
 
       {shown && (
-        <div {...{ [MARK]: '' }} role="dialog" aria-label="Design notes as Markdown" className={cx('fixed z-[122] w-[460px]', place.box, 'rounded-2xl border border-line bg-raised p-3 shadow-elev-3')}>
+        <div {...{ [MARK]: '' }} role="dialog" aria-label="Design notes as Markdown" className={cx('fixed z-[122] w-[460px]', corners.box, 'rounded-2xl border border-line bg-raised p-3 shadow-elev-3')}>
           <p className="mb-2 text-[12.5px] text-ink-soft">Select all (Ctrl A), copy, and paste into Claude.</p>
           <textarea readOnly autoFocus value={shown} rows={14} onFocus={(e) => e.currentTarget.select()} aria-label="Markdown" className="w-full resize-none rounded-xl border border-line bg-bg p-3 font-mono text-[11.5px] leading-relaxed" />
           <div className="mt-2 flex justify-end">
@@ -374,9 +523,10 @@ export default function DesignNotes() {
         </div>
       )}
 
-      <div {...{ [MARK]: '' }} className={cx('fixed z-[120] flex items-center gap-0.5 rounded-full bg-inverse p-1 pl-3 text-on-inverse shadow-elev-3', place.bar)}>
+      <div {...{ [MARK]: '' }} className={cx('fixed z-[120] flex items-center gap-0.5 rounded-full bg-inverse p-1 pl-3 text-on-inverse shadow-elev-3', corners.bar)}>
         <PenLine size={14} aria-hidden />
         <span className="mr-1 ml-1 text-[12px] font-semibold tabular-nums opacity-80">{pageNotes.length} here</span>
+        {picking && <span className="mr-1 text-[11.5px] opacity-70">↑ ↓ around or inside · Shift drag an area</span>}
         <button type="button" aria-pressed={picking} onClick={() => setPicking((on) => !on)} title="Pick an element to note (Alt N)" className={cx(pill, picking ? 'bg-accent-fill text-on-accent' : 'hover:bg-on-inverse/10')}>
           <MousePointerClick size={15} aria-hidden /> Pick <kbd className="font-sans text-[10.5px] opacity-70">Alt N</kbd>
         </button>
@@ -391,70 +541,5 @@ export default function DesignNotes() {
         </button>
       </div>
     </>
-  );
-}
-
-function NoteCard({
-  editor,
-  path,
-  room,
-  onSave,
-  onCancel,
-  onDone,
-  onDelete,
-}: {
-  editor: Editor;
-  path: string;
-  room: string;
-  onSave: (text: string) => void;
-  onCancel: () => void;
-  onDone: (id: string, done: boolean) => void;
-  onDelete: (id: string) => void;
-}) {
-  const [text, setText] = useState(editor.kind === 'edit' ? editor.note.text : '');
-  const place = cardPlace(editor.rect);
-  const note = editor.kind === 'edit' ? editor.note : null;
-  const save = () => text.trim() && onSave(text.trim());
-  return (
-    <div {...{ [MARK]: '' }} role="dialog" aria-label="Design note" className="fixed z-[121] w-80 rounded-2xl border border-line bg-raised p-3 shadow-elev-3" style={{ left: place.left, top: place.top }}>
-      <p className="truncate text-[12.5px] font-semibold">{note ? note.element : editor.kind === 'new' ? editor.element : ''}</p>
-      <p className="truncate text-[11.5px] text-ink-faint">
-        {room} · {path}
-      </p>
-      <textarea
-        autoFocus
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={(e) => {
-          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-            e.preventDefault();
-            save();
-          }
-        }}
-        rows={4}
-        placeholder="What should change here?"
-        aria-label="Note"
-        className="mt-2 w-full resize-none rounded-xl border border-line-strong bg-bg px-3 py-2 text-[14px] leading-snug outline-none placeholder:text-ink-faint focus:border-accent"
-      />
-      <div className="mt-2 flex flex-wrap items-center gap-1.5">
-        <Button size="sm" onClick={save} disabled={!text.trim()}>
-          Save
-        </Button>
-        <Button size="sm" variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
-        {note && (
-          <>
-            <Button size="sm" variant="ghost" icon={Check} onClick={() => onDone(note.id, !note.done)}>
-              {note.done ? 'Open again' : 'Done'}
-            </Button>
-            <Button size="sm" variant="ghost" icon={Trash2} onClick={() => onDelete(note.id)}>
-              Delete
-            </Button>
-          </>
-        )}
-        {!note && <span className="ml-auto text-[11px] text-ink-faint">Ctrl Enter saves</span>}
-      </div>
-    </div>
   );
 }

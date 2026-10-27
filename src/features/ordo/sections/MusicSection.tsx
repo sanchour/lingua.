@@ -25,11 +25,11 @@ export function MusicSection({ cantus, spotify, youtubeKey }: { cantus: Settings
             { value: 'hide', label: 'Hidden' },
           ]}
         />
-        <p className="mt-2 text-[13px] text-ink-soft">Blurred lines clear when you tap them: try the song first, then check.</p>
+        <p data-hint="" className="mt-2 text-[13px] text-ink-soft">Blurred lines clear when you tap them: try the song first, then check.</p>
       </div>
       <div className="mt-6 border-t border-line pt-5">
         <p className="text-[15px] font-semibold">Where lyrics come from</p>
-        <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">
+        <p data-hint="" className="mt-1 text-[13px] leading-relaxed text-ink-soft">
           LRCLIB first, often timed line by line to the music; then lyrics.ovh. For a song neither has, its page links to Genius: copy the words there and paste them in. Lyrics without timings are shown whole, to read along as you listen.
         </p>
       </div>
@@ -73,14 +73,14 @@ function SpotifySetup({ spotify }: { spotify: Settings['spotify'] }) {
       </div>
       {connected ? (
         <>
-          <p className="mt-1 text-[13px] text-ink-soft">Sonus › Music shows your liked songs sung in the language you’re learning, and finds each song on Spotify so its lyrics follow Spotify’s player.</p>
+          <p data-hint="" className="mt-1 text-[13px] text-ink-soft">Sonus › Music shows your liked songs sung in the language you’re learning, and finds each song on Spotify so its lyrics follow Spotify’s player.</p>
           <Button className="mt-3" variant="secondary" size="sm" icon={LogOut} onClick={() => void disconnectSpotify().then(() => toast('Spotify is disconnected.'))}>
             Disconnect
           </Button>
         </>
       ) : (
         <>
-          <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">
+          <p data-hint="" className="mt-1 text-[13px] leading-relaxed text-ink-soft">
             Spotify lets apps read your library only through an app of your own. It’s free, takes two minutes, and only you use it. Lingua never sees your password; the sign-in stays on this device.
           </p>
           <ol className="mt-3 list-decimal space-y-2.5 pl-5 text-[14px] leading-snug marker:font-semibold marker:text-ink-faint">
@@ -134,7 +134,7 @@ function YouTubeKey({ value }: { value: string }) {
       <label htmlFor="youtube-key" className="text-[15px] font-semibold">
         Whole songs: your YouTube key (optional)
       </label>
-      <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">
+      <p data-hint="" className="mt-1 text-[13px] leading-relaxed text-ink-soft">
         Apple and Spotify play 30 seconds unless you’re signed in, so Cantus finds each song’s whole recording on YouTube by itself. Without a key it asks the public Piped and Invidious servers, which are sometimes busy. With your own free YouTube Data API key (Google Cloud › YouTube Data API v3) it asks YouTube directly. The key stays on this device and travels only in a request header.
       </p>
       <input

@@ -66,6 +66,10 @@ export interface Settings {
     readings: 'new' | 'all' | 'off';
     /** How Known, Learning and Unseen words look; unset is the usual look. Unseen marks show with `highlightUnseen`. */
     words?: Partial<Record<WordLookState, WordLook>>;
+    /** The end page of a text: "Check yourself", the two story questions with AI, and "In your own words". */
+    endCheck: boolean;
+    endStory: boolean;
+    endOwnWords: boolean;
   };
   /** How flashcards look (Thesaurus). */
   cards: { font: ReaderFontId; style: CardStyleId; tint: CardTintId; size: 'sm' | 'md' | 'lg'; width: CardWidth };
@@ -148,6 +152,10 @@ export interface Settings {
     flavour: boolean;
     /** Settings › Lab › Design notes (7-0b): click any element to pin a note. Off for learners. */
     designNotes: boolean;
+    /** The small lines that explain a setting or a card ([data-hint]); off hides them everywhere. */
+    hints: boolean;
+    /** Settings as a calm page of the essentials, or every group and option. */
+    settingsMode: 'simple' | 'full';
   };
   /** Device-only. */
   meta: {
@@ -217,6 +225,9 @@ export const DEFAULT_SETTINGS: Settings = {
     paperDark: 'charcoal',
     contextGlosses: true,
     readings: 'new',
+    endCheck: true,
+    endStory: true,
+    endOwnWords: true,
   },
   cards: { font: 'literata', style: 'plain', tint: 'paper', size: 'md', width: 'normal' },
   study: { newPerDay: 15, maxReviews: 200, desiredRetention: 0.9, ludusAffectsSchedule: true, autoPromoteMature: true },
@@ -230,7 +241,7 @@ export const DEFAULT_SETTINGS: Settings = {
   voice: { off: false, chosen: {} },
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today', flavour: true, designNotes: false },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today', flavour: true, designNotes: false, hints: true, settingsMode: 'simple' },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null, plan: null },
   sync: { devices: [], includeApiKeys: false },
 };

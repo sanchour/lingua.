@@ -2218,6 +2218,13 @@ as its guide. It comes after Lingua 6 · Features (the user, 2026-10-26).
       `node scripts/handbook-pdf.ts` prints it with any Chromium on the computer.
 - [x] **7-0b · Design notes in the Lab** (2026-10-27): Settings › Lab › Design notes; Alt N, click anything, pin a note;
       pins follow their elements; a panel per page; Copy for Claude as Markdown; kept on this device only.
+- [x] **7-0c · Design notes in more detail** (2026-10-27): kinds and priority, ↑ ↓ and Bigger / Smaller for the right
+      element, Shift-drag areas, new words, tweaks with a live preview, what the element is (tokens, component), all in
+      the Markdown. Plan: LINGUA-7-PLAN.md.
+- [x] **7-0d · More in the Device lab** (2026-10-27): restructured as a developer's tool (a rail of six parts and a
+      status strip): replay the first start, the look, grid and outlines, check sizes, toasts, caches.
+- [x] **Settings: Simple and Everything** (2026-10-27, the user's ask): a calm page of essentials by default, every
+      option in Everything (with new end-of-text options), Developer apart, and a switch for tips and explanations.
 - [ ] **7-1 · The first start, quieter and shorter** (handover step 24): a first name before Continue,
       no skip; on the language page no "Commitment issues" line, tiers that say what they have and
       what they don't yet, the core six as small book covers and every other language larger, and a

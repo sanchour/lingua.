@@ -134,7 +134,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
           );
         })}
       </ul>
-      {languages.some((l) => getLanguage(l.id)?.tier === 3) && <p className="mt-2 px-1 text-[13px] leading-snug text-ink-soft">{BETA_INCLUDES}</p>}
+      {languages.some((l) => getLanguage(l.id)?.tier === 3) && <p data-hint="" className="mt-2 px-1 text-[13px] leading-snug text-ink-soft">{BETA_INCLUDES}</p>}
       <Button variant="ghost" icon={Plus} className="mt-3" onClick={() => void startAnotherLanguage()}>
         Learn another language
       </Button>
@@ -161,7 +161,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
       {(target?.flags.length ?? 0) > 1 && (
         <div className="mt-6">
           <p className="text-[14px] font-semibold">Flag for {target?.name}</p>
-          <p className="mt-0.5 mb-3 text-[13px] text-ink-soft">The flag shown beside {target?.name} throughout Lingua.</p>
+          <p data-hint="" className="mt-0.5 mb-3 text-[13px] text-ink-soft">The flag shown beside {target?.name} throughout Lingua.</p>
           <div role="radiogroup" aria-label={`Flag for ${target?.name}`} className="flex flex-wrap gap-2">
             {target?.flags.map((code) => {
               const chosen = flagFor(active.id, active.flag) === code;
@@ -190,7 +190,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
 
       <div className="mt-6">
         <p className="text-[14px] font-semibold">What you enjoy most</p>
-        <p className="mt-0.5 mb-3 text-[13px] text-ink-soft">Home suggests these first, in the order you pick them.</p>
+        <p data-hint="" className="mt-0.5 mb-3 text-[13px] text-ink-soft">Home suggests these first, in the order you pick them.</p>
         <div role="group" aria-label="What you enjoy most" className="flex flex-wrap gap-2">
           {ENJOYMENTS.map((e) => {
             const rank = learner.enjoys.indexOf(e.id);

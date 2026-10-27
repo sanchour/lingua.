@@ -34,7 +34,7 @@ export function ListeningSection({ audio }: { audio: Settings['audio'] }) {
       </div>
 
       <h3 className="mt-6 mb-1 text-[13px] font-bold tracking-wide text-ink-soft uppercase">Sentence repeats</h3>
-      <p className="mb-2 text-[13px] text-ink-soft">With a transcript, the Repeat button in the player plays each sentence more than once, with a short pause to say it yourself.</p>
+      <p data-hint="" className="mb-2 text-[13px] text-ink-soft">With a transcript, the Repeat button in the player plays each sentence more than once, with a short pause to say it yourself.</p>
       <Slider label="Each sentence plays" value={repeat} min={2} max={5} onChange={setRepeat} format={(v) => `${v}×`} />
       <Slider label="Pause between repeats" value={gap} min={0} max={4} step={0.2} onChange={setGap} format={(v) => (v === 0 ? 'None' : `${v.toFixed(1)} s`)} />
 
@@ -63,7 +63,7 @@ export function ListeningSection({ audio }: { audio: Settings['audio'] }) {
               ]}
             />
           </div>
-          <p className="mt-2 text-[13px] text-ink-soft">Groq makes transcripts in seconds with the free key in AI & translation, with a timing for every word. Only the sound is sent.</p>
+          <p data-hint="" className="mt-2 text-[13px] text-ink-soft">Groq makes transcripts in seconds with the free key in AI & translation, with a timing for every word. Only the sound is sent.</p>
         </>
       ) : (
         <>
@@ -76,7 +76,7 @@ export function ListeningSection({ audio }: { audio: Settings['audio'] }) {
               options={(Object.keys(DEVICE_MODELS) as DeviceModel[]).map((m) => ({ value: m, label: `${DEVICE_MODELS[m].label} · ${DEVICE_MODELS[m].size}` }))}
             />
           </div>
-          <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">
+          <p data-hint="" className="mt-2 text-[13px] leading-relaxed text-ink-soft">
             Whisper runs right here, so nothing leaves the device and no key is needed. The model downloads the first time and then works offline. It uses the graphics chip when it can; expect a few minutes for an episode, longer on phones.
           </p>
         </>
@@ -84,7 +84,7 @@ export function ListeningSection({ audio }: { audio: Settings['audio'] }) {
 
       <h3 className="mt-6 mb-1 text-[13px] font-bold tracking-wide text-ink-soft uppercase">Downloads</h3>
       <div>
-        <p className="mb-2 text-[13px] leading-relaxed text-ink-soft">
+        <p data-hint="" className="mb-2 text-[13px] leading-relaxed text-ink-soft">
           Most podcast hosts let Lingua save episodes offline. A few don’t allow apps to download; those still stream. If you run your own relay (for example a small Cloudflare Worker), put its address here, with{' '}
           <code className="rounded bg-sunken px-1">{'{url}'}</code> where the episode address goes.
         </p>

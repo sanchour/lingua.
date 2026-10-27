@@ -230,7 +230,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 }
 
 function Hint({ children }: { children: ReactNode }) {
-  return <p className="mt-1.5 text-[13px] leading-snug text-ink-soft">{children}</p>;
+  return <p data-hint="" className="mt-1.5 text-[13px] leading-snug text-ink-soft">{children}</p>;
 }
 
 function DangerRow({ title, detail, action }: { title: string; detail: string; action: ReactNode }) {

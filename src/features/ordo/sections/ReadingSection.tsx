@@ -41,7 +41,7 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
         {target.sample}
       </div>
       {fallback && (
-        <p className="mt-2 text-[13px] text-ink-soft">
+        <p data-hint="" className="mt-2 text-[13px] text-ink-soft">
           {font.label} has no {SCRIPT_NAMES[target.script]} letters, so {target.name} text uses {fallback}.
         </p>
       )}
@@ -113,7 +113,7 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
       {READING_LANGS.has(target.code) && (
         <div className="mt-5">
           <p className="text-[15px] font-semibold">{target.code === 'ja' ? 'Furigana over words' : 'Pinyin over words'}</p>
-          <p className="mt-0.5 mb-2 text-[13px] text-ink-soft">
+          <p data-hint="" className="mt-0.5 mb-2 text-[13px] text-ink-soft">
             {target.code === 'ja' ? 'Kana above words written with kanji.' : 'The pinyin of each word, with its tones, above the characters.'}
           </p>
           <Segmented
@@ -147,6 +147,29 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
           description="With an AI key (AI & translation), a word you look up gets the meaning its sentence needs. One small request per sentence, remembered. Without a key, the words around it still help choose."
           checked={reader.contextGlosses}
           onChange={(contextGlosses) => void patchSetting('reader', { contextGlosses })}
+        />
+      </div>
+
+      <p className="mt-5 text-[15px] font-semibold">At the end of a text</p>
+      <div className="divide-y divide-line">
+        <ToggleRow
+          title="Check yourself"
+          description="A few quick questions made from the text: a missing word, a meaning, a sentence to put back in order. They count in Ratio."
+          checked={reader.endCheck}
+          onChange={(endCheck) => void patchSetting('reader', { endCheck })}
+        />
+        <ToggleRow
+          title="Questions about the story"
+          description="With AI, two questions about what happened follow the word questions."
+          checked={reader.endStory}
+          disabled={!reader.endCheck}
+          onChange={(endStory) => void patchSetting('reader', { endStory })}
+        />
+        <ToggleRow
+          title="In your own words"
+          description="Retell the text or carry it on in a few lines, checked by AI with a key, and kept in Diarium."
+          checked={reader.endOwnWords}
+          onChange={(endOwnWords) => void patchSetting('reader', { endOwnWords })}
         />
       </div>
     </SettingsSection>

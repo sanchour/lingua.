@@ -12,12 +12,15 @@ import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { fade } from '@/design/motion';
 import { aiBlock } from '@/data/plan';
-import { SearchInput } from '@/design/primitives';
+import { SearchInput, Segmented } from '@/design/primitives';
+import { patchSetting } from '@/data/settings';
 import { cx } from '@/lib/cx';
 import { formatDateTime } from '@/lib/format';
-import { APP_VERSION, GROUPS, LEARNING_GROUPS, getGroup, groupOf, searchSettings, sectionTitle } from './groups';
+import type { Settings } from '@/data/settings';
+import { APP_VERSION, DEVELOPER_GROUPS, GROUPS, LEARNING_GROUPS, getGroup, groupOf, searchSettings, sectionTitle } from './groups';
 import type { SectionId, SettingEntry, SettingsGroup } from './groups';
 import { SectionAlone } from './SettingsSection';
+import { SimpleSettings } from './SimpleSettings';
 import { AboutSection } from './sections/AboutSection';
 import { AiSection } from './sections/AiSection';
 import { AppearanceSection } from './sections/AppearanceSection';
@@ -49,6 +52,7 @@ export default function OrdoPage() {
   const { group: groupId } = useParams();
   const { hash, state } = useLocation();
   const { layout, pointer } = useLayout();
+  const { settings } = useApp();
   const hidden = pointer === 'fine' ? NONE_HIDDEN : TOUCH_HIDDEN;
 
   if (!groupId && hash) {
@@ -57,6 +61,15 @@ export default function OrdoPage() {
   }
   const group = getGroup(groupId);
   if (groupId && !group) return <Navigate to="/settings" replace />;
+  // Simple shows one calm page of the essentials; a link to a group (or a search) still opens it in full.
+  if (!groupId && settings.ui.settingsMode === 'simple') {
+    return (
+      <>
+        <PageHeader title="Settings" actions={<ModeSwitch />} />
+        <SimpleSettings />
+      </>
+    );
+  }
 
   if (layout === 'wide') return <WideOrdo group={group ?? GROUPS[0]} hidden={hidden} />;
   return group ? <GroupPage group={group} hidden={hidden} /> : <Overview hidden={hidden} />;
@@ -76,7 +89,8 @@ function Overview({ hidden }: { hidden: ReadonlySet<SectionId> }) {
       ) : (
         <div className="space-y-6">
           <GroupList title="Your learning" groups={GROUPS.filter((g) => LEARNING_GROUPS.includes(g.id))} summaries={summaries} />
-          <GroupList title="Lingua" groups={GROUPS.filter((g) => !LEARNING_GROUPS.includes(g.id))} summaries={summaries} />
+          <GroupList title="Lingua" groups={GROUPS.filter((g) => !LEARNING_GROUPS.includes(g.id) && !DEVELOPER_GROUPS.includes(g.id))} summaries={summaries} />
+          <GroupList title="Developer" groups={GROUPS.filter((g) => DEVELOPER_GROUPS.includes(g.id))} summaries={summaries} />
         </div>
       )}
     </>
@@ -128,12 +142,13 @@ function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet
 
   return (
     <>
-      <PageHeader title="Settings" />
+      <PageHeader title="Settings" actions={<ModeSwitch />} />
       <div className="grid grid-cols-[236px_minmax(0,1fr)] gap-10">
         <nav aria-label="Settings" className="sticky top-12 self-start">
           <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search settings" className="mb-4" />
-          {[GROUPS.filter((g) => LEARNING_GROUPS.includes(g.id)), GROUPS.filter((g) => !LEARNING_GROUPS.includes(g.id))].map((list, i) => (
-            <ul key={i} className={cx('space-y-0.5', i > 0 && 'mt-3 border-t border-line/70 pt-3')}>
+          {[GROUPS.filter((g) => LEARNING_GROUPS.includes(g.id)), GROUPS.filter((g) => !LEARNING_GROUPS.includes(g.id) && !DEVELOPER_GROUPS.includes(g.id)), GROUPS.filter((g) => DEVELOPER_GROUPS.includes(g.id))].map((list, i) => (
+            <ul key={i} className={cx('space-y-0.5', i === 1 && 'mt-3 border-t border-line/70 pt-3', i === 2 && 'mt-8 border-t border-dashed border-line-strong pt-3')}>
+              {i === 2 && <li className="mb-1 px-2.5 text-[11px] font-bold tracking-[0.14em] text-ink-faint uppercase">For developers</li>}
               {list.map((g) => {
                 const current = !searching && g.id === group.id;
                 return (
@@ -171,6 +186,26 @@ function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet
   );
 }
 
+/** Simple or Everything: the calm page of essentials, or every group and option. */
+function ModeSwitch() {
+  const { settings } = useApp();
+  const navigate = useNavigate();
+  return (
+    <Segmented<Settings['ui']['settingsMode']>
+      label="Settings view"
+      value={settings.ui.settingsMode}
+      onChange={(settingsMode) => {
+        void patchSetting('ui', { settingsMode });
+        if (settingsMode === 'simple') navigate('/settings');
+      }}
+      options={[
+        { value: 'simple', label: 'Simple' },
+        { value: 'full', label: 'Everything' },
+      ]}
+    />
+  );
+}
+
 // ── Shared ──────────────────────────────────────────────────────────────────────────────────────
 
 function Tile({ group, small }: { group: SettingsGroup; small?: boolean }) {
@@ -204,7 +239,7 @@ function SectionView({ id }: { id: SectionId }) {
   const { settings, language } = useApp();
   switch (id) {
     case 'appearance':
-      return <AppearanceSection theme={settings.theme} motion={settings.ui.motion} palette={settings.palette} homeLayout={settings.ui.homeLayout} flavour={settings.ui.flavour} lang={language.id} />;
+      return <AppearanceSection theme={settings.theme} motion={settings.ui.motion} palette={settings.palette} homeLayout={settings.ui.homeLayout} flavour={settings.ui.flavour} hints={settings.ui.hints} lang={language.id} />;
     case 'reading':
       return <ReadingSection reader={settings.reader} lang={language.id} />;
     case 'study':
@@ -232,7 +267,7 @@ function SectionView({ id }: { id: SectionId }) {
     case 'keyboard':
       return <KeyboardSection />;
     case 'performance':
-      return <PerformanceSection perfHud={settings.ui.perfHud} />;
+      return <PerformanceSection perfHud={settings.ui.perfHud} designNotes={settings.ui.designNotes} />;
     case 'about':
       return <AboutSection />;
   }
@@ -296,7 +331,8 @@ function useSummaries(hidden: ReadonlySet<SectionId>): Summaries {
     look: { text: `${themeName} · ${motionName}` },
     ai: !block ? { text: `${llm.provider === 'groq' ? 'Groq' : 'Gemini'} key connected` } : block === 'max' ? { text: apiKeys[llm.provider]?.trim() ? 'Key saved · works with Lingua+ Max' : 'Comes with Lingua+ Max' } : { text: 'Add a free key for explanations', attention: true },
     data: meta.lastBackupAt ? { text: `Last backup ${formatDateTime(meta.lastBackupAt)}` } : { text: 'No backup yet', attention: true },
-    about: { text: `Lingua ${APP_VERSION} · ${hidden.has('keyboard') ? '' : 'shortcuts, '}performance, credits` },
+    about: { text: `Lingua ${APP_VERSION} · ${hidden.has('keyboard') ? '' : 'shortcuts, '}credits` },
+    developer: { text: `Device lab${ui.designNotes ? ' · design notes on' : ''}${ui.perfHud ? ' · FPS on' : ''}` },
   };
 }
 

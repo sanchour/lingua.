@@ -11,7 +11,11 @@ export function LabCard({ icon: Icon, title, description, children }: { icon: Lu
         </span>
         <div className="min-w-0 pt-0.5">
           <h2 className="font-serif text-lg leading-tight font-semibold">{title}</h2>
-          {description && <p className="mt-0.5 text-sm leading-snug text-ink-soft">{description}</p>}
+          {description && (
+            <p data-hint="" className="mt-0.5 text-sm leading-snug text-ink-soft">
+              {description}
+            </p>
+          )}
         </div>
       </div>
       {children}

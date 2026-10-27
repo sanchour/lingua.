@@ -56,7 +56,11 @@ export function ToggleRow({
     <div className="flex items-center gap-4 py-3">
       <label htmlFor={id} className="min-w-0 flex-1 cursor-pointer">
         <div className="text-[15px] font-semibold">{title}</div>
-        {description && <div className="mt-0.5 text-[13px] leading-snug text-ink-soft">{description}</div>}
+        {description && (
+          <div data-hint="" className="mt-0.5 text-[13px] leading-snug text-ink-soft">
+            {description}
+          </div>
+        )}
       </label>
       <Switch id={id} checked={checked} onChange={onChange} label={title} disabled={disabled} />
     </div>

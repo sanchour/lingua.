@@ -747,3 +747,46 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
   refuses, the Markdown is shown to select.
 - **Kept on this device** (`lingua.designNotes` in localStorage): never synced or backed up; Reset clears them. The
   first start's notes stay its own, though it shares "/" with Home.
+
+### More detail (7-0c)
+
+- **Kind and priority:** chips for Layout, Spacing, Size, Colour, Type, Words, Remove, Add, Behaviour, Question, and
+  Must, Should, Could. Pins with Must have a ring, Could ones are sage; the panel shows each note's priority and kinds,
+  with a count by priority at the top.
+- **The right element:** ↑ and ↓ while picking choose the element around or inside (the label says how far up); the
+  card's Bigger and Smaller do the same. The chosen element stays outlined while the card is open.
+- **Areas:** Shift and drag while picking marks a rectangle, kept as fractions of the smallest element around it, so it
+  follows the page; drawn dashed, with the pin at its top right.
+- **New words:** "Edit the words" for an element with text; written out as “old” → “new”.
+- **Tweaks:** add type size, weight, line height, letter spacing, typeface, colour, background, padding, margin, gap,
+  corners, width, height, opacity or shadow; the value now is filled in, the wanted value typed (a bare number is px,
+  `--ink` is the token); Preview shows them on the element until it is turned off or the card closes.
+- **What it is:** a fold-out with the tag, the React component around it (dev server only), classes, size, type,
+  colours with their token names, border, padding, margin, gap and corners. All of it goes into the Markdown.
+
+## Device lab (Settings › Developer, restructured in 7-0d)
+
+- **A developer's tool:** a status strip (version, build, language, plan, light, what's on) and six parts on a rail:
+  Design notes; Flows; Look; Layout; Pieces; Device and data. `?tab=` keeps the part in the address.
+- **Flows:** replay the first start from the beginning or any page, with the language already chosen, over the app;
+  nothing is saved, buying is off, the light chosen in it is put back, Esc or "Leave the replay" ends it. Pretend a
+  plan. Home's first steps shown again.
+- **Look:** light, every palette as a swatch, motion and the language touches, the real settings.
+- **Layout:** a 4 px grid with an 8 px beat and the 720 px measure on the page's column; outlines on every box; both on
+  every page for the session, with a "Lab" chip at the top to turn them off. The check sizes (1280 × 800, 1366 × 768,
+  1440 × 900) resize the installed app's window, or open a window that size from a tab.
+- **Pieces:** a toast of each kind, drawers, long-press, words and scripts, sound, flags. **Device and data:** this
+  device, storage, the translation and AI caches (cleared without touching learning data), smoothness, sharing.
+
+## Settings: Simple and Everything
+
+- **Simple** (the default): one calm page of essentials in soft cards: your language, the look, reading (text size,
+  page style), study (new cards a day), comfort (motion, tips, lesson sounds) and your data, with "Show everything"
+  and a quiet link to the developer's tools. A link to a group or a search result still opens that group in full.
+- **Everything:** every group as before, and more to fine-tune: at the end of a text, Check yourself, the questions
+  about the story and In your own words can each be turned off (Reading).
+- **Developer stands apart:** its own group under "For developers", below the rest: the Device lab, design notes and
+  the FPS monitor.
+- **Tips and explanations** (Look and feel, and Simple › Comfort): off hides the small lines that explain a setting
+  or a card (`data-hint`), everywhere; status lines and warnings (last backup, what a reset deletes, where a key goes)
+  always show.

@@ -15,7 +15,7 @@ const BACK_TO: Record<string, string> = {
   'sonus/book': '/sonus?tab=books',
   'mentis/diarium': '/mentis/diarium',
   'thesaurus/ready': '/thesaurus?tab=discover',
-  'settings/lab': '/settings/about',
+  'settings/lab': '/settings/developer',
   'cantus/spotify': '/sonus',
   'sonus/song': '/sonus',
 };

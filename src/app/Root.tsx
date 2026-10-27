@@ -14,6 +14,7 @@ import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
 import { checkAllMilestones, onMilestone } from '@/data/journey';
 import { installPack, packMissing } from '@/services/packs/packs';
+import { useDevLab } from '@/features/lab/devLab';
 import { toast } from '@/state/ui';
 import { PackProgress } from './PackProgress';
 import { AppShell } from './shells/AppShell';
@@ -21,6 +22,7 @@ import { AppShell } from './shells/AppShell';
 const Onboarding = lazy(() => import('@/app/onboarding/Onboarding'));
 const PerfHud = lazy(() => import('@/features/lab/PerfHud'));
 const DesignNotes = lazy(() => import('@/features/lab/designNotes/DesignNotes'));
+const DevOverlays = lazy(() => import('@/features/lab/DevOverlays'));
 
 export function Root() {
   const settings = useSettings();
@@ -33,11 +35,20 @@ export function Root() {
     document.documentElement.dataset.motion = motionPref;
   }, [motionPref]);
 
+  // Tips and explanations: mirrored on <html data-hints> so CSS hides every [data-hint] line when they're off.
+  const hints = settings?.ui.hints !== false;
+  useLayoutEffect(() => {
+    document.documentElement.dataset.hints = hints ? 'on' : 'off';
+  }, [hints]);
+
   useEffect(() => {
     void ensureDeviceMeta();
   }, []);
 
   const onboarded = Boolean(settings?.meta.onboardedAt && language);
+  // The Device lab's session tools (7-0d): a replay of the first start, and the layout overlays.
+  const replay = useDevLab((s) => s.replay);
+  const overlays = useDevLab((s) => s.grid || s.outlines);
 
   // The studied language's touch in the design (5.1-4b), unless it's turned off.
   const flavourLang = onboarded && settings?.ui.flavour !== false ? language?.id : null;
@@ -96,7 +107,11 @@ export function Root() {
 
   return (
     <MotionConfig reducedMotion={motionPref === 'reduced' ? 'always' : motionPref === 'full' ? 'never' : 'user'}>
-      {context && onboarded ? (
+      {replay && context ? (
+        <Suspense fallback={null}>
+          <Onboarding key={`replay-${replay.from}`} replay={replay.from} />
+        </Suspense>
+      ) : context && onboarded ? (
         <AppContext.Provider value={context}>
           <AppShell />
         </AppContext.Provider>
@@ -111,6 +126,11 @@ export function Root() {
       {settings.ui.perfHud && (
         <Suspense fallback={null}>
           <PerfHud />
+        </Suspense>
+      )}
+      {(overlays || replay) && (
+        <Suspense fallback={null}>
+          <DevOverlays />
         </Suspense>
       )}
       {settings.ui.designNotes && (

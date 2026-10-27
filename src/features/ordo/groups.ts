@@ -1,7 +1,7 @@
 // How Ordo is arranged: a few groups, each a page of one or more sections, and an index of every
 // setting so the search can take you straight to it.
 import type { LucideIcon } from 'lucide-react';
-import { BookOpenText, Database, Gem, GraduationCap, Headphones, Info, Languages, Music2, Palette, Sparkles } from 'lucide-react';
+import { BookOpenText, Database, Gem, GraduationCap, Headphones, Info, Languages, Music2, Palette, Sparkles, Wrench } from 'lucide-react';
 import { searchKey } from '@/design/primitives';
 
 export type SectionId = 'appearance' | 'reading' | 'study' | 'cards' | 'listening' | 'music' | 'language' | 'ai' | 'plus' | 'sync' | 'storage' | 'backup' | 'reset' | 'keyboard' | 'performance' | 'about';
@@ -26,8 +26,12 @@ export const GROUPS: SettingsGroup[] = [
   { id: 'ai', title: 'AI and translation', icon: Sparkles, color: '#cf8299', sections: ['ai'] },
   { id: 'plus', title: 'Lingua+', icon: Gem, color: '#c08a4a', sections: ['plus'] },
   { id: 'data', title: 'Your data', icon: Database, color: '#5f9e96', sections: ['sync', 'storage', 'backup', 'reset'] },
-  { id: 'about', title: 'About and more', icon: Info, color: '#948d82', sections: ['keyboard', 'performance', 'about'] },
+  { id: 'about', title: 'About and more', icon: Info, color: '#948d82', sections: ['keyboard', 'about'] },
+  { id: 'developer', title: 'Developer', icon: Wrench, color: '#6b7a8f', sections: ['performance'] },
 ];
+
+/** The developer's tools stand apart from the learner's settings, last and on their own. */
+export const DEVELOPER_GROUPS = ['developer'];
 
 /** "2.0.0" reads as "2.0"; a patch release keeps its third number. */
 export const APP_VERSION = __APP_VERSION__.replace(/^(\d+\.\d+)\.0$/, '$1');
@@ -55,6 +59,7 @@ export interface SettingEntry {
 export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Theme', section: 'appearance', also: 'paper nocturne dark mode light night colour color system appearance' },
   { label: 'Motion', section: 'appearance', also: 'animation reduce motion transitions movement' },
+  { label: 'Tips and explanations', section: 'appearance', also: 'hints subtitles descriptions help text quiet' },
 
   { label: 'Reading font', section: 'reading', also: 'typeface literata lora newsreader merriweather atkinson comfortaa serif sans' },
   { label: 'Text size', section: 'reading', also: 'font size bigger smaller zoom' },
@@ -65,6 +70,9 @@ export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Highlight unseen words', section: 'reading', also: 'underline new words' },
   { label: 'Mark unseen words as known when I turn the page', section: 'reading', also: 'known lingq auto' },
   { label: 'Translations that read the sentence', section: 'reading', also: 'context ai gloss meaning' },
+  { label: 'Check yourself', section: 'reading', also: 'questions quiz end page codex comprehension' },
+  { label: 'Questions about the story', section: 'reading', also: 'ai questions end page codex comprehension' },
+  { label: 'In your own words', section: 'reading', also: 'retell write end page codex diarium' },
 
   { label: 'New cards a day, for new decks', section: 'study', also: 'new per day limit pace' },
   { label: 'Remember, for new decks', section: 'study', also: 'retention fsrs recall percent' },
@@ -119,6 +127,8 @@ export const SETTINGS_INDEX: SettingEntry[] = [
 
   { label: 'Keyboard shortcuts', section: 'keyboard', also: 'keys hotkeys' },
   { label: 'FPS monitor', section: 'performance', also: 'frame rate speed performance' },
+  { label: 'Device lab', section: 'performance', also: 'developer test replay onboarding grid outlines toasts caches' },
+  { label: 'Design notes', section: 'performance', also: 'developer review feedback claude pin' },
   { label: 'About Lingua', section: 'about', also: 'version credits licences licenses' },
 ];
 
@@ -137,7 +147,7 @@ const SECTION_TITLES: Record<SectionId, string> = {
   backup: 'Backup & move devices',
   reset: 'Reset',
   keyboard: 'Keyboard shortcuts',
-  performance: 'Performance',
+  performance: 'Developer tools',
   about: 'About Lingua',
 };
 

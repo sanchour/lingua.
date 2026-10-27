@@ -1660,3 +1660,21 @@ Short records of choices that are not obvious from the code. Newest last.
   button never presses it. Alt N is matched by the physical key; it works in text fields except on a Mac, where
   Option N types the tilde of ñ.
 - **The bar moves between corners** because the bottom right is shared with the mini player and download progress.
+
+## 2026-10-27 — Design notes in detail, the Device lab as a developer's tool, Simple settings (7-0c, 7-0d)
+
+- **Areas are kept relative to the smallest element around them**, as fractions, like a pin's spot: they follow the page
+  when it scrolls or reflows, and still make sense when the window is another size.
+- **Tweak previews are inline `!important` styles** on the element, put back exactly as they were when Preview is turned
+  off, the element changes or the card closes; nothing is left on the page.
+- **Token names come from the app's own stylesheets**, matched by colour where the element is (so a room's own
+  colours are named too); the shortest name first, at most two.
+- **The component name is read from React's fiber in the dev server only**; production builds minify names, so it is
+  left out there rather than shown wrong.
+- **The replay draws the first start over the app** (the Lab's state in `features/lab/devLab.ts`, session only) and
+  never calls `completeOnboarding`; the light is the real setting, so the one from before is written back at the end.
+- **Settings default to Simple** (the user, 2026-10-27: "a cute, minimal clean settings … essential", and "a more
+  customizable settings"): most people only change a few things; Everything is one click away and remembered. The
+  developer's tools stand apart in their own group, last.
+- **Tips and explanations hide by an attribute** (`data-hint` on the explaining line, `html[data-hints=off]` in CSS):
+  one switch for every primitive and Settings, no prop threading. Lines that report a state or warn stay untagged.

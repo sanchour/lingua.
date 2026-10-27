@@ -54,7 +54,11 @@ function Header({ id, title, description, onClose }: { id: string; title: string
         <h2 id={id} className="font-serif text-xl font-semibold">
           {title}
         </h2>
-        {description && <p className="mt-0.5 text-sm text-ink-soft">{description}</p>}
+        {description && (
+          <p data-hint="" className="mt-0.5 text-sm text-ink-soft">
+            {description}
+          </p>
+        )}
       </div>
       <IconButton icon={X} label="Close" size="sm" variant="soft" onClick={onClose} showTooltip={false} className="-mr-1" />
     </header>

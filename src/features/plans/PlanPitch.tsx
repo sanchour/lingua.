@@ -8,6 +8,7 @@ import type { PlanKind } from '@/data/plan';
 import { spring } from '@/design/motion';
 import { Button, Segmented } from '@/design/primitives';
 import { TEST_MODE } from '@/services/licence/config';
+import { toast } from '@/state/ui';
 import { useBuy } from './PlanCards';
 
 type Perk = { icon: LucideIcon; name: string; text: string };
@@ -66,9 +67,11 @@ function Yours({ children }: { children: ReactNode }) {
  * free stays one clear line under them. Only true promises: what each plan opens, how it is paid, and
  * that words stay on the device.
  */
-export function PlanPitch({ current, onFree }: { current: PlanKind; onFree: () => void }) {
+export function PlanPitch({ current, onFree, replay = false }: { current: PlanKind; onFree: () => void; replay?: boolean }) {
   const [period, setPeriod] = useState<'month' | 'year'>('month');
-  const { busy, get } = useBuy();
+  const { busy, get: buyNow } = useBuy();
+  // The Device lab's replay of the first start (7-0d) buys nothing.
+  const get = replay ? async (_: Parameters<typeof buyNow>[0]) => void toast('Buying is off in the replay.') : buyNow;
   const rise = (i: number) => ({ initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { ...spring.soft, delay: 0.08 + i * 0.1 } });
 
   return (
