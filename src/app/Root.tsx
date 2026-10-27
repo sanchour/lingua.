@@ -17,6 +17,7 @@ import { installPack, packMissing } from '@/services/packs/packs';
 import { useDevLab } from '@/features/lab/devLab';
 import { toast } from '@/state/ui';
 import { PackProgress } from './PackProgress';
+import { StartingUp } from './StartingUp';
 import { AppShell } from './shells/AppShell';
 
 const Onboarding = lazy(() => import('@/app/onboarding/Onboarding'));
@@ -102,8 +103,8 @@ export function Root() {
 
   const context = useMemo(() => (settings && language ? { settings, language } : null), [settings, language]);
 
-  // First IndexedDB read takes a few ms; the themed background is already painted by index.html.
-  if (!settings || language === undefined) return null;
+  // The first IndexedDB read takes a few ms; if it takes seconds, StartingUp says so instead of a blank page.
+  if (!settings || language === undefined) return <StartingUp waitingFor={!settings ? (language === undefined ? 'settings and language' : 'settings') : 'language'} />;
 
   return (
     <MotionConfig reducedMotion={motionPref === 'reduced' ? 'always' : motionPref === 'full' ? 'never' : 'user'}>
