@@ -33,7 +33,20 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Shown until the app draws (React replaces it), so a slow start or an update never looks like a blank page. -->
+      <style>
+        #boot { min-height: 100vh; display: grid; place-items: center; font: 600 28px/1.2 Georgia, serif; color: #2b2522; background: #faf6f0; }
+        [data-theme='nocturne'] #boot { color: #efe7df; background: #1f1c1a; }
+        #boot span { opacity: 0.55; animation: boot 1.6s ease-in-out infinite alternate; }
+        #boot p { display: none; margin: 14px 0 0; font: 400 14px/1.5 system-ui, sans-serif; text-align: center; opacity: 0.7; }
+        #boot.slow p { display: block; }
+        #boot button { font: inherit; text-decoration: underline; background: none; border: 0; color: inherit; cursor: pointer; padding: 0; }
+        @keyframes boot { to { opacity: 1; } }
+      </style>
+      <div id="boot"><div><span>Lingua</span><p>Taking longer than usual. <button type="button" onclick="location.reload()">Reload</button></p></div></div>
+      <script>setTimeout(function () { var b = document.getElementById('boot'); if (b) b.className = 'slow'; }, 15000);</script>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
