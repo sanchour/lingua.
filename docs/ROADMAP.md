@@ -2186,42 +2186,42 @@ and push, finish".*
 - **Can't be checked here:** the extension on the streaming services (it needs the user's accounts
       and an unpacked install); Gemini's transcript needs a Max key.
 
-## Lingua 6 · Design
+## Lingua 6 · Features
 
-Planned 2026-10-26 in [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md): a design update, page by page, from the
+Planned 2026-10-26 in [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md), from the audit
+[LINGUA-6-FEATURES.md](LINGUA-6-FEATURES.md): the Lingyu feature catalogue's 1,618 entries checked against Lingua
+(437 there, 262 partly, 834 missing, 38 already in Lingua 5.2, 47 needing the user's word). Built next after Lingua
+5's check and before Lingua 7 (the user, 2026-10-26), in other sessions; each step is claimed in the plan's own table.
+
+- [x] **The audit and the plan** (2026-10-26).
+- [ ] **Part A · Foundations:** 6-1 the word record · 6-2 the inbox and the deck workshop · 6-3 cards and memory ·
+      6-4 one exercise engine · 6-5 the learner's record · 6-6 generated materials, checked.
+- [ ] **Part B · The skills:** 6-7 grammar · 6-8 reading · 6-9 listening · 6-10 sounds and pronunciation · 6-11
+      speaking · 6-12 writing · 6-13 translating and comparing languages.
+- [ ] **Part C · Paths and guidance:** 6-14 courses and lessons · 6-15 the tutor, in context · 6-16 personal and
+      adaptive · 6-17 goals, habits and progress · 6-18 exams and levels.
+- [ ] **Part D · More of the language:** 6-19 immersion and culture · 6-20 phrasebook, notebook and the word map ·
+      6-21 games and projects · 6-22 dictionary tools · 6-23 tools for each language.
+- [ ] **Part E · Around the app:** 6-24 import, export and integrations · 6-25 accessibility and the desktop.
+- [ ] **Part F · Further out, with the user's word:** 6-26 experiments · 6-27 together, and beyond the desk.
+- [ ] **6-28 · Lingua 6's check;** version 0.6.0.
+
+## Lingua 7 · Design
+
+Planned 2026-10-26 in [LINGUA-7-PLAN.md](LINGUA-7-PLAN.md): a design update, page by page, from the
 user's notes, with the handbook ([handbook/Lingua-Design-Handbook.pdf](handbook/Lingua-Design-Handbook.pdf))
-as its guide. It comes after Lingua 7 · Features (the user, 2026-10-26).
+as its guide. It comes after Lingua 6 · Features (the user, 2026-10-26).
 
-- [x] **6-0 · The handbook** (2026-10-26): a small A5 book, forty pages, on designing or improving each
+- [x] **7-0 · The handbook** (2026-10-26): a small A5 book, forty pages, on designing or improving each
       page in Lingua's own spirit: the spirit, the materials, every room on one page, the states, the
       check and a review sheet, and every number in an appendix. Source `docs/handbook/handbook.html`;
       `node scripts/handbook-pdf.ts` prints it with any Chromium on the computer.
-- [ ] **6-1 · The first start, quieter and shorter** (handover step 23): a first name before Continue,
+- [ ] **7-1 · The first start, quieter and shorter** (handover step 24): a first name before Continue,
       no skip; on the language page no "Commitment issues" line, tiers that say what they have and
       what they don't yet, the core six as small book covers and every other language larger, and a
       country panel without tabs; the level redone as seven steps with a card that pops up with what
       each could mean; "You speak" and "Why" out of the first start; the goal without a pace or a
       forecast, with what the minutes hold instead. Three bare "remove" notes are read as section 4 of
       the plan says, until the user says otherwise.
-- [ ] **6-2 to 6-10 · The rooms and the shared pieces,** each planned when the user's notes for it come.
-- [ ] **6-11 · Lingua 6's check;** the version becomes 0.8.0 (Lingua 7 is built first, as 0.7.x).
-
-## Lingua 7 · Features
-
-Planned 2026-10-26 in [LINGUA-7-PLAN.md](LINGUA-7-PLAN.md), from the audit
-[LINGUA-7-FEATURES.md](LINGUA-7-FEATURES.md): the Lingyu feature catalogue's 1,618 entries checked against Lingua
-(437 there, 262 partly, 834 missing, 38 already in Lingua 5.2, 47 needing the user's word). Built next after Lingua
-5's check and before Lingua 6 (the user, 2026-10-26), in other sessions; each step is claimed in the plan's own table.
-
-- [x] **The audit and the plan** (2026-10-26).
-- [ ] **Part A · Foundations:** 7-1 the word record · 7-2 the inbox and the deck workshop · 7-3 cards and memory ·
-      7-4 one exercise engine · 7-5 the learner's record · 7-6 generated materials, checked.
-- [ ] **Part B · The skills:** 7-7 grammar · 7-8 reading · 7-9 listening · 7-10 sounds and pronunciation · 7-11
-      speaking · 7-12 writing · 7-13 translating and comparing languages.
-- [ ] **Part C · Paths and guidance:** 7-14 courses and lessons · 7-15 the tutor, in context · 7-16 personal and
-      adaptive · 7-17 goals, habits and progress · 7-18 exams and levels.
-- [ ] **Part D · More of the language:** 7-19 immersion and culture · 7-20 phrasebook, notebook and the word map ·
-      7-21 games and projects · 7-22 dictionary tools · 7-23 tools for each language.
-- [ ] **Part E · Around the app:** 7-24 import, export and integrations · 7-25 accessibility and the desktop.
-- [ ] **Part F · Further out, with the user's word:** 7-26 experiments · 7-27 together, and beyond the desk.
-- [ ] **7-28 · Lingua 7's check;** version 0.7.0.
+- [ ] **7-2 to 7-10 · The rooms and the shared pieces,** each planned when the user's notes for it come.
+- [ ] **7-11 · Lingua 7's check;** the version becomes 0.7.0 (Lingua 6 is built first, as 0.6.x).

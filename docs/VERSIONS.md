@@ -16,8 +16,9 @@ always say which build is live.
 - `0.5.2-alpha.1`, `0.5.2-alpha.2`, … are the pushes while 5.2 is built.
 - When a part's check passes (5.2-10), the suffix goes: **`0.5.2`** is that part, finished and checked.
 - The next part starts at `-alpha.1` again: `0.5.3-alpha.1`, or a new Lingua's line.
-- **Lingua 7 is built before Lingua 6** (the user, 2026-10-26), and versions only go up: Lingua 7 · Features is
-  `0.7.0-alpha.N` (`--line 0.7.0`), then Lingua 6 · Design takes `0.8.0-alpha.N` (`--line 0.8.0`). The names stay.
+- **Lingua 6 · Features** is `0.6.0-alpha.N` (`--line 0.6.0`), built after Lingua 5's check; **Lingua 7 · Design** follows as
+  `0.7.0-alpha.N` (`--line 0.7.0`). The two plans were renamed on 2026-10-27 so their numbers follow the order they're
+  built in (the user: "so Lingua Design becomes 0.7").
 - **Lingua 5.1** was checked on 2026-10-25 (5.1-5) as 5.1.0; in this scheme it is **`0.5.1`**
   (tagged at that commit). The versions before it (2.0, 3.0, 5.1.0) keep their old numbers in
   the history.

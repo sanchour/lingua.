@@ -1631,3 +1631,16 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Chapters number themselves** in the book (the script counts them), so other docs cite chapters by name.
 - **The PDF keeps its file name** (`Lingua-Design-Handbook.pdf`) so every link to it still works; its title is
   "The Lingua Handbook".
+
+## 2026-10-27 — Lingua 6 is Features, Lingua 7 is Design; the handbook's missing chapters
+
+- **Renamed so the numbers follow the order** (the user: "Put Lingua 7 as Lingua 6 - Design, so Lingua Design becomes
+  0.7"). Lingua 6 · Features (`LINGUA-6-PLAN.md`, the audit `LINGUA-6-FEATURES.md`, steps 6-1 … 6-28, versions 0.6.x,
+  handover step 23) is built first; Lingua 7 · Design (`LINGUA-7-PLAN.md`, steps 7-0 … 7-11, versions 0.7.x, handover
+  step 24) follows. The 0.8 line from earlier the same day is gone. Entries above this one, and the changelog, keep the
+  old names as they were written.
+- **The handbook's gaps, filled** (the user: "check if anything still misses from handbook and add that"): adding a
+  language (what each tier takes, with the commands), getting the language right (named sources, a native reader
+  before Core, reports become fixes), the mark and the press kit, how Lingua is built, keeping learners' data safe,
+  when something breaks (an order of severity and of steps), choosing what's next, your own rhythm, and an index the
+  print script makes from the pages themselves. 90 pages.

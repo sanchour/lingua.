@@ -1,4 +1,4 @@
-// Prints the Lingua Handbook (docs/handbook/handbook.html) to docs/handbook/Lingua-Design-Handbook.pdf (Lingua 6-0).
+// Prints the Lingua Handbook (docs/handbook/handbook.html) to docs/handbook/Lingua-Design-Handbook.pdf (Lingua 7-0).
 //   node scripts/handbook-pdf.ts            from the repository's root, after npm install (the fonts come from node_modules)
 // It drives a Chromium already on the computer over the DevTools protocol, with Node's own WebSocket: Chrome, Edge,
 // or Playwright's headless shell (set CHROME_PATH to use another). The PDF gets clickable contents and bookmarks from the headings.
