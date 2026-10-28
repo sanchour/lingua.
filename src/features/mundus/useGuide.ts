@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useApp } from '@/app/context';
 import { getLanguage } from '@/core/lang/languages';
-import { emptyWeek, guideNote, nextSteps, SESSION_LANE, steer } from '@/core/mundus/guide';
-import type { GuideInput, Step, Steer, Week } from '@/core/mundus/guide';
+import { emptyWeek, guideNote, guideSteer, nextSteps, replyLine, SESSION_LANE } from '@/core/mundus/guide';
+import type { GuideInput, Replies, Step, Steer, Week } from '@/core/mundus/guide';
 import { tipsFor } from '@/core/mundus/tips';
 import type { Picks } from '@/core/mundus/types';
 import { useChallenges } from '@/data/challenges';
@@ -11,6 +11,7 @@ import { db } from '@/data/db';
 import { currentGrammarTopic } from '@/data/grammar';
 import { localDateKey } from '@/lib/format';
 import { usePicks } from '@/features/mundus/hooks';
+import { useReplies } from '@/features/mundus/replies';
 import { useRecent } from '@/features/mentis/useRecent';
 
 const DAY = 86_400_000;
@@ -63,7 +64,10 @@ export interface Guide {
   langName: string;
   week: Week;
   steer: Steer;
+  /** Mundus's line: the day's note, or its answer to what the learner said back. */
   note: string;
+  /** What the learner said back today (5.2-7). */
+  replies: Replies;
   steps: Step[];
   picks: Picks | null;
   /** Tips done today (they stay in place, ticked). */
@@ -81,23 +85,25 @@ export function useGuide(): Guide | undefined {
   const done = useChallenges(lang);
   const grammar = useGrammarNext(lang, language.level);
   const recent = useRecent(lang);
+  const replies = useReplies();
   const day = Math.floor(Date.now() / DAY);
 
   return useMemo(() => {
     if (picks === undefined || !week || !used || !done || !recent) return undefined;
     const today = localDateKey();
     const doneTips = new Set(done.filter((r) => r.date !== today).map((r) => r.tipId));
-    const s = steer(week, enjoys);
+    const s = guideSteer({ week, enjoys, replies });
     const langName = getLanguage(lang)?.name ?? lang;
     return {
       lang,
       langName,
       week,
       steer: s,
-      note: guideNote(week, s, langName),
-      steps: nextSteps({ level: language.level, enjoys, week, picks, tips: tipsFor(lang), doneTips, used, grammar, recent: recent[0], day }),
+      note: replyLine(replies, s, guideNote(week, s, langName)),
+      replies,
+      steps: nextSteps({ level: language.level, enjoys, week, picks, tips: tipsFor(lang), doneTips, used, grammar, recent: recent[0], day, replies }),
       picks,
       doneToday: new Set(done.filter((r) => r.date === today).map((r) => r.tipId)),
     };
-  }, [picks, week, used, done, recent, enjoys, lang, language.level, grammar, day]);
+  }, [picks, week, used, done, recent, enjoys, lang, language.level, grammar, day, replies]);
 }

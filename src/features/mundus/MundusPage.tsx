@@ -23,6 +23,7 @@ import { ExploreView } from '@/features/mundus/ExploreView';
 import { pickKey, usePickLookups, useStreaming } from '@/features/mundus/hooks';
 import type { PickLookup } from '@/features/mundus/hooks';
 import { NoPicks, PickCard, PicksView } from '@/features/mundus/PicksView';
+import { ReplyBar } from '@/features/mundus/ReplyBar';
 import { TIP_ICONS, TipsView } from '@/features/mundus/TipsView';
 import { TitleSheet } from '@/features/visio/services/TitleSheet';
 import type { SheetTitle } from '@/features/visio/services/TitleSheet';
@@ -187,7 +188,10 @@ function Hero({ guide, level }: { guide: Guide; level: Parameters<typeof stageIn
           <p className={label} style={{ color: MUNDUS }}>
             Mundus says
           </p>
-          <p className="mt-2 font-serif text-[21px] leading-snug font-semibold text-ink sm:text-[25px]">{guide.note}</p>
+          <p aria-live="polite" className="mt-2 font-serif text-[21px] leading-snug font-semibold text-ink sm:text-[25px]">
+            {guide.note}
+          </p>
+          <ReplyBar replies={guide.replies} />
           <div className="mt-4 flex flex-wrap gap-2">
             <Chip>
               {stage.name} · {level === 'A0' ? 'beginner' : level}
@@ -258,7 +262,8 @@ function StepCard({ step, n, lang, done, lookup, onOpen }: { step: Step; n: numb
         <span className="text-[12px] font-bold tracking-[0.14em] uppercase" style={{ color: `color-mix(in oklab, ${hue} 85%, var(--color-ink))` }}>
           {kind}
         </span>
-        <span className="ml-auto font-serif text-[15px] font-semibold text-ink-faint tabular-nums" aria-hidden>
+        {step.minutes && <span className="ml-auto rounded-full bg-surface/80 px-2 py-0.5 text-[11.5px] font-bold text-ink-soft">{step.minutes} min</span>}
+        <span className={cx('font-serif text-[15px] font-semibold text-ink-faint tabular-nums', !step.minutes && 'ml-auto')} aria-hidden>
           {n}
         </span>
       </div>

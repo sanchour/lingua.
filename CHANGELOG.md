@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.22** · 2026-10-28 · Mundus says (5.2-7): replies that change the steps, kept for the day
 - **0.5.2-alpha.21** · 2026-10-28 · Sermo (5.2-6): three screens, 81 scenes, the AIs with their marks, no chat inside Lingua
 - **0.5.2-alpha.20** · 2026-10-28 · Lingua 6 plan: stages, which AI builds what, and 6-0 the contracts
 - **0.5.2-alpha.19** · 2026-10-27 · Sandesigner 1.1, Design notes collapse & hover, Mac/Windows command symbols

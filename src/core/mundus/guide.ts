@@ -27,8 +27,8 @@ export const emptyWeek = (): Week => ({ read: 0, listen: 0, watch: 0, words: 0, 
 export interface Steer {
   /** Where to go next. */
   lane: Lane;
-  /** start: barely begun this week · quiet: nothing in this lane yet · balance: the quietest lane. */
-  why: 'start' | 'quiet' | 'balance';
+  /** start: barely begun this week · quiet: nothing in this lane yet · balance: the quietest lane · asked: the learner said so. */
+  why: 'start' | 'quiet' | 'balance' | 'asked';
   /** The lane with the most time this week. */
   top?: Lane;
 }
@@ -116,10 +116,51 @@ export function nextLevelPicks(picks: Picks | null, level: Level, count = 4): Ar
 // ── Next steps ─────────────────────────────────────────────────────────────
 
 export type Step =
-  | { key: string; type: 'pick'; lane: Lane; pick: Pick; group: PickGroup; reason: string }
-  | { key: string; type: 'room'; lane: Lane; title: string; to: string; action: string; reason: string }
-  | { key: string; type: 'tip'; tip: Tip; reason: string }
-  | { key: string; type: 'grammar'; title: string; to: string; reason: string };
+  | { key: string; type: 'pick'; lane: Lane; pick: Pick; group: PickGroup; reason: string; minutes?: number }
+  | { key: string; type: 'room'; lane: Lane; title: string; to: string; action: string; reason: string; minutes?: number }
+  | { key: string; type: 'tip'; tip: Tip; reason: string; minutes?: number }
+  | { key: string; type: 'grammar'; title: string; to: string; reason: string; minutes?: number };
+
+// ── Replies (5.2-7): what the learner says back to Mundus, kept for the day ──
+
+export interface Replies {
+  /** The day they belong to (YYYY-MM-DD); another day starts again. */
+  date: string;
+  /** "I'd rather listen": the lane the learner asked for. */
+  lane?: Lane;
+  /** "Something shorter": five-minute steps. */
+  short?: boolean;
+  /** How many times "Not today" was said: each moves the day's picks along. */
+  skips: number;
+  /** The reply Mundus answers in its line. */
+  last?: 'lane' | 'short' | 'why' | 'skip';
+}
+
+export const noReplies = (date: string): Replies => ({ date, skips: 0 });
+
+/** The lanes a learner can ask for instead (the ones Mundus finds things for). */
+export const ASKABLE: Lane[] = ['read', 'listen', 'watch'];
+const ASK_VERB: Partial<Record<Lane, string>> = { read: 'read', listen: 'listen to', watch: 'watch' };
+export const askLabel = (lane: Lane) => `I’d rather ${lane}`;
+
+export type Say = { kind: 'lane'; lane: Lane } | { kind: 'short' } | { kind: 'why' } | { kind: 'skip' } | { kind: 'reset' };
+
+/** What a reply changes in the replies kept for the day. */
+export function reply(prev: Replies, say: Say, date: string): Replies {
+  const base = prev.date === date ? prev : noReplies(date);
+  switch (say.kind) {
+    case 'lane':
+      return { ...base, lane: say.lane, last: 'lane' };
+    case 'short':
+      return { ...base, short: !base.short, last: base.short ? undefined : 'short' };
+    case 'why':
+      return { ...base, last: 'why' };
+    case 'skip':
+      return { ...base, skips: base.skips + 1, last: 'skip' };
+    case 'reset':
+      return noReplies(date);
+  }
+}
 
 export interface GuideInput {
   level: Level;
@@ -136,11 +177,14 @@ export interface GuideInput {
   recent?: { title: string; lane: 'read' | 'watch' | 'listen' };
   /** Days since the epoch: picks and tips rotate daily. */
   day: number;
+  /** What the learner said back today (5.2-7). */
+  replies?: Replies;
 }
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export function steerReason(s: Steer): string {
+  if (s.why === 'asked') return `You asked for something to ${ASK_VERB[s.lane] ?? s.lane} today.`;
   if (s.why === 'start') return 'A good way to begin the week, with what you enjoy.';
   if (s.why === 'quiet') return `Lots of ${NOUN[s.top!]} this week and no ${NOUN[s.lane]} yet.`;
   return `${cap(NOUN[s.lane])} has been the quietest part of your week.`;
@@ -175,14 +219,19 @@ const FIRST_TIME: Array<{ room: keyof GuideInput['used']; lane: Lane; title: str
  * screen, and a way to grow (the next grammar topic, a room not tried yet, or a stretch).
  */
 export function nextSteps(input: GuideInput): Step[] {
-  const s = steer(input.week, input.enjoys);
+  const r = input.replies;
+  const s = guideSteer(input);
+  // "Not today" moves the day's picks and tips along, so what comes up is something else.
+  const day = input.day + (r?.skips ?? 0);
+  const short = Boolean(r?.short);
   const steps: Step[] = [];
-  const pick = lanePick(input.picks, s.lane, input.level, input.day);
-  if (pick) steps.push({ key: `pick:${pick.pick.title}`, type: 'pick', lane: s.lane, ...pick, reason: steerReason(s) });
-  else steps.push({ key: `room:${s.lane}`, type: 'room', lane: s.lane, ...laneRoom(s.lane, input.recent), reason: steerReason(s) });
+  const pick = short ? undefined : lanePick(input.picks, s.lane, input.level, day);
+  const why = steerReason(s);
+  if (pick) steps.push({ key: `pick:${pick.pick.title}`, type: 'pick', lane: s.lane, ...pick, reason: why });
+  else steps.push({ key: `room:${s.lane}`, type: 'room', lane: s.lane, ...(short ? SHORT_ROOM[s.lane] : laneRoom(s.lane, input.recent)), reason: short ? `Five minutes is enough. ${why}` : why });
 
   const { now } = tipsByReach(input.tips, input.level);
-  const tip = tipOfTheDay(now, input.doneTips, input.day);
+  const tip = tipOfTheDay(now, input.doneTips, day);
   if (tip) steps.push({ key: `tip:${tip.id}`, type: 'tip', tip, reason: 'Something to try away from the screen today.' });
 
   const fresh = FIRST_TIME.find((f) => !input.used[f.room] && f.lane !== s.lane);
@@ -191,10 +240,42 @@ export function nextSteps(input: GuideInput): Step[] {
   } else if (fresh) {
     steps.push({ key: `room:${fresh.room}`, type: 'room', lane: fresh.lane, title: fresh.title, to: fresh.to, action: fresh.action, reason: fresh.reason });
   } else {
-    const stretch = nextLevelPicks(input.picks, input.level, 8)[input.day % 8];
+    const stretch = nextLevelPicks(input.picks, input.level, 8)[day % 8];
     if (stretch) steps.push({ key: `pick:${stretch.pick.title}`, type: 'pick', lane: stretch.group === 'books' ? 'read' : stretch.group === 'podcasts' ? 'listen' : 'watch', ...stretch, reason: `A stretch: it’s ${stretch.pick.level}, a step above you. Worth a try.` });
   }
-  return steps;
+  return short ? steps.map((st) => ({ ...st, minutes: 5 })) : steps;
+}
+
+/** The steer the guide follows: what the learner asked for, else the quietest part of the week. */
+export function guideSteer(input: { week: Week; enjoys: readonly Enjoyment[]; replies?: Replies }): Steer {
+  const s = steer(input.week, input.enjoys);
+  return input.replies?.lane ? { lane: input.replies.lane, why: 'asked', top: s.top } : s;
+}
+
+/** The five-minute way into each lane, for "Something shorter". */
+const SHORT_ROOM: Record<Lane, { title: string; to: string; action: string }> = {
+  read: { title: 'Read one short article', to: '/codex/new?way=news', action: 'Open the news' },
+  listen: { title: 'Five minutes of a podcast', to: '/sonus?tab=podcasts', action: 'Open podcasts' },
+  watch: { title: 'One short clip, with subtitles', to: '/visio', action: 'Open Visio' },
+  words: { title: 'Five minutes of review', to: '/thesaurus', action: 'Review words' },
+  write: { title: 'Write three lines', to: '/mentis/diarium', action: 'Open Diarium' },
+  speak: { title: 'Say it out loud for five minutes', to: '/mentis/sermo', action: 'Open Sermo' },
+};
+
+/** Mundus's line after a reply (5.2-7); the day's note until the learner says something. */
+export function replyLine(replies: Replies | undefined, s: Steer, note: string): string {
+  switch (replies?.last) {
+    case 'lane':
+      return `Gladly: something to ${ASK_VERB[s.lane] ?? s.lane}. The steps below follow.`;
+    case 'short':
+      return 'Five minutes is enough. Here are the short ways in.';
+    case 'why':
+      return s.why === 'asked' ? `${steerReason(s)} The steps below follow it.` : `${steerReason(s)} It fills in what the rest of the week leaves out.`;
+    case 'skip':
+      return 'Not today, then. Here is something else.';
+    default:
+      return note;
+  }
 }
 
 /** The guide's note at the top: how the week went, and where the learner stands. */

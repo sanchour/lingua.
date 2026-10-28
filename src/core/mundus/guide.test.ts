@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { loadPicks } from '@/core/mundus/load';
 import { tipsFor } from '@/core/mundus/tips';
-import { emptyWeek, guideNote, lanePick, nextLevelPicks, nextSteps, stageIndex, steer, tipsByReach } from './guide';
+import { emptyWeek, guideNote, guideSteer, lanePick, nextLevelPicks, nextSteps, noReplies, reply, replyLine, stageIndex, steer, tipsByReach } from './guide';
 import type { GuideInput, Week } from './guide';
 
 const week = (w: Partial<Week>): Week => ({ ...emptyWeek(), ...w });
@@ -59,6 +59,47 @@ describe('next steps', () => {
     const steps = nextSteps(await base({ picks: null, used: { ...used, visio: false } }));
     expect(steps[0]).toMatchObject({ type: 'room', to: '/sonus?tab=podcasts' });
     expect(steps[2]).toMatchObject({ type: 'room', to: '/sonus?tab=streaming' });
+  });
+  describe('replies', () => {
+    const date = '2026-10-28';
+    const none = noReplies(date);
+
+    it('"I’d rather watch" turns the lane and the steps, and Mundus says so', async () => {
+      const replies = reply(none, { kind: 'lane', lane: 'watch' }, date);
+      const input = await base({ replies });
+      const s = guideSteer(input);
+      expect(s).toMatchObject({ lane: 'watch', why: 'asked' });
+      const steps = nextSteps(input);
+      expect(steps[0]).toMatchObject({ lane: 'watch' });
+      expect(steps[0].reason).toMatch(/You asked/);
+      expect(replyLine(replies, s, 'NOTE')).toMatch(/watch/);
+    });
+    it('"Something shorter" makes every step five minutes, and turns off again', async () => {
+      const on = reply(none, { kind: 'short' }, date);
+      expect(nextSteps(await base({ replies: on })).every((s) => s.minutes === 5)).toBe(true);
+      expect(nextSteps(await base({ replies: on }))[0]).toMatchObject({ type: 'room' });
+      const off = reply(on, { kind: 'short' }, date);
+      expect(off.short).toBe(false);
+      expect(nextSteps(await base({ replies: off })).some((s) => s.minutes)).toBe(false);
+    });
+    it('"Not today" brings other picks and tips', async () => {
+      const a = nextSteps(await base());
+      const b = nextSteps(await base({ replies: reply(none, { kind: 'skip' }, date) }));
+      expect(b[0].key).not.toBe(a[0].key);
+      expect(b[1].key).not.toBe(a[1].key);
+    });
+    it('"Why this?" answers with the reason and keeps the steps', async () => {
+      const replies = reply(none, { kind: 'why' }, date);
+      const input = await base({ replies });
+      expect(nextSteps(input).map((s) => s.key)).toEqual(nextSteps(await base()).map((s) => s.key));
+      expect(replyLine(replies, guideSteer(input), 'NOTE')).toMatch(/no listening yet|quietest/);
+    });
+    it('keeps nothing from another day, and starts over on request', () => {
+      const yesterday = reply(none, { kind: 'skip' }, date);
+      expect(reply(yesterday, { kind: 'short' }, '2026-10-29')).toEqual({ date: '2026-10-29', skips: 0, short: true, last: 'short' });
+      expect(reply(yesterday, { kind: 'reset' }, date)).toEqual(none);
+      expect(replyLine(none, steer(emptyWeek(), []), 'NOTE')).toBe('NOTE');
+    });
   });
   it('writes a note about the week', () => {
     expect(guideNote(week({ read: 50, listen: 10 }), steer(week({ read: 50, listen: 10 }), []), 'Spanish')).toMatch(/^60 minutes of Spanish this week, mostly reading/);
