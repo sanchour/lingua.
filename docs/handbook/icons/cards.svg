@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Cards: a deck</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 9Q29 7.5 38 9Q40 9.5 40 12V33Q40 35 38 35"/><path d="M10 15Q10 13.5 12 13.5H30Q32 13.5 32 15.5V40Q32 42 30 42H12Q10 42 10 40Z"/><path stroke="#c86d51" d="M15 24H27M15 29H24"/>
+  </g>
+</svg>

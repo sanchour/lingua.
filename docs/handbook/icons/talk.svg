@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Two bubbles: conversation</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M26 8H41Q43 8 43 10V24Q43 26 41 26H38V32L32 26H27" opacity=".55"/><path d="M5 17H29Q31 17 31 19V35Q31 37 29 37H18L11 43V37H5Q3 37 3 35V19Q3 17 5 17Z"/><circle fill="#c86d51" stroke="none" cx="11" cy="27" r="1.2"/><circle fill="#c86d51" stroke="none" cx="17" cy="27" r="1.2"/><circle fill="#c86d51" stroke="none" cx="23" cy="27" r="1.2"/>
+  </g>
+</svg>

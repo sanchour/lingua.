@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Globe: languages</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 6Q42 6 42 24Q42 42 24 42Q6 42 6 24Q6 6 24 6Z"/><path d="M9 16Q24 19 39 16M9 32Q24 29 39 32" opacity=".5"/><path stroke="#c86d51" d="M24 6Q13 24 24 42M24 6Q35 24 24 42"/>
+  </g>
+</svg>

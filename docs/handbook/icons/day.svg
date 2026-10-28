@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Calendar leaf: a day</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 12Q24 10.5 40 12V40Q24 41.5 8 40Z"/><path d="M8 20Q24 18.5 40 20"/><path d="M16 6.5V14.5M32 6.5V14.5"/><path stroke="#c86d51" d="M18 31L23 36L31 26"/>
+  </g>
+</svg>

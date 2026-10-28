@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Magnifier: look up</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 8Q31 7.5 32.5 18.5Q33.5 30 21.5 31.5Q9 33 8 21Q7 9.5 20 8Z"/><path d="M30 30L41 41.5"/><path stroke="#c86d51" d="M13.5 16Q15.5 12.5 19.5 12"/>
+  </g>
+</svg>

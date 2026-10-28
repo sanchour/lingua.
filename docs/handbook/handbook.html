@@ -181,7 +181,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 .station b { display: block; font-size: 9.8pt; line-height: 13pt; }
 .station span { display: block; color: var(--soft); font-size: 8.5pt; line-height: 12pt; }
 .toc.compact { line-height: 12.4pt; }
-#index-list { columns: 2; column-gap: 8mm; font-size: 7.9pt; line-height: 11.6pt; margin-top: 2pt; }
+#index-list { columns: 2; column-gap: 8mm; font-size: 7.7pt; line-height: 10.6pt; margin-top: 2pt; }
 #index-list div { break-inside: avoid; padding-left: 8pt; text-indent: -8pt; }
 #index-list .pg { color: var(--soft); font-style: italic; font-variant-numeric: lining-nums; }
 .toc.compact .part { margin: 7pt 0 2pt; }
@@ -215,6 +215,24 @@ ol.key.two li { break-inside: avoid; }
 .dodont .no li::before { background: var(--accent); }
 .tight { font-size: 7.7pt; line-height: 10.4pt; }
 .px { font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+
+/* Icons: tiles, dark swatch, size proofs. The line and its one accent come from variables so a <use> can be recoloured. */
+.ic { stroke: var(--il, var(--soft)); stroke-width: 2.6; }
+.ic .a { stroke: var(--ia, var(--accent)); }
+.ic .fa { fill: var(--ia, var(--accent)); stroke: none; }
+.icg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3.4mm 3mm; margin: 4pt 0 6pt; }
+.icg figure { margin: 0; text-align: center; }
+.icg .tile { height: 33mm; border: .5pt solid var(--line2); border-radius: 1.8mm; background: var(--raised); display: flex; align-items: center; justify-content: center; }
+.icg figcaption { font: 650 6.6pt/1.2 var(--sans); color: var(--ink); margin-top: 1.2mm; }
+.icg figcaption span { display: block; font-weight: 400; color: var(--faint); font-size: 6pt; }
+.dk { background: #1f1c1a; border-color: #3b3532 !important; --il: #bdb19f; --ia: #d49b54; }
+.proof { display: flex; align-items: flex-end; gap: 4mm; padding: 2.4mm 3mm; border: .5pt solid var(--line2); border-radius: 1.8mm; background: var(--raised); margin: 3pt 0 6pt; }
+.proof.dk { border: .5pt solid #3b3532; }
+.proof figure { margin: 0; text-align: center; font: 500 5.4pt/1.2 var(--sans); color: var(--faint); }
+.proof.dk figure { color: #918779; }
+.grid48 .g { stroke: var(--line2); stroke-width: .12; fill: none; }
+.grid48 .k { stroke: var(--accent); stroke-width: .18; fill: none; opacity: .7; }
+.grid48 .ln { stroke-width: 2.6; }
 </style>
 </head>
 <body>
@@ -240,6 +258,39 @@ ol.key.two li { break-inside: avoid; }
     <symbol id="r-settings" viewBox="0 0 48 48"><g class="ln"><path d="M7 14H41M7 24H41M7 34H41"/><circle class="f" cx="16" cy="14" r="3.4"/><circle class="f a" cx="31" cy="24" r="3.4"/><circle class="f" cx="22" cy="34" r="3.4"/></g></symbol>
     <symbol id="d-stairs" viewBox="0 0 160 70"><g class="ln"><path d="M4 64H24V56H44V48H64V40H84V32H104V24H124V16H144" /><path d="M4 64H150" opacity=".35"/><g class="a"><rect x="66" y="2" width="56" height="20" rx="4" class="f"/><path d="M92 22l3 4 3-4"/><path d="M73 9H108M73 15H98" opacity=".7"/></g></g></symbol>
     <symbol id="d-cover" viewBox="0 0 60 70"><g class="ln"><rect x="8" y="6" width="44" height="58" rx="3"/><path d="M14 6V64" opacity=".45"/><path class="a" d="M40 6V22L43 19.5L46 22V6"/><path d="M20 36H44M20 42H38" opacity=".6"/></g></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 48 48"><g class="ln ic"><path d="M14 6.5Q24 5 34 6V42L24 34L14 42.5Z"/><path class="a" d="M19 13Q24 12 29 13"/><path d="M19 18Q24 17 29 18" opacity=".5"/></g></symbol>
+    <symbol id="i-quill" viewBox="0 0 48 48"><g class="ln ic"><path d="M41 7C42 20 33 32 16 35C17 28 24 13 41 7Z"/><path d="M13 38C19 27 28 18 38 11"/><path d="M27 16L23 21M31 22L26 27M22 25L19 29" opacity=".5"/><path class="a" d="M13 38L8.5 43"/></g></symbol>
+    <symbol id="i-book" viewBox="0 0 48 48"><g class="ln ic"><path d="M24 12Q16 7 5 9.5V37Q16 35 24 40Q32 35 43 37V9.5Q32 7 24 12Z"/><path d="M24 12V40"/><path d="M10 16Q16 15 20 17.5M10 22Q16 21 20 23.5M10 28Q16 27 20 29.5" opacity=".5"/><path class="a" d="M33 8.5V22L35.5 20L38 22V9"/></g></symbol>
+    <symbol id="i-stack" viewBox="0 0 48 48"><g class="ln ic"><path d="M6.5 34Q24 33.5 42 34V42Q24 42.5 6.5 42Z"/><path d="M10 34V26Q26 25.5 39 26V34"/><path d="M13 26L16 18.5Q26 19.5 36 21.5L35 26"/><path d="M12 38H29" opacity=".5"/><path class="a" d="M34 34V42"/></g></symbol>
+    <symbol id="i-letter" viewBox="0 0 48 48"><g class="ln ic"><path d="M5 13Q24 12 43 13V37Q24 38 5 37Z"/><path d="M5.5 14L24 27L42.5 14"/><path class="a" d="M24 27.5m-3.8 0a3.8 3.8 0 1 0 7.6 0a3.8 3.8 0 1 0-7.6 0"/></g></symbol>
+    <symbol id="i-lamp" viewBox="0 0 48 48"><g class="ln ic"><path d="M15 8Q24 7 33 8L38.5 22Q24 23.5 9.5 22Z"/><path d="M24 23V38"/><path d="M15 41.5Q24 40.5 33 41.5"/><path class="a" d="M14 28Q24 33 34 28"/></g></symbol>
+    <symbol id="i-search" viewBox="0 0 48 48"><g class="ln ic"><path d="M20 8Q31 7.5 32.5 18.5Q33.5 30 21.5 31.5Q9 33 8 21Q7 9.5 20 8Z"/><path d="M30 30L41 41.5"/><path class="a" d="M13.5 16Q15.5 12.5 19.5 12"/></g></symbol>
+    <symbol id="i-glasses" viewBox="0 0 48 48"><g class="ln ic"><path d="M5 27Q5 21.5 11 21.5Q18 21.5 19 28Q19.5 35 12 35Q5 35 5 27Z"/><path d="M29 28Q30 21.5 37 21.5Q43 21.5 43 27Q43 35 36 35Q28.5 35 29 28Z"/><path d="M5 25L3 18M43 25L45 18"/><path class="a" d="M19 25Q24 21 29 25"/></g></symbol>
+    <symbol id="i-diary" viewBox="0 0 48 48"><g class="ln ic"><path d="M11 6Q23 5 36 6.5V42Q23 43 11 42Z"/><path d="M17 6V42"/><path d="M22 20Q27 19.5 31 20M22 26Q27 25.5 31 26" opacity=".5"/><path class="a" d="M29 6V17L31.5 15L34 17V6.5"/></g></symbol>
+    <symbol id="i-leaf" viewBox="0 0 48 48"><g class="ln ic"><path d="M9 39C7 16 22 8 39 9C40 28 28 40 9 39Z"/><path d="M17 31Q18 25 23 22M24 26Q27 23 28 19" opacity=".5"/><path class="a" d="M9 39Q22 28 33 15"/></g></symbol>
+    <symbol id="i-cards" viewBox="0 0 48 48"><g class="ln ic"><path d="M19 9Q29 7.5 38 9Q40 9.5 40 12V33Q40 35 38 35"/><path d="M10 15Q10 13.5 12 13.5H30Q32 13.5 32 15.5V40Q32 42 30 42H12Q10 42 10 40Z"/><path class="a" d="M15 24H27M15 29H24"/></g></symbol>
+    <symbol id="i-tag" viewBox="0 0 48 48"><g class="ln ic"><path d="M7 24V10Q7 8 9 8H24Q26 8 28 10L40 22Q42 24 40 26L26 40Q24 42 22 40L9 27Q7 25 7 24Z"/><path class="a" d="M16.5 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0"/></g></symbol>
+    <symbol id="i-add" viewBox="0 0 48 48"><g class="ln ic"><path d="M9 11Q24 9.5 39 11Q40 24 39 37Q24 38.5 9 37Q8 24 9 11Z" opacity=".6"/><path class="a" d="M24 15V33M15 24H33"/></g></symbol>
+    <symbol id="i-play" viewBox="0 0 48 48"><g class="ln ic"><path d="M15 9.5Q16 8.5 18 9.5L38 22Q40.5 24 38 26L18 38.5Q15.5 39.5 15 37Z"/><path class="a" d="M42 17Q45 24 42 31"/></g></symbol>
+    <symbol id="i-pause" viewBox="0 0 48 48"><g class="ln ic"><path d="M14 10Q17.5 9 21 10V38Q17.5 39 14 38Z"/><path class="a" d="M27 10Q30.5 9 34 10V38Q30.5 39 27 38Z"/></g></symbol>
+    <symbol id="i-repeat" viewBox="0 0 48 48"><g class="ln ic"><path d="M9 24V20Q9 12 17 12H37"/><path d="M32 6.5L38 12L32 17.5"/><path d="M39 24V28Q39 36 31 36H11"/><path class="a" d="M16 30.5L10 36L16 41.5"/></g></symbol>
+    <symbol id="i-sound" viewBox="0 0 48 48"><g class="ln ic"><path d="M7 19Q11 18 15 19L24 11V37L15 29Q11 30 7 29Z"/><path class="a" d="M30 18Q34.5 24 30 30M35 13Q43.5 24 35 35"/></g></symbol>
+    <symbol id="i-mic" viewBox="0 0 48 48"><g class="ln ic"><path d="M19 9Q24 5.5 29 9V22Q24 28 19 22Z"/><path d="M12 21Q11 33 24 33.5Q37 33 36 21"/><path d="M24 34V41M17 41.5Q24 40.5 31 41.5"/><path class="a" d="M20 14H28M20 19H28"/></g></symbol>
+    <symbol id="i-tray" viewBox="0 0 48 48"><g class="ln ic"><path d="M8 28V38Q24 40 40 38V28"/><path class="a" d="M24 8V29M16 22L24 30L32 22"/></g></symbol>
+    <symbol id="i-share" viewBox="0 0 48 48"><g class="ln ic"><path d="M6 22L42 6L34 42L24 30Z"/><path d="M24 30L42 6"/><path class="a" d="M6 35Q12 31 17 36"/></g></symbol>
+    <symbol id="i-bin" viewBox="0 0 48 48"><g class="ln ic"><path d="M12 15L14 40Q24 41.5 34 40L36 15"/><path d="M19 14V9.5H29V14"/><path d="M20 21V34M28 21V34" opacity=".5"/><path class="a" d="M8 14.5Q24 12.5 40 14.5"/></g></symbol>
+    <symbol id="i-undo" viewBox="0 0 48 48"><g class="ln ic"><path d="M12 19H27Q38 19 38 29Q38 39 27 39H17"/><path class="a" d="M18 11L10 19L18 27"/></g></symbol>
+    <symbol id="i-help" viewBox="0 0 48 48"><g class="ln ic"><path d="M8 10Q24 8.5 40 10V31Q32 32 27 32L19 40V32Q13 32 8 31Z"/><path class="a" d="M19.5 18.5Q19.5 14.5 24 14.5Q28.5 14.5 28.5 18.5Q28.5 21.5 24.5 23.5V25"/><circle class="fa" cx="24.5" cy="28.5" r="1.2"/></g></symbol>
+    <symbol id="i-bell" viewBox="0 0 48 48"><g class="ln ic"><path d="M13 33V22Q13 11.5 24 11.5Q35 11.5 35 22V33L39 37.5H9Z"/><path d="M24 7V11.5"/><path class="a" d="M19.5 41Q24 45 28.5 41"/></g></symbol>
+    <symbol id="i-flag" viewBox="0 0 48 48"><g class="ln ic"><path d="M12 5V43"/><path class="a" d="M12 8Q24 6 37 8L31 16.5L37 25Q24 27 12 25"/></g></symbol>
+    <symbol id="i-day" viewBox="0 0 48 48"><g class="ln ic"><path d="M8 12Q24 10.5 40 12V40Q24 41.5 8 40Z"/><path d="M8 20Q24 18.5 40 20"/><path d="M16 6.5V14.5M32 6.5V14.5"/><path class="a" d="M18 31L23 36L31 26"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 48 48"><g class="ln ic"><path d="M24 41.5Q9 41.5 9 26.5Q9 11.5 24 11.5Q39 11.5 39 26.5Q39 41.5 24 41.5Z"/><path d="M21 6H27M24 6V11.5"/><path d="M34 14L37 11" opacity=".6"/><path class="a" d="M24 27V18.5M24 27L30 30.5"/></g></symbol>
+    <symbol id="i-seal" viewBox="0 0 48 48"><g class="ln ic"><path d="M24 6Q29 4.5 32 9.5Q38 8.5 38.5 15Q43.5 18.5 40.5 24Q43.5 29.5 38.5 33Q38 39.5 32 38.5Q29 43.5 24 42Q19 43.5 16 38.5Q10 39.5 9.5 33Q4.5 29.5 7.5 24Q4.5 18.5 9.5 15Q10 8.5 16 9.5Q19 4.5 24 6Z"/><path class="a" d="M17 24.5L22 30L31 19"/></g></symbol>
+    <symbol id="i-candle" viewBox="0 0 48 48"><g class="ln ic"><path d="M17.5 23Q24 21.5 30.5 23V41Q24 42.5 17.5 41Z"/><path d="M12 41.5Q24 40 36 41.5"/><path d="M24 23V19"/><path class="a" d="M24 6.5Q32 13 24 19Q16 13 24 6.5Z"/></g></symbol>
+    <symbol id="i-folder" viewBox="0 0 48 48"><g class="ln ic"><path d="M6 14Q6 11 9 11H19L23.5 16H39Q42 16 42 19V37Q42 40 39 40H9Q6 40 6 37Z"/><path class="a" d="M6.5 23Q24 21 41.5 23"/></g></symbol>
+    <symbol id="i-keys" viewBox="0 0 48 48"><g class="ln ic"><path d="M5 15Q24 13.5 43 15V35Q24 36.5 5 35Z"/><path d="M11 21h2M17.5 21h2M24 21h2M30.5 21h2M37 21h2M11 27h2M35 27h2"/><path class="a" d="M17 30H31"/></g></symbol>
+    <symbol id="i-globe" viewBox="0 0 48 48"><g class="ln ic"><path d="M24 6Q42 6 42 24Q42 42 24 42Q6 42 6 24Q6 6 24 6Z"/><path d="M9 16Q24 19 39 16M9 32Q24 29 39 32" opacity=".5"/><path class="a" d="M24 6Q13 24 24 42M24 6Q35 24 24 42"/></g></symbol>
+    <symbol id="i-talk" viewBox="0 0 48 48"><g class="ln ic"><path d="M26 8H41Q43 8 43 10V24Q43 26 41 26H38V32L32 26H27" opacity=".55"/><path d="M5 17H29Q31 17 31 19V35Q31 37 29 37H18L11 43V37H5Q3 37 3 35V19Q3 17 5 17Z"/><circle class="fa" cx="11" cy="27" r="1.2"/><circle class="fa" cx="17" cy="27" r="1.2"/><circle class="fa" cx="23" cy="27" r="1.2"/></g></symbol>
   </defs>
 </svg>
 
@@ -319,6 +370,7 @@ ol.key.two li { break-inside: avoid; }
       <li><span class="n" data-n-for="ch6"></span><a href="#ch6">Space, corners and light</a><span class="dots"></span><span class="pn" data-for="ch6"></span></li>
       <li><span class="n" data-n-for="ch7"></span><a href="#ch7">Motion</a><span class="dots"></span><span class="pn" data-for="ch7"></span></li>
       <li><span class="n" data-n-for="ch8"></span><a href="#ch8">Drawings, icons and flags</a><span class="dots"></span><span class="pn" data-for="ch8"></span></li>
+      <li><span class="n" data-n-for="d-icons"></span><a href="#d-icons">Icons: the Lingua hand</a><span class="dots"></span><span class="pn" data-for="d-icons"></span></li>
       <li><span class="n" data-n-for="d-frame"></span><a href="#d-frame">The desktop frame</a><span class="dots"></span><span class="pn" data-for="d-frame"></span></li>
       <li><span class="n" data-n-for="d-patterns"></span><a href="#d-patterns">Layout patterns</a><span class="dots"></span><span class="pn" data-for="d-patterns"></span></li>
       <li><span class="n" data-n-for="d-elements"></span><a href="#d-elements">Elements, one by one</a><span class="dots"></span><span class="pn" data-for="d-elements"></span></li>
@@ -926,6 +978,155 @@ ol.key.two li { break-inside: avoid; }
     <div class="row"><p>When you design a page, switch through the six. If the touch makes anything harder to read, the touch is wrong, not the page.</p><aside></aside></div>
     <svg class="draw" width="24mm" height="8.5mm" style="margin-top:14mm"><use href="#d-sprig"/></svg>
   </div>
+</section>
+
+
+<!-- I1 · Icons -->
+<section class="page" data-rh="Icons: the Lingua hand">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-icons" data-ch>Icons: the Lingua hand</h2>
+    <div class="rule"></div>
+    <p class="lead">An icon in Lingua is a small drawing, not a pictogram. It should look as if someone had sketched it with a fine pen in the margin of a book: one line, a little imperfect, and one small thing in terracotta.</p>
+    <div class="wide" style="display:grid;grid-template-columns:46mm 1fr;gap:5mm;align-items:start;margin:4pt 0 6pt">
+      <div><svg class="grid48" viewBox="0 0 48 48" width="46mm" height="46mm" style="background:var(--raised);border:.5pt solid var(--line2);border-radius:1.6mm"><g><path class="g" d="M6 0V48M0 6H48"/><path class="g" d="M12 0V48M0 12H48"/><path class="g" d="M18 0V48M0 18H48"/><path class="g" d="M24 0V48M0 24H48"/><path class="g" d="M30 0V48M0 30H48"/><path class="g" d="M36 0V48M0 36H48"/><path class="g" d="M42 0V48M0 42H48"/></g><rect class="k" x="4" y="4" width="40" height="40"/><circle class="k" cx="24" cy="24" r="20"/><rect class="k" x="6" y="6" width="36" height="36"/><rect class="k" x="9" y="4" width="30" height="40"/><rect class="k" x="4" y="9" width="40" height="30"/><g class="ln"><path d="M24 12Q16 7 5 9.5V37Q16 35 24 40Q32 35 43 37V9.5Q32 7 24 12Z" /><path d="M24 12V40"/><path d="M10 16Q16 15 20 17.5M10 22Q16 21 20 23.5M10 28Q16 27 20 29.5" opacity=".5"/><path class="a" d="M33 8.5V22L35.5 20L38 22V9"/></g></svg><p class="small muted" style="margin-top:3pt">The 48 grid: a live area of 40, the circle, the square, the portrait and the landscape that every icon is fitted to.</p></div>
+      <ol class="key tight" style="margin:0">
+        <li><b>The field is 48 × 48,</b> with 4 units of margin all round. Big shapes touch the keylines; small ones centre in them.</li>
+        <li><b>One line.</b> Stroke 2.6 on the 48 field: 1.3 px at 24 px, a little under 1 px at 16, 1.7 at 32. Nothing finer than 3 units apart, or it clogs.</li>
+        <li><b>Round caps and joins,</b> always; no sharp mitres, no square ends.</li>
+        <li><b>Drawn, not ruled.</b> Curves lean by half a unit; a circle is a little egg; lines overshoot a corner by a unit or leave it open.</li>
+        <li><b>One idea.</b> A bookmark is a bookmark, not a bookmark plus a star.</li>
+        <li><b>One terracotta detail:</b> the part that carries the meaning, under a quarter of the line, never filled except for a dot.</li>
+      </ol>
+    </div>
+    <h3>Why these, and not a standard set</h3>
+    <p>A standard set is clean and everywhere; Lingua is a book. The pages already draw a little (the books, the sprig), and icons in the same hand make buttons and empty pages feel like one object. The 33 here are the start of that set.</p>
+    <div class="dodont">
+      <div><span class="h">Draw</span><ul><li>Things from a desk: a pen, a seal, a lamp, a leaf.</li></ul></div>
+      <div class="no"><span class="h">Avoid</span><ul><li>Fills, gradients, shadows; compass-perfect circles.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" data-rh="Icons: the Lingua hand">
+  <div class="sheet">
+    <h3>Sizes, and what to leave out</h3>
+    <p class="small">The same drawing is used at every size; what changes is how much of it is shown. Faint detail lines (at half strength) belong to 24 px and up; at 20 and below they are dropped, and the drawing reads from its outline and its one accent.</p>
+    <div class="proof wide"><figure><svg width="16" height="16"><use href="#i-book"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-book"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-book"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-book"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-bookmark"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-bookmark"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-bookmark"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-bookmark"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-seal"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-seal"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-seal"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-seal"/></svg><br>32</figure></div>
+    <table class="spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th style="width:15%">Size</th><th>Use</th></tr>
+      <tr><td class="px">16</td><td>Tabs, dense lists, chips. Outline and accent only.</td></tr>
+      <tr><td class="px">20 · 24</td><td>Buttons with a label; icon buttons (a 32 to 44 px target around them).</td></tr>
+      <tr><td class="px">32</td><td>Cards and room tiles.</td></tr>
+      <tr><td class="px">48 · 96</td><td>Empty pages, onboarding, the end of a book: here the faint details return and a second accent may be used.</td></tr>
+    </table>
+    <h3>Colour and state</h3>
+    <table class="spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th style="width:24%">State</th><th>Line</th><th>The one accent</th></tr>
+      <tr><td>Rest</td><td>Soft ink</td><td>Terracotta (amber at night)</td></tr>
+      <tr><td>Hover</td><td>Ink</td><td>The same</td></tr>
+      <tr><td>Selected</td><td>Ink, on a soft wash</td><td>Terracotta, a little stronger</td></tr>
+      <tr><td>Disabled</td><td>45% of soft ink</td><td>45%: it fades with the rest</td></tr>
+      <tr><td>On an accent button</td><td>Ivory (or Charcoal at night)</td><td>None: the fill is the accent</td></tr>
+    </table>
+      </div>
+</section>
+
+<section class="page" data-rh="Icons: the Lingua hand">
+  <div class="sheet">
+    <h3 style="margin-top:0">At night, and how to draw one</h3>
+<div class="icg wide"><figure><div class="tile dk"><svg width="21mm" height="21mm"><use href="#i-bookmark"/></svg></div><figcaption>Bookmark<span>in Nocturne</span></figcaption></figure><figure><div class="tile dk"><svg width="21mm" height="21mm"><use href="#i-seal"/></svg></div><figcaption>Seal<span>in Nocturne</span></figcaption></figure><figure><div class="tile dk"><svg width="21mm" height="21mm"><use href="#i-candle"/></svg></div><figcaption>Candle<span>in Nocturne</span></figcaption></figure><figure><div class="tile dk"><svg width="21mm" height="21mm"><use href="#i-leaf"/></svg></div><figcaption>Leaf<span>in Nocturne</span></figcaption></figure></div>
+    <p class="small">At night the line turns soft ivory, terracotta turns amber, sage turns light sage, and a paper fill turns Mocha: the same drawing in a lower light.</p>
+    <h3>How to draw one</h3>
+    <ol class="key tight">
+      <li><b>Sketch it on paper</b> with a fine pen, three times, and pick the one that is least careful.</li>
+      <li><b>Trace it in a vector editor</b> on the 48 field, with a 2.6 stroke at 48 (1.3 at 24), round caps, round joins.</li>
+      <li><b>Keep few nodes,</b> twelve at most; let curves do the work.</li>
+      <li><b>Pick the one detail</b> that carries the meaning and make only that terracotta.</li>
+      <li><b>Test at 16, 24 and 48,</b> in Paper and Nocturne, beside two others from the set.</li>
+      <li><b>Name it for its meaning</b> (<code>bookmark</code>: a saved word), and write the meaning beside it.</li>
+    </ol>
+      <h3>Before an icon is added</h3>
+    <ul class="plain">
+      <li>It means one thing, and that thing has no icon yet.</li>
+      <li>It reads at 16 px in Paper and in Nocturne, and beside two others from the set.</li>
+      <li>It has an accessible name (its meaning) and, if it stands alone, a tooltip.</li>
+      <li>It is saved as <code>name.svg</code> in <code>docs/handbook/icons</code>, with the line in <code>currentColor</code>.</li>
+      <li>This chapter’s meaning table has a row for it.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- I2 · Gallery: reading and learning -->
+<section class="page" data-rh="Icons: the Lingua hand">
+  <div class="sheet">
+    <h3 style="margin-top:0">Reading and learning</h3>
+    <p class="small">Things from a reader’s desk. Each says one thing, and the same thing everywhere.</p>
+    <div class="icg wide"><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-bookmark"/></svg></div><figcaption>Bookmark<span>a saved word</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-quill"/></svg></div><figcaption>Quill<span>to write</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-book"/></svg></div><figcaption>Open book<span>a text to read</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-stack"/></svg></div><figcaption>Stack of books<span>the library</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-letter"/></svg></div><figcaption>Letter<span>the inbox</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-lamp"/></svg></div><figcaption>Reading lamp<span>focus, night</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-search"/></svg></div><figcaption>Magnifier<span>look up</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-glasses"/></svg></div><figcaption>Spectacles<span>read closely</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-diary"/></svg></div><figcaption>Journal<span>Diarium</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-leaf"/></svg></div><figcaption>Leaf<span>a word you know</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-cards"/></svg></div><figcaption>Cards<span>a deck</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-tag"/></svg></div><figcaption>Tag<span>a label</span></figcaption></figure></div>
+    <div class="row"><p class="small">The bookmark is a saved word; the leaf a known one; the stack the library; the journal Diarium. Draw a new learning icon from the desk, not from a screen.</p><aside><span class="k">Files</span><code>docs/<wbr>handbook/<wbr>icons/*.svg</code>: one file each, the line in <code>currentColor</code>, the detail in terracotta.</aside></div>
+  </div>
+</section>
+
+<!-- I3 · Gallery: actions -->
+<section class="page" data-rh="Icons: the Lingua hand">
+  <div class="sheet">
+    <h3 style="margin-top:0">Doing things</h3>
+    <p class="small">The verbs of the app. Where a verb is rare or risky, give it a word as well as a drawing.</p>
+    <div class="icg wide"><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-add"/></svg></div><figcaption>Add<span>new</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-play"/></svg></div><figcaption>Play<span>start</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-pause"/></svg></div><figcaption>Pause<span>hold</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-repeat"/></svg></div><figcaption>Repeat<span>again</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-sound"/></svg></div><figcaption>Sound<span>listen</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-mic"/></svg></div><figcaption>Microphone<span>speak</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-tray"/></svg></div><figcaption>Tray<span>save to the device</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-share"/></svg></div><figcaption>Paper plane<span>send, share</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-bin"/></svg></div><figcaption>Waste basket<span>delete</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-undo"/></svg></div><figcaption>Undo<span>take it back</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-help"/></svg></div><figcaption>Speech bubble<span>help, ask</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-bell"/></svg></div><figcaption>Bell<span>a reminder</span></figcaption></figure></div>
+    <div class="row"><p class="small">The waste basket carries its terracotta on the lid, not the whole bin: it says “delete” quietly. The paper plane stands for sending or sharing and never for “submit”.</p><aside></aside></div>
+  </div>
+</section>
+
+<!-- I4 · Gallery: places and marks -->
+<section class="page" data-rh="Icons: the Lingua hand">
+  <div class="sheet">
+    <h3 style="margin-top:0">Marks and places</h3>
+    <p class="small">The small things that say how it is going and where you are.</p>
+    <div class="icg wide" style="grid-template-columns:repeat(5,1fr)"><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-flag"/></svg></div><figcaption>Pennant<span>a goal</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-day"/></svg></div><figcaption>Calendar leaf<span>a day</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-clock"/></svg></div><figcaption>Pocket watch<span>time</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-seal"/></svg></div><figcaption>Seal<span>a milestone</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-candle"/></svg></div><figcaption>Candle<span>a streak</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-folder"/></svg></div><figcaption>Folder<span>a group</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-keys"/></svg></div><figcaption>Keys<span>typing</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-globe"/></svg></div><figcaption>Globe<span>languages</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-talk"/></svg></div><figcaption>Two bubbles<span>conversation</span></figcaption></figure></div>
+    <h3>A set at small size</h3>
+    <div class="proof wide"><figure><svg width="16" height="16"><use href="#i-flag"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-flag"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-flag"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-flag"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-candle"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-candle"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-candle"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-candle"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-globe"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-globe"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-globe"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-globe"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-talk"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-talk"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-talk"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-talk"/></svg><br>32</figure></div>
+    <div class="proof wide dk"><figure><svg width="16" height="16"><use href="#i-flag"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-flag"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-flag"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-flag"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-candle"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-candle"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-candle"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-candle"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-globe"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-globe"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-globe"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-globe"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-talk"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-talk"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-talk"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-talk"/></svg><br>32</figure></div>
+    <p class="small">Above, 16 to 32 px in Paper; below, the same in Nocturne. If a drawing is unclear at 16, it has too many parts: take one away.</p>
+  </div>
+</section>
+
+<!-- I5 · Using icons -->
+<section class="page" data-rh="Icons: the Lingua hand">
+  <div class="sheet">
+    <h3 style="margin-top:0">One metaphor, one meaning</h3>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:19%">Icon</th><th style="width:28%">Always means</th><th>Never used for</th></tr>
+      <tr><td class="k">Bookmark</td><td>A saved word or place</td><td>“Favourite”, “bookmark this page of the app”</td></tr>
+      <tr><td class="k">Leaf</td><td>A word you know; growth</td><td>Nature, eco, a leaf-shaped button</td></tr>
+      <tr><td class="k">Candle</td><td>Your streak: days in a row</td><td>Birthday, urgency, a warning</td></tr>
+      <tr><td class="k">Seal</td><td>A milestone reached</td><td>Verified, approved, a plan badge</td></tr>
+      <tr><td class="k">Pennant</td><td>A goal</td><td>Report, flag a problem</td></tr>
+      <tr><td class="k">Pocket watch</td><td>Time spent, or a time chip</td><td>Loading</td></tr>
+      <tr><td class="k">Tag · Folder</td><td>A label · a group</td><td>Each other</td></tr>
+      <tr><td class="k">Cards</td><td>A deck, review</td><td>Payment cards</td></tr>
+      <tr><td class="k">Speech bubble</td><td>Help; ask</td><td>Messages from people (Lingua has none)</td></tr>
+    </table>
+    <h3>In the app today</h3>
+    <div class="row"><p>The app’s controls use Lucide icons as lines (15 to 18 px, stroke 1.3), and the rooms their own Lucide icons; these drawings are for the book, the empty pages and the pages the design pass redraws. To bring one into the app, add it as a small component beside the others in <code>src/design</code>, drawn with <code>currentColor</code> and one accent token, and give it the same name and meaning as here. Nothing in the app uses them yet.</p>
+      <aside><span class="k">Rule</span>Never mix the two sets in one toolbar: pick one set per surface.</aside></div>
+      </div>
+</section>
+
+<section class="page" data-rh="Icons: the Lingua hand">
+  <div class="sheet">
+    <h3 style="margin-top:0">Where an icon is used, and where it isn’t</h3>
+    <ul class="plain">
+      <li><b>Sidebar and room tabs:</b> the room’s own drawing, with its name always beside it: never an icon alone.</li>
+      <li><b>Toolbars:</b> icon with a word for the first three actions; icons alone only for the commonest verbs (play, pause, undo, close), each with a tooltip and an accessible name.</li>
+      <li><b>Cards and tiles:</b> one icon, 32 px, at the top left, as the card’s kind.</li>
+      <li><b>Empty pages, onboarding, the end of a book:</b> a drawing at 96 px or more, made from the same hand.</li>
+      <li><b>Milestone toasts:</b> the seal, the candle or the leaf, with the sentence.</li>
+    </ul>
+    <div class="dodont">
+      <div><span class="h">Do</span><ul><li>Pair an icon with a word the first time it appears.</li><li>Keep one set per surface.</li></ul></div>
+      <div class="no"><span class="h">Don’t</span><ul><li>Invent a second metaphor for something that has one.</li><li>Use an icon to decorate a heading.</li></ul></div>
+    </div>
+    </div>
 </section>
 
 <!-- D1 · The desktop frame -->
@@ -1839,7 +2040,7 @@ ol.key.two li { break-inside: avoid; }
 <!-- 23 · Home -->
 <section class="page" data-rh="Home">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch11" data-ch>Home</h2><p class="role">Your hearth</p></div><aside><svg width="14mm" height="14mm"><use href="#r-home"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch11" data-ch>Home</h2><p class="role">Your hearth</p></div><aside><svg width="21mm" height="21mm"><use href="#r-home"/></svg></aside></div>
     <p class="lead">Coming home to the language: what you did today, and the one thing to do next.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>The greeting by name, today’s minutes against the goal, and Next up.</span></div>
@@ -1895,7 +2096,7 @@ ol.key.two li { break-inside: avoid; }
 <!-- 24 · Cursus -->
 <section class="page" data-rh="Cursus">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch12" data-ch>Cursus</h2><p class="role">The course, grammar, alphabets and typing</p></div><aside><svg width="14mm" height="14mm"><use href="#r-cursus"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch12" data-ch>Cursus</h2><p class="role">The course, grammar, alphabets and typing</p></div><aside><svg width="21mm" height="21mm"><use href="#r-cursus"/></svg></aside></div>
     <p class="lead">Learning in order, for those who like a path: it leads, and everything stays open.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>The next point on the trail.</span></div>
@@ -1977,7 +2178,7 @@ ol.key.two li { break-inside: avoid; }
 <!-- 25 · Codex -->
 <section class="page" data-rh="Codex">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch13" data-ch>Codex</h2><p class="role">Reading</p></div><aside><svg width="14mm" height="14mm"><use href="#r-codex"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch13" data-ch>Codex</h2><p class="role">Reading</p></div><aside><svg width="21mm" height="21mm"><use href="#r-codex"/></svg></aside></div>
     <p class="lead">Reading real things in the language, with every word a tap away. The heart of Lingua.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>The book you’re reading. In the reader, the page and nothing else.</span></div>
@@ -2134,7 +2335,7 @@ ol.key.two li { break-inside: avoid; }
 <!-- 28 · Mentis -->
 <section class="page" data-rh="Mentis">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch16" data-ch>Mentis</h2><p class="role">The guide, talking and writing</p></div><aside><svg width="14mm" height="14mm"><use href="#r-mentis"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch16" data-ch>Mentis</h2><p class="role">The guide, talking and writing</p></div><aside><svg width="21mm" height="21mm"><use href="#r-mentis"/></svg></aside></div>
     <p class="lead">Using the language: Mundus suggests, Sermo talks, Diarium writes.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>Today’s prompt: one thing to write, one thing to talk about.</span></div>
@@ -2186,7 +2387,7 @@ ol.key.two li { break-inside: avoid; }
 <!-- 29 · Ratio -->
 <section class="page" data-rh="Ratio">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch17" data-ch>Ratio</h2><p class="role">How it’s going</p></div><aside><svg width="14mm" height="14mm"><use href="#r-ratio"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch17" data-ch>Ratio</h2><p class="role">How it’s going</p></div><aside><svg width="21mm" height="21mm"><use href="#r-ratio"/></svg></aside></div>
     <p class="lead">An honest look back: time, words, reading, listening, and the journey so far.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>This week, in a few numbers anyone understands.</span></div>
@@ -2240,7 +2441,7 @@ ol.key.two li { break-inside: avoid; }
 <!-- 30 · Settings -->
 <section class="page" data-rh="Settings and the plans">
   <div class="sheet">
-    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch18" data-ch>Settings and the plans</h2><p class="role">Everything you can change</p></div><aside><svg width="14mm" height="14mm"><use href="#r-settings"/></svg></aside></div>
+    <div class="row"><div><span class="kicker">Chapter <span class="chn"></span></span><h2 id="ch18" data-ch>Settings and the plans</h2><p class="role">Everything you can change</p></div><aside><svg width="21mm" height="21mm"><use href="#r-settings"/></svg></aside></div>
     <p class="lead">Everything adjustable, in groups, with search, and the plans told straight.</p>
     <div class="card3">
       <div><span class="l">Show first</span><span>The groups, and the search.</span></div>
@@ -3387,7 +3588,7 @@ ol.key.two li { break-inside: avoid; }
  ["Exams", "\\bexams?\\b"], ["Earnings and funding", "earn|funding|bootstrap"], ["Features audit", "audit|1,618"], ["First start", "first start"], ["FSRS", "FSRS"], ["Goals", "goal"],
  ["Grammatica", "Grammatica"], ["Handover", "handover"], ["Inbox", "inbox"], ["Keys, AI", "own key|AI key|your own free key"], ["Launch", "launch"],
  ["Licence", "licence"], ["Lingua+", "Lingua\\+"], ["Ludus", "Ludus"], ["Max", "\\bMax\\b"], ["Mentis", "Mentis"], ["Motion and springs", "spring"],
- ["iPad and tablets", "iPad|tablet|Android"], ["Dark mode, Nocturne", "Nocturne|Charcoal"], ["Charts", "chart|heat map"], ["Keyboard shortcuts", "shortcut|Alt 1"], ["Words on screen", "empty page|microcopy|Words on the screen"], ["Extension, the Lingua", "extension"], ["Visio", "Visio"], ["Phone", "\\bphones?\\b"], ["Prices", "€"], ["Privacy", "privac"], ["Ratio", "Ratio"], ["Refunds", "refund"], ["Sermo", "Sermo"],
+ ["iPad and tablets", "iPad|tablet|Android"], ["Dark mode, Nocturne", "Nocturne|Charcoal"], ["Charts", "chart|heat map"], ["Keyboard shortcuts", "shortcut|Alt 1"], ["Words on screen", "empty page|microcopy|Words on the screen"], ["Extension, the Lingua", "extension"], ["Visio", "Visio"], ["Icons", "icon"], ["Phone", "\\bphones?\\b"], ["Prices", "€"], ["Privacy", "privac"], ["Ratio", "Ratio"], ["Refunds", "refund"], ["Sermo", "Sermo"],
  ["Sonus et Visio", "Sonus"], ["States of a page", "loading|empty"], ["Stripe", "Stripe"], ["Support", "support"], ["Thesaurus", "Thesaurus"],
  ["Tiers", "tier"], ["Type and fonts", "Literata"], ["VAT", "VAT"], ["Versions", "version"], ["Voice, Lingua's", "voice"], ["Website", "website"]
 ]</script>

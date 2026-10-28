@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Pause: hold</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 10Q17.5 9 21 10V38Q17.5 39 14 38Z"/><path stroke="#c86d51" d="M27 10Q30.5 9 34 10V38Q30.5 39 27 38Z"/>
+  </g>
+</svg>

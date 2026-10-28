@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Journal: Diarium</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 6Q23 5 36 6.5V42Q23 43 11 42Z"/><path d="M17 6V42"/><path d="M22 20Q27 19.5 31 20M22 26Q27 25.5 31 26" opacity=".5"/><path stroke="#c86d51" d="M29 6V17L31.5 15L34 17V6.5"/>
+  </g>
+</svg>

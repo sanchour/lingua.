@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Microphone: speak</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 9Q24 5.5 29 9V22Q24 28 19 22Z"/><path d="M12 21Q11 33 24 33.5Q37 33 36 21"/><path d="M24 34V41M17 41.5Q24 40.5 31 41.5"/><path stroke="#c86d51" d="M20 14H28M20 19H28"/>
+  </g>
+</svg>

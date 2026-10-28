@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Pennant: a goal</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5V43"/><path stroke="#c86d51" d="M12 8Q24 6 37 8L31 16.5L37 25Q24 27 12 25"/>
+  </g>
+</svg>

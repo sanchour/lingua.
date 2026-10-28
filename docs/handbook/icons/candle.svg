@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Candle: a streak</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17.5 23Q24 21.5 30.5 23V41Q24 42.5 17.5 41Z"/><path d="M12 41.5Q24 40 36 41.5"/><path d="M24 23V19"/><path stroke="#c86d51" d="M24 6.5Q32 13 24 19Q16 13 24 6.5Z"/>
+  </g>
+</svg>

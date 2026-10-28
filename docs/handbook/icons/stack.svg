@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Stack of books: the library</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.5 34Q24 33.5 42 34V42Q24 42.5 6.5 42Z"/><path d="M10 34V26Q26 25.5 39 26V34"/><path d="M13 26L16 18.5Q26 19.5 36 21.5L35 26"/><path d="M12 38H29" opacity=".5"/><path stroke="#c86d51" d="M34 34V42"/>
+  </g>
+</svg>

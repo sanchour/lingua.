@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Repeat: again</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 24V20Q9 12 17 12H37"/><path d="M32 6.5L38 12L32 17.5"/><path d="M39 24V28Q39 36 31 36H11"/><path stroke="#c86d51" d="M16 30.5L10 36L16 41.5"/>
+  </g>
+</svg>

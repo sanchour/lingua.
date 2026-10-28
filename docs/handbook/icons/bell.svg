@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" color="#5e554e" role="img">
+  <title>Bell: a reminder</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 33V22Q13 11.5 24 11.5Q35 11.5 35 22V33L39 37.5H9Z"/><path d="M24 7V11.5"/><path stroke="#c86d51" d="M19.5 41Q24 45 28.5 41"/>
+  </g>
+</svg>
