@@ -5,10 +5,10 @@ import { IconButton } from '@/design/primitives';
 import { spring } from '@/design/motion';
 
 /** The study screen's quiet top bar: close, a progress hairline, and room for counts or actions. */
-export function StudyBar({ title, progress, onClose, children }: { title: string; progress: number; onClose: () => void; children?: ReactNode }) {
+export function StudyBar({ title, progress, onClose, children, wide }: { title: string; progress: number; onClose: () => void; children?: ReactNode; wide?: boolean }) {
   return (
     <header className="fixed inset-x-0 top-0 z-20 bg-bg/85 backdrop-blur-md" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-      <div className="mx-auto flex h-14 max-w-3xl items-center gap-3 px-3 sm:px-6">
+      <div className={`mx-auto flex h-14 items-center gap-3 px-3 sm:px-6 ${wide ? 'max-w-6xl' : 'max-w-3xl'}`}>
         <IconButton icon={X} label="Close" shortcut="Esc" onClick={onClose} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-center text-[13px] font-semibold text-ink-soft">{title}</p>

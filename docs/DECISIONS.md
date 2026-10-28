@@ -1763,3 +1763,10 @@ Short records of choices that are not obvious from the code. Newest last.
   Explore are gone and their links are redirected. Radio and audiobooks have estimated levels, shown with a "~".
 - Things to try is a grid of small cards. Each challenge has a time (2, 5 or 15 minutes) and a place by its icon, kept as small tables in
   `core/mundus/try.ts` rather than in every tip's data. Done ones go to the back, and a habit counts again the next day.
+
+## 2026-10-28 — Grammatica is a path with a reason, and lessons use the width
+
+- The suggestion rule did not change (`nextTopic`: the first topic not learned at or below your level); what changed is that it is shown
+  with its reason (`core/grammar/path.ts`), so it reads as a guide and not a coincidence. Nothing is locked.
+- Weak spots are topics whose items have been forgotten most (lapses), not a new measure, so there is no new table or Dexie version.
+- Lessons have a 320 px side column (the steps and the rule) on desktop and no narrow column; Lightning keeps the plain stage.

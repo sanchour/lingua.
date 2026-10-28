@@ -529,6 +529,13 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 
 ## Grammatica (3.0-8)
 
+**The guided path (5.2-8).** The page opens on your next step, large, with the reason it is next (carrying on, the topic after one you
+learned, or the first at your level), its five steps and Start. Below, a ladder of levels with how many topics are learned (pick one),
+and that level as a path: learned, now, next, later. On the right: reviews due and a Lightning round, where it slips (topics you
+forgot most), the placement check and the alphabets. All topics is a tab away. Lessons and topic pages use the full width, with a side
+column (steps and the rule, the whole rule a click away); after a topic is learned, a placement or a review, the first button leads to
+the next step on the path.
+
 - **Grammar topics** for Spanish (28), German (23), French (21), Russian (17), Arabic (16) and
   Mandarin (15), A1 to B2, in units (First steps, then the cases, the past, going further).
 - **A short grammar for tier 2 languages:** Italian (9 topics), Portuguese (7), Dutch (7),

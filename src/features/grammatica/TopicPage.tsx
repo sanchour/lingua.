@@ -37,77 +37,82 @@ export default function TopicPage() {
   const related = (topic.related ?? []).map((id) => findTopic(grammar, id)).filter((t) => t !== undefined);
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-6xl">
       <BackLink to="/cursus/grammatica">Grammatica</BackLink>
       <PageHeader title={topic.title} eyebrow={`${topic.level} · ${unit?.title ?? 'Grammar'}`} />
       <p className="-mt-3 text-[17px] leading-snug text-ink-soft">{topic.summary}</p>
-      <LessonCard topic={topic} state={state} />
+      <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="min-w-0 max-w-3xl">
+          <Section title="See it first">
+            <Card className="divide-y divide-line/60 p-0">
+              {opening.map((ex) => (
+                <div key={ex.s} className="px-4 py-4 sm:px-5">
+                  <SentenceLine example={ex} lang={lang} size="lg" />
+                </div>
+              ))}
+            </Card>
+          </Section>
 
-      <Section title="See it first">
-        <Card className="divide-y divide-line/60 p-0">
-          {opening.map((ex) => (
-            <div key={ex.s} className="px-4 py-4 sm:px-5">
-              <SentenceLine example={ex} lang={lang} size="lg" />
+          <Section title="The rule">
+            <div className="space-y-3 text-[16.5px] leading-relaxed text-ink-soft">
+              {topic.rule.map((p) => (
+                <p key={p}>
+                  <Rich text={p} lang={lang} />
+                </p>
+              ))}
             </div>
-          ))}
-        </Card>
-      </Section>
+          </Section>
 
-      <Section title="The rule">
-        <div className="space-y-3 text-[16.5px] leading-relaxed text-ink-soft">
-          {topic.rule.map((p) => (
-            <p key={p}>
-              <Rich text={p} lang={lang} />
-            </p>
-          ))}
-        </div>
-      </Section>
+          {topic.compare && (
+            <Section title={topic.compare.title}>
+              <CompareView compare={topic.compare} lang={lang} />
+            </Section>
+          )}
 
-      {topic.compare && (
-        <Section title={topic.compare.title}>
-          <CompareView compare={topic.compare} lang={lang} />
-        </Section>
-      )}
-
-      {topic.tables && topic.tables.length > 0 && (
-        <Section title={topic.tables.length > 1 ? 'Tables' : 'Table'}>
-          <div className="grid gap-5">
-            {topic.tables.map((t, i) => (
-              <TableView key={i} table={t} lang={lang} />
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {topic.watch && (
-        <div className="mt-8">
-          <WatchOut>{topic.watch}</WatchOut>
-        </div>
-      )}
-
-      {more.length > 0 && (
-        <Section title="More sentences">
-          <Card className="divide-y divide-line/60 p-0">
-            {more.map((ex) => (
-              <div key={ex.s} className="px-4 py-3.5 sm:px-5">
-                <SentenceLine example={ex} lang={lang} />
+          {topic.tables && topic.tables.length > 0 && (
+            <Section title={topic.tables.length > 1 ? 'Tables' : 'Table'}>
+              <div className="grid gap-5">
+                {topic.tables.map((t, i) => (
+                  <TableView key={i} table={t} lang={lang} />
+                ))}
               </div>
-            ))}
-          </Card>
-        </Section>
-      )}
+            </Section>
+          )}
 
-      {related.length > 0 && (
-        <Section title="Related">
-          <div className="flex flex-wrap gap-2">
-            {related.map((t) => (
-              <Link key={t.id} to={`/cursus/grammatica/${t.id}`} className="rounded-full border border-line px-3.5 py-1.5 text-[14px] font-semibold transition-colors hover:border-line-strong hover:bg-surface">
-                {t.title}
-              </Link>
-            ))}
-          </div>
-        </Section>
-      )}
+          {topic.watch && (
+            <div className="mt-8">
+              <WatchOut>{topic.watch}</WatchOut>
+            </div>
+          )}
+
+          {more.length > 0 && (
+            <Section title="More sentences">
+              <Card className="divide-y divide-line/60 p-0">
+                {more.map((ex) => (
+                  <div key={ex.s} className="px-4 py-3.5 sm:px-5">
+                    <SentenceLine example={ex} lang={lang} />
+                  </div>
+                ))}
+              </Card>
+            </Section>
+          )}
+
+          {related.length > 0 && (
+            <Section title="Related">
+              <div className="flex flex-wrap gap-2">
+                {related.map((t) => (
+                  <Link key={t.id} to={`/cursus/grammatica/${t.id}`} className="rounded-full border border-line px-3.5 py-1.5 text-[14px] font-semibold transition-colors hover:border-line-strong hover:bg-surface">
+                    {t.title}
+                  </Link>
+                ))}
+              </div>
+            </Section>
+          )}
+        </div>
+        <aside className="order-first lg:sticky lg:top-6 lg:order-last">
+          <LessonCard topic={topic} state={state} />
+        </aside>
+      </div>
     </div>
   );
 }

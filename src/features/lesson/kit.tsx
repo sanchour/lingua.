@@ -129,9 +129,11 @@ export interface FeedbackBarProps {
   aside?: ReactNode;
   /** The button while answering, when it isn't a check ("Got it" on a new letter). */
   checkLabel?: string;
+  /** Lines up with a wide stage (a side column) instead of the narrow column. */
+  wide?: boolean;
 }
 
-export function FeedbackBar({ phase, ready, onCheck, onNext, praise, rightNote, wrong, hint, aside, checkLabel = 'Check' }: FeedbackBarProps) {
+export function FeedbackBar({ phase, ready, onCheck, onNext, praise, rightNote, wrong, hint, aside, checkLabel = 'Check', wide }: FeedbackBarProps) {
   const { pointer } = useLayout();
   return (
     <div
@@ -141,7 +143,7 @@ export function FeedbackBar({ phase, ready, onCheck, onNext, praise, rightNote, 
       )}
       style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}
     >
-      <div className="mx-auto flex max-w-2xl flex-col gap-3 px-5 pt-4 sm:flex-row sm:items-center">
+      <div className={cx('mx-auto flex flex-col gap-3 px-5 pt-4 sm:flex-row sm:items-center', wide ? 'max-w-6xl' : 'max-w-2xl')}>
         <div className="min-h-12 min-w-0 flex-1" aria-live="polite">
           {phase === 'right' && (
             <motion.div className="flex items-center gap-3" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>

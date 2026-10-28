@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { BookOpen, Keyboard, Settings2, Zap } from 'lucide-react';
 import { checkForm, DRILL_LABEL, hasItem, itemDrill, retryDrill, solutionOf, tilesMatch } from '@/core/grammar/drills';
 import type { Drill, DrillKind, FormCheck } from '@/core/grammar/drills';
+import type { Step } from '@/core/grammar/progress';
 import { gradeFor } from '@/core/srs/ludus';
 import type { Item, Topic } from '@/core/grammar/types';
 import { answerGrammarItem } from '@/data/grammar';
@@ -15,7 +16,7 @@ import { ComboBadge, FeedbackBar, LIGHTNING_MS, LightningClock, PRAISE, useLesso
 import type { LessonResult, Phase } from '@/features/lesson/kit';
 import type { OwnSentenceCheck } from '@/services/llm/grammar';
 import { BuildView, HearView, OwnView, PairsView, PickView, RecogniseView, SpotView, TableGapView, TilesView } from './drillViews';
-import { RuleSheet, SeeIt } from './lessonParts';
+import { LessonSide, RuleSheet, SeeIt } from './lessonParts';
 import { Rich, SentenceLine } from './parts';
 
 interface Track {
@@ -56,6 +57,8 @@ interface Props {
   retries?: boolean;
   /** Examples first: the whole "See it" (a topic's first lesson), a short one, or none. */
   intro?: { topic: Topic; full: boolean };
+  /** The step this lesson can pass, for the side column. */
+  step?: Step | null;
   onFinish: (o: GrammarLessonOutcome) => void;
   onClose: () => void;
   onActive: (ms: number) => void;
@@ -70,7 +73,7 @@ interface Props {
  * item graded into its FSRS card when it is done with (no mistake Good, right on the retry Hard,
  * missed twice Again).
  */
-export function GrammarLesson({ lang, title, drills, topics, random, endsAt, practice, retries: allowRetries = true, intro, onFinish, onClose, onActive, onSetup, labels }: Props) {
+export function GrammarLesson({ lang, title, drills, topics, random, endsAt, practice, retries: allowRetries = true, intro, step, onFinish, onClose, onActive, onSetup, labels }: Props) {
   const lightning = endsAt !== undefined;
   const feel = useLessonFeel();
   const tracks = useRef<Map<string, Track> | null>(null);
@@ -339,43 +342,49 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
 
   return (
     <>
-      <StudyBar title={title} progress={progress} onClose={onClose}>
+      <StudyBar wide title={title} progress={progress} onClose={onClose}>
         {lightning && endsAt ? <LightningClock endsAt={endsAt} onEnd={finish} onTick={() => feel.cue('tick')} /> : <ComboBadge combo={feel.combo} burst={feel.burst} onBurstEnd={feel.clearBurst} />}
         {!lightning && <IconButton icon={Settings2} label="Lesson settings" size="sm" onClick={onSetup} />}
       </StudyBar>
-      <main className="mx-auto flex min-h-dvh max-w-2xl flex-col px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 104px)' }}>
-        <AnimatePresence mode="popLayout" initial={false}>
-          {d && (
-            <motion.section
-              key={d.key}
-              initial={{ opacity: 0, x: 28 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -28, transition: { duration: 0.15 } }}
-              transition={spring.soft}
-              aria-labelledby="drill-label"
-            >
-              <p id="drill-label" className="mb-6 flex items-center gap-2 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">
-                {lightning && <Zap size={14} aria-hidden />}
-                {d.key.includes('-r') ? 'One more try · ' : d.key.includes('-due-') ? 'Due again · ' : ''}
-                {labels?.[d.kind] ?? DRILL_LABEL[d.kind]}
-                {topics.size > 1 && topic && <span className="truncate font-semibold tracking-normal text-ink-faint normal-case">· {topic.title}</span>}
-              </p>
-              {d.kind === 'recognise' && <RecogniseView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
-              {d.kind === 'hear' && <HearView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
-              {d.kind === 'pick' && <PickView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
-              {d.kind === 'table' && <TableGapView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
-              {d.kind === 'build' && <BuildView d={d} lang={lang} value={typed} onChange={setTyped} phase={phase} onSubmit={() => (phase === 'answer' ? check() : next())} />}
-              {(d.kind === 'order' || d.kind === 'say') && <TilesView d={d} lang={lang} value={tiles} onChange={setTiles} phase={phase} />}
-              {d.kind === 'spot' && <SpotView d={d} lang={lang} value={choice} onChange={setChoice} phase={phase} />}
-              {d.kind === 'pairs' && <PairsView d={d} lang={lang} onDone={onPairs} random={random} />}
-              {d.kind === 'own' && topic && (
-                <OwnView d={d} topic={topic} lang={lang} value={typed} onChange={setTyped} phase={phase} checking={own.checking} error={own.error} onSubmit={() => (phase === 'answer' ? check() : next())} />
+      <main className="mx-auto min-h-dvh max-w-6xl px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 104px)' }}>
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0 max-w-3xl">
+            <AnimatePresence mode="popLayout" initial={false}>
+              {d && (
+                <motion.section
+                  key={d.key}
+                  initial={{ opacity: 0, x: 28 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -28, transition: { duration: 0.15 } }}
+                  transition={spring.soft}
+                  aria-labelledby="drill-label"
+                >
+                  <p id="drill-label" className="mb-6 flex items-center gap-2 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">
+                    {lightning && <Zap size={14} aria-hidden />}
+                    {d.key.includes('-r') ? 'One more try · ' : d.key.includes('-due-') ? 'Due again · ' : ''}
+                    {labels?.[d.kind] ?? DRILL_LABEL[d.kind]}
+                    {topics.size > 1 && topic && <span className="truncate font-semibold tracking-normal text-ink-faint normal-case">· {topic.title}</span>}
+                  </p>
+                  {d.kind === 'recognise' && <RecogniseView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
+                  {d.kind === 'hear' && <HearView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
+                  {d.kind === 'pick' && <PickView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
+                  {d.kind === 'table' && <TableGapView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
+                  {d.kind === 'build' && <BuildView d={d} lang={lang} value={typed} onChange={setTyped} phase={phase} onSubmit={() => (phase === 'answer' ? check() : next())} />}
+                  {(d.kind === 'order' || d.kind === 'say') && <TilesView d={d} lang={lang} value={tiles} onChange={setTiles} phase={phase} />}
+                  {d.kind === 'spot' && <SpotView d={d} lang={lang} value={choice} onChange={setChoice} phase={phase} />}
+                  {d.kind === 'pairs' && <PairsView d={d} lang={lang} onDone={onPairs} random={random} />}
+                  {d.kind === 'own' && topic && (
+                    <OwnView d={d} topic={topic} lang={lang} value={typed} onChange={setTyped} phase={phase} checking={own.checking} error={own.error} onSubmit={() => (phase === 'answer' ? check() : next())} />
+                  )}
+                </motion.section>
               )}
-            </motion.section>
-          )}
-        </AnimatePresence>
+            </AnimatePresence>
+          </div>
+          {topic && !lightning && <LessonSide topic={topic} lang={lang} step={step ?? null} onRule={() => setRule(topic)} />}
+        </div>
       </main>
       <FeedbackBar
+        wide
         phase={phase}
         ready={ready}
         onCheck={() => check()}

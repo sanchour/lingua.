@@ -6,7 +6,7 @@ import { Coffee } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { DRILL_KINDS, DRILL_NAME, planLightning, planPlacement, planReview, planTopicLesson, seededRandom } from '@/core/grammar/drills';
 import type { Drill, DrillKind } from '@/core/grammar/drills';
-import { STEPS } from '@/core/grammar/progress';
+import { nextTopic, STEPS } from '@/core/grammar/progress';
 import type { Step } from '@/core/grammar/progress';
 import { findTopic, topicsOf } from '@/core/grammar/types';
 import type { Grammar, Topic } from '@/core/grammar/types';
@@ -102,6 +102,11 @@ export default function GrammarLessonPage({ review = false, placement = false }:
     async ({ result, byTopic, missed }: GrammarLessonOutcome) => {
       if (!grammar || !plan || plan === 'empty') return;
       active.current.n += result.answered;
+      // After a lesson, the way on: the next step on the path (never the topic just done).
+      const onward = async (exceptId?: string): Promise<EndAction[]> => {
+        const next = nextTopic(grammar, await grammarProgress(lang), language.level);
+        return next && next.id !== exceptId ? [{ label: `Next: ${next.title}`, onClick: () => navigate(`/cursus/grammatica/${next.id}/lesson`, { replace: true }) }] : [];
+      };
       const again = { label: kind === 'lightning' ? 'Play again' : 'Another round', onClick: () => setRound((r) => r + 1) };
       if (kind === 'lightning') {
         const key = `${lang}:grammar${review ? '' : `:${topicId}`}`;
@@ -117,13 +122,13 @@ export default function GrammarLessonPage({ review = false, placement = false }:
           result,
           title: 'Check done',
           note: known.length ? `${known.length === 1 ? 'One topic' : `${known.length} topics`} you already know ${known.length === 1 ? 'is' : 'are'} marked learned. The rest wait for you in order.` : 'Nothing marked yet: start from the first topic. You’ll move fast through what you know.',
-          actions: [],
+          actions: await onward(),
         });
         return;
       }
       if (kind === 'review') {
         for (const t of byTopic.keys()) await finishGrammarLesson(lang, t, null, 0);
-        setEnd({ missed, result, title: 'Review done', note: 'Every item comes back when it’s due again.', actions: [] });
+        setEnd({ missed, result, title: 'Review done', note: 'Every item comes back when it’s due again.', actions: await onward() });
         return;
       }
       const topic = findTopic(grammar, topicId)!;
@@ -135,7 +140,7 @@ export default function GrammarLessonPage({ review = false, placement = false }:
       if (plan.step === null) {
         setEnd({ missed, result, title: 'Practice done', note: `${topic.title}: ${pct}% right first time.`, actions: [again] });
       } else if (passed && step >= 6) {
-        setEnd({ missed, result, title: 'Topic learned', note: `${topic.title} is yours. Its items come back for review when they’re due.`, actions: [{ label: 'Practise it', onClick: () => navigate(`/cursus/grammatica/${topic.id}/lesson?mode=practice`, { replace: true }) }] });
+        setEnd({ missed, result, title: 'Topic learned', note: `${topic.title} is yours. Its items come back for review when they’re due.`, actions: [...(await onward(topic.id)), { label: 'Practise it', onClick: () => navigate(`/cursus/grammatica/${topic.id}/lesson?mode=practice`, { replace: true }) }] });
       } else if (passed) {
         const s = STEPS[step - 1];
         setEnd({ missed, result, title: `Step ${plan.step} passed`, note: `Next: step ${step}, ${s.name.toLowerCase()} (${s.hint.toLowerCase()}).`, actions: [{ label: `On to step ${step}`, onClick: () => setRound((r) => r + 1) }] });
@@ -143,7 +148,7 @@ export default function GrammarLessonPage({ review = false, placement = false }:
         setEnd({ missed, result, title: 'Lesson done', note: `${pct}% right first time. At 80% you move on to the next step; another round?`, actions: [again] });
       }
     },
-    [grammar, plan, kind, lang, review, topicId, lessons.best, navigate],
+    [grammar, plan, kind, lang, language.level, review, topicId, lessons.best, navigate],
   );
 
   const setup = <LessonSetup open={setupOpen} onClose={() => setSetupOpen(false)} kinds={SETUP_KINDS} offKey="grammarOff" />;
@@ -179,6 +184,7 @@ export default function GrammarLessonPage({ review = false, placement = false }:
         practice={kind === 'lightning' || kind === 'placement'}
         retries={kind !== 'placement'}
         intro={plan.intro}
+        step={plan.step}
         onFinish={(o) => void onFinish(o)}
         onClose={back}
         onActive={onActive}

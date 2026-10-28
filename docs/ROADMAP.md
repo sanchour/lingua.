@@ -1728,7 +1728,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [ ] 5.2-5 · Diarium: writing tools, a calendar, search, in the language
 - [ ] 5.2-6 · Sermo: a guided path into your AI app, many more scenes
 - [x] 5.2-7 · Mundus: an interactive guide, one Explore, Things to try
-- [ ] 5.2-8 · Grammatica: a guided path at your level, lessons at desktop size
+- [x] 5.2-8 · Grammatica: a guided path at your level, lessons at desktop size
 - [ ] 5.2-9 · Ratio: one language, compact, goals in Tabula instead of Iter, more numbers
 - [ ] Cursus · the course, with speaking and writing (moved here from 4.0-4; section "Cursus" below)
 - [ ] 5.2-10 · Lingua 5 complete: the full check
@@ -2238,7 +2238,7 @@ design of each is LINGUA-5.2-PLAN.md's section; below is how it is built and how
    - Things to try: a dense grid, Deal me one, tick done (counted this week), filters by time and room, "Try this
      one today".
    - **Checked:** each reply changes the steps; Explore's bands and side bar; dealing, ticking and filters.
-4. [ ] **Grammatica (5.2-8, handover 17).**
+4. [x] **Grammatica (5.2-8, handover 17)** — done 2026-10-28 (0.5.2-alpha.26). Checked in the app (French): the next step with its reason, the ladder, the path, the lesson at 1440 wide with the side column (320 px, steps and rule) and Enter/1–4 as before; unit tests for the reasons, ladder, path and weak spots. Not checked: a learner placed at A2 in the app (covered by the unit test), dark mode, 1280 and 1366.
    - The page: one next step large with its reason and Start, a level ladder, your level as a path (done,
      current, next, later), on the right reviews due, weak spots and the placement test; All topics one click
      away; Next after a lesson goes to the next step on the path.
