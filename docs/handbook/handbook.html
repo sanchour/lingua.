@@ -46,6 +46,8 @@ body { margin: 0; font-family: var(--serif); font-size: 9.3pt; line-height: 13.4
 /* The text column, and the outer margin for the fine print. */
 .recto .sheet > :not(.row):not(.wide) { margin-right: calc(var(--note) + var(--gap)); }
 .verso .sheet > :not(.row):not(.wide) { margin-left: calc(var(--note) + var(--gap)); }
+/* A table with no width of its own takes the whole line: with the note column's margin on top of 100% it ran past the page. */
+.page .sheet > table:not(.wide):not([style*="width"]) { width: 100%; margin-left: 0; margin-right: 0; }
 .row { display: grid; column-gap: var(--gap); align-items: start; }
 .recto .row { grid-template-columns: 1fr var(--note); grid-template-areas: 't n'; }
 .verso .row { grid-template-columns: var(--note) 1fr; grid-template-areas: 'n t'; }
@@ -117,7 +119,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 .fleuron svg { display: inline-block; }
 
 /* Contents */
-.toc { list-style: none; margin: 0; padding: 0; font-size: 9pt; line-height: 13.2pt; }
+.toc { list-style: none; margin: 0; padding: 0; font-size: 9pt; line-height: 12.9pt; }
 .toc li { display: flex; align-items: baseline; gap: 3pt; }
 .toc li .dots { flex: 1; border-bottom: .7pt dotted var(--line2); transform: translateY(-2.4pt); }
 .toc li a { color: var(--ink); text-decoration: none; }
@@ -181,9 +183,9 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 .station b { display: block; font-size: 9.8pt; line-height: 13pt; }
 .station span { display: block; color: var(--soft); font-size: 8.5pt; line-height: 12pt; }
 .toc.compact { line-height: 12.4pt; }
-#index-list { columns: 2; column-gap: 8mm; font-size: 7.7pt; line-height: 10.6pt; margin-top: 2pt; }
-#index-list div { break-inside: avoid; padding-left: 8pt; text-indent: -8pt; }
-#index-list .pg { color: var(--soft); font-style: italic; font-variant-numeric: lining-nums; }
+#index-list, #index-list-2 { columns: 2; column-gap: 8mm; font-size: 7.9pt; line-height: 11.4pt; margin-top: 2pt; }
+#index-list div, #index-list-2 div { break-inside: avoid; padding-left: 8pt; text-indent: -8pt; }
+#index-list .pg, #index-list-2 .pg { color: var(--soft); font-style: italic; font-variant-numeric: lining-nums; }
 .toc.compact .part { margin: 7pt 0 2pt; }
 
 /* Wireframes: a screen drawn in boxes, with numbered parts. */
@@ -226,13 +228,77 @@ ol.key.two li { break-inside: avoid; }
 .icg figcaption { font: 650 6.6pt/1.2 var(--sans); color: var(--ink); margin-top: 1.2mm; }
 .icg figcaption span { display: block; font-weight: 400; color: var(--faint); font-size: 6pt; }
 .dk { background: #1f1c1a; border-color: #3b3532 !important; --il: #bdb19f; --ia: #d49b54; }
-.proof { display: flex; align-items: flex-end; gap: 4mm; padding: 2.4mm 3mm; border: .5pt solid var(--line2); border-radius: 1.8mm; background: var(--raised); margin: 3pt 0 6pt; }
+.proof { display: flex; align-items: flex-end; gap: 2.4mm; padding: 2.4mm 3mm; border: .5pt solid var(--line2); border-radius: 1.8mm; background: var(--raised); margin: 3pt 0 6pt; }
 .proof.dk { border: .5pt solid #3b3532; }
 .proof figure { margin: 0; text-align: center; font: 500 5.4pt/1.2 var(--sans); color: var(--faint); }
 .proof.dk figure { color: #918779; }
 .grid48 .g { stroke: var(--line2); stroke-width: .12; fill: none; }
 .grid48 .k { stroke: var(--accent); stroke-width: .18; fill: none; opacity: .7; }
 .grid48 .ln { stroke-width: 2.6; }
+
+/* Round 3: fields, tags, mini screens, charts, briefs, storyboard, sound, accessibility. */
+.nv { display: inline-block; font: 700 5pt/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; border: .6pt solid var(--accent); color: var(--accent-t); border-radius: 1pt; padding: .8pt 2pt; vertical-align: 1pt; margin-left: 3pt; white-space: nowrap; }
+.nv.pr { border-color: var(--sage); color: var(--sage-t); }
+.fgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.6mm 4.5mm; margin: 5pt 0 7pt; }
+.fld label { display: block; font: 700 5.3pt/1 var(--sans); letter-spacing: .09em; text-transform: uppercase; color: var(--soft); margin-bottom: 1mm; }
+.fld .in { height: 7.4mm; border: .7pt solid var(--line2); border-radius: 2.2mm; background: var(--raised); padding: 0 2.4mm; font: 500 6.6pt/7.4mm var(--sans); color: var(--ink); position: relative; }
+.fld .in.ph { color: var(--faint); }
+.fld .in.f { outline: 1.1pt solid var(--accent); outline-offset: .5mm; border-color: var(--accent); }
+.fld .in.e { border-color: var(--accent-t); }
+.fld .in.ok { border-color: var(--sage); }
+.fld .in.x { opacity: .5; background: var(--sunken); }
+.fld .in .m { position: absolute; right: 2.2mm; top: 0; font-weight: 700; }
+.fld .in.e .m { color: var(--accent-t); } .fld .in.ok .m { color: var(--sage-t); }
+.fld .h { font: 500 5.8pt/1.25 var(--sans); color: var(--faint); margin-top: 1mm; }
+.fld .h.e { color: var(--accent-t); } .fld .h.ok { color: var(--sage-t); }
+.fld .st { font: 700 4.9pt/1 var(--sans); color: var(--faint); margin-top: 1mm; letter-spacing: .1em; text-transform: uppercase; }
+.mini3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin: 5pt 0 3pt; }
+.mini { --mb: #faf6f0; --mi: #262220; --ms: #5e554e; --mc: #efe7d9; --ma: #c86d51; --ml: #e1d6c4; --mo: #fffaf2; background: var(--mb); color: var(--mi); border: .5pt solid var(--ml); border-radius: 1.6mm; padding: 2.4mm; height: 33mm; font: 500 5.2pt/1.3 var(--sans); position: relative; overflow: hidden; }
+.mini.n { --mb: #1f1c1a; --mi: #ebe0cc; --ms: #bdb19f; --mc: #2b2724; --ma: #d49b54; --ml: #3b3532; --mo: #1f1c1a; }
+.mini.w { --mb: #000; --mi: #fff; --ms: #ccc; --mc: #1a1a1a; --ma: #c86d51; --ml: #333; --mo: #fff; }
+.mini .t { font: 600 9pt/1.1 var(--serif); margin-bottom: 1.2mm; }
+.mini .c { background: var(--mc); border: .4pt solid var(--ml); border-radius: 1.8mm; padding: 1.6mm 2mm; margin-top: 1.6mm; color: var(--ms); }
+.mini .c b { display: block; color: var(--mi); font: 650 6pt/1.2 var(--sans); }
+.mini .bt { display: inline-block; background: var(--ma); color: var(--mo); border-radius: 1.4mm; padding: 1mm 2.4mm; font: 700 5.4pt/1 var(--sans); margin-top: 2mm; }
+.mini .ch { display: inline-block; border-radius: 6mm; padding: .5mm 1.8mm; font: 700 4.8pt/1.2 var(--sans); background: color-mix(in srgb, var(--ma) 16%, transparent); color: var(--ma); margin-right: 1mm; }
+.mcap { font: 600 5.6pt/1.25 var(--sans); color: var(--soft); margin-top: 1mm; }
+.mcap b { color: var(--ink); }
+.brief { border: .6pt solid var(--line2); border-radius: 1.8mm; background: var(--raised); padding: 2.6mm 3.2mm 1.4mm; margin: 4pt 0 6pt; font-size: 7.6pt; line-height: 10.4pt; }
+.brief .q { display: grid; grid-template-columns: 31% 1fr; gap: 2.4mm; align-items: end; margin-bottom: 1.2mm; }
+.brief .q > b { font: 650 6.7pt/1.2 var(--sans); color: var(--ink); }
+.brief .q > i { display: block; border-bottom: .5pt solid var(--line2); height: 4.8mm; font-style: normal; color: var(--soft); font: 500 6.6pt/4.8mm var(--serif); }
+.brief .q > i.t2 { height: 9.6mm; background: linear-gradient(var(--line2), var(--line2)) 0 4.8mm / 100% .5pt no-repeat; }
+.brief.ex .q > i { border-bottom-color: transparent; border-bottom-style: dotted; height: auto; min-height: 4.8mm; line-height: 9.4pt; padding: .4mm 0; font: 500 7pt/9.4pt var(--serif); color: var(--ink); }
+.gest td { vertical-align: top; }
+.thumb { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; align-items: start; margin: 4pt 0 6pt; }
+.phone { position: relative; width: 36mm; height: 70mm; border: .8pt solid var(--soft); border-radius: 5mm; background: var(--raised); overflow: hidden; margin: 0 auto; }
+.phone .z { position: absolute; left: 0; right: 0; font: 650 5pt/1.2 var(--sans); text-align: center; padding-top: 1.4mm; color: var(--soft); }
+.phone .z.hard { top: 0; height: 24mm; background: rgb(200 109 81 / .14); }
+.phone .z.ok { top: 24mm; height: 21mm; background: rgb(107 142 120 / .14); }
+.phone .z.easy { top: 45mm; height: 25mm; background: rgb(107 142 120 / .30); }
+.phone .bar { position: absolute; left: 3mm; right: 3mm; bottom: 3mm; height: 10mm; border: .6pt solid var(--accent); border-radius: 4mm; background: var(--raised); display: flex; align-items: center; justify-content: space-around; font: 700 4.6pt/1 var(--sans); color: var(--accent-t); }
+.sb { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2.2mm; margin: 4pt 0 6pt; }
+.sb .fr { border: .6pt solid var(--line2); border-radius: 1.6mm; background: var(--raised); padding: 1.4mm; }
+.sb .fr .scr { height: 21mm; border: .4pt solid var(--line2); border-radius: 1mm; background: var(--bg-p, var(--paper)); padding: 1.3mm; font: 500 4.4pt/1.25 var(--sans); color: var(--soft); overflow: hidden; }
+.sb .fr .scr .h { font: 600 7pt/1.05 var(--serif); color: var(--ink); margin-bottom: .8mm; }
+.sb .fr .scr .a { display: inline-block; margin-top: 1mm; padding: .5mm 1.4mm; border-radius: 1mm; background: var(--accent); color: #fffaf2; font-weight: 700; }
+.sb .fr .scr .l { display: block; height: 1.1mm; margin-top: .8mm; border-radius: .6mm; background: var(--line2); }
+.sb .fr b { display: block; font: 700 5.6pt/1.2 var(--sans); color: var(--ink); margin-top: 1mm; }
+.sb .fr > span { display: block; font: 400 5.2pt/1.3 var(--sans); color: var(--soft); margin-top: .4mm; }
+.sb .fr i.no { position: static; display: inline-block; width: 3.2mm; height: 3.2mm; border-radius: 50%; background: var(--accent-t); color: #fff; font: 700 4.6pt/3.2mm var(--sans); text-align: center; font-style: normal; margin-right: 1mm; }
+.cheat { font-size: 7pt; line-height: 9.4pt; }
+.cheat h3 { margin: 5pt 0 2pt; font-size: 8.6pt; }
+.cheat table td, .cheat table th { padding-top: 1.4pt; padding-bottom: 1.4pt; font-size: 6.9pt; line-height: 9pt; }
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.art96 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.2mm 3mm; margin: 4pt 0 6pt; }
+.art96 figure { margin: 0; text-align: center; }
+.art96 .tile { height: 31mm; border: .5pt solid var(--line2); border-radius: 1.8mm; background: var(--raised); display: flex; align-items: center; justify-content: center; }
+.art96 figcaption { font: 650 6.4pt/1.2 var(--sans); color: var(--ink); margin-top: 1.2mm; }
+.art96 figcaption span { display: block; font-weight: 400; color: var(--faint); font-size: 5.8pt; }
+
+.ic .f { fill: var(--ib, var(--raised)); }
+.dk { --ib: #1f1c1a; }
+.ic .dash { stroke-dasharray: 2.2 3.4; }
 </style>
 </head>
 <body>
@@ -291,6 +357,12 @@ ol.key.two li { break-inside: avoid; }
     <symbol id="i-keys" viewBox="0 0 48 48"><g class="ln ic"><path d="M5 15Q24 13.5 43 15V35Q24 36.5 5 35Z"/><path d="M11 21h2M17.5 21h2M24 21h2M30.5 21h2M37 21h2M11 27h2M35 27h2"/><path class="a" d="M17 30H31"/></g></symbol>
     <symbol id="i-globe" viewBox="0 0 48 48"><g class="ln ic"><path d="M24 6Q42 6 42 24Q42 42 24 42Q6 42 6 24Q6 6 24 6Z"/><path d="M9 16Q24 19 39 16M9 32Q24 29 39 32" opacity=".5"/><path class="a" d="M24 6Q13 24 24 42M24 6Q35 24 24 42"/></g></symbol>
     <symbol id="i-talk" viewBox="0 0 48 48"><g class="ln ic"><path d="M26 8H41Q43 8 43 10V24Q43 26 41 26H38V32L32 26H27" opacity=".55"/><path d="M5 17H29Q31 17 31 19V35Q31 37 29 37H18L11 43V37H5Q3 37 3 35V19Q3 17 5 17Z"/><circle class="fa" cx="11" cy="27" r="1.2"/><circle class="fa" cx="17" cy="27" r="1.2"/><circle class="fa" cx="23" cy="27" r="1.2"/></g></symbol>
+    <symbol id="a-welcome" viewBox="0 0 96 96"><g class="ln ic" style="stroke-width:2.4"><path d="M14 76Q48 74.5 82 76V86Q48 87.5 14 86Z"/><path d="M20 76V86"/><path d="M20 62Q50 60.5 80 62V74Q50 75.5 20 74Z"/><path d="M26 68H46" opacity=".5"/><path d="M28 46Q52 44 74 47V60Q50 61.5 28 59Z" transform="rotate(-3 50 52)"/><path d="M34 52H52" opacity=".5"/><path class="s" d="M52 44Q50 34 56 26"/><path class="s" d="M56 26Q64 24 66 18Q58 18 56 26Z"/><path class="s" d="M52 36Q44 35 41 29Q49 29 52 36Z"/><path class="a" d="M70 86V92L73 89.5L76 92V86.4"/></g></symbol>
+    <symbol id="a-empty" viewBox="0 0 96 96"><g class="ln ic" style="stroke-width:2.4"><path d="M8 74Q48 72.5 88 74"/><path d="M10 74V79Q48 80.5 86 79V74"/><path d="M16 74V40Q20 39 24 40V74"/><path d="M27 74V33Q32 32 36 33V74"/><path d="M38 74L41 38Q45 37 48 38.5L45 74"/><path d="M72 74V44Q76 43 80 44V74"/><path class="a dash" d="M52 74V46Q58 45 64 46V74"/><path class="s" d="M60 74Q60 68 64 64"/></g></symbol>
+    <symbol id="a-search" viewBox="0 0 96 96"><g class="ln ic" style="stroke-width:2.4"><path d="M24 12H56L70 26V74Q47 76 24 74Z"/><path d="M56 12V26H70"/><path d="M32 38H60M32 46H54M32 54H44" opacity=".5"/><path class="f" d="M50 58Q64 56 66 70Q68 84 54 86Q40 88 38 74Q36 60 50 58Z"/><path d="M63 82L80 90"/><path class="a" d="M44 68Q45 64 50 63"/></g></symbol>
+    <symbol id="a-done" viewBox="0 0 96 96"><g class="ln ic" style="stroke-width:2.4"><path d="M12 72Q48 70.5 84 72V84Q48 85.5 12 84Z"/><path d="M19 72V84"/><path d="M26 80H72" opacity=".5"/><path d="M34 54H62V62Q62 70 48 70Q34 70 34 62Z"/><path d="M62 57Q72 56 70 63Q68 67 61 66"/><path class="a" d="M42 48Q38 42 43 37Q47 32 43 27"/><path class="a" d="M52 48Q48 43 53 38"/></g></symbol>
+    <symbol id="a-offline" viewBox="0 0 96 96"><g class="ln ic" style="stroke-width:2.4"><path d="M28 20Q48 18 68 20L76 42Q48 45 20 42Z"/><path d="M48 44V70"/><path d="M34 76Q48 74 62 76"/><path d="M48 70Q48 86 60 86"/><path class="a" d="M60 82H68V90H60Z"/><path d="M78 80H88V92H78Z"/><path class="a" d="M71 83L74 80L73 85L76 83" /></g></symbol>
+    <symbol id="a-error" viewBox="0 0 96 96"><g class="ln ic" style="stroke-width:2.4"><path d="M24 12H72V50L65 44L58 52L50 44L42 52L34 45L24 52Z"/><path d="M32 22H60M32 30H54M32 38H58" opacity=".5"/><path d="M24 62L34 55L42 63L50 55L58 63L65 56L72 62V84H24Z"/><path d="M32 72H58M32 78H50" opacity=".5"/><path class="a" d="M16 57H22M74 57H80"/></g></symbol>
   </defs>
 </svg>
 
@@ -379,6 +451,8 @@ ol.key.two li { break-inside: avoid; }
       <li><span class="n" data-n-for="d-dark"></span><a href="#d-dark">Dark, and the papers</a><span class="dots"></span><span class="pn" data-for="d-dark"></span></li>
       <li><span class="n" data-n-for="d-charts"></span><a href="#d-charts">Charts and numbers</a><span class="dots"></span><span class="pn" data-for="d-charts"></span></li>
       <li><span class="n" data-n-for="d-words"></span><a href="#d-words">Words on the screen</a><span class="dots"></span><span class="pn" data-for="d-words"></span></li>
+      <li><span class="n" data-n-for="d-access"></span><a href="#d-access">Accessibility</a><span class="dots"></span><span class="pn" data-for="d-access"></span></li>
+      <li><span class="n" data-n-for="d-sound"></span><a href="#d-sound">Sound and haptics</a><span class="dots"></span><span class="pn" data-for="d-sound"></span></li>
       <li><span class="n" data-n-for="d-recipe"></span><a href="#d-recipe">Designing a new screen</a><span class="dots"></span><span class="pn" data-for="d-recipe"></span></li>
       <li><span class="n" data-n-for="d-tablet"></span><a href="#d-tablet">Tablet: iPad and Android</a><span class="dots"></span><span class="pn" data-for="d-tablet"></span></li>
       <li><span class="n" data-n-for="d-phone"></span><a href="#d-phone">Phone: iOS and Android</a><span class="dots"></span><span class="pn" data-for="d-phone"></span></li>
@@ -391,6 +465,7 @@ ol.key.two li { break-inside: avoid; }
     <ul class="toc compact">
       <span class="part">Part Four · Page by page</span>
       <li><span class="n" data-n-for="ch9"></span><a href="#ch9">The anatomy of a page</a><span class="dots"></span><span class="pn" data-for="ch9"></span></li>
+      <li><span class="n" data-n-for="d-first"></span><a href="#d-first">The first start, screen by screen</a><span class="dots"></span><span class="pn" data-for="d-first"></span></li>
       <li><span class="n" data-n-for="ch10"></span><a href="#ch10">The first start <i class="acc">· Lingua 7 begins here</i></a><span class="dots"></span><span class="pn" data-for="ch10"></span></li>
       <li><span class="n" data-n-for="ch11"></span><a href="#ch11">Home</a><span class="dots"></span><span class="pn" data-for="ch11"></span></li>
       <li><span class="n" data-n-for="ch12"></span><a href="#ch12">Cursus</a><span class="dots"></span><span class="pn" data-for="ch12"></span></li>
@@ -474,7 +549,7 @@ ol.key.two li { break-inside: avoid; }
       <aside><span class="k">The tokens</span><code>src/<wbr>design/<wbr>tokens.css</code>, “Cozy Scriptorium design tokens”.</aside></div>
     <div class="row"><p>The rooms have Latin names, because a scriptorium would have used them, and because it is a little bit fun. Each room keeps one kind of work:</p>
       <aside><span class="k">Order</span><code>src/<wbr>app/<wbr>sections.ts</code>. Alt 1 to 8 opens them in this order. Ratio and Settings sit apart at the bottom of the sidebar.</aside></div>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><td class="k">Home</td><td>your hearth: today, and what’s next</td></tr>
       <tr><td class="k">Cursus</td><td>the course, grammar, alphabets and typing</td></tr>
       <tr><td class="k">Codex</td><td>reading: books, articles, comics</td></tr>
@@ -629,10 +704,34 @@ ol.key.two li { break-inside: avoid; }
       <tr><td class="px">alpha.25</td><td class="k">This book</td><td>Money, what Lingua could earn, and how to fund it.</td></tr>
       <tr><td class="px">alpha.26</td><td class="k">Grammatica</td><td>A guided path at the learner’s level with the next step and its reason; a ladder of levels; lessons that use the width of a desktop window.</td></tr>
       <tr><td class="px">alpha.27</td><td class="k">Ratio</td><td>One language at a time; Iter retired and its goals moved into Tabula with “on track” and “behind”; an estimated level said as an estimate.</td></tr>
-      <tr><td class="px">alpha.28</td><td class="k">Ratio, Visio</td><td>Look-ups per 1,000 words, listening by kind, a typing card, Log time and Add a moment; YouTube in Visio, the follow clock, and the Lingua extension.</td></tr>
+      <tr><td class="px">alpha.28</td><td class="k">Ratio, Visio</td><td>Look-ups per 1,000 words, listening by kind, a typing card, Log time and Add a moment; YouTube in Visio, the follow clock, and the Lingua extension (not yet tried on real sites).</td></tr>
       <tr><td class="px">alpha.29</td><td class="k">This book</td><td>The design chapters: the desktop frame, layout patterns, elements, where things go, how it feels, dark, charts, words, a recipe; tablet and phone; a layout page for every room.</td></tr>
+      <tr><td class="px">alpha.30–.31</td><td class="k">This book</td><td>Icons, and chapters on forms, charts, accessibility, sound, the first start and a cheat sheet.</td></tr>
     </table>
     <div class="row"><p class="small muted">Next: the check of all of Lingua 5 (every point, at three desktop sizes, light and dark, as Free, Lingua+ and Max), which makes version 0.5.2.</p><aside><span class="k">Source</span><code>docs/<wbr>ROADMAP.md</code> › Finishing Lingua 5.</aside></div>
+  </div>
+</section>
+
+<!-- R3 changelog -->
+<section class="page" data-rh="What Lingua does today">
+  <div class="sheet">
+    <h3>The design changelog</h3>
+    <p class="small">What changed in how Lingua looks, sounds and is built to be designed, by version. The product’s own changes are on the page before; this one is for people drawing screens. <b>Keeping it up:</b> when a push changes a token, a primitive, a pattern or a rule here, add a line to this table and, if a number moved, to the facts block; <code>docs/HANDOVER.md</code> says so.</p>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:14%">Version</th><th style="width:20%">Part</th><th>What changed</th></tr>
+      <tr><td class="px">alpha.31</td><td class="k">Rules and chapters</td><td>Forms and validation, the anatomy of a chart, the fourteen papers measured, a screen in Nocturne, the design brief, accessibility, sound and haptics, the first start screen by screen, empty-page art, a cheat sheet checked by a test. Two findings: terracotta and sage share one lightness; faint ink fails 4.5 : 1 on Parchment and Mocha.</td></tr>
+      <tr><td class="px">alpha.30</td><td class="k">Icons</td><td>The Lingua hand: 33 icons on a 48 grid, one fine line and one terracotta detail, as files and as pages. Not in the app yet.</td></tr>
+      <tr><td class="px">alpha.29</td><td class="k">Design chapters</td><td>The desktop frame, patterns, elements, where things go, how it feels, dark, charts, words, a recipe; a layout page for every room; tablet and phone as guidance.</td></tr>
+      <tr><td class="px">alpha.28</td><td class="k">Ratio, Visio</td><td>A typing card and by-kind bars in Ratio; Log study time and Add a moment as drawers; the follow clock in Visio.</td></tr>
+      <tr><td class="px">alpha.26–27</td><td class="k">Grammatica, Ratio</td><td>Full-width lessons and a ladder of levels; one language at a time with goals in Tabula.</td></tr>
+      <tr><td class="px">alpha.17</td><td class="k">The map</td><td>Rooms regrouped: Home, Cursus, Explora, Bibliotheca as the main four; the rest under Tools.</td></tr>
+    </table>
+    <h3>The rule for what goes in</h3>
+    <ul class="plain">
+      <li><b>In:</b> a new or changed token, primitive, pattern, icon, sound, or a rule that a designer must now follow; a measured finding.</li>
+      <li><b>Out:</b> a feature that used the existing pieces as they are. That belongs in the product table.</li>
+      <li><b>One line</b> a version, with the effect first. If a line needs a paragraph, the paragraph belongs in the right chapter and the line points to it.</li>
+    </ul>
   </div>
 </section>
 
@@ -643,7 +742,7 @@ ol.key.two li { break-inside: avoid; }
     <div class="rule"></div>
     <div class="row"><p class="lead first">Seventy languages, in five tiers that say honestly how much Lingua has for each. A tier is a promise: nothing on the page may claim more.</p>
       <aside><span class="k">Where</span><code>TIERS</code> and <code>LANGUAGES</code> in <code>src/<wbr>core/<wbr>lang/<wbr>languages.ts</code>.</aside></div>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><th>Tier</th><th>Languages</th><th>What they get</th></tr>
       <tr><td><b>Core</b></td><td>6</td><td>Everything: the course, grammar, the alphabet, typing, the full dictionary, natural voices, every room</td></tr>
       <tr><td><b>Full</b></td><td>14</td><td>Every room, grammar and the alphabet; no course</td></tr>
@@ -876,7 +975,7 @@ ol.key.two li { break-inside: avoid; }
       <p class="sc" style="margin:8pt 0 4pt">Plus Jakarta Sans</p>
       <p style="font-family:var(--sans);font-size:10pt;margin:0">Continue with Deutsch &nbsp;·&nbsp; <span style="font-size:8pt;color:var(--soft)">Click a country to see what’s spoken there.</span></p>
     </div>
-    <table class="spec" style="width:86mm">
+    <table class="spec" style="width:84mm">
       <tr><th>Where</th><th>Face</th><th>Size</th></tr>
       <tr><td>Big moments (your name, the welcome)</td><td>Literata 600</td><td>40–44 px</td></tr>
       <tr><td>A page’s title</td><td>Literata 600, tight</td><td>30–36 px</td></tr>
@@ -921,7 +1020,7 @@ ol.key.two li { break-inside: avoid; }
     <h2 id="ch7" data-ch>Motion</h2>
     <div class="rule"></div>
     <p class="lead first">Things in Lingua settle like paper: they move a little, then they are still. Motion says where something came from. It never performs.</p>
-    <table class="spec" style="width:86mm">
+    <table class="spec" style="width:84mm">
       <tr><th>Spring</th><th>For</th><th>Stiffness · damping</th></tr>
       <tr><td>snappy</td><td>pills, toggles, indicators</td><td>560 · 42</td></tr>
       <tr><td>soft</td><td>cards and page content</td><td>320 · 34</td></tr>
@@ -964,7 +1063,7 @@ ol.key.two li { break-inside: avoid; }
     <h3 style="margin-top:0">A touch of the language</h3>
     <div class="row"><p>When you learn French, Lingua looks a little French. Each core language lends the app a heading face, one ornament and a lean of the accent. It is a touch, not a costume: the reading text and the learner’s palette never change.</p>
       <aside><span class="k">Where</span><code>src/<wbr>design/<wbr>flavours.ts</code>, on by default: Settings › Look and feel › Language touches.</aside></div>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><th>Language</th><th>Headings</th><th>Ornament, and more</th></tr>
       <tr><td>French</td><td>Garamond</td><td>a fleuron, a hint of bleu de France</td></tr>
       <tr><td>Spanish</td><td>Alegreya</td><td>a tile strip; ¿ in titles that ask</td></tr>
@@ -1084,8 +1183,8 @@ ol.key.two li { break-inside: avoid; }
     <p class="small">The small things that say how it is going and where you are.</p>
     <div class="icg wide" style="grid-template-columns:repeat(5,1fr)"><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-flag"/></svg></div><figcaption>Pennant<span>a goal</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-day"/></svg></div><figcaption>Calendar leaf<span>a day</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-clock"/></svg></div><figcaption>Pocket watch<span>time</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-seal"/></svg></div><figcaption>Seal<span>a milestone</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-candle"/></svg></div><figcaption>Candle<span>a streak</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-folder"/></svg></div><figcaption>Folder<span>a group</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-keys"/></svg></div><figcaption>Keys<span>typing</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-globe"/></svg></div><figcaption>Globe<span>languages</span></figcaption></figure><figure><div class="tile"><svg width="21mm" height="21mm"><use href="#i-talk"/></svg></div><figcaption>Two bubbles<span>conversation</span></figcaption></figure></div>
     <h3>A set at small size</h3>
-    <div class="proof wide"><figure><svg width="16" height="16"><use href="#i-flag"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-flag"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-flag"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-flag"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-candle"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-candle"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-candle"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-candle"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-globe"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-globe"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-globe"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-globe"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-talk"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-talk"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-talk"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-talk"/></svg><br>32</figure></div>
-    <div class="proof wide dk"><figure><svg width="16" height="16"><use href="#i-flag"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-flag"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-flag"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-flag"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-candle"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-candle"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-candle"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-candle"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-globe"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-globe"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-globe"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-globe"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-talk"/></svg><br>16</figure><figure><svg width="20" height="20"><use href="#i-talk"/></svg><br>20</figure><figure><svg width="24" height="24"><use href="#i-talk"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-talk"/></svg><br>32</figure></div>
+    <div class="proof wide"><figure><svg width="16" height="16"><use href="#i-flag"/></svg><br>16</figure><figure><svg width="24" height="24"><use href="#i-flag"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-flag"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-candle"/></svg><br>16</figure><figure><svg width="24" height="24"><use href="#i-candle"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-candle"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-globe"/></svg><br>16</figure><figure><svg width="24" height="24"><use href="#i-globe"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-globe"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-talk"/></svg><br>16</figure><figure><svg width="24" height="24"><use href="#i-talk"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-talk"/></svg><br>32</figure></div>
+    <div class="proof wide dk"><figure><svg width="16" height="16"><use href="#i-flag"/></svg><br>16</figure><figure><svg width="24" height="24"><use href="#i-flag"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-flag"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-candle"/></svg><br>16</figure><figure><svg width="24" height="24"><use href="#i-candle"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-candle"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-globe"/></svg><br>16</figure><figure><svg width="24" height="24"><use href="#i-globe"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-globe"/></svg><br>32</figure><figure><svg width="16" height="16"><use href="#i-talk"/></svg><br>16</figure><figure><svg width="24" height="24"><use href="#i-talk"/></svg><br>24</figure><figure><svg width="32" height="32"><use href="#i-talk"/></svg><br>32</figure></div>
     <p class="small">Above, 16 to 32 px in Paper; below, the same in Nocturne. If a drawing is unclear at 16, it has too many parts: take one away.</p>
   </div>
 </section>
@@ -1129,6 +1228,24 @@ ol.key.two li { break-inside: avoid; }
     </div>
 </section>
 
+<!-- R3 art -->
+<section class="page" data-rh="Icons: the Lingua hand">
+  <div class="sheet">
+    <h3 style="margin-top:0">Illustration and empty-page art</h3>
+    <p class="small">Where an icon is a word, a drawing is a sentence: it goes where a page has nothing else to say. Same hand as the icons, 96 units wide, the line a little finer (2.4). One small scene, at rest, the terracotta detail on what is missing; no people, faces or mascots, and never on a page with content.</p>
+    <div class="art96 wide"><figure><div class="tile"><svg width="23mm" height="23mm"><use href="#a-welcome"/></svg></div><figcaption>First start<span>a stack of books, a sprig, a ribbon</span></figcaption></figure><figure><div class="tile"><svg width="23mm" height="23mm"><use href="#a-empty"/></svg></div><figcaption>Nothing here yet<span>an empty shelf with a place held</span></figcaption></figure><figure><div class="tile"><svg width="23mm" height="23mm"><use href="#a-search"/></svg></div><figcaption>No results<span>a page and a lens that found nothing</span></figcaption></figure><figure><div class="tile"><svg width="23mm" height="23mm"><use href="#a-done"/></svg></div><figcaption>All done for today<span>a closed book and a cup</span></figcaption></figure><figure><div class="tile"><svg width="23mm" height="23mm"><use href="#a-offline"/></svg></div><figcaption>No connection<span>a lamp whose plug has come out</span></figcaption></figure><figure><div class="tile"><svg width="23mm" height="23mm"><use href="#a-error"/></svg></div><figcaption>Something tore<span>a page torn across</span></figcaption></figure></div>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:18%">Drawing</th><th style="width:30%">Where</th><th>The words beside it</th></tr>
+      <tr><td class="k">First start</td><td>The welcome; an empty Home on the first day</td><td>A warm line and one button: “Choose a language”.</td></tr>
+      <tr><td class="k">Nothing here yet</td><td>An empty library, deck, journal, shelf</td><td>What this place is for, and the one way to fill it. The dashed book is the one to come.</td></tr>
+      <tr><td class="k">No results</td><td>A search or filter that found nothing</td><td>What was searched, and one way out: “Clear the filter”.</td></tr>
+      <tr><td class="k">All done for today</td><td>The end of a review or of Next up</td><td>A short, kind sentence, and what tomorrow holds. Never confetti.</td></tr>
+      <tr><td class="k">No connection</td><td>A feature that needs the internet, when offline</td><td>What still works without it, which is nearly everything.</td></tr>
+      <tr><td class="k">Something tore</td><td>An error that stops a page</td><td>What happened, what it means for them, one thing to do. See “Words on the screen”.</td></tr>
+    </table>
+      </div>
+</section>
+
 <!-- D1 · The desktop frame -->
 <section class="page" data-rh="The desktop frame">
   <div class="sheet">
@@ -1156,7 +1273,7 @@ ol.key.two li { break-inside: avoid; }
       </div>
     </div>
     <ol class="key two tight">
-      <li><b>Sidebar,</b> 216 px, always on screen. It folds away with the button at its top.</li>
+      <li><b>Sidebar,</b> 216 px; it folds away.</li>
       <li><b>The language chip:</b> the language and its level; the one way to switch.</li>
       <li><b>Room title,</b> in the language’s display face, 42 px.</li>
       <li><b>The one thing,</b> top right, in the accent fill.</li>
@@ -1167,10 +1284,10 @@ ol.key.two li { break-inside: avoid; }
     <table class="spec">
       <tr><th>Window</th><th>Content column</th><th>What to do</th></tr>
       <tr><td class="px">1280</td><td class="px">about 970 inside the padding</td><td>Two columns still fit; three become two.</td></tr>
-      <tr><td class="px">1366 × 768</td><td class="px">about 1055</td><td>The laptop: the page must fit without a scroll bar, or scroll in one place.</td></tr>
+      <tr><td class="px">1366 × 768</td><td class="px">about 1055</td><td>The laptop: no extra scroll bar; scroll in one place.</td></tr>
       <tr><td class="px">1440 and up</td><td class="px">1072 (the cap)</td><td>The column stops growing; the sides stay empty and quiet.</td></tr>
     </table>
-    <div class="row"><p class="small muted">The column is <code>max-w-6xl</code> (1152 px) with 40 px at each side, 24 above and 32 below; the sidebar is 216 px. The scroll bar takes about 15 px, which is why the numbers aren’t round.</p><aside><span class="k">Where</span><code>src/<wbr>app/<wbr>shells/<wbr>desktop</code>: <code>DesktopShell.tsx</code>, <code>Sidebar.tsx</code>.</aside></div>
+    <div class="row"><p class="small muted">Column <code>max-w-6xl</code> (1152 px); sidebar 216 px.</p><aside><span class="k">Where</span><code>src/<wbr>app/<wbr>shells/<wbr>desktop</code>: <code>DesktopShell.tsx</code>, <code>Sidebar.tsx</code>.</aside></div>
   </div>
 </section>
 
@@ -1324,6 +1441,31 @@ ol.key.two li { break-inside: avoid; }
     </div>
     <div class="row"><p class="small muted">Everything is in <code>src/design/primitives</code>. If you need a thing that isn’t there, add it there for everyone, not in a feature’s folder.</p><aside><span class="k">Press</span>Buttons shrink to 97% while pressed, over 150 ms.</aside></div>
   </div>
+</section>
+
+<!-- R3 forms -->
+<section class="page" data-rh="Elements, one by one">
+  <div class="sheet">
+    <h3 style="margin-top:0">Forms and validation <span class="nv pr">Proposed</span></h3>
+    <p class="small">A field is three things: a label above it, a 44 px box (corners 12, 15 px text, a <code>--line-strong</code> edge), and one line of help below. That much is built (<code>h-11 rounded-xl border bg-bg px-3.5</code> in the drawers). The error and success states below are the design for when a form needs them: today a field either accepts what you type or quietly keeps it within range (Log time stops at 600 minutes), and there is no shared error state or <code>aria-invalid</code> yet. When one is added it goes in <code>src/design/primitives</code>, for everyone.</p>
+    <div class="fgrid wide">
+      <div class="fld"><label>Minutes</label><div class="in ph">45</div><div class="h">Help: one line, faint ink.</div><div class="st">Rest</div></div>
+      <div class="fld"><label>Minutes</label><div class="in f">45|</div><div class="h">A 2 px accent ring, 2 px off the edge.</div><div class="st">Focus</div></div>
+      <div class="fld"><label>Date</label><div class="in">28 October 2026</div><div class="h">Filled: ink, not faint.</div><div class="st">Filled</div></div>
+      <div class="fld"><label>Minutes</label><div class="in e">0<span class="m">!</span></div><div class="h e">Minutes: 1 to 600.</div><div class="st">Error</div></div>
+      <div class="fld"><label>Groq key</label><div class="in ok">••••••••••••<span class="m">✓</span></div><div class="h ok">Groq accepted this key.</div><div class="st">Success</div></div>
+      <div class="fld"><label>Voice</label><div class="in x">Natural voices</div><div class="h">Needs Lingua+. Why, in one line.</div><div class="st">Disabled</div></div>
+    </div>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:17%">Part</th><th>The rule</th></tr>
+      <tr><td class="k">Label</td><td>Always above the box, 13 px bold capitals in soft ink. Never only a placeholder: it vanishes when you type. Mark the <b>optional</b> fields with the word “Optional”, not the required ones with a star.</td></tr>
+      <tr><td class="k">Help</td><td>One line under the box, 12.5 px, faint. It says what goes in, not how the box works. An error <b>replaces</b> it, so the height never jumps.</td></tr>
+      <tr><td class="k">Error</td><td>Terracotta text and edge, a “!” at the right, and the words say what is wrong and what is allowed: “That date is in the future. Pick today or earlier.” Colour never carries it alone. Announce it politely and point the box at it with <code>aria-describedby</code>.</td></tr>
+      <tr><td class="k">Success</td><td>Only where the answer is slow or doubtful, such as testing an AI key: a sage edge and a tick, and the words. Not on every valid field.</td></tr>
+      <tr><td class="k">Disabled</td><td>Half strength, still readable, with the reason in the help line. If there is no reason to give, the field shouldn’t be there.</td></tr>
+      <tr><td class="k">When</td><td>Check when the field is left, not on every key. On Save, move focus to the first field with an error. Never clear what was typed, and never block typing: a wrong value can be corrected.</td></tr>
+    </table>
+      </div>
 </section>
 
 <!-- D4 · Where things go -->
@@ -1518,10 +1660,17 @@ ol.key.two li { break-inside: avoid; }
     <h3>The reading papers</h3>
     <div class="row"><p>The reader chooses a page colour for Codex separately for day and for night: seven light papers and seven dark ones. It changes the page, the panels and the ink together and flips with the theme.</p>
       <aside><span class="k">Where</span><code>src/<wbr>design/<wbr>papers.ts</code>.</aside></div>
-    <table class="spec" style="font-size:7.6pt;line-height:10.2pt">
-      <tr><th style="width:15%">Day</th><td style="white-space:normal">Cream · Ivory · Parchment · Sepia · Sage · Blush · Stone</td></tr>
-      <tr><th>Night</th><td style="white-space:normal">Charcoal · Espresso · Sepia night · Ink · Forest · Plum · Midnight</td></tr>
+    <table class="wide spec" style="font-size:7pt;line-height:9.4pt">
+      <tr><th>Day</th><th>Page</th><th>Ink</th><th>Ratio</th><th>Night</th><th>Page</th><th>Ink</th><th>Ratio</th></tr>
+      <tr><td>Cream</td><td><span class="sw" style="background:#faf6f0"></span>#faf6f0</td><td><span class="sw" style="background:#262220"></span>#262220</td><td class="px">14.6</td><td>Charcoal</td><td><span class="sw" style="background:#1f1c1a"></span>#1f1c1a</td><td><span class="sw" style="background:#ebe0cc"></span>#ebe0cc</td><td class="px">13.0</td></tr>
+      <tr><td>Ivory</td><td><span class="sw" style="background:#fdfbf6"></span>#fdfbf6</td><td><span class="sw" style="background:#23211f"></span>#23211f</td><td class="px">15.5</td><td>Espresso</td><td><span class="sw" style="background:#241b16"></span>#241b16</td><td><span class="sw" style="background:#eedcc1"></span>#eedcc1</td><td class="px">12.6</td></tr>
+      <tr><td>Parchment</td><td><span class="sw" style="background:#f5ecdb"></span>#f5ecdb</td><td><span class="sw" style="background:#2d2520"></span>#2d2520</td><td class="px">12.8</td><td>Sepia night</td><td><span class="sw" style="background:#2b2219"></span>#2b2219</td><td><span class="sw" style="background:#efdcb9"></span>#efdcb9</td><td class="px">11.6</td></tr>
+      <tr><td>Sepia</td><td><span class="sw" style="background:#f1e5cc"></span>#f1e5cc</td><td><span class="sw" style="background:#3b2d21"></span>#3b2d21</td><td class="px">10.6</td><td>Ink</td><td><span class="sw" style="background:#1a1c21"></span>#1a1c21</td><td><span class="sw" style="background:#e8e2d6"></span>#e8e2d6</td><td class="px">13.2</td></tr>
+      <tr><td>Sage</td><td><span class="sw" style="background:#eff1e7"></span>#eff1e7</td><td><span class="sw" style="background:#252a23"></span>#252a23</td><td class="px">12.8</td><td>Forest</td><td><span class="sw" style="background:#1b211d"></span>#1b211d</td><td><span class="sw" style="background:#e6e4d3"></span>#e6e4d3</td><td class="px">12.8</td></tr>
+      <tr><td>Blush</td><td><span class="sw" style="background:#faeee8"></span>#faeee8</td><td><span class="sw" style="background:#2d2321"></span>#2d2321</td><td class="px">13.4</td><td>Plum</td><td><span class="sw" style="background:#221c22"></span>#221c22</td><td><span class="sw" style="background:#eee1dc"></span>#eee1dc</td><td class="px">13.1</td></tr>
+      <tr><td>Stone</td><td><span class="sw" style="background:#f2f0eb"></span>#f2f0eb</td><td><span class="sw" style="background:#242320"></span>#242320</td><td class="px">13.8</td><td>Midnight</td><td><span class="sw" style="background:#100f0e"></span>#100f0e</td><td><span class="sw" style="background:#e4d7c2"></span>#e4d7c2</td><td class="px">13.5</td></tr>
     </table>
+    <p class="small muted">Ratios are each paper’s ink on its own page, worked out from <code>papers.ts</code>: all fourteen clear 4.5 : 1 for body text, the lowest being Sepia at 10.6. Faint and accent text on a paper must still be checked by eye, because only the ink is listed here.</p>
     <p>A screen must hold on all fourteen. When designing, switch through the papers, not only the two defaults: contrast and the accent must hold on each, and nothing may rely on Cream’s warmth to look right.</p>
     <h3>Switching</h3>
     <ul class="plain">
@@ -1529,10 +1678,35 @@ ol.key.two li { break-inside: avoid; }
       <li>The first paint follows the device’s setting before the app loads, so there is no flash of the wrong colour.</li>
       <li>The browser’s top bar and the installed app’s title bar take the page colour.</li>
     </ul>
-    <div class="dodont">
-      <div><span class="h">Check</span><ul><li>Each new screen in Paper and Nocturne, at 1366 × 768.</li><li>Every icon, every chart, every drawing.</li></ul></div>
-      <div class="no"><span class="h">Never</span><ul><li>White or black as a fill; use Raised and Sunken.</li><li>A grey: use a warm ink step.</li></ul></div>
+      </div>
+</section>
+
+<!-- R3 darkscreen -->
+<section class="page" data-rh="Dark, and the papers">
+  <div class="sheet">
+    <h3 style="margin-top:0">A screen in Nocturne: wrong, then right</h3>
+    <p class="small">The same card in three lights. The middle one is what happens when Paper is simply inverted; the third is Nocturne as designed.</p>
+    <div class="mini3 wide">
+      <div><div class="mini"><div class="t">Today</div><span class="ch">3 days</span><span class="ch">Spanish</span><div class="c"><b>Next up</b>Review 12 cards, about 5 minutes.</div><span class="bt">Start</span></div><div class="mcap"><b>Paper.</b> Cream, Espresso, Terracotta.</div></div>
+      <div><div class="mini w"><div class="t">Today</div><span class="ch">3 days</span><span class="ch">Spanish</span><div class="c"><b>Next up</b>Review 12 cards, about 5 minutes.</div><span class="bt">Start</span></div><div class="mcap"><b>Inverted: wrong.</b> Pure black and white glare; the card vanishes; the accent is dull.</div></div>
+      <div><div class="mini n"><div class="t">Today</div><span class="ch">3 days</span><span class="ch">Spanish</span><div class="c"><b>Next up</b>Review 12 cards, about 5 minutes.</div><span class="bt">Start</span></div><div class="mcap"><b>Nocturne.</b> Charcoal, soft Ivory, Amber; the card is lifted by Mocha and a hairline.</div></div>
     </div>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:20%">What changed</th><th>Paper → Nocturne</th><th style="width:36%">Why</th></tr>
+      <tr><td class="k">Ground</td><td>Cream #faf6f0 → Charcoal #1f1c1a, never #000</td><td>Pure black makes every edge shimmer; a warm dark rests.</td></tr>
+      <tr><td class="k">Text</td><td>Espresso → Ivory #ebe0cc, never #fff</td><td>White on near-black is harsh over a long read.</td></tr>
+      <tr><td class="k">Cards</td><td>Parchment → Mocha #2b2724, plus a hairline #3b3532</td><td>A shadow is invisible on dark, so lift with a lighter surface.</td></tr>
+      <tr><td class="k">Accent</td><td>Terracotta #c86d51 → Amber #d49b54; button text flips to Charcoal</td><td>Terracotta loses contrast at night; amber keeps the feeling.</td></tr>
+      <tr><td class="k">Sage</td><td>#6b8e78 → #93b39e</td><td>Lighter so that “done” still reads.</td></tr>
+    </table>
+    <h3>Checking a screen at night, in order</h3>
+    <ol class="key tight">
+      <li>Is there any pure black or white, or a hex in the code? There must be none.</li>
+      <li>Does every card still read as a card without its shadow?</li>
+      <li>Do the accent button and its label keep 4.5 : 1? (Amber on Charcoal is 7.8 : 1.)</li>
+      <li>Are pictures dimmed a little, and their colours untouched?</li>
+      <li>Squint, or turn the screen to grey: is the hierarchy the same as by day?</li>
+    </ol>
   </div>
 </section>
 
@@ -1607,6 +1781,38 @@ ol.key.two li { break-inside: avoid; }
   </div>
 </section>
 
+<!-- R3 chart -->
+<section class="page" data-rh="Charts and numbers">
+  <div class="sheet">
+    <h3 style="margin-top:0">Anatomy of a chart</h3>
+    <p class="small">Every chart in Lingua (<code>src/design/charts</code>: line, bar, calendar heat map, ring) has the same parts, in the same places. A chart missing one of them is unfinished.</p>
+    <svg class="wide" viewBox="0 0 300 118" width="100%" style="background:var(--raised);border:.5pt solid var(--line2);border-radius:1.8mm;font-family:var(--sans)">
+      <text x="30" y="14" font-size="7" font-weight="700" fill="var(--ink)">Minutes a day, last four weeks</text>
+      <text x="30" y="21.5" font-size="4.8" fill="var(--faint)">Time in Lingua plus time you logged. Today isn’t over yet.</text>
+      <g stroke="var(--line2)" stroke-width=".35"><path d="M30 38H270M30 62H270M30 86H270"/></g>
+      <path d="M30 86H270" stroke="var(--line2)" stroke-width=".8"/>
+      <g font-size="4.6" fill="var(--faint)" text-anchor="end"><text x="26" y="39.5">60</text><text x="26" y="63.5">30</text><text x="26" y="87.5">0</text></g>
+      <path d="M30 76C48 72 58 80 76 70S104 62 122 66 150 54 170 58 200 46 222 50 252 36 262 40" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M30 82C50 80 60 78 80 80S110 76 130 78 160 74 180 76 215 72 235 74 255 70 262 71" fill="none" stroke="var(--sage)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="262" cy="40" r="2.6" fill="var(--accent)"/><circle cx="262" cy="71" r="2.6" fill="var(--sage)"/>
+      <text x="266" y="36" font-size="5.4" font-weight="700" fill="var(--accent-t)">42 min</text>
+      <text x="170" y="52" font-size="5.2" fill="var(--accent-t)">Reading</text><text x="170" y="71" font-size="5.2" fill="var(--sage-t)">Listening</text>
+      <g font-size="4.6" fill="var(--faint)" text-anchor="middle"><text x="30" y="95">1 Oct</text><text x="110" y="95">8 Oct</text><text x="190" y="95">15 Oct</text><text x="262" y="95">Today</text></g>
+      <g fill="var(--accent-t)"><circle cx="20" cy="12" r="3.4"/><circle cx="11" cy="39" r="3.4"/><circle cx="276" cy="30" r="3.4"/><circle cx="196" cy="48" r="3.4"/><circle cx="150" cy="78" r="3.4"/><circle cx="282" cy="38" r="3.4"/><circle cx="282" cy="86" r="3.4"/><circle cx="150" cy="104" r="3.4"/></g><g font-size="4.4" font-weight="700" fill="#fff" text-anchor="middle"><text x="20" y="13.6">1</text><text x="11" y="40.6">2</text><text x="276" y="31.6">3</text><text x="196" y="49.6">4</text><text x="150" y="79.6">5</text><text x="282" y="39.6">6</text><text x="282" y="87.6">7</text><text x="150" y="105.6">8</text></g>
+    </svg>
+    <table class="wide spec" style="font-size:7.2pt;line-height:9.6pt">
+      <tr><th style="width:7%">#</th><th style="width:17%">Part</th><th>How it is made</th></tr>
+      <tr><td>1</td><td class="k">Title and line</td><td>What is counted, with its unit, in 12 px bold; and one faint line for what it leaves out. “Minutes a day”, not “Activity”.</td></tr>
+      <tr><td>2</td><td class="k">Scale</td><td>Two or three ticks, in faint ink, as plain numbers. A bar chart starts at zero. A line may start higher, but then says so.</td></tr>
+      <tr><td>3</td><td class="k">The last value</td><td>A dot and the number beside it: where you are now matters more than the whole curve.</td></tr>
+      <tr><td>4</td><td class="k">Labels on the lines</td><td>Name the line where it runs, in its own colour, instead of a legend to look up. A legend only when there are labels that cannot fit.</td></tr>
+      <tr><td>5</td><td class="k">Series</td><td>Three at most: terracotta, sage, soft ink. A line is 1.7 px, round-capped; no points except the last.</td></tr>
+      <tr><td>6–8</td><td class="k">Grid, baseline, dates</td><td>Hairlines, a slightly stronger baseline, and 3 or 4 dates, “Today” at the right end. No box around the chart, no 3D, no shadows.</td></tr>
+    </table>
+    <div class="row"><p class="small"><b>Reading one:</b> what is counted, over what time, and is the last point partial? <b>Hover</b> shows the exact number and date in a tooltip; it is a bonus, never the only place a number lives. <b>For a screen reader</b> each chart is one image with a label that gives the latest value per series (“Reading: 42 min now”). The numbers behind it as a table, on request, would close the gap: <span class="nv pr">Proposed</span></p><aside><span class="k">Where</span><code>LineChart</code>, <code>BarChart</code>, <code>Heatmap</code>, <code>Ring</code> in <code>src/<wbr>design/<wbr>charts</code>.</aside></div>
+      </div>
+</section>
+
 <!-- D8 · Words on the screen -->
 <section class="page" data-rh="Words on the screen">
   <div class="sheet">
@@ -1668,6 +1874,186 @@ ol.key.two li { break-inside: avoid; }
   </div>
 </section>
 
+<!-- R3 access -->
+<section class="page" data-rh="Accessibility">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-access" data-ch>Accessibility</h2>
+    <div class="rule"></div>
+    <p class="lead">A language learner reads small text, listens closely and often studies tired. Making Lingua usable without a mouse, without sight, without hearing, or without seeing colour makes it better for all of them.</p>
+    <table class="wide spec" style="font-size:7.2pt;line-height:9.5pt">
+      <tr><th style="width:16%">Area</th><th style="width:47%">What Lingua does today</th><th>Still to do</th></tr>
+      <tr><td class="k">Focus</td><td>Every control shows a 2 px accent ring, 2 px off its edge, for keyboard focus only (<code>:focus-visible</code>).</td><td>—</td></tr>
+      <tr><td class="k">Names</td><td>Icon buttons need a <code>label</code> and carry it as their accessible name. Switches are <code>role="switch"</code>; segmented controls are radio groups; the first start says “Step 3 of 7” and marks the current step.</td><td>Name the new icons as the icon chapter says.</td></tr>
+      <tr><td class="k">Overlays</td><td>Drawers are modal dialogs, the confirm box an alert dialog: Tab stays inside, Esc closes the topmost, focus goes in and comes back. A toast is announced (<code>status</code>; an error as <code>alert</code>).</td><td>—</td></tr>
+      <tr><td class="k">Motion</td><td>Settings › Preferences › Motion: System, Reduced or Full. System follows the device’s “reduce motion”; the choice is written on the page as <code>data-motion</code>, so CSS and code both follow it.</td><td>—</td></tr>
+      <tr><td class="k">Keyboard</td><td>Alt 1–8 for the rooms, <b>?</b> for the shortcut sheet, <b>/</b> to search, <b>[</b> for the sidebar, letters on words; every drawer by Esc.</td><td>A skip-to-content link was not found in the code. <span class="nv pr">Proposed</span></td></tr>
+      <tr><td class="k">Text size</td><td>No size setting of its own: the browser’s zoom works, and the reader has its own size in the Typography panel. 12.5 px is the smallest text.</td><td>The layout at 200% zoom has not been measured.</td></tr>
+      <tr><td class="k">Colour</td><td>State is never colour alone, as a rule. Body text clears 4.5 : 1 except where measured below.</td><td>Two findings, over the page.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Accessibility">
+  <div class="sheet">
+    <h3 style="margin-top:0">Two things we measured</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:36%">Pair</th><th>Normal</th><th>Protan</th><th>Deutan</th><th style="width:30%">What it means</th></tr>
+      <tr><td>Terracotta #c86d51 · Sage #6b8e78 (Paper)</td><td class="px acc">1.0 : 1</td><td class="px">1.2 : 1</td><td class="px">1.1 : 1</td><td>The same lightness. Only the hue differs.</td></tr>
+      <tr><td>Amber #d49b54 · Sage #93b39e (Nocturne)</td><td class="px">1.1 : 1</td><td class="px">1.2 : 1</td><td class="px">1.0 : 1</td><td>The same at night.</td></tr>
+      <tr><td>Accent text #a5533b · Sage text #4f6f5b</td><td class="px">1.0 : 1</td><td class="px">1.2 : 1</td><td class="px">1.2 : 1</td><td>Text in either looks equally dark.</td></tr>
+      <tr><td>Faint ink on Parchment · on Mocha</td><td class="px acc">4.2 : 1</td><td colspan="2">—</td><td>Just under 4.5 : 1.</td></tr>
+    </table>
+    <p class="small">The simulations are worked out with a standard colour-vision matrix and show the direction, not a verdict: check with a tool as well. <b>The consequence is firm:</b> terracotta (“needs attention”) and sage (“done”) can look the same to a colour-blind learner, so each must always come with a second signal. That is the rule in “Dark, and the papers”, made concrete:</p>
+    <div class="cols2 wide">
+      <ul class="plain">
+        <li>A tick or a word with sage: “Known ✓”.</li>
+        <li>A mark or a word with terracotta: “Due”, “!”.</li>
+        <li>In a chart, label the lines and keep the two apart in position, not only in colour.</li>
+      </ul>
+      <ul class="plain">
+        <li>Learning, known and unseen words in the reader differ by underline and weight as well as tint.</li>
+        <li>Faint ink only for large or decorative text on Parchment and Mocha; soft ink for what must be read.</li>
+      </ul>
+    </div>
+      </div>
+</section>
+
+<section class="page" data-rh="Accessibility">
+  <div class="sheet">
+<h3 style="margin-top:0">Focus order, and the names of things</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:22%">Thing</th><th>Order or name</th></tr>
+      <tr><td class="k">Tab order</td><td>The reading order: sidebar, then the header (back link, title, tabs, the one thing), then the content left to right and top to bottom, then a side rail, then the foot bar. Never <code>tabindex</code> above 0.</td></tr>
+      <tr><td class="k">An open drawer</td><td>Focus goes to the first field marked <code>data-autofocus</code>, or to the drawer; Tab cycles inside; Esc closes and returns focus to what opened it.</td></tr>
+      <tr><td class="k">An icon on its own</td><td>Its meaning from the icon chapter: “Bookmark: a saved word”. With a word beside it the icon is hidden from screen readers.</td></tr>
+      <tr><td class="k">A drawing</td><td>Decorative: hidden from screen readers. The empty-page words say what the drawing says.</td></tr>
+      <tr><td class="k">A flag</td><td>Never alone: the language’s name always sits beside it.</td></tr>
+      <tr><td class="k">A chart or a ring</td><td>An image with a label: “Reading: 42 min now”, “Goal: 12 of 20 minutes”.</td></tr>
+      <tr><td class="k">A chip</td><td>The word is in the chip; colour only adds.</td></tr>
+      <tr><td class="k">The learning language</td><td>Text in the language being learned should carry its <code>lang</code>, so a screen reader speaks it right. <span class="nv pr">Proposed</span> to check where it is set.</td></tr>
+    </table>
+    <h3>Naming recipe</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:30%">Say what it does</th><th style="width:32%">Not</th><th>The rule</th></tr>
+      <tr><td>“Close”</td><td>“X”, “cross”</td><td>The name is the action, not the picture.</td></tr>
+      <tr><td>“Mark as known”</td><td>“Green tick”</td><td>Never the colour or the shape.</td></tr>
+      <tr><td>“Play, 12 s of 3 min”</td><td>“Button”</td><td>Include the state that changes: playing, off, 3 of 10.</td></tr>
+      <tr><td>“Reading: 42 min now”</td><td>“Chart”</td><td>A chart is named by what it shows, and its latest number.</td></tr>
+      <tr><td>“Spanish” beside a flag</td><td>“Flag of Spain”</td><td>The language, not the flag. The flag is hidden.</td></tr>
+    </table>
+    <ul class="plain">
+      <li><b>Short:</b> four words if it can be, and no “button” or “icon” (the role is announced).</li>
+      <li><b>The same everywhere:</b> one meaning, one name, in every room. The icon chapter’s table gives the names.</li>
+      <li><b>In the learner’s language,</b> not the language being learned, except for the words being learned.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="page" data-rh="Accessibility">
+  <div class="sheet">
+    <h3 style="margin-top:0">Checks to run on every screen</h3>
+    <div class="cols2 wide">
+      <div>
+        <div class="ck"><span class="box"></span><b>Keyboard only.</b> Reach everything, see the focus, open and close every drawer.</div>
+        <div class="ck"><span class="box"></span><b>200% browser zoom</b> at 1280 px: nothing cut off, nothing overlapping, no sideways scroll.</div>
+        <div class="ck"><span class="box"></span><b>Reduce motion</b> on: no page slides, no springs that matter; the meaning still arrives.</div>
+        <div class="ck"><span class="box"></span><b>Grey.</b> Turn the screen to greyscale: is every state still readable?</div>
+        <div class="ck"><span class="box"></span><b>Contrast.</b> Body text 4.5 : 1, large text 3 : 1, in Paper, Nocturne and the papers it can sit on.</div>
+      </div>
+      <div>
+        <div class="ck"><span class="box"></span><b>A screen reader.</b> NVDA on Windows (free), VoiceOver on a Mac (Cmd F5), TalkBack on Android. Listen to one screen end to end.</div>
+        <div class="ck"><span class="box"></span><b>Names.</b> Every icon button, chart and switch is announced with what it does.</div>
+        <div class="ck"><span class="box"></span><b>Errors.</b> They are announced, say what is wrong, and put focus where to fix it.</div>
+        <div class="ck"><span class="box"></span><b>Sound off, voice off, AI off.</b> The screen still works and still makes sense.</div>
+        <div class="ck"><span class="box"></span><b>Targets.</b> 32 px at the least with a mouse, 40 to 44 under a finger.</div>
+      </div>
+    </div>
+    <h3>Reduced motion, in detail</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:14%">Choice</th><th>What happens</th></tr>
+      <tr><td class="k">System</td><td>Follows the device’s “reduce motion”. The default.</td></tr>
+      <tr><td class="k">Reduced</td><td>Movement is kept minimal everywhere, whatever the device says: pages appear without rising, lists don’t reorder with a slide, the lesson card doesn’t fly.</td></tr>
+      <tr><td class="k">Full</td><td>Richer, longer motion for a fast display: pages rise further and settle on a softer spring. Never required to understand anything.</td></tr>
+    </table>
+    <div class="row"><p class="small"><b>Rule for new motion:</b> read <code>motionIsReduced()</code> (<code>src/design/motionPref.ts</code>) or use the springs in <code>motion.ts</code>, and make the reduced version a short fade or nothing. Meaning must never ride on movement alone.</p><aside><span class="k">Test</span>Turn it on and click through the new screen.</aside></div>
+  </div>
+</section>
+
+<!-- R3 sound -->
+<section class="page" data-rh="Sound and haptics">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-sound" data-ch>Sound and haptics</h2>
+    <div class="rule"></div>
+    <p class="lead">Lingua is mostly quiet. Sound has two jobs: it is the content (a voice, a song, a station), and, in a few places, it says how an answer went. Only the second is a design matter, and it should be small.</p>
+    <div class="row"><p><b>What exists.</b> Six cues, made in the browser with Web Audio (no sound files), played in the lesson sets of Ludus and the grammar drills. The learner can switch sounds and haptics off in the lesson setup sheet; both start on. Vibration works where the browser lets it (Android Chrome; not iOS Safari, not a desktop), so on the desktop only the sounds are heard.</p><aside><span class="k">Where</span><code>src/<wbr>features/<wbr>lesson/<wbr>sfx.ts</code>, used by the lesson kit.</aside></div>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:11%">Cue</th><th style="width:33%">Shape</th><th style="width:22%">Means</th><th>Vibration (ms)</th></tr>
+      <tr><td class="k">right</td><td>E5 then B5 (660, 990 Hz), sine, 0.3 s: a rising fifth</td><td>A right answer</td><td class="px">12</td></tr>
+      <tr><td class="k">wrong</td><td>A♯3 then G3 (233, 196 Hz), triangle: two low falling notes</td><td>A miss, gently</td><td class="px">30 · 40 · 30</td></tr>
+      <tr><td class="k">combo</td><td>E5, G♯5, B5, E6: a four-note run up, 0.34 s</td><td>A streak in a row</td><td class="px">10 · 30 · 10 · 30 · 18</td></tr>
+      <tr><td class="k">finish</td><td>C5, E5, G5, C6: an upward arpeggio, last note 0.5 s</td><td>The lesson is complete</td><td class="px">20 · 60 · 40</td></tr>
+      <tr><td class="k">tick</td><td>1760 Hz, 50 ms, very quiet</td><td>A counting step</td><td>none</td></tr>
+      <tr><td class="k">tap</td><td>880 Hz, 60 ms, very quiet</td><td>A press that deserves a click</td><td>none</td></tr>
+    </table>
+    <p class="small">The loudest cue is at a gain of 0.12, below speech and music; ticks and taps at 0.05. Notes begin in 12 ms and fall off exponentially, so nothing clicks.</p>
+      </div>
+</section>
+
+<section class="page" data-rh="Sound and haptics">
+  <div class="sheet">
+    <h3 style="margin-top:0">Where it must be silent <span class="nv pr">Rules</span></h3>
+    <p class="small">The cues are built; these are the rules for any new one. When in doubt, no sound.</p>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:26%">Where</th><th>Why it is silent</th></tr>
+      <tr><td class="k">Opening a page, switching a room, loading</td><td>Nothing has been judged. A cue means “you answered”.</td></tr>
+      <tr><td class="k">While audio plays</td><td>A song, a podcast, a station, a voice: the sound is the content. A chime on top of a sentence spoils it. Pause or skip the cue.</td></tr>
+      <tr><td class="k">While the microphone listens</td><td>Speaking exercises: the cue would be recorded, and it would break the learner’s concentration. Play it after the recording stops.</td></tr>
+      <tr><td class="k">Reading and writing</td><td>The reader, Diarium and typing: no cue for finishing a page or a word. Silence is the room’s whole point.</td></tr>
+      <tr><td class="k">Ordinary buttons and menus</td><td>Clicks are not events. Only a judged answer, a streak or a finish earns a sound.</td></tr>
+      <tr><td class="k">Errors in forms, toasts, settings</td><td>A warning tone is an alarm; use words.</td></tr>
+      <tr><td class="k">When sounds are off</td><td>Silent everywhere, with no hidden exceptions, and the vibration follows its own switch.</td></tr>
+    </table>
+        <h3>Should it make a sound?</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:42%">Moment</th><th style="width:14%">Sound</th><th>Why</th></tr>
+      <tr><td>A card answered right, or wrong</td><td class="px">right · wrong</td><td>A judged answer.</td></tr>
+      <tr><td>Five right in a row</td><td class="px">combo</td><td>A streak is the reward.</td></tr>
+      <tr><td>A timer counting down in a game</td><td class="px">tick</td><td>It counts; keep it very quiet.</td></tr>
+      <tr><td>A lesson finished</td><td class="px">finish</td><td>The one place for a small flourish.</td></tr>
+      <tr><td>A word saved from the reader</td><td class="px">none</td><td>A toast says it; the reader is quiet.</td></tr>
+      <tr><td>A drawer opened, a tab switched, a page loaded</td><td class="px">none</td><td>Not an event.</td></tr>
+      <tr><td>A goal reached for the day</td><td class="px">none</td><td>A line of warmth in words; sound would arrive unasked.</td></tr>
+      <tr><td>A typing mistake in a typing drill</td><td class="px">none</td><td>It would sound on every key.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Sound and haptics">
+  <div class="sheet">
+    <h3 style="margin-top:0">The language of the cues</h3>
+    <ul class="plain">
+      <li><b>Up means well, down means miss,</b> and more notes mean more: one rising pair, a run, an arpeggio. A learner should be able to tell right from wrong with eyes closed.</li>
+      <li><b>A miss is soft,</b> low and short, never a buzzer. Nothing in Lingua should make a learner flinch.</li>
+      <li><b>The reader’s buzz:</b> on Android, holding a word for 430 ms gives an 8 ms tap as the drawer opens. That is the only vibration outside a lesson.</li>
+    </ul>
+<h3>Making a new cue</h3>
+    <ol class="key tight">
+      <li><b>Ask whether it is needed.</b> If the screen already says it, a sound is a second voice.</li>
+      <li><b>Build it from the existing family:</b> sine or triangle notes, a few of them, a final note under 0.5 s.</li>
+      <li><b>Keep it under the music:</b> peak gain 0.12 at the most.</li>
+      <li><b>Give it a vibration only if it matters</b>, shorter than 100 ms in all.</li>
+      <li><b>Write it into the table here,</b> with what it means, and test it with the sounds off.</li>
+    </ol>
+    <div class="dodont">
+      <div><span class="h">Do</span><ul><li>Make the off switch one click, in the place the sounds are heard.</li><li>Play cues after the visible result, not before.</li></ul></div>
+      <div class="no"><span class="h">Don’t</span><ul><li>Play a sound that starts by itself, ever.</li><li>Make a haptic the only signal: most devices have none.</li></ul></div>
+    </div>
+    <div class="row"><p class="small">Web Audio needs a click or a tap before it will play, which a lesson always has. The speaking voices (recordings, the device’s voice, Piper) are separate: they are content, and they are covered in Part Two.</p><aside></aside></div>
+  </div>
+</section>
+
 <!-- D9 · Designing a new screen -->
 <section class="page" data-rh="Designing a new screen">
   <div class="sheet">
@@ -1702,6 +2088,20 @@ ol.key.two li { break-inside: avoid; }
       <tr><td>use a new colour</td><td>Is there already a token that means this? There is.</td></tr>
       <tr><td>add a dialog</td><td>Is it a question that must be answered? Otherwise it is a toast or a line.</td></tr>
     </table>
+<!-- R3 brief -->
+    <h3>The brief to fill in before drawing</h3>
+    <p class="small">Copy this onto the top of the step’s plan. If a line can’t be filled in, the screen isn’t ready to draw.</p>
+    <div class="brief wide">
+      <div class="q"><b>This page is for</b><i></i></div>
+      <div class="q"><b>Room, and shape</b><i></i></div>
+      <div class="q"><b>Who, and when</b><i></i></div>
+      <div class="q"><b>The one thing</b><i></i></div>
+      <div class="q"><b>Shown first</b><i class="t2"></i></div>
+      <div class="q"><b>Kept quiet</b><i class="t2"></i></div>
+      <div class="q"><b>The words</b><i></i></div>
+      <div class="q"><b>States and plans</b><i></i></div>
+      <div class="q"><b>Done when</b><i></i></div>
+    </div>
   </div>
 </section>
 
@@ -1717,6 +2117,19 @@ ol.key.two li { break-inside: avoid; }
       <li><b>The states:</b> empty, loading, partial, full, error, offline.</li>
       <li><b>What is checked:</b> the five things to try by hand before calling it done.</li>
     </ol>
+<!-- R3 example -->
+    <h3>The same brief, filled in: Log study time</h3>
+    <div class="brief ex wide">
+      <div class="q"><b>This page is for</b><i>Adding time you spent learning away from Lingua.</i></div>
+      <div class="q"><b>Room, and shape</b><i>Ratio, in a drawer (440 px), opened from Overview and from Tabula.</i></div>
+      <div class="q"><b>Who, and when</b><i>Someone who just finished a class or a podcast, in under twenty seconds.</i></div>
+      <div class="q"><b>The one thing</b><i>“Save” at the foot of the drawer, primary, full width.</i></div>
+      <div class="q"><b>Shown first</b><i>Language, what (class, tutor, other app), and how long: chips for 15 to 90 minutes and a number field. The date is today.</i></div>
+      <div class="q"><b>Kept quiet</b><i>The date, and a note marked “Optional”, below the fold of the drawer.</i></div>
+      <div class="q"><b>The words</b><i>Title “Log study time”, help “Classes, tutors, conversations, other apps: it all counts.” Minutes 1 to 600. Toast: “Logged 45 minutes of French.” with Undo.</i></div>
+      <div class="q"><b>States and plans</b><i>Minutes are held to 1–600, with no error text yet; a toast on save. Free: all of it.</i></div>
+      <div class="q"><b>Done when</b><i>Paper and Nocturne at 1280, 1366 and 1440; keyboard only from open to save; the time shows in Ratio.</i></div>
+    </div>
   </div>
 </section>
 
@@ -1756,7 +2169,7 @@ ol.key.two li { break-inside: avoid; }
     <span class="kicker">Chapter <span class="chn"></span></span>
     <h2 id="d-tablet" data-ch>Tablet: iPad and Android</h2>
     <div class="rule"></div>
-    <p class="lead">Lingua is built and checked for the desktop. A tablet is the next-nearest thing: the same rooms on a bigger screen you touch, and a very good place to read, listen and review.</p>
+    <p class="lead"><span class="nv pr" style="margin:0 4pt 0 0">Guidance only</span>Lingua is built and checked for the desktop. A tablet is the next-nearest thing: the same rooms on a bigger screen you touch, and a very good place to read, listen and review.</p>
     <div class="row"><p><b>Where it stands.</b> The app already has a second shell for narrow windows (below 768 px, see the phone chapter), and the controls already grow under a finger. What hasn’t had its own design pass is the tablet, so this chapter is the brief for it: how it should look, feel and be laid out when it gets one.</p>
       <aside><span class="k">Rule</span>Desktop first. Phone and tablet are guides for later, not a reason to change a desktop screen.</aside></div>
     <h3>Which size is it?</h3>
@@ -1838,13 +2251,63 @@ ol.key.two li { break-inside: avoid; }
   </div>
 </section>
 
+<!-- R3 tabletx -->
+<section class="page" data-rh="Tablet: iPad and Android">
+  <div class="sheet">
+    <h3 style="margin-top:0">Touch and gestures <span class="nv pr">Guidance only</span></h3>
+    <table class="wide spec gest" style="font-size:7.2pt;line-height:9.5pt">
+      <tr><th style="width:24%">Gesture</th><th style="width:40%">In Lingua</th><th>Desktop twin</th></tr>
+      <tr><td class="k">Tap</td><td>Does what a click does, everywhere. Targets grow to 40 or 44 px under a finger.</td><td>Click</td></tr>
+      <tr><td class="k">Press a word and hold (430 ms), then lift</td><td>Opens the word’s drawer in the reader, with a small tap on Android.</td><td>Right-click, or D</td></tr>
+      <tr><td class="k">Press a word and slide</td><td>Chooses a phrase and shows its bubble.</td><td>Drag over words</td></tr>
+      <tr><td class="k">Scroll, flick</td><td>The page’s own scrolling; nothing of ours intercepts it.</td><td>Wheel</td></tr>
+      <tr><td class="k">Pinch</td><td>The browser’s zoom. The reader’s text size is its own panel.</td><td>Ctrl + wheel</td></tr>
+      <tr><td class="k">Swipe a card away</td><td>Not built. <span class="nv pr">Proposed</span> for reviews: right for Good, left for Again, with the buttons kept.</td><td>Space, 1 to 4</td></tr>
+      <tr><td class="k">Press and hold a list row</td><td>Not built. <span class="nv pr">Proposed</span>: the ⋯ menu, as right-click gives it.</td><td>Right-click</td></tr>
+    </table>
+        <h3>How a screen adapts by width</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:20%">Window</th><th style="width:30%">Shell</th><th>What a screen does</th></tr>
+      <tr><td class="px">1280 and up</td><td>Sidebar 216, column up to 1152</td><td>The desktop design, as drawn in the room pages.</td></tr>
+      <tr><td class="px">1024 to 1279</td><td>Sidebar, column fills</td><td>Two columns stay; a third rail folds under the main one.</td></tr>
+      <tr><td class="px">768 to 1023</td><td>Sidebar, folded to 64 if wanted</td><td>One main column; the rail becomes a row of chips or a tab; drawers keep their 440.</td></tr>
+      <tr><td class="px">Below 768</td><td>Top bar and floating tab bar</td><td>One column, as in the phone chapter. Drawers rise as sheets.</td></tr>
+    </table>
+    <p class="small muted">The first row is built; the others are how it should behave, and need a real device to prove.</p>
+  </div>
+</section>
+
+<section class="page" data-rh="Tablet: iPad and Android">
+  <div class="sheet">
+<h3 style="margin-top:0">The iPad, before calling a screen done</h3>
+    <div class="cols2 wide">
+      <div>
+        <div class="ck"><span class="box"></span>Installed from Safari: Share › Add to Home Screen. It opens without browser bars (<code>display: standalone</code>).</div>
+        <div class="ck"><span class="box"></span>Both orientations; the app asks for no lock (<code>orientation: any</code>).</div>
+        <div class="ck"><span class="box"></span>Split View and Stage Manager at a third of the screen: below 768 px it changes to the phone shell by itself.</div>
+        <div class="ck"><span class="box"></span>With a trackpad: hover states appear; with a keyboard: the shortcuts, Alt as Option, with the Mac symbols chosen in Settings.</div>
+        <div class="ck"><span class="box"></span>Safe areas: nothing sits under the home indicator (the page uses <code>viewport-fit=cover</code>).</div>
+      </div>
+      <div>
+        <div class="ck"><span class="box"></span>Sound starts only after a tap; Visio and Sonus wait for one. No vibration on iOS: nothing may depend on it.</div>
+        <div class="ck"><span class="box"></span>Text is at least 16 px in a field, or Safari zooms in on focus (the inputs already do this on a coarse pointer).</div>
+        <div class="ck"><span class="box"></span>Storage: installed to the Home Screen, the data is kept; in a plain tab Safari may clear a site that hasn’t been opened for seven days. A backup reminder helps.</div>
+        <div class="ck"><span class="box"></span>The keyboard, when open, doesn’t cover the field or the primary button.</div>
+        <div class="ck"><span class="box"></span>Checked on a real iPad, not only in a narrowed desktop window.</div>
+      </div>
+    </div>
+    <h3>Android tablets</h3>
+    <p class="small">Chrome offers to install the app from its menu. Gesture navigation and the three buttons both leave the bottom edge to the system, so the tab bar floats clear of it (a 54 px target, glass behind). Pick the voices on the device; they differ by maker. Check on a real Samsung and a Pixel tablet: their window and keyboard behaviours are not the same.</p>
+  </div>
+</section>
+
 <!-- P1 · Phones -->
 <section class="page" data-rh="Phone: iOS and Android">
   <div class="sheet">
     <span class="kicker">Chapter <span class="chn"></span></span>
     <h2 id="d-phone" data-ch>Phone: iOS and Android</h2>
     <div class="rule"></div>
-    <p class="lead">The phone is for the minutes in between: a lesson on the bus, ten cards in a queue, a song on a walk. Small, one-handed, interrupted. The design is the same book with fewer things on each page.</p>
+    <p class="lead"><span class="nv pr" style="margin:0 4pt 0 0">Guidance only</span>The phone is for the minutes in between: a lesson on the bus, ten cards in a queue, a song on a walk. Small, one-handed, interrupted. The design is the same book with fewer things on each page.</p>
     <div class="row"><p><b>Where it stands.</b> A phone shell exists (below 768 px) and works as it is; it hasn’t had the care the desktop has had, and it isn’t the focus. This chapter is the guide for the day it is.</p>
       <aside><span class="k">Where</span><code>src/<wbr>app/<wbr>shells/<wbr>touch</code>: <code>TouchShell</code>, <code>TopBar</code>, <code>TabBar</code>.</aside></div>
     <div class="wf wide" style="grid-template-columns:1fr 1fr 1fr;align-items:start;padding:2mm">
@@ -1949,6 +2412,39 @@ ol.key.two li { break-inside: avoid; }
   </div>
 </section>
 
+<!-- R3 phonex -->
+<section class="page" data-rh="Phone: iOS and Android">
+  <div class="sheet">
+    <h3 style="margin-top:0">Where the thumb reaches <span class="nv pr">Guidance only</span></h3>
+    <div class="thumb wide">
+      <div>
+        <div class="phone"><div class="z hard">Hard to reach<br>Title, back, settings</div><div class="z ok">Reachable<br>The content</div><div class="z easy">Easy<br>Primary actions</div><div class="bar"><span>Home</span><span>Cursus</span><span>Explora</span><span>Library</span></div></div>
+        <div class="mcap" style="text-align:center">One hand, right thumb, a 6″ phone.</div>
+      </div>
+      <div>
+        <ul class="plain small">
+          <li><b>The bottom third is the easy third.</b> The floating tab bar (items 54 px high) and the primary button of a stage live there.</li>
+          <li><b>The top is for reading, not tapping:</b> the title and a back link; a rare action there is a feature.</li>
+          <li><b>A destructive action goes high and far from the thumb,</b> with Undo.</li>
+          <li><b>One column, 16 px gutters,</b> and a drawer becomes a sheet that rises from the bottom.</li>
+          <li><b>Fields are 16 px or more,</b> so iOS doesn’t zoom in; the keyboard may hide half the screen, so the primary button rides above it.</li>
+        </ul>
+      </div>
+    </div>
+    <h3>Gestures and system habits</h3>
+    <table class="wide spec gest" style="font-size:7.2pt;line-height:9.5pt">
+      <tr><th style="width:20%">System</th><th style="width:40%">What the user expects</th><th>What Lingua does</th></tr>
+      <tr><td class="k">iOS back swipe</td><td>From the left edge goes back.</td><td>The browser’s history; don’t put a horizontal scroller at the edge.</td></tr>
+      <tr><td class="k">Android back</td><td>Closes a sheet, then goes back, then exits.</td><td>Esc and back close the topmost drawer first.</td></tr>
+      <tr><td class="k">Pull to refresh</td><td>Reloads the page.</td><td>Lingua is local; a reload is never needed. Don’t add it.</td></tr>
+      <tr><td class="k">Install</td><td>iOS: Share › Add to Home Screen. Android: Chrome’s menu.</td><td>It then opens standalone, its own colour in the status bar (theme-color, by scheme).</td></tr>
+      <tr><td class="k">Notifications</td><td>Asked for with a reason, once.</td><td>Not used today; the reminder is Home’s Next up. <span class="nv pr">Proposed</span> if added.</td></tr>
+      <tr><td class="k">Haptics</td><td>Subtle, on Android Chrome only.</td><td>Lessons and the reader’s word hold; never the only signal.</td></tr>
+    </table>
+    <p class="small muted">The desktop-only rule stands: none of this is built or checked for. Keep this page as the brief for the day a phone design pass is asked for.</p>
+  </div>
+</section>
+
 <!-- 19 · Part Three -->
 <section class="page bare">
   <div class="opener">
@@ -2034,6 +2530,66 @@ ol.key.two li { break-inside: avoid; }
       <li>Does any page promise something Lingua can’t measure?</li>
       <li>Is there more than one joke on a page, or one inside an instruction?</li>
     </ol>
+  </div>
+</section>
+
+<!-- R3 first -->
+<section class="page" data-rh="The first start">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-first" data-ch>The first start, screen by screen</h2>
+    <div class="rule"></div>
+    <p class="lead">The first four minutes decide whether Lingua gets a second day. Ten screens, each asking one thing, in a fixed order; the first three are a welcome, the last seven build the learner’s plan.</p>
+    <div class="sb wide"><div class="fr"><div class="scr"><div class="h">First things first.</div><i class="l" style="width:60%;margin:2.2mm auto 0;height:.5mm;background:var(--accent)"></i><span class="a">Skip for now</span></div><b><i class="no">1</i>Your name</b><span>What should we call you?</span></div><div class="fr"><div class="scr"><div class="h">Welcome, Sam.</div><i class="l"></i><i class="l"></i><i class="l"></i><span class="a">Show me around</span></div><b><i class="no">2</i>Welcome</b><span>One of four funny lines</span></div><div class="fr"><div class="scr"><div class="h">See what Lingua can do</div><i class="l"></i><i class="l"></i><i class="l"></i><span class="a">Choose a language</span></div><b><i class="no">3</i>What Lingua does</b><span>Read anything · Keep every word · Listen and watch</span></div><div class="fr"><div class="scr"><div class="h">What language will it be?</div><i class="l" style="height:6mm;margin-top:1.2mm"></i><span class="a">Continue with Españo</span></div><b><i class="no">4</i>Language</b><span>The language map and the tiers</span></div><div class="fr"><div class="scr"><div class="h">So, how far along are you?</div><i class="l"></i><i class="l"></i><i class="l"></i><span class="a">Continue</span></div><b><i class="no">5</i>Level</b><span>Click the last line you understand</span></div><div class="fr"><div class="scr"><div class="h">Which languages do you alr…</div><i class="l"></i><i class="l"></i><i class="l"></i><span class="a">Continue</span></div><b><i class="no">6</i>You speak</b><span>Bragging is allowed.</span></div><div class="fr"><div class="scr"><div class="h">Why do you want to learn S…</div><i class="l"></i><i class="l"></i><i class="l"></i><span class="a">Continue</span></div><b><i class="no">7</i>Why</b><span>Be honest, we won’t tell.</span></div><div class="fr"><div class="scr"><div class="h">Set your own goal</div><i class="l"></i><i class="l"></i><i class="l"></i><span class="a">Continue</span></div><b><i class="no">8</i>Goal</b><span>Aim high, start small.</span></div><div class="fr"><div class="scr"><div class="h">Choose your study light</div><i class="l" style="height:5mm;margin-top:1.2mm"></i><span class="a">Continue</span></div><b><i class="no">9</i>Light</b><span>Paper, Nocturne or the device</span></div><div class="fr"><div class="scr"><div class="h">Unlock all of Lingua</div><i class="l"></i><i class="l"></i><i class="l"></i><span class="a">Begin</span></div><b><i class="no">10</i>Plans</b><span>Free · Lingua+ · Max</span></div></div>
+    <p class="small">Real titles and button labels, from <code>src/app/onboarding</code>; the drawings are schematic. The order is <code>FIRST</code> in <code>pages.ts</code>. The progress dots count only the seven steps from Language on (“Step 1 of 7”), so the welcome never feels like homework.</p>
+      </div>
+</section>
+
+<section class="page" data-rh="The first start">
+  <div class="sheet">
+    <h3 style="margin-top:0">What each screen is for</h3>
+    <table class="wide spec" style="font-size:7.2pt;line-height:9.5pt">
+      <tr><th style="width:4%">#</th><th style="width:13%">Screen</th><th style="width:30%">What it asks, and what that is used for</th><th style="width:11%">Page width</th><th>Design note</th></tr>
+      <tr><td>1</td><td class="k">Name</td><td>A first name; greets, never sent anywhere.</td><td class="px">768</td><td>A line, not a box: a bare underline that turns terracotta on focus. Serif 40 for the title.</td></tr>
+      <tr><td>2</td><td class="k">Welcome</td><td>Nothing. A warm line.</td><td class="px">768</td><td>Title at 44, the quip in italics, the book last at 0.55 s. Nothing to read twice.</td></tr>
+      <tr><td>3</td><td class="k">About</td><td>Nothing: three promises.</td><td class="px">1152</td><td>Read anything, Keep every word, Listen and watch. No screenshots.</td></tr>
+      <tr><td>4</td><td class="k">Language</td><td>The language being learned: picks the pack, the course, the voices.</td><td class="px">1280</td><td>A map and five tiers; each tier’s promise is on hover. The button names the language.</td></tr>
+      <tr><td>5</td><td class="k">Level</td><td>The last line understood: seeds known words and the starting level.</td><td class="px">768</td><td>Real text, a lines ladder; the ticks are drawn as you click.</td></tr>
+      <tr><td>6</td><td class="k">You speak</td><td>Languages already known: what meanings are shown in.</td><td class="px">768</td><td>Level chips A1 to C2 and native. Centred title.</td></tr>
+      <tr><td>7</td><td class="k">Why</td><td>Reasons: orders Home’s suggestions.</td><td class="px">768</td><td>Chips with an icon; many allowed; the sentence is the learner’s language.</td></tr>
+      <tr><td>8</td><td class="k">Goal</td><td>A goal and minutes a day.</td><td class="px">768</td><td>A default by level; the ring previews the daily target.</td></tr>
+      <tr><td>9</td><td class="k">Light</td><td>Paper, Nocturne or the device; a palette.</td><td class="px">1152</td><td>The language’s own sample text on each, so the learner picks on reading.</td></tr>
+      <tr><td>10</td><td class="k">Plans</td><td>Free, Lingua+ or Max.</td><td class="px">1152</td><td>Cards for the three; Free proceeds at once.</td></tr>
+    </table>
+        <div class="row"><p class="small">Everything it asks can be changed later, and every answer has a use that the learner can see: the language and level pick the starting text, the reasons order Home’s suggestions, the goal sets the ring, the light sets the room. If a question wouldn’t change anything, it isn’t asked. A learner can replay it from the Device lab.</p><aside><span class="k">Rule</span>One question a screen. A reason for each. Skippable until the language.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="The first start">
+  <div class="sheet">
+    <h3 style="margin-top:0">The frame around every screen</h3>
+    <ul class="plain">
+      <li><b>The foot:</b> Back as a ghost at the left, the large primary button filling the rest. Its label says what comes next (“Choose a language”, “Continue with Español”, “Begin”), not “Next”.</li>
+      <li><b>Esc</b> leaves a replay; on the real first start it is the learner’s to skip only once something has been chosen.</li>
+      <li><b>Motion:</b> steps move on the gentle spring (the slowest, 200 · 28), and the card tilts a little in perspective; with reduced motion they simply change.</li>
+      <li><b>What is saved:</b> the choices are written together at the end, so closing the window halfway leaves nothing half-made.</li>
+    </ul>
+    <div class="dodont">
+      <div><span class="h">Measure</span><ul><li>Time from opening to the first card or page read.</li><li>Where people stop: the language and level screens, first.</li></ul></div>
+      <div class="no"><span class="h">Never</span><ul><li>Ask for an account, an email or a card.</li><li>Add a screen for something that could be a setting.</li></ul></div>
+    </div>
+    <h3>Watching someone do it</h3>
+    <p class="small">One learner, one sitting, no help. Say nothing, and note:</p>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:22%">Screen</th><th>What to watch</th></tr>
+      <tr><td class="k">Name</td><td>Do they type, or look for the skip?</td></tr>
+      <tr><td class="k">Language</td><td>How long they scan the map; whether they read the tiers; whether a Soon language frustrates.</td></tr>
+      <tr><td class="k">Level</td><td>Whether “the last line you understand” is understood; whether they hesitate over the first click.</td></tr>
+      <tr><td class="k">Goal</td><td>Whether the default is accepted, raised or lowered; whether “minutes” is clear.</td></tr>
+      <tr><td class="k">Light</td><td>Whether they notice the sample text, and choose by it.</td></tr>
+      <tr><td class="k">Plans</td><td>Whether Free is found at once, and what they say about the others.</td></tr>
+      <tr><td class="k">After</td><td>“What do you think Lingua is for?”</td></tr>
+    </table>
   </div>
 </section>
 
@@ -2312,17 +2868,16 @@ ol.key.two li { break-inside: avoid; }
     </div>
     <ol class="key two tight">
       <li><b>Sonus tabs:</b> Library, Radio, Music; Add at the right; a mini player stays at the foot of every page.</li>
-      <li><b>The mini player,</b> 56 px: cover, title, play, a thin bar. A click opens the full player.</li>
-      <li><b>Visio’s watch page:</b> the video as the stage, the lines in time beneath.</li>
-      <li><b>Two lines over the picture:</b> the language’s line larger; the translation smaller.</li>
+            <li><b>Visio’s watch page:</b> the video as the stage, the lines in time beneath.</li>
     </ol>
     <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
       <tr><th style="width:19%">Part</th><th>How</th></tr>
       <tr><td class="k">The lines</td><td>Two at a time, centred, 22 and 16 px, on a 78% espresso plate for contrast; every word is hoverable, and hovering pauses; ← and → step by line; , and . nudge a followed show by half a second.</td></tr>
       <tr><td class="k">The player</td><td>Play, ±10 s, speed, repeat-each-sentence (R), the transcript as a column at the right, the current line lit. ↑ and ↓ move by sentence.</td></tr>
       <tr><td class="k">A YouTube link</td><td>Plays in YouTube’s own embed; its title and picture come from YouTube; the lines come from the extension or a file.</td></tr>
-      <tr><td class="k">Following a show</td><td>A subtitles-only item gets a clock instead of a video: Play, Pause, ±0.5 s; the lines move in time beside the show playing in its own app.</td></tr>
-      <tr><td class="k">The extension</td><td>On Netflix, YouTube and the like it draws the same two lines over their player and asks an open Lingua tab for meanings; it reads only subtitle files, never the video.</td></tr>
+      <tr><td class="k">Following a show</td><td><span class="nv" style="margin:0 3pt 0 0">Not yet tried with a real show</span>A subtitles-only item gets a clock instead of a video: Play, Pause, ±0.5 s; the lines move in time beside the show playing in its own app.</td></tr>
+      <tr><td class="k">The extension</td><td><span class="nv" style="margin:0 3pt 0 0">Not yet tried on real sites</span>On Netflix, YouTube and the like it draws the same two lines over their player and asks an open Lingua tab for meanings; it reads only subtitle files, never the video.</td></tr>
+      <tr><td class="k">Not built</td><td>Gemini transcripts (Max) and a YouTube captions fallback: planned.</td></tr>
     </table>
     <div class="dodont">
       <div><span class="h">Tips</span><ul><li>Let subtitles be readable first, clever second.</li><li>Keep the video as large as the window allows.</li></ul></div>
@@ -2534,7 +3089,7 @@ ol.key.two li { break-inside: avoid; }
     <h2 id="ch19" data-ch>Every page’s states</h2>
     <div class="rule"></div>
     <p class="lead">A page is not done when it looks right full. It is done when it also looks right empty, slow, wrong and offline.</p>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><td class="k">The first time</td><td>Say why it’s empty, and give one way in.</td></tr>
       <tr><td class="k">Loading</td><td>Keep the page’s shape. If it takes more than a moment, say what’s happening.</td></tr>
       <tr><td class="k">Nothing found</td><td>Show what was searched for, and a way to clear it.</td></tr>
@@ -2683,7 +3238,7 @@ ol.key.two li { break-inside: avoid; }
     <h2 id="notfor" data-ch>Who it isn’t for, honestly</h2>
     <div class="rule"></div>
     <p class="lead">Saying who Lingua isn’t for keeps it good for the people it is for, and keeps the marketing honest.</p>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><td class="k">Five minutes on the bus</td><td>Lingua is a desk app. Phone apps “can be” (your answer, 26 October), but not now.</td></tr>
       <tr><td class="k">Children</td><td>The voice, the content and the AI are made for adults.</td></tr>
       <tr><td class="k">Streak hunters</td><td>No hearts, no leagues, no guilt. Some people want those; they have good options.</td></tr>
@@ -2789,7 +3344,7 @@ ol.key.two li { break-inside: avoid; }
     <h3>In thirty seconds</h3>
     <p>Most apps teach you made-up sentences. Lingua lets you learn from the real thing: a novel, a podcast, a song, a series. Tap any word and it’s explained; keep it, and Lingua brings it back as a card, in a game, in a lesson, in your journal. For six languages there’s a full course too. It runs on your computer, keeps your data there, and Lingua+ is bought once.</p>
     <h3>Four things to say again and again</h3>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><td class="k">Live in it</td><td>Real books, songs, radio and shows, from the first weeks.</td></tr>
       <tr><td class="k">Keep every word</td><td>One word, everywhere: met once, never lost.</td></tr>
       <tr><td class="k">A calm desk</td><td>No ads, no streak guilt, no noise. It looks like a good book.</td></tr>
@@ -2902,7 +3457,7 @@ ol.key.two li { break-inside: avoid; }
       <li>Screen recordings, a minute each: a comic’s bubbles read, a song’s lines saved, a book becoming a deck.</li>
     </ul>
     <h3>A monthly rhythm</h3>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><td class="k">Week 1</td><td>One guide</td></tr>
       <tr><td class="k">Week 2</td><td>One short video</td></tr>
       <tr><td class="k">Week 3</td><td>One useful thing shared in a community</td></tr>
@@ -2933,7 +3488,7 @@ ol.key.two li { break-inside: avoid; }
 <section class="page" data-rh="The launch">
   <div class="sheet">
     <h3 style="margin-top:0">Launch week</h3>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><td class="k">The week before</td><td>Website, plans and install page checked; Stripe live with a real purchase and a refund tested; support inbox and FAQ ready; the beta learners told first.</td></tr>
       <tr><td class="k">Day 1</td><td>The letter to everyone who asked; the launch-site post; be there all day to answer.</td></tr>
       <tr><td class="k">Day 2</td><td>The developer-forum post, on the local-first angle.</td></tr>
@@ -3009,7 +3564,7 @@ ol.key.two li { break-inside: avoid; }
     <h3 style="margin-top:0">What one Lingua+ leaves you</h3>
     <div class="row"><p>Prices include VAT, which belongs to the buyer’s country. A worked example, with the numbers as assumptions to replace:</p>
       <aside><span class="k">Only an illustration</span>Your VAT rate, Stripe’s fee and taxes on profit are yours to check.</aside></div>
-    <table style="width:86mm" class="spec">
+    <table style="width:84mm" class="spec">
       <tr><td>Price paid</td><td>€24.99</td></tr>
       <tr><td>VAT inside it, at 21 % (e.g. the Netherlands)</td><td>− €4.34</td></tr>
       <tr><td>Net price</td><td>€20.65</td></tr>
@@ -3033,7 +3588,7 @@ ol.key.two li { break-inside: avoid; }
     <div class="row"><p class="lead first">Honestly: a good small income is a realistic first goal; a salary is a long way off. What follows are estimates from the prices and fees in this book, to plan with, not forecasts.</p>
       <aside><span class="k">Not advice</span>This is planning help, not financial, tax or legal advice. Check it with an accountant who knows your country.</aside></div>
     <h3>What one sale leaves you</h3>
-    <table style="width:100%" class="spec">
+    <table class="spec">
       <tr><th>Plan</th><th>Price paid</th><th>Left after 21 % VAT and Stripe’s fee</th></tr>
       <tr><td>Lingua+ (once)</td><td>€24.99</td><td>about €20.03</td></tr>
       <tr><td>Max, a month</td><td>€5.99</td><td>about €4.61 a month</td></tr>
@@ -3043,7 +3598,7 @@ ol.key.two li { break-inside: avoid; }
     <h3>A year, in four pictures</h3>
     <div class="row"><p>Assume that 3 in 100 active learners buy in the year (freemium apps commonly see a few per cent; yours may be lower or higher), three in four of them Lingua+ and one in four Max yearly. A buyer is then worth about <b>€25</b> to you.</p>
       <aside><span class="k">Assumptions</span>3 % buy; 75 % Lingua+, 25 % Max yearly; no refunds, no renewals counted.</aside></div>
-    <table style="width:100%" class="spec">
+    <table class="spec">
       <tr><th>Active learners</th><th>Buyers</th><th>Left, before income tax</th></tr>
       <tr><td>500</td><td>15</td><td>about €380</td></tr>
       <tr><td>2,000</td><td>60</td><td>about €1,500</td></tr>
@@ -3058,7 +3613,7 @@ ol.key.two li { break-inside: avoid; }
     <div class="row" style="margin-top:0"><p><span class="lede-sc">Read it like this:</span> the number that matters is how many people find Lingua, not the price. Doubling the price helps less than doubling the people who try it. A one-time price also means a year’s income comes from that year’s new learners; Max is the part that repeats.</p>
       <aside><span class="k">Why Max exists</span>Its AI runs on the learner’s own key, so each Max month costs Lingua nothing to serve.</aside></div>
     <h3>What it costs to run</h3>
-    <table style="width:100%" class="spec">
+    <table class="spec">
       <tr><th>Cost</th><th>Roughly, a year</th></tr>
       <tr><td>Domain and hosting (GitHub Pages, Cloudflare’s free tier)</td><td>€10–20</td></tr>
       <tr><td>An accountant for a small business</td><td>€300–1,000, by country</td></tr>
@@ -3116,7 +3671,7 @@ ol.key.two li { break-inside: avoid; }
       <li>Reinvest the first small profits in what brings learners: better pages, one good video, one channel done well.</li>
     </ul>
     <h3>What the numbers would take</h3>
-    <table style="width:100%" class="spec">
+    <table class="spec">
       <tr><th>If you want</th><th>You need, a year</th></tr>
       <tr><td>Costs covered</td><td>25–75 sales; about 800–2,500 learners</td></tr>
       <tr><td>€5,000 left</td><td>about 200 buyers; about 6,700 learners</td></tr>
@@ -3126,7 +3681,7 @@ ol.key.two li { break-inside: avoid; }
     <div class="row"><p><span class="lede-sc">A decision rule:</span> don’t quit anything for Lingua until it has paid you more than a year’s costs twice over, two years running, or your savings could carry you for a year without it. Max’s repeat income and a classroom price are what would change that picture; both are later.</p>
       <aside><span class="k">Your decision</span>When to pay yourself, and how much.</aside></div>
     <h3>First milestones</h3>
-    <table style="width:100%" class="spec">
+    <table class="spec">
       <tr><th>When</th><th>What to do</th></tr>
       <tr><td>The first ten sales</td><td>Write to each buyer; ask what almost stopped them.</td></tr>
       <tr><td>The first €1,000 left</td><td>Book the accountant; check the VAT and the small-business scheme in your country.</td></tr>
@@ -3193,7 +3748,7 @@ ol.key.two li { break-inside: avoid; }
       <li>Tag the version; push main and the tag; check the deploy went live.</li>
     </ol>
     <h3>The order of the versions</h3>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><td class="k">0.5.2-alpha.N</td><td>Lingua 5.2 being built; 0.5.2 at its check</td></tr>
       <tr><td class="k">0.6.0-alpha.N</td><td>Lingua 6 · Features, next (your answer); 0.6.0 at its check</td></tr>
       <tr><td class="k">0.7.0-alpha.N</td><td>Lingua 7 · Design, after it</td></tr>
@@ -3210,7 +3765,7 @@ ol.key.two li { break-inside: avoid; }
     <div class="row"><p class="lead first">A web app that installs on the desktop and works offline. Everything runs on the learner’s computer; the website only hands out the app and its language packs.</p>
       <aside><span class="k">Read more</span><code>docs/<wbr>ARCHITECTURE.md</code>; the sixty-frames rules in <code>docs/<wbr>PERFORMANCE.md</code>.</aside></div>
     <p class="small muted">Vite 8 · React 19 · TypeScript · Tailwind 4 · Dexie on IndexedDB · Zustand · motion/react · Web Workers</p>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><td class="k">app/</td><td>the shells, the router, the first start</td></tr>
       <tr><td class="k">features/</td><td>one folder per room</td></tr>
       <tr><td class="k">design/</td><td>tokens, motion, fonts, the primitives</td></tr>
@@ -3276,7 +3831,7 @@ ol.key.two li { break-inside: avoid; }
     <div class="rule"></div>
     <div class="row"><p class="lead first">Lingua is built across several accounts and computers. Memory doesn’t travel; the repository does. Everything a session needs is written down there.</p>
       <aside><span class="k">Start here</span><code>CLAUDE.md</code>, then <code>docs/<wbr>HANDOVER.md</code>.</aside></div>
-    <table style="width:86mm">
+    <table style="width:84mm">
       <tr><td class="k">CLAUDE.md</td><td>The way of working and the rules that always hold</td></tr>
       <tr><td class="k">HANDOVER.md</td><td>The queue in order, how to claim a step, the prompt to paste</td></tr>
       <tr><td class="k">The plans</td><td>Lingua 5.1, 5.2, 6 and 7, each step planned before it’s built</td></tr>
@@ -3492,6 +4047,71 @@ ol.key.two li { break-inside: avoid; }
   </div>
 </section>
 
+<!-- R3 cheat -->
+<section class="page" data-rh="The numbers">
+  <div class="sheet cheat">
+    <span class="kicker wide">Appendix A · on one page</span>
+    <h2 class="wide" style="margin-top:0" id="cheat">The cheat sheet</h2>
+    <div class="rule"></div>
+    <p class="small muted">Every number here comes from one block of facts at the end of this file, and a test (<code>handbook-facts.test.ts</code>) checks that block against the code, so the book and the app can’t drift apart without a failing test.</p>
+    <div class="cols2 wide">
+      <div>
+        <h3>Sizes (px)</h3>
+        <table class="spec">
+          <tr><td>Button small · medium · large</td><td class="px"><span data-fact="button.sm"></span> · <span data-fact="button.md"></span> · <span data-fact="button.lg"></span></td></tr>
+          <tr><td>Corners on those buttons</td><td class="px"><span data-fact="radius.sm"></span> · <span data-fact="radius.md"></span> · <span data-fact="radius.lg"></span></td></tr>
+          <tr><td>Drawer width (or the screen less 24)</td><td class="px"><span data-fact="drawer.w"></span></td></tr>
+          <tr><td>Dialog, at the most</td><td class="px"><span data-fact="dialog.w"></span></td></tr>
+          <tr><td>Sidebar, open · folded</td><td class="px"><span data-fact="sidebar.w"></span> · <span data-fact="sidebar.min"></span></td></tr>
+          <tr><td>Content column</td><td class="px"><span data-fact="column.w"></span></td></tr>
+          <tr><td>Text, smallest · body · reading</td><td class="px">12.5 · 15 · 19</td></tr>
+          <tr><td>Check at (px)</td><td class="px">1280 · 1440 · 1366 × 768</td></tr>
+        </table>
+        <h3>Time</h3>
+        <table class="spec">
+          <tr><td>Fade (s)</td><td class="px"><span data-fact="fade"></span></td></tr>
+          <tr><td>Spring snappy (stiffness · damping · mass)</td><td class="px"><span data-fact="spring.snappy"></span></td></tr>
+          <tr><td>soft (pages, cards)</td><td class="px"><span data-fact="spring.soft"></span></td></tr>
+          <tr><td>sheet (drawers)</td><td class="px"><span data-fact="spring.sheet"></span></td></tr>
+          <tr><td>gentle (onboarding)</td><td class="px"><span data-fact="spring.gentle"></span></td></tr>
+          <tr><td>fluid (full motion)</td><td class="px"><span data-fact="spring.fluid"></span></td></tr>
+        </table>
+        <h3>Colour, Paper · Nocturne</h3>
+        <table class="spec">
+          <tr><td>Page</td><td class="px"><span data-fact="paper.bg"></span> · <span data-fact="night.bg"></span></td></tr>
+          <tr><td>Surface</td><td class="px"><span data-fact="paper.surface"></span> · <span data-fact="night.surface"></span></td></tr>
+          <tr><td>Ink</td><td class="px"><span data-fact="paper.ink"></span> · <span data-fact="night.ink"></span></td></tr>
+          <tr><td>Accent</td><td class="px"><span data-fact="paper.accent"></span> · <span data-fact="night.accent"></span></td></tr>
+          <tr><td>Sage</td><td class="px"><span data-fact="paper.sage"></span> · <span data-fact="night.sage"></span></td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>Keys (Alt, or ⌥ on a Mac)</h3>
+        <table class="spec" id="cheat-keys"><tr><td>Alt 1 – 8</td><td>The rooms, in the sidebar’s order</td></tr></table>
+        <h3>Always</h3>
+        <ul class="plain">
+          <li>One accent button a page; the rest ghosts.</li>
+          <li>Tokens, never a hex; no pure black or white.</li>
+          <li>Text 4.5 : 1; state never by colour alone.</li>
+          <li>Every icon has a name; every chart a label.</li>
+          <li>Empty, loading, error, offline: all four designed.</li>
+          <li>Paper and Nocturne, and 1366 × 768.</li>
+          <li>Sound only for a judged answer; off means silent.</li>
+        </ul>
+        <h3>Where things are</h3>
+        <ul class="plain">
+          <li>Tokens: <code>src/design/tokens.css</code></li>
+          <li>Primitives: <code>src/design/primitives</code></li>
+          <li>Motion: <code>src/design/motion.ts</code></li>
+          <li>Charts: <code>src/design/charts</code></li>
+          <li>Papers: <code>src/design/papers.ts</code></li>
+          <li>Shortcuts: <code>src/app/ShortcutsDialog.tsx</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- 37 · Appendix B -->
 <section class="page" data-rh="Words Lingua uses">
   <div class="sheet">
@@ -3581,6 +4201,24 @@ ol.key.two li { break-inside: avoid; }
     <div id="index-list" class="wide"></div>
   </div>
 </section>
+<section class="page" data-rh="Index">
+  <div class="sheet">
+    <span class="kicker wide">At the back</span>
+    <h2 class="wide" style="margin-top:0">Index, continued</h2>
+    <div class="rule"></div>
+    <div id="index-list-2" class="wide"></div>
+  </div>
+</section>
+<script type="application/json" id="facts">{"button.sm": "32", "button.md": "40", "button.lg": "48", "radius.sm": "8", "radius.md": "12", "radius.lg": "16", "drawer.w": "440", "dialog.w": "448", "sidebar.w": "216", "sidebar.min": "64", "column.w": "1152", "spring.snappy": "560 · 42 · 0.8", "spring.soft": "320 · 34", "spring.sheet": "400 · 40 · 0.9", "spring.gentle": "200 · 28", "spring.fluid": "210 · 26 · 1", "fade": "0.16", "paper.bg": "#faf6f0", "paper.ink": "#262220", "paper.accent": "#c86d51", "paper.sage": "#6b8e78", "paper.surface": "#efe7d9", "night.bg": "#1f1c1a", "night.ink": "#ebe0cc", "night.accent": "#d49b54", "night.sage": "#93b39e", "night.surface": "#2b2724", "shortcuts": [["[", "Collapse or expand the sidebar"], ["?", "Show keyboard shortcuts"], ["/", "Search books or decks"], ["Esc", "Close a drawer or dialog"], ["K", "Mark the hovered word known"], ["L", "Mark the hovered word learning"], ["X", "Reset the hovered word to unseen"], ["D", "Open the hovered word’s details"], ["Z", "Undo the last answer"], ["E", "Edit the card"]]}</script>
+<script>
+(function () {
+  const facts = JSON.parse(document.getElementById('facts').textContent);
+  document.querySelectorAll('td.px, td.k').forEach((td) => { if (td.textContent.length > 22) td.style.whiteSpace = 'normal'; });
+  document.querySelectorAll('[data-fact]').forEach((el) => { el.textContent = facts[el.dataset.fact] ?? '?'; });
+  const keys = document.getElementById('cheat-keys');
+  if (keys) facts.shortcuts.forEach(([k, label]) => { const tr = document.createElement('tr'); tr.innerHTML = `<td><b>${k}</b></td><td>${label}</td>`; keys.append(tr); });
+})();
+</script>
 <script type="application/json" id="index-terms">[
  ["Accessibility", "accessib"], ["Alphabets", "alphabet"], ["Anki", "Anki"], ["Ask, the tutor", "Ask button|the tutor"], ["Backups", "backup"],
  ["Beta, the private", "private beta|the beta"], ["Codex", "Codex"], ["Colours and palettes", "palette|terracotta"], ["Competitors", "gamified|what else they use"],
@@ -3588,7 +4226,7 @@ ol.key.two li { break-inside: avoid; }
  ["Exams", "\\bexams?\\b"], ["Earnings and funding", "earn|funding|bootstrap"], ["Features audit", "audit|1,618"], ["First start", "first start"], ["FSRS", "FSRS"], ["Goals", "goal"],
  ["Grammatica", "Grammatica"], ["Handover", "handover"], ["Inbox", "inbox"], ["Keys, AI", "own key|AI key|your own free key"], ["Launch", "launch"],
  ["Licence", "licence"], ["Lingua+", "Lingua\\+"], ["Ludus", "Ludus"], ["Max", "\\bMax\\b"], ["Mentis", "Mentis"], ["Motion and springs", "spring"],
- ["iPad and tablets", "iPad|tablet|Android"], ["Dark mode, Nocturne", "Nocturne|Charcoal"], ["Charts", "chart|heat map"], ["Keyboard shortcuts", "shortcut|Alt 1"], ["Words on screen", "empty page|microcopy|Words on the screen"], ["Extension, the Lingua", "extension"], ["Visio", "Visio"], ["Icons", "icon"], ["Phone", "\\bphones?\\b"], ["Prices", "€"], ["Privacy", "privac"], ["Ratio", "Ratio"], ["Refunds", "refund"], ["Sermo", "Sermo"],
+ ["iPad and tablets", "iPad|tablet|Android"], ["Dark mode, Nocturne", "Nocturne|Charcoal"], ["Charts", "chart|heat map"], ["Keyboard shortcuts", "shortcut|Alt 1"], ["Words on screen", "empty page|microcopy|Words on the screen"], ["Extension, the Lingua", "extension"], ["Visio", "Visio"], ["Icons", "icon"], ["Phone", "\\bphones?\\b"], ["Prices", "€"], ["Sound and haptics", "haptic|vibrat|chime"], ["Cheat sheet", "cheat sheet"], ["Forms and errors", "validation|error state"], ["Illustrations", "empty-page art|illustration"], ["Reduced motion", "reduced motion|Reduced"], ["Contrast", "contrast"], ["Colour-blind", "colour-blind|colour blind|colour vision"], ["Privacy", "privac"], ["Ratio", "Ratio"], ["Refunds", "refund"], ["Sermo", "Sermo"],
  ["Sonus et Visio", "Sonus"], ["States of a page", "loading|empty"], ["Stripe", "Stripe"], ["Support", "support"], ["Thesaurus", "Thesaurus"],
  ["Tiers", "tier"], ["Type and fonts", "Literata"], ["VAT", "VAT"], ["Versions", "version"], ["Voice, Lingua's", "voice"], ["Website", "website"]
 ]</script>
@@ -3646,7 +4284,7 @@ ol.key.two li { break-inside: avoid; }
   const terms = document.getElementById('index-terms');
   const list = document.getElementById('index-list');
   if (terms && list) {
-    const texts = pages.map((p) => (p.classList.contains('bare') || p.querySelector('.toc, #index-list') ? '' : p.innerText));
+    const texts = pages.map((p) => (p.classList.contains('bare') || p.querySelector('.toc, #index-list, #index-list-2') ? '' : p.innerText));
     JSON.parse(terms.textContent).forEach(([label, pattern]) => {
       const re = new RegExp(pattern, 'i');
       const hits = texts.flatMap((t, i) => (t && re.test(t) ? [i + 1] : []));
@@ -3655,6 +4293,10 @@ ol.key.two li { break-inside: avoid; }
       row.innerHTML = `<b>${label}</b> <span class="pg">${hits.length > 9 ? hits.slice(0, 9).join(', ') + ' …' : hits.join(', ')}</span>`;
       list.append(row);
     });
+    const rows = [...list.children];
+    const list2 = document.getElementById('index-list-2');
+    if (list2 && rows.length > 54) rows.slice(54).forEach((r) => list2.append(r));
+    else if (list2) list2.closest('section.page').remove();
   }
   document.querySelectorAll('.pn[data-for]').forEach((pn) => {
     const target = document.getElementById(pn.dataset.for);
@@ -3671,6 +4313,22 @@ ol.key.two li { break-inside: avoid; }
     const bottom = box.bottom - parseFloat(getComputedStyle(page).paddingBottom) + 2;
     const last = [...sheet.querySelectorAll('*')].reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
     if (last > bottom) { page.setAttribute('data-overflow', ''); over.push(i + 1); }
+    // Sideways: nothing may reach past the page's side margins (the page clips what does, in the PDF as on screen).
+    const cs = getComputedStyle(page);
+    const left = box.left + parseFloat(cs.paddingLeft) - 1;
+    const right = box.right - parseFloat(cs.paddingRight) + 1;
+    const tooWide = [...sheet.querySelectorAll('*')].filter((el) => {
+      if (el.closest('svg') && el.tagName.toLowerCase() !== 'svg') return false;
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && (r.right > right || r.left < left) && !el.matches('i.n, .wf .n');
+    });
+    // Text that a box clips inside itself (a long word in a narrow cell) counts too.
+    const clipped = [...sheet.querySelectorAll('td, th, li, p, span, b, code, figcaption')].filter((el) => el.scrollWidth > el.clientWidth + 1 && el.clientWidth > 0 && getComputedStyle(el).display !== 'inline');
+    if (tooWide.length || clipped.length) {
+      page.setAttribute('data-overflow', '');
+      if (!over.includes(i + 1)) over.push(i + 1);
+      (window.__wide = window.__wide || []).push([i + 1, ...tooWide.slice(0, 3).map((el) => el.tagName + '.' + String(el.className).slice(0, 24) + ' ' + Math.round(Math.max(el.getBoundingClientRect().right - right, left - el.getBoundingClientRect().left)) + 'px'), ...clipped.slice(0, 2).map((el) => 'clip ' + el.tagName + ' ' + (el.textContent || '').trim().slice(0, 30))]);
+    }
   });
   window.__handbook = { pages: pages.length, overflow: over };
   return window.__handbook;

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" color="#5e554e" role="img">
+  <title>First start: a stack of books, a sprig, a ribbon</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 76Q48 74.5 82 76V86Q48 87.5 14 86Z"/><path d="M20 76V86"/><path d="M20 62Q50 60.5 80 62V74Q50 75.5 20 74Z"/><path d="M26 68H46" opacity=".5"/><path d="M28 46Q52 44 74 47V60Q50 61.5 28 59Z" transform="rotate(-3 50 52)"/><path d="M34 52H52" opacity=".5"/><path stroke="#6b8e78" d="M52 44Q50 34 56 26"/><path stroke="#6b8e78" d="M56 26Q64 24 66 18Q58 18 56 26Z"/><path stroke="#6b8e78" d="M52 36Q44 35 41 29Q49 29 52 36Z"/><path stroke="#c86d51" d="M70 86V92L73 89.5L76 92V86.4"/>
+  </g>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" color="#5e554e" role="img">
+  <title>Nothing here yet: an empty shelf with a place held</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 74Q48 72.5 88 74"/><path d="M10 74V79Q48 80.5 86 79V74"/><path d="M16 74V40Q20 39 24 40V74"/><path d="M27 74V33Q32 32 36 33V74"/><path d="M38 74L41 38Q45 37 48 38.5L45 74"/><path d="M72 74V44Q76 43 80 44V74"/><path stroke="#c86d51" stroke-dasharray="2.2 3.4" d="M52 74V46Q58 45 64 46V74"/><path stroke="#6b8e78" d="M60 74Q60 68 64 64"/>
+  </g>
+</svg>

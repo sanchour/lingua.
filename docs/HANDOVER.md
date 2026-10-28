@@ -188,3 +188,6 @@ adventure path like Duolingo's and HelloChinese's (ROADMAP "Cursus as an adventu
   frame. Check with DOM reads or by measuring with JavaScript, and retry the screenshot.
 - A fresh browser profile starts at onboarding. Test decks can be made from the page's console:
   `(await import('/src/data/starter.ts')).addStarterDeck('es', { kind: 'theme', id: 'food' }, { skipKnown: false })`.
+
+> **Handbook upkeep (2026-10-28):** when a push changes a token, a primitive, a pattern, a sound or a design rule, add a line to the handbook's "design changelog" page and, if a number moved, to its `#facts` block (`src/test/handbookFacts.test.ts` fails until they agree). Print with `node scripts/handbook-pdf.ts`: it also refuses a page whose content crosses a side margin.
+

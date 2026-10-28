@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" color="#5e554e" role="img">
+  <title>Something tore: a page torn across</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 12H72V50L65 44L58 52L50 44L42 52L34 45L24 52Z"/><path d="M32 22H60M32 30H54M32 38H58" opacity=".5"/><path d="M24 62L34 55L42 63L50 55L58 63L65 56L72 62V84H24Z"/><path d="M32 72H58M32 78H50" opacity=".5"/><path stroke="#c86d51" d="M16 57H22M74 57H80"/>
+  </g>
+</svg>

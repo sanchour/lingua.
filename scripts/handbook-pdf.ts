@@ -2,7 +2,7 @@
 //   node scripts/handbook-pdf.ts            from the repository's root, after npm install (the fonts come from node_modules)
 // It drives a Chromium already on the computer over the DevTools protocol, with Node's own WebSocket: Chrome, Edge,
 // or Playwright's headless shell (set CHROME_PATH to use another). The PDF gets clickable contents and bookmarks from the headings.
-// A page whose text runs past its bottom margin is named, and the PDF isn't written until it fits.
+// A page whose text runs past its bottom margin, or whose boxes reach past its sides, is named, and the PDF isn't written until it fits.
 import { spawn } from 'node:child_process';
 import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -106,7 +106,9 @@ try {
   const { result } = await send('Runtime.evaluate', { expression: 'window.__handbookReady', awaitPromise: true, returnByValue: true }, sessionId);
   const report = result.value as { pages: number; overflow: number[] };
   if (report.overflow.length) {
-    console.error(`These pages run past their bottom margin: ${report.overflow.join(', ')}. Shorten them (they're outlined in red in a browser), then print again.`);
+    console.error(`These pages run past a margin (the bottom, or the sides): ${report.overflow.join(', ')}. Shorten or narrow them (they're outlined in red in a browser), then print again.`);
+    const why = await send('Runtime.evaluate', { expression: 'JSON.stringify(window.__wide || [])', returnByValue: true }, sessionId);
+    for (const row of JSON.parse(why.result.value as string) as string[][]) console.error(`  page ${row[0]}: ${row.slice(1).join('; ')}`);
     process.exitCode = 1;
   } else {
     const pdf = await send('Page.printToPDF', { printBackground: true, preferCSSPageSize: true, generateDocumentOutline: true, generateTaggedPDF: true }, sessionId);

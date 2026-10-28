@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" color="#5e554e" role="img">
+  <title>No results: a page and a lens that found nothing</title>
+  <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 12H56L70 26V74Q47 76 24 74Z"/><path d="M56 12V26H70"/><path d="M32 38H60M32 46H54M32 54H44" opacity=".5"/><path fill="#fffbf4" d="M50 58Q64 56 66 70Q68 84 54 86Q40 88 38 74Q36 60 50 58Z"/><path d="M63 82L80 90"/><path stroke="#c86d51" d="M44 68Q45 64 50 63"/>
+  </g>
+</svg>
