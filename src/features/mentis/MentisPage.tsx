@@ -19,7 +19,7 @@ const TABS: Array<RoomTab<Tab>> = [
   { id: 'sermo', label: 'Sermo', to: '/mentis/sermo', icon: MessagesSquare },
   { id: 'diarium', label: 'Diarium', to: '/mentis/diarium', icon: Feather },
 ];
-const MUNDUS_TABS = new Set(['', 'explore', 'picks', 'try']);
+const MUNDUS_TABS = new Set(['', 'try']);
 
 /**
  * Mentis (Lingua 5.1-1), the room for thinking in the language: Mundus the guide, Sermo for talking

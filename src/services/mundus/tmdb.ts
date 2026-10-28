@@ -207,6 +207,14 @@ export async function whereToWatch(type: TitleType, id: number, region: string, 
   };
 }
 
+/** A title's trailer on YouTube, when TMDB lists one (an address to open); `null` when it doesn't. Kept a week. */
+export async function trailerUrl(type: TitleType, id: number, token: string, fetcher?: typeof fetch): Promise<string | null> {
+  const data = await get<{ results?: Array<{ site?: string; type?: string; key?: string; official?: boolean }> }>(`/${type}/${id}/videos`, {}, token, 7 * DAY, fetcher);
+  const videos = (data.results ?? []).filter((v) => v.site === 'YouTube' && v.key);
+  const pick = videos.find((v) => v.type === 'Trailer' && v.official) ?? videos.find((v) => v.type === 'Trailer') ?? videos.find((v) => v.type === 'Teaser');
+  return pick?.key ? `https://www.youtube.com/watch?v=${pick.key}` : null;
+}
+
 /** A title's overview in a language (English when TMDB has none in it). Kept a week. */
 export async function titleDetails(type: TitleType, id: number, lang: string, token: string, fetcher?: typeof fetch): Promise<TmdbTitle> {
   const raw = await get<RawTitle>(`/${type}/${id}`, { language: tmdbLanguage(lang) }, token, 7 * DAY, fetcher);

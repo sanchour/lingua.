@@ -120,6 +120,8 @@ export const router = createBrowserRouter(
         { path: 'visio', element: <VisioPage /> },
         { path: 'visio/watch/:mediaId', element: <WatchPage /> },
         // Mentis: Mundus (with its own tabs), Sermo and Diarium; an entry is a page of its own.
+        // Mundus's Explore and Every pick are Explore in Explora now: the old addresses move there.
+        ...['mentis/explore', 'mentis/picks'].map((path) => ({ path, element: <Moved /> })),
         { path: 'mentis/*', element: <MentisPage /> },
         // The chat inside Lingua went in 5.2-6: old chat links open Sermo (the chats stay in the database).
         { path: 'mentis/sermo/chat/:chatId', element: <Navigate to="/mentis/sermo" replace /> },

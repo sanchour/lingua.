@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { BookOpen, Compass, Layers, Library, Sparkles } from 'lucide-react';
+import { BookOpen, Compass, Layers, Library } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { RoomTabs } from '@/app/RoomTabs';
@@ -11,17 +11,15 @@ import { starterKey } from '@/data/starter';
 import { buttonClasses, SearchInput } from '@/design/primitives';
 import { spring } from '@/design/motion';
 import { DiscoverTab } from '@/features/codex/discover/DiscoverTab';
-import { ExploreView } from '@/features/mundus/ExploreView';
-import { NoPicks, PicksView } from '@/features/mundus/PicksView';
+import { ExploreAll } from '@/features/explora/ExploreAll';
 import { useGuide } from '@/features/mundus/useGuide';
 import { StarterLibrary } from '@/features/thesaurus/library/StarterLibrary';
 
-type Tab = 'all' | 'read' | 'picks' | 'words';
+type Tab = 'all' | 'read' | 'words';
 
 const TABS: Array<RoomTab<Tab>> = [
-  { id: 'all', label: 'For you', to: '/explora', icon: Compass },
+  { id: 'all', label: 'Explore', to: '/explora', icon: Compass },
   { id: 'read', label: 'Free reading', short: 'Read', to: '/explora?tab=read', icon: BookOpen },
-  { id: 'picks', label: 'Curated picks', short: 'Picks', to: '/explora?tab=picks', icon: Sparkles },
   { id: 'words', label: 'Word decks', short: 'Decks', to: '/explora?tab=words', icon: Layers },
 ];
 
@@ -37,7 +35,7 @@ export default function ExploraPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const requested = params.get('tab');
-  const tab: Tab = requested === 'read' || requested === 'picks' || requested === 'words' ? requested : 'all';
+  const tab: Tab = requested === 'read' || requested === 'words' ? requested : 'all';
   const [deckQuery, setDeckQuery] = useState('');
 
   return (
@@ -74,9 +72,8 @@ export default function ExploraPage() {
       ) : (
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.snappy}>
-            {tab === 'all' && <ExploreView lang={lang} picks={guide.picks} level={language.level} />}
+            {tab === 'all' && <ExploreAll lang={lang} picks={guide.picks} level={language.level} />}
             {tab === 'read' && <DiscoverTab lang={lang} />}
-            {tab === 'picks' && (guide.picks ? <PicksView lang={lang} picks={guide.picks} level={language.level} /> : <NoPicks lang={lang} />)}
             {tab === 'words' && (
               <StarterLibrary
                 lang={lang}

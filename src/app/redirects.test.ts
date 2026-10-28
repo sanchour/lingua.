@@ -15,8 +15,12 @@ describe('movedPath', () => {
     ['/grammatica/letters/ru-vowels/lesson', '?mode=practice', '/cursus/alphabets/ru-vowels/lesson?mode=practice'],
     ['/mundus', '', '/mentis'],
     ['/mundus', '?kind=games', '/mentis?kind=games'],
-    ['/mundus/explore', '?shelf=watch', '/mentis/explore?shelf=watch'],
-    ['/mundus/picks', '?kind=series', '/mentis/picks?kind=series'],
+    ['/mundus/explore', '?shelf=watch', '/explora?kind=series'],
+    ['/mundus/explore', '', '/explora'],
+    ['/mundus/picks', '?kind=series', '/explora?kind=series'],
+    ['/mentis/picks', '?kind=music', '/explora?kind=music'],
+    ['/mentis/explore', '?shelf=words', '/explora?tab=words'],
+    ['/mentis/explore', '?shelf=beyond', '/mentis/try'],
     ['/mundus/try', '', '/mentis/try'],
     ['/colloquium', '', '/mentis/sermo'],
     ['/colloquium', '?scene=cafe', '/mentis/sermo?scene=cafe'],
@@ -74,7 +78,6 @@ describe('rooms', () => {
     expect(roomKey('/cursus/grammatica')).toBe('/cursus');
     expect(roomKey('/cursus/alphabets/')).toBe('/cursus');
     expect(roomKey('/mentis/sermo')).toBe('/mentis');
-    expect(roomKey('/mentis/explore')).toBe('/mentis');
     expect(roomKey('/cursus/grammatica/es-ser-estar')).toBeNull();
     expect(roomKey('/mentis/diarium/e1')).toBeNull();
     expect(roomKey('/codex')).toBeNull();

@@ -19,10 +19,9 @@ import { useLayout } from '@/design/hooks/useLayout';
 import { spring } from '@/design/motion';
 import { cx } from '@/lib/cx';
 import { localDateKey } from '@/lib/format';
-import { ExploreView } from '@/features/mundus/ExploreView';
 import { pickKey, usePickLookups, useStreaming } from '@/features/mundus/hooks';
 import type { PickLookup } from '@/features/mundus/hooks';
-import { NoPicks, PickCard, PicksView } from '@/features/mundus/PicksView';
+import { PickCard } from '@/features/mundus/PicksView';
 import { ReplyBar } from '@/features/mundus/ReplyBar';
 import { TIP_ICONS, TipsView } from '@/features/mundus/TipsView';
 import { TitleSheet } from '@/features/visio/services/TitleSheet';
@@ -39,11 +38,9 @@ const GROUP_LANE: Record<PickGroup, Lane> = { series: 'watch', films: 'watch', y
 const tint = (hue: string, amount = 16): CSSProperties => ({ background: `color-mix(in oklab, ${hue} ${amount}%, var(--color-surface))` });
 const rise = (i: number) => ({ initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, transition: { ...spring.soft, delay: 0.05 * i } });
 
-type Tab = 'guide' | 'explore' | 'picks' | 'try';
+type Tab = 'guide' | 'try';
 const TABS: Array<{ id: Tab; label: string; short: string; to: string }> = [
   { id: 'guide', label: 'Your guide', short: 'Guide', to: '/mentis' },
-  { id: 'explore', label: 'Explore', short: 'Explore', to: '/mentis/explore' },
-  { id: 'picks', label: 'Every pick', short: 'Picks', to: '/mentis/picks' },
   { id: 'try', label: 'Things to try', short: 'Try', to: '/mentis/try' },
 ];
 
@@ -55,7 +52,7 @@ const TABS: Array<{ id: Tab; label: string; short: string; to: string }> = [
  */
 export default function MundusPage() {
   const sub = useParams()['*'];
-  const tab: Tab = sub === 'explore' || sub === 'picks' || sub === 'try' ? sub : 'guide';
+  const tab: Tab = sub === 'try' ? sub : 'guide';
   const { language } = useApp();
   const guide = useGuide();
   const streaming = useStreaming();
@@ -77,8 +74,6 @@ export default function MundusPage() {
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.snappy}>
             {tab === 'guide' && <GuideTab guide={guide} level={language.level} lookups={lookups} onOpen={open} />}
-            {tab === 'explore' && <ExploreView lang={guide.lang} picks={guide.picks} level={language.level} />}
-            {tab === 'picks' && (guide.picks ? <PicksView lang={guide.lang} picks={guide.picks} level={language.level} /> : <NoPicks lang={guide.lang} />)}
             {tab === 'try' && <TipsView lang={guide.lang} />}
           </motion.div>
         </AnimatePresence>
