@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.3-alpha.4** · 2026-10-28 · Handbook: pages drawn and Lingua 6 drawn, 200 pages
 - **0.5.3-alpha.3** · 2026-10-28 · Handbook: page by page for every route, Lingua 6 page by page, 190 pages
 - **0.5.3-alpha.2** · 2026-10-28 · Handbook: stores and installers (Windows, Mac, phones later), the release process, listing kit
 - **0.5.3-alpha.1** · 2026-10-28 · Handbook and roadmap: Lingua 5 release wording, AI gating corrected, 0.5.2 rows
