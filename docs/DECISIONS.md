@@ -1784,3 +1784,9 @@ Short records of choices that are not obvious from the code. Newest last.
 - The extension reads only the subtitle files a player loads, never the video, and asks an open Lingua tab for lookups and saves (`services/visio/bridge.ts`), so it holds no data and needs no account. Messages from the page are checked (`parseRequest`) before anything is done.
 - Not built: a Gemini transcript from a link (needs Max; the file and the extension cover it) and YouTube's own captions as a fallback.
 - Ratio's look-ups per 1,000 words count only sessions that recorded look-ups (`lookups` on `ActivitySession`, from alpha.28), so the rate is honest rather than thinned by older sessions.
+
+## 2026-10-28 — The handbook grows a design half, and guides for tablet and phone
+
+- The user asked for the handbook to be updated with all recent changes and for the design to be expanded: how it looks, feels, is laid out, its elements and where they go. It now has chapters on the desktop frame (216 px sidebar, a 1152 px column with 40 px sides), six layout patterns, every primitive with its real size, where each kind of thing goes (and the real keyboard shortcuts), how it feels (states, timings, small moments), dark and the fourteen reading papers (with measured contrast: faint ink on Parchment and Mocha is 4.2:1, just under 4.5), charts and numbers, the words on the screen, a recipe for a new screen, and a layout page for every room.
+- The user then asked for tablet (iPad) and phone (iOS and Android) sections. They are written as briefs for a later pass, stating what exists today (the shell switches at 768 px; controls already grow under a finger) and what should be done. **The rule to build desktop only is unchanged**: nothing was built or changed for the phone or tablet.
+- Fact-checked against the code where it states a number (sizes, radii, timings, shortcuts, the shell); the rest is marked as guidance.

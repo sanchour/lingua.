@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.29** · 2026-10-28 · Handbook: recent changes, design chapters, tablet and phone guides, a layout page per room
 - **0.5.2-alpha.28** · 2026-10-28 · Visio: YouTube, follow clock, the extension; Ratio: look-ups, typing, listening by kind, Log time (5.2-4, 5.2-9)
 - **0.5.2-alpha.27** · 2026-10-28 · Ratio: one language, goals in Tabula, estimated level (5.2-9)
 - **0.5.2-alpha.26** · 2026-10-28 · Grammatica: a guided path, full-width lessons (5.2-8)

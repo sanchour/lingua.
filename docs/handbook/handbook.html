@@ -185,6 +185,36 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
 #index-list div { break-inside: avoid; padding-left: 8pt; text-indent: -8pt; }
 #index-list .pg { color: var(--soft); font-style: italic; font-variant-numeric: lining-nums; }
 .toc.compact .part { margin: 7pt 0 2pt; }
+
+/* Wireframes: a screen drawn in boxes, with numbered parts. */
+.wf { display: grid; gap: 1.3mm; border: .7pt solid var(--line2); border-radius: 2mm; background: var(--raised); padding: 1.5mm; margin: 3pt 0 7pt; font: 600 5.2pt/1.15 var(--sans); color: var(--soft); }
+.wf.in { border: 0; background: transparent; padding: 0; margin: 0; }
+.wf .b { position: relative; display: flex; align-items: center; justify-content: center; text-align: center; min-height: 3.6mm; padding: .8mm 1.2mm; border: .5pt solid var(--line2); border-radius: 1.1mm; background: var(--paper); overflow: visible; }
+.wf .b.t { align-items: flex-start; justify-content: flex-start; text-align: left; }
+.wf .b.a { border-color: var(--accent); background: rgb(200 109 81 / .12); color: var(--accent-t); }
+.wf .b.s { border-color: var(--sage); background: rgb(107 142 120 / .14); color: var(--sage-t); }
+.wf .b.d { border-style: dashed; background: transparent; }
+.wf .b.k { background: var(--sunken); }
+.wf .b.k.col > .b { min-height: 2.7mm; padding: .3mm 1mm; }
+.wf .b.col { flex-direction: column; gap: 1mm; align-items: stretch; justify-content: flex-start; }
+.wf .b.row { gap: 1mm; }
+.wf .n, i.n { position: absolute; top: -1.5mm; left: -1.2mm; width: 3.4mm; height: 3.4mm; border-radius: 50%; background: var(--accent-t); color: #fff; font: 700 4.8pt/3.4mm var(--sans); text-align: center; font-style: normal; z-index: 2; }
+ol.key { margin: 0 0 5pt; padding: 0; list-style: none; counter-reset: k; }
+ol.key li { counter-increment: k; position: relative; padding-left: 11pt; margin-bottom: 2.4pt; }
+ol.key li::before { content: counter(k); position: absolute; left: 0; top: 1.5pt; width: 7.4pt; height: 7.4pt; border-radius: 50%; background: var(--accent-t); color: #fff; font: 700 5.2pt/7.4pt var(--sans); text-align: center; }
+ol.key.two { columns: 2; column-gap: 5mm; }
+ol.key.two li { break-inside: avoid; }
+.dodont { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin: 3pt 0 7pt; }
+.dodont > div { border-top: .8pt solid var(--sage); padding-top: 3pt; font-size: 8.2pt; line-height: 11.4pt; }
+.dodont > div.no { border-top-color: var(--accent); }
+.dodont .h { font: 700 5.6pt/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--sage-t); display: block; margin-bottom: 3pt; }
+.dodont .no .h { color: var(--accent-t); }
+.dodont ul { margin: 0; padding: 0; list-style: none; }
+.dodont li { padding-left: 8pt; position: relative; margin-bottom: 2pt; }
+.dodont li::before { content: ''; position: absolute; left: 0; top: 5pt; width: 3pt; height: 3pt; border-radius: 50%; background: var(--sage); }
+.dodont .no li::before { background: var(--accent); }
+.tight { font-size: 7.7pt; line-height: 10.4pt; }
+.px { font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -289,6 +319,17 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <li><span class="n" data-n-for="ch6"></span><a href="#ch6">Space, corners and light</a><span class="dots"></span><span class="pn" data-for="ch6"></span></li>
       <li><span class="n" data-n-for="ch7"></span><a href="#ch7">Motion</a><span class="dots"></span><span class="pn" data-for="ch7"></span></li>
       <li><span class="n" data-n-for="ch8"></span><a href="#ch8">Drawings, icons and flags</a><span class="dots"></span><span class="pn" data-for="ch8"></span></li>
+      <li><span class="n" data-n-for="d-frame"></span><a href="#d-frame">The desktop frame</a><span class="dots"></span><span class="pn" data-for="d-frame"></span></li>
+      <li><span class="n" data-n-for="d-patterns"></span><a href="#d-patterns">Layout patterns</a><span class="dots"></span><span class="pn" data-for="d-patterns"></span></li>
+      <li><span class="n" data-n-for="d-elements"></span><a href="#d-elements">Elements, one by one</a><span class="dots"></span><span class="pn" data-for="d-elements"></span></li>
+      <li><span class="n" data-n-for="d-where"></span><a href="#d-where">Where things go</a><span class="dots"></span><span class="pn" data-for="d-where"></span></li>
+      <li><span class="n" data-n-for="d-feel"></span><a href="#d-feel">How it feels</a><span class="dots"></span><span class="pn" data-for="d-feel"></span></li>
+      <li><span class="n" data-n-for="d-dark"></span><a href="#d-dark">Dark, and the papers</a><span class="dots"></span><span class="pn" data-for="d-dark"></span></li>
+      <li><span class="n" data-n-for="d-charts"></span><a href="#d-charts">Charts and numbers</a><span class="dots"></span><span class="pn" data-for="d-charts"></span></li>
+      <li><span class="n" data-n-for="d-words"></span><a href="#d-words">Words on the screen</a><span class="dots"></span><span class="pn" data-for="d-words"></span></li>
+      <li><span class="n" data-n-for="d-recipe"></span><a href="#d-recipe">Designing a new screen</a><span class="dots"></span><span class="pn" data-for="d-recipe"></span></li>
+      <li><span class="n" data-n-for="d-tablet"></span><a href="#d-tablet">Tablet: iPad and Android</a><span class="dots"></span><span class="pn" data-for="d-tablet"></span></li>
+      <li><span class="n" data-n-for="d-phone"></span><a href="#d-phone">Phone: iOS and Android</a><span class="dots"></span><span class="pn" data-for="d-phone"></span></li>
     </ul>
   </div>
 </section>
@@ -489,7 +530,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     <span class="kicker">Chapter <span class="chn"></span></span>
     <h2 id="p-rooms" data-ch>What Lingua does today</h2>
     <div class="rule"></div>
-    <div class="row"><p class="lead">Room by room, what a learner can do in Lingua now (version 0.5.2, October 2026). The details are in FEATURES.md; this is the shelf, not the books.</p>
+    <div class="row"><p class="lead">Room by room, what a learner can do in Lingua now (version 0.5.2-alpha.29, October 2026). The details are in FEATURES.md; this is the shelf, not the books.</p>
       <aside><span class="k">Source</span><code>docs/FEATURES.md</code>, kept up to date with every step.</aside></div>
     <table class="wide" style="font-size:7.9pt;line-height:10.8pt">
       <tr><th style="width:22%">Room</th><th>What is there</th></tr>
@@ -506,9 +547,9 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   <div class="sheet">
     <table class="wide" style="font-size:7.9pt;line-height:10.8pt">
       <tr><th style="width:22%">Room</th><th>What is there</th></tr>
-      <tr><td class="k">Sonus et Visio</td><td>The library (songs, podcasts, episodes, audiobooks, stations, your files, films and videos); LibriVox and free courses; radio in the language with a tuner and live text; Sonus+ for music with timed lyrics, song lessons and podcasts; Visio for films and series with two interactive subtitle lines; Commute mode.</td></tr>
+      <tr><td class="k">Sonus et Visio</td><td>The library (songs, podcasts, episodes, audiobooks, stations, your files, films and videos); LibriVox and free courses; radio in the language with a tuner and live text; Sonus+ for music with timed lyrics, song lessons and podcasts; Visio for films, series and YouTube links with two interactive subtitle lines, a follow clock for a show playing elsewhere, and a browser extension for the services’ subtitles; Commute mode.</td></tr>
       <tr><td class="k">Mentis</td><td>Mundus, the guide: a note on your week, three next steps that answer back (something shorter, I’d rather listen, why this, not today; with Max, your own words), and Things to try, small cards with a time chip, a tick that stamps them, filters, and Deal me one. Sermo: about 80 scenes in groups, each ending in a prompt for your own AI app (ChatGPT, Claude, Gemini, Copilot, Grok); the chat inside Lingua is gone. Diarium, the journal, with writing tools, a calendar, search, checking by AI with Max, a word diff and corrections to cards.</td></tr>
-      <tr><td class="k">Ratio</td><td>Statistics for words, reading, listening, cards, writing, time and habit; Tabula, the table of every language you speak.</td></tr>
+      <tr><td class="k">Ratio</td><td>Overview for the language being learned: an estimated level, words, reading, listening, cards, writing, typing, grammar and a year of habit; Tabula, every language you speak, with goals; Log time.</td></tr>
       <tr><td class="k">Settings</td><td>Eight groups with search: reading, cards, listening, languages, look and feel, AI and translation, your data, about.</td></tr>
     </table>
     <h3>Across the whole app</h3>
@@ -516,10 +557,30 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <li>Works offline as an installed desktop app, and updates itself at a quiet moment.</li>
       <li>Your devices sync directly, device to device, with no account and no server; backups as files.</li>
       <li>Natural voices: real speakers’ recordings, Piper voices on the device, Gemini with a key.</li>
-      <li>Paper and Nocturne, twelve palettes, six reading fonts, and a touch of each core language in the design.</li>
+      <li>Paper and Nocturne, twelve palettes, six reading fonts, a touch of each language.</li>
       <li>Keyboard first: Alt 1–8 for the rooms, letters for words, a shortcut sheet.</li>
     </ul>
-    <div class="row"><p class="muted small">What it doesn’t do yet: Grammatica’s guided path, Ratio’s compact rework and the rest of Visio (Lingua 5.2), then Lingua 6’s features and Lingua 7’s design pass.</p><aside></aside></div>
+    <div class="row"><p class="muted small">Not yet: the 0.5.2 check, then Lingua 6’s features and Lingua 7’s design pass.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="What Lingua does today">
+  <div class="sheet">
+    <h3>What changed lately</h3>
+    <p>Since the last edition of this book (versions 0.5.2-alpha.17 to .29, late October 2026). Each line is a step of Lingua 5.2; the details are in <code>docs/FEATURES.md</code>.</p>
+    <table class="wide spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th style="width:15%">Version</th><th style="width:18%">Room</th><th>What a learner now has</th></tr>
+      <tr><td class="px">alpha.17</td><td class="k">The map</td><td>Home, Cursus, Explora and Bibliotheca are the main rooms; Codex, Thesaurus, Sonus, Visio and Mentis sit under Tools; Ratio and Settings at the bottom.</td></tr>
+      <tr><td class="px">alpha.18</td><td class="k">Diarium</td><td>A real editor (headings, lists, a toolbar over a selection), “Cher journal” in the language, search and sort, rename and delete with Undo, a calendar of the days written.</td></tr>
+      <tr><td class="px">alpha.21</td><td class="k">Sermo</td><td>Three screens that build a prompt and open the learner’s own AI (ChatGPT, Claude, Gemini, Copilot, Grok) with it; about eighty scenes. The chat inside Lingua is gone; old chats stay and open Sermo.</td></tr>
+      <tr><td class="px">alpha.22–.24</td><td class="k">Mundus</td><td>Next steps that answer back (shorter, I’d rather listen, why this, not today); one Explore; Things to try as small cards with a time chip, a stamp and Deal me one.</td></tr>
+      <tr><td class="px">alpha.25</td><td class="k">This book</td><td>Money, what Lingua could earn, and how to fund it.</td></tr>
+      <tr><td class="px">alpha.26</td><td class="k">Grammatica</td><td>A guided path at the learner’s level with the next step and its reason; a ladder of levels; lessons that use the width of a desktop window.</td></tr>
+      <tr><td class="px">alpha.27</td><td class="k">Ratio</td><td>One language at a time; Iter retired and its goals moved into Tabula with “on track” and “behind”; an estimated level said as an estimate.</td></tr>
+      <tr><td class="px">alpha.28</td><td class="k">Ratio, Visio</td><td>Look-ups per 1,000 words, listening by kind, a typing card, Log time and Add a moment; YouTube in Visio, the follow clock, and the Lingua extension.</td></tr>
+      <tr><td class="px">alpha.29</td><td class="k">This book</td><td>The design chapters: the desktop frame, layout patterns, elements, where things go, how it feels, dark, charts, words, a recipe; tablet and phone; a layout page for every room.</td></tr>
+    </table>
+    <div class="row"><p class="small muted">Next: the check of all of Lingua 5 (every point, at three desktop sizes, light and dark, as Free, Lingua+ and Max), which makes version 0.5.2.</p><aside><span class="k">Source</span><code>docs/<wbr>ROADMAP.md</code> › Finishing Lingua 5.</aside></div>
   </div>
 </section>
 
@@ -621,7 +682,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
         <text x="122" y="66">then its check</text><text x="172" y="66">28 steps, next</text><text x="222" y="66">the first start</text><text x="272" y="66">public release</text>
       </g>
     </svg>
-    <div class="row"><p><span class="lede-sc">Lingua 5.2</span> has Radio and listening, Diarium, Sermo and Mundus done. Still open: Grammatica’s guided path, Ratio, the rest of Visio, then its check, which makes version 0.5.2.</p>
+    <div class="row"><p><span class="lede-sc">Lingua 5.2</span> has every step built: Radio and listening, Diarium, Sermo, Mundus, Grammatica’s guided path, Ratio and Visio. What is left is its check, which makes version 0.5.2.</p>
       <aside><span class="k">Queue</span><code>docs/HANDOVER.md</code>, steps 17, 18, 22 and 21.</aside></div>
     <div class="row"><p><span class="lede-sc">Lingua 6 · Features</span> comes next (your call, 26 October): it adds what the Lingyu catalogue has and Lingua doesn’t. It is staged so the parts that can run side by side go to different AIs (Claude, ChatGPT, Gemini), after step 6-0 writes the shared types, tables and APIs as typechecked code. The next chapter is its summary.</p>
       <aside><span class="k">Plan</span><code>docs/LINGUA-6-PLAN.md</code> and the audit <code>LINGUA-6-FEATURES.md</code>; step 23. Versions 0.6.x.</aside></div>
@@ -867,6 +928,826 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   </div>
 </section>
 
+<!-- D1 · The desktop frame -->
+<section class="page" data-rh="The desktop frame">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-frame" data-ch>The desktop frame</h2>
+    <div class="rule"></div>
+    <p class="lead">Lingua is a desktop app. Every screen is drawn for a window 1280 to 1440 pixels wide, with the sidebar always at its left, and has to be just as good on a 1366 × 768 laptop.</p>
+    <div class="wf wide" style="grid-template-columns:17% 1fr;height:47mm">
+      <div class="b col k" style="gap:.9mm">
+        <i class="n">1</i>
+        <span class="b">Lingua  ◧</span>
+        <span class="b s"><i class="n">2</i>Français · A0</span>
+        <span class="b a">Home</span><span class="b">Cursus</span><span class="b">Explora</span><span class="b">Bibliotheca</span>
+        <span class="b d">Tools ▾</span><span class="b">Codex · Thesaurus</span><span class="b">Sonus · Visio · Mentis</span>
+        <span style="flex:1"></span>
+        <span class="b">Ratio</span><span class="b">Settings</span>
+      </div>
+      <div class="b col t d" style="gap:1.2mm;padding:1.6mm">
+        <div class="wf in" style="grid-template-columns:1fr auto"><span class="b t" style="border:0;background:transparent;font:600 9pt/1 var(--serif);color:var(--ink)"><i class="n">3</i>Room title</span><span class="b a"><i class="n">4</i>The one thing</span></div>
+        <span class="b t"><i class="n">5</i>Room tabs: Overview · Tabula</span>
+        <div class="wf in" style="grid-template-columns:1fr 27%;flex:1">
+          <span class="b" style="min-height:30mm"><i class="n">6</i>The work: biggest, calmest</span>
+          <span class="b d"><i class="n">7</i>Beside it</span>
+        </div>
+      </div>
+    </div>
+    <ol class="key two tight">
+      <li><b>Sidebar,</b> 216 px, always on screen. It folds away with the button at its top.</li>
+      <li><b>The language chip:</b> the language and its level; the one way to switch.</li>
+      <li><b>Room title,</b> in the language’s display face, 42 px.</li>
+      <li><b>The one thing,</b> top right, in the accent fill.</li>
+      <li><b>Room tabs,</b> a segmented control under the title.</li>
+      <li><b>The work,</b> the widest column.</li>
+      <li><b>A panel beside it,</b> 280 to 360 px.</li>
+    </ol>
+    <table class="spec">
+      <tr><th>Window</th><th>Content column</th><th>What to do</th></tr>
+      <tr><td class="px">1280</td><td class="px">about 970 inside the padding</td><td>Two columns still fit; three become two.</td></tr>
+      <tr><td class="px">1366 × 768</td><td class="px">about 1055</td><td>The laptop: the page must fit without a scroll bar, or scroll in one place.</td></tr>
+      <tr><td class="px">1440 and up</td><td class="px">1072 (the cap)</td><td>The column stops growing; the sides stay empty and quiet.</td></tr>
+    </table>
+    <div class="row"><p class="small muted">The column is <code>max-w-6xl</code> (1152 px) with 40 px at each side, 24 above and 32 below; the sidebar is 216 px. The scroll bar takes about 15 px, which is why the numbers aren’t round.</p><aside><span class="k">Where</span><code>src/<wbr>app/<wbr>shells/<wbr>desktop</code>: <code>DesktopShell.tsx</code>, <code>Sidebar.tsx</code>.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="The desktop frame">
+  <div class="sheet">
+    <h3>Space comes in fours</h3>
+    <div class="row"><p>Everything is a multiple of 4 px. The few distances that do the work are these, and a new screen should use no others.</p>
+      <aside><span class="k">Tailwind</span><code>gap-3</code> is 12, <code>gap-5</code> 20, <code>p-6</code> 24.</aside></div>
+    <table class="spec">
+      <tr><th style="width:15%">Distance</th><th>Where it is</th></tr>
+      <tr><td class="px">4 · 8 · 12</td><td>Inside a control, and between small things in a row: icon and label, buttons, stat tiles.</td></tr>
+      <tr><td class="px">16</td><td>Inside a card’s small parts; between a label and its field.</td></tr>
+      <tr><td class="px">20</td><td>Between panels, both ways. One number, so a grid of panels looks like one sheet.</td></tr>
+      <tr><td class="px">24</td><td>Inside a panel (its padding), and between a title and what follows.</td></tr>
+      <tr><td class="px">32 · 40</td><td>Between a page’s big parts; the page’s own side padding is 40.</td></tr>
+    </table>
+    <h3>Columns</h3>
+    <ul class="plain">
+      <li><b>Two panels side by side</b> from 1024 px up (<code>lg:grid-cols-2</code>), ending on the same line. If one is much taller, move something across, not stretch the short one.</li>
+      <li><b>Four small tiles in a row</b> for the numbers that open a page; <b>three</b> when each has a chart.</li>
+            <li><b>A rail</b> beside the work: filters, the outline, the people, 240 to 320 px wide, sticky under the top, never wider than a third.</li>
+    </ul>
+    <h3>The fold</h3>
+    <p>A laptop shows about 560 px below the title: put what a person came to do inside that, and nothing that matters below two screens.</p>
+    <div class="dodont">
+      <div><span class="h">Do</span><ul><li>Let the cap hold: a wide window is calm, not a stretched page.</li><li>Fill height with the work: a list scrolls, a stage stays.</li></ul></div>
+      <div class="no"><span class="h">Don’t</span><ul><li>Stretch a card to the full width of a 1920 screen.</li><li>Make text smaller to make it fit: take something away.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- D2 · Layout patterns -->
+<section class="page" data-rh="Layout patterns">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-patterns" data-ch>Layout patterns</h2>
+    <div class="rule"></div>
+    <p class="lead">Almost every screen is one of six shapes. Pick the shape first; the details follow.</p>
+    <h3><span class="num">A</span>The dashboard</h3>
+    <div class="wf wide" style="grid-template-columns:repeat(4,1fr);grid-auto-rows:auto">
+      <span class="b s">tile</span><span class="b s">tile</span><span class="b s">tile</span><span class="b s">tile</span>
+      <span class="b" style="grid-column:span 4;min-height:9mm">the long panel: a chart over a year</span>
+      <span class="b" style="grid-column:span 2;min-height:12mm">panel</span><span class="b" style="grid-column:span 2;min-height:12mm">panel</span>
+    </div>
+    <p class="small">Ratio, Home. Tiles first (the answer in four numbers), then panels, each with a title in capitals, an icon and one action at its right. Used when the page is for looking.</p>
+    <h3><span class="num">B</span>The list with a rail</h3>
+    <div class="wf wide" style="grid-template-columns:22% 1fr;height:17mm">
+      <span class="b col t k">filters<br>sort<br>tags</span>
+      <div class="wf in" style="grid-template-columns:repeat(4,1fr)"><span class="b">card</span><span class="b">card</span><span class="b">card</span><span class="b">card</span><span class="b">card</span><span class="b">card</span><span class="b">card</span><span class="b">card</span></div>
+    </div>
+    <p class="small">Thesaurus, Bibliotheca, Explora. The search is at the top of the list, not the rail. Used when the page is for choosing.</p>
+    <h3><span class="num">C</span>The stage with a side panel</h3>
+    <div class="wf wide" style="grid-template-columns:1fr 27%;height:19mm">
+      <span class="b a" style="flex-direction:column">the thing being done, large<br><span style="font-weight:500">a bar for what to do next, at its foot</span></span>
+      <span class="b d">outline · lines · notes</span>
+    </div>
+    <p class="small">Lessons, Ludus, the player, Grammatica. The stage uses the width; the foot bar holds Check and Continue. Used when the page is for doing.</p>
+  </div>
+</section>
+
+<section class="page" data-rh="Layout patterns">
+  <div class="sheet">
+    <h3><span class="num">D</span>The reader</h3>
+    <div class="wf wide" style="grid-template-columns:1fr 38% 1fr;height:14mm">
+      <span class="b d">outline, folded</span><span class="b t">one column of text, 640 to 720 px (60 to 75 characters), the language at 19 px</span><span class="b d">word panel, on a tap</span>
+    </div>
+    <p class="small">Codex. The text is centred with room either side; everything else is a tap or a key away. Used when the page is for reading.</p>
+    <h3><span class="num">E</span>The table</h3>
+    <div class="wf wide" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr 2fr">
+      <span class="b k">Language</span><span class="b k">Level</span><span class="b k">Hours</span><span class="b k">Words</span><span class="b k">Goal</span><span class="b k">Notes</span>
+      <span class="b t">Français</span><span class="b">B1</span><span class="b">120</span><span class="b">2,400</span><span class="b s">on track</span><span class="b t">…</span>
+      <span class="b t">Deutsch</span><span class="b">A2</span><span class="b">40</span><span class="b">900</span><span class="b a">behind</span><span class="b t">…</span>
+    </div>
+    <p class="small">Tabula, the inbox, the dictionary list. Rows 48 to 56 px high, the numbers right-aligned in tabular figures, the row’s actions at its right and on right-click. Used when the page is a record.</p>
+    <h3><span class="num">F</span>The drawer</h3>
+    <div class="wf wide" style="grid-template-columns:1fr 24%;height:15mm">
+      <span class="b d" style="background:var(--sunken);opacity:.7">the page, dimmed, still there</span>
+      <span class="b col t"><b>Title</b><span style="font-weight:500">label · field<br>label · field</span><span class="b a" style="margin-top:auto">Save</span></span>
+    </div>
+    <p class="small">A form that belongs to a place: a goal, log time. It slides in from the right, 440 px wide, 12 px off the edge, its button at the foot. A dialog is only for a question that must be answered.</p>
+    <h3>Choosing</h3>
+    <table class="spec">
+      <tr><th style="width:36%">The page is for…</th><th>Use</th><th>Rooms that do</th></tr>
+      <tr><td>Looking back</td><td>A · the dashboard</td><td>Ratio, Home</td></tr>
+      <tr><td>Choosing something</td><td>B · list and rail</td><td>Thesaurus, Explora</td></tr>
+      <tr><td>Doing something now</td><td>C · the stage</td><td>Cursus, Ludus, Visio</td></tr>
+      <tr><td>Reading</td><td>D · the reader</td><td>Codex, Diarium</td></tr>
+      <tr><td>Keeping a record</td><td>E · the table</td><td>Tabula, Inbox</td></tr>
+      <tr><td>Adding or changing one thing</td><td>F · the drawer</td><td>Goals, Log time</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- D3 · Elements, one by one -->
+<section class="page" data-rh="Elements, one by one">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-elements" data-ch>Elements, one by one</h2>
+    <div class="rule"></div>
+    <p class="lead">Every control in Lingua is one of a dozen primitives. Use them as they are: a screen made of them already looks and feels like Lingua.</p>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.6pt">
+      <tr><th style="width:15%">Element</th><th style="width:27%">Size and shape</th><th>Where it goes, and when</th></tr>
+      <tr><td class="k">Button · accent</td><td>Terracotta fill, ivory text. 32, 40 or 48 px high (small, medium, large); corners 8, 12, 16.</td><td><b>The one thing</b> on a page: top right of the room, or at the foot of a stage. One per screen.</td></tr>
+      <tr><td class="k">Button · primary</td><td>Espresso fill (ivory in Nocturne), a small shadow.</td><td>The confirming button of a drawer or dialog, full width at its foot. Also the main button of a card.</td></tr>
+      <tr><td class="k">Button · secondary</td><td>Raised paper, a hairline, darker on hover.</td><td>Second to a primary: “Skip”, “Later”, “Choose another”. Never the only button.</td></tr>
+      <tr><td class="k">Button · ghost</td><td>No box; soft ink, a parchment wash on hover; usually an icon first.</td><td>Toolbars and the quiet side of a header: Goal, Log time, Image. Cancel is a ghost.</td></tr>
+      <tr><td class="k">Button · danger</td><td>A terracotta outline, no fill.</td><td>Delete, disconnect, reset. Never first, never the default focus, and with Undo or a confirmation that names what goes.</td></tr>
+      <tr><td class="k">Icon button</td><td>32, 40 or 44 px square; the icon 15 to 18 px; a tooltip always.</td><td>Close, more (⋯), fold, settings of a card. Four or more in a row means some belong in a menu.</td></tr>
+      <tr><td class="k">Search</td><td>44 px high, corners 12, 15 px text; “/” focuses it.</td><td>The top of a list or a room; never in a rail. It searches the page it is on, and says so in its hint.</td></tr>
+      <tr><td class="k">Popover</td><td>Corners 16, the middle shadow.</td><td>A small choice that belongs to one control: a sort, a menu, a few options. It closes on a click away or Esc.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Elements, one by one">
+  <div class="sheet">
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.6pt">
+      <tr><th style="width:15%">Element</th><th style="width:27%">Size and shape</th><th>Where it goes, and when</th></tr>
+      <tr><td class="k">Select</td><td>44 px, corners 12, a chevron.</td><td>A long list of one choice (languages, voices). Fewer than six options: a segmented control.</td></tr>
+      <tr><td class="k">Segmented</td><td>40 px (36 small), a pill that slides inside a rounded track.</td><td>Two to five views of one thing: Overview · Tabula, Voice · Text. Never for moving between rooms.</td></tr>
+      <tr><td class="k">Switch</td><td>50 px wide, 200 ms slide, label to its left.</td><td>One setting that applies at once. If it needs a Save, it isn’t a switch.</td></tr>
+      <tr><td class="k">Slider</td><td>A thin track, a round handle, the value shown beside it.</td><td>Speed, volume, size; with the number, and a reset where there’s a default.</td></tr>
+      <tr><td class="k">Card</td><td>Corners 24, a hairline, Parchment on Cream; Raised when it holds a choice.</td><td>One thing you may open: a book, a deck, a song. A cover or an icon at the top, a title, one line, one number. The whole card is the button.</td></tr>
+      <tr><td class="k">Panel</td><td>Corners 24, 24 px inside, a title in small capitals with an icon.</td><td>A group of facts on a dashboard. Its one action sits at the right of its title, as a quiet link with an arrow.</td></tr>
+      <tr><td class="k">Chip</td><td>A pill, 12.5 px bold; Parchment or a wash of its colour.</td><td>A tag, a count, a filter. Sage for done or good, terracotta for needs attention, grey for the rest.</td></tr>
+      <tr><td class="k">Tooltip</td><td>Corners 8, 12 px text; 120 ms in, 80 ms out.</td><td>Names an icon. Never the only place a fact lives, and never on text that is already readable.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Elements, one by one">
+  <div class="sheet">
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.6pt">
+      <tr><th style="width:15%">Element</th><th style="width:27%">Size and shape</th><th>Where it goes, and when</th></tr>
+      <tr><td class="k">Drawer</td><td>440 px (or the screen less 24), 12 px off the edge, corners 24, the top shadow.</td><td>A form or details that belong to what’s behind it. Its title, a line of help, the fields, one primary button at the foot.</td></tr>
+      <tr><td class="k">Dialog</td><td>Up to 448 px, corners 24, centred, the page dimmed.</td><td>A question that must be answered before going on, with two buttons at the most. Never for information.</td></tr>
+      <tr><td class="k">Toast</td><td>Up to 448 px, bottom centre, 24 px up; in and out in 140 ms.</td><td>Says what just happened: “Logged 45 minutes of French.” With Undo if it can be undone. It goes by itself.</td></tr>
+      <tr><td class="k">Empty state</td><td>Up to 384 px wide, centred, a drawing, corners 16.</td><td>A title, one kind line, one button. See “Words on the screen”.</td></tr>
+      <tr><td class="k">Kbd</td><td>20 px high, 11 px, a hairline and a tiny shadow.</td><td>Beside the thing a key does: “Search /”. Alt on Windows, ⌥ on a Mac, as the user chose.</td></tr>
+    </table>
+    <h3>Building a card, from top to bottom</h3>
+    <ol class="key">
+      <li><b>The picture or cover,</b> a fixed ratio so a row lines up; a drawn icon where there is none.</li>
+      <li><b>A small label in capitals:</b> what it is (“Reading”, “Deck”), not what it says.</li>
+      <li><b>The title,</b> in the book’s voice, two lines at most, then cut.</li>
+      <li><b>One line</b> of why or how much, and <b>one number</b> where it helps: 12 left, 40 min.</li>
+    </ol>
+    <div class="dodont">
+      <div><span class="h">Do</span><ul><li>Make a whole card clickable, with a slight lift and a deeper line on hover.</li><li>Keep one primary per card.</li></ul></div>
+      <div class="no"><span class="h">Don’t</span><ul><li>Put a button inside a clickable card unless it does something else.</li><li>Stack more than three small details on a card.</li></ul></div>
+    </div>
+    <div class="row"><p class="small muted">Everything is in <code>src/design/primitives</code>. If you need a thing that isn’t there, add it there for everyone, not in a feature’s folder.</p><aside><span class="k">Press</span>Buttons shrink to 97% while pressed, over 150 ms.</aside></div>
+  </div>
+</section>
+
+<!-- D4 · Where things go -->
+<section class="page" data-rh="Where things go">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-where" data-ch>Where things go</h2>
+    <div class="rule"></div>
+    <p class="lead">People look for a thing where they found it last time. Put each kind of thing in its one place, in every room.</p>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:22%">The thing</th><th style="width:30%">Where</th><th>Why, and the rule</th></tr>
+      <tr><td class="k">The room’s one thing</td><td>Top right of the header, in the accent fill</td><td>Eyes end the title’s line at the right. One per page; if there are two, one is a ghost.</td></tr>
+      <tr><td class="k">Room tabs</td><td>Under the title, at the left</td><td>Same place in every room. Five at most; more means a second row of a different kind, or a menu.</td></tr>
+      <tr><td class="k">Search</td><td>The top of the list, full width of it; or the header’s right in a room with tabs</td><td>It is the first thing tried on a long list. “/” works everywhere.</td></tr>
+      <tr><td class="k">Filters and sort</td><td>A rail at the left (wide), or a row of chips under the search</td><td>They change what you see, so they sit beside it, not in a menu.</td></tr>
+      <tr><td class="k">A list’s actions</td><td>The right end of each row, ⋯; the same on right-click</td><td>Hover shows them on a desktop; they are never the only way.</td></tr>
+      <tr><td class="k">Back</td><td>Top left, above the title, a small link with an arrow that says where to</td><td>“← Thesaurus”, not “Back”. It goes to the page you came from.</td></tr>
+      <tr><td class="k">Progress</td><td>A thin bar at the top of a stage; a number in the foot bar</td><td>It tells where you are, not how you are doing; it never blinks.</td></tr>
+      <tr><td class="k">Check · Continue</td><td>The stage’s foot bar, at the right; Skip at the left</td><td>The same two spots for every exercise, so the hand learns them.</td></tr>
+      <tr><td class="k">Settings and help of a thing</td><td>A ⋯ or a gear, or a small Ask button, at the thing’s corner</td><td>Not in a distant Settings page; Settings holds the app’s own.</td></tr>
+      <tr><td class="k">Messages</td><td>A toast at the bottom centre; an inline line where the fault is</td><td>The place the eye already is, or the place it must go to fix it.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Where things go">
+  <div class="sheet">
+    <h3>Keys, menus and the right-click</h3>
+    <div class="row"><p>On a desktop the keyboard is the fast road; the mouse is the road for finding out. Everything that has a key shows it where the thing is.</p>
+      <aside><span class="k">Where</span><code>ShortcutsDialog.tsx</code> holds the lists; <code>Kbd</code> shows a key.</aside></div>
+    <table class="spec">
+      <tr><th style="width:30%">Key</th><th>Does</th></tr>
+      <tr><td class="px">Alt 1 … 8 (⌥ on a Mac)</td><td>The rooms, in the sidebar’s order.</td></tr>
+      <tr><td class="px">[</td><td>Collapse or expand the sidebar.</td></tr>
+      <tr><td class="px">?</td><td>The shortcut sheet, grouped: Navigate, Reading, Studying, Listening, Watching.</td></tr>
+      <tr><td class="px">/</td><td>Search the books or the decks on the page.</td></tr>
+      <tr><td class="px">Esc</td><td>Close a drawer or a dialog.</td></tr>
+      <tr><td class="px">← →</td><td>Previous or next page; in a player, skip back or forward.</td></tr>
+      <tr><td class="px">Space</td><td>Turn the card, then Good; play or pause.</td></tr>
+      <tr><td class="px">1 … 4 · Z · E</td><td>Again, Hard, Good, Easy; undo the answer; edit the card.</td></tr>
+      <tr><td class="px">K · L · X · D</td><td>On a hovered word: known, learning, reset, details. Right-click opens the details too.</td></tr>
+      <tr><td class="px">Enter</td><td>In Ludus, check, then continue.</td></tr>
+    </table>
+    <h3>Menus and right-click</h3>
+    <ul class="plain">
+      <li><b>A row’s menu</b> is the same list whether you reach it by ⋯ or by right-click, in the same order: the most used first, danger last, after a line.</li>
+      <li><b>Drag</b> reorders what has an order (decks, goals, the table’s rows), with a grip that shows on hover and the row lifting by its shadow.</li>
+      <li><b>Double-click</b> in the reader marks a word as being learned; renaming in place saves with Enter and leaves with Esc.</li>
+      <li><b>Hover</b> may add (a ⋯, a preview, a tooltip) but never carries the only way to do a thing.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="page" data-rh="Where things go">
+  <div class="sheet">
+    <div class="row"><p class="lead" style="font-size:9.6pt;line-height:13.6pt">Left is for where you are and what you can go to. Right is for what you can do. Under is for what comes next.</p><aside><span class="k">Rule of three</span>Title, the work, one action.</aside></div>
+    <h3>The order on a page</h3>
+    <p>Read top to bottom, a page should answer in this order: <b>where am I</b> (the room, the title), <b>what is this</b> (the one line), <b>what can I do now</b> (the work and the one thing), <b>what else</b> (beside it), and last, <b>what is rarely needed</b> (More, settings, counts). If a screen answers them in a different order, it is probably crowded.</p>
+    <h3>Worked examples: where does it go?</h3>
+    <table class="spec" style="font-size:7.6pt;line-height:10.2pt">
+      <tr><th style="width:34%">A new thing</th><th>Where, and why</th></tr>
+      <tr><td>“Export this deck”</td><td>In the deck’s ⋯ menu, after the line. It is used rarely and belongs to one deck, so not in the toolbar.</td></tr>
+      <tr><td>A warning that the AI will use a key</td><td>One line under the AI button, in soft ink. Not a dialog: it is information, not a question.</td></tr>
+      <tr><td>A new filter for Explora</td><td>In the rail with the others, in the order of how often it is used. Never above the search.</td></tr>
+      <tr><td>The progress of a download</td><td>A thin bar inside the thing being downloaded; a chip in the header if you leave the page.</td></tr>
+      <tr><td>“Add a moment” in Ratio</td><td>A ghost button at the top right with “Log time”: two small, equal, quiet actions; Ratio is for looking.</td></tr>
+      <tr><td>A tip about a feature</td><td>Where the feature is, once, dismissible, in Mundus’s voice; never on every visit.</td></tr>
+    </table>
+    <div class="dodont">
+      <div><span class="h">Do</span><ul><li>Put the same action in the same place across rooms.</li><li>Show a key where a thing is, in its tooltip.</li><li>Keep destructive actions at the far end, and quiet.</li></ul></div>
+      <div class="no"><span class="h">Don’t</span><ul><li>Hide the only way to do something in a hover or a right-click.</li><li>Move a button because the page below it changed.</li><li>Put “Delete” next to “Save”.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- D5 · How it feels -->
+<section class="page" data-rh="How it feels">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-feel" data-ch>How it feels</h2>
+    <div class="rule"></div>
+    <p class="lead">Feel is a list of small promises kept the same way everywhere: what hovering does, what pressing does, how long things take, what happens when it goes wrong.</p>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:17%">State</th><th>What it looks like</th><th style="width:24%">Time</th></tr>
+      <tr><td class="k">Rest</td><td>Lines, not shadows. Text in ink; the small lines in soft ink.</td><td>—</td></tr>
+      <tr><td class="k">Hover</td><td>The fill goes one step deeper (Parchment on Cream), the line one step darker; a card lifts a little. The cursor is a pointer only on things that act.</td><td class="px">150 ms ease-out</td></tr>
+      <tr><td class="k">Press</td><td>A control shrinks to 97% (a tab-bar item to 94%) and the fill deepens.</td><td class="px">150 ms</td></tr>
+      <tr><td class="k">Focus</td><td>A 2 px terracotta ring with a 2 px gap, on every control, for the keyboard only. Never removed.</td><td>at once</td></tr>
+      <tr><td class="k">Selected</td><td>A wash of the accent or sage behind it and the text in its dark; the segmented pill slides to it. Never colour alone: also a tick, a weight or a line.</td><td class="px">snappy spring</td></tr>
+      <tr><td class="k">Disabled</td><td>45% opacity and no pointer events; its reason in a tooltip if it isn’t obvious.</td><td>—</td></tr>
+      <tr><td class="k">Loading</td><td>The shape of the thing, softly pulsing (a skeleton), for anything over about 200 ms; a spinner only inside a button that was pressed.</td><td class="px">after 200 ms</td></tr>
+      <tr><td class="k">Arriving</td><td>A page rises 8 px and fades in; a drawer slides in; a toast rises 8 px.</td><td class="px">soft · sheet springs</td></tr>
+      <tr><td class="k">Done</td><td>A small change where it happened (a tick, a number counting up), and a toast only if it is somewhere else.</td><td class="px">under 1 s</td></tr>
+      <tr><td class="k">Wrong</td><td>A line next to the thing, in terracotta text with a plain sentence. The page never shakes, and never says “Error”.</td><td>—</td></tr>
+    </table>
+    <div class="row"><p class="small">The springs are in <code>src/design/motion.ts</code>; only transform and opacity move. Reduced motion removes the movement entirely and keeps the fades.</p><aside><span class="k">Sound</span>Off unless the learner asked for it; a click for a right answer is the most it does.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="How it feels">
+  <div class="sheet">
+    <h3>Speed is part of the feel</h3>
+    <table class="spec">
+      <tr><th style="width:36%">What</th><th>Should take</th></tr>
+      <tr><td>A tap or a click answering</td><td class="px">under 100 ms, always visibly</td></tr>
+      <tr><td>A page showing something</td><td class="px">its frame at once; its content under 300 ms from the device’s own data</td></tr>
+      <tr><td>A word card after a click on a word</td><td class="px">under 100 ms; the translation may follow</td></tr>
+      <tr><td>Opening the reader on a book</td><td class="px">under 500 ms to the last page</td></tr>
+      <tr><td>Anything that waits on the internet</td><td>It says so, shows progress, and can be left</td></tr>
+    </table>
+    <h3>Making a wait kind</h3>
+    <ul class="plain">
+      <li><b>Show the frame first,</b> then fill it. A page that appears empty and then jumps feels broken; one that appears shaped and then fills feels fast.</li>
+      <li><b>Say what is happening</b> in the helper’s voice: “Finding the sentences…”, never “Loading”.</li>
+      <li><b>Let people leave.</b> A long job runs on, and a small chip says it’s still going.</li>
+      <li><b>Keep their place.</b> Going back returns to the scroll position, the tab and the filter they had.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="page" data-rh="How it feels">
+  <div class="sheet">
+    <h3>The small moments</h3>
+    <table class="spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th style="width:27%">Moment</th><th>How it should feel</th></tr>
+      <tr><td>A right answer</td><td>A quiet sage tick that draws itself in 200 ms, the foot bar turning sage; a soft click if sound is on. No confetti.</td></tr>
+      <tr><td>A wrong answer</td><td>Terracotta, the right answer shown at once beside it, and Continue waiting. No buzz, no shake, no lost hearts.</td></tr>
+      <tr><td>Turning a card</td><td>A flip of 200 ms with the shadow following; Space does it.</td></tr>
+      <tr><td>Marking a word known</td><td>Its underline fades from terracotta to nothing, in the reader, where the eye is. No toast.</td></tr>
+      <tr><td>Saving a word</td><td>A small “Saved” in place of the button, and a number going up by one in the deck chip.</td></tr>
+      <tr><td>Finishing a lesson</td><td>The stage settles and a quiet summary rises: what you did, how long, what is next. One line of warmth in the helper’s voice.</td></tr>
+      <tr><td>A milestone</td><td>One toast with a small drawing: “100 words known.” It never pops up over reading or listening.</td></tr>
+      <tr><td>A missed day</td><td>Nothing. Lingua doesn’t scold, and a streak never breaks loudly.</td></tr>
+    </table>
+    <h3>When it goes wrong</h3>
+    <div class="dodont">
+      <div><span class="h">Say</span><ul><li>What happened, in a sentence: “The recording didn’t start.”</li><li>What it means for them: “Your words are safe.”</li><li>One thing to do: “Try again”.</li></ul></div>
+      <div class="no"><span class="h">Never say</span><ul><li>A code or a stack, “Something went wrong”, or “Oops”.</li><li>Anything that blames them.</li><li>Nothing, if their work might be lost.</li></ul></div>
+    </div>
+    <h3>Pointer, keyboard, screen reader</h3>
+    <p>Each is a first-class way in: every control reachable with the keyboard in reading order, every icon named, colour never the only signal, text that can grow without breaking a page.</p>
+    <div class="row"><p class="small muted">The check in Part Five has the list; do it before you call a page done.</p><aside></aside></div>
+  </div>
+</section>
+
+<!-- D6 · Dark, and the papers -->
+<section class="page" data-rh="Dark, and the papers">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-dark" data-ch>Dark, and the papers</h2>
+    <div class="rule"></div>
+    <p class="lead">Nocturne isn’t Paper turned upside down. It is the same room with the lamp low: the same layout, the same hierarchy, warmer and softer, never pure black or pure white.</p>
+    <table class="wide spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th style="width:22%">Role</th><th>Paper (day)</th><th>Nocturne (night)</th><th style="width:30%">Used for</th></tr>
+      <tr><td class="k">Page</td><td><span class="sw" style="background:#faf6f0"></span>Cream #faf6f0</td><td><span class="sw" style="background:#1f1c1a"></span>Charcoal #1f1c1a</td><td>The ground of every page.</td></tr>
+      <tr><td class="k">Surface</td><td><span class="sw" style="background:#efe7d9"></span>Parchment #efe7d9</td><td><span class="sw" style="background:#2b2724"></span>Mocha #2b2724</td><td>Panels, the sidebar, tiles.</td></tr>
+      <tr><td class="k">Raised</td><td><span class="sw" style="background:#fffbf4"></span>#fffbf4</td><td><span class="sw" style="background:#35302c"></span>#35302c</td><td>Fields, cards holding a choice, menus.</td></tr>
+      <tr><td class="k">Ink</td><td><span class="sw" style="background:#262220"></span>Espresso #262220</td><td><span class="sw" style="background:#ebe0cc"></span>Ivory #ebe0cc</td><td>Text; the primary button’s fill, swapped.</td></tr>
+      <tr><td class="k">Accent</td><td><span class="sw" style="background:#c86d51"></span>Terracotta #c86d51</td><td><span class="sw" style="background:#d49b54"></span>Amber #d49b54</td><td>The one thing, learning, selected.</td></tr>
+      <tr><td class="k">Sage</td><td><span class="sw" style="background:#6b8e78"></span>#6b8e78</td><td><span class="sw" style="background:#93b39e"></span>#93b39e</td><td>Known, done, good.</td></tr>
+    </table>
+    <h3>Contrast, measured</h3>
+    <table class="spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th>Pair</th><th>Ratio</th><th>Pair</th><th>Ratio</th></tr>
+      <tr><td>Ink on Cream</td><td class="px">14.6 : 1</td><td>Ink on Charcoal</td><td class="px">13.0 : 1</td></tr>
+      <tr><td>Soft ink on Cream</td><td class="px">6.8 : 1</td><td>Soft ink on Charcoal</td><td class="px">8.0 : 1</td></tr>
+      <tr><td>Faint ink on Cream</td><td class="px">4.7 : 1</td><td>Faint ink on Charcoal</td><td class="px">4.8 : 1</td></tr>
+      <tr><td>Faint ink on Parchment</td><td class="px acc">4.2 : 1</td><td>Faint ink on Mocha</td><td class="px acc">4.2 : 1</td></tr>
+      <tr><td>Terracotta text on Cream</td><td class="px">5.0 : 1</td><td>Amber text on Charcoal</td><td class="px">7.8 : 1</td></tr>
+      <tr><td>Sage text on Cream</td><td class="px">5.2 : 1</td><td>Sage on Charcoal</td><td class="px">7.4 : 1</td></tr>
+    </table>
+    <div class="row"><p class="small">Body text needs 4.5 : 1. <b>Faint ink falls just under it on Parchment and Mocha:</b> use it there only for large or purely decorative text, and soft ink for anything that must be read. The bright terracotta line (3.4 : 1) is for lines and fills, never for small text; text uses the darker <code>accent-text</code>.</p><aside><span class="k">Tokens</span><code>src/<wbr>design/<wbr>tokens.css</code>: <code>--bg --surface --ink --accent-text</code>.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Dark, and the papers">
+  <div class="sheet">
+    <h3>Making a screen that works in both</h3>
+    <ul class="plain">
+      <li><b>Never write a colour.</b> Use the token: <code>bg-surface</code>, <code>text-ink-soft</code>, <code>border-line</code>. A hex in a feature’s code is a bug in one of the two themes.</li>
+      <li><b>Shadows get heavier at night,</b> not lighter: on dark ground a light shadow is invisible, so lift with a lighter surface and a hairline too.</li>
+      <li><b>Pictures need care.</b> Covers and photographs can glare on Charcoal: a quiet scrim or a slight dim at night, never a filter that changes their colours.</li>
+      <li><b>Drawings use the line colour,</b> so they flip by themselves; a drawing with its own colours must be checked on both.</li>
+      <li><b>Accent flips from warm terracotta to amber,</b> on purpose: the same feeling at a different light. Never use the day accent at night.</li>
+      <li><b>Selected, learning and error</b> must read without colour in either theme: a weight, an underline, a tick.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="page" data-rh="Dark, and the papers">
+  <div class="sheet">
+    <h3>The reading papers</h3>
+    <div class="row"><p>The reader chooses a page colour for Codex separately for day and for night: seven light papers and seven dark ones. It changes the page, the panels and the ink together and flips with the theme.</p>
+      <aside><span class="k">Where</span><code>src/<wbr>design/<wbr>papers.ts</code>.</aside></div>
+    <table class="spec" style="font-size:7.6pt;line-height:10.2pt">
+      <tr><th style="width:15%">Day</th><td style="white-space:normal">Cream · Ivory · Parchment · Sepia · Sage · Blush · Stone</td></tr>
+      <tr><th>Night</th><td style="white-space:normal">Charcoal · Espresso · Sepia night · Ink · Forest · Plum · Midnight</td></tr>
+    </table>
+    <p>A screen must hold on all fourteen. When designing, switch through the papers, not only the two defaults: contrast and the accent must hold on each, and nothing may rely on Cream’s warmth to look right.</p>
+    <h3>Switching</h3>
+    <ul class="plain">
+      <li>Light, dark or the device’s own, in Settings › Look and feel; the choice crossfades the whole window in one view transition, not piece by piece.</li>
+      <li>The first paint follows the device’s setting before the app loads, so there is no flash of the wrong colour.</li>
+      <li>The browser’s top bar and the installed app’s title bar take the page colour.</li>
+    </ul>
+    <div class="dodont">
+      <div><span class="h">Check</span><ul><li>Each new screen in Paper and Nocturne, at 1366 × 768.</li><li>Every icon, every chart, every drawing.</li></ul></div>
+      <div class="no"><span class="h">Never</span><ul><li>White or black as a fill; use Raised and Sunken.</li><li>A grey: use a warm ink step.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- D7 · Charts and numbers -->
+<section class="page" data-rh="Charts and numbers">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-charts" data-ch>Charts and numbers</h2>
+    <div class="rule"></div>
+    <p class="lead">A number is evidence, not a grade. Show it plainly, say what it counts, and draw a chart only when a shape says more than the number.</p>
+    <h3>The stat tile</h3>
+    <div class="wf wide" style="grid-template-columns:repeat(4,1fr)">
+      <span class="b col" style="gap:.6mm"><span style="font:600 10pt/1 var(--serif);color:var(--ink)">2,400</span><span>KNOWN WORDS</span><span style="font-weight:500">+120 this month</span></span>
+      <span class="b col" style="gap:.6mm"><span style="font:600 10pt/1 var(--serif);color:var(--ink)">1.5 h</span><span>TIME STUDIED</span><span style="font-weight:500">last 30 days</span></span>
+      <span class="b col" style="gap:.6mm"><span style="font:600 10pt/1 var(--serif);color:var(--ink)">0 days</span><span>STREAK</span><span style="font-weight:500">longest 12</span></span>
+      <span class="b col" style="gap:.6mm"><span style="font:600 10pt/1 var(--serif);color:var(--ink)">0 / 7</span><span>THIS WEEK</span><span style="font-weight:500">good days</span></span>
+    </div>
+    <p class="small">The number big, in the book’s voice; a caption in small capitals under it saying what it counts; one line of context in soft ink. Four of them open Ratio.</p>
+    <h3>Which chart</h3>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:22%">The question</th><th style="width:20%">Chart</th><th>Rules</th></tr>
+      <tr><td class="k">How is it changing?</td><td>Line</td><td>Time along the bottom, from the start of the data. No more than three lines, each named at its end. Sage for known, terracotta for learning. A short gap is carried across, a long one left empty.</td></tr>
+      <tr><td class="k">How much in each period?</td><td>Bars</td><td>One bar per day, week or month; the current one outlined. Stack by kind (read, listen, review…) only when the parts matter. A baseline at zero, always.</td></tr>
+      <tr><td class="k">How regular?</td><td>Heat map</td><td>A year as weeks and weekdays, five shades of sage; today outlined. The scale in a small legend.</td></tr>
+      <tr><td class="k">How far to a goal?</td><td>Ring or slim bar</td><td>One value of one whole, with the figure in the middle or beside it. Never two rings side by side that mean different things.</td></tr>
+      <tr><td class="k">What is it made of?</td><td>A row of bars with labels</td><td>Sorted by size, labels at the left, values at the right. Not a pie.</td></tr>
+    </table>
+    <div class="row"><p class="small">The charts are in <code>src/design/charts</code> (<code>LineChart</code>, <code>BarChart</code>, <code>Heatmap</code>, <code>Ring</code>), each with a hover that names the value and date.</p><aside><span class="k">Heights</span>Lines 110 to 130 px; long bars 110; rings 58.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Charts and numbers">
+  <div class="sheet">
+    <h3>Colour in a chart</h3>
+    <ul class="plain">
+      <li><b>Meaning first.</b> Sage is what you have (known, done); terracotta is what is moving (learning, today). The same colours mean the same things on every page.</li>
+      <li><b>Rooms get tints, not hues:</b> reading is sage, listening a paler sage, watching and cards warmer, writing nearly paper. Seven tints are enough, and any two must be tellable apart in grey.</li>
+      <li><b>Always label directly</b> where a line ends or a bar sits; a legend is for stacks only, and sits above the chart.</li>
+    </ul>
+    <h3>Numbers in sentences and tables</h3>
+    <table class="spec" style="font-size:7.6pt;line-height:10.2pt">
+      <tr><th style="width:36%">Do</th><th>Because</th></tr>
+      <tr><td>2,400 words; 1.5 h; 12 min</td><td>Thousands separated, time in the unit people think in, never 5400 s.</td></tr>
+      <tr><td>Tabular figures in tables</td><td>The digits line up and the eye compares.</td></tr>
+      <tr><td>“Words / min”, not “WPM”</td><td>The caption says what it counts.</td></tr>
+      <tr><td>~A2 and “estimated”</td><td>An estimate is labelled as one, with how it was made.</td></tr>
+      <tr><td>“Show once you have read a little more”</td><td>A figure from too little data would be a guess dressed as a fact.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Charts and numbers">
+  <div class="sheet">
+    <h3>Empty, thin and sudden</h3>
+    <div class="dodont">
+      <div><span class="h">Do</span><ul><li>Say kindly why it’s empty and what fills it: “Check two entries to see your grade trend”.</li><li>Keep the chart’s frame so the page doesn’t jump when data arrives.</li><li>Show a single point as a point, not a line.</li></ul></div>
+      <div class="no"><span class="h">Don’t</span><ul><li>Draw a flat line for no data.</li><li>Compare to other people, or to a number the learner didn’t choose.</li><li>Colour a day red for a missed one.</li></ul></div>
+    </div>
+    <h3>Honest numbers Lingua keeps</h3>
+    <ul class="plain">
+      <li>A <b>known word</b> is one the learner said they know; a saved word is saved, and is never called known.</li>
+      <li><b>Time</b> counts active time with the window visible and a recent action, so a book left open isn’t an hour read.</li>
+      <li><b>Look-ups per 1,000 words</b> appear after 500 words are read, from sessions that counted them.</li>
+      <li><b>Retention after a day</b> isn’t recorded, so it isn’t shown; a number Lingua can’t back isn’t made up.</li>
+    </ul>
+    <h3>A worked example: Ratio’s Reading panel</h3>
+    <div class="wf wide" style="grid-template-columns:1fr 1fr">
+      <span class="b col t" style="gap:1mm"><span>READING</span><span class="wf in" style="grid-template-columns:repeat(3,1fr)"><span class="b">3.2 h<br>read</span><span class="b">41k<br>words</span><span class="b">126<br>words / min</span></span><span class="b" style="min-height:10mm">a line: words a minute, week by week</span><span style="font-weight:500">3 books finished, 1 this year</span></span>
+      <span class="b col t" style="gap:1mm"><span>READING: THE ANATOMY</span><span style="font-weight:500">1 · three numbers in a row, each with its caption</span><span style="font-weight:500">2 · one chart, the one that shows change</span><span style="font-weight:500">3 · a sentence of plain context</span><span style="font-weight:500">4 · the list behind it: the books, with how much of each is known</span><span style="font-weight:500">+ a line under the numbers: look-ups per 1,000 words, when there is enough</span></span>
+    </div>
+    <p class="small">Every panel on Ratio is built the same way: caption and numbers, one chart, a line of context, and the list behind it. That regularity is why a dashboard of eight panels still reads as one page.</p>
+  </div>
+</section>
+
+<!-- D8 · Words on the screen -->
+<section class="page" data-rh="Words on the screen">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-words" data-ch>Words on the screen</h2>
+    <div class="rule"></div>
+    <p class="lead">Most of the design is words: a button’s name, an empty page, a warning. They are set in the helper’s voice: plain, warm, short, and on the learner’s side.</p>
+    <table class="wide spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th style="width:20%">Where</th><th style="width:38%">Instead of</th><th>Write</th></tr>
+      <tr><td class="k">A button</td><td>Submit · OK · Yes · Proceed</td><td>A verb and what it acts on: <b>Log 45 minutes</b>, <b>Save the word</b>, <b>Start the lesson</b>.</td></tr>
+      <tr><td class="k">A cancel</td><td>Cancel</td><td><b>Not now</b>, <b>Keep it</b>, <b>Go back</b>: say what stays true.</td></tr>
+      <tr><td class="k">A delete</td><td>Are you sure?</td><td><b>Delete “Cher journal”?</b> Say what goes; give Undo, not a second question, where it can.</td></tr>
+      <tr><td class="k">A title</td><td>Settings Management Console</td><td>The name a person would use: <b>Settings</b>, <b>Tabula</b>, <b>Your words</b>.</td></tr>
+      <tr><td class="k">The line under a title</td><td>Here you can view statistics about…</td><td>One sentence in the learner’s terms: <b>An honest look back at what you’ve done.</b></td></tr>
+      <tr><td class="k">A toast</td><td>Operation completed successfully</td><td><b>Logged 45 minutes of French.</b> Past tense, the thing, then stop.</td></tr>
+      <tr><td class="k">An error</td><td>Error 500 · Invalid input</td><td><b>That didn’t save. Your words are safe. Try again.</b></td></tr>
+      <tr><td class="k">A hint in a field</td><td>Enter text</td><td>An example in the language: <b>e.g. Dutch, Arabic</b>.</td></tr>
+      <tr><td class="k">A price or plan</td><td>Premium · Unlimited · Best value</td><td>The price, what it includes and when it renews, together: <b>€24.99 once, every update included.</b></td></tr>
+    </table>
+    <div class="row"><p class="small">The voice has its own chapter in Part One; this is its use on the smallest surfaces. A button that has an icon still has a name, and the name is what a screen reader says.</p><aside><span class="k">Case</span>Sentence case everywhere. Capitals only in the small labels, set by the design, not typed.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Words on the screen">
+  <div class="sheet">
+    <h3>The empty page</h3>
+    <p>An empty page is the first thing a new learner sees of a room, so it is written with care. It has exactly three parts, and the third is a button.</p>
+    <div class="wf wide" style="grid-template-columns:1fr;justify-items:center;padding:3mm">
+      <span class="b col" style="width:55%;gap:1.2mm;align-items:center;text-align:center;border-style:dashed;background:transparent;padding:2.4mm"><span class="b d" style="width:12mm;height:6mm;border-radius:50%">a drawing</span><span style="font:600 8.4pt/1 var(--serif);color:var(--ink)">Nothing in your inbox</span><span style="font-weight:500">Words you meet while reading land here, with their sentence.</span><span class="b a">Open a book</span></span>
+    </div>
+    <ol class="key tight">
+      <li><b>A title that says what is true,</b> not what’s wrong: “Nothing here yet” is fine; “No data found” is not.</li>
+      <li><b>One line that says what will fill it</b> and how, in the helper’s voice.</li>
+      <li><b>One button that does the first thing,</b> in the accent fill.</li>
+    </ol>
+    <h3>Six empty pages, written</h3>
+    <table class="spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th style="width:17%">Page</th><th style="width:27%">Title</th><th>The line</th><th style="width:20%">The button</th></tr>
+      <tr><td>Inbox</td><td>Nothing waiting</td><td>Words you meet while reading land here with their sentence.</td><td>Open a book</td></tr>
+      <tr><td>Decks</td><td>No decks yet</td><td>A deck is a list of words to remember; start with a ready-made one.</td><td>Browse decks</td></tr>
+      <tr><td>Diarium</td><td>Today…</td><td>A few sentences in the language are enough.</td><td>Start writing</td></tr>
+      <tr><td>Visio</td><td>Nothing to watch yet</td><td>Add a film, a video or a link, and its subtitles go in two lines.</td><td>Add a video</td></tr>
+      <tr><td>Goals (Tabula)</td><td>No goal yet</td><td>A level by a date, or hours a week. You can change it any time.</td><td>Set a goal</td></tr>
+      <tr><td>A search</td><td>Nothing for “xyz”</td><td>Try fewer letters, or search in the language you’re learning.</td><td>Clear the search</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Words on the screen">
+  <div class="sheet">
+    <h3>Rules for all small words</h3>
+    <div class="dodont">
+      <div><span class="h">Do</span><ul><li>Write the way a kind teacher would say it aloud.</li><li>Use the learner’s word: “word”, not “lexeme”; “deck”, not “collection”.</li><li>Put the most important word first.</li><li>Keep a button to one to three words.</li><li>Name a thing the same everywhere: it’s always “Tabula”.</li></ul></div>
+      <div class="no"><span class="h">Don’t</span><ul><li>Use “please”, “sorry” and “oops” as padding.</li><li>Praise for nothing, or shout: no “Amazing!” or exclamation marks.</li><li>Make a joke where something went wrong.</li><li>Use “we” for the app; Lingua says “I” rarely and “you” often.</li><li>Leave a word for translation: all text is ready for the language of the app.</li></ul></div>
+    </div>
+    <h3>The app’s language, and the learner’s</h3>
+    <p>The app speaks the learner’s own language (the one glosses and help come in) and shows the language being learned wherever the learning is: in the reader, the cards, the lesson. Do not mix them in one line without a visual reason: the language being learned is set in the book’s voice and larger, so you can always tell it from the helper’s.</p>
+    <div class="row"><p class="small muted">Texts may grow by a third in another language: a button must never be sized to its English.</p><aside></aside></div>
+  </div>
+</section>
+
+<!-- D9 · Designing a new screen -->
+<section class="page" data-rh="Designing a new screen">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-recipe" data-ch>Designing a new screen</h2>
+    <div class="rule"></div>
+    <p class="lead">A recipe that works every time. Follow it in order; each step takes minutes, and skipping one is where most mistakes begin.</p>
+    <ol class="key">
+      <li><b>Write the sentence.</b> “This page is for ___.” One verb; if you need “and”, it is two pages, or a tab.</li>
+      <li><b>Pick the shape</b> from the six patterns: dashboard, list with a rail, stage, reader, table, drawer.</li>
+      <li><b>Choose the one thing,</b> the single action the page leads to, and where it goes. Everything else is a ghost or a link.</li>
+      <li><b>List what to show first and what to keep quiet,</b> as in the room cards: what is on the page at once, and what waits behind a tab, a hover or More.</li>
+      <li><b>Draw it in boxes</b> at 1366 × 768 with real content and the longest word; then at 1440 and 1280.</li>
+      <li><b>Build with the primitives</b> and the tokens; add nothing new unless you have asked for it in the primitives.</li>
+      <li><b>Write the words</b> last but before it is called done: the title, the line, the buttons, the empty page, the errors.</li>
+      <li><b>Put it through every state</b> (next chapter in Part Five): empty, loading, partial, full, error, offline, slow.</li>
+      <li><b>Check it</b> in Paper and Nocturne, with the keyboard only, with the text larger, and with the voice and AI off.</li>
+      <li><b>Show it to one learner</b> and watch without helping; count the pauses.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="page" data-rh="Designing a new screen">
+  <div class="sheet">
+    <h3>Questions that settle most arguments</h3>
+    <table class="spec" style="font-size:7.7pt;line-height:10.4pt">
+      <tr><th style="width:44%">If you’re not sure whether to…</th><th>Ask</th></tr>
+      <tr><td>add a button</td><td>Does anyone need it in the first minute? If not, it goes in ⋯.</td></tr>
+      <tr><td>add a setting</td><td>Can it be decided for them? A setting is a failure to decide, unless people truly differ.</td></tr>
+      <tr><td>show a number</td><td>Would the learner act differently because of it?</td></tr>
+      <tr><td>add motion</td><td>Does it say where something came from? If not, it is decoration.</td></tr>
+      <tr><td>use a new colour</td><td>Is there already a token that means this? There is.</td></tr>
+      <tr><td>add a dialog</td><td>Is it a question that must be answered? Otherwise it is a toast or a line.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Designing a new screen">
+  <div class="sheet">
+    <h3>Handing a screen over</h3>
+    <div class="row"><p>A design is finished when someone else can build it without asking you. Hand over these, in this order.</p><aside><span class="k">Where</span>Put them in the step’s plan in <code>docs/</code>.</aside></div>
+    <ol class="key">
+      <li><b>The sentence and the shape:</b> “For choosing a deck; list with a rail.”</li>
+      <li><b>The boxes,</b> at 1366 × 768, annotated with the primitives and the tokens.</li>
+      <li><b>What is shown first and what is kept quiet,</b> written as in a room card.</li>
+      <li><b>The words,</b> every one, including empty and error.</li>
+      <li><b>The states:</b> empty, loading, partial, full, error, offline.</li>
+      <li><b>What is checked:</b> the five things to try by hand before calling it done.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="page" data-rh="Designing a new screen">
+  <div class="sheet">
+    <h3>The twenty mistakes we keep meeting</h3>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:4%">#</th><th style="width:40%">The mistake</th><th>The fix</th></tr>
+      <tr><td>1</td><td>Two accent buttons on a page.</td><td>One accent; the other is a ghost or a link.</td></tr>
+      <tr><td>2</td><td>A card in a card in a card.</td><td>A card holds text and one picture; group by space first.</td></tr>
+      <tr><td>3</td><td>A shadow on everything.</td><td>Lines for rest; a shadow only for what floats.</td></tr>
+      <tr><td>4</td><td>Text set smaller to make it fit.</td><td>Remove something; 12.5 px is the floor.</td></tr>
+      <tr><td>5</td><td>A hex code or a grey in a feature’s code.</td><td>Use the tokens.</td></tr>
+      <tr><td>6</td><td>Colour as the only signal of state.</td><td>Add a tick, a weight or an underline.</td></tr>
+      <tr><td>7</td><td>The only way to do it is a hover or a right-click.</td><td>Make it visible, then add the shortcut.</td></tr>
+      <tr><td>8</td><td>A button that moves when the page changes.</td><td>Reserve its place; keep the frame.</td></tr>
+      <tr><td>9</td><td>“Loading…” on a blank page.</td><td>Show the shape, then fill it.</td></tr>
+      <tr><td>10</td><td>An error that says “Error”.</td><td>What happened, what it means for them, one thing to do.</td></tr>
+      <tr><td>11</td><td>Delete next to Save.</td><td>Danger at the far end, quiet, with Undo.</td></tr>
+      <tr><td>12</td><td>A stretched card on a wide screen.</td><td>Let the 1152 px column hold.</td></tr>
+      <tr><td>13</td><td>A scroll bar inside a scroll bar.</td><td>One scrolling area per column.</td></tr>
+      <tr><td>14</td><td>An icon without a name.</td><td>A tooltip and an accessible name, always.</td></tr>
+      <tr><td>15</td><td>Praise on every step.</td><td>Quiet confirmation; a word of warmth at the end only.</td></tr>
+      <tr><td>16</td><td>The one thing at the bottom of a long page.</td><td>Top right, or sticky in the foot bar.</td></tr>
+      <tr><td>17</td><td>A page tested only with short, English text.</td><td>Test the longest word and a right-to-left language.</td></tr>
+      <tr><td>18</td><td>Three tab rows.</td><td>One row; the rest in a rail or a menu.</td></tr>
+      <tr><td>19</td><td>New patterns invented for one screen.</td><td>Use one of six, or change the pattern for all.</td></tr>
+      <tr><td>20</td><td>Called done without the check.</td><td>Part Five’s check, every time.</td></tr>
+    </table>
+    <div class="row"><p class="small muted">Add your own to this list when you meet a twenty-first. It is the cheapest design tool Lingua has.</p><aside></aside></div>
+  </div>
+</section>
+
+<!-- T1 · Tablets -->
+<section class="page" data-rh="Tablet: iPad and Android">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-tablet" data-ch>Tablet: iPad and Android</h2>
+    <div class="rule"></div>
+    <p class="lead">Lingua is built and checked for the desktop. A tablet is the next-nearest thing: the same rooms on a bigger screen you touch, and a very good place to read, listen and review.</p>
+    <div class="row"><p><b>Where it stands.</b> The app already has a second shell for narrow windows (below 768 px, see the phone chapter), and the controls already grow under a finger. What hasn’t had its own design pass is the tablet, so this chapter is the brief for it: how it should look, feel and be laid out when it gets one.</p>
+      <aside><span class="k">Rule</span>Desktop first. Phone and tablet are guides for later, not a reason to change a desktop screen.</aside></div>
+    <h3>Which size is it?</h3>
+    <table class="spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th style="width:36%">Device (CSS pixels)</th><th>Portrait × landscape</th><th>Layout it gets today</th></tr>
+      <tr><td>iPad mini</td><td class="px">744 × 1133 · 1133 × 744</td><td>Compact in portrait; the sidebar in landscape</td></tr>
+      <tr><td>iPad, iPad Air 11″</td><td class="px">820 × 1180 · 1180 × 820</td><td>Sidebar both ways, narrow in portrait</td></tr>
+      <tr><td>iPad Pro 11″</td><td class="px">834 × 1194 · 1194 × 834</td><td>As above</td></tr>
+      <tr><td>iPad Pro 13″</td><td class="px">1024 × 1366 · 1366 × 1024</td><td>As the desktop at 1024 and 1366</td></tr>
+      <tr><td>Android tablets</td><td class="px">about 800 × 1280 · 1280 × 800</td><td>As the iPad; check on a real one</td></tr>
+    </table>
+    <div class="row"><p class="small">Today the shell switches at 768 px: from there up it shows the desktop sidebar, whatever the pointer; below it, the phone’s top bar and tab bar. The pointer is read separately (<code>fine</code> or <code>coarse</code>), so a tablet gets the desktop layout with bigger targets. Stage Manager and Split View can narrow the window at any time, and it should simply change shell.</p><aside><span class="k">Where</span><code>src/<wbr>design/<wbr>hooks/<wbr>useLayout.ts</code>.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Tablet: iPad and Android">
+  <div class="sheet">
+    <h3>Landscape: the desktop, touched</h3>
+    <div class="wf wide" style="grid-template-columns:14% 1fr 26%;height:30mm">
+      <span class="b col k" style="gap:.8mm;font-size:4.6pt"><span class="b">Home</span><span class="b">Cursus</span><span class="b">Explora</span><span class="b">Biblio.</span><span class="b d">Tools</span></span>
+      <span class="b col t d" style="gap:1mm"><span class="b t" style="width:100%">Title · one thing</span><span class="b" style="flex:1;width:100%">the work</span></span>
+      <span class="b d">panel</span>
+    </div>
+    <p class="small">1180 × 820. It is the desktop layout at the width of a small laptop: sidebar, work, panel. The changes are in the hands, not the grid: every target 44 px or more, nothing that needs a hover, and a bottom margin for the home indicator.</p>
+    <h3>Portrait: the sidebar steps back</h3>
+    <div class="wf wide" style="grid-template-columns:8% 1fr;height:34mm;width:56%;margin-left:auto;margin-right:auto">
+      <span class="b col k" style="gap:.8mm;font-size:4.4pt"><span class="b">◧</span><span class="b">⌂</span><span class="b">▣</span><span class="b">✧</span><span class="b">▤</span></span>
+      <span class="b col t d" style="gap:1mm"><span class="b t" style="width:100%">Title · one thing</span><span class="b" style="flex:1;width:100%">the work, one column, full width</span><span class="b d" style="width:100%">the panel, now under it or a sheet</span></span>
+    </div>
+    <p class="small">820 × 1180. The sidebar folds to a rail of icons (about 64 px) with names on press, so the work keeps over 750 px. A side panel drops under the work, or into a sheet; two columns become one, except when each is narrow (stat tiles, cards).</p>
+  </div>
+</section>
+
+<section class="page" data-rh="Tablet: iPad and Android">
+  <div class="sheet">
+    <h3>What changes, rule by rule</h3>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:24%">Part</th><th>On a tablet</th></tr>
+      <tr><td class="k">Targets</td><td>44 pt on iPad, 48 dp on Android, at least 8 px apart. Buttons already grow by 8 px under a finger (small 32 to 40, medium 40 to 44).</td></tr>
+      <tr><td class="k">Hover</td><td>There is none. Whatever shows on hover (⋯, a preview, a grip) is always visible or reached by a tap; the same menu opens on a long press as on a right-click.</td></tr>
+      <tr><td class="k">The reader</td><td>The best place for it. A tap on a word opens the card as a sheet that stops at half the screen, so the sentence stays visible; swipe turns pages; two columns in landscape at 19 px, one in portrait.</td></tr>
+      <tr><td class="k">Drawers</td><td>A sheet from the right in landscape (440 px), from the bottom in portrait, with a handle; both rise above the on-screen keyboard.</td></tr>
+      <tr><td class="k">Keyboards</td><td>With a hardware keyboard every desktop shortcut works. Without one, none is required: each has a button.</td></tr>
+      <tr><td class="k">Pencil</td><td>Not special: it is a pointer. Handwriting into a text box is the system’s job; never build a canvas for it.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Tablet: iPad and Android">
+  <div class="sheet">
+    <h3>Room by room on a tablet</h3>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:17%">Room</th><th>The tablet’s version</th></tr>
+      <tr><td class="k">Home</td><td>One column of the same cards; the week and “Continue learning” as wide rows that swipe; the greeting stays big.</td></tr>
+      <tr><td class="k">Cursus</td><td>The adventure trail fills the width; a lesson is a stage with Check and Continue in a foot bar the thumb can reach, in the lower third.</td></tr>
+      <tr><td class="k">Codex</td><td>Reading, full screen, with the chrome hidden after a moment; the library as a grid of 4 to 6 covers.</td></tr>
+      <tr><td class="k">Thesaurus · Ludus</td><td>Cards big and centred with the four answers as large buttons; Ludus games use the whole width for pairs and word banks.</td></tr>
+      <tr><td class="k">Sonus · Visio</td><td>The player first, with lines in time under it in landscape or beside it in portrait; the lock-screen and control-centre controls work.</td></tr>
+      <tr><td class="k">Mentis</td><td>Mundus and Things to try as a single column; Diarium with the keyboard up and the toolbar above it.</td></tr>
+      <tr><td class="k">Ratio</td><td>Tiles four across in landscape, two in portrait; charts get a tap in place of hover, showing the value in a small bubble.</td></tr>
+      <tr><td class="k">Settings</td><td>The groups as a list on the left and their contents on the right, as on a desktop; one column in portrait.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Tablet: iPad and Android">
+  <div class="sheet">
+    <h3>Installing and living with it</h3>
+    <ul class="plain">
+      <li><b>iPad:</b> Safari › Share › Add to Home Screen. The page asks for it once, kindly, after the first lesson, with a drawing of the button. A home-screen app runs full screen with the status bar in the page’s colour.</li>
+      <li><b>Android tablet:</b> Chrome’s own Install prompt, offered from Settings and once after a session.</li>
+      <li><b>Storage:</b> ask the browser to keep the data (<code>storage.persist()</code>), show how much is used, and remind about a backup file; Safari may clear a site’s data after a week unused unless it is installed.</li>
+      <li><b>Audio:</b> playback must start from a tap; the lock screen shows title, cover and the skip keys.</li>
+    </ul>
+    <div class="dodont">
+      <div><span class="h">Do</span><ul><li>Test on a real iPad in both orientations, and in Split View at one-third width.</li><li>Keep every action thumb-reachable at the sides and foot.</li></ul></div>
+      <div class="no"><span class="h">Don’t</span><ul><li>Stretch a phone screen across a tablet.</li><li>Put a primary action in the top-left, far from the thumb.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- P1 · Phones -->
+<section class="page" data-rh="Phone: iOS and Android">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="d-phone" data-ch>Phone: iOS and Android</h2>
+    <div class="rule"></div>
+    <p class="lead">The phone is for the minutes in between: a lesson on the bus, ten cards in a queue, a song on a walk. Small, one-handed, interrupted. The design is the same book with fewer things on each page.</p>
+    <div class="row"><p><b>Where it stands.</b> A phone shell exists (below 768 px) and works as it is; it hasn’t had the care the desktop has had, and it isn’t the focus. This chapter is the guide for the day it is.</p>
+      <aside><span class="k">Where</span><code>src/<wbr>app/<wbr>shells/<wbr>touch</code>: <code>TouchShell</code>, <code>TopBar</code>, <code>TabBar</code>.</aside></div>
+    <div class="wf wide" style="grid-template-columns:1fr 1fr 1fr;align-items:start;padding:2mm">
+      <div class="wf in" style="grid-template-rows:5mm 6mm 1fr 6mm;height:68mm;border:.6pt solid var(--line2);padding:1mm;border-radius:2.4mm">
+        <span class="b t k" style="font-size:4.4pt">9:41 · status bar</span><span class="b t">Home</span><span class="b" style="font-size:4.4pt">the page: one column, 16 px gutters</span><span class="b k" style="border-radius:3mm;font-size:4.4pt">⌂ · ▣ · ✧ · ▤ · ⋯</span>
+      </div>
+      <div class="wf in" style="grid-template-rows:5mm 6mm 1fr 6mm;height:68mm;border:.6pt solid var(--line2);padding:1mm;border-radius:2.4mm">
+        <span class="b t k" style="font-size:4.4pt">Dynamic Island</span><span class="b t">Lesson · 3 of 8</span><span class="b a" style="font-size:4.4pt">the exercise, large</span><span class="b a" style="border-radius:3mm">Check</span>
+      </div>
+      <div class="wf in" style="grid-template-rows:5mm 1fr;height:68mm;border:.6pt solid var(--line2);padding:1mm;border-radius:2.4mm;background:var(--sunken)">
+        <span class="b t k" style="font-size:4.4pt">dimmed page</span><span class="b col t" style="font-size:4.4pt;justify-content:flex-end;border-radius:2.4mm 2.4mm 0 0;margin:6mm -0.4mm -0.4mm"><span style="margin:0 auto;width:8mm;height:1mm;border-radius:1mm;background:var(--line2)"></span>a sheet: the word, its meaning, Save</span>
+      </div>
+    </div>
+    <ol class="key two tight">
+      <li><b>A page:</b> a top bar of 48 px whose big title collapses as you scroll; one column; a floating tab bar.</li>
+      <li><b>A stage:</b> the tab bar steps aside; a foot bar with the one thing, in the thumb’s reach.</li>
+      <li><b>A sheet:</b> what was a drawer or a popover, from the bottom, with a handle, over a dimmed page.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="page" data-rh="Phone: iOS and Android">
+  <div class="sheet">
+    <h3>The measures</h3>
+    <table class="spec" style="font-size:7.5pt;line-height:10pt">
+      <tr><th style="width:34%">Part</th><th>Size</th></tr>
+      <tr><td>Phones, in CSS pixels</td><td class="px">360 to 430 wide; 640 to 932 tall (a small iPhone is 375 × 667)</td></tr>
+      <tr><td>Top bar</td><td class="px">48 px below the status bar; the title shows in it once the big one has scrolled away</td></tr>
+      <tr><td>Tab bar</td><td class="px">a floating rounded bar, up to 448 px wide, items 54 px high, with the finger’s press shrinking an item to 94%</td></tr>
+      <tr><td>Side gutters</td><td class="px">16 px, plus the safe area in landscape</td></tr>
+      <tr><td>Targets</td><td class="px">44 pt (iOS) or 48 dp (Android); 8 px between</td></tr>
+      <tr><td>Text in a field</td><td class="px">16 px at least, or iOS zooms the page</td></tr>
+    </table>
+    <h3>Layout, rule by rule</h3>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:21%">Part</th><th>On a phone</th></tr>
+      <tr><td class="k">Columns</td><td>One. Two panels stack; a table becomes a list of cards with the main fact large and the rest as a line; a rail becomes a Filters button opening a sheet.</td></tr>
+      <tr><td class="k">The one thing</td><td>In the foot bar, above the tab bar, full width, in the thumb’s reach; the title row keeps only a quiet action.</td></tr>
+      <tr><td class="k">Room tabs</td><td>A scrolling row of chips under the title, never wrapping to a second line; the current one scrolled into view.</td></tr>
+      <tr><td class="k">Lists</td><td>Rows 56 px or more; a swipe left reveals the ⋯ actions; a long press opens the same menu as a right-click.</td></tr>
+      <tr><td class="k">Sheets</td><td>From the bottom; a handle; they stop at half height by default, drag up to full, drag down to close; the button at the foot clears the home indicator.</td></tr>
+      <tr><td class="k">The keyboard</td><td>The focused field and its button stay visible above it; the page scrolls rather than the sheet jumping.</td></tr>
+      <tr><td class="k">Toasts</td><td>Above the tab bar (about 100 px up), with the safe area, never under the Dynamic Island.</td></tr>
+      <tr><td class="k">Type</td><td>The language 19 to 20 px; body 15 to 16; nothing under 12.5. Respect the system’s text size up to 130%.</td></tr>
+      <tr><td class="k">Motion</td><td>The same springs, with a swipe back from the left edge on iOS and the system back on Android, both returning to the exact place.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Phone: iOS and Android">
+  <div class="sheet">
+    <h3>Safe areas and orientation</h3>
+    <ul class="plain">
+      <li>The page covers the whole screen (<code>viewport-fit=cover</code>) and keeps clear of notches and home bars with <code>env(safe-area-inset-*)</code>: top for the status bar and Dynamic Island, bottom for the home indicator or Android’s gesture bar, left and right in landscape.</li>
+      <li>Both orientations work. In landscape a lesson uses two columns, the exercise and its help, and the tab bar hides.</li>
+      <li>The status bar takes the page’s colour; light page, dark text; Nocturne the other way.</li>
+    </ul>
+    <h3>iOS and Android differ here</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.6pt">
+      <tr><th style="width:18%"></th><th style="width:41%">iPhone</th><th>Android</th></tr>
+      <tr><td class="k">Back</td><td>Swipe from the left edge; a back link in the bar.</td><td>The system back button or gesture, always handled.</td></tr>
+      <tr><td class="k">Install</td><td>Safari › Share › Add to Home Screen; no automatic prompt, so a drawing explains it.</td><td>Chrome offers “Install app”; Lingua can ask at a good moment.</td></tr>
+      <tr><td class="k">Icons</td><td>A 180 px touch icon, light and dark.</td><td>A maskable icon, safe within the central 80%.</td></tr>
+      <tr><td class="k">Notifications</td><td>Only for an installed home-screen app, and only after a tap.</td><td>After a tap; a quiet channel for reminders.</td></tr>
+      <tr><td class="k">Sound</td><td>Starts on a tap; the lock screen shows controls; silent switch respected.</td><td>As iOS, with media controls in the shade.</td></tr>
+      <tr><td class="k">Files</td><td>Picker through the share sheet; downloads are saved to Files.</td><td>The system picker; downloads to the Downloads folder.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Phone: iOS and Android">
+  <div class="sheet">
+    <h3>Rooms on a phone: what stays and what folds</h3>
+    <table class="wide spec" style="font-size:7.4pt;line-height:9.8pt">
+      <tr><th style="width:17%">Room</th><th style="width:36%">Stays</th><th>Folds away or waits</th></tr>
+      <tr><td class="k">Home</td><td>Greeting, today’s minutes, Next up</td><td>The week, first steps, Mundus’s card below the fold</td></tr>
+      <tr><td class="k">Cursus</td><td>The next lesson, the trail, the check</td><td>The full unit map; grammar and alphabets under Tools</td></tr>
+      <tr><td class="k">Codex</td><td>Reading: the text, a tap for a word, page turns</td><td>The library’s filters, import, the end-page statistics</td></tr>
+      <tr><td class="k">Thesaurus · Ludus</td><td>Review the due cards; one game</td><td>Browsing decks, the dictionary, imports</td></tr>
+      <tr><td class="k">Sonus · Visio</td><td>Play, pause, the current line, the next line</td><td>The library, lyrics editing, the extension’s setup</td></tr>
+      <tr><td class="k">Mentis</td><td>Mundus’s three steps, a short Things to try</td><td>Sermo’s scene list; long writing (Diarium works with the keyboard)</td></tr>
+      <tr><td class="k">Ratio</td><td>Four tiles and the heat map</td><td>Every other panel, behind a tab; Tabula as cards</td></tr>
+      <tr><td class="k">Settings</td><td>Look and feel, listening, your data</td><td>The rest, one group at a time</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Phone: iOS and Android">
+  <div class="sheet">
+    <h3>Rules for hands</h3>
+    <div class="dodont">
+      <div><span class="h">Do</span><ul><li>Put what is used most in the thumb’s arc: the lower two-thirds, toward the dominant side.</li><li>Make an exercise answerable with one thumb.</li><li>Save a half-finished lesson silently when the app goes to the background.</li><li>Allow interruption: a call, a notification, the screen locking.</li><li>Work on a bad connection, and say when it isn’t.</li></ul></div>
+      <div class="no"><span class="h">Don’t</span><ul><li>Put a close button top-left of a sheet and nothing else; a swipe must close it too.</li><li>Rely on a swipe alone; each has a button.</li><li>Auto-play sound on opening a page.</li><li>Ask for a permission at the first start: ask where it’s needed.</li><li>Show a banner over the work to ask for a rating.</li></ul></div>
+    </div>
+    <h3>Check it on a phone</h3>
+    <ul class="plain">
+      <li>A small iPhone (375 × 667) and a large Android (412 × 915), both orientations.</li>
+      <li>With text at 130%, in Nocturne, with Reduce Motion on, on a poor connection.</li>
+      <li>One-handed: can the main thing be done with the thumb alone?</li>
+      <li>After the screen locks and unlocks in the middle of it.</li>
+    </ul>
+  </div>
+</section>
+
 <!-- 19 · Part Three -->
 <section class="page bare">
   <div class="opener">
@@ -977,6 +1858,40 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   </div>
 </section>
 
+<!-- LAYOUT home -->
+<section class="page" data-rh="Home">
+  <div class="sheet">
+    <span class="kicker">Home · how it is laid out</span>
+    <div class="wf wide" style="grid-template-columns:1.7fr 1fr;grid-auto-rows:auto">
+      <span class="b col t" style="gap:.8mm;min-height:17mm"><i class="n">1</i><b style="font:600 8pt/1 var(--serif);color:var(--ink)">Your French shelves are waiting, Anna</b><span style="font-weight:500">Wednesday · French · A2</span><span class="b s" style="width:100%"><i class="n">2</i>Today: 0 of 15 minutes · a ribbon by room</span><span class="b" style="width:100%"><i class="n">3</i>Where you left off · one card, one click</span></span>
+      <span class="b col" style="gap:.7mm"><i class="n">4</i>Choose and more<span class="wf in" style="grid-template-columns:1fr 1fr 1fr;width:100%"><span class="b">Codex</span><span class="b">Sonus</span><span class="b">Visio</span><span class="b">Thesaurus</span><span class="b">Mentis</span><span class="b">Cursus</span></span></span>
+      <span class="b col t" style="grid-column:span 2;gap:.7mm"><i class="n">5</i>Continue learning ›<span class="wf in" style="grid-template-columns:repeat(5,1fr)"><span class="b" style="min-height:8mm">card</span><span class="b">card</span><span class="b">card</span><span class="b">card</span><span class="b">card</span></span></span>
+      <span class="b col t" style="grid-column:span 2;gap:.7mm"><i class="n">6</i>Discover your next content ›<span class="wf in" style="grid-template-columns:repeat(5,1fr)"><span class="b" style="min-height:6mm">card</span><span class="b">card</span><span class="b">card</span><span class="b">card</span><span class="b">card</span></span></span>
+    </div>
+    <ol class="key two tight">
+      <li><b>A greeting in the display face,</b> with the date and the language above it in capitals.</li>
+      <li><b>Today,</b> the minutes against the goal, split by room; the only number on the page that moves.</li>
+      <li><b>Where you left off:</b> the one place to carry on, as a card.</li>
+      <li><b>Choose and more,</b> the other rooms as a small grid, with “Customise”.</li>
+      <li><b>Continue learning:</b> a row of up to five cards, scrolling.</li>
+      <li><b>Discover:</b> a row of what is new for your level; below, the week and the next grammar topic.</li>
+    </ol>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:18%">Rule</th><th>Home’s version</th></tr>
+      <tr><td class="k">Purpose</td><td>“Where do I carry on?” Every part answers it or points to a room that does.</td></tr>
+      <tr><td class="k">One thing</td><td>There is no accent button: “Where you left off” is the one thing, and the whole card is its button.</td></tr>
+      <tr><td class="k">Rows</td><td>Five cards across at 1440; each card is a cover, a small label, a title, one line, and “Continue”. The row’s title is a link to its room.</td></tr>
+      <tr><td class="k">Numbers</td><td>At most three: minutes today, known words, hours this week. The rest are in Ratio.</td></tr>
+      <tr><td class="k">New learner</td><td>First steps replace the rows until they’re done: three tiles, each opening a room with one task.</td></tr>
+    </table>
+    <div class="dodont">
+      <div><span class="h">Tips</span><ul><li>Greet briefly; the second line is where a smile goes.</li><li>Order the rows by what they’d do next, not by room.</li></ul></div>
+      <div class="no"><span class="h">Avoid</span><ul><li>A streak that shouts, or a leaderboard.</li><li>More than two rows above the fold.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+
 <!-- 24 · Cursus -->
 <section class="page" data-rh="Cursus">
   <div class="sheet">
@@ -998,6 +1913,66 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     <div class="row"><p></p><aside><span class="k">Decided</span>D10 of the 5.1 plan: “It leads, everything stays open.”</aside></div>
   </div>
 </section>
+
+<!-- LAYOUT cursus -->
+<section class="page" data-rh="Cursus">
+  <div class="sheet">
+    <span class="kicker">Cursus · how it is laid out</span>
+    <div class="wf wide" style="grid-template-columns:1.3fr 1fr;height:46mm">
+      <span class="b col t d" style="gap:.8mm"><i class="n">1</i><span class="wf in" style="grid-template-columns:repeat(4,auto);justify-content:start;gap:1mm"><span class="b a">Course</span><span class="b">Grammatica</span><span class="b">Alphabets</span><span class="b">Typing</span></span><span class="b" style="width:100%;flex:1"><i class="n">2</i>The adventure trail: twelve units, A1 to B1, drawn along a path; the next one lit</span></span>
+      <span class="b col t" style="gap:.8mm"><i class="n">3</i>A lesson, a stage<span class="b a" style="width:100%;flex:1">the exercise: large, one at a time</span><span class="wf in" style="grid-template-columns:1fr auto;width:100%"><span class="b k">3 of 8 · bar</span><span class="b a"><i class="n">4</i>Check</span></span></span>
+    </div>
+    <ol class="key two tight">
+      <li><b>Room tabs</b> with a chip of progress each; the course shows only for the six core languages.</li>
+      <li><b>The trail:</b> units as places on a path, the finished ones inked, the next one lit and larger.</li>
+      <li><b>The lesson,</b> full width on desktop, one exercise at a time.</li>
+      <li><b>The foot bar:</b> Skip at the left, Check then Continue at the right; progress above it.</li>
+    </ol>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:18%">Tab</th><th>Layout and feel</th></tr>
+      <tr><td class="k">Course</td><td>The trail is the page; a unit opens a short list of its lessons in a panel at the side. The trail never asks to be scrolled sideways.</td></tr>
+      <tr><td class="k">Grammatica</td><td>A guided path: “the next step, with its reason”, then a ladder of levels A1 to B2. A topic is a stage with the explanation at the left and the practice at the right.</td></tr>
+      <tr><td class="k">Alphabets</td><td>A grid of letters, each a large glyph with its sound; a tap plays it, a second opens the stroke order. Only the seven scripts that need it.</td></tr>
+      <tr><td class="k">Typing</td><td>The line to type, large, in the language’s keys; a keyboard map under it, the next key lit; speed and accuracy in a small row.</td></tr>
+    </table>
+    <div class="dodont">
+      <div><span class="h">Tips</span><ul><li>Show how far, never how far behind.</li><li>End every lesson on a clear next step.</li><li>Keep the foot bar in the same place for every exercise type.</li></ul></div>
+      <div class="no"><span class="h">Avoid</span><ul><li>Lives, hearts or timers that punish.</li><li>A lesson that scrolls: if it must, it is two exercises.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- LAYOUT explora -->
+<section class="page" data-rh="Cursus">
+  <div class="sheet">
+    <span class="kicker">Explora and Bibliotheca · how they are laid out</span>
+    <h3>Explora: one place to find something new</h3>
+    <div class="wf wide" style="grid-template-columns:20% 1fr;height:26mm">
+      <span class="b col t k" style="font-size:4.6pt"><i class="n">1</i>Reading<br>Films and series<br>Radio<br>Audiobooks<br>Words</span>
+      <span class="b col t d" style="gap:.8mm"><span class="b t" style="width:100%"><i class="n">2</i>Search · level · length</span><span class="wf in" style="grid-template-columns:repeat(5,1fr);flex:1;width:100%"><span class="b">a</span><span class="b">b</span><span class="b">c</span><span class="b">d</span><span class="b">e</span></span></span>
+    </div>
+    <p class="small">The kinds at the left, the finds as cards at the right, filtered to your level. The one button on a card adds it to Bibliotheca or starts it. Never a feed that goes on for ever: a page of about twenty, and More.</p>
+    <h3>Bibliotheca: everything that is yours</h3>
+    <div class="wf wide" style="grid-template-columns:1fr;height:26mm">
+      <span class="b col t d" style="gap:.8mm"><span class="wf in" style="grid-template-columns:auto auto auto auto 1fr auto;gap:1mm;width:100%"><span class="b a"><i class="n">3</i>All</span><span class="b">Reading</span><span class="b">Audio</span><span class="b">Video</span><span class="b t">search</span><span class="b">Add ▾</span></span><span class="wf in" style="grid-template-columns:repeat(6,1fr);flex:1;width:100%"><span class="b">cover</span><span class="b">poster</span><span class="b">cover</span><span class="b">cover</span><span class="b">poster</span><span class="b">cover</span></span></span>
+    </div>
+    <ol class="key two tight">
+      <li><b>Explora’s rail</b> picks the kind; its choice is remembered.</li>
+      <li><b>The filters</b> are two at most: level and length.</li>
+      <li><b>The kinds as tabs</b> and one search; <b>Add</b> (a file, a link, a camera) at the right.</li>
+    </ol>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:20%">Part</th><th>How</th></tr>
+      <tr><td class="k">Covers</td><td>All the same ratio per kind (a book 2:3, a poster 2:3, a song square), so a row lines up; a drawn one where there’s no cover; a thin bar for progress at its foot.</td></tr>
+      <tr><td class="k">Sort</td><td>Last opened first; a popover for title, date added, length. Remembered per kind.</td></tr>
+      <tr><td class="k">Selecting</td><td>A tick appears on hover; with something selected a bar rises at the foot with Tag, Move, Remove.</td></tr>
+      <tr><td class="k">Opening</td><td>A click opens the thing in its own room (Codex, Sonus, Visio); the back link returns to the same scroll place.</td></tr>
+      <tr><td class="k">Empty</td><td>“Nothing here yet” with Add as the one thing, and Explora as the other.</td></tr>
+    </table>
+  </div>
+</section>
+
 
 <!-- 25 · Codex -->
 <section class="page" data-rh="Codex">
@@ -1021,6 +1996,37 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   </div>
 </section>
 
+<!-- LAYOUT codex -->
+<section class="page" data-rh="Codex">
+  <div class="sheet">
+    <span class="kicker">Codex · how it is laid out</span>
+    <div class="wf wide" style="grid-template-columns:1fr 1.2fr;height:46mm">
+      <span class="b col t d" style="gap:.8mm"><i class="n">1</i>The library<span class="wf in" style="grid-template-columns:repeat(3,1fr);flex:1;width:100%"><span class="b">cover</span><span class="b">cover</span><span class="b">cover</span><span class="b">cover</span><span class="b">cover</span><span class="b">cover</span></span></span>
+      <span class="wf in" style="grid-template-columns:1fr 2fr 1fr;height:100%"><span class="b d" style="font-size:4.4pt"><i class="n">2</i>outline</span><span class="b t" style="font-size:4.6pt;align-items:flex-start;flex-direction:column;gap:.6mm"><i class="n">3</i>Le soir, nous lisions près de la fenêtre pendant que la neige tombait…<span class="b a" style="min-height:2mm">neige</span></span><span class="b col t" style="font-size:4.4pt"><i class="n">4</i>neige · snow<br>Save · Known</span></span>
+    </div>
+    <ol class="key two tight">
+      <li><b>The library:</b> covers 2:3, a progress bar at the foot of each, filters and import on top.</li>
+      <li><b>The outline,</b> folded until asked for.</li>
+      <li><b>One column of text,</b> 640 to 720 px, the language at 19 px, a line height of 1.7.</li>
+      <li><b>The word panel,</b> on a click, beside the text and never over it.</li>
+    </ol>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:19%">Part</th><th>How</th></tr>
+      <tr><td class="k">The page</td><td>Paper, the reader’s own: seven light or dark papers. Margins of 15% or more; chrome fades after a few seconds and returns on a mouse move.</td></tr>
+      <tr><td class="k">Words</td><td>Unseen: a thin sage underline. Learning: a terracotta wash. Known: nothing. Never colour alone: the learning wash also has a soft underline.</td></tr>
+      <tr><td class="k">The word card</td><td>The word large, its meaning, its form, a sound button, two buttons: Known and Save. Keys K, L, X, D act on the hovered word; right-click opens the details.</td></tr>
+      <tr><td class="k">Phrases</td><td>Drag across words to translate a phrase; the sentence’s translation appears in the card on S.</td></tr>
+      <tr><td class="k">Turning</td><td>← → or a click at the page’s edge; the page is two columns on a very wide window, one otherwise.</td></tr>
+      <tr><td class="k">The end</td><td>A quiet page: time, words, what was new, one line about the next book.</td></tr>
+    </table>
+    <div class="dodont">
+      <div><span class="h">Tips</span><ul><li>Everything that isn’t the text should leave when the reader stops looking.</li><li>Keep the card’s place fixed so the hand learns it.</li></ul></div>
+      <div class="no"><span class="h">Avoid</span><ul><li>Popups over the line being read.</li><li>Justified text without good hyphenation.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+
 <!-- 26 · Thesaurus and Ludus -->
 <section class="page" data-rh="Thesaurus and Ludus">
   <div class="sheet">
@@ -1042,6 +2048,36 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     <div class="row"><p></p><aside><span class="k">Careful</span>A saved word is not a known word. Count them separately, everywhere.</aside></div>
   </div>
 </section>
+
+<!-- LAYOUT thesaurus -->
+<section class="page" data-rh="Thesaurus and Ludus">
+  <div class="sheet">
+    <span class="kicker">Thesaurus and Ludus · how they are laid out</span>
+    <div class="wf wide" style="grid-template-columns:1.1fr 1fr;height:42mm">
+      <span class="b col t d" style="gap:.8mm"><i class="n">1</i><span class="wf in" style="grid-template-columns:repeat(4,auto);justify-content:start;gap:1mm"><span class="b a">Decks</span><span class="b">Words</span><span class="b">Dictionary</span><span class="b">Ludus</span></span><span class="wf in" style="grid-template-columns:1fr 1fr 1fr;flex:1;width:100%"><span class="b">deck</span><span class="b">deck</span><span class="b">deck</span></span></span>
+      <span class="b col t" style="gap:.8mm"><i class="n">2</i>A review<span class="b a" style="width:100%;flex:1;font:600 9pt/1 var(--serif)">la neige</span><span class="wf in" style="grid-template-columns:repeat(4,1fr);width:100%"><span class="b">Again</span><span class="b">Hard</span><span class="b s"><i class="n">3</i>Good</span><span class="b">Easy</span></span></span>
+    </div>
+    <ol class="key two tight">
+      <li><b>Tabs:</b> Decks, the word memory, the Dictionary, and Ludus’s games.</li>
+      <li><b>The review is a stage:</b> the card centred, nothing else but the progress.</li>
+      <li><b>Four answers,</b> large, the likeliest (Good) in sage; keys 1 to 4.</li>
+    </ol>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:19%">Part</th><th>How</th></tr>
+      <tr><td class="k">Decks</td><td>Cards in folders; each shows its title, a due count in a chip, and a thin bar. Search with “/”, drag to reorder, ⋯ for the rest.</td></tr>
+      <tr><td class="k">A card</td><td>The front in the book’s voice at 28 px or more; the back appears with a turn of 200 ms; the sentence it came from sits under it in soft ink.</td></tr>
+      <tr><td class="k">Answers</td><td>Four buttons across the foot of the stage, equal width, with the next interval beneath each in small figures.</td></tr>
+      <tr><td class="k">The Dictionary</td><td>A search at the top, the entry below: forms, recordings, the other meanings, examples from Tatoeba; the word’s whole history in the word memory beside it.</td></tr>
+      <tr><td class="k">Ludus</td><td>One game at a time as a stage: choices, pairs, gaps, word banks, listening, typing, speaking. The progress bar on top, Check and Continue at the foot, as in a lesson.</td></tr>
+      <tr><td class="k">When done</td><td>“12 cards in 4 minutes; 3 to see again tomorrow”, and the next thing.</td></tr>
+    </table>
+    <div class="dodont">
+      <div><span class="h">Tips</span><ul><li>Show the interval, not a grade.</li><li>Keep Undo (Z) always one key away.</li></ul></div>
+      <div class="no"><span class="h">Avoid</span><ul><li>A countdown on a card.</li><li>Different layouts for each game: one stage, many contents.</li></ul></div>
+    </div>
+  </div>
+</section>
+
 
 <!-- 27 · Sonus et Visio -->
 <section class="page" data-rh="Sonus et Visio">
@@ -1065,6 +2101,36 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   </div>
 </section>
 
+<!-- LAYOUT sonus -->
+<section class="page" data-rh="Sonus et Visio">
+  <div class="sheet">
+    <span class="kicker">Sonus and Visio · how they are laid out</span>
+    <div class="wf wide" style="grid-template-columns:1fr 1.15fr;height:48mm">
+      <span class="b col t d" style="gap:.8mm"><i class="n">1</i><span class="wf in" style="grid-template-columns:repeat(3,auto);justify-content:start;gap:1mm"><span class="b a">Library</span><span class="b">Radio</span><span class="b">Music</span></span><span class="wf in" style="grid-template-columns:1fr 1fr 1fr;flex:1;width:100%"><span class="b">cover</span><span class="b">cover</span><span class="b">cover</span></span><span class="b k" style="width:100%"><i class="n">2</i>▶ ━━━○ title · 12:40</span></span>
+      <span class="b col t" style="gap:.8mm"><i class="n">3</i>Visio: Watch<span class="b a" style="width:100%;flex:1"><i class="n">4</i>the video<br><span style="font-weight:500;background:rgb(20 18 16/.8);color:#fbf5ea;padding:.4mm 1.4mm;border-radius:.8mm">Le soir, nous lisions…</span><br><span style="font-weight:500;color:var(--ink)">In the evening, we read…</span></span><span class="b k" style="width:100%">scrubber · speed · lines</span></span>
+    </div>
+    <ol class="key two tight">
+      <li><b>Sonus tabs:</b> Library, Radio, Music; Add at the right; a mini player stays at the foot of every page.</li>
+      <li><b>The mini player,</b> 56 px: cover, title, play, a thin bar. A click opens the full player.</li>
+      <li><b>Visio’s watch page:</b> the video as the stage, the lines in time beneath.</li>
+      <li><b>Two lines over the picture:</b> the language’s line larger; the translation smaller.</li>
+    </ol>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:19%">Part</th><th>How</th></tr>
+      <tr><td class="k">The lines</td><td>Two at a time, centred, 22 and 16 px, on a 78% espresso plate for contrast; every word is hoverable, and hovering pauses; ← and → step by line; , and . nudge a followed show by half a second.</td></tr>
+      <tr><td class="k">The player</td><td>Play, ±10 s, speed, repeat-each-sentence (R), the transcript as a column at the right, the current line lit. ↑ and ↓ move by sentence.</td></tr>
+      <tr><td class="k">A YouTube link</td><td>Plays in YouTube’s own embed; its title and picture come from YouTube; the lines come from the extension or a file.</td></tr>
+      <tr><td class="k">Following a show</td><td>A subtitles-only item gets a clock instead of a video: Play, Pause, ±0.5 s; the lines move in time beside the show playing in its own app.</td></tr>
+      <tr><td class="k">The extension</td><td>On Netflix, YouTube and the like it draws the same two lines over their player and asks an open Lingua tab for meanings; it reads only subtitle files, never the video.</td></tr>
+    </table>
+    <div class="dodont">
+      <div><span class="h">Tips</span><ul><li>Let subtitles be readable first, clever second.</li><li>Keep the video as large as the window allows.</li></ul></div>
+      <div class="no"><span class="h">Avoid</span><ul><li>Controls over the picture that don’t fade.</li><li>Auto-play with sound on a new page.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+
 <!-- 28 · Mentis -->
 <section class="page" data-rh="Mentis">
   <div class="sheet">
@@ -1087,6 +2153,36 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   </div>
 </section>
 
+<!-- LAYOUT mentis -->
+<section class="page" data-rh="Mentis">
+  <div class="sheet">
+    <span class="kicker">Mentis · how it is laid out</span>
+    <div class="wf wide" style="grid-template-columns:1.2fr 1fr;height:44mm">
+      <span class="b col t d" style="gap:.8mm"><i class="n">1</i><span class="wf in" style="grid-template-columns:repeat(4,auto);justify-content:start;gap:1mm"><span class="b a">Mundus</span><span class="b">Sermo</span><span class="b">Diarium</span><span class="b">Try</span></span><span class="b t" style="width:100%"><i class="n">2</i>A note on your week</span><span class="wf in" style="grid-template-columns:1fr 1fr 1fr;flex:1;width:100%"><span class="b"><i class="n">3</i>step 1</span><span class="b">step 2</span><span class="b">step 3</span></span></span>
+      <span class="b col t" style="gap:.8mm"><i class="n">4</i>Diarium<span class="wf in" style="grid-template-columns:1fr 2fr;flex:1;width:100%"><span class="b t k" style="font-size:4.2pt">list · calendar<br>search</span><span class="b t" style="font-size:4.4pt">Cher journal,<br>Aujourd’hui…</span></span></span>
+    </div>
+    <ol class="key two tight">
+      <li><b>Tabs:</b> Mundus (the guide), Sermo (talking with your own AI), Diarium (writing), Things to try.</li>
+      <li><b>A note on your week,</b> two sentences, in the learner’s language.</li>
+      <li><b>Three next steps,</b> each a card that answers back: shorter, I’d rather listen, why this, not today.</li>
+      <li><b>Diarium:</b> a list or a calendar at the left, the page at the right.</li>
+    </ol>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:19%">Part</th><th>How</th></tr>
+      <tr><td class="k">Mundus</td><td>A note, then the three steps at the same size, one link each; “Why this” opens a line of reasoning. Nothing here changes while the page is open except when asked.</td></tr>
+      <tr><td class="k">Things to try</td><td>Small cards with a time chip (5 min), a tick that stamps them, filters, and “Deal me one”.</td></tr>
+      <tr><td class="k">Sermo</td><td>Three screens with Back: the scene as large cards in groups, how you’ll talk (voice or text, corrections as I go or at the end, 5, 10 or 20 minutes), the prompt as a reading card with Copy and the AI’s buttons.</td></tr>
+      <tr><td class="k">Diarium</td><td>The page is the writing: a title in the language (“Cher journal”), a plain editor, a toolbar that appears over a selection; the word count and Saved sit in the header; the AI check is a quiet line.</td></tr>
+      <tr><td class="k">Calendar</td><td>Months as grids; days inked by length; a tick for corrected days; the month’s totals beside it.</td></tr>
+    </table>
+    <div class="dodont">
+      <div><span class="h">Tips</span><ul><li>Mundus talks like a friend with a plan, not a coach.</li><li>Let the page be quiet enough to write in.</li></ul></div>
+      <div class="no"><span class="h">Avoid</span><ul><li>A chat window inside Lingua: Sermo opens your own AI.</li><li>Red marks all over what someone wrote.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+
 <!-- 29 · Ratio -->
 <section class="page" data-rh="Ratio">
   <div class="sheet">
@@ -1098,7 +2194,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <div><span class="l">The one thing</span><span>None. Ratio is for looking; a goal can be changed from here.</span></div>
     </div>
     <div class="row"><p>Numbers are evidence, not grades. Each says what it counts and over how long. Where there isn’t enough to say anything, Ratio says that kindly instead of drawing a flat line.</p>
-      <aside><span class="k">Tabs</span>Overview · Tabula · Iter, with a language filter. Charts in <code>src/<wbr>design/<wbr>charts</code>, each with a popover.</aside></div>
+      <aside><span class="k">Tabs</span>Overview · Tabula, one language at a time outside Tabula. Charts in <code>src/<wbr>design/<wbr>charts</code>, each with a popover.</aside></div>
     <h3>Ask yourself</h3>
     <ol class="ask">
       <li>Does every number say what it counts, and since when?</li>
@@ -1108,6 +2204,38 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     <div class="row"><p></p><aside><span class="k">Tabula</span>The languages you speak, with level and notes; certificates can be added later.</aside></div>
   </div>
 </section>
+
+<!-- LAYOUT ratio -->
+<section class="page" data-rh="Ratio">
+  <div class="sheet">
+    <span class="kicker">Ratio · how it is laid out</span>
+    <div class="wf wide" style="grid-template-columns:repeat(4,1fr);grid-auto-rows:auto">
+      <span class="b t" style="grid-column:span 4;font-size:4.6pt"><i class="n">1</i>Overview · Tabula<span style="margin-left:auto" class="b">Log time</span><span class="b">Add a moment</span></span>
+      <span class="b s">Known</span><span class="b s">Time</span><span class="b s">Streak</span><span class="b s">This week</span>
+      <span class="b" style="grid-column:span 4;min-height:6mm"><i class="n">2</i>Where you are: ~A2 · bar to the next level</span>
+      <span class="b" style="grid-column:span 4;min-height:8mm"><i class="n">3</i>Time and habit: the year as a heat map · 30 days by room</span>
+      <span class="b" style="grid-column:span 2;min-height:12mm"><i class="n">4</i>Vocabulary · Reading</span><span class="b" style="grid-column:span 2;min-height:12mm">Cards · Listening · Typing · Writing</span>
+    </div>
+    <ol class="key two tight">
+      <li><b>Tabs,</b> and two ghost buttons at the right: time done outside Lingua, and the moments worth keeping.</li>
+      <li><b>Where you are,</b> an estimate, labelled as one.</li>
+      <li><b>The year and the month,</b> which show whether you come back.</li>
+      <li><b>Two columns of panels,</b> each the same anatomy: caption, numbers, a chart, a line.</li>
+    </ol>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:19%">Part</th><th>How</th></tr>
+      <tr><td class="k">Language</td><td>Only the one being learned, outside Tabula. Switching language is the chip in the sidebar.</td></tr>
+      <tr><td class="k">Tabula</td><td>A row per language you speak, drag to order; a slim bar for its goal and “on track”, “behind” or “reached”; notes; Goal, Log time, Notion CSV and Image at the top; the reading challenge above the rows.</td></tr>
+      <tr><td class="k">Panels</td><td>Vocabulary, Reading (with look-ups per 1,000 words), Listening (by kind), Typing (average and slowest letter), Cards, Writing, Grammar.</td></tr>
+      <tr><td class="k">Logging</td><td>Both buttons open a drawer at the right; saving closes it with a toast, and the numbers update.</td></tr>
+    </table>
+    <div class="dodont">
+      <div><span class="h">Tips</span><ul><li>Say what each number counts and since when.</li><li>Let “enough data” be a rule, not a guess.</li></ul></div>
+      <div class="no"><span class="h">Avoid</span><ul><li>Comparing with others.</li><li>A flat line where there’s no data.</li></ul></div>
+    </div>
+  </div>
+</section>
+
 
 <!-- 30 · Settings -->
 <section class="page" data-rh="Settings and the plans">
@@ -1128,6 +2256,35 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <li>Is “Continue free” as easy to see as the rest?</li>
     </ol>
     <div class="row"><p></p><aside><span class="k">Name</span>Settings was called Ordo until 5.2-1.</aside></div>
+  </div>
+</section>
+
+<!-- LAYOUT settings -->
+<section class="page" data-rh="Settings and the plans">
+  <div class="sheet">
+    <span class="kicker">Settings · how it is laid out</span>
+    <div class="wf wide" style="grid-template-columns:24% 1fr;height:40mm">
+      <span class="b col t k" style="gap:.7mm;font-size:4.6pt"><span class="b t" style="width:100%"><i class="n">1</i>Search settings</span>Reading<br>Cards<br>Listening<br>Languages<br>Look and feel<br>AI and translation<br>Your data<br>About</span>
+      <span class="b col t d" style="gap:.8mm"><span class="b t" style="width:100%"><i class="n">2</i>Look and feel</span><span class="b t" style="width:100%"><i class="n">3</i>Theme · light, dark, device <span style="margin-left:auto">▣ ▣ ▣</span></span><span class="b t" style="width:100%">Reading paper · seven swatches</span><span class="b t" style="width:100%">Commands · Mac or Windows <span style="margin-left:auto">◐</span></span><span class="b a" style="margin-top:auto;align-self:flex-end"><i class="n">4</i>Plans</span></span>
+    </div>
+    <ol class="key two tight">
+      <li><b>The groups and a search,</b> at the left; the search finds a setting in any group.</li>
+      <li><b>One group at a time,</b> with a title.</li>
+      <li><b>Each setting is a row:</b> its name and one line, the control at the right.</li>
+      <li><b>Plans</b> sit apart, in their own place, told straight.</li>
+    </ol>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:19%">Part</th><th>How</th></tr>
+      <tr><td class="k">A row</td><td>56 px high; the name in 15 px, the line under it in soft 13 px; a switch, a segmented control, a select or a button at the right. It acts at once.</td></tr>
+      <tr><td class="k">Look and feel</td><td>Choices are shown, not named: the themes and papers as swatches, the fonts in their own faces, the language touch with a preview.</td></tr>
+      <tr><td class="k">Your data</td><td>Backup, restore, sync and delete are four different things with four different buttons; Delete is danger, last, and names what goes.</td></tr>
+      <tr><td class="k">AI and translation</td><td>A key is pasted into a field and stays on this device; the field says so, and nothing sends it anywhere but the service it is for.</td></tr>
+      <tr><td class="k">Plans</td><td>Free, Lingua+ and Max side by side, each with its price, what it includes and when it renews, beside its button; “Continue free” as easy to see as the rest.</td></tr>
+    </table>
+    <div class="dodont">
+      <div><span class="h">Tips</span><ul><li>Group by what a person wants to do, not by how it is built.</li><li>Say what a setting changes right where you change it.</li></ul></div>
+      <div class="no"><span class="h">Avoid</span><ul><li>A setting that needs a restart.</li><li>Three buttons called Remove.</li></ul></div>
+    </div>
   </div>
 </section>
 
@@ -2148,7 +3305,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <tr><td class="k">Sonus et Visio</td><td>sound and sight. Listening and watching.</td></tr>
       <tr><td class="k">Mentis</td><td>of the mind. Mundus (the world: the guide), Sermo (talk), Diarium (a daily record).</td></tr>
       <tr><td class="k">Grammatica</td><td>grammar, in Cursus.</td></tr>
-      <tr><td class="k">Ratio</td><td>a reckoning. Overview, Tabula (a writing tablet: the languages you speak), Iter (a journey).</td></tr>
+      <tr><td class="k">Ratio</td><td>a reckoning. Overview, and Tabula (a writing tablet: the languages you speak, each with its goal).</td></tr>
       <tr><td class="k">Ordo</td><td>order. Settings’ old name.</td></tr>
       <tr><td class="k">Paper, Nocturne</td><td>the light and the dark.</td></tr>
       <tr><td class="k">Palette, paper</td><td>a colour set for each light; a page colour for reading.</td></tr>
@@ -2230,7 +3387,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
  ["Exams", "\\bexams?\\b"], ["Earnings and funding", "earn|funding|bootstrap"], ["Features audit", "audit|1,618"], ["First start", "first start"], ["FSRS", "FSRS"], ["Goals", "goal"],
  ["Grammatica", "Grammatica"], ["Handover", "handover"], ["Inbox", "inbox"], ["Keys, AI", "own key|AI key|your own free key"], ["Launch", "launch"],
  ["Licence", "licence"], ["Lingua+", "Lingua\\+"], ["Ludus", "Ludus"], ["Max", "\\bMax\\b"], ["Mentis", "Mentis"], ["Motion and springs", "spring"],
- ["Phone", "\\bphones?\\b"], ["Prices", "€"], ["Privacy", "privac"], ["Ratio", "Ratio"], ["Refunds", "refund"], ["Sermo", "Sermo"],
+ ["iPad and tablets", "iPad|tablet|Android"], ["Dark mode, Nocturne", "Nocturne|Charcoal"], ["Charts", "chart|heat map"], ["Keyboard shortcuts", "shortcut|Alt 1"], ["Words on screen", "empty page|microcopy|Words on the screen"], ["Extension, the Lingua", "extension"], ["Visio", "Visio"], ["Phone", "\\bphones?\\b"], ["Prices", "€"], ["Privacy", "privac"], ["Ratio", "Ratio"], ["Refunds", "refund"], ["Sermo", "Sermo"],
  ["Sonus et Visio", "Sonus"], ["States of a page", "loading|empty"], ["Stripe", "Stripe"], ["Support", "support"], ["Thesaurus", "Thesaurus"],
  ["Tiers", "tier"], ["Type and fonts", "Literata"], ["VAT", "VAT"], ["Versions", "version"], ["Voice, Lingua's", "voice"], ["Website", "website"]
 ]</script>

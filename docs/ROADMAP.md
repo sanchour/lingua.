@@ -2327,3 +2327,5 @@ as its guide. It comes after Lingua 6 · Features (the user, 2026-10-26).
       the plan says, until the user says otherwise.
 - [ ] **7-2 to 7-10 · The rooms and the shared pieces,** each planned when the user's notes for it come.
 - [ ] **7-11 · Lingua 7's check;** the version becomes 0.7.0 (Lingua 6 is built first, as 0.6.x).
+
+- [x] **Handbook, 2026-10-28 (0.5.2-alpha.29):** recent changes, the design chapters, tablet and phone guides, a layout page per room (141 pages; see DECISIONS 2026-10-28).
