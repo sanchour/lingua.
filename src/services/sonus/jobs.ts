@@ -7,6 +7,10 @@ import type { Cue, Media } from '@/data/types';
 import { setCues } from '@/services/audio/engine';
 import { transcribe, TranscribeError } from '@/services/transcribe/groq';
 import { makeNativeTrack, subtitleSized } from '@/services/visio/subtitles';
+import { DEFAULT_GEMINI_MODEL, fetchYouTubeCaptions, transcribeWithGemini, TranscriptError } from '@/services/visio/youtubeTranscript';
+import { aiKeys } from '@/data/plan';
+import { getSettings } from '@/data/settings';
+import { saveTrack } from '@/data/video';
 import { toast } from '@/state/ui';
 import { downloadBlob, NetError } from './net';
 import { readAlongPart } from './readAlong';
@@ -120,5 +124,46 @@ export async function startTranslation(media: Media, cues: Cue[]): Promise<boole
     return false;
   } finally {
     setJob('translating', media.id, null);
+  }
+}
+
+/** Subtitles for a YouTube video, made by Gemini with the learner's own key (Max). */
+export async function startGeminiTranscript(media: Media): Promise<boolean> {
+  if (!media.youtubeId || useJobs.getState().transcribing[media.id] !== undefined) return false;
+  setJob('transcribing', media.id, 0.05);
+  setNote(media.id, 'Gemini is watching the video…');
+  try {
+    const settings = await getSettings();
+    const model = settings.llm.provider === 'gemini' && settings.llm.model ? settings.llm.model : DEFAULT_GEMINI_MODEL;
+    const cues = await transcribeWithGemini({ youtubeId: media.youtubeId, lang: media.lang, key: aiKeys(settings).gemini?.trim() ?? '', model });
+    await saveTrack(media.id, media.lang, 'target', subtitleSized(cues), 'gemini');
+    toast(`Subtitles for “${media.title}” are ready: ${cues.length} lines.`, { tone: 'success' });
+    return true;
+  } catch (error) {
+    toast(error instanceof TranscriptError || error instanceof Error ? error.message : 'Gemini couldn’t make the subtitles.', { tone: 'error', duration: 8000 });
+    return false;
+  } finally {
+    setJob('transcribing', media.id, null);
+    setNote(media.id, null);
+  }
+}
+
+/** YouTube's own captions, if it will hand them over (often it won't, and the learner is told what else to try). */
+export async function startYouTubeCaptions(media: Media): Promise<boolean> {
+  if (!media.youtubeId || useJobs.getState().transcribing[media.id] !== undefined) return false;
+  setJob('transcribing', media.id, 0.1);
+  setNote(media.id, 'Asking YouTube for its captions…');
+  try {
+    const cues = await fetchYouTubeCaptions(media.youtubeId, media.lang);
+    if (!cues.length) {
+      toast('YouTube didn’t share captions for this video. Try the Lingua extension on YouTube, a subtitle file, or Gemini with Max.', { duration: 9000 });
+      return false;
+    }
+    await saveTrack(media.id, media.lang, 'target', subtitleSized(cues), 'youtube');
+    toast(`Captions added: ${cues.length} lines.`, { tone: 'success' });
+    return true;
+  } finally {
+    setJob('transcribing', media.id, null);
+    setNote(media.id, null);
   }
 }

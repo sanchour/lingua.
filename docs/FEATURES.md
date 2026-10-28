@@ -869,3 +869,4 @@ Its own tool in `sandesigning/` (no React, no dependencies), served beside Lingu
 - **Tips and explanations** (Look and feel, and Simple › Comfort): off hides the small lines that explain a setting
   or a card (`data-hint`), everywhere; status lines and warnings (last backup, what a reset deletes, where a key goes)
   always show.
+- **Visio, subtitles for a YouTube video (0.5.3-alpha.7):** the Subtitles panel has **Gemini** (Lingua+ Max, your own key; Gemini listens to the video and returns timed lines; shown as "Gemini" in the track's source) and **Captions** (YouTube's own, asked for from the browser; often YouTube shares none and says so). "Set up Whisper" no longer shows for a YouTube link.

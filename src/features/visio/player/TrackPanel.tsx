@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { Clock, Ellipsis, FileText, KeyRound, Languages, Sparkles, Trash2 } from 'lucide-react';
+import { Captions, Clock, Ellipsis, FileText, KeyRound, Languages, Sparkles, Trash2 } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { getLanguage, GLOSS_LANG } from '@/core/lang/languages';
 import type { Media, Transcript } from '@/data/types';
@@ -7,7 +7,7 @@ import { removeTrack, saveTrack, shiftTrack } from '@/data/video';
 import type { TrackRole, Tracks } from '@/data/video';
 import { Button, Card, MenuItem, Popover } from '@/design/primitives';
 import { pickFile } from '@/services/files/files';
-import { startTranscription, startTranslation, useJobs } from '@/services/sonus/jobs';
+import { startGeminiTranscript, startTranscription, startTranslation, startYouTubeCaptions, useJobs } from '@/services/sonus/jobs';
 import { readSubtitleFile, SUBTITLE_ACCEPT } from '@/services/visio/files';
 import { aiBlock, aiKeys } from '@/data/plan';
 import { toast, useUI } from '@/state/ui';
@@ -20,6 +20,8 @@ const SOURCE: Record<Transcript['source'], string> = {
   text: 'Text',
   machine: 'AI translation',
   book: 'The book’s text',
+  gemini: 'Gemini',
+  youtube: 'YouTube captions',
 };
 
 async function addFile(media: Media, role: TrackRole) {
@@ -42,10 +44,11 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
   const transcribing = useJobs((s) => s.transcribing[media.id]);
   const note = useJobs((s) => s.notes[media.id]);
   const translating = useJobs((s) => s.translating[media.id]);
-  const hasSound = Boolean(media.blobId || media.remoteUrl);
+  const hasSound = !media.youtubeId && Boolean(media.blobId || media.remoteUrl);
   const canTranscribe = settings.audio.transcriber === 'device' || Boolean(aiKeys(settings).groq);
   const needsMax = aiBlock(settings, settings.llm.provider) === 'max';
   const hasAi = Boolean(aiKeys(settings)[settings.llm.provider] && settings.llm.model);
+  const geminiBlock = aiBlock(settings, 'gemini');
   const openPlans = useUI((s) => s.openPlans);
   const name = getLanguage(media.lang)?.name ?? media.lang;
 
@@ -67,7 +70,7 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
               </div>
             </>
           ) : (
-            <p className="text-[12.5px] text-ink-soft">{track ? `${SOURCE[track.source]} · ${track.cues.length} lines` : 'None yet'}</p>
+            <p className="text-[12.5px] text-ink-soft">{track ? `${SOURCE[track.source] ?? 'Subtitles'} · ${track.cues.length} lines` : 'None yet'}</p>
           )}
         </div>
         {!busy &&
@@ -79,6 +82,16 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
                 <Button size="sm" variant="secondary" icon={canTranscribe ? Sparkles : KeyRound} onClick={() => (canTranscribe ? void startTranscription(media) : needsMax ? openPlans('ai') : navigate('/settings/listening'))}>
                   {canTranscribe ? 'Make' : 'Set up Whisper'}
                 </Button>
+              )}
+              {role === 'target' && media.youtubeId && (
+                <>
+                  <Button size="sm" variant="secondary" icon={geminiBlock ? KeyRound : Sparkles} onClick={() => (geminiBlock === null ? void startGeminiTranscript(media) : geminiBlock === 'max' ? openPlans('ai') : navigate('/settings/ai'))}>
+                    {geminiBlock === null ? 'Gemini' : geminiBlock === 'max' ? 'Lingua+ Max' : 'Add Gemini key'}
+                  </Button>
+                  <Button size="sm" variant="ghost" icon={Captions} onClick={() => void startYouTubeCaptions(media)}>
+                    Captions
+                  </Button>
+                </>
               )}
               {role === 'native' && tracks.target && (
                 <Button size="sm" variant="secondary" icon={hasAi ? Languages : KeyRound} onClick={() => (hasAi ? void startTranslation(media, tracks.target!.cues) : needsMax ? openPlans('ai') : navigate('/settings/ai'))}>

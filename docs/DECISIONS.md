@@ -1782,7 +1782,7 @@ Short records of choices that are not obvious from the code. Newest last.
 
 - The YouTube embed hides its captions, so Visio's two lines come from a subtitle file, the extension, or (for a show playing elsewhere) the follow clock; a `VideoLike` stand-in lets one clock serve a real video, YouTube and a timer.
 - The extension reads only the subtitle files a player loads, never the video, and asks an open Lingua tab for lookups and saves (`services/visio/bridge.ts`), so it holds no data and needs no account. Messages from the page are checked (`parseRequest`) before anything is done.
-- Not built: a Gemini transcript from a link (needs Max; the file and the extension cover it) and YouTube's own captions as a fallback.
+- Not built then, built 2026-10-28 (0.5.3-alpha.7): a Gemini transcript from a link (Max, the learner's key in a header) and YouTube's own captions as a best-effort fallback (YouTube often answers with nothing from a browser page, so an empty answer is reported, not retried).
 - Ratio's look-ups per 1,000 words count only sessions that recorded look-ups (`lookups` on `ActivitySession`, from alpha.28), so the rate is honest rather than thinned by older sessions.
 
 ## 2026-10-28 — The handbook grows a design half, and guides for tablet and phone

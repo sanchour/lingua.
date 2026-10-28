@@ -480,7 +480,7 @@ export interface Transcript extends Synced {
    * `text`: a plain transcript without timings, spread over the audio by length (approximate).
    * `book`: an audiobook's own text from Codex, timed by matching it with Whisper's.
    */
-  source: 'srt' | 'vtt' | 'text' | 'whisper-groq' | 'whisper-local' | 'machine' | 'book';
+  source: 'srt' | 'vtt' | 'text' | 'whisper-groq' | 'whisper-local' | 'machine' | 'book' | 'gemini' | 'youtube';
   offsetMs: number;
   cues: Cue[];
   /** With `book`: the transcript it was timed from, to go back to. */

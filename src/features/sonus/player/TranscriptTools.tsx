@@ -20,6 +20,8 @@ const SOURCE: Record<Transcript['source'], string> = {
   text: 'Text file · approximate timing',
   machine: 'Machine transcript',
   book: 'The book’s own text · timed by Whisper',
+  gemini: 'Gemini',
+  youtube: 'YouTube captions',
 };
 
 async function addFile(media: Media) {
