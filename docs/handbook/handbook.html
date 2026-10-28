@@ -508,6 +508,7 @@ ol.key.two li { break-inside: avoid; }
       <li><span class="n" data-n-for="law"></span><a href="#law">Privacy, licences and the law</a><span class="dots"></span><span class="pn" data-for="law"></span></li>
       <li><span class="n" data-n-for="support"></span><a href="#support">Support</a><span class="dots"></span><span class="pn" data-for="support"></span></li>
       <li><span class="n" data-n-for="ship"></span><a href="#ship">Shipping</a><span class="dots"></span><span class="pn" data-for="ship"></span></li>
+      <li><span class="n" data-n-for="stores"></span><a href="#stores">Stores and installers</a><span class="dots"></span><span class="pn" data-for="stores"></span></li>
       <li><span class="n" data-n-for="built"></span><a href="#built">How Lingua is built</a><span class="dots"></span><span class="pn" data-for="built"></span></li>
       <li><span class="n" data-n-for="datasafe"></span><a href="#datasafe">Keeping learners’ data safe</a><span class="dots"></span><span class="pn" data-for="datasafe"></span></li>
       <li><span class="n" data-n-for="breaks"></span><a href="#breaks">When something breaks</a><span class="dots"></span><span class="pn" data-for="breaks"></span></li>
@@ -3749,11 +3750,178 @@ ol.key.two li { break-inside: avoid; }
     </ol>
     <h3>The order of the versions</h3>
     <table style="width:84mm">
-      <tr><td class="k">0.5.2-alpha.N</td><td>Lingua 5.2 being built; 0.5.2 at its check</td></tr>
-      <tr><td class="k">0.6.0-alpha.N</td><td>Lingua 6 · Features, next (your answer); 0.6.0 at its check</td></tr>
+      <tr><td class="k">0.5.2</td><td>Lingua 5 complete, released 2026-10-28</td></tr>
+      <tr><td class="k">0.5.3-alpha.N</td><td>Between lines: the book and fixes</td></tr>
+      <tr><td class="k">0.6.0-alpha.N</td><td>Lingua 6 · Features, next; 0.6.0 at its check</td></tr>
       <tr><td class="k">0.7.0-alpha.N</td><td>Lingua 7 · Design, after it</td></tr>
       <tr><td class="k">1.0.0</td><td>The first public release, when you say so</td></tr>
     </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Stores and installers">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="stores" data-ch>Stores and installers <span class="nv pr">A plan, nothing built</span></h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Lingua is a web app, so every store package is a thin frame around the same site: the store’s door and trust, with the app, updates and offline packs unchanged.</p>
+      <aside><span class="k">Careful</span>Fees and rules are as I knew them in mid-2026; read the store’s page the day you act.</aside></div>
+    <h3>The channels</h3>
+    <table class="wide spec" style="font-size:7.2pt;line-height:9.6pt">
+      <tr><th style="width:21%">Where</th><th style="width:33%">What it is</th><th style="width:25%">Cost</th><th>For Lingua</th></tr>
+      <tr><td class="k">The website</td><td>The app; Edge and Chrome offer Install, Safari Add to Dock.</td><td>Free</td><td>Live</td></tr>
+      <tr><td class="k">Extension stores</td><td>Chrome, Edge and Firefox add-on stores; the extension only.</td><td>About US$5 once for Chrome; the others free</td><td>After it is tried on real sites</td></tr>
+      <tr><td class="k">Microsoft Store</td><td>The PWA packaged as an MSIX (PWABuilder); the Store signs it.</td><td>Developer account, once (about US$19 a person)</td><td>The first store</td></tr>
+      <tr><td class="k">Windows download</td><td>A signed installer from a wrapper (Tauri or Electron); also <code>winget</code>.</td><td>A signing service or certificate, yearly</td><td>Maybe</td></tr>
+      <tr><td class="k">Mac download</td><td>A <code>.dmg</code>, signed and notarized, outside the store.</td><td>Apple Developer Program, US$99 a year</td><td>Maybe</td></tr>
+      <tr><td class="k">Mac App Store</td><td>The same app, sandboxed, reviewed.</td><td>The same US$99</td><td>Later</td></tr>
+      <tr><td class="k">Google Play</td><td>An Android package of the site (a Trusted Web Activity).</td><td>US$25 once</td><td>Not now: phones are not built</td></tr>
+      <tr><td class="k">iPhone and iPad</td><td>A wrapper (Capacitor) in the App Store.</td><td>The same US$99</td><td>Not now</td></tr>
+    </table>
+    <div class="row"><p class="small"><b>The order I would take:</b> the site (done), the Microsoft Store, the extension, a Windows and a Mac download, the Mac App Store; phones only once the phone is designed.</p><aside><span class="k">Your call</span>Which channels, and when, is yours.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Stores and installers">
+  <div class="sheet">
+    <h3 style="margin-top:0">From code to a store, in nine steps</h3>
+    <ol class="ask" style="font-style:normal;font-size:8pt;line-height:10.8pt">
+      <li><b>Choose one channel</b> and write down why in <code>docs/DECISIONS.md</code>. One at a time: each has its own account, its own rules and its own reviews.</li>
+      <li><b>Open the account.</b> Yours, in your name or your business’s; a session never creates one. Identity checks take days (an Apple enrolment as a company can take two weeks).</li>
+      <li><b>Freeze a version.</b> Stores want a plain number: 1.0.0, not 0.5.3-alpha.1. Until you say 1.0.0, use a beta channel (TestFlight, Play testing, a Store flight).</li>
+      <li><b>Build the package</b> (a session). A <code>packaging/</code> folder, away from <code>src/</code>, that points at the live site and keeps the service worker for offline.</li>
+      <li><b>Sign it.</b> The keys and certificates are yours, in your password manager, never in the repository or in a chat. The Microsoft Store signs for you.</li>
+      <li><b>Test it in the store’s own channel,</b> in a clean user account with no dev profile: first start, offline start, an update, uninstall and reinstall.</li>
+      <li><b>Prepare the listing</b> (two pages on): icon, screenshots, words, the privacy answers.</li>
+      <li><b>Submit and wait.</b> Usually a day or two, sometimes hours, sometimes a week for a new account. Answer a rejection the same day, in plain words.</li>
+      <li><b>Release in stages,</b> watch the reviews and the crash reports, and keep the update path warm.</li>
+    </ol>
+    <h3>What each side does</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:50%">A session can</th><th>Only you can</th></tr>
+      <tr><td>Build and test the package, write the listing words and screenshots, keep the docs, version and changelog.</td><td>Open accounts, pay fees, hold keys, sign, accept the store’s terms, press Submit, answer the reviewer’s mail.</td></tr>
+    </table>
+    <div class="row"><p class="small"><b>The good news about updates.</b> A frame that loads the hosted site updates the moment the site does, with no store review. Review applies to the frame, not to the learning inside it. The catch: a reviewer can object when a wrapper’s behaviour changes by remote update, so what the app is for must not change between reviews.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Stores and installers">
+  <div class="sheet">
+    <h3 style="margin-top:0">Windows</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:23%">Route</th><th>How it goes</th></tr>
+      <tr><td class="k">Install from Edge or Chrome</td><td>Already works and costs nothing. The website’s download page should say it first, with one picture: the install icon in the address bar.</td></tr>
+      <tr><td class="k">Microsoft Store</td><td>PWABuilder reads the site’s address and manifest and returns an MSIX. Lingua’s manifest needs a full name, icons up to 512, a start address and scope, shortcuts and screenshots. You upload it in Partner Center; the package is checked and signed by the Store, so <b>no certificate of your own</b>. Run the Windows App Certification Kit before sending.</td></tr>
+      <tr><td class="k">Direct download</td><td>A wrapper (Tauri uses the system’s WebView2 and is small; Electron carries its own Chromium and weighs over a hundred megabytes) made into a signed installer. Unsigned, Windows SmartScreen warns “unrecognised app” and many learners stop.</td></tr>
+      <tr><td class="k">Signing</td><td>Azure Trusted Signing (about US$10 a month; only some countries and businesses qualify) or a certificate from an authority (roughly US$100 to 400 a year). A new certificate builds trust with downloads; expect a few warnings at first.</td></tr>
+      <tr><td class="k"><code>winget</code></td><td>A small manifest sent to the public winget list lets learners type <code>winget install Lingua</code>. Free; it needs the signed installer to point at.</td></tr>
+    </table>
+    <h3>Things to test on Windows</h3>
+    <ul class="plain" style="font-size:8pt;line-height:10.8pt">
+      <li><b>Offline:</b> install, switch the network off, open, study a lesson.</li>
+      <li><b>Voices and speech:</b> the device voices, Piper and the microphone behave in a frame as they do in Edge.</li>
+      <li><b>Uninstalling</b> can take the learner’s data with it. The page should say “Back up first”; Settings already has the backup.</li>
+      <li><b>Two copies:</b> the browser tab and the installed app open on one profile: only one should write at a time.</li>
+    </ul>
+    <div class="row"><p class="small"><b>My lean, not a decision:</b> the Microsoft Store through PWABuilder first (free of signing); a Tauri installer only if learners ask for a download.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Stores and installers">
+  <div class="sheet">
+    <h3 style="margin-top:0">Mac</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:23%">Route</th><th>How it goes</th></tr>
+      <tr><td class="k">Add to Dock</td><td>In Safari on a recent macOS: File › Add to Dock makes the site an app. Free, no account, offline works. Chrome and Edge also install it.</td></tr>
+      <tr><td class="k">Direct download</td><td>A <code>.dmg</code> holding the app, <b>signed</b> with a Developer ID certificate and <b>notarized</b> by Apple (the <code>notarytool</code> step), then stapled. Unsigned, Gatekeeper says it can’t be opened. Needs the US$99 programme.</td></tr>
+      <tr><td class="k">Mac App Store</td><td>The same app signed for distribution, with the App Sandbox on and only the rights it needs (the network; files the learner picks), uploaded through Xcode or Transporter, then a listing in App Store Connect and a review.</td></tr>
+      <tr><td class="k">Chip</td><td>Build for Apple silicon and Intel together (a universal build), or Apple silicon only if you accept losing old Macs.</td></tr>
+    </table>
+    <h3>What differs from Windows</h3>
+    <ul class="plain" style="font-size:8pt;line-height:10.8pt">
+      <li><b>The engine is WebKit, not Chromium.</b> Speech recognition, some audio and storage behaviour differ. Test Sonus, Piper, dictation, file pickers and how much IndexedDB the system keeps.</li>
+      <li><b>Menus and keys:</b> the Mac has its own menu bar and <kbd>⌘</kbd>; the shortcuts page shows the Mac set when the learner chooses it in Settings.</li>
+      <li><b>The review reads the app, not the site.</b> A frame that only shows a website can be refused as “minimum functionality”. Offline packs, the menu bar, dropping files into Bibliotheca and notifications are what make it more.</li>
+    </ul>
+    <h3>Linux</h3>
+    <p class="small">Not planned. Edge and Chrome install the web app there; if learners ask, an AppImage or Flatpak is the same frame again.</p>
+    <div class="row"><p class="small"><b>My lean:</b> Add to Dock and the install in Chrome first, a notarized <code>.dmg</code> only when Mac learners ask. The Mac App Store last: the most work, and it gives the least a website doesn’t.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Stores and installers">
+  <div class="sheet">
+    <h3 style="margin-top:0">Phones, later</h3>
+    <p class="small">Nothing here is built: the phone isn’t part of Lingua yet. This is what it would take.</p>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:23%">Store</th><th>What it would take</th></tr>
+      <tr><td class="k">Google Play</td><td>A Trusted Web Activity made with Bubblewrap or PWABuilder; an Android App Bundle; a file on the domain that proves the site and the app belong together; Play App Signing; the Data safety form and a content rating; a privacy-policy address. In mid-2026 a new personal account had to run a closed test with at least twelve testers for fourteen days before it could publish: check that first.</td></tr>
+      <tr><td class="k">App Store (iPhone, iPad)</td><td>No equivalent to a Trusted Web Activity: a Capacitor wrapper in WebKit. Apple’s “minimum functionality” rule refuses a plain website in a box, so it needs something native (offline packs, notifications, the share sheet, widgets). TestFlight first; the privacy “nutrition label” to fill.</td></tr>
+    </table>
+    <h3>The money rule</h3>
+    <div class="row"><p>Inside a store app, a digital thing (Lingua+, Max) must normally be bought with the store’s own billing, at a share of 15 to 30 per cent. Lingua’s sale is on its own website through Stripe, a one-time payment that keeps most of its price.</p>
+      <aside><span class="k">Moving</span>These rules have shifted (a 2025 US ruling on links out of iPhone apps; the EU’s rules). Read the current text before deciding.</aside></div>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:36%">Choice</th><th>What it means</th></tr>
+      <tr><td class="k">Free in the store, bought on the website</td><td>Cheapest, only where the store lets an app point to the website.</td></tr>
+      <tr><td class="k">Store billing in the app</td><td>Works everywhere; a higher price or less income per sale; two sets of buyers to keep straight.</td></tr>
+      <tr><td class="k">No phone store</td><td>The site installs on a phone already; the desktop is where Lingua is designed to live.</td></tr>
+    </table>
+    <p class="small muted">Not decided; there is no phone app to decide it for.</p>
+  </div>
+</section>
+
+<section class="page" data-rh="Stores and installers">
+  <div class="sheet">
+    <h3 style="margin-top:0">The listing kit</h3>
+    <table class="wide spec" style="font-size:7.2pt;line-height:9.5pt">
+      <tr><th style="width:21%">Piece</th><th style="width:42%">What each store wants (check the current sizes)</th><th>For Lingua</th></tr>
+      <tr><td class="k">Name</td><td>About 30 characters at Apple and Google; longer at Microsoft. The name must be free in that store.</td><td>Search first; the law chapter says why.</td></tr>
+      <tr><td class="k">Icon</td><td>1024 × 1024 at Apple; 512 × 512 at Google; Microsoft a set of tiles that PWABuilder makes.</td><td>The mark from the press kit.</td></tr>
+      <tr><td class="k">Screenshots</td><td>Desktop: 1280 × 800 and up (Microsoft 1366 × 768 at least); the Mac App Store takes 1280 × 800 to 2880 × 1800; Play also wants a 1024 × 500 banner.</td><td>Real screens: Home, a reader page, a card review, Ratio; one in Nocturne.</td></tr>
+      <tr><td class="k">Words</td><td>A short line, a long description, a keyword list at Apple (100 characters), “what’s new”.</td><td>From “Words for selling”; “what’s new” from the changelog line.</td></tr>
+      <tr><td class="k">Links</td><td>A privacy-policy address, a support address, a website.</td><td>The pages the law and support chapters list.</td></tr>
+      <tr><td class="k">Category, age</td><td>Education; an age questionnaire.</td><td>Answer honestly: books and videos chosen by the learner.</td></tr>
+      <tr><td class="k">Privacy answers</td><td>What is collected, what is shared, with whom.</td><td>Nothing leaves the device but packs, look-ups and what the learner sends to their own AI; Stripe handles payment on the website.</td></tr>
+      <tr><td class="k">Languages</td><td>Each store lists translations of the listing.</td><td>The six core languages first.</td></tr>
+    </table>
+    <h3>What gets refused</h3>
+    <table class="wide spec" style="font-size:7.2pt;line-height:9.5pt">
+      <tr><th style="width:30%">Why</th><th>How Lingua stays clear</th></tr>
+      <tr><td class="k">A website in a box</td><td>Show what the frame adds: offline, menus, files.</td></tr>
+      <tr><td class="k">Buying outside store billing</td><td>The money rule; decide before the first submission.</td></tr>
+      <tr><td class="k">No privacy policy, dead links</td><td>Open each link the day you submit.</td></tr>
+      <tr><td class="k">Looks unfinished</td><td>The 35 “Soon” languages could read as placeholder content: word them “not yet” or hide them in the store build.</td></tr>
+      <tr><td class="k">A crash, or a login the reviewer lacks</td><td>Lingua has no account; test a clean first start.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Stores and installers">
+  <div class="sheet">
+    <h3 style="margin-top:0">Versions, updates and release day</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:26%">Place</th><th style="width:36%">Version rule</th><th>Updates</th></tr>
+      <tr><td class="k">The site</td><td>Lingua’s own, 0.X.Y-alpha.N</td><td>Every push to main; installs update at a quiet moment</td></tr>
+      <tr><td class="k">Microsoft Store</td><td>Four numbers, no suffix: 1.0.0.0</td><td>The frame by review; the app by the site</td></tr>
+      <tr><td class="k">Apple, Google</td><td>A number (1.0.0) and a build that goes up with every upload</td><td>The same; a build is never reused</td></tr>
+      <tr><td class="k">The extension</td><td>Its own manifest number</td><td>Reviewed on each upload</td></tr>
+    </table>
+    <p class="small">Until 1.0.0 only the site is public. At 1.0.0 the stores start at 1.0.0 too and follow the major and minor of Lingua’s own line.</p>
+    <h3>If it goes wrong</h3>
+    <ul class="plain" style="font-size:8pt;line-height:10.8pt">
+      <li><b>The site:</b> revert the commit; the next push is the fix. Installed apps follow.</li>
+      <li><b>A store:</b> halt a staged rollout. Apple can’t roll back, so a fix is a new build, with an expedited review asked for.</li>
+      <li><b>Data:</b> no release may change a table without its migration (the data chapter).</li>
+    </ul>
+    <h3>Release day, before you press Submit</h3>
+    <div class="ck"><span class="box"></span>A clean first start works offline, in a new user account.</div>
+    <div class="ck"><span class="box"></span>The privacy answers match what the privacy page says.</div>
+    <div class="ck"><span class="box"></span>Every link in the listing opens; the support inbox is read.</div>
+    <div class="ck"><span class="box"></span>The payment path is the one chosen, tried in Stripe’s test mode.</div>
+    <div class="ck"><span class="box"></span>Screenshots are of the version in the store, in the learner’s language.</div>
+    <div class="ck"><span class="box"></span>The changelog line, the roadmap and this chapter are updated.</div>
+    <div class="row"><p class="small">When a channel is chosen, its steps move out of this chapter into <code>docs/DEPLOY.md</code>, and the decision into <code>docs/DECISIONS.md</code>.</p><aside></aside></div>
   </div>
 </section>
 
@@ -3861,12 +4029,12 @@ ol.key.two li { break-inside: avoid; }
     <h2 id="road" data-ch>The whole road</h2>
     <div class="rule"></div>
     <div class="row"><p class="lead">Ten stations. The first three are behind you; the rest is in order, and some of it can run side by side.</p>
-      <aside><span class="k">As of</span>27 October 2026, version 0.5.2-alpha.4.</aside></div>
+      <aside><span class="k">As of</span>28 October 2026, version 0.5.2.</aside></div>
     <div class="station done"><b>1 · The first builds</b><span>Lingua 1 to 3: the reader, cards, rooms, twenty languages, Grammatica and alphabets.</span></div>
     <div class="station done"><b>2 · Lingua 4.0</b><span>Tiers and seventy languages, the full dictionary, comics, the end page.</span></div>
     <div class="station done"><b>3 · Lingua 5.1</b><span>Plans and Stripe in test mode, the first start, Home, the course, typing, natural voices. Version 0.5.1.</span></div>
-    <div class="station now"><b>4 · Lingua 5.2</b><span>The rooms still open (Visio, Diarium, Sermo, Mundus, Grammatica’s path, Ratio), then its check. Version 0.5.2.</span></div>
-    <div class="station"><b>5 · Lingua 6 · Features</b><span>Foundations first, then the skills, paths, more of the language, around the app. Version 0.6.0. Next, by your choice.</span></div>
+    <div class="station done"><b>4 · Lingua 5.2</b><span>The rooms still open (Visio, Diarium, Sermo, Mundus, Grammatica’s path, Ratio), then its check. Version 0.5.2.</span></div>
+    <div class="station now"><b>5 · Lingua 6 · Features</b><span>Foundations first, then the skills, paths, more of the language, around the app. Version 0.6.0. Next, by your choice.</span></div>
   </div>
 </section>
 
@@ -4220,7 +4388,7 @@ ol.key.two li { break-inside: avoid; }
 })();
 </script>
 <script type="application/json" id="index-terms">[
- ["Accessibility", "accessib"], ["Alphabets", "alphabet"], ["Anki", "Anki"], ["Ask, the tutor", "Ask button|the tutor"], ["Backups", "backup"],
+ ["Accessibility", "accessib"], ["App stores and installers", "App Store|Google Play|Microsoft Store|installer|winget"], ["Signing and notarizing", "notariz|code-signing|SmartScreen"], ["Alphabets", "alphabet"], ["Anki", "Anki"], ["Ask, the tutor", "Ask button|the tutor"], ["Backups", "backup"],
  ["Beta, the private", "private beta|the beta"], ["Codex", "Codex"], ["Colours and palettes", "palette|terracotta"], ["Competitors", "gamified|what else they use"],
  ["Course, the", "the course"], ["Credits", "credits"], ["Cursus", "Cursus"], ["Dictionary", "dictionar"], ["Drawings", "drawing"],
  ["Exams", "\\bexams?\\b"], ["Earnings and funding", "earn|funding|bootstrap"], ["Features audit", "audit|1,618"], ["First start", "first start"], ["FSRS", "FSRS"], ["Goals", "goal"],
