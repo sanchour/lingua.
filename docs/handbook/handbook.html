@@ -477,6 +477,8 @@ ol.key.two li { break-inside: avoid; }
       <li><span class="n" data-n-for="ch18"></span><a href="#ch18">Settings and the plans</a><span class="dots"></span><span class="pn" data-for="ch18"></span></li>
       <li><span class="n" data-n-for="newtabs"></span><a href="#newtabs">The new tabs of Lingua 6</a><span class="dots"></span><span class="pn" data-for="newtabs"></span></li>
       <span class="part">Part Five · Before you call it done</span>
+      <li><span class="n" data-n-for="pages"></span><a href="#pages">Page by page</a><span class="dots"></span><span class="pn" data-for="pages"></span></li>
+      <li><span class="n" data-n-for="l6pages"></span><a href="#l6pages">Lingua 6, page by page</a><span class="dots"></span><span class="pn" data-for="l6pages"></span></li>
       <li><span class="n" data-n-for="ch19"></span><a href="#ch19">Every page’s states</a><span class="dots"></span><span class="pn" data-for="ch19"></span></li>
       <li><span class="n" data-n-for="ch20"></span><a href="#ch20">The check</a><span class="dots"></span><span class="pn" data-for="ch20"></span></li>
       <li><span class="n" data-n-for="ch21"></span><a href="#ch21">The review sheet</a><span class="dots"></span><span class="pn" data-for="ch21"></span></li>
@@ -3083,6 +3085,239 @@ ol.key.two li { break-inside: avoid; }
   </div>
 </section>
 
+<section class="page" data-rh="Page by page">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="pages" data-ch>Page by page</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">The room chapters say what each room is for. This chapter goes down a level: every page a learner can reach, where its parts sit, and how it behaves when it is empty, full, locked or busy.</p>
+      <aside><span class="k">Where</span>The routes are in <code>src/<wbr>app/<wbr>router.tsx</code>. The cards say how a page is meant to be; where the app differs, the app wins and the card is corrected.</aside></div>
+    <h3>How to read a page card</h3>
+    <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
+      <tr><th style="width:21%">Part</th><th>What it tells you</th></tr>
+      <tr><td><b>Page</b></td><td>Its name and where it lives. A page you can bookmark has its own address; a tab or a drawer is said to be one.</td></tr>
+      <tr><td><b>Where things sit</b></td><td>The regions, left to right and top to bottom, with the sizes that matter. Sizes are from the frame chapter: a sidebar of 216 (64 folded), a column up to 1152, a drawer of 440, a dialog of 448.</td></tr>
+      <tr><td><b>Elements</b></td><td>What is on the page, which one is the one thing, the keys, and how it looks empty, locked, offline.</td></tr>
+    </table>
+    <h3>What every page shares</h3>
+    <ul class="plain" style="font-size:8pt;line-height:10.8pt">
+      <li><b>The frame:</b> the sidebar at the left, the room’s name and, if it has them, its tabs under the header; the page’s own column in the middle; the mini player at the foot when something plays.</li>
+      <li><b>One accent button at most,</b> and it is the page’s one thing. A page that has none says so in its card.</li>
+      <li><b>The same five states:</b> loading (a quiet skeleton, never a spinner over content), empty (one sentence and the one action), offline (what still works), locked (the plan, told straight with a way on), error (what happened, what to do). The states chapter has the wording.</li>
+      <li><b>Back goes back to the same place,</b> the same scroll and the same tab.</li>
+      <li><b>Keys:</b> Alt 1 to 9 and 0 open the rooms; / searches where a page has a search; Esc closes the topmost thing; ? shows every key.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="page" data-rh="Page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Home, and Cursus</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:17%">Page</th><th style="width:40%">Where things sit</th><th>Elements</th></tr>
+      <tr><td><b>Home</b><br><code>/</code></td><td>One column to 1152. Top: the greeting in the display face, the date and the language in capitals above it. Then <i>Today</i> (minutes against the goal, split by room) and <i>Where you left off</i> as one wide card. Below: <i>Choose and more</i> as a small grid; rows of up to five cards (Continue learning, Discover); the week and the next grammar topic last.</td><td>No accent button: the left-off card is the one thing and is itself the button. At most three numbers. A new learner sees three First steps tiles in place of the rows until done. Empty row: hidden, not shown empty. Offline: rows that need the network fold away.</td></tr>
+      <tr><td><b>Cursus · Course</b><br><code>cursus</code></td><td>Tabs under the header, each with a progress chip. The trail fills the column: units as places on a path, finished ones inked, the next one lit and larger. A unit opens a panel at the side (about 440) listing its lessons.</td><td>Only for the six core languages; others see the tab missing, not locked. Free: a calm “comes with Lingua+” line and the first lesson open. The trail never scrolls sideways. Key: Enter starts the lit unit.</td></tr>
+      <tr><td><b>A lesson</b><br><code>cursus/<wbr>course/<wbr>:unit/<wbr>:lesson</code></td><td>The whole window, no sidebar pull: a thin progress bar above; the exercise centred in a column of about 640; the foot bar at the same place for every exercise type.</td><td>Skip at the left, Check then Continue at the right (Check is the accent button). Right answer: sage and a soft sound; wrong: the answer shown kindly, no loss. Esc asks before leaving. End: what was learned, the time, one next step.</td></tr>
+      <tr><td><b>Grammatica</b><br><code>cursus/<wbr>grammatica</code></td><td>A guided path on top (“the next step, with its reason”), then a ladder of levels A1 to B2 as rows of topic tiles, each with a progress mark.</td><td>The path card is the one thing. A topic tile shows its title and a count of exercises; done ones are inked. Placement and review sit at the right of the ladder’s head as two quiet links.</td></tr>
+      <tr><td><b>A grammar topic</b><br><code>cursus/<wbr>grammatica/<wbr>:topicId</code></td><td>Two columns: the explanation at the left (headings, examples with the part in terracotta), the practice at the right, sticky. Examples span the full width at the foot.</td><td>“Practise” is the accent button, once. Links to related topics at the foot. Examples have a sound button each; the tables of forms never scroll sideways, they wrap.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Cursus, continued, and Explora</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:17%">Page</th><th style="width:40%">Where things sit</th><th>Elements</th></tr>
+      <tr><td><b>Grammar practice, placement and review</b><br><code>…<wbr>/lesson</code>, <code>…<wbr>/placement</code>, <code>…<wbr>/review</code></td><td>The lesson frame again: progress above, one exercise centred, the foot bar. Placement has a short intro card before the first question; review has no intro.</td><td>Placement says it is an estimate and that stopping is fine; its result is a level and the first topic, not a mark. Review is the topics that are due, as many as the learner sets.</td></tr>
+      <tr><td><b>Alphabets</b><br><code>cursus/<wbr>alphabets</code></td><td>A grid of glyph tiles by group (vowels, consonants, marks), each a large letter with its sound under it; a stroke-order panel at the right opens from a second click.</td><td>Only the seven scripts that need it; other languages hide the tab. A tile plays its sound, shows its name. The writing practice is a full-width canvas with the stroke order as a ghost.</td></tr>
+      <tr><td><b>A letters lesson</b><br><code>…<wbr>/alphabets/<wbr>:groupId/<wbr>lesson</code></td><td>The lesson frame, with the letter large at the left of the exercise and its choices at the right.</td><td>Hear, match, write. The writing step can be skipped; its result is never graded harshly. Review mixes groups.</td></tr>
+      <tr><td><b>Typing</b><br><code>cursus/<wbr>typing</code></td><td>The line to type, large, centred; the keyboard map under it with the next key lit; speed and accuracy in a small row under that.</td><td>Mistakes stay silent (no sound per key); the slowest letter is shown at the end. A Plus feature: Free sees the pitch and one drill.</td></tr>
+      <tr><td><b>Explora · Explore</b><br><code>explora</code></td><td>A rail at the left picks the kind; the main area is rows of covers by kind, one search at the top, two filters at most (level, length), Add at the far right.</td><td>The kind is remembered. Covers keep one ratio per kind so a row lines up. A click opens the thing in its own room; no accent button.</td></tr>
+      <tr><td><b>Free reading, Word decks</b><br><code>explora?tab=…</code></td><td>The same rail and cover rows; Word decks shows starter decks as cards with their size and level.</td><td>A starter deck opens its preview page first, never adds itself. “Add to my decks” is the accent button there.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Bibliotheca, and Codex</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:17%">Page</th><th style="width:40%">Where things sit</th><th>Elements</th></tr>
+      <tr><td><b>Bibliotheca</b><br><code>bibliotheca</code></td><td>Kinds as tabs and one search across the top; Add (a file, a link, a camera) at the right. Below, covers in a grid; with something selected a bar rises at the foot.</td><td>Covers: a book 2:3, a poster 2:3, a song square, a thin progress bar at the foot of each. Sort in a popover, remembered per kind. Hover shows a tick; the bar offers Tag, Move, Remove (with Undo). Empty: “Nothing here yet”, Add the one thing.</td></tr>
+      <tr><td><b>Codex · Library</b><br><code>codex</code></td><td>Tabs: Library, Discover, Goodreads. The library is the covers with filters and import on top, grouped as Reading now, Not started, Finished.</td><td>The book being read comes first and larger. Import a book or a comic is a button at the head. Right-click on a cover: details, mark finished, remove.</td></tr>
+      <tr><td><b>Discover, Goodreads</b><br><code>codex/<wbr>discover</code>, <code>codex/<wbr>goodreads</code></td><td>Discover: shelves from open sources in rows by level. Goodreads: a file drop area at the top, then the matched books as rows.</td><td>Each shelf row has its title as a link. A book’s card says its level and length in words. Goodreads says what it found and what it could not match, never silently drops.</td></tr>
+      <tr><td><b>The reader</b><br><code>codex/<wbr>read/<wbr>:textId</code></td><td>Paper, the whole window. The text column 640 to 720, language at 19 px, line height 1.7, centred, margins of 15% or more; the outline folded at the left; the word card or drawer at the right, beside the text and never over it. Chrome fades after a few seconds.</td><td>Seven papers. Unseen words a sage line, learning words a terracotta wash with a soft underline; known words plain. K, L, X, D act on the hovered word; S the sentence’s translation; ← → turn. Closing the drawer returns to the same word. A reading-goal note at the end.</td></tr>
+      <tr><td><b>New text, Book details</b><br><code>codex/<wbr>new</code>, <code>codex/<wbr>book/<wbr>:textId</code></td><td>New text: a large paste area, a title, a language, then “Add to library”. Book details: the cover left (about 180), its facts and progress right, then its words and notes below.</td><td>Both are quiet forms; the paste area keeps its text if the page is left by mistake. Details offers Read, Export highlights, Remove (danger, last).</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Thesaurus</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:17%">Page</th><th style="width:40%">Where things sit</th><th>Elements</th></tr>
+      <tr><td><b>My decks</b><br><code>thesaurus</code></td><td>Tabs: My decks, Discover, Dictionary (and Ludus’s games). Decks as cards in folders, each with its title, a due count in a chip and a thin bar. A study button for the day at the head.</td><td>Search with “/”, drag to reorder, “⋯” for the rest. The day’s study is the accent button, once. Empty: “No decks yet”, with Discover the one action. Due count is a chip, never red.</td></tr>
+      <tr><td><b>Discover</b><br><code>thesaurus?tab=discover</code></td><td>Ready-made decks as cards in rows by level and topic; the room’s tools (Ludus) sit at the right of the tab row.</td><td>A deck card shows its size, level and a sample word. Opening it goes to the starter page, never straight into your decks.</td></tr>
+      <tr><td><b>A deck</b><br><code>thesaurus/<wbr>deck/<wbr>:deckId</code></td><td>Head: title, counts, Study. Below, the cards as a list with the word, its meaning and its due date in soft ink; a rail at the right for the deck’s settings.</td><td>Click a row for the card’s drawer (440): its sentence, its forms, its history in the word memory. Select several for Tag, Move, Suspend. Undo (Z) is always one key away.</td></tr>
+      <tr><td><b>A starter deck</b><br><code>thesaurus/<wbr>ready/<wbr>:key</code></td><td>A preview: a title and a short note at the left, a sample of cards at the right, and the one button at the foot of the note.</td><td>“Add to my decks” is the accent button. The page says how many words you already know in it.</td></tr>
+      <tr><td><b>Study</b><br><code>thesaurus/<wbr>study/<wbr>:deckId</code></td><td>A stage: the card centred, nothing else but a thin progress line; four answers across the foot, equal width, with the next interval under each.</td><td>Front in the book’s voice at 28 px or more; turn in 200 ms; the sentence under it in soft ink. Keys: Space to turn, 1 to 4 to answer, Z to undo. “Good” is sage. No countdown. End: “12 cards in 4 minutes; 3 to see again tomorrow”.</td></tr>
+      <tr><td><b>Dictionary</b><br><code>thesaurus?tab=dictionary</code></td><td>A search at the top; the entry below; the word’s whole history in the word memory beside it. Six core languages.</td><td>Forms, recordings, the other meanings, Tatoeba examples. A word not in the pack is looked up online and kept once found. “Save as a card” is the one action.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Sonus and Visio</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:17%">Page</th><th style="width:40%">Where things sit</th><th>Elements</th></tr>
+      <tr><td><b>Sonus</b><br><code>sonus</code></td><td>Tabs: Library, Audiobooks, Radio; Sonus+ link at the right end. Library: songs, podcasts and episodes as rows or covers. The mini player stays at the foot of every page.</td><td>Add at the right; search is “/”. Nothing autoplays. Sonus+ shows its pitch for Free, never a lock over the library.</td></tr>
+      <tr><td><b>The player</b><br><code>sonus/<wbr>play/<wbr>:mediaId</code></td><td>The cover or a drawn one at the left; the controls under it; the transcript as a column at the right with the current line lit.</td><td>Play, ±10 s, speed, repeat each sentence (R). ↑ ↓ move by sentence. The transcript lines are hoverable like the reader’s words.</td></tr>
+      <tr><td><b>A podcast, an audiobook</b><br><code>sonus/<wbr>podcast/<wbr>:feedId</code>, <code>sonus/<wbr>book/<wbr>:bookId</code></td><td>Head: cover left, title and a Subscribe or Listen button right. Episodes or chapters below as rows with length and a progress bar.</td><td>A finished episode is dimmed, not hidden. Audiobook chapters keep the place. Download for offline is a quiet button on the row.</td></tr>
+      <tr><td><b>Radio, a station, Commute</b><br><code>sonus?tab=radio</code>, <code>sonus/<wbr>station/<wbr>:stationId</code>, <code>sonus/<wbr>commute</code></td><td>Radio: a world map at the left, stations in the language as a list at the right. A station: a large play control and what is on now. Commute: a plan of tracks for a set time, as one column.</td><td>Radio says which country each station is from. Commute asks one thing: how long. The old song pages send to Sonus, with a note.</td></tr>
+      <tr><td><b>Visio</b><br><code>visio</code></td><td>Tabs: Library, Streaming. Library: films and videos as covers, a YouTube link as a row with its own picture. Streaming: the services as cards, with their open buttons.</td><td>Streaming has a Plus chip on its tab. A card says what Lingua does for that service and that it needs the extension (not yet tried on real sites).</td></tr>
+      <tr><td><b>Watch</b><br><code>visio/<wbr>watch/<wbr>:mediaId</code></td><td>The video as the stage, as large as the window allows; two lines of subtitle beneath on a plate (22 and 16 px); the transcript can open as a column at the right.</td><td>Hover a word pauses. ← → step by line; , and . nudge a followed show by half a second. R repeats the line. A subtitles-only item has a clock instead of a video.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Mentis, Ratio</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:17%">Page</th><th style="width:40%">Where things sit</th><th>Elements</th></tr>
+      <tr><td><b>Mundus</b><br><code>mentis</code></td><td>Tabs: Mundus, Sermo, Diarium. A note on your week, two sentences, in the learner’s language; three next steps as equal cards below.</td><td>Each card answers back: shorter, I’d rather listen, why this, not today. Nothing changes while the page is open unless asked. No accent button.</td></tr>
+      <tr><td><b>Things to try</b><br><code>mentis/<wbr>try</code></td><td>Small cards in a grid with a time chip (5 min), a tick that stamps them, filters on top, and “Deal me one” at the right.</td><td>The stamp is a soft ink, not a trophy. A card opens in the room it belongs to.</td></tr>
+      <tr><td><b>Sermo</b><br><code>mentis/<wbr>sermo</code></td><td>Three screens with Back: the scene as large cards in groups; how you’ll talk (voice or text, corrections as I go or at the end, 5, 10 or 20 minutes); the prompt as a reading card with Copy and the AI’s own buttons.</td><td>The accent button is Copy or the chosen AI’s button. There is no chat inside Lingua. A Plus feature. Old chats remain and open in a list.</td></tr>
+      <tr><td><b>Diarium</b><br><code>mentis/<wbr>diarium</code></td><td>A list or a calendar at the left; the page at the right. The calendar is months as grids, days inked by length, a tick for corrected days, the month’s totals beside it.</td><td>Search and sort above the list; rename and delete with Undo. “New entry” is the accent button.</td></tr>
+      <tr><td><b>An entry</b><br><code>mentis/<wbr>diarium/<wbr>:entryId</code></td><td>The page is the writing: a title in the language, a plain editor with a toolbar that appears over a selection; word count and Saved sit in the header.</td><td>The AI check (Max) is a quiet line under the text, not a panel. Saves as it goes. Leaving needs no confirmation.</td></tr>
+      <tr><td><b>Ratio</b><br><code>ratio</code></td><td>Tabs, and two ghost buttons at the right (time done outside Lingua; moments worth keeping). Where you are, an estimate and labelled one; the year and the month; then two columns of panels, each caption, numbers, a chart, a line.</td><td>Only the language being learned; Tabula below holds a row per language you speak with a goal bar and “on track”, “behind” or “reached”. Logging opens a drawer at the right and closes with a toast. No data: a sentence, never a flat line.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Settings, and the frame itself</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:17%">Page</th><th style="width:40%">Where things sit</th><th>Elements</th></tr>
+      <tr><td><b>Settings</b><br><code>settings</code>, <code>settings/<wbr>:group</code></td><td>The groups and a search at the left; one group at a time at the right with a title. Groups: Reading, Study and cards, Listening, Music, Languages, Look and feel, AI and translation, Lingua+, Your data, About and more, Developer.</td><td>A row is 56 px high: the name at 15, its line under it at 13 in soft ink, the control at the right. It acts at once; nothing needs a restart. The search finds a setting in any group and scrolls to it.</td></tr>
+      <tr><td><b>Look and feel</b></td><td>Choices shown, not named: themes and the seven papers as swatches, fonts in their own faces, the language touch with a preview.</td><td>The change is visible at once on the page itself. Reading’s text size 15 to 30 and line spacing 1.3 to 2.1 live in Reading.</td></tr>
+      <tr><td><b>AI and translation</b><br><code>settings/<wbr>ai</code></td><td>A key field for each service, with a line saying it stays on this device; below, what each key is for.</td><td>AI with your own key comes with Max: Free and Lingua+ see the line and a link to the plan. The key is never in a URL.</td></tr>
+      <tr><td><b>Lingua+</b></td><td>Free, Lingua+ and Max side by side, each with price, what it includes and when it renews, with its button.</td><td>“Continue free” is as easy to see as the rest. Buying opens Stripe’s page; the licence comes back to this window.</td></tr>
+      <tr><td><b>Your data</b></td><td>Four buttons for four things: backup, restore, sync, delete. Delete is last, in danger, and names what goes.</td><td>Restore shows what is in the file before it changes anything. A backup file is a download and asks first.</td></tr>
+      <tr><td><b>Lab</b><br><code>settings/<wbr>lab</code></td><td>Tabs for notes, flows, design notes and the pretend plan buttons (Free, Lingua+, Max, Real).</td><td>For the maker; it can change what the app shows without touching the learner’s data.</td></tr>
+      <tr><td><b>The frame</b></td><td>Sidebar (216, 64 folded); the update prompt as a quiet bar; the starting-up screen; the error page; the shortcuts dialog (448); toasts at the foot right.</td><td>An error says what happened and offers Reload; it never shows a stack. The update waits for a quiet moment, never mid-lesson. The shortcuts dialog is ?.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Lingua 6, page by page">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="l6pages" data-ch>Lingua 6, page by page <span class="nv pr">Planned, not built</span></h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Lingua 6 adds a great deal and almost no new rooms. This chapter says where each step lives on the screens above and what it asks of the layout, so the pages stay calm as they grow.</p>
+      <aside><span class="k">Plan</span><code>docs/<wbr>LINGUA-6-PLAN.md</code>, 28 steps; the audit is <code>docs/<wbr>LINGUA-6-FEATURES.md</code>.</aside></div>
+    <h3>Five rules for putting a feature somewhere</h3>
+    <ol class="ask" style="font-style:normal;font-size:8pt;line-height:10.8pt">
+      <li><b>Inside before beside.</b> A feature goes into the page that already has its subject (a highlight in the reader) before it gets a tab, and a tab before it gets a room. No new room is planned.</li>
+      <li><b>One thing per page.</b> A page that gains a second one thing gives it a tab or a drawer, or says no.</li>
+      <li><b>Every word is the same word.</b> A word opened anywhere, in a card, the reader, a game or the map, opens the same page (6-1).</li>
+      <li><b>Generated is labelled and reportable</b> (6-6), and without Max the page still works, with the generated part simply missing.</li>
+      <li><b>Quiet until asked.</b> New panels start folded; a rail that was not there before is closed by default.</li>
+    </ol>
+    <h3>The new tabs and where they go</h3>
+    <table class="wide spec" style="font-size:7.1pt;line-height:9.4pt">
+      <tr><th style="width:23%">Tab</th><th style="width:15%">Step</th><th>Sits beside</th></tr>
+      <tr><td>Cursus › Sounds</td><td>6-10</td><td>Alphabets, before Typing</td></tr>
+      <tr><td>Cursus › Exams</td><td>6-18</td><td>After Sounds; hidden until an exam is chosen</td></tr>
+      <tr><td>Thesaurus › Phrases, Map</td><td>6-20</td><td>After Dictionary</td></tr>
+      <tr><td>Mentis › Notebook</td><td>6-20</td><td>After Diarium</td></tr>
+      <tr><td>Ludus › Translate</td><td>6-13</td><td>With the other games</td></tr>
+      <tr><td>The inbox</td><td>6-2</td><td>A tab at the head of My decks, with a count chip</td></tr>
+    </table>
+    <div class="row"><p class="small">The tab rows were built for four tabs. At six, the last ones fold into a “More” popover; the first three are always the ones the learner uses most.</p><aside></aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Lingua 6, page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Part A · Foundations: the word, the inbox, cards, the engine</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:15%">Step</th><th style="width:42%">Where it sits and how</th><th>Rule to hold</th></tr>
+      <tr><td><b>6-1 The word record</b></td><td><b>The word’s page</b>, one for every word in every room. On a desktop two columns: the language at the left (meaning, forms, sound, pictures, examples), the learner’s own side at the right (status, cards, notes, where met). It opens as the drawer (440) first, and “Open” widens it to the page.</td><td>Same layout wherever it is opened.</td></tr>
+      <tr><td><b>6-2 Inbox, workshop</b></td><td><b>The inbox:</b> a list with each word, the sentence it came from, and three choices across the row (Learn, Know, Drop). Bulk actions appear at the foot only when rows are selected. <b>The deck workshop</b> is the deck page with a rail at the right: tidy, merge, split.</td><td>The inbox never grows without a way to empty it in one sitting; a count chip on the tab, not a red badge.</td></tr>
+      <tr><td><b>6-3 Cards and memory</b></td><td>Card templates per deck, as a small editor in the deck’s rail: front, back and the hint, with a live preview at the right at the study size (28 px). Pictures sit above the word, never behind it. Memory controls live in Settings › Study and cards.</td><td>The preview is the card, not a drawing of one. Intervals are shown, never a grade.</td></tr>
+      <tr><td><b>6-4 One exercise engine</b></td><td>Every exercise is the lesson frame: progress above, the question centred (about 640), the foot bar with Skip, Check, Continue. New kinds change only the centre.</td><td>The foot bar never moves between kinds.</td></tr>
+      <tr><td><b>6-5 The learner’s record</b></td><td><b>The error log</b> as a page in Mentis › Notebook and a chip on Ratio: errors by category, each opening the example. Private, on the device.</td><td>A mirror, not a report card.</td></tr>
+      <tr><td><b>6-6 Generated materials</b></td><td>Wherever a page shows something Max made it wears a small “Made by AI” label under it, and a “Report” in the “⋯”. Without Max the section is not shown, not shown locked.</td><td>The same label, in the same place, everywhere.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Lingua 6, page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Part B · The skills</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:15%">Step</th><th style="width:42%">Where it sits and how</th><th>Rule to hold</th></tr>
+      <tr><td><b>6-7 Grammar</b></td><td>Grammatica’s path gains more ways in (by level, by problem, by the last error). A topic page gains a “In the language / both” switch at the head of the explanation, and the sentence explainer as a drawer: tap a sentence, see its parts.</td><td>Explanation left, practice right.</td></tr>
+      <tr><td><b>6-8 Reading</b></td><td>Codex Library gains a Graded shelf and shelves by kind. The reader gains a <b>tools rail</b> at the right, folded, with: read aloud, parts of speech, interlinear glosses, hide translations, ruler, highlights in colours and notes. A book is a project: unknown-word density on its contents.</td><td>A ruler or a gloss is a layer, off by default.</td></tr>
+      <tr><td><b>6-9 Listening</b></td><td>The player gains a speed ladder, an A–B loop and “listen first”, which hides the transcript until the end. Exercises use the engine’s stage.</td><td>A toggle at the head of the column, kept per item.</td></tr>
+      <tr><td><b>6-10 Sounds</b></td><td><b>Cursus › Sounds:</b> a chart of the language’s sounds as tiles (like Alphabets), each with a drawing of the mouth, a recording and Record. The one you are on is large at the top. Minimal pairs below as two buttons.</td><td>Feedback says how a sound was heard, not a mark; the waveform is shown only after a recording.</td></tr>
+      <tr><td><b>6-11 Speaking</b></td><td>Sermo’s prompt card gains a “How did it go?” step after the talk: three short questions, then what to work on. A solo speaking page: a prompt, a timer you can hide, Record.</td><td>The fourth step is skippable.</td></tr>
+      <tr><td><b>6-12 Writing</b></td><td>Diarium gains writing tasks (a prompt card above the page) and, with Max, a checking line under the text and a side panel for suggestions, closed by default.</td><td>The panel pushes the page; it never covers it.</td></tr>
+      <tr><td><b>6-13 Translating</b></td><td><b>Ludus › Translate:</b> the sentence to translate, large, the answer field under it; hints, references and the alignment view are folded until asked. A language-comparison note appears under a grammar topic.</td><td>One sentence at a time.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Lingua 6, page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Part C · Paths and guidance</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:15%">Step</th><th style="width:42%">Where it sits and how</th><th>Rule to hold</th></tr>
+      <tr><td><b>6-14 Courses</b></td><td>The trail grows: more units, side branches for skills, and “your own course” as a unit the learner assembles from lessons. A unit’s panel shows its lessons with a mark for the skill each trains.</td><td>The trail still never scrolls sideways; a branch is a second lane, not wider.</td></tr>
+      <tr><td><b>6-15 The tutor, in context</b></td><td><b>Ask:</b> a small button at the foot right of every learning page. It opens a side panel (440) that knows the page, and closes back to the exact place. With Max; without it the button is not there.</td><td>Not a chat room: it answers about what is on the page. It never covers the exercise being done.</td></tr>
+      <tr><td><b>6-16 Personal, adaptive</b></td><td>Home’s Where you left off and Mundus’s three steps use the record; “Today’s plan” becomes a list of three to five tiles above the rows. Every suggestion shows why and can be dismissed.</td><td>The plan is a suggestion, never a duty: nothing turns red if it is not done.</td></tr>
+      <tr><td><b>6-17 Goals, habits</b></td><td>Ratio gains goals of every kind in Tabula, reminders in Settings, a “looking back” year page, and stamps in the place of points. Home’s numbers stay at three.</td><td>New analytics go into Ratio’s panels, never onto Home.</td></tr>
+      <tr><td><b>6-18 Exams</b></td><td><b>Cursus › Exams:</b> the exam you chose and the days left at the top, the next task as one card, then past mocks as rows. Score ranges are folded until a mock is done.</td><td>The tab appears only once an exam is chosen. Say plainly when a result is only an estimate.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Lingua 6, page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Part D and E · More of the language, around the app</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:15%">Step</th><th style="width:42%">Where it sits and how</th><th>Rule to hold</th></tr>
+      <tr><td><b>6-19 Culture</b></td><td>A culture note appears as a quiet card in Mundus and under a word in its page; a “Lingua in the language” switch in Settings › Languages.</td><td>A note says where it comes from.</td></tr>
+      <tr><td><b>6-20 Phrases, notebook, map</b></td><td><b>Thesaurus › Phrases:</b> phrases by situation as rows with sound. <b>Mentis › Notebook:</b> folders and tags in a rail, the latest note first. <b>Thesaurus › Map:</b> the word you came from in the middle, its neighbours around it, filters in a rail.</td><td>The map starts from one word, never the whole graph.</td></tr>
+      <tr><td><b>6-21 Games, projects</b></td><td>Ludus gains word games on the learner’s own words and story games (Max). A <b>project</b> is a page of its own with steps down the left and the working area at the right.</td><td>Games are one stage with different contents.</td></tr>
+      <tr><td><b>6-22 Dictionary tools</b></td><td>Dictionary search gains filters (part of speech, level, topic) in a row under the field; “your dictionary” is a tab inside the entry’s page.</td><td>The entry stays the largest thing on the page.</td></tr>
+      <tr><td><b>6-23 Per-language tools</b></td><td>Small tools appear only for the languages that need them (scripts, Russian stress marks, Romance conjugation tables, East Asian radicals, Arabic roots), in the reader’s rail or in Cursus › Sounds.</td><td>A tool is hidden for a language that does not use it, not locked.</td></tr>
+      <tr><td><b>6-24 Import, export</b></td><td>One exporter: a button in each place (the deck rail, the highlights, Ratio) opening the same drawer with the format and what is included. Imports (Anki, Goodreads, a CSV) share the drop area from Codex’s Goodreads tab.</td><td>An import says what it found and could not read.</td></tr>
+      <tr><td><b>6-25 Desktop</b></td><td>On the desktop, in place of a phone widget: a small always-on-top window for today’s cards, a tray item, global shortcuts. Accessibility fixes from the accessibility chapter land here.</td><td>None may need the main window to be open.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="Lingua 6, page by page">
+  <div class="sheet">
+    <h3 style="margin-top:0">Further out: only with your word</h3>
+    <table class="wide spec" style="font-size:7pt;line-height:9.3pt">
+      <tr><th style="width:24%">Idea</th><th>What it would ask of the layout</th></tr>
+      <tr><td><b>Experiments (6-26)</b></td><td>A Lab tab inside Settings, never in the sidebar, with each experiment off by default and a plain note of what it does.</td></tr>
+      <tr><td><b>Together (6-27)</b></td><td>Sharing a deck or a reading goal with a friend: one drawer from the deck rail and one row in Tabula. Nothing public, nothing ranked.</td></tr>
+      <tr><td><b>A phone</b></td><td>The Phone chapter’s layout: top bar, a floating tab bar of four, sheets in place of drawers. Not built.</td></tr>
+      <tr><td><b>A teacher’s view</b></td><td>A read-only page of a learner’s own choice, shared as a file: a Ratio summary and a deck. No accounts.</td></tr>
+    </table>
+    <div class="row"><p class="small">Everything on these pages is a place to start from. Each step is drawn properly, with the handbook’s recipe, before it is built.</p><aside></aside></div>
+  </div>
+</section>
+
 <!-- 32 · Chapter 19 -->
 <section class="page" data-rh="Every page's states">
   <div class="sheet">
@@ -4480,7 +4715,7 @@ ol.key.two li { break-inside: avoid; }
     if (!sheet) return;
     const bottom = box.bottom - parseFloat(getComputedStyle(page).paddingBottom) + 2;
     const last = [...sheet.querySelectorAll('*')].reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
-    if (last > bottom) { page.setAttribute('data-overflow', ''); over.push(i + 1); }
+    if (last > bottom) { page.setAttribute('data-overflow', ''); over.push(i + 1); (window.__wide = window.__wide || []).push([i + 1, 'bottom by ' + Math.round(last - bottom) + 'px: ' + (page.dataset.rh || '') + ' / ' + page.innerText.trim().slice(0, 40).replace(/\s+/g, ' ')]); }
     // Sideways: nothing may reach past the page's side margins (the page clips what does, in the PDF as on screen).
     const cs = getComputedStyle(page);
     const left = box.left + parseFloat(cs.paddingLeft) - 1;
