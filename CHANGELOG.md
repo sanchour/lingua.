@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.27** · 2026-10-28 · Ratio: one language, goals in Tabula, estimated level (5.2-9)
 - **0.5.2-alpha.26** · 2026-10-28 · Grammatica: a guided path, full-width lessons (5.2-8)
 - **0.5.2-alpha.25** · 2026-10-28 · Handbook: recent changes, what Lingua could earn, funding it
 - **0.5.2-alpha.24** · 2026-10-28 · Things to try: small cards, Deal me one (5.2-7, part 3)

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { recordSession } from './activity';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
-import { checkMilestones, goalProgress, importCapabilities, saveCapability, seedCapabilities } from './journey';
+import { checkMilestones, goalProgress, goalStatus, importCapabilities, saveCapability, seedCapabilities } from './journey';
 import { completeOnboarding } from './languages';
 import type { Goal } from './types';
 
@@ -62,5 +62,18 @@ describe('goal progress', () => {
     const level = goalProgress({ ...base, kind: 'level', target: 'B1' }, data, july);
     expect(level.label).toBe('A2 → B1');
     expect(level.projection).toMatch(/190 hours away/);
+  });
+
+  it('says whether a goal is reached, on track, behind or open', () => {
+    const july = new Date('2026-07-01T12:00:00').getTime();
+    const status = (goal: Goal, d = data, now = july) => goalStatus(goal, goalProgress(goal, d, now));
+    expect(status(base)).toBe('behind');
+    expect(status(base, { ...data, booksThisYear: 6 })).toBe('on track');
+    expect(status(base, { ...data, booksThisYear: 12 })).toBe('reached');
+    expect(status({ ...base, kind: 'hours-week', target: 4 })).toBe('open');
+    expect(status({ ...base, kind: 'level', target: 'A2' })).toBe('reached');
+    expect(status({ ...base, kind: 'level', target: 'B1' })).toBe('open');
+    expect(status({ ...base, kind: 'level', target: 'B1', by: '2026-07-15' })).toBe('behind');
+    expect(status({ ...base, kind: 'level', target: 'B1', by: '2030-01-01' })).toBe('on track');
   });
 });

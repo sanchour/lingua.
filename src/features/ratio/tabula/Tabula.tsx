@@ -1,17 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Reorder, useDragControls } from 'motion/react';
-import { FileUp, GripVertical, ImageDown, Plus } from 'lucide-react';
+import { FileUp, GripVertical, ImageDown, Plus, Target } from 'lucide-react';
 import { codeForLanguage, LANGUAGE_NAMES, parseNotionLanguages } from '@/core/parsers/notion';
-import { addCapability, importCapabilities, reorderCapabilities, seedCapabilities, useCapabilities } from '@/data/journey';
+import { addCapability, goalProgress, goalStatus, importCapabilities, reorderCapabilities, seedCapabilities, useCapabilities, useGoals } from '@/data/journey';
+import type { GoalStatus } from '@/data/journey';
 import { grammarLevels } from '@/data/grammar';
 import { useLanguages } from '@/data/languages';
-import { hoursSince, languageSummaries } from '@/data/ratio';
-import type { LanguageSummary } from '@/data/ratio';
-import type { Capability } from '@/data/types';
+import { hoursSince, languageSummaries, paceOf } from '@/data/ratio';
+import type { LanguageSummary, Pace } from '@/data/ratio';
+import type { Capability, Goal } from '@/data/types';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Button, Popover } from '@/design/primitives';
 import { downloadFile, pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
+import { cx } from '@/lib/cx';
+import { GoalDrawer } from '../forms';
 import { hours } from '../common';
 import { CapabilityDrawer } from './CapabilityDrawer';
 import { renderTableImage } from './image';
@@ -54,6 +57,9 @@ export function Tabula() {
   const [yearHours, setYearHours] = useState(0);
   const [grammar, setGrammar] = useState<Map<string, { level: string | null; learned: number }>>(new Map());
   const [newName, setNewName] = useState('');
+  const goals = useGoals();
+  const [paces, setPaces] = useState<Map<string, Pace>>(new Map());
+  const [goalDrawer, setGoalDrawer] = useState<{ lang: string; goal: Goal | null } | null>(null);
 
   useEffect(() => void seedCapabilities(), []);
   useEffect(() => setOrder((rows ?? []).map((r) => r.id)), [rows]);
@@ -63,6 +69,12 @@ export function Tabula() {
     void hoursSince(new Date(new Date().getFullYear(), 0, 1).getTime()).then(setYearHours);
     void grammarLevels(ids).then(setGrammar);
   }, [studied]);
+
+  const goalLangs = useMemo(() => [...new Set((goals ?? []).map((g) => g.lang))].join(','), [goals]);
+  useEffect(() => {
+    const ids = goalLangs ? goalLangs.split(',') : [];
+    void Promise.all(ids.map(async (id) => [id, await paceOf(id)] as const)).then((list) => setPaces(new Map(list)));
+  }, [goalLangs, goals]);
 
   const byId = useMemo(() => new Map((rows ?? []).map((r) => [r.id, r])), [rows]);
   const ordered = order.map((id) => byId.get(id)).filter((r): r is Capability => Boolean(r));
@@ -75,6 +87,17 @@ export function Tabula() {
     const grammarNote = g?.level ? `grammar ${g.level}` : g?.learned ? `${g.learned} grammar ${g.learned === 1 ? 'topic' : 'topics'}` : null;
     return [s ? `${s.known.toLocaleString()} words` : null, grammarNote, hours(((s?.hours ?? 0) + extra) * 60)].filter(Boolean).join(' · ');
   };
+
+  /** A language's goal: its level goal first, else a weekly one; reading challenges sit above the table. */
+  const goalFor = (c: Capability): RowGoal | undefined => {
+    const mine = (goals ?? []).filter((g) => g.lang === c.id && g.kind !== 'books-year');
+    const goal = mine.find((g) => g.kind === 'level') ?? mine[0];
+    const pace = paces.get(c.id);
+    if (!goal || !pace) return undefined;
+    const p = goalProgress(goal, { level: c.level, ...pace, hours: pace.hours + (c.extraHours ?? 0) });
+    return { goal, label: p.label, fraction: p.fraction, status: goalStatus(goal, p) };
+  };
+  const challenges = (goals ?? []).filter((g) => g.kind === 'books-year');
 
   const importNotion = async () => {
     const file = await pickFile('.csv,text/csv');
@@ -135,6 +158,9 @@ export function Tabula() {
               </form>
             )}
           </Popover>
+          <Button variant="ghost" icon={Target} onClick={() => setGoalDrawer({ lang: ordered[0]?.id ?? '', goal: null })} disabled={!ordered.length}>
+            Goal
+          </Button>
           <Button variant="ghost" icon={FileUp} onClick={() => void importNotion()}>
             Notion CSV
           </Button>
@@ -143,6 +169,24 @@ export function Tabula() {
           </Button>
         </div>
       </div>
+
+      {challenges.map((g) => {
+        const pace = paces.get(g.lang);
+        if (!pace) return null;
+        const p = goalProgress(g, { level: 'A0', ...pace });
+        return (
+          <button key={g.id} type="button" onClick={() => setGoalDrawer({ lang: g.lang === '*' ? (ordered[0]?.id ?? '') : g.lang, goal: g })} className="mb-5 flex w-full items-center gap-4 rounded-2xl border border-line/70 bg-surface px-4 py-3 text-left">
+            <Target size={18} className="shrink-0 text-ink-faint" aria-hidden />
+            <span className="min-w-0 flex-1">
+              <span className="block text-[14.5px] font-semibold">Reading challenge · {p.label}</span>
+              <span className="block truncate text-[13px] text-ink-soft">{p.projection}</span>
+            </span>
+            <span className="h-1.5 w-28 shrink-0 overflow-hidden rounded-full bg-sunken">
+              <span className="block h-full rounded-full bg-sage" style={{ width: `${p.fraction * 100}%` }} />
+            </span>
+          </button>
+        );
+      })}
 
       {wide && (
         <div className={`grid ${COLUMNS} gap-3 border-b border-line px-3 pb-2 text-[11.5px] font-bold tracking-wide text-ink-faint uppercase`}>
@@ -163,18 +207,45 @@ export function Tabula() {
         as="ul"
       >
         {ordered.map((c) => (
-          <Row key={c.id} capability={c} wide={wide} live={live(c)} onOpen={() => setOpen(c)} onDrop={() => void reorderCapabilities(order)} />
+          <Row key={c.id} capability={c} wide={wide} live={live(c)} goal={goalFor(c)} onGoal={(goal) => setGoalDrawer({ lang: c.id, goal: goal ?? null })} onOpen={() => setOpen(c)} onDrop={() => void reorderCapabilities(order)} />
         ))}
       </Reorder.Group>
       {!ordered.length && <p className="py-10 text-center text-ink-soft">Add the languages you speak, even ones Lingua doesn’t teach.</p>}
       <p className="mt-5 text-[12.5px] text-ink-faint">Drag the handle to reorder. Tap a language for skills, certificates and notes. Notion: export your table as CSV (Dutch or English columns).</p>
 
+      <GoalDrawer open={goalDrawer !== null} onClose={() => setGoalDrawer(null)} languages={studied ?? []} lang={goalDrawer?.lang ?? ''} editing={goalDrawer?.goal} />
       <CapabilityDrawer capability={open} onClose={() => setOpen(null)} live={open ? (live(open) ?? undefined) : undefined} />
     </div>
   );
 }
 
-function Row({ capability: c, wide, live, onOpen, onDrop }: { capability: Capability; wide: boolean; live: string | null; onOpen: () => void; onDrop: () => void }) {
+interface RowGoal {
+  goal: Goal;
+  label: string;
+  fraction: number;
+  status: GoalStatus;
+}
+
+/** A language's goal as a slim bar and a word on how it is going, or a quiet way to set one. */
+function GoalLine({ goal, onGoal }: { goal?: RowGoal; onGoal: (goal?: Goal) => void }) {
+  return (
+    <button type="button" onClick={() => onGoal(goal?.goal)} className="mt-1 flex max-w-full items-center gap-2 text-left text-[12.5px]">
+      {goal ? (
+        <>
+          <span className="h-1.5 w-24 shrink-0 overflow-hidden rounded-full bg-sunken">
+            <span className="block h-full rounded-full bg-sage" style={{ width: `${goal.fraction * 100}%` }} />
+          </span>
+          <span className="min-w-0 truncate text-ink-soft">{goal.label}</span>
+          {goal.status !== 'open' && <span className={cx('shrink-0 font-bold', goal.status === 'behind' ? 'text-accent-text' : 'text-sage-text')}>{goal.status}</span>}
+        </>
+      ) : (
+        <span className="text-ink-faint hover:text-ink">+ Set a goal</span>
+      )}
+    </button>
+  );
+}
+
+function Row({ capability: c, wide, live, goal, onGoal, onOpen, onDrop }: { capability: Capability; wide: boolean; live: string | null; goal?: RowGoal; onGoal: (goal?: Goal) => void; onOpen: () => void; onDrop: () => void }) {
   const controls = useDragControls();
   const handle = (
     <button
@@ -192,10 +263,13 @@ function Row({ capability: c, wide, live, onOpen, onDrop }: { capability: Capabi
       {wide ? (
         <div className={`grid ${COLUMNS} items-center gap-3 border-b border-line px-3 py-3`}>
           {handle}
-          <button type="button" onClick={onOpen} className="flex min-w-0 items-center gap-2 text-left">
-            <span className="truncate font-serif text-[17px] font-semibold hover:underline">{c.name}</span>
-            <SkillBars capability={c} />
-          </button>
+          <div className="min-w-0">
+            <button type="button" onClick={onOpen} className="flex min-w-0 items-center gap-2 text-left">
+              <span className="truncate font-serif text-[17px] font-semibold hover:underline">{c.name}</span>
+              <SkillBars capability={c} />
+            </button>
+            <GoalLine goal={goal} onGoal={onGoal} />
+          </div>
           <LevelPill level={c.level} />
           <span className="truncate text-[14px] text-ink-soft">{STATUS_LABEL[c.status]}</span>
           <span className="flex min-w-0 flex-wrap gap-1">
@@ -211,17 +285,20 @@ function Row({ capability: c, wide, live, onOpen, onDrop }: { capability: Capabi
       ) : (
         <div className="flex items-center gap-3 rounded-2xl border border-line/70 bg-surface p-3.5">
           {handle}
-          <button type="button" onClick={onOpen} className="min-w-0 flex-1 text-left">
-            <span className="flex items-center gap-2">
-              <span className="truncate font-serif text-[18px] font-semibold">{c.name}</span>
-              <SkillBars capability={c} />
-            </span>
-            <span className="mt-0.5 block truncate text-[13px] text-ink-soft">
-              {STATUS_LABEL[c.status]}
-              {c.methods.length ? ` · ${c.methods.join(', ')}` : ''}
-            </span>
-            {live && <span className="mt-0.5 block truncate text-[12.5px] text-ink-faint">{live}</span>}
-          </button>
+          <div className="min-w-0 flex-1">
+            <button type="button" onClick={onOpen} className="block w-full min-w-0 text-left">
+              <span className="flex items-center gap-2">
+                <span className="truncate font-serif text-[18px] font-semibold">{c.name}</span>
+                <SkillBars capability={c} />
+              </span>
+              <span className="mt-0.5 block truncate text-[13px] text-ink-soft">
+                {STATUS_LABEL[c.status]}
+                {c.methods.length ? ` · ${c.methods.join(', ')}` : ''}
+              </span>
+              {live && <span className="mt-0.5 block truncate text-[12.5px] text-ink-faint">{live}</span>}
+            </button>
+            <GoalLine goal={goal} onGoal={onGoal} />
+          </div>
           <LevelPill level={c.level} />
         </div>
       )}

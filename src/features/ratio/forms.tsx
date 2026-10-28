@@ -7,7 +7,7 @@ import { Button, Drawer } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
-import { langName } from '../common';
+import { langName } from './common';
 
 const label = 'mb-2 block text-[12px] font-bold tracking-wide text-ink-faint uppercase';
 const input = 'h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[15px] outline-none transition-colors focus:border-ink';

@@ -100,6 +100,14 @@ languages Lingua doesn't teach (e.g. a native language or a dormant one).
 
 ---
 
+## Ratio in Lingua 5 (5.2-9)
+
+- **One language.** Overview shows only the language being learned; every language you speak is in Tabula.
+- **Iter is gone.** Its goals moved into Tabula: each row has a slim bar for its goal (a level by a date, hours or new words a week) and
+  says reached, on track or behind; a reading challenge sits above the table; "Goal" sets one. Old `?tab=iter` links open Tabula. The
+  timeline's data is kept; milestone toasts and the Home journey card lead to Tabula.
+- **Where you are:** an estimated level from the words known (round figures, said plainly as an estimate).
+
 ## Iter — the language-learning journey (Ratio › Iter, Phase 6)
 
 Tracks the learner's path per language and across all of them.

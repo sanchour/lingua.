@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowDownRight, ArrowRight, ArrowUpRight, BookOpen, Clock, Feather, Globe2, Headphones, Layers, Sprout } from 'lucide-react';
+import { ArrowRight, BookOpen, Clock, Compass, Feather, Headphones, Layers, Sprout } from 'lucide-react';
 import { useApp } from '@/app/context';
-import { useLanguages } from '@/data/languages';
-import { ACTIVITIES, languageSummaries, loadOverview } from '@/data/ratio';
-import type { LanguageSummary, Overview as OverviewData } from '@/data/ratio';
+import { estimateLevel } from '@/core/ratio/estimate';
+import { ACTIVITIES, loadOverview } from '@/data/ratio';
+import type { Overview as OverviewData } from '@/data/ratio';
 import { BarChart } from '@/design/charts/BarChart';
 import { Heatmap } from '@/design/charts/Heatmap';
 import { LineChart } from '@/design/charts/LineChart';
@@ -12,26 +12,21 @@ import { gradeColor, Ring } from '@/design/charts/Ring';
 import { compact } from '@/design/charts/useWidth';
 import { cx } from '@/lib/cx';
 import { GrammarPanel } from './GrammarPanel';
-import { ACTIVITY_COLOR, ACTIVITY_LABEL, hours, langName, Legend, Panel, pct, shortDate, Stat } from './common';
+import { ACTIVITY_COLOR, ACTIVITY_LABEL, hours, Legend, Panel, pct, shortDate, Stat } from './common';
 
 const MODE_LABEL: Record<string, string> = { mcq: 'Choose', match: 'Match pairs', cloze: 'Fill the gap', build: 'Build sentences', type: 'Typing', listen: 'Listening', speak: 'Speaking' };
 const weekday = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { weekday: 'narrow' });
 
 export function Overview() {
   const { language } = useApp();
-  const languages = useLanguages();
-  const [scope, setScope] = useState<string>(language.id);
+  const lang = language.id;
   const [data, setData] = useState<OverviewData | null>(null);
-  const [summaries, setSummaries] = useState<LanguageSummary[] | null>(null);
-  const langs = useMemo(() => (scope === 'all' ? (languages ?? []).map((l) => l.id) : [scope]), [scope, languages]);
 
+  // Only the language being learned: every language you speak is in Tabula.
   useEffect(() => {
-    if (!langs.length) return;
     let alive = true;
-    const load = () => {
-      void loadOverview(langs).then((d) => alive && setData(d));
-      void languageSummaries((languages ?? []).map((l) => l.id)).then((s) => alive && setSummaries(s));
-    };
+    setData(null);
+    const load = () => void loadOverview([lang]).then((d) => alive && setData(d));
     load();
     const onVisible = () => document.visibilityState === 'visible' && load();
     document.addEventListener('visibilitychange', onVisible);
@@ -39,33 +34,42 @@ export function Overview() {
       alive = false;
       document.removeEventListener('visibilitychange', onVisible);
     };
-  }, [langs, languages]);
+  }, [lang]);
 
-  const many = (languages?.length ?? 0) > 1;
+  return <div className="space-y-5">{!data ? <div className="h-96 animate-pulse rounded-3xl bg-surface" /> : <Dashboard data={data} lang={lang} />}</div>;
+}
+
+function LevelCard({ known, said }: { known: number; said: string }) {
+  const e = estimateLevel(known);
   return (
-    <div className="space-y-5">
-      {many && (
-        <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none]" role="radiogroup" aria-label="Language">
-          {[...(languages ?? []).map((l) => ({ id: l.id, label: langName(l.id) })), { id: 'all', label: 'All languages' }].map((o) => (
-            <button
-              key={o.id}
-              type="button"
-              role="radio"
-              aria-checked={scope === o.id}
-              onClick={() => setScope(o.id)}
-              className={cx('h-9 shrink-0 rounded-full border px-4 text-[13.5px] font-semibold transition-colors', scope === o.id ? 'border-ink bg-inverse text-on-inverse' : 'border-line bg-raised text-ink-soft hover:text-ink')}
-            >
-              {o.label}
-            </button>
-          ))}
+    <Panel title="Where you are" icon={Compass}>
+      <div className="grid items-center gap-6 sm:grid-cols-[auto_minmax(0,1fr)]">
+        <div>
+          <p className="font-serif text-[40px] leading-none font-semibold tabular-nums">~{e.level}</p>
+          <p className="mt-1 text-[12px] font-bold tracking-wide text-ink-faint uppercase">Estimated</p>
         </div>
-      )}
-      {!data ? <div className="h-96 animate-pulse rounded-3xl bg-surface" /> : <Dashboard data={data} summaries={summaries} single={scope !== 'all'} lang={scope} />}
-    </div>
+        <div className="min-w-0">
+          {e.next && (
+            <>
+              <div className="h-2 overflow-hidden rounded-full bg-sunken">
+                <div className="h-full rounded-full bg-sage" style={{ width: `${e.progress * 100}%` }} />
+              </div>
+              <p className="mt-1.5 text-[13.5px] text-ink-soft tabular-nums">
+                {e.next.remaining.toLocaleString()} more words to about {e.next.level}.
+              </p>
+            </>
+          )}
+          <p className="mt-2 text-[13px] leading-snug text-ink-faint">
+            An estimate from the {known.toLocaleString()} words you know, nothing more: listening, speaking and grammar can sit above or below it. You say you are {said}; that is the level Lingua uses.
+          </p>
+        </div>
+      </div>
+    </Panel>
   );
 }
 
-function Dashboard({ data, summaries, single, lang }: { data: OverviewData; summaries: LanguageSummary[] | null; single: boolean; lang: string }) {
+function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
+  const { language } = useApp();
   const { vocabulary: v, reading: r, listening: l, flashcards: f, writing: w, habit: h } = data;
   const totalMinutes = ACTIVITIES.reduce((n, a) => n + h.totals[a], 0);
   const heat = useMemo(() => new Map(h.days.map((d) => [d.date, d.total])), [h.days]);
@@ -100,6 +104,9 @@ function Dashboard({ data, summaries, single, lang }: { data: OverviewData; summ
           </div>
         ))}
       </dl>
+
+      {/* Where you are */}
+      <LevelCard known={v.known} said={language.level} />
 
       {/* Time & habit */}
       <Panel title="Time and habit" icon={Clock}>
@@ -306,69 +313,7 @@ function Dashboard({ data, summaries, single, lang }: { data: OverviewData; summ
         </div>
       </div>
 
-      {single && <GrammarPanel lang={lang} />}
-
-      {/* Polyglot */}
-      {summaries && (summaries.length > 1 || !single) && (
-        <Panel title="All your languages" icon={Globe2}>
-          {/* On a phone: one line per language instead of a table to scroll sideways. */}
-          <ul className="divide-y divide-line sm:hidden">
-            {[...summaries]
-              .sort((a, b) => b.hours - a.hours)
-              .map((s) => {
-                const up = s.hoursThisMonth >= s.hoursLastMonth;
-                const Arrow = up ? ArrowUpRight : ArrowDownRight;
-                return (
-                  <li key={s.lang} className="flex items-center gap-3 py-2.5">
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[14.5px] font-semibold">{langName(s.lang)}</span>
-                      <span className="block text-[12.5px] text-ink-soft tabular-nums">
-                        {hours(s.hours * 60)} · {s.known.toLocaleString()} known{s.lastStudied ? ` · ${shortDate(s.lastStudied)}` : ''}
-                      </span>
-                    </span>
-                    <span className={cx('inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold', up ? 'text-sage-text' : 'text-accent-text')} title="This month">
-                      <Arrow size={14} aria-hidden /> {hours(s.hoursThisMonth * 60)}
-                    </span>
-                  </li>
-                );
-              })}
-          </ul>
-          <div className="-mx-2 hidden overflow-x-auto sm:block">
-            <table className="w-full min-w-[520px] text-left text-[14px]">
-              <thead>
-                <tr className="text-[11.5px] font-bold tracking-wide text-ink-faint uppercase">
-                  <th className="px-2 pb-2 font-bold">Language</th>
-                  <th className="px-2 pb-2 text-right font-bold">Hours</th>
-                  <th className="px-2 pb-2 text-right font-bold">Known</th>
-                  <th className="px-2 pb-2 font-bold">Last studied</th>
-                  <th className="px-2 pb-2 font-bold">This month</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...summaries]
-                  .sort((a, b) => b.hours - a.hours)
-                  .map((s) => {
-                    const up = s.hoursThisMonth >= s.hoursLastMonth;
-                    const Arrow = up ? ArrowUpRight : ArrowDownRight;
-                    return (
-                      <tr key={s.lang} className="border-t border-line">
-                        <td className="px-2 py-2.5 font-semibold">{langName(s.lang)}</td>
-                        <td className="px-2 py-2.5 text-right tabular-nums">{hours(s.hours * 60)}</td>
-                        <td className="px-2 py-2.5 text-right tabular-nums">{s.known.toLocaleString()}</td>
-                        <td className="px-2 py-2.5 text-ink-soft">{s.lastStudied ? shortDate(s.lastStudied) : '—'}</td>
-                        <td className="px-2 py-2.5">
-                          <span className={cx('inline-flex items-center gap-1 text-[13px] font-semibold', up ? 'text-sage-text' : 'text-accent-text')}>
-                            <Arrow size={14} aria-hidden /> {hours(s.hoursThisMonth * 60)}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </div>
-        </Panel>
-      )}
+      <GrammarPanel lang={lang} />
     </div>
   );
 }

@@ -1,20 +1,22 @@
 import { useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ChartNoAxesColumn, Route, Table2 } from 'lucide-react';
+import { ChartNoAxesColumn, Table2 } from 'lucide-react';
 import { PageHeader } from '@/app/PageHeader';
 import { Segmented } from '@/design/primitives';
 import { fade } from '@/design/motion';
-import { Iter } from './iter/Iter';
 import { Overview } from './Overview';
 import { Tabula } from './tabula/Tabula';
 
-type Tab = 'overview' | 'tabula' | 'iter';
+type Tab = 'overview' | 'tabula';
 
-/** Ratio: honest numbers (Overview), every language you speak (Tabula), and the road so far (Iter). */
+/**
+ * Ratio: honest numbers for the language you are learning (Overview), and every language you speak with its goals (Tabula).
+ * Iter, the timeline, went in 5.2-9: its goals live in Tabula, and its old links open Tabula.
+ */
 export default function RatioPage() {
   const [params, setParams] = useSearchParams();
   const picked = params.get('tab');
-  const tab: Tab = picked === 'tabula' || picked === 'iter' ? picked : 'overview';
+  const tab: Tab = picked === 'tabula' || picked === 'iter' ? 'tabula' : 'overview';
   return (
     <>
       <PageHeader title="Ratio" />
@@ -26,7 +28,6 @@ export default function RatioPage() {
           options={[
             { value: 'overview', label: 'Overview', icon: ChartNoAxesColumn },
             { value: 'tabula', label: 'Tabula', icon: Table2 },
-            { value: 'iter', label: 'Iter', icon: Route },
           ]}
         />
       </div>
@@ -34,7 +35,6 @@ export default function RatioPage() {
         <motion.div key={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={fade}>
           {tab === 'overview' && <Overview />}
           {tab === 'tabula' && <Tabula />}
-          {tab === 'iter' && <Iter />}
         </motion.div>
       </AnimatePresence>
     </>

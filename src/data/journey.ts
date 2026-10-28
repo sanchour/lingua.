@@ -235,6 +235,15 @@ export function goalProgress(goal: Goal, data: { level: CefrLevel; hours: number
   };
 }
 
+/** Where a goal stands, for the slim bar in Tabula: reached, on track, behind, or open (a weekly goal still being filled, a level goal with no date). */
+export type GoalStatus = 'reached' | 'on track' | 'behind' | 'open';
+export function goalStatus(goal: Goal, progress: GoalProgress): GoalStatus {
+  if (progress.fraction >= 1) return 'reached';
+  if (goal.kind === 'level') return !goal.by ? 'open' : /On track/.test(progress.projection) ? 'on track' : /To make it by/.test(progress.projection) ? 'behind' : 'open';
+  if (goal.kind === 'books-year') return /On track/.test(progress.projection) ? 'on track' : 'behind';
+  return 'open';
+}
+
 // ── Tabula ──────────────────────────────────────────────────────────────────
 
 export function useCapabilities(): Capability[] | undefined {

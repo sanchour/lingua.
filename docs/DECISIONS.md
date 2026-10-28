@@ -1770,3 +1770,10 @@ Short records of choices that are not obvious from the code. Newest last.
   with its reason (`core/grammar/path.ts`), so it reads as a guide and not a coincidence. Nothing is locked.
 - Weak spots are topics whose items have been forgotten most (lapses), not a new measure, so there is no new table or Dexie version.
 - Lessons have a 320 px side column (the steps and the rule) on desktop and no narrow column; Lightning keeps the plain stage.
+
+## 2026-10-28 — Ratio: Iter goes, goals live in Tabula
+
+- Goals were already per language, so they moved without a data change: Tabula reads the same `goals` table, shows the main one on the
+  row (a level goal first) and the all-languages reading challenge above. Iter's timeline events, logs and moments stay in the database.
+- The estimated level uses only words known, with round figures (500, 1,000, 2,000, 4,000, 8,000, 16,000 for A1 to C2) and says so;
+  the level the learner says they have stays the one Lingua uses.

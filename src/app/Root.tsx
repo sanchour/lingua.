@@ -95,7 +95,7 @@ export function Root() {
   useEffect(() => {
     if (!onboarded) return;
     const off = onMilestone((events) => {
-      for (const e of events.slice(0, 2)) toast(`Milestone: ${e.title}`, { tone: 'success', action: { label: 'Journey', onClick: () => navigate('/ratio?tab=iter') } });
+      for (const e of events.slice(0, 2)) toast(`Milestone: ${e.title}`, { tone: 'success', action: { label: 'Ratio', onClick: () => navigate('/ratio?tab=tabula') } });
     });
     void checkAllMilestones().catch(() => {});
     return off;

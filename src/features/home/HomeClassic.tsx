@@ -486,7 +486,7 @@ function MilestoneCard({ lang }: { lang: string }) {
   const latest = journey?.find((e) => e.lang === lang || e.lang === '*');
   if (!journey) return null;
   return (
-    <Link to="/ratio?tab=iter" className="block">
+    <Link to="/ratio?tab=tabula" className="block">
       <Card className="flex items-center gap-4 p-5 transition-colors hover:bg-surface sm:p-6">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sage-soft text-sage-text">{latest ? <Trophy size={20} aria-hidden /> : <Sprout size={20} aria-hidden />}</span>
         <span className="min-w-0 flex-1">

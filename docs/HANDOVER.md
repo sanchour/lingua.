@@ -73,7 +73,7 @@ read that part before starting.
 | 15 | [x] | *done 2026-10-28 (0.5.2-alpha.21)* **Sermo.** **Parallel** after 2. | 5.2-6 | M |
 | 16 | [x] | *done 2026-10-28 (0.5.2-alpha.24)* **Mundus** (the interactive guide, one Explore, Things to try). **Parallel** after 2. | 5.2-7 | M |
 | 17 | [x] | *done 2026-10-28 (0.5.2-alpha.26)* **Grammatica's guided path** and full-width lessons. **Parallel** after 1 and 2. | 5.2-8 | L |
-| 18 | [~] | *claimed 2026-10-27 (with all of Lingua 5, ROADMAP "Finishing Lingua 5")* **Ratio** (one language, compact, goals in Tabula, more numbers). **Parallel.** | 5.2-9 | M |
+| 18 | [~] | *mostly done 2026-10-28 (0.5.2-alpha.27; the rest is in ROADMAP "Ratio (5.2-9)")* **Ratio** (one language, compact, goals in Tabula, more numbers). **Parallel.** | 5.2-9 | M |
 | 19 | [x] | **Grammatica part 6: topic maps for every language** (3.0-8). *Done 2026-10-21:* short grammars for twelve tier 2 languages, the Georgian alphabet; the rest named in ROADMAP "3.0-8". **Parallel.** | ROADMAP "3.0-8" | L |
 | 20 | [x] | *done 2026-10-25, with step 9 (a · typing, b · language touches: ROADMAP "Typing, and the language in the design")* **5.1-4 · Typing, and the language in the design,** one step in two parts: a · typing practice in Cursus; b · a touch of the language in the design. After the room steps above (b touches every room lightly). | 5.1-4a, b | L |
 | 21 | [~] | *claimed 2026-10-27 (with all of Lingua 5, ROADMAP "Finishing Lingua 5")* **Lingua 5 complete:** the full check; the version becomes 0.5.2 (`node scripts/version.ts --release`, docs/VERSIONS.md; 5.1-5, 5.1's own check, was done on 2026-10-25 at the user's ask: 0.5.1). Last, after 22. | 5.2-10 | S |

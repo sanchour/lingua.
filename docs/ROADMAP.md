@@ -2246,7 +2246,7 @@ design of each is LINGUA-5.2-PLAN.md's section; below is how it is built and how
      the rule, its words); Enter continues, 1–4 choose. The narrow `max-w-2xl` column goes.
    - **Checked:** a French learner placed at A2 lands on their next step with its reason; every lesson view uses
      the full width at 1280, 1366 and 1440.
-5. [ ] **Ratio (5.2-9, handover 18).**
+5. [~] **Ratio (5.2-9, handover 18)** — mostly done 2026-10-28 (0.5.2-alpha.27): Overview is the current language only, Iter is gone (its old links open Tabula; its data stays), goals sit on Tabula rows with a slim bar and on track / behind, the reading challenge sits above the table, and Overview has an estimated level said plainly as an estimate. Already there from before: words over time and coverage, reading speed, listening, retention and Ludus accuracy, the year heat map, time by room and by part of the day. **Left for the check (5.2-10):** look-ups per 1,000 words, typing speed and grammar mastered as cards of their own, listening by kind as its own card, a daily known-word record if missing, and the Iter form for logging time by hand (its drawer is kept in `ratio/forms.tsx`, not yet reachable). Checked in the app (French): no other language chips, Tabula goal lines and the old `?tab=iter` link.
    - Only the current language outside Tabula; everything more compact, even-width figures.
    - Iter's tab and pages go (its data stays); a goal on each Tabula row (level by a date, hours a week) with a
      slim bar and on track / behind; an Iter goal with a level and a date moves into it.
