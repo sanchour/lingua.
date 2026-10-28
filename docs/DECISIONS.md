@@ -1744,3 +1744,13 @@ Short records of choices that are not obvious from the code. Newest last.
   different AIs then meets in the compiler, not in a merge. It also reserves the Dexie versions, the one thing two
   parallel steps would otherwise both claim.
 - The audit's entries are ticked step by step, so the final check (6-28) is a spot-check, not a 1,618-entry pass.
+
+## 2026-10-28 — Sermo opens the learner's own AI; no chat inside Lingua
+
+- Sermo's job is the prompt, not the conversation: each AI does the talking, with its own voice mode, where the learner is
+  signed in. So the in-app chat (and its key handling) went; chats already made stay in the database.
+- Scenes are data in English, not translated wholesale: ten keep their hand-written sentence per language, the other seventy
+  go in as English inside the language's frame ("written in English so I understand it, but speak only French with me"). It
+  keeps eighty scenes cheap and the AI answers in the language anyway.
+- Always copy first, and fill the prompt in only where a site's link takes one: a link can fail (sign-in pages drop the
+  question), a copied prompt can't.

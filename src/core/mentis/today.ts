@@ -1,8 +1,7 @@
 // Mentis's "Today's prompt" (Lingua 5.1-1): one thing to write and one thing to talk about, at the
 // learner's level, chosen from what they read, watched and listened to this week. Pure: the rail
 // gathers the week (features/mentis/useRecent.ts) and draws this.
-import { sceneOfTheDay, SCENE_INFO } from '@/core/colloquium/prompts';
-import type { SceneId } from '@/core/colloquium/prompts';
+import { sceneOfTheDay } from '@/core/colloquium/prompts';
 import { curatedPrompt } from '@/core/lang/prompts';
 import type { Level } from '@/core/lang/levels';
 
@@ -24,7 +23,7 @@ export interface TodayWrite {
 export interface TodayTalk {
   title: string;
   detail: string;
-  scene?: SceneId;
+  scene?: string;
   about?: string;
 }
 
@@ -61,7 +60,7 @@ export function todayPrompt(lang: string, level: Level, recent: readonly Recent[
     };
   } else {
     const scene = sceneOfTheDay(level, day);
-    talk = { title: SCENE_INFO[scene].title, detail: SCENE_INFO[scene].detail, scene };
+    talk = { title: scene.title, detail: scene.detail, scene: scene.id };
   }
   return { write, talk };
 }

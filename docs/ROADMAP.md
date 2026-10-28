@@ -2216,7 +2216,10 @@ design of each is LINGUA-5.2-PLAN.md's section; below is how it is built and how
      entries, words, days written, longest run, words corrected.
    - **Checked:** headings and every key in French, Russian and Arabic; the salutation follows the language;
      search, sort, rename, delete and undo; the calendar inks the right days.
-2. [ ] **Sermo (5.2-6, handover 15).**
+2. [x] **Sermo (5.2-6, handover 15)** — done 2026-10-28 (0.5.2-alpha.21). Checked in the app (French, Lingua+): the three screens with
+   Back, the AI buttons with their marks and the link built with only the prompt, the old chat link opening Sermo; not checked:
+   each AI's site actually filling the prompt in (links as researched 2026-10-27: ChatGPT, Grok fill and send or ask; Claude
+   and Copilot need sign-in; Gemini takes none), dark mode.
    - Three screens with Back, choices remembered: the scene (large cards in groups, levels, search, Surprise me),
      how you'll talk (Voice or Text, corrections at the end or as I go, help when stuck, 5/10/20 minutes), the
      prompt (a reading card, Copy, and ChatGPT · Claude · Gemini · Copilot · Grok with their marks).

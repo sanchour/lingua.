@@ -443,6 +443,21 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Onboarding:** language, level, goal and look (four steps); what you enjoy is set in Ordo ›
   Languages, and Home starts from your reasons.
 
+## Sermo in Lingua 5 (5.2-6)
+
+- **Three screens, one choice each, with Back** (`features/colloquium/ColloquiumPage.tsx`): the scene (large cards by group, a
+  level filter, search with `/`, Surprise me, and "From your week": what you read, watched and wrote), how you'll talk (Voice or
+  Text, corrections as I go / at the end / none, 5, 10 or 20 minutes, help when stuck), and the prompt (a reading card, Copy, and
+  ChatGPT · Claude · Gemini · Copilot · Grok with their marks). Choices are remembered on the device (`choices.ts`).
+- **81 scenes** in `core/colloquium/scenes/` (everyday, travel, work and study, social, culture, stories and games, practice),
+  each with a level range, who plays whom, three to five goals and a picture. The first ten have their sentence in each language;
+  the rest are written in English inside the language's own frame (`core/colloquium/prompts.ts`), and the new lines (goals,
+  corrections at the end, help, minutes) are written for the six core languages. The test builds every scene in every tier 1 and 2 language.
+- **Opening an AI** (`core/colloquium/ais.ts`): the prompt is copied and the site opens, filled in where its link takes a prompt
+  (ChatGPT, Claude, Copilot, Grok), else "Paste with Ctrl+V" (Gemini). The link carries only the prompt.
+- **The chat inside Lingua is gone**; old chats stay in the database and old links open Sermo. Home's talk step now asks whether
+  an AI was opened this week (on this device) instead of counting chats.
+
 ## Colloquium: talking with AI (3.0-6)
 
 - **Where:** in the desktop sidebar (Alt 8); on a phone from Home's "Talk today" card or the

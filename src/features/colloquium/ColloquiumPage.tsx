@@ -1,92 +1,387 @@
-import { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Check, Copy, ExternalLink, MessageCircle, Mic, Type, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Check, Clapperboard, Copy, Dices, ExternalLink, Headphones, Keyboard, Mic, NotebookPen, Type } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
-import { asScene, buildPrompt, promptInLanguage, SCENE_INFO, SCENES } from '@/core/colloquium/prompts';
-import type { SceneId } from '@/core/colloquium/prompts';
+import { AIS } from '@/core/colloquium/ais';
+import type { Ai } from '@/core/colloquium/ais';
+import { asScene, buildPrompt, getScene, promptInLanguage } from '@/core/colloquium/prompts';
+import { fits, GROUPS, SCENES, searchScenes } from '@/core/colloquium/scenes';
+import type { Scene } from '@/core/colloquium/scenes';
+import { toPlain } from '@/core/journal/markdown';
 import { getLanguage } from '@/core/lang/languages';
-import { createChat, useChats } from '@/data/chats';
+import type { Level } from '@/core/lang/levels';
+import { appIconUrl } from '@/core/mundus/marks';
 import { currentGrammarTopic } from '@/data/grammar';
+import { useJournal } from '@/data/journal';
 import { dueTerms } from '@/data/study';
-import { Button, Card, Segmented } from '@/design/primitives';
+import { Button, Card, SearchInput, Segmented } from '@/design/primitives';
+import { useRecent } from '@/features/mentis/useRecent';
 import { cx } from '@/lib/cx';
-import { aiBlock } from '@/data/plan';
-import { MaxLink } from '@/features/plans/Locked';
 import { toast } from '@/state/ui';
+import { loadChoices, markTalked, saveChoices } from './choices';
+import type { SermoChoices } from './choices';
+import { GROUP_TONE, SCENE_ICONS } from './sceneArt';
+
+type Step = 'scene' | 'how' | 'prompt';
 
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
-const dateFmt = new Intl.DateTimeFormat('en', {
-  day: 'numeric',
-  month: 'short',
-});
+const LOW = new Set<Level>(['A0', 'A1', 'A2']);
+const WEEK = 7 * 86_400_000;
+const typing = (el: EventTarget | null) => el instanceof HTMLElement && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+const range = (s: Scene) => (s.from === s.to ? s.from : `${s.from}–${s.to}`);
 
-/** Each AI's own app or site; on a phone the link opens the app when it's installed. */
-const AIS = [
-  {
-    name: 'ChatGPT',
-    url: 'https://chatgpt.com/',
-    voice: 'the voice button by the message box',
-  },
-  {
-    name: 'Claude',
-    url: 'https://claude.ai/new',
-    voice: 'the voice button in the Claude app',
-  },
-  {
-    name: 'Gemini',
-    url: 'https://gemini.google.com/app',
-    voice: 'Gemini Live, the wave button',
-  },
-  {
-    name: 'Copilot',
-    url: 'https://copilot.microsoft.com/',
-    voice: 'the microphone, for Copilot Voice',
-  },
-];
-
-const LOW = new Set(['A0', 'A1', 'A2']);
+/** Something from the learner's week to talk about. */
+interface WeekItem {
+  title: string;
+  detail: string;
+  icon: LucideIcon;
+}
 
 /**
- * Colloquium: talk in the language. A scene and a few wishes make a prompt in the language, which
- * opens in the AI the learner already uses (nothing is sent from Lingua); with a key, the chat
- * can happen here too, with corrections.
+ * Sermo (5.2-6): three screens, one choice each. Pick a scene, say how you'll talk, and take the prompt, written in
+ * the language for your level and words, to the AI you already use. Nothing is sent from Lingua; the chat happens there.
  */
 export default function ColloquiumPage() {
-  const { language, settings } = useApp();
+  const { language } = useApp();
   const lang = language.id;
+  const level = language.level;
   const name = getLanguage(lang)?.name ?? lang;
-  const navigate = useNavigate();
   const [params] = useSearchParams();
-  // Home's scene of the day opens with that scene picked.
-  const [scene, setScene] = useState<SceneId>(() => asScene(params.get('scene')) ?? 'cafe');
-  // Mentis's prompt and Diarium's "Talk about this" open Sermo with something to talk about instead of a scene.
-  const [about, setAbout] = useState(() => params.get('topic')?.trim().slice(0, 160) || '');
-  const [correct, setCorrect] = useState(true);
-  const [slow, setSlow] = useState(LOW.has(language.level));
-  const [mode, setMode] = useState<'voice' | 'text'>('voice');
+  // Home's scene of the day and Mentis's "talk about" open on the second screen with the scene or topic picked.
+  const linkedScene = asScene(params.get('scene'));
+  const linkedAbout = params.get('topic')?.trim().slice(0, 160) || '';
+  const [step, setStep] = useState<Step>(linkedScene || linkedAbout ? 'how' : 'scene');
+  const [sceneId, setSceneId] = useState(linkedScene ?? 'cafe');
+  const [about, setAbout] = useState(linkedAbout);
+  const [choices, setChoices] = useState<SermoChoices>(loadChoices);
   const [useWords, setUseWords] = useState(true);
   const [useTopic, setUseTopic] = useState(true);
-  const [copied, setCopied] = useState(false);
   const due = useLiveQuery(() => dueTerms(lang, 10), [lang]);
-  // Grammatica's next topic, woven in when there is one.
-  const grammar = useLiveQuery(() => currentGrammarTopic(lang, language.level), [lang, language.level]);
-  const topic = useTopic && grammar ? grammar.topic.title : undefined;
-  const chats = useChats(lang);
-  const block = aiBlock(settings, settings.llm.provider);
-  const hasKey = !block;
+  const grammar = useLiveQuery(() => currentGrammarTopic(lang, level), [lang, level]);
+  const top = useRef<HTMLDivElement>(null);
 
+  const choose = (patch: Partial<SermoChoices>) =>
+    setChoices((c) => {
+      const next = { ...c, ...patch };
+      saveChoices(next);
+      return next;
+    });
+  const go = (next: Step) => {
+    setStep(next);
+    top.current?.scrollIntoView({ block: 'start' });
+  };
+
+  const scene = getScene(sceneId)!;
+  const slow = choices.slow ?? LOW.has(level);
+  const topic = grammar && (useTopic || scene.id === 'grammar') ? grammar.topic.title : undefined;
   const prompt = buildPrompt(lang, {
-    scene,
-    level: language.level,
-    correct,
+    scene: sceneId,
+    level,
+    correct: choices.correct === 'off' ? false : choices.correct,
     slow,
-    voice: mode === 'voice',
+    help: choices.help,
+    minutes: choices.minutes,
+    voice: choices.mode === 'voice',
     words: useWords ? (due ?? []) : [],
     topic,
     about: about || undefined,
   });
+
+  const steps: Array<{ id: Step; text: string }> = [
+    { id: 'scene', text: 'Your scene' },
+    { id: 'how', text: 'How you’ll talk' },
+    { id: 'prompt', text: 'Your prompt' },
+  ];
+  const at = steps.findIndex((s) => s.id === step);
+
+  return (
+    <div ref={top} className="scroll-mt-24">
+      <PageHeader title="Sermo" eyebrow={`Talk in ${name}`} />
+      <ol className="-mt-1 mb-6 flex items-center gap-2 text-[13.5px] font-semibold" aria-label="Steps">
+        {steps.map((s, i) => (
+          <li key={s.id} className="flex items-center gap-2">
+            {i > 0 && <span className="h-px w-8 bg-line" aria-hidden />}
+            <button
+              type="button"
+              disabled={i > at}
+              aria-current={i === at ? 'step' : undefined}
+              onClick={() => go(s.id)}
+              className={cx('flex items-center gap-2 rounded-full py-1 pr-3 pl-1 transition-colors', i === at ? 'text-ink' : i < at ? 'text-ink-soft hover:bg-surface hover:text-ink' : 'text-ink-faint')}
+            >
+              <span className={cx('grid size-6 place-items-center rounded-full text-[12px]', i === at ? 'bg-inverse text-on-inverse' : i < at ? 'bg-sage-soft text-sage-text' : 'bg-sunken')}>
+                {i < at ? <Check size={13} aria-hidden /> : i + 1}
+              </span>
+              {s.text}
+            </button>
+          </li>
+        ))}
+      </ol>
+
+      {step === 'scene' && (
+        <ScenePicker
+          lang={lang}
+          level={level}
+          picked={about ? undefined : sceneId}
+          onScene={(id) => {
+            setSceneId(id);
+            setAbout('');
+            go('how');
+          }}
+          onAbout={(title) => {
+            setAbout(title);
+            go('how');
+          }}
+        />
+      )}
+
+      {step === 'how' && (
+        <section aria-label="How you’ll talk" className="max-w-4xl">
+          <Picked scene={scene} about={about} onChange={() => go('scene')} />
+          <h2 className={cx(label, 'mt-7 mb-3')}>Voice or text</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {(
+              [
+                { id: 'voice', icon: Mic, title: 'Voice', detail: 'Talk out loud with the AI’s voice mode. Short turns, like a real conversation.' },
+                { id: 'text', icon: Type, title: 'Text', detail: 'Type and read. Time to think, look words up, and see every correction.' },
+              ] as const
+            ).map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                aria-pressed={choices.mode === m.id}
+                onClick={() => choose({ mode: m.id })}
+                className={cx('flex items-start gap-4 rounded-3xl border p-5 text-left transition-colors', choices.mode === m.id ? 'border-accent/50 bg-accent-soft' : 'border-line bg-raised hover:border-line-strong')}
+              >
+                <span className={cx('grid size-12 shrink-0 place-items-center rounded-2xl', choices.mode === m.id ? 'bg-accent-fill text-on-accent' : 'bg-sunken text-ink-soft')}>
+                  <m.icon size={22} aria-hidden />
+                </span>
+                <span>
+                  <span className="block font-serif text-[20px] font-semibold">{m.title}</span>
+                  <span className="mt-1 block text-[14px] leading-snug text-ink-soft">{m.detail}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-7 grid gap-x-10 gap-y-6 md:grid-cols-2">
+            <Option title="Correct my mistakes" detail={choices.correct === 'end' ? 'All together when you finish, so the talk keeps flowing.' : choices.correct === 'live' ? 'Briefly, after each of your answers.' : 'No corrections, just talking.'}>
+              <Segmented<SermoChoices['correct']>
+                label="Correct my mistakes"
+                value={choices.correct}
+                onChange={(correct) => choose({ correct })}
+                options={[
+                  { value: 'live', label: 'As I go' },
+                  { value: 'end', label: 'At the end' },
+                  { value: 'off', label: 'Not at all' },
+                ]}
+              />
+            </Option>
+            <Option title="How long" detail="The AI wraps the scene up and tells you how you did.">
+              <Segmented<'5' | '10' | '20'>
+                label="How long"
+                value={String(choices.minutes) as '5' | '10' | '20'}
+                onChange={(m) => choose({ minutes: Number(m) as SermoChoices['minutes'] })}
+                options={[
+                  { value: '5', label: '5 min' },
+                  { value: '10', label: '10 min' },
+                  { value: '20', label: '20 min' },
+                ]}
+              />
+            </Option>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            <Toggle on={choices.help} onClick={() => choose({ help: !choices.help })} text="Help me when I’m stuck" />
+            <Toggle on={slow} onClick={() => choose({ slow: !slow })} text="Slowly and simply" />
+            {Boolean(due?.length) && <Toggle on={useWords} onClick={() => setUseWords(!useWords)} text={`Use my ${due!.length} words due`} />}
+            {grammar && scene.id !== 'grammar' && <Toggle on={useTopic} onClick={() => setUseTopic(!useTopic)} text={`Practise ${grammar.topic.title}`} />}
+          </div>
+
+          <div className="mt-8 flex items-center gap-2">
+            <Button variant="ghost" icon={ArrowLeft} onClick={() => go('scene')}>
+              Back
+            </Button>
+            <Button size="lg" onClick={() => go('prompt')}>
+              Write my prompt <ArrowRight size={17} aria-hidden />
+            </Button>
+          </div>
+        </section>
+      )}
+
+      {step === 'prompt' && <PromptStep lang={lang} name={name} prompt={prompt} voice={choices.mode === 'voice'} scene={scene} about={about} onBack={() => go('how')} onRestart={() => go('scene')} />}
+    </div>
+  );
+}
+
+/** The first screen: the learner's week, then every group's scenes as large cards. */
+function ScenePicker({ lang, level, picked, onScene, onAbout }: { lang: string; level: Level; picked?: string; onScene: (id: string) => void; onAbout: (title: string) => void }) {
+  const [query, setQuery] = useState('');
+  const [all, setAll] = useState(false);
+  const search = useRef<HTMLInputElement>(null);
+  const recent = useRecent(lang);
+  const journal = useJournal(lang);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || typing(e.target)) return;
+      e.preventDefault();
+      search.current?.focus();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const week = useMemo(() => {
+    const out: WeekItem[] = (recent ?? []).slice(0, 3).map((r) => ({
+      title: r.title,
+      detail: r.lane === 'read' ? 'You read it this week' : r.lane === 'watch' ? 'You watched it this week' : 'You listened to it this week',
+      icon: r.lane === 'read' ? BookOpen : r.lane === 'watch' ? Clapperboard : Headphones,
+    }));
+    const entry = journal?.find((e) => e.text.trim() && Date.now() - new Date(e.date).getTime() < WEEK);
+    if (entry) {
+      const plain = toPlain(entry.text).replace(/\s+/g, ' ');
+      out.push({ title: entry.title || entry.prompt || (plain.length > 60 ? `${plain.slice(0, 60)}…` : plain), detail: 'You wrote about it in Diarium', icon: NotebookPen });
+    }
+    return out;
+  }, [recent, journal]);
+
+  const shown = searchScenes(all ? SCENES : SCENES.filter((s) => fits(s, level)), query);
+  const surprise = () => {
+    const list = SCENES.filter((s) => fits(s, level) && s.id !== picked);
+    onScene(list[Math.floor(Math.random() * list.length)].id);
+  };
+
+  return (
+    <section aria-label="Your scene">
+      <div className="sticky top-0 z-10 -mx-1 flex flex-wrap items-center gap-2 bg-bg/90 px-1 py-2 backdrop-blur">
+        <SearchInput ref={search} value={query} onChange={setQuery} placeholder="Search scenes   /" className="w-80" />
+        <Segmented<'mine' | 'all'>
+          label="Levels"
+          value={all ? 'all' : 'mine'}
+          onChange={(v) => setAll(v === 'all')}
+          options={[
+            { value: 'mine', label: `For ${level === 'A0' ? 'A1' : level}` },
+            { value: 'all', label: 'All levels' },
+          ]}
+        />
+        <span className="flex-1" />
+        <Button variant="secondary" icon={Dices} onClick={surprise}>
+          Surprise me
+        </Button>
+      </div>
+
+      {!query && week.length > 0 && (
+        <Group title="From your week" detail="Talk about what you read, watched and wrote">
+          {week.map((w) => (
+            <SceneCard key={w.title} title={w.title} detail={w.detail} icon={w.icon} tone={GROUP_TONE.week} onClick={() => onAbout(w.title)} />
+          ))}
+        </Group>
+      )}
+
+      {GROUPS.filter((g) => g.id !== 'week').map((g) => {
+        const list = shown.filter((s) => s.group === g.id);
+        if (!list.length) return null;
+        return (
+          <Group key={g.id} title={g.title} detail={g.detail}>
+            {list.map((s) => (
+              <SceneCard key={s.id} title={s.title} detail={s.detail} icon={SCENE_ICONS[s.icon] ?? Keyboard} tone={GROUP_TONE[s.group]} level={range(s)} active={s.id === picked} onClick={() => onScene(s.id)} />
+            ))}
+          </Group>
+        );
+      })}
+      {shown.length === 0 && <p className="mt-10 text-center text-[15px] text-ink-soft">No scene matches “{query}”.</p>}
+    </section>
+  );
+}
+
+function Group({ title, detail, children }: { title: string; detail: string; children: React.ReactNode }) {
+  return (
+    <section className="mt-7">
+      <h2 className="flex items-baseline gap-3">
+        <span className="font-serif text-[21px] font-semibold">{title}</span>
+        <span className="text-[13.5px] text-ink-soft">{detail}</span>
+      </h2>
+      <ul className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">{children}</ul>
+    </section>
+  );
+}
+
+function SceneCard({ title, detail, icon: Icon, tone, level, active, onClick }: { title: string; detail: string; icon: LucideIcon; tone: string; level?: string; active?: boolean; onClick: () => void }) {
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onClick}
+        className={cx('group flex h-full w-full flex-col overflow-hidden rounded-3xl border text-left transition-[border-color,transform] hover:-translate-y-0.5', active ? 'border-accent/60' : 'border-line hover:border-line-strong')}
+      >
+        <span className={cx('relative grid h-24 place-items-center', tone)}>
+          <Icon size={38} strokeWidth={1.5} aria-hidden />
+          {level && <span className="absolute top-2.5 right-3 rounded-full bg-raised/80 px-2 py-0.5 text-[11.5px] font-bold text-ink-soft">{level}</span>}
+        </span>
+        <span className="flex flex-1 flex-col bg-raised px-4 py-3">
+          <span className="line-clamp-2 text-[15.5px] leading-snug font-semibold">{title}</span>
+          <span className="mt-0.5 line-clamp-2 text-[13px] leading-snug text-ink-soft">{detail}</span>
+        </span>
+      </button>
+    </li>
+  );
+}
+
+/** The scene or topic picked, at the top of the second and third screens. */
+function Picked({ scene, about, onChange }: { scene: Scene; about: string; onChange: () => void }) {
+  const Icon = about ? NotebookPen : (SCENE_ICONS[scene.icon] ?? Keyboard);
+  return (
+    <Card className="flex items-center gap-4 p-4">
+      <span className={cx('grid size-14 shrink-0 place-items-center rounded-2xl', about ? GROUP_TONE.week : GROUP_TONE[scene.group])}>
+        <Icon size={26} strokeWidth={1.6} aria-hidden />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-serif text-[20px] leading-snug font-semibold">{about ? `Talk about ${about}` : scene.title}</span>
+        <span className="mt-0.5 block text-[13.5px] leading-snug text-ink-soft">
+          {about ? 'The AI asks what it is about and what you thought of it.' : `You: ${scene.you === 'yourself' ? 'yourself' : scene.you}. The AI: ${scene.ai}. Goals: ${scene.goals.join(' · ')}.`}
+        </span>
+      </span>
+      <Button variant="ghost" size="sm" onClick={onChange}>
+        Change
+      </Button>
+    </Card>
+  );
+}
+
+function Option({ title, detail, children }: { title: string; detail: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h2 className={cx(label, 'mb-2.5')}>{title}</h2>
+      {children}
+      <p className="mt-2 text-[13px] leading-snug text-ink-soft">{detail}</p>
+    </div>
+  );
+}
+
+function Toggle({ on, onClick, text }: { on: boolean; onClick: () => void; text: string }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={onClick}
+      className={cx(
+        'flex h-10 items-center gap-1.5 rounded-full border px-4 text-[13.5px] font-bold transition-colors',
+        on ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised text-ink-soft hover:border-line-strong',
+      )}
+    >
+      {on && <Check size={14} aria-hidden />}
+      {text}
+    </button>
+  );
+}
+
+/** The third screen: the prompt to read and copy, and each AI with its mark. */
+function PromptStep({ lang, name, prompt, voice, scene, about, onBack, onRestart }: { lang: string; name: string; prompt: string; voice: boolean; scene: Scene; about: string; onBack: () => void; onRestart: () => void }) {
+  const [copied, setCopied] = useState(false);
+  const [last, setLast] = useState<Ai>();
 
   const copy = async () => {
     try {
@@ -95,188 +390,67 @@ export default function ColloquiumPage() {
       window.setTimeout(() => setCopied(false), 2000);
       return true;
     } catch {
-      toast('The prompt couldn’t be copied. Select it and copy it yourself.', {
-        tone: 'error',
-      });
+      toast('The prompt couldn’t be copied. Select it and copy it yourself.', { tone: 'error' });
       return false;
     }
   };
 
-  const open = async (ai: (typeof AIS)[number]) => {
-    // Open first, inside the tap, so the browser doesn't block it; the copy follows at once.
-    window.open(ai.url, '_blank', 'noopener');
-    if (await copy()) toast(`Copied. Paste it in ${ai.name} and send it${mode === 'voice' ? `, then use ${ai.voice}` : ''}.`, { tone: 'success', duration: 7000 });
+  const open = (ai: Ai) => {
+    // Open inside the click so the browser allows it; the prompt is copied as well, for when the link can't fill it in.
+    window.open(ai.link(prompt), '_blank', 'noopener');
+    markTalked();
+    setLast(ai);
+    void copy();
   };
-
-  const chatHere = async () => {
-    const id = await createChat(
-      lang,
-      scene,
-      about ? `About ${about}` : SCENE_INFO[scene].title,
-      buildPrompt(lang, {
-        scene,
-        level: language.level,
-        correct,
-        slow,
-        voice: false,
-        words: useWords ? (due ?? []) : [],
-        topic,
-        about: about || undefined,
-      }),
-    );
-    navigate(`/mentis/sermo/chat/${id}`);
-  };
-
-  const toggle = (on: boolean, set: (v: boolean) => void, text: string) => (
-    <button
-      type="button"
-      aria-pressed={on}
-      onClick={() => set(!on)}
-      className={cx(
-        'flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors',
-        on ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised text-ink-soft hover:border-line-strong',
-      )}
-    >
-      {on && <Check size={14} aria-hidden />}
-      {text}
-    </button>
-  );
 
   return (
-    <>
-      <PageHeader title="Sermo" eyebrow={`Talk in ${name}`} />
-      <p className="-mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-soft">
-        Pick a scene and Lingua writes the opening in {name}, for your level and the words you’re learning. Talk it through in the AI you already use, by voice or text
-        {hasKey ? ', or chat here with corrections.' : '.'}
-      </p>
-
-      {about && (
-        <Card className="mt-5 flex items-center gap-3 p-4 sm:p-5">
-          <MessageCircle size={20} className="shrink-0 text-accent-text" aria-hidden />
-          <span className="min-w-0 flex-1">
-            <span className="block text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase">Talking about</span>
-            <span className="block truncate font-serif text-[19px] font-semibold">{about}</span>
-          </span>
-          <Button variant="ghost" size="sm" icon={X} onClick={() => setAbout('')}>
-            Pick a scene instead
-          </Button>
+    <section aria-label="Your prompt" className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="min-w-0">
+        <Picked scene={scene} about={about} onChange={onRestart} />
+        <Card className="mt-4 p-6">
+          <div className="flex items-center gap-2">
+            <h2 className={cx(label, 'flex-1')}>Your prompt{promptInLanguage(lang) ? ` · in ${name}` : ''}</h2>
+            <Button variant="ghost" size="sm" icon={copied ? Check : Copy} onClick={() => void copy()}>
+              {copied ? 'Copied' : 'Copy'}
+            </Button>
+          </div>
+          <p lang={promptInLanguage(lang) ? lang : 'en'} className="mt-3 font-serif text-[18px] leading-[1.65] select-text">
+            {prompt}
+          </p>
         </Card>
-      )}
-
-      <h2 className={cx(label, 'mt-5 sm:mt-6 mb-2.5', about && 'hidden')}>The scene</h2>
-      <ul hidden={Boolean(about)} className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-        {SCENES.map((id) => {
-          const info = SCENE_INFO[id];
-          return (
-            <li key={id}>
-              <button
-                type="button"
-                aria-pressed={scene === id}
-                onClick={() => setScene(id)}
-                className={cx(
-                  'flex h-full w-full flex-col rounded-2xl border px-3.5 py-3 text-left transition-colors',
-                  scene === id ? 'border-accent/50 bg-accent-soft' : 'border-line bg-raised hover:border-line-strong',
-                )}
-              >
-                <span className="text-[14.5px] leading-snug font-semibold">{info.title}</span>
-                <span className="mt-0.5 text-[12.5px] leading-snug text-ink-soft">{info.detail}</span>
-                {info.from !== 'A1' && <span className="mt-1.5 text-[11px] font-bold tracking-wide text-ink-faint uppercase">From {info.from}</span>}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      <h2 className={cx(label, 'mt-5 sm:mt-6 mb-2.5')}>How it goes</h2>
-      <div className="flex flex-wrap items-center gap-2">
-        <Segmented<'voice' | 'text'>
-          label="Voice or text"
-          value={mode}
-          onChange={setMode}
-          options={[
-            { value: 'voice', label: 'Voice', icon: Mic },
-            { value: 'text', label: 'Text', icon: Type },
-          ]}
-        />
-        {toggle(correct, setCorrect, 'Correct my mistakes')}
-        {toggle(slow, setSlow, 'Slowly and simply')}
-        {Boolean(due?.length) && toggle(useWords, setUseWords, `Use my ${due!.length} words due`)}
-        {grammar && toggle(useTopic, setUseTopic, `Practise ${grammar.topic.title}`)}
-      </div>
-
-      <Card className="mt-4 sm:mt-5 p-4 sm:p-5">
-        <div className="flex items-center gap-2">
-          <h2 className={cx(label, 'flex-1')}>The prompt{promptInLanguage(lang) ? ` · in ${name}` : ''}</h2>
-          <Button variant="ghost" size="sm" icon={copied ? Check : Copy} onClick={() => void copy()}>
-            {copied ? 'Copied' : 'Copy'}
+        <div className="mt-6">
+          <Button variant="ghost" icon={ArrowLeft} onClick={onBack}>
+            Back
           </Button>
         </div>
-        <p lang={promptInLanguage(lang) ? lang : 'en'} className="mt-2 text-[15.5px] leading-relaxed select-text">
-          {prompt}
-        </p>
-      </Card>
-
-      <h2 className={cx(label, 'mt-5 sm:mt-6 mb-2.5')}>Open it in</h2>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {AIS.map((ai) => (
-          <button
-            key={ai.name}
-            type="button"
-            onClick={() => void open(ai)}
-            className="flex h-12 items-center justify-center gap-2 rounded-2xl border border-line bg-raised text-[15px] font-semibold transition-colors hover:border-line-strong active:scale-[0.98]"
-          >
-            {ai.name} <ExternalLink size={14} className="text-ink-faint" aria-hidden />
-          </button>
-        ))}
       </div>
-      <p className="mt-2 text-[13px] leading-snug text-ink-soft">
-        The prompt is copied as the AI opens: paste it and send it
-        {mode === 'voice' ? ', then switch to voice there' : ''}. Nothing is sent from Lingua.
-      </p>
 
-      <section aria-label="Chat here" className="mt-6 pb-6">
-        <h2 className={cx(label, 'mb-3')}>Chat here</h2>
-        {hasKey ? (
-          <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:p-5">
-            <span className="min-w-0 flex-1 text-[14.5px] leading-snug text-ink-soft">
-              A text chat in this scene with your own AI key: tap any word for its meaning, hear the answers, and see your mistakes corrected under each of your lines.
-            </span>
-            <Button icon={MessageCircle} onClick={() => void chatHere()}>
-              Start chatting
-            </Button>
-          </Card>
-        ) : block === 'max' ? (
-          <p className="text-[14.5px] leading-snug text-ink-soft">
-            With Lingua+ Max you can chat right here, using your own free key, with your mistakes corrected as you go.{' '}
-            <MaxLink className="text-accent-text" />
-          </p>
-        ) : (
-          <p className="text-[14.5px] leading-snug text-ink-soft">
-            With a free Groq or Gemini key you can chat right here, with your mistakes corrected as you go.{' '}
-            <Link to="/settings/ai" className="font-semibold text-accent-text hover:underline">
-              Add a key in Settings › AI
-            </Link>
-          </p>
-        )}
-        {chats && chats.length > 0 && (
-          <ul className="mt-4 -mx-2 flex flex-col">
-            {chats.map((c) => (
-              <li key={c.id}>
-                <Link to={`/mentis/sermo/chat/${c.id}`} className="flex items-center gap-3 rounded-2xl px-2 py-2.5 transition-colors hover:bg-surface/70">
-                  <MessageCircle size={18} className="shrink-0 text-ink-faint" aria-hidden />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[15px] font-semibold">{c.title}</span>
-                    <span lang={lang} className="block truncate text-[12.5px] text-ink-soft">
-                      {c.messages.at(-1)?.text ?? 'Not started'}
-                    </span>
-                  </span>
-                  <span className="shrink-0 text-[12.5px] text-ink-faint">{dateFmt.format(c.updatedAt)}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </>
+      <aside aria-label="Open it in" className="lg:sticky lg:top-6 lg:self-start">
+        <h2 className={cx(label, 'mb-3')}>Open it in</h2>
+        <ul className="flex flex-col gap-2">
+          {AIS.map((ai) => (
+            <li key={ai.id}>
+              <button
+                type="button"
+                onClick={() => open(ai)}
+                className="flex h-16 w-full items-center gap-3.5 rounded-2xl border border-line bg-raised px-3.5 text-left transition-colors hover:border-line-strong hover:bg-surface"
+              >
+                <img src={appIconUrl(ai.icon, 80)} alt="" width={40} height={40} className="size-10 rounded-[11px] shadow-elev-1" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[16px] font-semibold">{ai.name}</span>
+                  <span className="block text-[12.5px] text-ink-soft">{ai.fills ? 'Opens with the prompt filled in' : 'Opens; paste with Ctrl+V'}</span>
+                </span>
+                <ExternalLink size={15} className="text-ink-faint" aria-hidden />
+              </button>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-[13px] leading-snug text-ink-soft">
+          {last
+            ? `${last.fills ? `${last.name} opened with your prompt. If it isn’t filled in, paste it with Ctrl+V` : `Paste the prompt in ${last.name} with Ctrl+V`}${voice ? `, send it, then use ${last.voice}` : ', and send it'}.`
+            : 'It opens where you’re signed in, and the prompt is copied too. Nothing is sent from Lingua.'}
+        </p>
+      </aside>
+    </section>
   );
 }

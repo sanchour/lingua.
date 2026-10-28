@@ -5,7 +5,6 @@ import {
   BibliothecaPage,
   BookDetailsPage,
   CantusPage,
-  ChatPage,
   CodexPage,
   CommutePage,
   CourseLessonPage,
@@ -120,16 +119,10 @@ export const router = createBrowserRouter(
         { path: 'cantus/spotify', element: <SpotifyCallbackPage /> },
         { path: 'visio', element: <VisioPage /> },
         { path: 'visio/watch/:mediaId', element: <WatchPage /> },
-        // Mentis: Mundus (with its own tabs), Sermo and Diarium; a chat and an entry are pages of their own.
+        // Mentis: Mundus (with its own tabs), Sermo and Diarium; an entry is a page of its own.
         { path: 'mentis/*', element: <MentisPage /> },
-        {
-          path: 'mentis/sermo/chat/:chatId',
-          element: (
-            <PlanRoute feature="sermo" fallback="/mentis/sermo">
-              <ChatPage />
-            </PlanRoute>
-          ),
-        },
+        // The chat inside Lingua went in 5.2-6: old chat links open Sermo (the chats stay in the database).
+        { path: 'mentis/sermo/chat/:chatId', element: <Navigate to="/mentis/sermo" replace /> },
         { path: 'mentis/diarium/:entryId', element: <JournalEntryPage /> },
         { path: 'ratio', element: <RatioPage /> },
         { path: 'settings', element: <OrdoPage /> },

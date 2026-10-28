@@ -32,7 +32,7 @@ import { MundusHomeCard } from '@/features/mundus/HomeCard';
 import { ColloquiumHomeCard } from '@/features/colloquium/HomeCard';
 import { GrammarHomeCard } from '@/features/grammatica/links';
 import { LettersCard } from '@/features/grammatica/letters/LettersCard';
-import { useChats } from '@/data/chats';
+import { lastTalked } from '@/features/colloquium/choices';
 import { studyMinutes, useHomeFacts } from './facts';
 import type { HomeFacts } from './facts';
 import { GoalRing } from './GoalRing';
@@ -191,8 +191,7 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
   const playback = usePlaybackMap();
   const journal = useJournal(lang);
   const songs = useSavedSongs(lang);
-  const chats = useChats(lang);
-  if (!due || !texts || !listening || !videos || !journal || !songs || !chats) return undefined;
+  if (!due || !texts || !listening || !videos || !journal || !songs) return undefined;
 
   const steps: Step[] = [];
   const cards = due.due + due.fresh;
@@ -279,9 +278,9 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
     steps.push({ key: 'write', to: '/mentis/diarium', icon: PenLine, tone: 'sage', title: 'Write today’s entry', detail: prompt.en || prompt.text });
   }
 
-  // Now and then (every third day, when no chat here this week) ten minutes of talking.
+  // Now and then (every third day, when Sermo hasn't opened an AI this week) ten minutes of talking.
   const day = Math.floor(Date.now() / 86_400_000);
-  if (day % 3 === 0 && !chats.some((c) => Date.now() - c.updatedAt < 7 * 86_400_000)) {
+  if (day % 3 === 0 && Date.now() - lastTalked() > 7 * 86_400_000) {
     steps.push({ key: 'talk', to: '/mentis/sermo', icon: MessagesSquare, tone: 'accent', title: 'Talk for ten minutes', detail: 'A scene in Sermo, by voice or text with an AI' });
   }
 

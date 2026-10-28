@@ -9,16 +9,12 @@ import { PRACTICE } from './practice';
 import { SOCIAL } from './social';
 import { TRAVEL } from './travel';
 import type { Scene } from './types';
+import { WORK } from './work';
 
 export type { Scene, SceneGroup } from './types';
 export { GROUPS } from './types';
 
-export const SCENES: Scene[] = [...EVERYDAY, ...TRAVEL, ...WORK_AND_STUDY(), ...SOCIAL, ...CULTURE, ...GAMES, ...PRACTICE];
-
-function WORK_AND_STUDY() {
-  return WORK;
-}
-import { WORK } from './work';
+export const SCENES: Scene[] = [...EVERYDAY, ...TRAVEL, ...WORK, ...SOCIAL, ...CULTURE, ...GAMES, ...PRACTICE];
 
 const BY_ID = new Map(SCENES.map((s) => [s.id, s]));
 

@@ -30,7 +30,7 @@ const isImmersive = (pathname: string, wide: boolean) =>
   /^\/cursus\/course\/[^/]+\/[^/]+\/?$/.test(pathname) ||
   pathname === '/sonus/commute' ||
   (pathname.startsWith('/cantus') && !pathname.startsWith('/cantus/spotify')) ||
-  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/sonus/station/') || pathname.startsWith('/visio/watch/') || pathname.startsWith('/mentis/sermo/chat/')));
+  (!wide && (pathname.startsWith('/sonus/play/') || pathname.startsWith('/sonus/station/') || pathname.startsWith('/visio/watch/')));
 
 /** On wide screens Settings' groups open beside their list, so moving between them isn't a new page. */
 const pageKey = (pathname: string, wide: boolean) => (wide && /^\/settings(?:\/(?!lab)[\w-]+)?\/?$/.test(pathname) ? '/settings' : (roomKey(pathname) ?? pathname));

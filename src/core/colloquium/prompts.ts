@@ -1,39 +1,85 @@
-// Colloquium's prompts: a scene and how the conversation should go, written in the language so the
+// Sermo's prompts: a scene and how the conversation should go, written in the language so the
 // AI answers in it from the first line. The core twenty have their own wording; beta languages get
-// the English one, which names the language.
+// the English one, which names the language. The scenes themselves (scenes/) are written in English:
+// the first ten have a sentence in each language, the rest go in as English inside the language's frame.
 import { getLanguage } from '@/core/lang/languages';
 import type { Level } from '@/core/lang/levels';
+import { getScene } from './scenes';
+import type { Scene } from './scenes';
 
-export const SCENES = ['cafe', 'market', 'way', 'meet', 'day', 'doctor', 'hotel', 'interview', 'story', 'debate'] as const;
-export type SceneId = (typeof SCENES)[number];
+export { asScene, getScene, sceneOfTheDay, scenesFor, SCENES } from './scenes';
 
-/** How each scene is named in the app, and the level it starts to work at. */
-export const SCENE_INFO: Record<SceneId, { title: string; detail: string; from: 'A1' | 'A2' | 'B1' }> = {
-  cafe: { title: 'At a café', detail: 'Order something, ask what’s good', from: 'A1' },
-  market: { title: 'At the market', detail: 'Prices, amounts, a little haggling', from: 'A1' },
-  way: { title: 'Asking the way', detail: 'Directions in a city you don’t know', from: 'A1' },
-  meet: { title: 'Meeting someone', detail: 'Who you are, where from, what you like', from: 'A1' },
-  day: { title: 'Your day', detail: 'What you did and what’s next', from: 'A1' },
-  doctor: { title: 'At the doctor’s', detail: 'Say what hurts and understand advice', from: 'A2' },
-  hotel: { title: 'Checking in', detail: 'A room, a problem, a request', from: 'A2' },
-  interview: { title: 'A job interview', detail: 'Talk about yourself and your work', from: 'B1' },
-  story: { title: 'A story together', detail: 'One line each, wherever it goes', from: 'B1' },
-  debate: { title: 'A friendly debate', detail: 'Take a side and argue it', from: 'B1' },
+/** The scenes with their own sentence in each language (Lingua 5.1's ten). */
+const TRANSLATED = ['cafe', 'market', 'way', 'meet', 'day', 'doctor', 'hotel', 'interview', 'story', 'debate'] as const;
+type TranslatedId = (typeof TRANSLATED)[number];
+const isTranslated = (id: string): id is TranslatedId => (TRANSLATED as readonly string[]).includes(id);
+
+/** Lines added in Lingua 5.2-6, written for the six core languages; the others use the English ones. */
+interface Extra {
+  /** Leads into a scene written in English. */
+  scene: string;
+  goals: string;
+  /** Corrections at the end instead of after each answer. */
+  end: string;
+  help: string;
+  minutes: string;
+}
+
+const EN_EXTRA: Extra = {
+  scene: 'Here is the scene, written in English so I understand it, but speak only {name} with me: {scene}',
+  goals: 'What I want to manage (in English): {goals}.',
+  end: 'Don’t interrupt me with corrections; when we finish, list my mistakes with the right forms.',
+  help: 'If I get stuck, offer me two or three words or the start of a sentence I could use.',
+  minutes: 'Let’s talk for about {minutes} minutes, then end the scene and tell me how I did.',
 };
 
-const RANK: Record<Level | 'A1' | 'A2' | 'B1', number> = { A0: 1, A1: 1, A2: 2, B1: 3, B2: 4, C1: 5 };
-
-/** The scenes that work at a level (a beginner gets the A1 ones). */
-export const scenesFor = (level: Level): SceneId[] => SCENES.filter((id) => RANK[SCENE_INFO[id].from] <= RANK[level]);
-
-/** One scene a day, turning through those that fit the level. */
-export const sceneOfTheDay = (level: Level, day: number): SceneId => {
-  const fits = scenesFor(level);
-  return fits[((day % fits.length) + fits.length) % fits.length];
+const EXTRAS: Record<string, Extra> = {
+  es: {
+    scene: 'Esta es la escena, escrita en inglés para que la entienda, pero háblame solo en español: {scene}',
+    goals: 'Lo que quiero conseguir (en inglés): {goals}.',
+    end: 'No me interrumpas para corregirme; al terminar, haz una lista de mis errores con la forma correcta.',
+    help: 'Si me atasco, ofréceme dos o tres palabras o el comienzo de una frase.',
+    minutes: 'Hablemos unos {minutes} minutos; después termina la escena y dime cómo lo he hecho.',
+  },
+  fr: {
+    scene: 'Voici la scène, écrite en anglais pour que je la comprenne, mais parle-moi uniquement en français : {scene}',
+    goals: 'Ce que je veux réussir (en anglais) : {goals}.',
+    end: 'Ne m’interromps pas pour me corriger ; à la fin, fais la liste de mes fautes avec la bonne forme.',
+    help: 'Si je bloque, propose-moi deux ou trois mots ou un début de phrase.',
+    minutes: 'Parlons environ {minutes} minutes, puis termine la scène et dis-moi comment je m’en suis sorti.',
+  },
+  de: {
+    scene: 'Hier ist die Szene, auf Englisch, damit ich sie verstehe, aber sprich mit mir nur Deutsch: {scene}',
+    goals: 'Was ich schaffen möchte (auf Englisch): {goals}.',
+    end: 'Unterbrich mich nicht mit Korrekturen; liste am Ende meine Fehler mit der richtigen Form auf.',
+    help: 'Wenn ich nicht weiterweiß, biete mir zwei oder drei Wörter oder einen Satzanfang an.',
+    minutes: 'Lass uns etwa {minutes} Minuten sprechen; beende dann die Szene und sag mir, wie es lief.',
+  },
+  ru: {
+    scene: 'Вот сцена — по-английски, чтобы я её понял, но говори со мной только по-русски: {scene}',
+    goals: 'Что я хочу сделать (по-английски): {goals}.',
+    end: 'Не перебивай меня исправлениями; в конце перечисли мои ошибки с правильными формами.',
+    help: 'Если я застряну, предложи мне два-три слова или начало фразы.',
+    minutes: 'Давай поговорим минут {minutes}, потом закончи сцену и скажи, как у меня получилось.',
+  },
+  ar: {
+    scene: 'هذا هو المشهد، مكتوبًا بالإنجليزية لأفهمه، لكن تكلّم معي بالعربية فقط: {scene}',
+    goals: 'ما أريد أن أحققه (بالإنجليزية): {goals}.',
+    end: 'لا تقاطعني بالتصحيحات؛ وفي النهاية اذكر أخطائي مع الصيغة الصحيحة.',
+    help: 'إذا توقفت، فاقترح عليّ كلمتين أو ثلاثًا أو بداية جملة.',
+    minutes: 'لنتحدث مدة {minutes} دقائق تقريبًا، ثم أنهِ المشهد وأخبرني كيف كان أدائي.',
+  },
+  zh: {
+    scene: '这是场景，用英文写的，方便我理解，但请你只用中文跟我说话：{scene}',
+    goals: '我想做到的事（英文）：{goals}。',
+    end: '聊天时不要打断我来纠错；结束后，把我的错误列出来，并给出正确的说法。',
+    help: '如果我卡住了，给我两三个词或者一句话的开头。',
+    minutes: '我们聊大约{minutes}分钟，然后结束这个场景，告诉我表现得怎么样。',
+  },
 };
 
-const isScene = (v: unknown): v is SceneId => typeof v === 'string' && (SCENES as readonly string[]).includes(v);
-export const asScene = (v: unknown): SceneId | undefined => (isScene(v) ? v : undefined);
+/** A scene in English: the setting, who plays whom, and the goals. */
+const sceneInEnglish = (s: Scene) => `${s.setting} You play ${s.ai}; ${s.you === 'yourself' ? 'I play myself' : `I am ${s.you}`}. My goals: ${s.goals.join('; ')}.`;
 
 interface Kit {
   open: string;
@@ -46,7 +92,7 @@ interface Kit {
   about: string;
   voice: string;
   start: string;
-  scenes: Record<SceneId, string>;
+  scenes: Record<TranslatedId, string>;
 }
 
 const EN: Kit = {
@@ -518,12 +564,17 @@ const UNSPACED = new Set(['zh', 'ja', 'yue']);
 const LIST_SEPARATOR: Record<string, string> = { zh: '、', ja: '、', yue: '、', ar: '، ', fa: '، ' };
 
 export interface PromptOptions {
-  scene: SceneId;
+  /** A scene's id (scenes/). */
+  scene: string;
   level: Level;
-  /** Correct my mistakes after each answer. */
-  correct: boolean;
+  /** Correct my mistakes after each answer (true or 'live'), all at the end ('end'), or not at all. */
+  correct: boolean | 'live' | 'end';
   /** Speak slowly and simply. */
   slow: boolean;
+  /** Offer words when I'm stuck. */
+  help?: boolean;
+  /** How long to talk, in minutes. */
+  minutes?: number;
   /** A voice chat (short turns) or a text chat. */
   voice: boolean;
   /** Words due for review, to weave in. */
@@ -540,24 +591,33 @@ export const promptInLanguage = (lang: string): boolean => lang === 'en' || lang
 /** The prompt to paste into an AI, in the language when Lingua has its wording. */
 export function buildPrompt(lang: string, o: PromptOptions): string {
   const kit = KITS[lang] ?? EN;
+  const extra = EXTRAS[lang] ?? EN_EXTRA;
   const name = getLanguage(lang)?.name ?? lang;
   const level = o.level === 'A0' ? 'A1' : o.level;
+  const scene = getScene(o.scene) ?? getScene('cafe')!;
   const fill = (s: string) =>
     s
       .replaceAll('{name}', name)
       .replaceAll('{level}', level)
       .replaceAll('{words}', o.words.join(LIST_SEPARATOR[lang] ?? ', '))
       .replaceAll('{topic}', o.topic ?? '')
-      .replaceAll('{about}', o.about ?? '');
+      .replaceAll('{about}', o.about ?? '')
+      .replaceAll('{minutes}', String(o.minutes ?? ''))
+      .replaceAll('{goals}', scene.goals.join('; '))
+      .replaceAll('{scene}', sceneInEnglish(scene));
+  // The first ten scenes in the language, with their goals; the others in English inside the language's frame.
+  const sceneLines = o.about ? [kit.about] : isTranslated(scene.id) ? [kit.scenes[scene.id], extra.goals] : [extra.scene];
   const parts = [
     kit.open,
-    o.about ? kit.about : kit.scenes[o.scene],
+    ...sceneLines,
     kit.level,
     o.slow && kit.slow,
-    o.correct && kit.correct,
+    o.correct === 'end' ? extra.end : o.correct && kit.correct,
+    o.help && extra.help,
     o.words.length > 0 && kit.words,
     o.topic && kit.grammar,
     o.voice && kit.voice,
+    o.minutes && extra.minutes,
     kit.start,
   ].filter((p): p is string => Boolean(p));
   return parts.map(fill).join(UNSPACED.has(lang) ? '' : ' ');

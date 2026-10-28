@@ -126,7 +126,7 @@ export function sightingLink(s: Pick<Sighting, 'kind' | 'sourceId'>): string | u
     case 'video':
       return `/visio/watch/${s.sourceId}`;
     case 'chat':
-      return `/mentis/sermo/chat/${s.sourceId}`;
+      return '/mentis/sermo';
     case 'journal':
       return `/mentis/diarium/${s.sourceId}`;
     default:
