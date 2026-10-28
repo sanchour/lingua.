@@ -110,7 +110,7 @@ languages Lingua doesn't teach (e.g. a native language or a dormant one).
 - **More numbers (alpha.28):** Reading shows look-ups per 1,000 words (once 500 words are read; counted from the sessions that record it, so older
   sessions don't thin the rate); Listening shows time by kind (songs, podcasts, audiobooks, audio courses, video, other audio); a Typing card shows
   the average and the slowest letter's speed, accuracy and letters unlocked; known words over time is the daily record that was already kept.
-- **Log time and Add a moment** are buttons on Overview; Tabula has Log time. Retention after a day is not recorded, so it isn't shown.
+- **Log time and Add a moment** are buttons on Overview; Tabula has Log time. Recall is shown as Recall 30 d and 90 d (reviews of cards in review state).
 
 ## Iter — the language-learning journey (Ratio › Iter, Phase 6)
 

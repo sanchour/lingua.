@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.3-alpha.6** · 2026-10-28 · Lingua 5 plan checklists ticked, handover 18 done, recall text corrected
 - **0.5.3-alpha.5** · 2026-10-28 · Roadmap: Lingua 5's last three lines ticked (5.2-5, 5.2-6, the course)
 - **0.5.3-alpha.4** · 2026-10-28 · Handbook: pages drawn and Lingua 6 drawn, 200 pages
 - **0.5.3-alpha.3** · 2026-10-28 · Handbook: page by page for every route, Lingua 6 page by page, 190 pages

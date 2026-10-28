@@ -87,9 +87,9 @@ narrower and nothing in it wraps or clips; the three widths change every flashca
 ### 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries
 
 **The user's points**
-- [ ] Each language shows many countries and stations that aren't in that language. Fix it.
-- [ ] Improve the very long list: its look and its layout.
-- [ ] The country slider: more fun, interactive and good-looking.
+- [x] Each language shows many countries and stations that aren't in that language. Fix it.
+- [x] Improve the very long list: its look and its layout.
+- [x] The country slider: more fun, interactive and good-looking.
 
 **Why it happens:** stations come from radio-browser.info by their language tag, and anyone who
 adds a station types the tags. A station in the USA tagged "english,spanish,french", or a music
@@ -140,13 +140,13 @@ the map follows.
 ### 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings
 
 **The user's points**
-- [ ] Free courses (now at the bottom of Audiobooks) as a tab beside free audiobooks, with courses
+- [x] Free courses (now at the bottom of Audiobooks) as a tab beside free audiobooks, with courses
   to explore and add easily, like LibriVox's books.
-- [ ] An audiobook's page: a design lift for its parts, and a larger cover.
-- [ ] The audiobook player: "Read along as you listen" becomes a small button with small text, and
+- [x] An audiobook's page: a design lift for its parts, and a larger cover.
+- [x] The audiobook player: "Read along as you listen" becomes a small button with small text, and
   the player is centred.
-- [ ] Commute: more liquid glass, more like iOS.
-- [ ] Sonus+: basic settings that fit the app.
+- [x] Commute: more liquid glass, more like iOS.
+- [x] Sonus+: basic settings that fit the app.
 
 **Audiobooks, with tabs** (`sonus/library/BooksTab.tsx`)
 - Tabs inside Audiobooks: **Your shelf** (your books and your courses) · **Free audiobooks**
@@ -203,15 +203,15 @@ button; Commute looks like glass and stays smooth; each Sonus+ setting changes w
 ### 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks
 
 **The user's points**
-- [ ] A YouTube player with dual subtitles; if possible for the streaming services too.
-- [ ] The services' icons accurate and up to date.
-- [ ] Remove "From Mundus" at the bottom of Services.
-- [ ] The Visio the user asked for (2026-10-20): Netflix, Prime Video, Max, Disney+ and YouTube shows,
-  transcribed and watched inside Lingua with hover translations, as in Codex.
-- [ ] For the streaming services that protect their video: their subtitles brought in (3.0-7's "Add its
-  subtitles") and followed beside the show playing in its own app, with the same taps and translations.
-- [ ] A look at whether a small Lingua browser extension is worth it for desktop. The user's decision
-  D9 (yes) stands; the look comes first and fixes what the extension does.
+- [x] A YouTube player with dual subtitles; if possible for the streaming services too.
+- [x] The services' icons accurate and up to date.
+- [x] Remove "From Mundus" at the bottom of Services.
+- [x] The Visio the user asked for (2026-10-20): Netflix, Prime Video, Max, Disney+ and YouTube shows,
+  transcribed and watched inside Lingua with hover translations, as in Codex. *(built; not tried on real sites)*
+- [x] For the streaming services that protect their video: their subtitles brought in (3.0-7's "Add its
+  subtitles") and followed beside the show playing in its own app, with the same taps and translations. *(built; not tried on real sites)*
+- [x] A look at whether a small Lingua browser extension is worth it for desktop. The user's decision
+  D9 (yes) stands; the look comes first and fixes what the extension does. *(built; not tried on real sites)*
 
 **What exists:** dual subtitles for your own video files (the language's line with every word
 hoverable, your language's line under it). YouTube doesn't play in Visio yet.
@@ -267,13 +267,13 @@ service shows its real mark.
 ### 5.2-5 · Diarium: writing tools, a calendar, search, in the language
 
 **The user's points**
-- [ ] Remove "A few sentences…".
-- [ ] Without AI set up, remove the bar at the bottom.
-- [ ] Basic writing tools: three heading sizes, Ctrl+B, Ctrl+I and so on.
-- [ ] "Dear diary" in the language being learned.
-- [ ] Search and sort buttons.
-- [ ] A ⋯ on each entry in the list to rename or delete it.
-- [ ] A calendar view, in the same design as the rest, that shows your progress.
+- [x] Remove "A few sentences…".
+- [x] Without AI set up, remove the bar at the bottom.
+- [x] Basic writing tools: three heading sizes, Ctrl+B, Ctrl+I and so on.
+- [x] "Dear diary" in the language being learned.
+- [x] Search and sort buttons.
+- [x] A ⋯ on each entry in the list to rename or delete it.
+- [x] A calendar view, in the same design as the rest, that shows your progress.
 
 **Text and the bar**
 - The "A few sentences a day is plenty…" line on Diarium's home and the editor's "A few sentences
@@ -319,12 +319,12 @@ days.
 ### 5.2-6 · Sermo: a guided path into your AI app, many more scenes
 
 **The user's points**
-- [ ] Remove "Pick a scene…".
-- [ ] A better layout, larger scene cards, Sermo screen by screen: pick your scene (large); then
+- [x] Remove "Pick a scene…".
+- [x] A better layout, larger scene cards, Sermo screen by screen: pick your scene (large); then
   voice or text and "correct my mistakes"; then your prompt, opened in ChatGPT, Claude, Gemini,
   Copilot or Grok, going smoothly to the site or app where the learner is signed in.
-- [ ] Remove the chat inside Lingua.
-- [ ] Many more scenes, situations and things to practise and talk about.
+- [x] Remove the chat inside Lingua.
+- [x] Many more scenes, situations and things to practise and talk about.
 
 **Screen by screen** (one choice a screen, large, with Back on each; choices remembered)
 1. **Pick your scene.** Large picture cards (a free photo or a drawing per scene), in groups, each
@@ -378,12 +378,12 @@ copied; there is no chat inside Lingua; about 80 scenes in groups, each with goa
 ### 5.2-7 · Mundus: an interactive guide, one Explore, Things to try
 
 **The user's points**
-- [ ] Make "Mundus says" interactive.
-- [ ] Remove "Something for every room…" in Explore.
-- [ ] Explore and Every pick become one, called Explore: Every pick's layout with Explore's pictures
+- [x] Make "Mundus says" interactive.
+- [x] Remove "Something for every room…" in Explore.
+- [x] Explore and Every pick become one, called Explore: Every pick's layout with Explore's pictures
   and cards. Clicking one opens a small side bar with the rest: a short description, "Add its
   subtitles", which streaming service, the trailer, and so on. Stress the level more.
-- [ ] Things to try: smaller cards; a more interactive, fun tab.
+- [x] Things to try: smaller cards; a more interactive, fun tab.
 
 **Mundus says, interactive** (the guide's line on its first tab)
 - Mundus's line is followed by two or three replies to click, and each does something:
@@ -422,8 +422,8 @@ ticks and filters.
 ### 5.2-8 · Grammatica: a guided path at your level, lessons at desktop size
 
 **The user's points**
-- [ ] A complete redesign that leads you along a progression, by hand; it knows your level.
-- [ ] Opening a grammar step makes the screen small and thin, like a phone page. Fix it: desktop
+- [x] A complete redesign that leads you along a progression, by hand; it knows your level.
+- [x] Opening a grammar step makes the screen small and thin, like a phone page. Fix it: desktop
   only.
 
 **What it knows:** your level (onboarding, Tabula, the placement test), how well you know each
@@ -458,10 +458,10 @@ the full desktop width.
 ### 5.2-9 · Ratio: one language, compact, goals in Tabula instead of Iter, more numbers
 
 **The user's points**
-- [ ] Ratio shows only the language being learned, except on Tabula.
-- [ ] Every element a bit more compact.
-- [ ] Remove Iter completely; a basic goal inside Tabula instead.
-- [ ] Expand Ratio.
+- [x] Ratio shows only the language being learned, except on Tabula.
+- [x] Every element a bit more compact.
+- [x] Remove Iter completely; a basic goal inside Tabula instead.
+- [x] Expand Ratio.
 
 **One language:** the Overview's "all languages" choice goes; Ratio is about the current language.
 Tabula still shows every language you know.
