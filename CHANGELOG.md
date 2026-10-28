@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.20** · 2026-10-28 · Lingua 6 plan: stages, which AI builds what, and 6-0 the contracts
 - **0.5.2-alpha.19** · 2026-10-27 · Sandesigner 1.1, Design notes collapse & hover, Mac/Windows command symbols
 - **0.5.2-alpha.18** · 2026-10-27 · Diarium: an editor with headings and lists, Dear diary in the language, search, rename, delete with undo, a calendar
 - **0.5.2-alpha.17** · 2026-10-27 · Home redesign, new navigation, and the Bibliotheca, Explora and Visio rooms

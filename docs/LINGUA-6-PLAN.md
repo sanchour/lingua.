@@ -69,6 +69,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | Step | Status | What | Entries | Needs | Size |
 | --- | --- | --- | --- | --- | --- |
 | **Part A · Foundations** | | | | | |
+| 6-0 | [ ] | The contracts: Part A's types, tables and APIs, before any code | — | Lingua 5's check | S |
 | 6-1 | [ ] | The word record | 22 new · 23 to finish | — | L |
 | 6-2 | [ ] | The inbox and the deck workshop | 15 new · 25 to finish | 6-1 | L |
 | 6-3 | [ ] | Cards and memory | 21 new · 11 to finish | 6-1 | L |
@@ -107,6 +108,31 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 Sizes are a guide: S an evening, M a session, L two or three sessions, XL more, best split into parts as Lingua 5's
 big steps were (a, b, c), each pushed on its own.
 
+### Stages, and which AI builds what (the user, 2026-10-28)
+
+The user has Claude Pro, ChatGPT Plus and Google AI Pro, each with its own limits; Lingua 6 is spread over them so
+one limit never stops the work. Each step is still claimed in the table above first, whichever AI builds it.
+
+| Stage | Steps | Who | Why |
+| --- | --- | --- | --- |
+| 0 | 6-0 The contracts | Claude Opus, one session | The one place a careful model pays off: every later step and every AI builds against it |
+| 1 | Part A, 6-1 to 6-6, in order | Claude Code, Sonnet | Dexie migrations and shared types: one owner, one after the other, no parallel work |
+| 2a | Part B, 6-7 to 6-13 | Claude Code, Sonnet | The skills; deep in Part A's engine and the learner's record |
+| 2b | Parts D and E, 6-19 to 6-25 | Codex (ChatGPT Plus) or Gemini in Antigravity (Google AI Pro) | Mostly new tabs and parsers, in their own folders; runs at the same time as 2a |
+| 3 | Part C, 6-14 to 6-18, in order | Claude Code, Sonnet | Ties A, B and D together; 6-14 waits for 6-8 to 6-10, 6-18 for 6-14 and 6-16 |
+| 4 | 6-28 The check, 0.6.0 | Any, Gemini is enough | A spot-check: the audit's entries are ticked step by step as they're built, not all at the end |
+| — | Part F, 6-26 and 6-27 | Only with the user's word | Not part of 0.6.0 unless the user asks |
+
+- **Models:** Sonnet for building (Opus uses a Pro limit several times faster); Opus only for 6-0 and a step that
+  needs real design thinking. The tests, typecheck and build cost no tokens: run them, don't ask a model to.
+- **Parallel without collisions (stages 2a and 2b).** The folders differ, but some files are shared: `src/data/db.ts`
+  (the Dexie versions), `src/data/types.ts`, `src/app/router.tsx`, `src/app/pages.ts`, the navigation, and the docs
+  (FEATURES, DECISIONS, HANDOVER, this table). So: 6-0 reserves every Lingua 6 table and Dexie version up front,
+  so no two steps add the same version number; a step adds to the shared files only in its own lines; always rebase
+  onto `origin/main` before a push (CLAUDE.md), and a conflict in a shared file is merged, never overwritten.
+- **Short briefs:** with 6-0 in place, a step's brief is "build 6-N as LINGUA-6-PLAN.md says, against the contracts",
+  plus HANDOVER.md's prompt. Codex and Gemini read CLAUDE.md too.
+
 ---
 
 ## 3. The steps
@@ -115,6 +141,26 @@ Each step: the idea, what it adds, where it lives, the data, and when it is done
 entry the step builds or finishes (the audit has their names).
 
 ### Part A · Foundations
+
+#### 6-0 · The contracts (the user, 2026-10-28)
+
+**The idea:** before Part A is built, fix what everything else builds against, so the parallel stages and the three
+AIs agree without reading each other's work. Written as code, not only prose: a types-only folder that
+`npm run typecheck` checks, with a short guide beside it.
+
+- `src/core/contracts/word.ts`: the updated `Word` and `DictEntry` (6-1), what each field means, which are new and
+  how old records read (defaults, never a rewrite of the learner's data).
+- `src/core/contracts/db.ts`: the Dexie bump for all of Lingua 6, every new table with its keys and indexes, and the
+  version numbers reserved per step; the upgrade functions stay in `src/data/db.ts`, written in 6-1 to 6-6.
+- `src/core/contracts/exercise.ts`: the API of `core/exercise` (6-4): the exercise kinds, the props each screen
+  takes, how an answer is checked (exact, accent-blind, a list of accepted answers, AI-checked with Max) and the
+  result it reports.
+- `src/core/contracts/learner.ts`: the `evidence` table of `core/learner` (6-5): one row per thing the learner did
+  (what, which word or topic, right or wrong, how sure, when, from which room), and the questions other rooms ask of it.
+- `docs/LINGUA-6-CONTRACTS.md`: a page on how to use them, and the rule that changing a contract is its own small,
+  versioned push that says what moved.
+
+**Done when:** the four files typecheck, Part A's steps here point to them, and nothing in the app uses them yet.
 
 #### 6-1 · The word record
 

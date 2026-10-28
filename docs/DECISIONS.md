@@ -1735,3 +1735,12 @@ Short records of choices that are not obvious from the code. Newest last.
 - **Mac and Windows keyboard command symbols:** Both Sandesigner (`sandesigner.keyboard`) and Lingua (`settings.ui.keyboardStyle: 'auto' | 'mac' | 'windows'`) now provide an option to switch shortcut modifier symbols.
   Auto detects the platform via `navigator`. Mac renders symbols `⌘`, `⌥`, `⇧`, `⎋`, `⏎`, `⌫`, `⌦`, while Windows renders `Ctrl`, `Alt`, `Shift`, `Esc`, `Enter`, `Backspace`, `Del`.
   In Lingua, users can toggle this in Settings > Keyboard (`KeyboardSection`) or directly in the `?` shortcuts modal dialog (`ShortcutsDialog`).
+
+## 2026-10-28 — Lingua 6 is spread over three AIs, against contracts written first
+
+- The user has Claude Pro, ChatGPT Plus and Google AI Pro. Lingua 6 is staged (LINGUA-6-PLAN.md, "Stages") so the
+  parallel parts go to different subscriptions and one usage limit never stops the work.
+- A new step 6-0 writes Part A's types, tables and APIs as typechecked code before Part A is built: parallel work by
+  different AIs then meets in the compiler, not in a merge. It also reserves the Dexie versions, the one thing two
+  parallel steps would otherwise both claim.
+- The audit's entries are ticked step by step, so the final check (6-28) is a spot-check, not a 1,618-entry pass.
