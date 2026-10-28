@@ -223,7 +223,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     <p class="sub">Everything Lingua, from start to finish</p>
     <div class="rule" style="margin:12pt auto 0"></div>
   </div>
-  <div class="ed"><span class="sc">Design · product · people · launch · running it</span><p class="small muted" style="margin-top:5pt;font-style:italic">Second edition, October 2026</p></div>
+  <div class="ed"><span class="sc">Design · product · people · launch · running it</span><p class="small muted" style="margin-top:5pt;font-style:italic">Third edition, October 2026 (updated 28 October)</p></div>
 </section>
 
 <!-- 2 · Inside -->
@@ -335,6 +335,8 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <li><span class="n" data-n-for="count"></span><a href="#count">Counting without spying</a><span class="dots"></span><span class="pn" data-for="count"></span></li>
       <span class="part">Part Eight · Running it</span>
       <li><span class="n" data-n-for="money"></span><a href="#money">Money</a><span class="dots"></span><span class="pn" data-for="money"></span></li>
+      <li><span class="n" data-n-for="income"></span><a href="#income">What Lingua could earn</a><span class="dots"></span><span class="pn" data-for="income"></span></li>
+      <li><span class="n" data-n-for="fund"></span><a href="#fund">Funding it, and paying yourself</a><span class="dots"></span><span class="pn" data-for="fund"></span></li>
       <li><span class="n" data-n-for="law"></span><a href="#law">Privacy, licences and the law</a><span class="dots"></span><span class="pn" data-for="law"></span></li>
       <li><span class="n" data-n-for="support"></span><a href="#support">Support</a><span class="dots"></span><span class="pn" data-for="support"></span></li>
       <li><span class="n" data-n-for="ship"></span><a href="#ship">Shipping</a><span class="dots"></span><span class="pn" data-for="ship"></span></li>
@@ -491,6 +493,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <aside><span class="k">Source</span><code>docs/FEATURES.md</code>, kept up to date with every step.</aside></div>
     <table class="wide" style="font-size:7.9pt;line-height:10.8pt">
       <tr><th style="width:22%">Room</th><th>What is there</th></tr>
+      <tr><td class="k">The map</td><td>Since 0.5.2-alpha.17 the main rooms are Home, Cursus, Explora and Bibliotheca; Codex, Thesaurus, Sonus, Visio and Mentis sit under Tools; Ratio and Settings are at the bottom. Explora is one place to discover (reading, films, series, radio, audiobooks, words) at your level, in three bands: at your level, a stretch, easier. Bibliotheca is the one library across every tool.</td></tr>
       <tr><td class="k">Home</td><td>Good evening by name; today’s minutes against the goal on a ribbon by room; Next up, one click each; the week; first steps for new learners; the next grammar topic and Mundus’s suggestion. A Classic layout a setting away.</td></tr>
       <tr><td class="k">Cursus</td><td>The course for the six core languages: twelve units A1–B1 as an adventure trail, each with words, phrases, grammar, speaking, writing and a check. Grammatica (topics A1–B2 for the core six, short grammars for twelve more), Alphabets for seven scripts with writing, and keybr-style typing in the language’s layout.</td></tr>
       <tr><td class="k">Codex</td><td>Read anything: EPUB, PDF, text, comics with speech bubbles read on the device, photos of printed pages, news, Wikipedia, Gutenberg and Wikisource, Goodreads shelves. Every word a click away, phrases by dragging, sentences translated ahead, the word panel, typography and papers, the end page, Check yourself.</td></tr>
@@ -504,7 +507,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
     <table class="wide" style="font-size:7.9pt;line-height:10.8pt">
       <tr><th style="width:22%">Room</th><th>What is there</th></tr>
       <tr><td class="k">Sonus et Visio</td><td>The library (songs, podcasts, episodes, audiobooks, stations, your files, films and videos); LibriVox and free courses; radio in the language with a tuner and live text; Sonus+ for music with timed lyrics, song lessons and podcasts; Visio for films and series with two interactive subtitle lines; Commute mode.</td></tr>
-      <tr><td class="k">Mentis</td><td>Mundus, the guide (a note on your week, three next steps, Explore, Things to try); Sermo (scenes that open your own AI app); Diarium, the journal, checked by AI with Max, with a word diff and corrections to cards.</td></tr>
+      <tr><td class="k">Mentis</td><td>Mundus, the guide: a note on your week, three next steps that answer back (something shorter, I’d rather listen, why this, not today; with Max, your own words), and Things to try, small cards with a time chip, a tick that stamps them, filters, and Deal me one. Sermo: about 80 scenes in groups, each ending in a prompt for your own AI app (ChatGPT, Claude, Gemini, Copilot, Grok); the chat inside Lingua is gone. Diarium, the journal, with writing tools, a calendar, search, checking by AI with Max, a word diff and corrections to cards.</td></tr>
       <tr><td class="k">Ratio</td><td>Statistics for words, reading, listening, cards, writing, time and habit; Tabula, the table of every language you speak.</td></tr>
       <tr><td class="k">Settings</td><td>Eight groups with search: reading, cards, listening, languages, look and feel, AI and translation, your data, about.</td></tr>
     </table>
@@ -516,7 +519,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
       <li>Paper and Nocturne, twelve palettes, six reading fonts, and a touch of each core language in the design.</li>
       <li>Keyboard first: Alt 1–8 for the rooms, letters for words, a shortcut sheet.</li>
     </ul>
-    <div class="row"><p class="muted small">What it doesn’t do yet is the rest of this part: Lingua 5.2’s open rooms, Lingua 7’s design pass and Lingua 6’s features.</p><aside></aside></div>
+    <div class="row"><p class="muted small">What it doesn’t do yet: Grammatica’s guided path, Ratio’s compact rework and the rest of Visio (Lingua 5.2), then Lingua 6’s features and Lingua 7’s design pass.</p><aside></aside></div>
   </div>
 </section>
 
@@ -618,9 +621,9 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
         <text x="122" y="66">then its check</text><text x="172" y="66">28 steps, next</text><text x="222" y="66">the first start</text><text x="272" y="66">public release</text>
       </g>
     </svg>
-    <div class="row"><p><span class="lede-sc">Lingua 5.2</span> still has its rooms open: Visio (claimed), Diarium, Sermo, Mundus, Grammatica’s guided path and Ratio, then its check, which makes version 0.5.2.</p>
-      <aside><span class="k">Queue</span><code>docs/HANDOVER.md</code>, steps 14–18, 22 and 21.</aside></div>
-    <div class="row"><p><span class="lede-sc">Lingua 6 · Features</span> comes next (your call, 26 October): it adds what the Lingyu catalogue has and Lingua doesn’t, foundations first. The next chapter is its summary.</p>
+    <div class="row"><p><span class="lede-sc">Lingua 5.2</span> has Radio and listening, Diarium, Sermo and Mundus done. Still open: Grammatica’s guided path, Ratio, the rest of Visio, then its check, which makes version 0.5.2.</p>
+      <aside><span class="k">Queue</span><code>docs/HANDOVER.md</code>, steps 17, 18, 22 and 21.</aside></div>
+    <div class="row"><p><span class="lede-sc">Lingua 6 · Features</span> comes next (your call, 26 October): it adds what the Lingyu catalogue has and Lingua doesn’t. It is staged so the parts that can run side by side go to different AIs (Claude, ChatGPT, Gemini), after step 6-0 writes the shared types, tables and APIs as typechecked code. The next chapter is its summary.</p>
       <aside><span class="k">Plan</span><code>docs/LINGUA-6-PLAN.md</code> and the audit <code>LINGUA-6-FEATURES.md</code>; step 23. Versions 0.6.x.</aside></div>
     <div class="row"><p><span class="lede-sc">Lingua 7 · Design</span> follows, room by room from your notes, starting with the first start. This book is its guide.</p>
       <aside><span class="k">Plan</span><code>docs/LINGUA-7-PLAN.md</code>; step 24. Versions 0.7.x.</aside></div>
@@ -1664,6 +1667,117 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
   </div>
 </section>
 
+<section class="page" data-rh="What Lingua could earn">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="income" data-ch>What Lingua could earn</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Honestly: a good small income is a realistic first goal; a salary is a long way off. What follows are estimates from the prices and fees in this book, to plan with, not forecasts.</p>
+      <aside><span class="k">Not advice</span>This is planning help, not financial, tax or legal advice. Check it with an accountant who knows your country.</aside></div>
+    <h3>What one sale leaves you</h3>
+    <table style="width:100%" class="spec">
+      <tr><th>Plan</th><th>Price paid</th><th>Left after 21 % VAT and Stripe’s fee</th></tr>
+      <tr><td>Lingua+ (once)</td><td>€24.99</td><td>about €20.03</td></tr>
+      <tr><td>Max, a month</td><td>€5.99</td><td>about €4.61 a month</td></tr>
+      <tr><td>Max, a year</td><td>€49.99</td><td>about €40.31 a year</td></tr>
+    </table>
+    <p class="small muted">The fee is assumed at 1.5 % + €0.25; other cards and countries cost more. VAT depends on the buyer’s country. Income tax comes after.</p>
+    <h3>A year, in four pictures</h3>
+    <div class="row"><p>Assume that 3 in 100 active learners buy in the year (freemium apps commonly see a few per cent; yours may be lower or higher), three in four of them Lingua+ and one in four Max yearly. A buyer is then worth about <b>€25</b> to you.</p>
+      <aside><span class="k">Assumptions</span>3 % buy; 75 % Lingua+, 25 % Max yearly; no refunds, no renewals counted.</aside></div>
+    <table style="width:100%" class="spec">
+      <tr><th>Active learners</th><th>Buyers</th><th>Left, before income tax</th></tr>
+      <tr><td>500</td><td>15</td><td>about €380</td></tr>
+      <tr><td>2,000</td><td>60</td><td>about €1,500</td></tr>
+      <tr><td>10,000</td><td>300</td><td>about €7,500</td></tr>
+      <tr><td>50,000</td><td>1,500</td><td>about €37,700</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="page" data-rh="What Lingua could earn">
+  <div class="sheet">
+    <div class="row" style="margin-top:0"><p><span class="lede-sc">Read it like this:</span> the number that matters is how many people find Lingua, not the price. Doubling the price helps less than doubling the people who try it. A one-time price also means a year’s income comes from that year’s new learners; Max is the part that repeats.</p>
+      <aside><span class="k">Why Max exists</span>Its AI runs on the learner’s own key, so each Max month costs Lingua nothing to serve.</aside></div>
+    <h3>What it costs to run</h3>
+    <table style="width:100%" class="spec">
+      <tr><th>Cost</th><th>Roughly, a year</th></tr>
+      <tr><td>Domain and hosting (GitHub Pages, Cloudflare’s free tier)</td><td>€10–20</td></tr>
+      <tr><td>An accountant for a small business</td><td>€300–1,000, by country</td></tr>
+      <tr><td>A code-signing certificate, if the desktop installer needs one</td><td>€100–400</td></tr>
+      <tr><td>The AI subscriptions you build with</td><td>your choice; check their pages</td></tr>
+    </table>
+    <div class="row"><p>Call it €500–1,500 a year. At €20 left per Lingua+, that is about <b>25 to 75 sales</b> to cover it, before anything is paid to you.</p>
+      <aside><span class="k">Estimates</span>Every line is a range to replace with a real quote.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="What Lingua could earn">
+  <div class="sheet">
+    <h3 style="margin-top:0">What moves the number</h3>
+    <ul class="plain">
+      <li><b>Reach.</b> The channels and content in “Telling people”: a few good places beat many thin ones.</li>
+      <li><b>Conversion.</b> Free must show real value first; the buy button belongs beside the thing a learner just wanted. Never a nag.</li>
+      <li><b>Founders’ price.</b> A lower Lingua+ for the first weeks (say €19.99, said plainly to be temporary) brings early cash, early reviews and early bug reports.</li>
+      <li><b>Gifts and groups.</b> A gift link, a teacher or class price later: more buyers from one conversation.</li>
+      <li><b>A tip jar.</b> “Pay what you like” through GitHub Sponsors or Ko-fi. Small, but it comes from people who love it.</li>
+      <li><b>Regional prices.</b> Lower prices where €24.99 is a lot; worth it once you see where learners come from. Stripe can show local prices.</li>
+    </ul>
+    <h3>What not to do</h3>
+    <p>No ads and no selling learners’ data: they would break the spirit of this book, the privacy promise and the licence’s simplicity, for very little money. Don’t raise prices on those who bought Lingua+: they keep it forever, and that promise is part of why they bought.</p>
+    <div class="row"><p><span class="lede-sc">Watch these four numbers,</span> not more: learners who come back after a week; how many buy; how many ask for a refund; what they say when they don’t buy.</p>
+      <aside><span class="k">See</span>“Counting without spying” for how to count with no tracking.</aside></div>
+  </div>
+</section>
+
+<section class="page" data-rh="Funding it, and paying yourself">
+  <div class="sheet">
+    <span class="kicker">Chapter <span class="chn"></span></span>
+    <h2 id="fund" data-ch>Funding it, and paying yourself</h2>
+    <div class="rule"></div>
+    <div class="row"><p class="lead first">Lingua costs almost nothing to run, so the honest recommendation is to bootstrap: pay for it from what you already earn, and let sales pay it back.</p>
+      <aside><span class="k">Not advice</span>Rules of thumb for planning. Taxes, schemes and grants differ by country; ask an accountant.</aside></div>
+    <h3>Ways to fund it, in the order to try them</h3>
+    <ol class="plain">
+      <li><b>Your own time and savings.</b> The costs above are small. Keep your job or studies; nothing here needs a loan.</li>
+      <li><b>Sales.</b> A Founders’ price and the first learners’ purchases, from the launch chapter. Money in, feedback in.</li>
+      <li><b>Small tips.</b> A sponsor page, mentioned once in About and once in the launch note.</li>
+      <li><b>Grants and schemes.</b> Many countries and cities pay for new small businesses, software or education projects. Look up yours; they usually fund a stated piece of work, and they take weeks of paperwork.</li>
+      <li><b>Investors: not now.</b> A one-time-price, local-first app is not what investors look for, and giving up a share of it would cost more than the little you need.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="page" data-rh="Funding it, and paying yourself">
+  <div class="sheet">
+        <h3 style="margin-top:0">Keeping the money straight</h3>
+    <ul class="plain">
+      <li>A separate business account from the first sale, so Lingua’s money never mixes with yours.</li>
+      <li>Set aside part of every payment for VAT and income tax (many people start with about a third) until your accountant gives the real share.</li>
+      <li>Keep a runway: six months of the yearly costs, in cash, before you pay yourself anything.</li>
+      <li>Reinvest the first small profits in what brings learners: better pages, one good video, one channel done well.</li>
+    </ul>
+    <h3>What the numbers would take</h3>
+    <table style="width:100%" class="spec">
+      <tr><th>If you want</th><th>You need, a year</th></tr>
+      <tr><td>Costs covered</td><td>25–75 sales; about 800–2,500 learners</td></tr>
+      <tr><td>€5,000 left</td><td>about 200 buyers; about 6,700 learners</td></tr>
+      <tr><td>A €30,000 salary</td><td>about 1,200 buyers; about 40,000 learners</td></tr>
+    </table>
+    <p class="small muted">At €25 a buyer and 3 % buying, before income tax and the costs above.</p>
+    <div class="row"><p><span class="lede-sc">A decision rule:</span> don’t quit anything for Lingua until it has paid you more than a year’s costs twice over, two years running, or your savings could carry you for a year without it. Max’s repeat income and a classroom price are what would change that picture; both are later.</p>
+      <aside><span class="k">Your decision</span>When to pay yourself, and how much.</aside></div>
+    <h3>First milestones</h3>
+    <table style="width:100%" class="spec">
+      <tr><th>When</th><th>What to do</th></tr>
+      <tr><td>The first ten sales</td><td>Write to each buyer; ask what almost stopped them.</td></tr>
+      <tr><td>The first €1,000 left</td><td>Book the accountant; check the VAT and the small-business scheme in your country.</td></tr>
+      <tr><td>Costs covered</td><td>Put the runway aside; then spend on the one channel that works.</td></tr>
+      <tr><td>€5,000 left</td><td>Pay yourself a first small amount, or buy time: a month for Lingua 6’s big steps.</td></tr>
+    </table>
+  </div>
+</section>
+
 <section class="page" data-rh="Privacy, licences and the law">
   <div class="sheet">
     <span class="kicker">Chapter <span class="chn"></span></span>
@@ -2113,7 +2227,7 @@ ol.ask li::before { content: counter(q); position: absolute; left: 0; font-style
  ["Accessibility", "accessib"], ["Alphabets", "alphabet"], ["Anki", "Anki"], ["Ask, the tutor", "Ask button|the tutor"], ["Backups", "backup"],
  ["Beta, the private", "private beta|the beta"], ["Codex", "Codex"], ["Colours and palettes", "palette|terracotta"], ["Competitors", "gamified|what else they use"],
  ["Course, the", "the course"], ["Credits", "credits"], ["Cursus", "Cursus"], ["Dictionary", "dictionar"], ["Drawings", "drawing"],
- ["Exams", "\\bexams?\\b"], ["Features audit", "audit|1,618"], ["First start", "first start"], ["FSRS", "FSRS"], ["Goals", "goal"],
+ ["Exams", "\\bexams?\\b"], ["Earnings and funding", "earn|funding|bootstrap"], ["Features audit", "audit|1,618"], ["First start", "first start"], ["FSRS", "FSRS"], ["Goals", "goal"],
  ["Grammatica", "Grammatica"], ["Handover", "handover"], ["Inbox", "inbox"], ["Keys, AI", "own key|AI key|your own free key"], ["Launch", "launch"],
  ["Licence", "licence"], ["Lingua+", "Lingua\\+"], ["Ludus", "Ludus"], ["Max", "\\bMax\\b"], ["Mentis", "Mentis"], ["Motion and springs", "spring"],
  ["Phone", "\\bphones?\\b"], ["Prices", "€"], ["Privacy", "privac"], ["Ratio", "Ratio"], ["Refunds", "refund"], ["Sermo", "Sermo"],
