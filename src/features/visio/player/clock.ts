@@ -1,14 +1,15 @@
+import type { VideoLike } from '@/core/visio/videoLike';
 import type { PlayheadClock } from '@/features/sonus/player/KaraokeTranscript';
 
 export type VideoClock = PlayheadClock & {
-  attach: (video: HTMLVideoElement | null) => void;
+  attach: (video: VideoLike | null) => void;
   now: () => number;
-  video: () => HTMLVideoElement | null;
+  video: () => VideoLike | null;
 };
 
-/** A playhead for a <video>: every frame while playing, and on every seek or pause. */
+/** A playhead for a <video> (or a stand-in for one): every frame while playing, and on every seek or pause. */
 export function createVideoClock(): VideoClock {
-  let el: HTMLVideoElement | null = null;
+  let el: VideoLike | null = null;
   let frame = 0;
   const listeners = new Set<(ms: number) => void>();
   const now = () => (el ? el.currentTime * 1000 : 0);

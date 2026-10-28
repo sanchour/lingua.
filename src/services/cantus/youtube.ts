@@ -132,6 +132,10 @@ export interface YTPlayer {
   playVideo(): void;
   pauseVideo(): void;
   destroy(): void;
+  /** Visio's embed also reads the length and sets the speed. */
+  getDuration(): number;
+  getPlaybackRate(): number;
+  setPlaybackRate(rate: number): void;
 }
 
 interface YTNamespace {
@@ -143,7 +147,7 @@ interface YTNamespace {
       height?: string | number;
       host?: string;
       playerVars?: Record<string, string | number>;
-      events?: { onReady?: (e: { target: YTPlayer }) => void; onStateChange?: (e: { data: number; target: YTPlayer }) => void; onError?: () => void };
+      events?: { onReady?: (e: { target: YTPlayer }) => void; onStateChange?: (e: { data: number; target: YTPlayer }) => void; onPlaybackRateChange?: () => void; onError?: () => void };
     },
   ) => YTPlayer;
 }

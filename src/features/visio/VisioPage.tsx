@@ -174,7 +174,7 @@ function ContinueCard({ media, progress }: { media: Media; progress?: PlaybackPr
   return (
     <Card className="flex items-center gap-4 p-4 sm:gap-5 sm:p-5">
       <Link to={`/visio/watch/${media.id}`} className="w-28 shrink-0 sm:w-36" aria-label={`Continue watching ${media.title}`}>
-        <Poster title={media.title} coverBlobId={media.coverBlobId} />
+        <Poster title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} />
       </Link>
       <div className="min-w-0 flex-1">
         <p className="text-[12px] font-bold tracking-[0.12em] text-accent-text uppercase">Continue watching</p>

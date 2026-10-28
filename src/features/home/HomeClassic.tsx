@@ -250,7 +250,7 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
       detail: 'Continue watching',
       art: (
         <span className="block w-16">
-          <Poster title={video.title} coverBlobId={video.coverBlobId} className="rounded-lg shadow-none" />
+          <Poster title={video.title} coverBlobId={video.coverBlobId} coverUrl={video.coverUrl} className="rounded-lg shadow-none" />
         </span>
       ),
     });

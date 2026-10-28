@@ -9,7 +9,7 @@ import { cx } from '@/lib/cx';
 const VELVET = ['#3f4b5c', '#5b4b6b', '#2f3e36', '#6b3f3a', '#4a5a4f', '#3a3550', '#5c4a3a', '#2e4650'];
 
 /** A 16:9 poster (or, with `fill`, one filling its box): the frame captured when the video was added, or a quiet generated tile. */
-export const Poster = memo(function Poster({ title, coverBlobId, className, children, fill = false }: { title: string; coverBlobId?: string; className?: string; children?: ReactNode; fill?: boolean }) {
+export const Poster = memo(function Poster({ title, coverBlobId, coverUrl, className, children, fill = false }: { title: string; coverBlobId?: string; /** A picture on the web (a YouTube video's), used when there is no stored frame. */ coverUrl?: string; className?: string; children?: ReactNode; fill?: boolean }) {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
     if (!coverBlobId) return setUrl(null);
@@ -29,11 +29,12 @@ export const Poster = memo(function Poster({ title, coverBlobId, className, chil
     };
   }, [coverBlobId]);
 
+  const picture = url ?? coverUrl ?? null;
   const bg = VELVET[parseInt(hashString(title), 36) % VELVET.length];
   return (
-    <span className={cx('relative block overflow-hidden rounded-2xl shadow-elev-1', fill ? 'size-full' : 'aspect-video', className)} style={url ? undefined : { backgroundColor: bg }}>
-      {url ? (
-        <img src={url} alt="" loading="lazy" draggable={false} className="size-full object-cover" />
+    <span className={cx('relative block overflow-hidden rounded-2xl shadow-elev-1', fill ? 'size-full' : 'aspect-video', className)} style={picture ? undefined : { backgroundColor: bg }}>
+      {picture ? (
+        <img src={picture} alt="" loading="lazy" draggable={false} className="size-full object-cover" />
       ) : (
         <span className="grid size-full place-items-center text-[#faf3e6]">
           <Clapperboard className="size-[22%] opacity-70" strokeWidth={1.5} aria-hidden />

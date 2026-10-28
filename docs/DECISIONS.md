@@ -1777,3 +1777,10 @@ Short records of choices that are not obvious from the code. Newest last.
   row (a level goal first) and the all-languages reading challenge above. Iter's timeline events, logs and moments stay in the database.
 - The estimated level uses only words known, with round figures (500, 1,000, 2,000, 4,000, 8,000, 16,000 for A1 to C2) and says so;
   the level the learner says they have stays the one Lingua uses.
+
+## 2026-10-28 — Visio: YouTube in its own embed, the extension reads, Lingua looks up
+
+- The YouTube embed hides its captions, so Visio's two lines come from a subtitle file, the extension, or (for a show playing elsewhere) the follow clock; a `VideoLike` stand-in lets one clock serve a real video, YouTube and a timer.
+- The extension reads only the subtitle files a player loads, never the video, and asks an open Lingua tab for lookups and saves (`services/visio/bridge.ts`), so it holds no data and needs no account. Messages from the page are checked (`parseRequest`) before anything is done.
+- Not built: a Gemini transcript from a link (needs Max; the file and the extension cover it) and YouTube's own captions as a fallback.
+- Ratio's look-ups per 1,000 words count only sessions that recorded look-ups (`lookups` on `ActivitySession`, from alpha.28), so the rate is honest rather than thinned by older sessions.

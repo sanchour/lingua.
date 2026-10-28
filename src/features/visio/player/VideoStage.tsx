@@ -3,6 +3,7 @@ import type { ReactNode, RefObject } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Bookmark, Maximize, Minimize, Pause, Play, Repeat, SkipBack, SkipForward } from 'lucide-react';
 import { formatClock } from '@/core/audio/cues';
+import type { VideoLike } from '@/core/visio/videoLike';
 import type { Cue, Media } from '@/data/types';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Popover } from '@/design/primitives';
@@ -28,7 +29,14 @@ interface StageProps {
   native: Cue[] | null;
   clock: VideoClock;
   stageRef: RefObject<HTMLDivElement | null>;
-  videoRef: RefObject<HTMLVideoElement | null>;
+  /** What plays: the <video>, or a stand-in (the follow clock, YouTube's embed). */
+  player: VideoLike | null;
+  /** Receives the <video> element once it is on the page. */
+  onVideo: (el: HTMLVideoElement | null) => void;
+  /** Draws the controls and the subtitles over something that isn't a <video> (YouTube's embed, the follow clock). */
+  live?: boolean;
+  /** Put where the <video> would be (YouTube's embed). */
+  embed?: ReactNode;
   tracks: Array<{ src: string; lang: string; label: string; role: 'target' | 'native' }>;
   lines: LineActions;
   fullscreen: boolean;
@@ -39,7 +47,8 @@ interface StageProps {
 }
 
 /** The picture with its two subtitle lines and a quiet set of controls that fade while playing. */
-export function VideoStage({ media, src, target, native, clock, stageRef, videoRef, tracks, lines, fullscreen, onFullscreen, onHold, placeholder }: StageProps) {
+export function VideoStage({ media, src, target, native, clock, stageRef, player, onVideo, live: standIn, embed, tracks, lines, fullscreen, onFullscreen, onHold, placeholder }: StageProps) {
+  const live = Boolean(src) || Boolean(standIn);
   const { pointer } = useLayout();
   const [playing, setPlaying] = useState(false);
   const [chrome, setChrome] = useState(true);
@@ -49,7 +58,7 @@ export function VideoStage({ media, src, target, native, clock, stageRef, videoR
   const hideTimer = useRef(0);
 
   useEffect(() => {
-    const v = videoRef.current;
+    const v = player;
     if (!v) return;
     const sync = () => {
       setPlaying(!v.paused);
@@ -63,13 +72,13 @@ export function VideoStage({ media, src, target, native, clock, stageRef, videoR
     return () => {
       for (const e of events) v.removeEventListener(e, sync);
     };
-  }, [videoRef, src]);
+  }, [player]);
 
   const poke = () => {
     setChrome(true);
     window.clearTimeout(hideTimer.current);
     hideTimer.current = window.setTimeout(() => {
-      if (videoRef.current && !videoRef.current.paused) setChrome(false);
+      if (player && !player.paused) setChrome(false);
     }, 2600);
   };
   useEffect(() => {
@@ -78,14 +87,14 @@ export function VideoStage({ media, src, target, native, clock, stageRef, videoR
   }, [playing]);
 
   const toggle = () => {
-    const v = videoRef.current;
+    const v = player;
     if (!v) return;
     if (v.paused) void v.play().catch(() => undefined);
     else v.pause();
   };
 
   const onStageClick = () => {
-    if (!src) return;
+    if (!live) return;
     if (pointer === 'fine') {
       toggle();
       poke();
@@ -103,7 +112,7 @@ export function VideoStage({ media, src, target, native, clock, stageRef, videoR
     >
       {src ? (
         <video
-          ref={videoRef}
+          ref={onVideo}
           src={src}
           playsInline
           preload="metadata"
@@ -115,17 +124,17 @@ export function VideoStage({ media, src, target, native, clock, stageRef, videoR
           ))}
         </video>
       ) : (
-        placeholder
+        (embed ?? placeholder)
       )}
 
-      {src && (
+      {live && (
         <div className="absolute inset-0 transition-transform duration-300" style={{ transform: chrome || !playing ? 'translateY(-46px)' : undefined }}>
           <SubtitleOverlay media={media} target={target} native={native} clock={clock} onHold={onHold} />
         </div>
       )}
 
       <AnimatePresence>
-        {src && (chrome || !playing) && (
+        {live && (chrome || !playing) && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="pointer-events-none absolute inset-0">
             {!started && !playing && (
               <button
@@ -145,7 +154,7 @@ export function VideoStage({ media, src, target, native, clock, stageRef, videoR
               className="pointer-events-auto absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent px-2 pt-10 pb-1.5 sm:px-3"
               onClick={(e) => e.stopPropagation()}
             >
-              <Scrubber clock={clock} videoRef={videoRef} durationMs={media.durationMs} />
+              <Scrubber clock={clock} player={player} durationMs={media.durationMs} />
               <div className="flex items-center gap-0.5">
                 <button type="button" aria-label={playing ? 'Pause' : 'Play'} onClick={toggle} className={icon}>
                   {playing ? <Pause size={19} className="fill-current" aria-hidden /> : <Play size={19} className="translate-x-px fill-current" aria-hidden />}
@@ -187,7 +196,7 @@ export function VideoStage({ media, src, target, native, clock, stageRef, videoR
                           key={r}
                           type="button"
                           onClick={() => {
-                            if (videoRef.current) videoRef.current.playbackRate = r;
+                            if (player) player.playbackRate = r;
                             close();
                           }}
                           className={cx('flex w-full rounded-lg px-3 py-2 text-left text-[14px] font-semibold tabular-nums hover:bg-surface', r === rate && 'bg-accent-soft text-accent-text')}
@@ -226,7 +235,7 @@ function TimeLabel({ clock, durationMs }: { clock: VideoClock; durationMs?: numb
   return <span ref={ref} className="ml-1.5 text-[12.5px] font-semibold text-white/85 tabular-nums" />;
 }
 
-function Scrubber({ clock, videoRef, durationMs }: { clock: VideoClock; videoRef: RefObject<HTMLVideoElement | null>; durationMs?: number }) {
+function Scrubber({ clock, player, durationMs }: { clock: VideoClock; player: VideoLike | null; durationMs?: number }) {
   const ref = useRef<HTMLInputElement>(null);
   const dragging = useRef(false);
   useEffect(
@@ -255,7 +264,7 @@ function Scrubber({ clock, videoRef, durationMs }: { clock: VideoClock; videoRef
       onChange={(e) => {
         const ms = Number(e.target.value);
         e.target.style.setProperty('--fill', `${(ms / Number(e.target.max)) * 100}%`);
-        if (videoRef.current) videoRef.current.currentTime = ms / 1000;
+        if (player) player.currentTime = ms / 1000;
       }}
     />
   );

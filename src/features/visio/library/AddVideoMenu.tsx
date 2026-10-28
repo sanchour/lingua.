@@ -12,7 +12,7 @@ type Choice = 'files' | 'link' | 'subtitles';
 
 const OPTIONS: Array<{ id: Choice; icon: LucideIcon; title: string; detail: string }> = [
   { id: 'files', icon: Film, title: 'Video files', detail: 'MP4, MOV, WebM; pick their .srt files too' },
-  { id: 'link', icon: Link2, title: 'Video link', detail: 'A direct link to a video file' },
+  { id: 'link', icon: Link2, title: 'Video link', detail: 'A YouTube video, or a direct link to a video file' },
   { id: 'subtitles', icon: Captions, title: 'Subtitles only', detail: 'For a show you watch elsewhere' },
 ];
 
@@ -137,7 +137,7 @@ function LinkDrawer({ lang, open, onClose, onAdded }: { lang: string; open: bool
       open={open}
       onClose={onClose}
       title="Add a video link"
-      description="A direct link to a video file (.mp4, .webm) streams here with your subtitles. Streaming services can’t be played inside Lingua; add their subtitles instead."
+      description="A YouTube link plays here with two subtitle lines once you add subtitles. A direct link to a video file (.mp4, .webm) streams the same way. Other streaming services can’t be played inside Lingua; add their subtitles instead and follow along."
       footer={
         <Button block size="lg" onClick={() => void save()} loading={busy} disabled={!url.trim()}>
           Add
@@ -154,7 +154,7 @@ function LinkDrawer({ lang, open, onClose, onAdded }: { lang: string; open: bool
           autoCapitalize="off"
           autoCorrect="off"
           spellCheck={false}
-          placeholder="https://…/episode.mp4"
+          placeholder="https://youtu.be/… or https://…/episode.mp4"
           data-autofocus
           className={field}
         />

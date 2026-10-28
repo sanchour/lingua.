@@ -1,6 +1,7 @@
 // Videos and subtitle files from the device: duration and a poster frame for videos; subtitles are
 // paired with videos by file name ("Episode 1.mp4" + "Episode 1.es.srt" + "Episode 1.en.srt").
 import { GLOSS_LANG } from '@/core/lang/languages';
+import { youtubeId, youtubeOembed, youtubeThumbnail, youtubeWatchUrl } from '@/core/visio/youtube';
 import { looksTimed, parseSubtitles } from '@/core/parsers/subtitles';
 import { decodeText } from '@/core/parsers/text';
 import type { Cue, Transcript } from '@/data/types';
@@ -167,8 +168,22 @@ export function probeLink(url: string): Promise<number | undefined> {
   });
 }
 
-/** Adds a video that streams from a web address. */
+/** A YouTube video: its title, channel and picture from YouTube's oEmbed (the learner can still name it), played from YouTube's own embed. */
+async function addYouTube(lang: string, id: string, title: string): Promise<string> {
+  let info: { title?: string; author_name?: string } = {};
+  try {
+    const response = await fetch(youtubeOembed(id));
+    if (response.ok) info = (await response.json()) as typeof info;
+  } catch {
+    // Offline, or YouTube won't say: the video still plays by its id.
+  }
+  return addVideo({ lang, title: title.trim() || info.title || 'YouTube video', url: youtubeWatchUrl(id), youtubeId: id, coverUrl: youtubeThumbnail(id), collection: info.author_name });
+}
+
+/** Adds a video that streams from a web address, or a YouTube video. */
 export async function addVideoLink(lang: string, url: string, title: string): Promise<string> {
+  const id = youtubeId(url);
+  if (id) return addYouTube(lang, id, title);
   let parsed: URL;
   try {
     parsed = new URL(url.trim());
@@ -177,7 +192,7 @@ export async function addVideoLink(lang: string, url: string, title: string): Pr
   }
   if (!/^https?:$/.test(parsed.protocol)) throw new Error('Use an http or https address.');
   if (/(^|\.)(youtube\.com|youtu\.be|netflix\.com|disneyplus\.com|max\.com|primevideo\.com)$/i.test(parsed.hostname)) {
-    throw new Error('Streaming sites can’t be played inside Lingua. Add the show’s subtitle file instead (Subtitles only), and watch it there.');
+    throw new Error('Streaming services can’t be played inside Lingua. Add the show’s subtitle file instead (Subtitles only), and follow it with the clock.');
   }
   const durationMs = await probeLink(parsed.href);
   if (durationMs === undefined) throw new Error('That address didn’t play as a video here. Use a direct link to an .mp4 or .webm file.');

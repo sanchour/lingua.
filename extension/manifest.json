@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "Lingua subtitles",
+  "version": "0.5.2",
+  "description": "Two interactive subtitle lines over YouTube and other video sites, for learning a language with Lingua. Reads the subtitle files the player loads, never the video.",
+  "host_permissions": [
+    "https://sanchour.github.io/lingua./*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://www.netflix.com/*",
+        "https://www.primevideo.com/*",
+        "https://www.disneyplus.com/*",
+        "https://play.max.com/*",
+        "https://tv.apple.com/*",
+        "https://www.arte.tv/*",
+        "https://www.zdf.de/*",
+        "https://www.ardmediathek.de/*",
+        "https://www.france.tv/*",
+        "https://www.rtve.es/*",
+        "https://www.raiplay.it/*",
+        "https://www.svtplay.se/*"
+      ],
+      "js": ["inject.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://www.netflix.com/*",
+        "https://www.primevideo.com/*",
+        "https://www.disneyplus.com/*",
+        "https://play.max.com/*",
+        "https://tv.apple.com/*",
+        "https://www.arte.tv/*",
+        "https://www.zdf.de/*",
+        "https://www.ardmediathek.de/*",
+        "https://www.france.tv/*",
+        "https://www.rtve.es/*",
+        "https://www.raiplay.it/*",
+        "https://www.svtplay.se/*"
+      ],
+      "js": ["parse.js", "content.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://sanchour.github.io/lingua./*", "http://localhost/*", "http://127.0.0.1/*"],
+      "js": ["lingua-page.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

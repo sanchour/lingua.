@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
-import { Bookmark, ChevronLeft, FileVideo, Repeat, SkipBack, SkipForward } from 'lucide-react';
+import { Bookmark, ChevronLeft, FileVideo, Repeat, SkipBack, SkipForward, Timer } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { BackLink } from '@/app/BackLink';
 import { cueIndexAt, formatDuration } from '@/core/audio/cues';
+import { TimerVideo } from '@/core/visio/videoLike';
+import type { VideoLike } from '@/core/visio/videoLike';
 import { getLanguage, GLOSS_LANG } from '@/core/lang/languages';
 import { recordSession } from '@/data/activity';
 import { savePlayback, updateMedia, useMedia, usePlaybackMap } from '@/data/media';
@@ -29,6 +31,7 @@ import { lineAt, matchingLine, nextLineStart, previousLineStart } from './lines'
 import { SubtitleSettings } from './SubtitleSettings';
 import { TrackPanel } from './TrackPanel';
 import { VideoStage } from './VideoStage';
+import { YouTubeEmbed } from './YouTubeEmbed';
 import type { LineActions } from './VideoStage';
 
 export default function WatchPage() {
@@ -90,7 +93,8 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
   const { layout } = useLayout();
   const navigate = useNavigate();
   const wide = layout === 'wide';
-  const src = useVideoSource(media);
+  const fileSrc = useVideoSource(media);
+  const src = media.youtubeId ? null : fileSrc;
   const vtt = useVttTracks(media, tracks);
   const playback = usePlaybackMap()?.get(media.id);
   const target = tracks.target?.cues ?? null;
@@ -99,8 +103,17 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
 
   const clock = useMemo(createVideoClock, []);
   const stageRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [el, setEl] = useState<HTMLVideoElement | null>(null);
+  const [embedded, setEmbedded] = useState<VideoLike | null>(null);
   const [fullscreen, setFullscreen] = useState(false);
+
+  // A subtitles-only item gets a follow clock: play it when the show plays in its own app, and nudge it until the lines match.
+  const following = !media.youtubeId && src === null && Boolean(target?.length);
+  const followMs = media.durationMs ?? (target?.length ? target[target.length - 1].endMs + 5000 : 0);
+  const follow = useMemo(() => new TimerVideo({ durationMs: Math.max(followMs, 1000) }), [followMs]);
+  useEffect(() => () => follow.dispose(), [follow]);
+  const player: VideoLike | null = media.youtubeId ? embedded : src ? el : following ? follow : null;
+  const ready = Boolean(player);
 
   // ── The video element: clock, resume, saving the place, watch time ──
   const resumed = useRef(false);
@@ -110,8 +123,8 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
   }, [playback]);
 
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v || !src) return;
+    const v = player;
+    if (!v) return;
     clock.attach(v);
     if (playback?.rate) v.playbackRate = playback.rate;
     let watchedMs = 0;
@@ -130,11 +143,11 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     };
     const save = (completed = false) => void savePlayback(media.id, completed ? 0 : v.currentTime * 1000, v.playbackRate, completed);
     const onMeta = () => {
-      for (const t of v.textTracks) t.mode = 'hidden';
+      for (const t of v.textTracks ?? []) t.mode = 'hidden';
       const at = resumeAt.current;
       if (!resumed.current && at > 5000 && at < v.duration * 1000 - 10_000) v.currentTime = at / 1000;
       resumed.current = true;
-      if (Number.isFinite(v.duration) && Math.abs((media.durationMs ?? 0) - v.duration * 1000) > 1500) void updateMedia(media.id, { durationMs: Math.round(v.duration * 1000) });
+      if (!following && Number.isFinite(v.duration) && Math.abs((media.durationMs ?? 0) - v.duration * 1000) > 1500) void updateMedia(media.id, { durationMs: Math.round(v.duration * 1000) });
     };
     const onPlay = () => {
       since = performance.now();
@@ -160,7 +173,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     };
     // iPhone's own full-screen player draws the subtitles from the <track>s.
     const onNativeFs = (showing: boolean) => () => {
-      for (const t of v.textTracks) t.mode = showing && t.language === media.lang ? 'showing' : 'hidden';
+      for (const t of v.textTracks ?? []) t.mode = showing && t.language === media.lang ? 'showing' : 'hidden';
     };
     const begin = onNativeFs(true);
     const end = onNativeFs(false);
@@ -189,13 +202,12 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     };
     // The place is read once; later saves come from this effect itself.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [src, clock, media.id, media.lang]);
+  }, [player, clock, media.id, media.lang]);
 
   // A new <track> starts out "showing" in some browsers; Lingua draws its own subtitles.
   useEffect(() => {
-    const v = videoRef.current;
-    if (v) for (const t of v.textTracks) t.mode = 'hidden';
-  }, [vtt]);
+    if (el) for (const t of el.textTracks) t.mode = 'hidden';
+  }, [vtt, el]);
 
   // ── Auto-pause at the end of each line ──
   const pausedFor = useRef(-1);
@@ -264,7 +276,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
 
   const toggleFullscreen = () => {
     const stage = stageRef.current;
-    const v = videoRef.current as (HTMLVideoElement & { webkitEnterFullscreen?: () => void }) | null;
+    const v = el as (HTMLVideoElement & { webkitEnterFullscreen?: () => void }) | null;
     if (document.fullscreenElement) return void document.exitFullscreen();
     if (stage && document.fullscreenEnabled) void stage.requestFullscreen().catch(() => v?.webkitEnterFullscreen?.());
     else v?.webkitEnterFullscreen?.();
@@ -298,13 +310,17 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
       s: () => void lines.save(),
       f: toggleFullscreen,
       c: cycleNative,
+      ',': () => following && nudge(-500),
+      '.': () => following && nudge(500),
       p: () => {
         void patchSetting('visio', { autoPause: !autoPause });
         toast(autoPause ? 'Auto-pause off.' : 'Pausing after each line.');
       },
     },
-    Boolean(src),
+    ready,
   );
+
+  const nudge = (ms: number) => clock.seek(clock.now() + ms);
 
   const placeholder = (
     <div className="absolute inset-0 grid place-items-center bg-[#1d1a17] p-6 text-center text-white/85">
@@ -326,6 +342,16 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     </div>
   );
 
+  const followPanel = (
+    <div className="absolute inset-0 grid place-items-center bg-[#1d1a17] p-6 text-center text-white/85">
+      <div className="-mt-16">
+        <Timer size={28} className="mx-auto mb-3 opacity-70" aria-hidden />
+        <p className="font-serif text-lg font-semibold text-white">Follow along</p>
+        <p className="mx-auto mt-1 max-w-sm text-[13.5px] text-white/70">Press play here when your show plays in its own app, and pause it when you pause. If the lines drift, nudge them with , and . (half a second).</p>
+      </div>
+    </div>
+  );
+
   const stage = (
     <VideoStage
       media={media}
@@ -334,23 +360,36 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
       native={native}
       clock={clock}
       stageRef={stageRef}
-      videoRef={videoRef}
+      player={player}
+      onVideo={setEl}
+      live={following || Boolean(media.youtubeId)}
+      embed={media.youtubeId ? <YouTubeEmbed id={media.youtubeId} onPlayer={setEmbedded} /> : undefined}
       tracks={vtt}
       lines={lines}
       fullscreen={fullscreen}
       onFullscreen={toggleFullscreen}
       onHold={onHold}
-      placeholder={src === null ? placeholder : null}
+      placeholder={following ? followPanel : src === null && !media.youtubeId ? placeholder : null}
     />
   );
 
   const lineBar = (
     <div className="flex items-center gap-1 px-3 sm:px-0">
-      <LineButton icon={SkipBack} label="Previous line" shortcut="↑" onClick={lines.previous} disabled={!lines.hasLines || !src} />
-      <LineButton icon={Repeat} label="Repeat line" shortcut="R" onClick={lines.repeat} disabled={!lines.hasLines || !src} />
-      <LineButton icon={SkipForward} label="Next line" shortcut="↓" onClick={lines.next} disabled={!lines.hasLines || !src} />
+      <LineButton icon={SkipBack} label="Previous line" shortcut="↑" onClick={lines.previous} disabled={!lines.hasLines || !ready} />
+      <LineButton icon={Repeat} label="Repeat line" shortcut="R" onClick={lines.repeat} disabled={!lines.hasLines || !ready} />
+      <LineButton icon={SkipForward} label="Next line" shortcut="↓" onClick={lines.next} disabled={!lines.hasLines || !ready} />
+      {following && (
+        <>
+          <Button size="sm" variant="ghost" onClick={() => nudge(-500)} aria-label="Lines half a second earlier">
+            −0.5 s
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => nudge(500)} aria-label="Lines half a second later">
+            +0.5 s
+          </Button>
+        </>
+      )}
       <span className="flex-1" />
-      <Button size="sm" variant="secondary" icon={Bookmark} onClick={() => void lines.save()} disabled={!lines.hasLines || !src}>
+      <Button size="sm" variant="secondary" icon={Bookmark} onClick={() => void lines.save()} disabled={!lines.hasLines || !ready}>
         Save line
       </Button>
       <SubtitleSettings />
@@ -374,7 +413,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
   const transcript = target?.length ? (
     <section aria-label="Lines">
       <p className="mb-3 text-[12.5px] font-bold tracking-wide text-ink-soft uppercase">All lines</p>
-      <KaraokeTranscript media={media} cues={target} live={Boolean(src)} clock={clock} gutter={false} docked={false} />
+      <KaraokeTranscript media={media} cues={target} live={ready} clock={clock} gutter={false} docked={false} />
     </section>
   ) : null;
 

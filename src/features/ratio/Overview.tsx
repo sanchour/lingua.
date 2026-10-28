@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, BookOpen, Clock, Compass, Feather, Headphones, Layers, Sprout } from 'lucide-react';
+import { ArrowRight, BookOpen, Clock, Compass, Feather, Headphones, Keyboard, Layers, Plus, Sprout } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { estimateLevel } from '@/core/ratio/estimate';
+import { LISTENING_KIND_LABEL, lookupsPer1000 } from '@/core/ratio/kinds';
+import { useLanguages } from '@/data/languages';
 import { ACTIVITIES, loadOverview } from '@/data/ratio';
 import type { Overview as OverviewData } from '@/data/ratio';
 import { BarChart } from '@/design/charts/BarChart';
@@ -10,7 +12,9 @@ import { Heatmap } from '@/design/charts/Heatmap';
 import { LineChart } from '@/design/charts/LineChart';
 import { gradeColor, Ring } from '@/design/charts/Ring';
 import { compact } from '@/design/charts/useWidth';
+import { Button } from '@/design/primitives';
 import { cx } from '@/lib/cx';
+import { LogTimeDrawer, MomentDrawer } from './forms';
 import { GrammarPanel } from './GrammarPanel';
 import { ACTIVITY_COLOR, ACTIVITY_LABEL, hours, Legend, Panel, pct, shortDate, Stat } from './common';
 
@@ -36,7 +40,28 @@ export function Overview() {
     };
   }, [lang]);
 
-  return <div className="space-y-5">{!data ? <div className="h-96 animate-pulse rounded-3xl bg-surface" /> : <Dashboard data={data} lang={lang} />}</div>;
+  const languages = useLanguages();
+  const [drawer, setDrawer] = useState<'time' | 'moment' | null>(null);
+  const close = () => {
+    setDrawer(null);
+    void loadOverview([lang]).then(setData);
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="flex justify-end gap-2">
+        <Button variant="ghost" icon={Clock} onClick={() => setDrawer('time')}>
+          Log time
+        </Button>
+        <Button variant="ghost" icon={Plus} onClick={() => setDrawer('moment')}>
+          Add a moment
+        </Button>
+      </div>
+      {!data ? <div className="h-96 animate-pulse rounded-3xl bg-surface" /> : <Dashboard data={data} lang={lang} />}
+      <LogTimeDrawer open={drawer === 'time'} onClose={close} languages={languages ?? []} lang={lang} />
+      <MomentDrawer open={drawer === 'moment'} onClose={close} languages={languages ?? []} lang={lang} />
+    </div>
+  );
 }
 
 function LevelCard({ known, said }: { known: number; said: string }) {
@@ -87,6 +112,7 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
     { label: 'Night', minutes: h.byHour[23] + h.byHour.slice(0, 5).reduce((a, b) => a + b, 0) },
   ];
   const daypartMax = Math.max(1, ...dayparts.map((d) => d.minutes));
+  const lookups = lookupsPer1000(r.lookups, r.lookupWords);
   const maturityTotal = Math.max(1, f.maturity.new + f.maturity.learning + f.maturity.young + f.maturity.mature);
 
   return (
@@ -192,6 +218,9 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
             <Stat value={compact(r.words)} label="Words" />
             <Stat value={r.wpm ?? '—'} label="Words / min" />
           </dl>
+          <p className="mb-5 text-[14px] text-ink-soft">
+            {lookups === null ? 'Look-ups per 1,000 words show once you have read a little more.' : <><span className="font-semibold text-ink tabular-nums">{lookups}</span> look-ups per 1,000 words read{lookups <= 20 ? ': you are reading mostly without help.' : '.'}</>}
+          </p>
           <LineChart series={[{ name: 'Words a minute', color: 'var(--sage)', points: r.wpmSeries }]} formatX={(x) => `Week of ${shortDate(x)}`} height={130} empty="Read a few sessions to see your speed" />
           <p className="mt-5 text-[14px] text-ink-soft">
             <span className="font-semibold text-ink">{r.finished}</span> {r.finished === 1 ? 'book' : 'books'} finished
@@ -279,7 +308,42 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
               <Stat value={hours(l.songMinutes)} label="With music" />
               <Stat value={l.mined} label="Words saved" />
             </dl>
+            {l.byKind.length > 0 && (
+              <div className="mt-5">
+                <p className="mb-3 text-[13px] font-semibold text-ink-soft">By kind</p>
+                <ul className="space-y-2">
+                  {l.byKind.map((k) => (
+                    <li key={k.kind} className="flex items-center gap-3 text-[14px]">
+                      <span className="w-28 shrink-0 text-ink-soft">{LISTENING_KIND_LABEL[k.kind]}</span>
+                      <span className="h-2 flex-1 overflow-hidden rounded-full bg-sunken">
+                        <span className="block h-full rounded-full bg-sage" style={{ width: `${(k.minutes / Math.max(...l.byKind.map((x) => x.minutes))) * 100}%` }} />
+                      </span>
+                      <span className="w-14 text-right text-ink-faint tabular-nums">{hours(k.minutes)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </Panel>
+
+          {data.typing && (
+            <Panel
+              title="Typing"
+              icon={Keyboard}
+              action={
+                <Link to="/cursus/typing" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
+                  Practise <ArrowRight size={14} aria-hidden />
+                </Link>
+              }
+            >
+              <dl className="grid grid-cols-3 gap-3">
+                <Stat value={data.typing.averageWpm ?? '—'} label="Words / min" hint="Average over the letters practised" />
+                <Stat value={data.typing.accuracy === null ? '—' : pct(data.typing.accuracy)} label="Accuracy" />
+                <Stat value={data.typing.unlocked} label="Letters" />
+              </dl>
+              <p className="mt-4 text-[13.5px] text-ink-soft">Your slowest letter types at {data.typing.wpm} words a minute; the course asks for {data.typing.target}.</p>
+            </Panel>
+          )}
 
           {/* Writing */}
           <Panel

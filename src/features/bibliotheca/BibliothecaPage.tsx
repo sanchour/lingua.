@@ -158,7 +158,7 @@ export default function BibliothecaPage() {
           sub: v.collection || 'Continue watching',
           pct,
           at: v.lastPlayedAt,
-          art: <Poster title={v.title} coverBlobId={v.coverBlobId} className="size-full rounded-none shadow-none" />,
+          art: <Poster title={v.title} coverBlobId={v.coverBlobId} coverUrl={v.coverUrl} className="size-full rounded-none shadow-none" />,
         });
       }
     }

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useLayoutEffect, useMemo } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { MotionConfig } from 'motion/react';
 import { AppContext } from '@/app/context';
@@ -7,6 +7,7 @@ import { applyFlavour } from '@/design/flavours';
 import { UpdatePrompt } from '@/app/UpdatePrompt';
 import { preloadSections } from '@/app/pages';
 import { useActiveLanguage } from '@/data/languages';
+import { startBridge } from '@/services/visio/bridge';
 import { ensureDeviceMeta, useSettings } from '@/data/settings';
 import { Toaster } from '@/design/primitives';
 import { getLanguage } from '@/core/lang/languages';
@@ -66,6 +67,11 @@ export function Root() {
 
   // The studied language's dictionary installs quietly in the background the first time.
   const activeLang = onboarded ? language?.id : undefined;
+
+  // The Lingua extension asks this tab to look words up and save them (5.2-4).
+  const bridgeLang = useRef('');
+  bridgeLang.current = language?.id ?? '';
+  useEffect(() => startBridge(() => bridgeLang.current), []);
   useEffect(() => {
     if (!activeLang) return;
     void Promise.all([packMissing(activeLang), db.dictPacks.get(packId(activeLang))]).then(([missing, installed]) => {

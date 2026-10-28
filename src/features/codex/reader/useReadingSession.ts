@@ -24,6 +24,7 @@ export function useReadingSession(lang: string, textId: string | undefined) {
   const lastTick = useRef(performance.now());
   const lastInteraction = useRef(performance.now());
   const wordsRead = useRef(0);
+  const lookups = useRef(0);
   const total = useRef({ activeMs: 0, wordsRead: 0, pages: 0 });
   const met = useRef(new Set<string>());
   const lookedUp = useRef(new Set<string>());
@@ -49,10 +50,12 @@ export function useReadingSession(lang: string, textId: string | undefined) {
       endedAt: Date.now(),
       activeMs: Math.round(activeMs.current),
       wordsRead: Math.round(wordsRead.current),
+      lookups: lookups.current,
     });
     startedAt.current = Date.now();
     activeMs.current = 0;
     wordsRead.current = 0;
+    lookups.current = 0;
   }, [lang, textId, tick]);
 
   useEffect(() => {
@@ -87,6 +90,7 @@ export function useReadingSession(lang: string, textId: string | undefined) {
     }, []),
     lookUp: useCallback((norm: string) => {
       lookedUp.current.add(norm);
+      lookups.current++;
     }, []),
     /** Reading time not yet recorded (what today's total doesn't include yet). */
     pendingMs: useCallback(() => {

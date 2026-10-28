@@ -406,6 +406,8 @@ export interface Media extends Synced {
   doneAt?: number;
   /** The Codex text an audiobook is read along with (its sentences light up in the player). */
   readAlongTextId?: string;
+  /** Visio: a YouTube video, played from YouTube's own embed. */
+  youtubeId?: string;
 }
 
 /** Colloquium: a conversation with the learner's own AI, in the language. */
@@ -622,6 +624,8 @@ export interface ActivitySession {
   endedAt: number;
   activeMs: number;
   wordsRead?: number;
+  /** Reading: words looked up in the sitting (for look-ups per 1,000 words). */
+  lookups?: number;
   cards?: number;
   correct?: number;
 }

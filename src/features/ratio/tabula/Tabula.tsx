@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Reorder, useDragControls } from 'motion/react';
-import { FileUp, GripVertical, ImageDown, Plus, Target } from 'lucide-react';
+import { Clock, FileUp, GripVertical, ImageDown, Plus, Target } from 'lucide-react';
 import { codeForLanguage, LANGUAGE_NAMES, parseNotionLanguages } from '@/core/parsers/notion';
 import { addCapability, goalProgress, goalStatus, importCapabilities, reorderCapabilities, seedCapabilities, useCapabilities, useGoals } from '@/data/journey';
 import type { GoalStatus } from '@/data/journey';
@@ -14,7 +14,7 @@ import { Button, Popover } from '@/design/primitives';
 import { downloadFile, pickFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
 import { cx } from '@/lib/cx';
-import { GoalDrawer } from '../forms';
+import { GoalDrawer, LogTimeDrawer } from '../forms';
 import { hours } from '../common';
 import { CapabilityDrawer } from './CapabilityDrawer';
 import { renderTableImage } from './image';
@@ -60,6 +60,7 @@ export function Tabula() {
   const goals = useGoals();
   const [paces, setPaces] = useState<Map<string, Pace>>(new Map());
   const [goalDrawer, setGoalDrawer] = useState<{ lang: string; goal: Goal | null } | null>(null);
+  const [logOpen, setLogOpen] = useState(false);
 
   useEffect(() => void seedCapabilities(), []);
   useEffect(() => setOrder((rows ?? []).map((r) => r.id)), [rows]);
@@ -161,6 +162,9 @@ export function Tabula() {
           <Button variant="ghost" icon={Target} onClick={() => setGoalDrawer({ lang: ordered[0]?.id ?? '', goal: null })} disabled={!ordered.length}>
             Goal
           </Button>
+          <Button variant="ghost" icon={Clock} onClick={() => setLogOpen(true)} disabled={!ordered.length}>
+            Log time
+          </Button>
           <Button variant="ghost" icon={FileUp} onClick={() => void importNotion()}>
             Notion CSV
           </Button>
@@ -213,6 +217,7 @@ export function Tabula() {
       {!ordered.length && <p className="py-10 text-center text-ink-soft">Add the languages you speak, even ones Lingua doesn’t teach.</p>}
       <p className="mt-5 text-[12.5px] text-ink-faint">Drag the handle to reorder. Tap a language for skills, certificates and notes. Notion: export your table as CSV (Dutch or English columns).</p>
 
+      <LogTimeDrawer open={logOpen} onClose={() => setLogOpen(false)} languages={studied ?? []} lang={ordered[0]?.id ?? ''} />
       <GoalDrawer open={goalDrawer !== null} onClose={() => setGoalDrawer(null)} languages={studied ?? []} lang={goalDrawer?.lang ?? ''} editing={goalDrawer?.goal} />
       <CapabilityDrawer capability={open} onClose={() => setOpen(null)} live={open ? (live(open) ?? undefined) : undefined} />
     </div>

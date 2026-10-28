@@ -520,7 +520,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         detail: vid.collection || 'Continue watching',
         pct,
         langAttr: lang,
-        art: <Poster title={vid.title} coverBlobId={vid.coverBlobId} className="size-full rounded-none shadow-none" />,
+        art: <Poster title={vid.title} coverBlobId={vid.coverBlobId} coverUrl={vid.coverUrl} className="size-full rounded-none shadow-none" />,
       });
     }
 

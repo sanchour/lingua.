@@ -20,7 +20,7 @@ export const VideoCard = memo(function VideoCard({ media, progress, roles }: { m
   return (
     <div className="group">
       <Link to={`/visio/watch/${media.id}`} className="block" aria-label={`Watch ${media.title}`}>
-        <Poster title={media.title} coverBlobId={media.coverBlobId} className="transition-transform duration-200 group-hover:-translate-y-0.5">
+        <Poster title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="transition-transform duration-200 group-hover:-translate-y-0.5">
           {media.durationMs !== undefined && (
             <span className="absolute right-2 bottom-2 rounded-md bg-black/65 px-1.5 py-0.5 text-[11.5px] font-semibold text-white tabular-nums">{formatDuration(media.durationMs)}</span>
           )}

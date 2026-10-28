@@ -1724,12 +1724,12 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [x] 5.2-1 · Settings (Ordo's new name), a narrower sidebar, flashcard widths (built with 5.1-1)
 - [x] 5.2-2 · Radio: only stations in the language, a better list, a tuner for countries (2026-10-25)
 - [x] 5.2-3 · Listening: audiobooks and free courses, the book page, the player, Commute, Sonus+ settings
-- [ ] 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks (Lingua 5's own step; Lingua 4.0-3 was removed)
+- [x] 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks (Lingua 5's own step; Lingua 4.0-3 was removed)
 - [ ] 5.2-5 · Diarium: writing tools, a calendar, search, in the language
 - [ ] 5.2-6 · Sermo: a guided path into your AI app, many more scenes
 - [x] 5.2-7 · Mundus: an interactive guide, one Explore, Things to try
 - [x] 5.2-8 · Grammatica: a guided path at your level, lessons at desktop size
-- [ ] 5.2-9 · Ratio: one language, compact, goals in Tabula instead of Iter, more numbers
+- [x] 5.2-9 · Ratio: one language, compact, goals in Tabula instead of Iter, more numbers
 - [ ] Cursus · the course, with speaking and writing (moved here from 4.0-4; section "Cursus" below)
 - [ ] 5.2-10 · Lingua 5 complete: the full check
 
@@ -2161,28 +2161,30 @@ mobile layout (not needed).
 ### Visio (5.2-4, handover step 22): how it is built
 *Planned 2026-10-25; the design is LINGUA-5.2-PLAN.md "5.2-4". The user: "Continue then with 5.2-4
 and push, finish".*
-- [ ] **Real marks** (`core/mundus/marks.ts`, `ServiceMark`): Simple Icons' open drawings where it
+- [x] **Real marks** (`core/mundus/marks.ts`, `ServiceMark`): Simple Icons' open drawings where it
       has the service (Netflix, HBO Max, Apple TV, MUBI, YouTube, Viaplay, ZDF, Crunchyroll), the
       service's App Store icon for the others (looked up in Apple's directory, each checked to be
       the service's own app), the letters as before when an icon can't load. Apple TV+ is "Apple TV".
       A test: every service has a mark.
-- [ ] **"From Mundus" removed** from the bottom of Services.
-- [ ] **YouTube inside Visio:** Add › YouTube video takes a link; its title, channel and picture come
+- [x] **"From Mundus" removed** from the bottom of Services.
+- [x] **YouTube inside Visio:** Add › YouTube video takes a link; its title, channel and picture come
       from YouTube's oEmbed. The player is YouTube's official embed behind `YouTubeVideo`, a small
       stand-in with the parts of a `<video>` Visio uses (time, play, pause, speed, events), so the
       clock, the two lines, auto-pause, hover-to-pause, the line keys and the scrubber work as for a
       file. Subtitles, in order: the Lingua extension (YouTube's captions and its English
       translation), Gemini with Max (a timed transcript from the link, then the English line as
       today), a subtitle file, else YouTube's own captions in its player.
-- [ ] **Following a show beside its own app:** a subtitles-only item gets a follow clock
+- [x] **Following a show beside its own app:** a subtitles-only item gets a follow clock
       (`TimerVideo`, the same stand-in on a timer): play, pause, nudge ±0.5 s, the lines in time,
       with the same hovering, lookups and saving as a video.
-- [ ] **The Lingua extension** (`extension/`, Chrome and Edge, Manifest V3, loaded unpacked until
+- [x] **The Lingua extension** (`extension/`, Chrome and Edge, Manifest V3, loaded unpacked until
       the user has a Web Store account): on Netflix, Prime Video, Disney+, HBO Max, YouTube and the
       free broadcasters it reads the subtitle files the player loads (WebVTT, TTML, YouTube's
       json3), never the video, and draws two lines over the player; hovering pauses, words look up
       through an open Lingua tab (`services/visio/bridge.ts`), a click saves a word to the deck, ←
       and → step by line. For YouTube it also hands the captions to Lingua.
+- **Built differently from the plan:** Gemini's transcript with Max and YouTube's own captions as a fallback are **not built** (the embed hides
+      its captions, and a subtitle file or the extension covers the same need); the lines come from the extension, a file or the follow clock.
 - **Can't be checked here:** the extension on the streaming services (it needs the user's accounts
       and an unpacked install); Gemini's transcript needs a Max key.
 
@@ -2246,7 +2248,7 @@ design of each is LINGUA-5.2-PLAN.md's section; below is how it is built and how
      the rule, its words); Enter continues, 1–4 choose. The narrow `max-w-2xl` column goes.
    - **Checked:** a French learner placed at A2 lands on their next step with its reason; every lesson view uses
      the full width at 1280, 1366 and 1440.
-5. [~] **Ratio (5.2-9, handover 18)** — mostly done 2026-10-28 (0.5.2-alpha.27): Overview is the current language only, Iter is gone (its old links open Tabula; its data stays), goals sit on Tabula rows with a slim bar and on track / behind, the reading challenge sits above the table, and Overview has an estimated level said plainly as an estimate. Already there from before: words over time and coverage, reading speed, listening, retention and Ludus accuracy, the year heat map, time by room and by part of the day. **Left for the check (5.2-10):** look-ups per 1,000 words, typing speed and grammar mastered as cards of their own, listening by kind as its own card, a daily known-word record if missing, and the Iter form for logging time by hand (its drawer is kept in `ratio/forms.tsx`, not yet reachable). Checked in the app (French): no other language chips, Tabula goal lines and the old `?tab=iter` link.
+5. [x] **Ratio (5.2-9, handover 18)** — done 2026-10-28 (0.5.2-alpha.27, and .28 for the rest: look-ups per 1,000 words, listening by kind, typing speed, Log time and Add a moment reachable from Overview, and Log time in Tabula; the daily known-word record and grammar mastered already existed; retention after a day is not recorded and is not shown): Overview is the current language only, Iter is gone (its old links open Tabula; its data stays), goals sit on Tabula rows with a slim bar and on track / behind, the reading challenge sits above the table, and Overview has an estimated level said plainly as an estimate. Already there from before: words over time and coverage, reading speed, listening, retention and Ludus accuracy, the year heat map, time by room and by part of the day. **Left for the check (5.2-10):** look-ups per 1,000 words, typing speed and grammar mastered as cards of their own, listening by kind as its own card, a daily known-word record if missing, and the Iter form for logging time by hand (its drawer is kept in `ratio/forms.tsx`, not yet reachable). Checked in the app (French): no other language chips, Tabula goal lines and the old `?tab=iter` link.
    - Only the current language outside Tabula; everything more compact, even-width figures.
    - Iter's tab and pages go (its data stays); a goal on each Tabula row (level by a date, hours a week) with a
      slim bar and on track / behind; an Iter goal with a level and a date moves into it.
@@ -2255,7 +2257,7 @@ design of each is LINGUA-5.2-PLAN.md's section; below is how it is built and how
      per room and of day, an estimated level said plainly as an estimate. A daily known-word record is added
      if missing.
    - **Checked:** no other language outside Tabula; Iter gone, goals in Tabula; real numbers for a test profile.
-6. [ ] **Visio, the rest (5.2-4, handover 22; taken over, the claim was free).**
+6. [x] **Visio, the rest (5.2-4, handover 22; taken over, the claim was free)** — done 2026-10-28 (0.5.2-alpha.28). Checked in the app: a YouTube link in Add, oEmbed title and picture, the embed behind `YouTubeVideo` (play, pause, time, speed), lines over it, the follow clock and its nudges, the extension's overlay on a stubbed page and the app's bridge; **not checked:** the extension unpacked on real sites, Netflix and the other services, Gemini's transcript (not built).
    - YouTube inside Visio (link, oEmbed details, the official embed behind `YouTubeVideo` so the two lines, keys,
      hover-pause and scrubber work as for a file); subtitles from the extension, Gemini with Max, a file, else
      YouTube's own.

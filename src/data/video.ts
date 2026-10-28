@@ -20,6 +20,9 @@ export interface NewVideo {
   durationMs?: number;
   poster?: Blob;
   collection?: string;
+  /** A YouTube video: played from YouTube's embed, with its picture from the web. */
+  youtubeId?: string;
+  coverUrl?: string;
 }
 
 export async function addVideo(input: NewVideo, database: LinguaDB = db): Promise<string> {
@@ -40,6 +43,8 @@ export async function addVideo(input: NewVideo, database: LinguaDB = db): Promis
       mime: input.mime ?? input.blob?.type,
       sizeBytes: input.blob?.size,
       remoteUrl: input.url,
+      youtubeId: input.youtubeId,
+      coverUrl: input.coverUrl,
       durationMs: input.durationMs,
       coverBlobId,
       createdAt: now,

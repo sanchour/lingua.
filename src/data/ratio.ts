@@ -3,6 +3,8 @@
 import { localDateKey } from '@/lib/format';
 import { db } from './db';
 import type { LinguaDB } from './db';
+import { listeningByKind, typingSummary } from '@/core/ratio/kinds';
+import type { ListeningKind, TypingSummary } from '@/core/ratio/kinds';
 import type { ActivitySession, CorrectionCategory, DailyStat, ReviewMode } from './types';
 
 const DAY = 86_400_000;
@@ -37,9 +39,14 @@ export interface Overview {
     wpmSeries: Array<{ x: number; y: number }>;
     finished: number;
     finishedThisYear: number;
+    /** Words looked up in the reader (counted from the sessions that recorded it). */
+    lookups: number;
+    /** Words read in those same sessions, so the rate is not thinned by older sessions without a count. */
+    lookupWords: number;
     books: Array<{ id: string; title: string; lang: string; known: number }>;
   };
-  listening: { minutes: number; watchMinutes: number; finished: number; withTranscript: number; mined: number; songs: number; songMinutes: number };
+  listening: { minutes: number; watchMinutes: number; finished: number; withTranscript: number; mined: number; songs: number; songMinutes: number; byKind: Array<{ kind: ListeningKind; minutes: number }> };
+  typing: TypingSummary | null;
   flashcards: {
     reviewsPerDay: Array<{ date: string; reviews: number }>;
     retention30: number | null;
@@ -123,7 +130,7 @@ export async function loadOverview(langs: string[], database: LinguaDB = db, now
   const sinceMs = now - HISTORY_DAYS * DAY;
   const langSet = new Set(langs);
 
-  const [dailyByLang, sessions, logs, decks, texts, entries, progress, media] = await Promise.all([
+  const [dailyByLang, sessions, logs, decks, texts, entries, progress, media, typingRow] = await Promise.all([
     Promise.all(langs.map((l) => database.dailyStats.where('[lang+date]').between([l, ''], [l, '￿']).toArray())),
     Promise.all(langs.map((l) => database.sessions.where('[lang+startedAt]').between([l, sinceMs], [l, Infinity]).toArray())).then((r) => r.flat()),
     database.studyLogs.toArray().then((rows) => rows.filter((r) => langSet.has(r.lang) && !r.deletedAt)),
@@ -132,6 +139,7 @@ export async function loadOverview(langs: string[], database: LinguaDB = db, now
     database.journalEntries.toArray().then((rows) => rows.filter((e) => langSet.has(e.lang) && !e.deletedAt)),
     database.playbackProgress.toArray(),
     database.media.toArray().then((rows) => rows.filter((m) => langSet.has(m.lang) && !m.deletedAt)),
+    langs.length === 1 ? database.typing.get(langs[0]) : Promise.resolve(undefined),
   ]);
   const daily: DailyStat[] = dailyByLang.flat();
 
@@ -292,6 +300,8 @@ export async function loadOverview(langs: string[], database: LinguaDB = db, now
       wpmSeries,
       finished: finishedTexts.length,
       finishedThisYear: finishedTexts.filter((t) => t.finishedAt && new Date(t.finishedAt).getFullYear() === year).length,
+      lookups: sessions.reduce((n, s) => n + (s.lookups ?? 0), 0),
+      lookupWords: sessions.filter((s) => s.lookups !== undefined).reduce((n, s) => n + (s.wordsRead ?? 0), 0),
       books,
     },
     listening: {
@@ -303,7 +313,9 @@ export async function loadOverview(langs: string[], database: LinguaDB = db, now
       // Cantus: songs sung along with (for at least half a minute), and the time with them.
       songs: new Set(sessions.filter((s) => s.type === 'sing' && s.refId && s.activeMs >= 30_000).map((s) => s.refId!)).size,
       songMinutes: daily.reduce((n, d) => n + (d.songMs ?? 0), 0) / 60_000,
+      byKind: listeningByKind(sessions, new Map(media.map((m) => [m.id, m]))),
     },
+    typing: langs.length === 1 ? typingSummary(typingRow) : null,
     flashcards: {
       reviewsPerDay,
       retention30: retention(30),
