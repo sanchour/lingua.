@@ -1731,7 +1731,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [x] 5.2-8 · Grammatica: a guided path at your level, lessons at desktop size
 - [x] 5.2-9 · Ratio: one language, compact, goals in Tabula instead of Iter, more numbers
 - [ ] Cursus · the course, with speaking and writing (moved here from 4.0-4; section "Cursus" below)
-- [ ] 5.2-10 · Lingua 5 complete: the full check
+- [x] 5.2-10 · Lingua 5 complete: the full check (done 2026-10-28, version 0.5.2. Typecheck, 1058 tests and the build pass. Looked at in the app's browser (French, the dev profile): every room and tab at 1280 (light), 1366 × 768 (light) and 1440 (dark): no sideways overflow, no error screens; as Free the course, Grammatica, Typing and Sermo are locked with a "comes with Lingua+" line, Streaming has its chip and Sonus+ shows its pitch; as Lingua+ and Max nothing is locked. **Not checked, and said so:** every room at every width in both light and dark (a sample only: 1366 light, 1440 dark, 1280 light); the Max-only AI answers (no real key is used in tests); Ludus under Free (covered by `plan.test.ts`, not looked at); the Lingua extension on real sites (Netflix, YouTube) and Visio's follow clock with a real show; Gemini transcripts and the YouTube captions fallback (planned, not built); retention after a day (not recorded, so not shown); a real phone or tablet (desktop only).)
 
 ### Codex (5.1-3a, handover step 9): how it is built
 *Planned 2026-10-21; the design is in LINGUA-5.1-PLAN.md "5.1-3a". Each part pushed. The user
@@ -2266,7 +2266,7 @@ design of each is LINGUA-5.2-PLAN.md's section; below is how it is built and how
    - **Checked here:** YouTube with a subtitle file, the follow clock, the extension on YouTube loaded unpacked
      in a local Chromium if possible. **Needs the user:** the streaming services (their accounts), a Max key for
      Gemini's transcript, a Web Store account to publish.
-7. [ ] **Lingua 5 complete (5.2-10, handover 21).** Every point of 5.1 and 5.2 in the app at 1280, 1440 and
+7. [x] **Lingua 5 complete (5.2-10, handover 21), done 2026-10-28 as 0.5.2** (what was checked and what was not: 5.2-10 above). Every point of 5.1 and 5.2 in the app at 1280, 1440 and
    1366×768, light and dark, as Free, Lingua+ and Max; the docs (ROADMAP, DECISIONS, FEATURES, ARCHITECTURE);
    `node scripts/version.ts --release` makes it 0.5.2; pushed and the live site checked.
 

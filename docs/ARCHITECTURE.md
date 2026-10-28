@@ -162,6 +162,7 @@ drawer       → LLM (Groq or Gemini, model chosen from the provider's live list
 ```
 lingua/
 ├─ docs/                 ARCHITECTURE · FEATURES · DECISIONS · PERFORMANCE · QA-ios · DEPLOY
+│  └─ handbook/          the design handbook: handbook.html (source), the PDF, icons/ and art/ (SVGs); its numbers are checked by src/test/handbookFacts.test.ts
 ├─ scripts/lang-data/    Node tools: fetch sources, build dictionary + frequency packs
 ├─ public/               logo.svg (icons + iOS splash screens are generated from it), packs/
 ├─ .github/workflows/    deploy.yml (GitHub Pages)

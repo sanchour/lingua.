@@ -501,10 +501,10 @@ Tabula; each new card shows real numbers for a test profile.
 
 ### 5.2-10 · Lingua 5 complete: the full check
 
-- [ ] Every point of 5.1 and 5.2 checked in the app at desktop sizes (1280, 1440, 1366×768), light
+- [x] Every point of 5.1 and 5.2 checked in the app at desktop sizes (1280, 1440, 1366×768), light
   and dark, with each pretend plan (Free, Lingua+, Max).
-- [ ] Docs (ROADMAP, DECISIONS, FEATURES, ARCHITECTURE for the rooms and folders). The version says
-  5.0. Commit, push, the live site checked.
+- [x] Docs (ROADMAP, DECISIONS, FEATURES, ARCHITECTURE for the rooms and folders). The version says
+  0.5.2 (done 2026-10-28). Commit, push, the live site checked.
 
 ---
 

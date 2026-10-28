@@ -1886,9 +1886,9 @@ ol.key.two li { break-inside: avoid; }
       <tr><td class="k">Focus</td><td>Every control shows a 2 px accent ring, 2 px off its edge, for keyboard focus only (<code>:focus-visible</code>).</td><td>—</td></tr>
       <tr><td class="k">Names</td><td>Icon buttons need a <code>label</code> and carry it as their accessible name. Switches are <code>role="switch"</code>; segmented controls are radio groups; the first start says “Step 3 of 7” and marks the current step.</td><td>Name the new icons as the icon chapter says.</td></tr>
       <tr><td class="k">Overlays</td><td>Drawers are modal dialogs, the confirm box an alert dialog: Tab stays inside, Esc closes the topmost, focus goes in and comes back. A toast is announced (<code>status</code>; an error as <code>alert</code>).</td><td>—</td></tr>
-      <tr><td class="k">Motion</td><td>Settings › Preferences › Motion: System, Reduced or Full. System follows the device’s “reduce motion”; the choice is written on the page as <code>data-motion</code>, so CSS and code both follow it.</td><td>—</td></tr>
+      <tr><td class="k">Motion</td><td>Settings › Motion: Device, Calm or Lively (System, Reduced or Full in the full view). Device follows the system’s “reduce motion”; the choice is on the page as <code>data-motion</code>.</td><td>—</td></tr>
       <tr><td class="k">Keyboard</td><td>Alt 1–8 for the rooms, <b>?</b> for the shortcut sheet, <b>/</b> to search, <b>[</b> for the sidebar, letters on words; every drawer by Esc.</td><td>A skip-to-content link was not found in the code. <span class="nv pr">Proposed</span></td></tr>
-      <tr><td class="k">Text size</td><td>No size setting of its own: the browser’s zoom works, and the reader has its own size in the Typography panel. 12.5 px is the smallest text.</td><td>The layout at 200% zoom has not been measured.</td></tr>
+      <tr><td class="k">Text size</td><td>The interface follows the browser’s zoom. Reading text has its own size, 15 to 30 px, and line spacing (Settings › Reading). 12.5 px is the smallest interface text.</td><td>The layout at 200% zoom has not been measured.</td></tr>
       <tr><td class="k">Colour</td><td>State is never colour alone, as a rule. Body text clears 4.5 : 1 except where measured below.</td><td>Two findings, over the page.</td></tr>
     </table>
   </div>
@@ -1972,9 +1972,9 @@ ol.key.two li { break-inside: avoid; }
     <h3>Reduced motion, in detail</h3>
     <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
       <tr><th style="width:14%">Choice</th><th>What happens</th></tr>
-      <tr><td class="k">System</td><td>Follows the device’s “reduce motion”. The default.</td></tr>
-      <tr><td class="k">Reduced</td><td>Movement is kept minimal everywhere, whatever the device says: pages appear without rising, lists don’t reorder with a slide, the lesson card doesn’t fly.</td></tr>
-      <tr><td class="k">Full</td><td>Richer, longer motion for a fast display: pages rise further and settle on a softer spring. Never required to understand anything.</td></tr>
+      <tr><td class="k">System</td><td>Follows the device: if it asks for less motion, Lingua moves less too. The default. (“Device” in the simple view.)</td></tr>
+      <tr><td class="k">Reduced</td><td>Calm and still, whatever the device says: things fade in place instead of sliding or springing.</td></tr>
+      <tr><td class="k">Full</td><td>Rich and liquid: pages glide in, lists reorder smoothly, everything settles softly; smoothest on 120 Hz. Never required to understand anything. (“Lively” in the simple view; Reduced is “Calm”.)</td></tr>
     </table>
     <div class="row"><p class="small"><b>Rule for new motion:</b> read <code>motionIsReduced()</code> (<code>src/design/motionPref.ts</code>) or use the springs in <code>motion.ts</code>, and make the reduced version a short fade or nothing. Meaning must never ride on movement alone.</p><aside><span class="k">Test</span>Turn it on and click through the new screen.</aside></div>
   </div>
@@ -1987,7 +1987,7 @@ ol.key.two li { break-inside: avoid; }
     <h2 id="d-sound" data-ch>Sound and haptics</h2>
     <div class="rule"></div>
     <p class="lead">Lingua is mostly quiet. Sound has two jobs: it is the content (a voice, a song, a station), and, in a few places, it says how an answer went. Only the second is a design matter, and it should be small.</p>
-    <div class="row"><p><b>What exists.</b> Six cues, made in the browser with Web Audio (no sound files), played in the lesson sets of Ludus and the grammar drills. The learner can switch sounds and haptics off in the lesson setup sheet; both start on. Vibration works where the browser lets it (Android Chrome; not iOS Safari, not a desktop), so on the desktop only the sounds are heard.</p><aside><span class="k">Where</span><code>src/<wbr>features/<wbr>lesson/<wbr>sfx.ts</code>, used by the lesson kit.</aside></div>
+    <div class="row"><p><b>What exists.</b> Six cues, made in the browser with Web Audio (no sound files), played in the lesson sets of Ludus and the grammar drills. The learner can switch sounds off in Settings (“Sounds in lessons”) and sounds and haptics in the lesson setup sheet; both start on. Vibration works where the browser lets it (Android Chrome; not iOS Safari, not a desktop), so on the desktop only the sounds are heard.</p><aside><span class="k">Where</span><code>src/<wbr>features/<wbr>lesson/<wbr>sfx.ts</code>, used by the lesson kit.</aside></div>
     <table class="wide spec" style="font-size:7.3pt;line-height:9.7pt">
       <tr><th style="width:11%">Cue</th><th style="width:33%">Shape</th><th style="width:22%">Means</th><th>Vibration (ms)</th></tr>
       <tr><td class="k">right</td><td>E5 then B5 (660, 990 Hz), sine, 0.3 s: a rising fifth</td><td>A right answer</td><td class="px">12</td></tr>
