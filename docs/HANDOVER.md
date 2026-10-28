@@ -71,7 +71,7 @@ read that part before starting.
 | 13 | [x] | *done 2026-10-25* **Radio and listening** (stations in the language, the tuner, audiobooks and courses, the player, Commute, Sonus+ settings). **Parallel** after 2. | 5.2-2 and 5.2-3 | L |
 | 14 | [x] | *done 2026-10-27 (0.5.2-alpha.18)* **Diarium.** **Parallel** after 2. | 5.2-5 | M |
 | 15 | [x] | *done 2026-10-28 (0.5.2-alpha.21)* **Sermo.** **Parallel** after 2. | 5.2-6 | M |
-| 16 | [~] | *claimed 2026-10-27 (with all of Lingua 5, ROADMAP "Finishing Lingua 5")* **Mundus** (the interactive guide, one Explore, Things to try). **Parallel** after 2. | 5.2-7 | M |
+| 16 | [x] | *done 2026-10-28 (0.5.2-alpha.24)* **Mundus** (the interactive guide, one Explore, Things to try). **Parallel** after 2. | 5.2-7 | M |
 | 17 | [~] | *claimed 2026-10-27 (with all of Lingua 5, ROADMAP "Finishing Lingua 5")* **Grammatica's guided path** and full-width lessons. **Parallel** after 1 and 2. | 5.2-8 | L |
 | 18 | [~] | *claimed 2026-10-27 (with all of Lingua 5, ROADMAP "Finishing Lingua 5")* **Ratio** (one language, compact, goals in Tabula, more numbers). **Parallel.** | 5.2-9 | M |
 | 19 | [x] | **Grammatica part 6: topic maps for every language** (3.0-8). *Done 2026-10-21:* short grammars for twelve tier 2 languages, the Georgian alphabet; the rest named in ROADMAP "3.0-8". **Parallel.** | ROADMAP "3.0-8" | L |

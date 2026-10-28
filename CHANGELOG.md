@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.5.2-alpha.24** · 2026-10-28 · Things to try: small cards, Deal me one (5.2-7, part 3)
 - **0.5.2-alpha.23** · 2026-10-28 · Explore (5.2-7, part 2): one Explore in Explora, tiles with the level large, three bands, a side bar
 - **0.5.2-alpha.22** · 2026-10-28 · Mundus says (5.2-7): replies that change the steps, kept for the day
 - **0.5.2-alpha.21** · 2026-10-28 · Sermo (5.2-6): three screens, 81 scenes, the AIs with their marks, no chat inside Lingua

@@ -486,7 +486,9 @@ Apple and Spotify say "30-second preview". Changing source carries on from the s
 - **Your path:** four stages, from Starting out (A1) to Going deep (B2+). It shows where you are,
   what this stage opens up, and a taste of what comes further along.
 - **Things to try:** small challenges suited to your stage, with a tap to mark one done. More open
-  up as your level rises. The full list, with the streak, is at Mundus › Things to try.
+  up as your level rises. The full list, with the streak, is at Mundus › Things to try: small cards with a time chip
+  (2, 5 or 15 minutes), a tick that stamps the card and counts it this week, done ones at the back, filters for time and
+  place, and Deal me one, which turns over a challenge you haven’t done. Mundus marks one as "Today".
 - **Explore everything:** the shelves below, for every room.
 - **Elsewhere:** Home shows Mundus's first suggestion.
 

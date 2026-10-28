@@ -1727,7 +1727,7 @@ start: it is built in the order of [HANDOVER.md](HANDOVER.md).** The steps, tick
 - [ ] 5.2-4 · Visio: dual subtitles for YouTube and the streaming services, real service marks (Lingua 5's own step; Lingua 4.0-3 was removed)
 - [ ] 5.2-5 · Diarium: writing tools, a calendar, search, in the language
 - [ ] 5.2-6 · Sermo: a guided path into your AI app, many more scenes
-- [ ] 5.2-7 · Mundus: an interactive guide, one Explore, Things to try
+- [x] 5.2-7 · Mundus: an interactive guide, one Explore, Things to try
 - [ ] 5.2-8 · Grammatica: a guided path at your level, lessons at desktop size
 - [ ] 5.2-9 · Ratio: one language, compact, goals in Tabula instead of Iter, more numbers
 - [ ] Cursus · the course, with speaking and writing (moved here from 4.0-4; section "Cursus" below)
@@ -2229,7 +2229,7 @@ design of each is LINGUA-5.2-PLAN.md's section; below is how it is built and how
    - About 80 scenes in `core/colloquium/scenes/` in the plan's groups, each with a level range, roles, three to
      five goals and words from the pack; a test builds every scene's prompt in every tier 1 and 2 language.
    - **Checked:** start to the AI's site with the prompt filled in or copied; no chat left; the scene test.
-3. [ ] **Mundus (5.2-7, handover 16).**
+3. [x] **Mundus (5.2-7, handover 16)** — done 2026-10-28 (0.5.2-alpha.22 to .24: replies, one Explore, Things to try). Checked in the app (French, Lingua+): each reply changes the steps and the line; Explore tiles and side bar; dealing, ticking, the stamp, the this-week count, the time filter and the detail drawer. Not checked: dark mode, a TMDB trailer with a real key, the Max "own words" box with a real key, the side bar at 1440 wide.
    - Mundus says with two or three replies (Something shorter, I'd rather listen/watch/read, Why this?, Not
      today) that change the three steps, kept for the day, no AI; with Max a small box to say it in your words.
    - One Explore: kinds and level on the left, picture tiles with the level large, three bands (at your level, a

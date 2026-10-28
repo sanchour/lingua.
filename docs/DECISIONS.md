@@ -1754,3 +1754,12 @@ Short records of choices that are not obvious from the code. Newest last.
   keeps eighty scenes cheap and the AI answers in the language anyway.
 - Always copy first, and fill the prompt in only where a site's link takes one: a link can fail (sign-in pages drop the
   question), a copied prompt can't.
+
+## 2026-10-28 — Mundus: replies, one Explore, small cards
+
+- Mundus's replies (shorter, I'd rather listen/watch/read, Why this, Not today) are chips that re-run the guide's own rules and are kept for
+  the day on the device; there is no AI in the loop. With Max a small box takes the learner's own words.
+- Explore is one page with the three level bands (at level, a stretch, easier) and a side bar, so the shelves, Every pick and the old
+  Explore are gone and their links are redirected. Radio and audiobooks have estimated levels, shown with a "~".
+- Things to try is a grid of small cards. Each challenge has a time (2, 5 or 15 minutes) and a place by its icon, kept as small tables in
+  `core/mundus/try.ts` rather than in every tip's data. Done ones go to the back, and a habit counts again the next day.

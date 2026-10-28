@@ -1,14 +1,16 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import {
   AppWindow,
   ArrowRight,
   AudioLines,
   BookOpenText,
   Check,
+  Clock,
   Coffee,
   CookingPot,
+  Dices,
   ExternalLink,
   Flame,
   Footprints,
@@ -24,21 +26,25 @@ import {
   Popcorn,
   Radio,
   Repeat1,
-  RotateCcw,
   ShoppingBasket,
   Smartphone,
   StickyNote,
   Sunrise,
   Users,
   Utensils,
+  X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { tipLevel, tipsByReach } from '@/core/mundus/guide';
 import { streakOf } from '@/core/mundus/streak';
 import type { Tip, TipIcon } from '@/core/mundus/tips';
-import { tipsFor } from '@/core/mundus/tips';
+import { tipOfTheDay, tipsFor } from '@/core/mundus/tips';
+import { dealOne, doneThisWeek, MINUTES, tipMinutes, visibleTips, WHERES } from '@/core/mundus/try';
+import type { DoneDates, TryFilter, Where } from '@/core/mundus/try';
 import { toggleChallenge, useChallenges } from '@/data/challenges';
-import { Card, Segmented } from '@/design/primitives';
+import { Drawer, Segmented } from '@/design/primitives';
 import { spring } from '@/design/motion';
+import { useApp } from '@/app/context';
 import { cx } from '@/lib/cx';
 import { localDateKey } from '@/lib/format';
 import { toast } from '@/state/ui';
@@ -73,202 +79,278 @@ export const TIP_ICONS: Record<TipIcon, LucideIcon> = {
 /** A soft colour per challenge, so the grid reads as a set of cards rather than a list. */
 const HUES = ['#c86d51', '#6b8e78', '#5f87a8', '#b56fa0', '#d49b54', '#8a7fb0', '#4f93a0', '#c4707f'];
 const hueOf = (id: string) => HUES[[...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % HUES.length];
+const soft = (hue: string) => ({ background: `color-mix(in oklab, ${hue} 17%, var(--color-surface))`, color: `color-mix(in oklab, ${hue} 78%, var(--color-ink))` });
 
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
+const chip = 'no-callout inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition-colors';
 
-type Show = 'all' | 'open' | 'done';
-
+/**
+ * Things to try (5.2-7): small challenges in a dense grid. Deal me one turns a card over, a tick stamps it and counts it
+ * this week, and the time and place filters find one for the moment. Mundus marks the one to try today.
+ */
 export function TipsView({ lang }: { lang: string }) {
+  const { language } = useApp();
   const tips = useMemo(() => tipsFor(lang), [lang]);
-  const done = useChallenges(lang);
+  const rows = useChallenges(lang);
   const today = localDateKey();
-  const [show, setShow] = useState<Show>('all');
+  const [filter, setFilter] = useState<TryFilter>({ show: 'all', minutes: 'any', where: 'any' });
+  const [dealt, setDealt] = useState<string>();
+  const [details, setDetails] = useState<string>();
 
-  const byTip = useMemo(() => {
+  const byTip: DoneDates = useMemo(() => {
     const map = new Map<string, string[]>();
-    for (const row of done ?? []) map.set(row.tipId, [...(map.get(row.tipId) ?? []), row.date]);
+    for (const row of rows ?? []) map.set(row.tipId, [...(map.get(row.tipId) ?? []), row.date]);
     return map;
-  }, [done]);
-  const streak = useMemo(() => streakOf((done ?? []).map((r) => r.date), today), [done, today]);
+  }, [rows]);
+  const streak = useMemo(() => streakOf((rows ?? []).map((r) => r.date), today), [rows, today]);
+  const week = doneThisWeek(byTip, today);
   const tried = tips.filter((t) => byTip.has(t.id)).length;
 
-  const visible = tips.filter((t) => (show === 'all' ? true : show === 'done' ? byTip.has(t.id) : !byTip.has(t.id) || (t.habit && !byTip.get(t.id)?.includes(today))));
+  // The one Mundus suggests today: the same tip its guide offers (a tip for the learner's stage, one a day).
+  const todayId = useMemo(() => {
+    const doneBefore = new Set([...byTip].filter(([, dates]) => dates.some((d) => d !== today)).map(([id]) => id));
+    return tipOfTheDay(tipsByReach(tips, language.level).now, doneBefore, Math.floor(Date.now() / 86_400_000))?.id;
+  }, [tips, byTip, today, language.level]);
+
+  const visible = visibleTips(tips, byTip, today, filter);
+  const dealtTip = tips.find((t) => t.id === dealt);
+  const detailTip = tips.find((t) => t.id === details);
+  const filtered = filter.minutes !== 'any' || filter.where !== 'any';
+
+  const deal = () => {
+    const next = dealOne(tips, byTip, today, filter, dealt);
+    if (!next) toast('Nothing left to deal with these filters. Try another time or place.');
+    setDealt(next?.id);
+  };
+
+  const mark = async (tip: Tip) => {
+    const now = await toggleChallenge(lang, tip.id);
+    if (now) toast(tip.habit ? 'Done for today.' : 'Challenge done. Lovely.', { tone: 'success' });
+  };
 
   return (
     <div>
-      <StreakCard days={streak.days} doneToday={streak.doneToday} tried={tried} total={tips.length} />
-      <div className="mt-7 mb-5">
-        <Segmented<Show>
-          block
+      <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <StreakCard days={streak.days} doneToday={streak.doneToday} week={week} tried={tried} total={tips.length} onDeal={deal} />
+        <DealtPanel tip={dealtTip} dates={dealtTip ? (byTip.get(dealtTip.id) ?? []) : []} today={today} onMark={(t) => void mark(t)} onAnother={deal} onOpen={setDetails} onClose={() => setDealt(undefined)} />
+      </div>
+
+      <div className="mt-6 mb-4 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <Segmented<TryFilter['show']>
           label="Show"
-          value={show}
-          onChange={setShow}
+          value={filter.show}
+          onChange={(show) => setFilter((f) => ({ ...f, show }))}
           options={[
             { value: 'all', label: 'All' },
             { value: 'open', label: 'To try' },
             { value: 'done', label: 'Done' },
           ]}
         />
+        <div role="group" aria-label="How long" className="flex items-center gap-1.5">
+          <Clock size={15} className="text-ink-faint" aria-hidden />
+          {MINUTES.map((m) => (
+            <Chip key={m} on={filter.minutes === m} onClick={() => setFilter((f) => ({ ...f, minutes: f.minutes === m ? 'any' : m }))}>
+              {m} min
+            </Chip>
+          ))}
+        </div>
+        <div role="group" aria-label="Where" className="flex flex-wrap items-center gap-1.5">
+          {WHERES.map((w) => (
+            <Chip key={w.id} on={filter.where === w.id} onClick={() => setFilter((f) => ({ ...f, where: f.where === w.id ? 'any' : (w.id as Where) }))}>
+              {w.label}
+            </Chip>
+          ))}
+        </div>
+        {filtered && (
+          <button type="button" onClick={() => setFilter((f) => ({ ...f, minutes: 'any', where: 'any' }))} className="hit text-[13px] font-semibold text-ink-soft hover:text-ink">
+            Clear
+          </button>
+        )}
       </div>
+
       {visible.length ? (
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
           {visible.map((tip, i) => (
-            <motion.li key={tip.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.03 * Math.min(i, 10) }}>
-              <FlipCard tip={tip} lang={lang} dates={byTip.get(tip.id) ?? []} today={today} />
+            <motion.li key={tip.id} layout="position" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.02 * Math.min(i, 12) }}>
+              <SmallCard tip={tip} dates={byTip.get(tip.id) ?? []} today={today} isToday={tip.id === todayId} dealt={tip.id === dealt} onOpen={() => setDetails(tip.id)} onMark={() => void mark(tip)} />
             </motion.li>
           ))}
         </ul>
       ) : (
-        <p className="py-10 text-center text-[15px] text-ink-soft">{show === 'done' ? 'Challenges you mark as done gather here.' : 'All done. Habits come back tomorrow.'}</p>
+        <p className="py-10 text-center text-[15px] text-ink-soft">{filter.show === 'done' ? 'Challenges you mark as done gather here.' : filtered ? 'Nothing matches. Try another time or place.' : 'All done. Habits come back tomorrow.'}</p>
+      )}
+
+      <Drawer open={Boolean(detailTip)} onClose={() => setDetails(undefined)} title={detailTip?.title ?? ''}>
+        {detailTip && <Detail tip={detailTip} dates={byTip.get(detailTip.id) ?? []} today={today} onMark={() => void mark(detailTip)} />}
+      </Drawer>
+    </div>
+  );
+}
+
+function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button type="button" aria-pressed={on} onClick={onClick} className={cx(chip, on ? 'border-transparent bg-inverse text-on-inverse' : 'border-line bg-surface text-ink-soft hover:border-line-strong hover:text-ink')}>
+      {children}
+    </button>
+  );
+}
+
+function StreakCard({ days, doneToday, week, tried, total, onDeal }: { days: number; doneToday: boolean; week: number; tried: number; total: number; onDeal: () => void }) {
+  return (
+    <div className="flex items-center gap-4 rounded-3xl border border-line/70 bg-surface p-4 sm:p-5">
+      <div className={cx('grid size-14 shrink-0 place-items-center rounded-2xl', days > 0 ? 'bg-accent-soft text-accent-text' : 'bg-sunken text-ink-faint')}>
+        <div className="flex flex-col items-center leading-none">
+          <Flame size={18} aria-hidden />
+          <span className="mt-0.5 font-serif text-[20px] font-semibold tabular-nums">{days}</span>
+        </div>
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className={label}>Beyond the app</p>
+        <p className="mt-0.5 font-serif text-[18px] leading-snug font-semibold">
+          {week === 0 ? 'Take the language out for a walk.' : week === 1 ? 'One challenge this week.' : `${week} challenges this week.`}
+        </p>
+        <p className="mt-0.5 text-[13px] text-ink-soft">
+          {days > 1 ? `${days} days in a row${doneToday ? '' : ': one more today keeps it alive'}. ` : ''}
+          {tried} of {total} tried.
+        </p>
+      </div>
+      <button type="button" onClick={onDeal} className="no-callout inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-inverse px-4 text-[14px] font-semibold text-on-inverse transition-transform active:scale-[0.97]">
+        <Dices size={18} aria-hidden /> Deal me one
+      </button>
+    </div>
+  );
+}
+
+/** The card turned over by "Deal me one": big enough to read and do, until it is done or closed. */
+function DealtPanel({ tip, dates, today, onMark, onAnother, onOpen, onClose }: { tip?: Tip; dates: readonly string[]; today: string; onMark: (t: Tip) => void; onAnother: () => void; onOpen: (id: string) => void; onClose: () => void }) {
+  const Icon = tip ? TIP_ICONS[tip.icon] : Dices;
+  const hue = tip ? hueOf(tip.id) : '#9a8466';
+  const done = tip ? (tip.habit ? dates.includes(today) : dates.length > 0) : false;
+  return (
+    <div className="relative min-h-36 [perspective:1000px]">
+      <AnimatePresence mode="wait" initial={false}>
+        {tip ? (
+          <motion.div key={tip.id} initial={{ rotateY: -90, opacity: 0 }} animate={{ rotateY: 0, opacity: 1 }} exit={{ rotateY: 90, opacity: 0 }} transition={spring.gentle} className="flex h-full gap-4 rounded-3xl border border-line/70 bg-raised p-4 sm:p-5">
+            <span className="grid size-14 shrink-0 place-items-center rounded-2xl" style={soft(hue)}>
+              <Icon size={26} aria-hidden />
+            </span>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <p className={label}>
+                Dealt · {tipMinutes(tip)} min
+              </p>
+              <h3 className="mt-0.5 font-serif text-[20px] leading-snug font-semibold">{tip.title}</h3>
+              <p className="mt-1 text-[14px] leading-snug text-ink-soft">{tip.teaser}</p>
+              <div className="mt-auto flex flex-wrap items-center gap-2 pt-3">
+                <button type="button" onClick={() => onMark(tip)} aria-pressed={done} className={cx(chip, 'h-9', done ? 'border-transparent bg-sage text-on-accent' : 'border-transparent bg-inverse text-on-inverse')}>
+                  <Check size={15} strokeWidth={2.6} aria-hidden /> {done ? 'Done' : 'I did it'}
+                </button>
+                <button type="button" onClick={() => onOpen(tip.id)} className={cx(chip, 'h-9 border-line bg-surface text-ink-soft hover:text-ink')}>
+                  How <ArrowRight size={14} aria-hidden />
+                </button>
+                <button type="button" onClick={onAnother} className={cx(chip, 'h-9 border-line bg-surface text-ink-soft hover:text-ink')}>
+                  <Dices size={14} aria-hidden /> Another
+                </button>
+              </div>
+            </div>
+            <button type="button" onClick={onClose} aria-label="Put it back" className="-mt-1 -mr-1 grid size-8 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-sunken hover:text-ink">
+              <X size={16} aria-hidden />
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div key="back" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex h-full items-center gap-4 rounded-3xl border border-dashed border-line p-4 text-ink-soft sm:p-5">
+            <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-sunken text-ink-faint">
+              <Dices size={26} aria-hidden />
+            </span>
+            <p className="text-[14.5px] leading-snug">Not sure what to try? Deal one: it turns over a challenge you haven’t done, for the time and place you chose below.</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/** A small card: what it is, how long, and a tick. A tick stamps it. */
+function SmallCard({ tip, dates, today, isToday, dealt, onOpen, onMark }: { tip: Tip; dates: readonly string[]; today: string; isToday: boolean; dealt: boolean; onOpen: () => void; onMark: () => void }) {
+  const Icon = TIP_ICONS[tip.icon];
+  const hue = hueOf(tip.id);
+  const done = dates.length > 0;
+  const doneNow = tip.habit ? dates.includes(today) : done;
+  return (
+    <div className={cx('group relative flex h-full flex-col rounded-2xl border bg-surface transition-[border-color,opacity,box-shadow]', dealt ? 'border-accent shadow-elev-1' : 'border-line/70 hover:border-line-strong', doneNow && 'opacity-75')}>
+      <button type="button" onClick={onOpen} aria-label={`${tip.title}: show how`} className="no-callout flex flex-1 flex-col rounded-2xl p-3.5 text-left">
+        <span className="flex items-center gap-2">
+          <span className="grid size-8 place-items-center rounded-xl" style={soft(hue)}>
+            <Icon size={16} aria-hidden />
+          </span>
+          <span className="rounded-full bg-sunken px-2 py-0.5 text-[11.5px] font-bold text-ink-faint tabular-nums">{tipMinutes(tip)} min</span>
+          {isToday && <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11.5px] font-bold text-accent-text">Today</span>}
+        </span>
+        <span className="mt-2.5 line-clamp-2 block text-[14.5px] leading-snug font-semibold">{tip.title}</span>
+        <span className="mt-1 line-clamp-2 block text-[12.5px] leading-snug text-ink-soft">{tip.teaser}</span>
+        {tip.habit && dates.length > 0 && <span className="mt-1.5 text-[11.5px] font-bold text-sage-text">{dates.length}× so far</span>}
+      </button>
+      <button
+        type="button"
+        onClick={onMark}
+        aria-pressed={doneNow}
+        aria-label={doneNow ? `${tip.title}: done, undo` : `${tip.title}: mark done`}
+        className={cx('absolute top-2.5 right-2.5 grid size-8 place-items-center rounded-full border transition-[background-color,border-color,transform] active:scale-90', doneNow ? 'border-transparent bg-sage text-on-accent' : 'border-line bg-raised text-ink-faint hover:border-line-strong hover:text-ink')}
+      >
+        <Check size={15} strokeWidth={2.6} aria-hidden />
+      </button>
+      {doneNow && (
+        <span aria-hidden className="pointer-events-none absolute right-3 bottom-3 -rotate-12 rounded-md border-2 border-sage px-1.5 py-0.5 text-[11px] font-extrabold tracking-widest text-sage uppercase">
+          {tip.habit ? 'Today' : 'Done'}
+        </span>
       )}
     </div>
   );
 }
 
-function StreakCard({ days, doneToday, tried, total }: { days: number; doneToday: boolean; tried: number; total: number }) {
-  return (
-    <Card className="flex items-center gap-5 p-5 sm:p-6">
-      <div className={cx('grid size-16 shrink-0 place-items-center rounded-2xl sm:size-[72px]', days > 0 ? 'bg-accent-soft text-accent-text' : 'bg-sunken text-ink-faint')}>
-        <div className="flex flex-col items-center leading-none">
-          <Flame size={22} aria-hidden />
-          <span className="mt-1 font-serif text-[22px] font-semibold tabular-nums">{days}</span>
-        </div>
-      </div>
-      <div className="min-w-0">
-        <p className={label}>Beyond the app</p>
-        <p className="mt-1 font-serif text-[20px] leading-snug font-semibold sm:text-[22px]">
-          {days === 0 ? 'Take the language out for a walk.' : days === 1 ? (doneToday ? 'One day so far. Lovely start.' : 'One day so far: keep it going today.') : `${days} days in a row${doneToday ? '' : ': one more today keeps it alive'}.`}
-        </p>
-        <p className="mt-1 text-[14px] text-ink-soft">
-          {tried} of {total} challenges tried. Tap a card to see how; mark it done when you have.
-        </p>
-      </div>
-    </Card>
-  );
-}
-
-function FlipCard({ tip, lang, dates, today }: { tip: Tip; lang: string; dates: string[]; today: string }) {
-  const [flipped, setFlipped] = useState(false);
+/** The back of a card: how to do it, in steps, with a mark and where to go. */
+function Detail({ tip, dates, today, onMark }: { tip: Tip; dates: readonly string[]; today: string; onMark: () => void }) {
   const [platform, setPlatform] = useState(0);
-  const backRef = useRef<HTMLDivElement>(null);
-  const frontRef = useRef<HTMLButtonElement>(null);
-  const Icon = TIP_ICONS[tip.icon];
-  const hue = hueOf(tip.id);
-  const doneToday = dates.includes(today);
-  const done = dates.length > 0;
   const steps = tip.platforms ? tip.platforms[platform]?.steps : tip.steps;
-
-  const flip = (to: boolean) => {
-    setFlipped(to);
-    // Move focus with the card so keyboard users land on the side they turned to.
-    window.setTimeout(() => (to ? backRef.current : frontRef.current)?.focus({ preventScroll: true }), 60);
-  };
-
-  const mark = async () => {
-    const now = await toggleChallenge(lang, tip.id);
-    if (now) toast(tip.habit ? 'Done for today.' : 'Challenge done. Lovely.', { tone: 'success' });
-  };
-
-  const markButton = (
-    <button
-      type="button"
-      onClick={() => void mark()}
-      aria-pressed={tip.habit ? doneToday : done}
-      className={cx(
-        'no-callout inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[13.5px] font-semibold transition-[background-color,color,transform] duration-150 active:scale-[0.96] pointer-coarse:h-10',
-        (tip.habit ? doneToday : done) ? 'bg-sage text-on-accent' : 'bg-inverse text-on-inverse',
-      )}
-    >
-      <Check size={15} strokeWidth={2.6} aria-hidden />
-      {tip.habit ? (doneToday ? 'Done today' : 'Did it today') : done ? 'Done' : 'Mark done'}
-    </button>
-  );
-
+  const done = tip.habit ? dates.includes(today) : dates.length > 0;
+  const level = tipLevel(tip);
   return (
-    <div className="h-full [perspective:1200px]">
-      <motion.div className="relative grid h-full [transform-style:preserve-3d]" initial={false} animate={{ rotateY: flipped ? 180 : 0 }} transition={spring.gentle}>
-        {/* Front */}
-        <button
-          ref={frontRef}
-          type="button"
-          onClick={() => flip(true)}
-          aria-label={`${tip.title}: show how`}
-          inert={flipped}
-          className="col-start-1 row-start-1 flex min-h-[188px] flex-col rounded-3xl border border-line/70 bg-surface p-5 text-left [backface-visibility:hidden] transition-colors hover:border-line-strong"
-        >
-          <span className="flex w-full items-start justify-between gap-3">
-            <span className="grid size-11 place-items-center rounded-2xl" style={{ background: `color-mix(in oklab, ${hue} 17%, var(--color-surface))`, color: `color-mix(in oklab, ${hue} 78%, var(--color-ink))` }}>
-              <Icon size={21} aria-hidden />
-            </span>
-            {done ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-sage-soft px-2.5 py-0.5 text-[11.5px] font-bold text-sage-text">
-                <Check size={12} strokeWidth={3} aria-hidden />
-                {tip.habit ? `${dates.length}×` : 'Done'}
-              </span>
-            ) : (
-              <span className="rounded-full bg-sunken px-2.5 py-0.5 text-[11.5px] font-bold text-ink-faint">{tip.habit ? 'Habit' : 'Once'}</span>
-            )}
-          </span>
-          <span className="mt-4 block font-serif text-[19px] leading-snug font-semibold">{tip.title}</span>
-          <span className="mt-1.5 block text-[14px] leading-snug text-ink-soft">{tip.teaser}</span>
-          <span className="mt-auto flex items-center gap-1 pt-4 text-[13px] font-semibold text-accent-text">
-            How <ArrowRight size={14} aria-hidden />
-          </span>
-        </button>
-
-        {/* Back */}
-        <div
-          ref={backRef}
-          tabIndex={-1}
-          // The face turned away stays out of the tab order and away from screen readers.
-          inert={!flipped}
-          className="col-start-1 row-start-1 flex min-h-[188px] flex-col rounded-3xl border border-line/70 bg-raised p-5 outline-none [backface-visibility:hidden] [transform:rotateY(180deg)]"
-        >
-          <div className="flex items-start gap-2">
-            <p className="min-w-0 flex-1 font-serif text-[17px] leading-snug font-semibold">{tip.title}</p>
-            <button type="button" onClick={() => flip(false)} aria-label="Turn back" className="-mt-1 -mr-1 grid size-9 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-surface hover:text-ink">
-              <RotateCcw size={16} aria-hidden />
+    <div>
+      <p className="text-[15px] leading-relaxed text-ink-soft">{tip.teaser}</p>
+      <p className="mt-2 text-[12.5px] font-semibold text-ink-faint">
+        About {tipMinutes(tip)} minutes{level !== 'A1' ? ` · from ${level}` : ''}
+      </p>
+      {tip.platforms && (
+        <div className="mt-4 flex flex-wrap gap-1.5" role="tablist" aria-label="Where">
+          {tip.platforms.map((p, i) => (
+            <button key={p.name} type="button" role="tab" aria-selected={i === platform} onClick={() => setPlatform(i)} className={cx('h-8 rounded-full px-3 text-[12.5px] font-semibold transition-colors', i === platform ? 'bg-inverse text-on-inverse' : 'bg-sunken text-ink-soft hover:text-ink')}>
+              {p.name}
             </button>
-          </div>
-          {tip.platforms && (
-            <div className="mt-3 flex flex-wrap gap-1.5" role="tablist" aria-label="Where">
-              {tip.platforms.map((p, i) => (
-                <button
-                  key={p.name}
-                  type="button"
-                  role="tab"
-                  aria-selected={i === platform}
-                  onClick={() => setPlatform(i)}
-                  className={cx('h-8 rounded-full px-3 text-[12.5px] font-semibold transition-colors pointer-coarse:h-9', i === platform ? 'bg-inverse text-on-inverse' : 'bg-sunken text-ink-soft hover:text-ink')}
-                >
-                  {p.name}
-                </button>
-              ))}
-            </div>
-          )}
-          <ol className="mt-3 space-y-1.5 text-[14px] leading-snug text-ink-soft">
-            {steps?.map((s, i) => (
-              <li key={s} className="flex gap-2">
-                <span className="mt-px grid size-5 shrink-0 place-items-center rounded-full bg-sunken text-[11px] font-bold text-ink-faint tabular-nums">{i + 1}</span>
-                <span className="min-w-0">{s}</span>
-              </li>
-            ))}
-          </ol>
-          <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
-            {markButton}
-            {tip.action?.to && (
-              <Link to={tip.action.to} className="no-callout inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-3.5 text-[13.5px] font-semibold text-ink-soft transition-colors hover:text-ink pointer-coarse:h-10">
-                {tip.action.label} <ArrowRight size={14} aria-hidden />
-              </Link>
-            )}
-            {tip.action?.href && (
-              <a href={tip.action.href} target="_blank" rel="noopener noreferrer" className="no-callout inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-3.5 text-[13.5px] font-semibold text-ink-soft transition-colors hover:text-ink pointer-coarse:h-10">
-                {tip.action.label} <ExternalLink size={13} aria-hidden />
-              </a>
-            )}
-          </div>
+          ))}
         </div>
-      </motion.div>
+      )}
+      <ol className="mt-4 space-y-2.5 text-[15px] leading-snug">
+        {steps?.map((s, i) => (
+          <li key={s} className="flex gap-2.5">
+            <span className="mt-px grid size-6 shrink-0 place-items-center rounded-full bg-sunken text-[12px] font-bold text-ink-faint tabular-nums">{i + 1}</span>
+            <span className="min-w-0 text-ink-soft">{s}</span>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-6 flex flex-wrap items-center gap-2">
+        <button type="button" onClick={onMark} aria-pressed={done} className={cx(chip, 'h-10 px-4 text-[14px]', done ? 'border-transparent bg-sage text-on-accent' : 'border-transparent bg-inverse text-on-inverse')}>
+          <Check size={15} strokeWidth={2.6} aria-hidden /> {tip.habit ? (done ? 'Done today' : 'Did it today') : done ? 'Done' : 'Mark done'}
+        </button>
+        {tip.action?.to && (
+          <Link to={tip.action.to} className={cx(chip, 'h-10 border-line px-4 text-[14px] text-ink-soft hover:text-ink')}>
+            {tip.action.label} <ArrowRight size={14} aria-hidden />
+          </Link>
+        )}
+        {tip.action?.href && (
+          <a href={tip.action.href} target="_blank" rel="noopener noreferrer" className={cx(chip, 'h-10 border-line px-4 text-[14px] text-ink-soft hover:text-ink')}>
+            {tip.action.label} <ExternalLink size={13} aria-hidden />
+          </a>
+        )}
+      </div>
     </div>
   );
 }
