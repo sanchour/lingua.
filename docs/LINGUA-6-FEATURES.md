@@ -1378,13 +1378,13 @@ Think of this as a personal linguistic knowledge base.
 - [ ] `F1063` Formality and register · **6-1** · partly there
 - [ ] `F1064` Regional usage · **6-1** · partly there
 - [x] `F1065` Source of discovery
-- [ ] `F1066` Personal notes · **6-1** · partly there
-- [ ] `F1067` Tags · **6-1**
-- [ ] `F1068` Favorite status · **6-1**
-- [ ] `F1069` First encountered date · **6-1** · partly there
-- [ ] `F1070` Last reviewed date · **6-1**
+- [x] `F1066` Personal notes · **6-1** · partly there
+- [x] `F1067` Tags · **6-1**
+- [x] `F1068` Favorite status · **6-1**
+- [x] `F1069` First encountered date · **6-1** · partly there
+- [x] `F1070` Last reviewed date · **6-1**
 - [ ] `F1071` Review history · **6-1**
-- [ ] `F1072` Recall success rate · **6-1**
+- [x] `F1072` Recall success rate · **6-1**
 - [ ] `F1073` Links to relevant grammar topics · **6-1** · partly there
 - [ ] `F1074` Links to other vocabulary items · **6-1**
 - [x] `F1075` Links to texts in which the word appeared

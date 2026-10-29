@@ -26,6 +26,7 @@ import { WordForms } from '@/features/codex/reader/WordForms';
 import { articleFor } from '../common/words';
 import { entryPath } from './DictionarySearch';
 import { WordPlaces } from './WordMemory';
+import { YourWord } from './YourWord';
 
 const GENDER: Record<string, string> = { m: 'masculine', f: 'feminine', n: 'neuter', mf: 'masculine or feminine' };
 const POS: Record<string, string> = { adj: 'adjective', adv: 'adverb', prep: 'preposition', conj: 'conjunction', pron: 'pronoun', det: 'determiner', intj: 'interjection', num: 'numeral', particle: 'particle', phrase: 'phrase', verb: 'verb', noun: 'noun', character: 'character', suffix: 'suffix', prefix: 'prefix' };
@@ -166,6 +167,8 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
         </div>
         <AddToDeck lang={lang} note={{ term: row.word, meaning: gloss, lemma: row.key, pos: main?.pos, gender: main?.gender, ipa: main?.ipa?.[0], source: 'codex' }} />
       </div>
+
+      <YourWord key={`${lang}:${row.key}`} lang={lang} norm={row.key} lemma={row.key} gloss={gloss} />
 
       <Tidy lang={lang} row={row} />
 

@@ -47,6 +47,8 @@ add the new one and read both.
 - **0.6.0-alpha.4 (6-4):** `exercise.ts` gains `TransformBody` and `AnswerRule`'s `accent-blind` gains `rejects`. From 6-4 on,
   `src/core/exercise/` imports `exercise.ts` and `learner.ts` for its types; the contract stays the single source.
 
+- **0.6.0-alpha.8 (6-1):** `WordV6` is built as `tags`, `favourite` and `important` on `Word` (Dexie 18, as `PART_A_SCHEMA` says); `inbox` waits for 6-2, `grammarTopics` and `relatedWordIds` for 6-1b. `WordHistory` is worked out by `wordHistory` in `data/words.ts`, never stored.
+
 ## What was decided here (and could be reopened)
 
 - Part A's tables: `evidence`, `evidenceDays` (6-5) and `generated` (6-6) are the only new ones; 6-1 to 6-3 add fields

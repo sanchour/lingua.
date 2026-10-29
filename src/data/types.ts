@@ -167,6 +167,11 @@ export interface Word extends Synced {
   gloss?: string;
   note?: string;
   noteId?: string;
+  /** The learner's own labels (6-1; contracts/word.ts). Absent reads as []. */
+  tags?: string[];
+  /** Absent reads as 0. Indexed, so a 0 | 1. */
+  favourite?: Bit;
+  important?: Bit;
 }
 
 export interface FrequencyRow {

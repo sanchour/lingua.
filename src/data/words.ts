@@ -5,6 +5,7 @@ import { defaultDeckConfig, newCard } from './decks';
 import { db } from './db';
 import { recordSighting } from './memory';
 import type { LinguaDB } from './db';
+import type { WordHistory } from '@/core/contracts/word';
 import type { Deck, Note, SightingKind, Word, WordState } from './types';
 
 export const wordId = (lang: string, norm: string) => `${lang}:${norm}`;
@@ -179,4 +180,85 @@ export function useVocabularyCounts(lang: string): { known: number; learning: nu
     ]);
     return { known, learning };
   }, [lang]);
+}
+
+// ── The learner's half of a word (6-1) ──────────────────────────────────────
+
+export const MAX_TAGS = 12;
+const MAX_TAG_LENGTH = 24;
+
+/** A tag as it is kept: trimmed, one line, short. */
+export const cleanTag = (tag: string) => tag.replace(/[\s,]+/g, ' ').trim().slice(0, MAX_TAG_LENGTH);
+
+/** A list of tags as it is kept: cleaned, none twice (whatever the case), at most twelve. */
+export function cleanTags(tags: readonly string[], lang?: string): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of tags) {
+    const tag = cleanTag(raw);
+    const key = tag.toLocaleLowerCase(lang);
+    if (!tag || seen.has(key)) continue;
+    seen.add(key);
+    out.push(tag);
+  }
+  return out.slice(0, MAX_TAGS);
+}
+
+/** Changes the learner's fields of a word. A word never met yet gets a row of its own (Unseen), so a favourite can be set from the dictionary. */
+type WordFields = Partial<Pick<Word, 'tags' | 'favourite' | 'important' | 'note'>>;
+
+async function patchWord(lang: string, norm: string, patch: WordFields | ((word: Word) => WordFields), ctx: { lemma?: string; gloss?: string }, database: LinguaDB): Promise<void> {
+  const id = wordId(lang, norm);
+  await database.transaction('rw', database.words, async () => {
+    const now = Date.now();
+    const existing = await database.words.get(id);
+    const base: Word = existing ?? { id, lang, norm, state: 0, stateChangedAt: now, lemma: ctx.lemma, gloss: ctx.gloss, createdAt: now, updatedAt: now };
+    await database.words.put({ ...base, ...(typeof patch === 'function' ? patch(base) : patch), deletedAt: undefined, updatedAt: now });
+  });
+}
+
+export const setWordFavourite = (lang: string, norm: string, on: boolean, ctx: { lemma?: string; gloss?: string } = {}, database: LinguaDB = db) =>
+  patchWord(lang, norm, { favourite: on ? 1 : 0 }, ctx, database);
+
+export const setWordImportant = (lang: string, norm: string, on: boolean, ctx: { lemma?: string; gloss?: string } = {}, database: LinguaDB = db) =>
+  patchWord(lang, norm, { important: on ? 1 : 0 }, ctx, database);
+
+export const setWordTags = (lang: string, norm: string, tags: readonly string[], ctx: { lemma?: string; gloss?: string } = {}, database: LinguaDB = db) =>
+  patchWord(lang, norm, { tags: cleanTags(tags, lang) }, ctx, database);
+
+/** Changes the saved tags as they are when it runs (two quick changes never undo each other, as they would if each read the screen's list). */
+export const changeWordTags = (lang: string, norm: string, change: (tags: string[]) => string[], ctx: { lemma?: string; gloss?: string } = {}, database: LinguaDB = db) =>
+  patchWord(lang, norm, (word) => ({ tags: cleanTags(change(word.tags ?? []), lang) }), ctx, database);
+
+/** The learner's own note on the word (the field `Word.note` has always had; now edited on the word's page). */
+export const setWordNote = (lang: string, norm: string, note: string, ctx: { lemma?: string; gloss?: string } = {}, database: LinguaDB = db) =>
+  patchWord(lang, norm, { note: note.trim() ? note : undefined }, ctx, database);
+
+/** The words of a language the learner marked, newest change first (for a filter in the dictionary and the word memory). */
+export async function markedWords(lang: string, flag: 'favourite' | 'important', database: LinguaDB = db): Promise<Word[]> {
+  const rows = await database.words.where(`[lang+${flag}]`).equals([lang, 1]).toArray();
+  return rows.filter((w) => !w.deletedAt).sort((a, b) => b.updatedAt - a.updatedAt);
+}
+
+/**
+ * What the learner has done with a word, worked out when asked and never stored: when it was first met, how it was reviewed,
+ * how often it was recalled. Its flashcards are found by the note's `wordId`; its review log is the cards' own.
+ */
+export async function wordHistory(lang: string, norm: string, database: LinguaDB = db): Promise<WordHistory & { places: number }> {
+  const id = wordId(lang, norm);
+  const [word, sightings, notes] = await Promise.all([database.words.get(id), database.sightings.where('[lang+norm]').equals([lang, norm]).toArray(), database.notes.where('wordId').equals(id).toArray()]);
+  const cardIds = (await database.cards.where('noteId').anyOf(notes.map((n) => n.id)).toArray()).filter((c) => !c.deletedAt).map((c) => c.id);
+  const logs = cardIds.length ? await database.reviewLogs.where('cardId').anyOf(cardIds).toArray() : [];
+  const met = [...sightings.map((s) => s.at), ...(word && !word.deletedAt ? [word.createdAt] : [])];
+  return {
+    firstMetAt: met.length ? Math.min(...met) : undefined,
+    lastReviewedAt: logs.length ? Math.max(...logs.map((l) => l.reviewedAt)) : undefined,
+    recallRate: logs.length ? logs.filter((l) => l.rating >= 3).length / logs.length : undefined,
+    reviews: logs.length,
+    places: sightings.length,
+  };
+}
+
+export function useWordHistory(lang: string, norm: string | null) {
+  return useLiveQuery(async () => (norm ? wordHistory(lang, norm) : undefined), [lang, norm]);
 }

@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.8** · 2026-10-29 · 6-1 done (the learner's half): Dexie 18, tags, favourite, important, notes and history on the word's page
 - **0.6.0-alpha.7** · 2026-10-29 · Claim 6-1: the word record
 - **0.6.0-alpha.6** · 2026-10-29 · 6-4 done: core/exercise, transformations in Ludus, Grammatica and the course
 - **0.6.0-alpha.5** · 2026-10-29 · Version fix: --line reset the counter on alpha.4; back on the line (no code change)

@@ -1,10 +1,12 @@
+import Dexie from 'dexie';
 import { afterEach, describe, expect, it } from 'vitest';
 import { localDateKey } from '@/lib/format';
 import { bumpDaily } from './activity';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
 import { completeOnboarding } from './languages';
-import { applyKnownSeed, markKnownBulk, setWordState } from './words';
+import { SCHEMA_V17 } from './db';
+import { applyKnownSeed, changeWordTags, cleanTags, markedWords, markKnownBulk, setWordFavourite, setWordImportant, setWordNote, setWordState, setWordTags, wordHistory } from './words';
 
 const open: LinguaDB[] = [];
 function freshDb(): LinguaDB {
@@ -77,5 +79,78 @@ describe('daily goal', () => {
     expect((await db.dailyStats.get(`sv:${localDateKey()}`))?.goalMet).toBe(0);
     await bumpDaily('sv', { readMs: 5 * 60_000 }, db);
     expect((await db.dailyStats.get(`sv:${localDateKey()}`))?.goalMet).toBe(1);
+  });
+});
+
+describe('the learner’s half of a word (6-1)', () => {
+  it('keeps tags short, one line, without repeats whatever the case, at most twelve', () => {
+    expect(cleanTags(['  Travel ', 'travel', 'to\n  eat', '', 'x'.repeat(40), 'a,b'])).toEqual(['Travel', 'to eat', 'x'.repeat(24), 'a b']);
+    expect(cleanTags(Array.from({ length: 20 }, (_, i) => `t${i}`))).toHaveLength(12);
+  });
+
+  it('marks a word never met before, as an Unseen row that changes nothing else', async () => {
+    const db = freshDb();
+    await setWordFavourite('es', 'casa', true, { lemma: 'casa', gloss: 'house' }, db);
+    await setWordTags('es', 'casa', ['home', 'Home', 'noun'], {}, db);
+    await setWordNote('es', 'casa', 'Not "caso"!', {}, db);
+    expect(await db.words.get('es:casa')).toMatchObject({ state: 0, lemma: 'casa', gloss: 'house', favourite: 1, tags: ['home', 'noun'], note: 'Not "caso"!' });
+    expect(await db.cards.count()).toBe(0);
+  });
+
+  it('two quick tag changes never undo each other', async () => {
+    const db = freshDb();
+    await Promise.all([changeWordTags('es', 'casa', (t) => [...t, 'home'], {}, db), changeWordTags('es', 'casa', (t) => [...t, 'noun'], {}, db)]);
+    expect((await db.words.get('es:casa'))?.tags?.sort()).toEqual(['home', 'noun']);
+    await changeWordTags('es', 'casa', (t) => t.filter((x) => x !== 'home'), {}, db);
+    expect((await db.words.get('es:casa'))?.tags).toEqual(['noun']);
+  });
+
+  it('survives the word being learned, known and reset, and clears with the toggles', async () => {
+    const db = freshDb();
+    await setWordImportant('es', 'perro', true, {}, db);
+    await setWordState('es', 'perro', 2, { surface: 'perro', gloss: 'dog' }, db);
+    await setWordState('es', 'perro', 1, {}, db);
+    expect(await db.words.get('es:perro')).toMatchObject({ state: 1, important: 1 });
+    await setWordImportant('es', 'perro', false, {}, db);
+    await setWordNote('es', 'perro', '   ', {}, db);
+    expect(await db.words.get('es:perro')).toMatchObject({ important: 0, note: undefined });
+  });
+
+  it('finds the marked words of a language, newest first, by the new indexes', async () => {
+    const db = freshDb();
+    await setWordFavourite('es', 'uno', true, {}, db);
+    await setWordFavourite('es', 'dos', true, {}, db);
+    await setWordFavourite('fr', 'trois', true, {}, db);
+    await setWordImportant('es', 'tres', true, {}, db);
+    await setWordFavourite('es', 'uno', false, {}, db);
+    expect((await markedWords('es', 'favourite', db)).map((w) => w.norm)).toEqual(['dos']);
+    expect((await markedWords('es', 'important', db)).map((w) => w.norm)).toEqual(['tres']);
+    expect(await markedWords('de', 'favourite', db)).toEqual([]);
+  });
+
+  it('works out the history from the sightings and the card’s reviews', async () => {
+    const db = freshDb();
+    expect(await wordHistory('es', 'luna', db)).toMatchObject({ reviews: 0, places: 0, firstMetAt: undefined, recallRate: undefined });
+    await setWordState('es', 'luna', 2, { surface: 'luna', gloss: 'moon', sentence: 'La luna es grande.', textId: 'book-1' }, db);
+    const card = (await db.cards.toArray())[0];
+    const log = (n: number, rating: 1 | 2 | 3 | 4, at: number) => ({ id: `l${n}`, cardId: card.id, deckId: card.deckId, reviewedAt: at, durationMs: 1000, rating, mode: 'classic' as const, affectedSchedule: 1 as const, stateBefore: 2 as const, stabilityAfter: 3, difficultyAfter: 5, elapsedDays: 1, scheduledDays: 3 });
+    await db.reviewLogs.bulkAdd([log(1, 3, 1_000), log(2, 1, 2_000), log(3, 4, 3_000), log(4, 3, 4_000)]);
+    const h = await wordHistory('es', 'luna', db);
+    expect(h).toMatchObject({ reviews: 4, lastReviewedAt: 4_000, recallRate: 0.75, places: 1 });
+    expect(h.firstMetAt).toBeGreaterThan(0);
+  });
+
+  it('opens a version-17 device with its words, and the new indexes work on them', async () => {
+    const name = `words-old-${Math.random().toString(36).slice(2)}`;
+    const old = new Dexie(name);
+    old.version(17).stores({ ...SCHEMA_V17, words: 'id, [lang+state], [lang+lemma], updatedAt' });
+    await old.table('words').add({ id: 'es:hola', lang: 'es', norm: 'hola', state: 1, stateChangedAt: 1, createdAt: 1, updatedAt: 1 });
+    old.close();
+    const db = createDb(name);
+    open.push(db);
+    expect(await db.words.get('es:hola')).toMatchObject({ state: 1 });
+    expect((await db.words.get('es:hola'))?.favourite).toBeUndefined();
+    await setWordFavourite('es', 'hola', true, {}, db);
+    expect((await markedWords('es', 'favourite', db)).map((w) => w.norm)).toEqual(['hola']);
   });
 });
