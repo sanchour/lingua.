@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cacheKey, labelFor, levelReport, readGenerated, readSentences, readStory, readWordlist, textOf, unknownWords, wordsOf } from './generate';
+import { cacheKey, labelFor, levelReport, readGenerated, readQuiz, readSentences, readStory, readWordlist, textOf, unknownWords, wordsOf } from './generate';
 
 describe('reading what the model answered', () => {
   it('accepts a story only with its title, text and translation', () => {
@@ -116,5 +116,25 @@ describe('a word list', () => {
   it('has its words and sentences as the text that is measured', () => {
     const body = readWordlist({ words: ['pain', 'lait', 'sel', 'riz', 'thé'].map(w) })!;
     expect(textOf('wordlist', body)).toContain('pain Je vois pain.');
+  });
+});
+
+describe('a quiz', () => {
+  const q = (answer: number, options = ['pan', 'leche', 'queso', 'arroz']) => ({ question: '¿Qué compra María?', options, answer, why: 'She buys bread.' });
+  it('needs three questions with different options and an answer among them', () => {
+    expect(readQuiz({ title: 'El mercado', questions: [q(0), q(1), q(2)] })?.questions).toHaveLength(3);
+    expect(readQuiz({ questions: [q(0), q(1), q(2)] })?.title).toBe('A quiz');
+    expect(readQuiz({ questions: [q(0), q(4), q(-1)] })).toBeNull();
+    expect(readQuiz({ questions: [q(0), q(0, ['pan', 'Pan', 'queso']), q(1)] })).toBeNull();
+    expect(readQuiz({ questions: [q(0), q(1)] })).toBeNull();
+  });
+  it('keeps its questions and options as the text to measure, and a simplified text is read as a story', () => {
+    expect(textOf('quiz', readQuiz({ questions: [q(0), q(1), q(2)] })!)).toContain('queso');
+    expect(readGenerated('simplified', { title: 'T', text: 'a', translation: 'b' })).toEqual({ title: 'T', text: 'a', translation: 'b' });
+  });
+  it('is cached apart for each source text', () => {
+    const base = { lang: 'es', kind: 'simplified' as const, level: 'A2' };
+    expect(cacheKey({ ...base, source: 'uno' })).not.toBe(cacheKey({ ...base, source: 'dos' }));
+    expect(cacheKey({ ...base, source: 'uno' })).toBe(cacheKey({ ...base, source: 'uno' }));
   });
 });

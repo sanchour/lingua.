@@ -9,7 +9,7 @@ import { BackLink } from '@/app/BackLink';
 import { PageHeader } from '@/app/PageHeader';
 import type { GeneratedRow } from '@/core/contracts/db';
 import { labelFor } from '@/core/generate/generate';
-import type { DialogueBody, GeneratedKind, SentencesBody, StoryBody, WordlistBody } from '@/core/generate/generate';
+import type { DialogueBody, GeneratedKind, QuizBody, SentencesBody, StoryBody, WordlistBody } from '@/core/generate/generate';
 import { CEFR_LEVELS } from '@/core/lang/levels';
 import type { Cefr } from '@/core/lang/levels';
 import { textToChapters } from '@/core/parsers/text';
@@ -30,6 +30,8 @@ const KINDS: Array<{ kind: GeneratedKind; title: string; detail: string; cost: s
   { kind: 'story', title: 'A story', detail: 'A short graded reader, with its translation.', cost: 'about 600 words in all' },
   { kind: 'sentences', title: 'Example sentences', detail: 'Eight short sentences on the topic.', cost: 'about 250 words in all' },
   { kind: 'dialogue', title: 'A dialogue', detail: 'Two people talking, line by line.', cost: 'about 300 words in all' },
+  { kind: 'quiz', title: 'A quiz', detail: 'Five questions to answer, with the reason for each.', cost: 'about 250 words in all' },
+  { kind: 'simplified', title: 'Simplify a text', detail: 'Paste a text; get it back in easier words, beside the original.', cost: 'about as long as your text, twice' },
   { kind: 'wordlist', title: 'A word list', detail: 'Twelve useful words, each with a sentence, for a deck.', cost: 'about 350 words in all' },
 ];
 
@@ -39,6 +41,7 @@ export default function MakePage() {
   const navigate = useNavigate();
   const [kind, setKind] = useState<GeneratedKind>('story');
   const [topic, setTopic] = useState('');
+  const [source, setSource] = useState('');
   const [level, setLevel] = useState<Cefr>((language.level === 'A0' ? 'A1' : language.level) as Cefr);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -52,7 +55,8 @@ export default function MakePage() {
     setError(null);
     setRow(null);
     try {
-      setRow((await generateMaterial({ lang, kind, level, topic: topic.trim() || undefined })).row);
+      if (kind === 'simplified' && source.trim().length < 40) throw new Error('Paste a longer text first.');
+      setRow((await generateMaterial({ lang, kind, level, topic: kind === 'simplified' ? undefined : topic.trim() || undefined, source: kind === 'simplified' ? source.trim().slice(0, 4000) : undefined })).row);
     } catch (e) {
       setError(e instanceof Error ? e : new Error('Something went wrong.'));
     } finally {
@@ -94,16 +98,31 @@ export default function MakePage() {
               </button>
             ))}
           </div>
-          <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
-            About
-            <input
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              maxLength={80}
-              placeholder="a trip to the market, my first job…"
-              className="mt-1.5 h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[15px] font-medium tracking-normal text-ink normal-case outline-none focus:border-accent"
-            />
-          </label>
+          {kind === 'simplified' ? (
+            <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
+              The text
+              <textarea
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
+                lang={lang}
+                rows={7}
+                maxLength={4000}
+                placeholder="An article, a page of a book…"
+                className="mt-1.5 w-full resize-y rounded-xl border border-line bg-raised p-3 text-[15px] font-normal tracking-normal text-ink normal-case outline-none focus:border-accent"
+              />
+            </label>
+          ) : (
+            <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
+              About
+              <input
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                maxLength={80}
+                placeholder="a trip to the market, my first job…"
+                className="mt-1.5 h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[15px] font-medium tracking-normal text-ink normal-case outline-none focus:border-accent"
+              />
+            </label>
+          )}
           <Select<Cefr> label="Level" value={level} onChange={setLevel} options={CEFR_LEVELS.map((l) => ({ value: l, label: l }))} />
           <div>
             <Button block size="lg" icon={Sparkles} loading={busy} disabled={block !== null} onClick={() => void make()}>
@@ -133,7 +152,7 @@ export default function MakePage() {
 
         <section aria-label="What was made" aria-live="polite">
           {row ? (
-            <Made row={row} lang={lang} translated={translated} onTranslated={setTranslated} onReported={() => setRow(null)} keepStory={keepStory} deckOf={deckOf} />
+            <Made row={row} lang={lang} translated={translated} onTranslated={setTranslated} onReported={() => setRow(null)} keepStory={keepStory} deckOf={deckOf} original={kind === 'simplified' ? source.trim() : undefined} />
           ) : (
             <p className="rounded-2xl border border-dashed border-line p-8 text-center text-[14px] text-ink-faint">{busy ? 'Max is writing…' : 'What Max makes appears here.'}</p>
           )}
@@ -151,6 +170,7 @@ function Made({
   onReported,
   keepStory,
   deckOf,
+  original,
 }: {
   row: GeneratedRow;
   lang: string;
@@ -159,6 +179,8 @@ function Made({
   onReported: () => void;
   keepStory: (b: StoryBody) => Promise<string>;
   deckOf: (name: string, drafts: Draft[]) => Promise<void>;
+  /** For a simplified text: what it was made from, shown beside it. */
+  original?: string;
 }) {
   const [busy, setBusy] = useState(false);
   const label = labelFor(row);
@@ -181,15 +203,28 @@ function Made({
         <span className="text-[12px] text-ink-faint">{label.detail}</span>
       </div>
 
-      {row.kind === 'story' && (
+      {row.kind === 'quiz' && <Quiz body={body as QuizBody} lang={lang} />}
+
+      {(row.kind === 'story' || row.kind === 'simplified') && (
         <>
           <h2 lang={lang} className="font-serif text-2xl font-semibold">
             {(body as StoryBody).title}
           </h2>
-          <div lang={lang} className="mt-3 space-y-3 font-serif text-[17px] leading-relaxed">
-            {(body as StoryBody).text.split(/\n\s*\n/).map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
+          <div className={cx('mt-3 grid gap-6', original && 'md:grid-cols-2')}>
+            {original && (
+              <div lang={lang} className="space-y-3 border-line/60 text-[15px] leading-relaxed text-ink-soft md:border-r md:pr-6">
+                <p className="text-[12px] font-bold tracking-wide text-ink-faint uppercase">Original</p>
+                {original.split(/\n\s*\n|\n/).map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
+            )}
+            <div lang={lang} className="space-y-3 font-serif text-[17px] leading-relaxed">
+              {original && <p className="font-sans text-[12px] font-bold tracking-wide text-ink-faint uppercase">Simpler</p>}
+              {(body as StoryBody).text.split(/\n\s*\n/).map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
           </div>
           {translated && (
             <div className="mt-4 space-y-3 border-t border-line/60 pt-4 text-[15px] text-ink-soft">
@@ -287,5 +322,61 @@ function Made({
         </>
       )}
     </article>
+  );
+}
+
+/** A quiz to answer: pick an option, see whether it was right and why, and a score at the end. */
+function Quiz({ body, lang }: { body: QuizBody; lang: string }) {
+  const [picked, setPicked] = useState<Record<number, number>>({});
+  const done = Object.keys(picked).length === body.questions.length;
+  const right = body.questions.filter((q, i) => picked[i] === q.answer).length;
+  return (
+    <>
+      <h2 className="font-serif text-2xl font-semibold">{body.title}</h2>
+      <ol className="mt-4 space-y-6">
+        {body.questions.map((q, i) => {
+          const chosen = picked[i];
+          return (
+            <li key={i}>
+              <p lang={lang} className="font-serif text-[18px] leading-snug font-semibold">
+                {i + 1}. {q.question}
+              </p>
+              <div className="mt-2 grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label={`Question ${i + 1}`}>
+                {q.options.map((o, j) => {
+                  const shown = chosen !== undefined;
+                  return (
+                    <button
+                      key={o}
+                      type="button"
+                      role="radio"
+                      aria-checked={chosen === j}
+                      disabled={shown}
+                      onClick={() => setPicked((p) => ({ ...p, [i]: j }))}
+                      lang={lang}
+                      className={cx(
+                        'rounded-xl border px-3.5 py-2.5 text-left text-[15px] transition-colors',
+                        !shown && 'border-line hover:bg-surface',
+                        shown && j === q.answer && 'border-sage bg-sage-soft text-sage-text',
+                        shown && chosen === j && j !== q.answer && 'border-accent bg-accent-soft text-accent-text',
+                        shown && chosen !== j && j !== q.answer && 'border-line text-ink-faint',
+                      )}
+                    >
+                      {o}
+                      {shown && j === q.answer && <span className="sr-only"> (right)</span>}
+                    </button>
+                  );
+                })}
+              </div>
+              {chosen !== undefined && q.why && <p className="mt-2 text-[14px] text-ink-soft">{q.why}</p>}
+            </li>
+          );
+        })}
+      </ol>
+      {done && (
+        <p className="mt-6 font-serif text-xl font-semibold" role="status">
+          {right} of {body.questions.length} right
+        </p>
+      )}
+    </>
   );
 }

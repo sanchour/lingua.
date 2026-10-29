@@ -6,7 +6,7 @@ import { CEFR_LEVELS, cefrForRank } from '@/core/lang/levels';
 import type { Cefr } from '@/core/lang/levels';
 import { normalizeWord } from '@/core/text/normalize';
 
-export type GeneratedKind = 'story' | 'sentences' | 'dialogue' | 'rewrites' | 'wordlist';
+export type GeneratedKind = 'story' | 'sentences' | 'dialogue' | 'rewrites' | 'wordlist' | 'quiz' | 'simplified';
 
 /** What a made-to-order rewrite asks for (the sentence tasks of 6-4b). */
 export type RewriteTask = 'passive' | 'reported' | 'question' | 'combine' | 'expand' | 'simplify';
@@ -42,7 +42,13 @@ export interface WordlistBody {
   words: Array<{ term: string; meaning: string; example?: string }>;
 }
 
-export type GeneratedBody = StoryBody | SentencesBody | DialogueBody | RewritesBody | WordlistBody;
+/** Multiple-choice questions on a topic, each with its reason. */
+export interface QuizBody {
+  title: string;
+  questions: Array<{ question: string; options: string[]; answer: number; why?: string }>;
+}
+
+export type GeneratedBody = StoryBody | SentencesBody | DialogueBody | RewritesBody | WordlistBody | QuizBody;
 
 const str = (v: unknown, max = 8000): string | null => (typeof v === 'string' && v.trim() && v.length <= max ? v.trim() : null);
 
@@ -109,8 +115,25 @@ export function readWordlist(raw: unknown): WordlistBody | null {
   return words.length >= 5 ? { words } : null;
 }
 
+/** A quiz: at least three questions, each with 3 or 4 different options and one right answer among them. */
+export function readQuiz(raw: unknown): QuizBody | null {
+  if (!raw || typeof raw !== 'object' || !Array.isArray((raw as { questions?: unknown }).questions)) return null;
+  const questions = (raw as { questions: unknown[] }).questions.flatMap((q) => {
+    const o = q && typeof q === 'object' ? (q as Record<string, unknown>) : {};
+    const question = str(o.question, 300);
+    const options = Array.isArray(o.options) ? o.options.map((x) => str(x, 160)).filter((x): x is string => x !== null) : [];
+    const answer = typeof o.answer === 'number' && Number.isInteger(o.answer) ? o.answer : -1;
+    const fine = question && options.length >= 3 && options.length <= 4 && new Set(options.map((x) => x.toLocaleLowerCase())).size === options.length && answer >= 0 && answer < options.length;
+    return fine ? [{ question, options, answer, why: str(o.why, 300) ?? undefined }] : [];
+  });
+  const title = str((raw as { title?: unknown }).title, 120) ?? 'A quiz';
+  return questions.length >= 3 ? { title, questions } : null;
+}
+
 export function readGenerated(kind: GeneratedKind, raw: unknown, task?: RewriteTask): GeneratedBody | null {
   if (kind === 'wordlist') return readWordlist(raw);
+  if (kind === 'quiz') return readQuiz(raw);
+  if (kind === 'simplified') return readStory(raw);
   if (kind === 'story') return readStory(raw);
   if (kind === 'dialogue') return readDialogue(raw);
   if (kind === 'rewrites') return task ? readRewrites(raw, task) : null;
@@ -130,7 +153,8 @@ export function wordsOf(text: string, lang: string): Map<string, number> {
 
 /** All the target-language text of a body. */
 export function textOf(kind: GeneratedKind, body: GeneratedBody): string {
-  if (kind === 'story') return (body as StoryBody).text;
+  if (kind === 'story' || kind === 'simplified') return (body as StoryBody).text;
+  if (kind === 'quiz') return (body as QuizBody).questions.flatMap((q) => [q.question, ...q.options]).join('\n');
   if (kind === 'dialogue') return (body as DialogueBody).lines.map((l) => l.text).join('\n');
   if (kind === 'rewrites') return (body as RewritesBody).items.flatMap((i) => [...i.given, i.answer]).join('\n');
   if (kind === 'wordlist') return (body as WordlistBody).words.map((w) => [w.term, w.example ?? ''].join(' ')).join('\n');
@@ -175,11 +199,11 @@ export function levelReport(words: ReadonlyMap<string, number>, rankOf: Readonly
 }
 
 /** A text is "at the level" when at most this share of its words is beyond it. */
-export const LEVEL_BEYOND_LIMIT: Record<GeneratedKind, number> = { story: 0.12, sentences: 0.15, dialogue: 0.12, rewrites: 0.15, wordlist: 0.3 };
+export const LEVEL_BEYOND_LIMIT: Record<GeneratedKind, number> = { story: 0.12, sentences: 0.15, dialogue: 0.12, rewrites: 0.15, wordlist: 0.3, quiz: 0.15, simplified: 0.12 };
 
 /** The cache key: the same request is answered from what was made before, and paid for once. */
-export function cacheKey(req: { lang: string; kind: GeneratedKind; level: string; topic?: string; native?: string; task?: RewriteTask }): string {
-  return hashString(['generated', req.lang, req.kind, req.task ?? '', req.level, (req.topic ?? '').trim().toLowerCase(), req.native ?? 'en'].join('|'));
+export function cacheKey(req: { lang: string; kind: GeneratedKind; level: string; topic?: string; native?: string; task?: RewriteTask; source?: string }): string {
+  return hashString(['generated', req.lang, req.kind, req.task ?? '', req.level, (req.topic ?? '').trim().toLowerCase(), req.native ?? 'en', req.source ? hashString(req.source) : ''].join('|'));
 }
 
 /** The quiet label shown beside everything generated: what it is, and what was checked. */

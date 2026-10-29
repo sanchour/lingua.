@@ -1327,11 +1327,11 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [x] `F1025` Generate writing prompts
 - [x] `F1026` Generate comprehension questions
 - [ ] `F1027` Generate pronunciation drills · **6-6**
-- [ ] `F1028` Generate quizzes · **6-6**
+- [x] `F1028` Generate quizzes · **6-6**
 - [ ] `F1029` Generate mock exams · **6-18**
 - [ ] `F1030` Generate topic-specific courses · **6-14**
-- [ ] `F1031` Generate parallel texts · **6-6**
-- [ ] `F1032` Generate simplified versions of difficult articles · **6-6**
+- [x] `F1031` Generate parallel texts · **6-6**
+- [x] `F1032` Generate simplified versions of difficult articles · **6-6**
 - [ ] `F1033` Generate exercises from uploaded documents · **6-6**
 - [ ] `F1034` Generate exercises from notes · **6-6**
 - [ ] `F1035` Generate exercises from transcripts · **6-6**
