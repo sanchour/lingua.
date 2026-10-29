@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.61** · 2026-10-29 · 6-1c: set phrases count as phrasal verbs and sayings
 - **0.6.0-alpha.60** · 2026-10-29 · 6-2b and 6-1c: deck colour and cover picture, irregular Spanish verb forms
 - **0.6.0-alpha.59** · 2026-10-29 · Contract: a deck's colour and cover picture (6-2b)
 - **0.6.0-alpha.58** · 2026-10-29 · 6-5b, 6-2b, 6-1c: error log in Ratio, decks from conversations, favourites, made-from panel
