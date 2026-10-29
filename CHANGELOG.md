@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.106** · 2026-10-29 · Contract: the dictation rule, listen-choose and listen-split (6-9)
 - **0.6.0-alpha.105** · 2026-10-29 · Max kinds: stories, courses, drills, sounds, differences; false cognates; quiz focus
 - **0.6.0-alpha.104** · 2026-10-29 · 6-10 S5: shadowing
 - **0.6.0-alpha.103** · 2026-10-29 · 6-9 L5: playlists, your words read aloud, settings for made dialogues
