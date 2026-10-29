@@ -1890,3 +1890,8 @@ Grammar rules now support target-language and side-by-side reading, allowing lea
 
 Visual representations follow the handbook Part One principles: one fine line (stroke-width 1.3, round caps and joins, ink-soft currentColor with terracotta accent highlights). `TenseTimeline` renders past/now/future coordinates with interval brackets and clickable examples; `WordOrderVisualizer` maps sequential syntactic slots with optional badges and highlight borders; `GrammarDecisionTree` guides learners through interactive branching choices (ser vs estar, which past, accusative vs dative, verb aspect); `SentenceStructureDiagram` maps clause constituents and roles; and `MorphologyBreakdownView` dissects complex words into prefix, stem, and endings. Reference tables across all core languages now colour endings distinctly on stems using markdown bold formatting and styled cell rendering.
 
+## 2026-10-29 — 6-7 G4: interactive topic map, prerequisite DAG and error heatmap
+
+Grammatica gains an interactive topic map tab. Topics are arranged in tiered CEFR columns (A1 through C1) connected by directed prerequisite edges drawn with fine-line cubic bezier curves and arrowheads. Nodes clearly distinguish learned topics (filled in sage with checkmarks), current/next topics (accent border), and unstarted topics. Clicking any node inspects its summary, met and missing prerequisites, unlocked dependent topics, and direct lesson navigation. An error heatmap overlay highlights trouble spots using exercise lapse counts and learner weak spots, visually cueing areas that need review. No general graph engine was added (preserving 6-29 for Opus).
+
+

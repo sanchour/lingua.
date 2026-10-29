@@ -18,8 +18,9 @@ import { Badge, buttonClasses, Card, EmptyState, Segmented } from '@/design/prim
 import { cx } from '@/lib/cx';
 import { eyebrow, TopicRing, useGrammar } from './parts';
 import { LettersCard } from './letters/LettersCard';
+import { TopicMap } from './TopicMap';
 
-type ViewMode = 'path' | 'category' | 'pos' | 'all';
+type ViewMode = 'path' | 'map' | 'category' | 'pos' | 'all';
 
 /**
  * Grammatica (Lingua 3.0-8, a guided path in 5.2-8, browse & search in 6-7): the next step large with its reason,
@@ -114,6 +115,7 @@ export default function GrammaticaPage() {
                     onChange={setTab}
                     options={[
                       { value: 'path', label: 'Your path' },
+                      { value: 'map', label: 'Topic map' },
                       { value: 'category', label: 'By category' },
                       { value: 'pos', label: 'By part of speech' },
                       { value: 'all', label: 'All topics' },
@@ -142,6 +144,17 @@ export default function GrammaticaPage() {
                       ))}
                     </ol>
                   </>
+                )}
+
+                {tab === 'map' && (
+                  <TopicMap
+                    grammar={grammar}
+                    states={states}
+                    learnedIds={learned}
+                    weakSpots={weak}
+                    nextId={next?.id}
+                    lang={lang}
+                  />
                 )}
 
                 {tab === 'category' && <TopicsByCategory topics={allTopics} states={states} nextId={next?.id} />}

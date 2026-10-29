@@ -326,7 +326,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0216` Grammar decision trees · **6-7**
 - [x] `F0217` Grammar timelines · **6-7**
 - [x] `F0218` Morphology breakdowns · **6-7**
-- [ ] `F0219` Interactive grammar maps · **6-7**
+- [x] `F0219` Interactive grammar maps · **6-7**
 - [x] `F0220` Cross-references between related rules · **6-7** · partly there
 - [x] `F0221` Prerequisite links showing what to learn first · **6-7**
 - [ ] `F0222` Grammar search by natural language question · **6-15**
@@ -381,10 +381,10 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 
 *In Lingua: Grammatica rings and crowns per topic.*
 
-- [ ] `F0264` Grammar error heatmap · **6-7** · partly there
+- [x] `F0264` Grammar error heatmap · **6-7** · partly there
 - [ ] `F0265` Personal grammar weakness tracker · **5.2-8** · planned in Lingua 5.2
 - [x] `F0266` Grammar mastery by topic
-- [ ] `F0267` Prerequisite dependency graph · **6-7**
+- [x] `F0267` Prerequisite dependency graph · **6-7**
 - [ ] `F0268` Contrastive grammar between two languages · **6-13**
 - [ ] `F0269` Compare grammatical gender systems · **6-13**
 - [ ] `F0270` Compare tense and aspect systems · **6-13**
