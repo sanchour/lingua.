@@ -126,6 +126,9 @@ export interface MergeRequest {
   title: string;
   /** The decks it can be merged into. */
   decks: Deck[];
+  /** The button, and the field's label; a merge by default. */
+  confirm?: string;
+  label?: string;
   onConfirm: (deckId: string) => void | Promise<void>;
 }
 
@@ -151,13 +154,13 @@ export function MergeDialog({ request, onClose }: { request: MergeRequest | null
               onClose();
             }}
           >
-            Merge
+            {request?.confirm ?? 'Merge'}
           </Button>
         </>
       }
     >
       <div className="pt-2">
-        {none ? <p className="text-[14px] text-ink-soft">There is no other deck in this language to merge it into.</p> : <Select label="Into" value={target} onChange={setTarget} options={(request?.decks ?? []).map((d) => ({ value: d.id, label: d.name }))} />}
+        {none ? <p className="text-[14px] text-ink-soft">There is no other deck in this language.</p> : <Select label={request?.label ?? 'Into'} value={target} onChange={setTarget} options={(request?.decks ?? []).map((d) => ({ value: d.id, label: d.name }))} />}
       </div>
     </Dialog>
   );

@@ -18,7 +18,7 @@ export type CardStyleId = (typeof CARD_STYLE_IDS)[number];
 export const CARD_TINT_IDS = ['paper', 'cream', 'sage', 'rose', 'sky', 'lavender', 'butter'] as const;
 export type CardTintId = (typeof CARD_TINT_IDS)[number];
 export type LibrarySort = 'recent' | 'added' | 'title' | 'author' | 'progress' | 'known';
-export type DeckSort = 'due' | 'name' | 'recent' | 'size';
+export type DeckSort = 'due' | 'name' | 'recent' | 'size' | 'hand';
 /** Thesaurus › Discover (5.1-3b): the order of its decks, and the shelves they stand on. */
 export type DiscoverSort = 'suggested' | 'size' | 'easiest';
 export type DiscoverGroup = 'kind' | 'level';

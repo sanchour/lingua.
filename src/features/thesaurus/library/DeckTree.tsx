@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { Archive, ArchiveRestore, ChevronRight, Combine, Copy, Ellipsis, Folder as FolderIcon, FolderInput, FolderPlus, Layers, Pencil, Pin, PinOff, Plus, Puzzle, Trash2 } from 'lucide-react';
+import { Archive, ArchiveRestore, ArrowDown, ArrowUp, ChevronRight, Combine, Copy, Ellipsis, Folder as FolderIcon, FolderInput, FolderPlus, Layers, Pencil, Pin, PinOff, Plus, Puzzle, Trash2 } from 'lucide-react';
 import type { DeckCounts } from '@/data/decks';
 import { deleteDeck, deleteFolder, updateDeck, updateFolder } from '@/data/decks';
-import { duplicateDeck, setDeckFlag } from '@/data/deckTools';
+import { duplicateDeck, setDeckFlag, shiftDeck } from '@/data/deckTools';
 import type { DeckSort } from '@/data/settings';
 import type { Deck, Folder } from '@/data/types';
 import { buttonClasses, MenuItem, Popover } from '@/design/primitives';
@@ -22,6 +22,8 @@ export interface TreeActions {
   /** Opens the merge dialog for a deck. */
   merge: (deck: Deck) => void;
   newDeck: (folderId: string | null) => void;
+  /** Sorted by hand: the deck menu offers Move up and Move down. */
+  byHand?: boolean;
 }
 
 interface TreeProps {
@@ -66,6 +68,7 @@ export function deckOrder(sort: DeckSort, decks: Deck[], folders: Folder[], coun
   // Pinned decks sit first, in whatever order the rest follow.
   const pinnedFirst = (order: (a: Deck, b: Deck) => number) => (a: Deck, b: Deck) => Number(b.pinned ?? 0) - Number(a.pinned ?? 0) || order(a, b);
   if (sort === 'name') return { decks: pinnedFirst(byName), folders: byName };
+  if (sort === 'hand') return { decks: pinnedFirst((a, b) => a.order - b.order || a.createdAt - b.createdAt), folders: byName };
   return { decks: pinnedFirst((a, b) => metric(b) - metric(a) || byName(a, b)), folders: (a, b) => folderMetric(b) - folderMetric(a) || byName(a, b) };
 }
 
@@ -326,6 +329,12 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
               actions.move({ title: `Move “${deck.name}”`, folders, current: deck.folderId, onConfirm: (folderId) => updateDeck(deck.id, { folderId }) });
             }}
           />
+          {actions.byHand && (
+            <>
+              <MenuItem icon={ArrowUp} label="Move up" onClick={() => (close(), void shiftDeck(deck.id, -1))} />
+              <MenuItem icon={ArrowDown} label="Move down" onClick={() => (close(), void shiftDeck(deck.id, 1))} />
+            </>
+          )}
           <MenuItem
             icon={deck.pinned ? PinOff : Pin}
             label={deck.pinned ? 'Unpin' : 'Pin to the top'}

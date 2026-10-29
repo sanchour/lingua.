@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
 import { addNote, createDeck } from './decks';
-import { duplicateDeck, mergeDecks, setDeckFlag } from './deckTools';
+import { deleteNotes, deckFromDrafts, duplicateDeck, mergeDecks, moveNotes, setDeckFlag, shiftDeck, suspendNotes, tagNotes } from './deckTools';
 import { addInboxToDeck, inboxStateOf, markInboxKnown, setInboxState } from './inbox';
 import { recordSighting } from './memory';
 import { loadStudySession } from './study';
@@ -131,5 +131,40 @@ describe('the deck workshop', () => {
     expect((await db.decks.get(b))?.deletedAt).toBeGreaterThan(0);
     expect((await db.decks.get(f))?.deletedAt).toBeUndefined();
     expect(await db.notes.where('deckId').equals(f).count()).toBe(1);
+  });
+
+  it('selected cards are tagged, suspended, moved and deleted together', async () => {
+    const db = freshDb();
+    const a = await deckWithWords(db, 'A', ['uno', 'dos', 'tres']);
+    const b = await deckWithWords(db, 'B', []);
+    const ids = (await db.notes.where('deckId').equals(a).toArray()).map((n) => n.id);
+    await tagNotes(ids.slice(0, 2), { add: ['Food', 'food', 'b1'] }, db);
+    await tagNotes([ids[0]], { remove: ['FOOD'] }, db);
+    expect((await db.notes.get(ids[0]))?.tags).toEqual(['t', 'b1']);
+    expect((await db.notes.get(ids[1]))?.tags).toEqual(['t', 'Food', 'b1']);
+    await suspendNotes(ids.slice(0, 2), true, db);
+    expect((await db.cards.where('noteId').equals(ids[0]).toArray()).every((c) => c.suspended === 1)).toBe(true);
+    await moveNotes(ids.slice(0, 2), b, db);
+    expect(await db.cards.where('deckId').equals(b).count()).toBe(2 * (await db.cards.where('noteId').equals(ids[0]).count()));
+    await deleteNotes([ids[2]], db);
+    expect((await db.notes.get(ids[2]))?.deletedAt).toBeGreaterThan(0);
+    await expect(moveNotes([ids[0]], 'nope', db)).rejects.toThrow();
+  });
+
+  it('a deck moves up and down among its neighbours, and stops at the ends', async () => {
+    const db = freshDb();
+    const [a, b, c] = [await deckWithWords(db, 'A', []), await deckWithWords(db, 'B', []), await deckWithWords(db, 'C', [])];
+    await shiftDeck(c, -1, db);
+    await shiftDeck(a, -1, db);
+    await shiftDeck(b, 1, db);
+    const order = (await db.decks.toArray()).sort((x, y) => x.order - y.order).map((d) => d.name);
+    expect(order).toEqual(['A', 'C', 'B']);
+  });
+
+  it('a deck is made from drafts, one card each', async () => {
+    const db = freshDb();
+    const id = await deckFromDrafts('es', 'List', [{ term: 'casa', meaning: 'house' }, { term: 'perro', meaning: '' }], db);
+    expect((await db.notes.where('deckId').equals(id).toArray()).map((n) => n.term).sort()).toEqual(['casa', 'perro']);
+    expect(await db.cards.where('deckId').equals(id).count()).toBeGreaterThanOrEqual(2);
   });
 });

@@ -1,24 +1,26 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
-import { Ellipsis, FolderInput, Layers, Pencil, Plus, Puzzle, Search, Settings2, TextCursorInput, Trash2, Zap } from 'lucide-react';
+import { Check, CheckSquare, Ellipsis, FolderInput, Layers, Pause, Pencil, Play, Plus, Puzzle, Search, Settings2, Sparkles, Tag, TextCursorInput, Trash2, Zap } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatInterval, maturityOf } from '@/core/srs/scheduler';
-import { deleteDeck, forgetDeck, updateDeck, useDeck, useDeckCards, useDeckCounts, useDeckNotes, useFolders } from '@/data/decks';
+import { deleteDeck, forgetDeck, updateDeck, useDeck, useDeckCards, useDeckCounts, useDecks, useDeckNotes, useFolders } from '@/data/decks';
+import { deleteNotes, moveNotes, suspendNotes, tagNotes } from '@/data/deckTools';
 import type { Card, Note } from '@/data/types';
 import { Button, buttonClasses, EmptyState, MenuItem, Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { DeckGlyph } from '../common/DeckIcon';
 import { articleFor } from '../common/words';
-import { ConfirmDialog, MoveDialog, NameDialog } from '../library/dialogs';
-import type { ConfirmRequest, MoveRequest, NameRequest } from '../library/dialogs';
+import { ConfirmDialog, MergeDialog, MoveDialog, NameDialog } from '../library/dialogs';
+import type { ConfirmRequest, MergeRequest, MoveRequest, NameRequest } from '../library/dialogs';
 import { STAGES } from '../library/states';
 import { DeckSettings } from './DeckSettings';
 import { PlusChip } from '@/features/plans/Locked';
 import { useGate } from '@/features/plans/PlanRoute';
 import { DeckStats } from './DeckStats';
 import { NoteEditor } from './NoteEditor';
+import { TidyDialog } from './TidyDialog';
 import type { EditorTarget } from './NoteEditor';
 
 const PAGE = 120;
@@ -32,6 +34,7 @@ export default function DeckPage() {
   const notes = useDeckNotes(deckId);
   const cards = useDeckCards(deckId);
   const folders = useFolders(language.id);
+  const allDecks = useDecks(language.id);
   const counts = useDeckCounts(deck ? [deck] : undefined)?.get(deckId ?? '');
 
   const [editor, setEditor] = useState<EditorTarget | null>(null);
@@ -41,6 +44,10 @@ export default function DeckPage() {
   const [moving, setMoving] = useState<MoveRequest | null>(null);
   const [query, setQuery] = useState('');
   const [shown, setShown] = useState(PAGE);
+  const [selecting, setSelecting] = useState(false);
+  const [picked, setPicked] = useState<ReadonlySet<string>>(new Set());
+  const [tidying, setTidying] = useState(false);
+  const [movingCards, setMovingCards] = useState<MergeRequest | null>(null);
 
   const cardsByNote = useMemo(() => {
     const map = new Map<string, Card[]>();
@@ -78,6 +85,45 @@ export default function DeckPage() {
       body: 'Every card goes back to new and comes again as new cards do. What you studied stays in Ratio’s history.',
       confirm: 'Forget progress',
       onConfirm: () => forgetDeck(deck.id).then(() => undefined),
+    });
+
+  const toggle = (id: string) =>
+    setPicked((p) => {
+      const next = new Set(p);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
+  const ids = [...picked];
+  const askTags = (remove: boolean) =>
+    setNaming({
+      title: remove ? `Remove a tag from ${ids.length} ${ids.length === 1 ? 'card' : 'cards'}` : `Tag ${ids.length} ${ids.length === 1 ? 'card' : 'cards'}`,
+      label: 'Tags, separated by commas',
+      confirm: remove ? 'Remove' : 'Add',
+      onConfirm: (text) => {
+        const tags = text.split(',').map((t) => t.trim()).filter(Boolean);
+        return tagNotes(ids, remove ? { remove: tags } : { add: tags });
+      },
+    });
+  const askMove = () =>
+    setMovingCards({
+      title: `Move ${ids.length} ${ids.length === 1 ? 'card' : 'cards'}`,
+      label: 'To the deck',
+      confirm: 'Move',
+      decks: (allDecks ?? []).filter((d) => d.id !== deck.id && !d.deletedAt),
+      onConfirm: async (to) => {
+        await moveNotes(ids, to);
+        setPicked(new Set());
+      },
+    });
+  const askDeleteCards = () =>
+    setConfirming({
+      title: `Delete ${ids.length} ${ids.length === 1 ? 'card' : 'cards'}?`,
+      body: 'The cards and their review history go. Words you know stay known in your books.',
+      confirm: 'Delete',
+      onConfirm: async () => {
+        await deleteNotes(ids);
+        setPicked(new Set());
+      },
     });
 
   return (
@@ -119,6 +165,7 @@ export default function DeckPage() {
                       setMoving({ title: `Move “${deck.name}”`, folders: folders ?? [], current: deck.folderId, onConfirm: (folderId) => updateDeck(deck.id, { folderId }) });
                     }}
                   />
+                  <MenuItem icon={Sparkles} label="Tidy…" onClick={() => (close(), setTidying(true))} />
                   <MenuItem icon={Trash2} label="Delete deck" danger onClick={() => (close(), askDelete())} />
                 </div>
               )}
@@ -175,6 +222,18 @@ export default function DeckPage() {
               ))}
             </p>
           )}
+          {notes.length > 1 && (
+            <Button
+              variant={selecting ? 'primary' : 'ghost'}
+              icon={CheckSquare}
+              onClick={() => {
+                setSelecting(!selecting);
+                setPicked(new Set());
+              }}
+            >
+              {selecting ? 'Done' : 'Select'}
+            </Button>
+          )}
           {notes.length > 8 && (
             <label className="relative">
               <span className="sr-only">Search cards</span>
@@ -200,10 +259,45 @@ export default function DeckPage() {
           <>
             <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {list.slice(0, shown).map((note) => (
-                <NoteCard key={note.id} note={note} cards={cardsByNote.get(note.id) ?? []} lang={deck.lang} onOpen={() => setEditor({ mode: 'edit', note, cards: cardsByNote.get(note.id) ?? [] })} />
+                <NoteCard
+                  key={note.id}
+                  note={note}
+                  cards={cardsByNote.get(note.id) ?? []}
+                  lang={deck.lang}
+                  selecting={selecting}
+                  selected={picked.has(note.id)}
+                  onOpen={() => (selecting ? toggle(note.id) : setEditor({ mode: 'edit', note, cards: cardsByNote.get(note.id) ?? [] }))}
+                />
               ))}
               {list.length === 0 && <li className="col-span-full py-6 text-center text-sm text-ink-soft">No cards match “{query}”.</li>}
             </ul>
+            {selecting && (
+              <div className="sticky bottom-4 z-20 mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-line bg-raised p-2.5 shadow-elev-3" role="toolbar" aria-label="Selected cards">
+                <span className="px-2 text-[14px] font-semibold tabular-nums">{ids.length} selected</span>
+                <Button variant="ghost" onClick={() => setPicked(new Set(list.map((n) => n.id)))}>
+                  Select all{query ? ' shown' : ''}
+                </Button>
+                <span className="flex-1" />
+                <Button variant="secondary" icon={Tag} disabled={!ids.length} onClick={() => askTags(false)}>
+                  Tag
+                </Button>
+                <Button variant="ghost" disabled={!ids.length} onClick={() => askTags(true)}>
+                  Untag
+                </Button>
+                <Button variant="secondary" icon={FolderInput} disabled={!ids.length} onClick={askMove}>
+                  Move
+                </Button>
+                <Button variant="secondary" icon={Pause} disabled={!ids.length} onClick={() => void suspendNotes(ids, true)}>
+                  Suspend
+                </Button>
+                <Button variant="secondary" icon={Play} disabled={!ids.length} onClick={() => void suspendNotes(ids, false)}>
+                  Resume
+                </Button>
+                <Button variant="secondary" icon={Trash2} disabled={!ids.length} onClick={askDeleteCards}>
+                  Delete
+                </Button>
+              </div>
+            )}
             {list.length > shown && (
               <div className="mt-4 text-center">
                 <Button variant="ghost" onClick={() => setShown((n) => n + PAGE * 4)}>
@@ -220,12 +314,14 @@ export default function DeckPage() {
       <NameDialog request={naming} onClose={() => setNaming(null)} />
       <ConfirmDialog request={confirming} onClose={() => setConfirming(null)} />
       <MoveDialog request={moving} onClose={() => setMoving(null)} />
+      <MergeDialog request={movingCards} onClose={() => setMovingCards(null)} />
+      <TidyDialog open={tidying} onClose={() => setTidying(false)} notes={notes} lang={deck.lang} />
     </>
   );
 }
 
 /** A small card in the deck's grid (5.1-3b): the word, its stage and when it's due; it turns over on hover to show the meaning. */
-function NoteCard({ note, cards, lang, onOpen }: { note: Note; cards: Card[]; lang: string; onOpen: () => void }) {
+function NoteCard({ note, cards, lang, onOpen, selecting = false, selected = false }: { note: Note; cards: Card[]; lang: string; onOpen: () => void; selecting?: boolean; selected?: boolean }) {
   const main = cards.find((c) => c.direction === 'recognition') ?? cards[0];
   const stage = STAGES[main ? maturityOf(main) : 'new'];
   const suspended = cards.length > 0 && cards.every((c) => c.suspended);
@@ -235,7 +331,18 @@ function NoteCard({ note, cards, lang, onOpen }: { note: Note; cards: Card[]; la
   const face = 'absolute inset-0 rounded-2xl border border-line/70 p-3 [backface-visibility:hidden]';
   return (
     <li className="[perspective:900px]">
-      <button type="button" onClick={onOpen} aria-label={`${note.term}: ${note.meaning}`} className={cx('group/card no-callout block h-[120px] w-full text-left', suspended && 'opacity-50')}>
+      <button
+        type="button"
+        onClick={onOpen}
+        aria-label={`${note.term}: ${note.meaning}`}
+        aria-pressed={selecting ? selected : undefined}
+        className={cx('group/card no-callout relative block h-[120px] w-full rounded-2xl text-left', suspended && 'opacity-50', selected && 'ring-2 ring-accent')}
+      >
+        {selecting && (
+          <span className={cx('absolute right-2 bottom-2 z-10 grid size-5 place-items-center rounded-full border', selected ? 'border-accent bg-accent text-on-accent' : 'border-line-strong bg-raised')} aria-hidden>
+            {selected && <Check size={13} strokeWidth={3} />}
+          </span>
+        )}
         <span className="relative block size-full transition-transform duration-500 ease-out [transform-style:preserve-3d] group-hover/card:[transform:rotateY(180deg)] group-focus-visible/card:[transform:rotateY(180deg)] motion-reduce:transition-none">
           <span className={cx(face, 'flex flex-col bg-surface')}>
             <span className="flex items-center justify-between gap-2 text-[11.5px] font-semibold text-ink-faint">

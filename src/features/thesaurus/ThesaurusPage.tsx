@@ -24,6 +24,7 @@ import { CsvImportDrawer } from './library/CsvImportDrawer';
 import { DeckCards, DeckResults, DeckTree, deckOrder, sumCounts } from './library/DeckTree';
 import type { TreeActions } from './library/DeckTree';
 import { ConfirmDialog, MergeDialog, MoveDialog, NameDialog } from './library/dialogs';
+import { FromListDialog } from './library/FromListDialog';
 import type { MergeRequest } from './library/dialogs';
 import { mergeDecks } from '@/data/deckTools';
 import { toast } from '@/state/ui';
@@ -43,6 +44,7 @@ const SORTS: Array<{ value: DeckSort; label: string }> = [
   { value: 'recent', label: 'Recently studied' },
   { value: 'name', label: 'Name' },
   { value: 'size', label: 'Most cards' },
+  { value: 'hand', label: 'By hand' },
 ];
 
 const DISCOVER_SORTS: Array<{ value: DiscoverSort; label: string }> = [
@@ -100,6 +102,7 @@ export default function ThesaurusPage() {
   const [confirming, setConfirming] = useState<ConfirmRequest | null>(null);
   const [moving, setMoving] = useState<MoveRequest | null>(null);
   const [merging, setMerging] = useState<MergeRequest | null>(null);
+  const [fromList, setFromList] = useState(false);
 
   const newDeck = (folderId: string | null) =>
     setNaming({
@@ -121,12 +124,13 @@ export default function ThesaurusPage() {
       },
     });
 
-  const actions: TreeActions = { ask: setNaming, confirm: setConfirming, move: setMoving, merge, newDeck };
+  const actions: TreeActions = { ask: setNaming, confirm: setConfirming, move: setMoving, merge, newDeck, byHand: sort === 'hand' };
 
   const choose = (action: NewAction) => {
     if (action === 'deck') newDeck(null);
     else if (action === 'folder')
       setNaming({ title: 'New folder', label: 'Name', confirm: 'Create folder', folders: folders ?? [], onConfirm: (name, parent) => void createFolder(lang, name, parent) });
+    else if (action === 'list') setFromList(true);
     else if (action === 'csv') void imports.pickCsv();
     else void imports.pickApkg();
   };
@@ -258,6 +262,7 @@ export default function ThesaurusPage() {
       <ConfirmDialog request={confirming} onClose={() => setConfirming(null)} />
       <MoveDialog request={moving} onClose={() => setMoving(null)} />
       <MergeDialog request={merging} onClose={() => setMerging(null)} />
+      <FromListDialog open={fromList} lang={lang} onClose={() => setFromList(false)} onMade={(id) => navigate(`/thesaurus/deck/${id}`)} />
     </>
   );
 }

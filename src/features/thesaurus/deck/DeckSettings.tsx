@@ -49,6 +49,7 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
   const [off, setOff] = useState<string[]>(deck.config.ludusOff ?? []);
   const [bury, setBury] = useState(Boolean(deck.config.burySiblings));
   const [steps, setSteps] = useState((deck.config.learningSteps ?? []).join(' '));
+  const [about, setAbout] = useState(deck.description ?? '');
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -63,11 +64,13 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
     setOff(deck.config.ludusOff ?? []);
     setBury(Boolean(deck.config.burySiblings));
     setSteps((deck.config.learningSteps ?? []).join(' '));
+    setAbout(deck.description ?? '');
   }, [open, deck]);
 
   const save = async () => {
     setBusy(true);
     await updateDeck(deck.id, {
+      description: about.trim() || undefined,
       config: { ...deck.config, newPerDay, maxReviews, desiredRetention: retention, front, cardWidth: width === 'all' ? undefined : width, newOrder: order, ludusOff: off.length ? off : undefined, burySiblings: bury || undefined, learningSteps: parseSteps(steps) },
     });
     if (ways !== toWays(deck.config.directions)) await setDeckDirections(deck.id, fromWays(ways));
@@ -103,6 +106,13 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
     >
       <div className="space-y-7">
         <Preview note={(front === 'sentence' && samples.find((n) => n.example?.text)) || samples[0]} lang={deck.lang} ways={ways} front={front} width={CARD_WIDTH[width === 'all' ? (look.width ?? 'normal') : width]} look={look} />
+
+        <Section title="About">
+          <label className="block">
+            <span className="mb-2 block text-[14px] font-semibold">Description</span>
+            <textarea value={about} onChange={(e) => setAbout(e.target.value)} rows={2} maxLength={300} placeholder="What this deck is for" className="w-full resize-y rounded-xl border border-line bg-raised p-3 text-[15px] outline-none focus:border-accent" />
+          </label>
+        </Section>
 
         <Section title="Daily limits">
           <Slider label="New cards a day" value={newPerDay} min={0} max={100} step={1} onChange={setNewPerDay} format={(v) => String(v)} />

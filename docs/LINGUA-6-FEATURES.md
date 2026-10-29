@@ -127,7 +127,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0043` ⭐ Organize decks into folders
 - [ ] `F0044` Nested folders and subdecks · **6-2** · partly there
 - [ ] `F0045` Tags and multiple tags per word · **6-2** · partly there
-- [ ] `F0046` Custom deck descriptions · **6-2**
+- [x] `F0046` Custom deck descriptions · **6-2**
 - [ ] `F0047` Deck cover images and colors · **6-2** · partly there
 - [ ] `F0048` Reorder cards manually · **6-2**
 - [ ] `F0049` Sort alphabetically · **6-2** · partly there
@@ -149,7 +149,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0065` Generate decks from a text, document or book · **6-2** · partly there
 - [ ] `F0066` Generate decks from a video transcript · **6-2** · partly there
 - [ ] `F0067` Generate decks from a conversation · **6-2**
-- [ ] `F0068` Generate decks from a list of unknown words · **6-2** · partly there
+- [x] `F0068` Generate decks from a list of unknown words · **6-2** · partly there
 - [ ] `F0069` Generate decks from exam vocabulary · **6-18**
 - [ ] `F0070` Generate decks from a topic or situation · **6-2** · partly there
 - [x] `F0071` Generate decks from a CEFR level
@@ -160,8 +160,8 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0076` Save words to a central vocabulary inbox · **6-2** · partly there
 - [x] `F0077` Review the inbox before adding words to a deck · **6-2**
 - [ ] `F0078` Bulk-edit word information · **6-2**
-- [ ] `F0079` Bulk-tag, move or delete cards · **6-2**
-- [ ] `F0080` Detect duplicate cards · **6-2** · partly there
+- [x] `F0079` Bulk-tag, move or delete cards · **6-2**
+- [x] `F0080` Detect duplicate cards · **6-2** · partly there
 - [ ] `F0081` Detect duplicate translations · **6-2**
 - [ ] `F0082` Suggest missing example sentences · **6-2** · partly there
 - [ ] `F0083` Suggest missing audio or pronunciation data · **6-2** · partly there
@@ -494,7 +494,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [ ] `F0358` Export highlights · **6-8**
 - [ ] `F0359` Save quotes · **6-8**
 - [ ] `F0360` Create flashcards from highlighted text · **6-8** · partly there
-- [ ] `F0361` Generate vocabulary lists from a text · **6-2** · partly there
+- [x] `F0361` Generate vocabulary lists from a text · **6-2** · partly there
 - [x] `F0362` Track reading progress
 - [x] `F0363` Track time spent reading
 - [x] `F0364` Estimate text difficulty
@@ -1883,7 +1883,7 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1478` Import EPUB files where supported
 - [x] `F1479` Import subtitles
 - [ ] `F1480` Import transcripts · **6-24** · partly there
-- [ ] `F1481` Import word lists · **6-2** · partly there
+- [x] `F1481` Import word lists · **6-2** · partly there
 - [ ] `F1482` Import personal dictionaries · **6-22**
 - [ ] `F1483` Import grammar notes · **6-24**
 - [x] `F1484` Import from a clipboard
