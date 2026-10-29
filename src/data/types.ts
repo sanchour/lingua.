@@ -307,6 +307,10 @@ export interface Deck extends Synced {
   folderId: string | null;
   name: string;
   description?: string;
+  /** A small picture for the deck (6-2b): a blob in `blobs`. */
+  coverBlobId?: string;
+  /** The deck's colour, one of `DECK_COLOURS` (6-2b). Absent: the one its kind has. */
+  color?: string;
   order: number;
   kind: 'custom' | 'mined' | 'starterFrequency' | 'starterTheme' | 'apkg' | 'csv' | 'visio' | 'cantus';
   /** Out of the way, with its history kept; its cards aren't studied with the rest (6-2). Absent reads as 0. */

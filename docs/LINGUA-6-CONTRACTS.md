@@ -71,3 +71,5 @@ add the new one and read both.
 - The persistent-mistake rule (three different days or three places) is the plan's, kept in `PERSISTENT_MISTAKE`.
 - Not checked against the real pack builder: the exact field names `DictEntryV6` takes when `scripts/dictionary.ts`
   writes them. 6-1 may adjust them, as its own contract push.
+
+- **0.6.0-alpha.59 (6-2b):** `Deck` gains `coverBlobId` (already in `DeckV6`) and `color`, both optional and not indexed, so no Dexie version.

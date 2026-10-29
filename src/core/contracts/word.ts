@@ -117,6 +117,8 @@ export interface ExampleDifficulty {
 /** Fields `Deck` gains in 6-2. */
 export interface DeckV6 {
   coverBlobId?: string;
+  /** One of the deck colours (features/thesaurus/common/DeckIcon `DECK_COLOURS`), chosen in Deck settings. Absent: the colour of its kind. */
+  color?: string;
   /** Absent reads as 0. Archived is not "mastered": the history stays. */
   archived?: Bit;
   pinned?: Bit;
