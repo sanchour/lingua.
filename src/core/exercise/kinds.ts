@@ -1,7 +1,7 @@
 // The kinds 6-4b adds, made from what the app already has: a word's dictionary entry (meaning, synonyms, antonyms, part of
 // speech, affixes, example), a grammar item with its wrong forms, a table of forms, and (with Max) sentences made to order.
 // Each builder returns specs (contracts/exercise.ts): data, no drawing. Pure and deterministic for a given random source.
-import type { CorrectBody, DialogueBody, DragBody, ExerciseSpec, MatchBody, PredictBody, TaskBody } from '@/core/contracts/exercise';
+import type { CorrectBody, DialogueBody, DragBody, ExerciseSpec, ListenSource, MatchBody, PredictBody, TaskBody } from '@/core/contracts/exercise';
 import { plain, splitFocus } from '@/core/grammar/types';
 import type { Item } from '@/core/grammar/types';
 import { shuffle } from '@/core/srs/ludus';
@@ -262,6 +262,68 @@ export function useInSentence(word: WordFacts, lang: string, key: string): Exerc
     trains: { skill: 'writing', item: { type: 'word', wordId: `${lang}:${word.word.toLocaleLowerCase(lang)}` } },
     feedback: { why: plain(word.sentence) },
   };
+}
+
+// ── Listening (6-9) ─────────────────────────────────────────────────────────
+
+/** A line of something the learner listened to: its words, and where in the audio or video it is heard. */
+export interface HeardLine {
+  text: string;
+  mediaId?: string;
+  startMs?: number;
+  endMs?: number;
+}
+
+const listenOf = (l: HeardLine): ListenSource => ({ text: l.text, ...(l.mediaId && l.startMs !== undefined ? { clip: { mediaId: l.mediaId, startMs: l.startMs, endMs: l.endMs ?? l.startMs + 4000 } } : {}) });
+const heardTrains = (l: HeardLine): Trains => ({ skill: 'listening', item: { type: 'text', textId: l.mediaId ?? 'heard' } });
+const wordsOfLine = (text: string) => plain(text).split(/\s+/).filter(Boolean);
+
+/** Dictation of a real line: hear it, type it. A missing accent counts as close, case and punctuation not at all. */
+export function listenType(line: HeardLine, lang: string, key: string): ExerciseSpec<'listen-type', TaskBody> {
+  return {
+    key,
+    kind: 'listen-type',
+    lang,
+    instruction: 'Type what you hear',
+    body: { task: 'fix', given: [], prompt: 'Type what you hear' },
+    listen: listenOf(line),
+    check: { rule: 'accent-blind', expected: plain(line.text) },
+    trains: heardTrains(line),
+    feedback: { why: plain(line.text) },
+    hints: [{ text: `${wordsOfLine(line.text).length} words`, strength: 0 }, { text: `It starts: ${wordsOfLine(line.text).slice(0, 2).join(' ')}…`, strength: 1 }],
+  };
+}
+
+/** A real line with one word taken out: hear it whole, type the missing word. Needs a line of at least five words. */
+export function listenGap(line: HeardLine, lang: string, random: () => number, key: string): ExerciseSpec<'listen-gap', TaskBody> | null {
+  const words = wordsOfLine(line.text);
+  if (words.length < 5) return null;
+  // Not the first word, and a word of some size: the gap should be a word to hear, not "a".
+  const candidates = words.map((w, i) => ({ w: w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ''), i })).filter((x) => x.i > 0 && [...x.w].length >= 4);
+  if (!candidates.length) return null;
+  const pick = candidates[Math.floor(random() * candidates.length)];
+  const shown = words.map((w, i) => (i === pick.i ? w.replace(pick.w, '_____') : w)).join(' ');
+  return {
+    key,
+    kind: 'listen-gap',
+    lang,
+    instruction: 'Type the missing word',
+    body: { task: 'fix', given: [shown], prompt: 'Type the missing word' },
+    listen: listenOf(line),
+    check: { rule: 'accent-blind', expected: pick.w },
+    trains: heardTrains(line),
+    feedback: { why: plain(line.text) },
+    hints: [{ text: `It has ${[...pick.w].length} letters`, strength: 0 }, { text: `It starts with “${[...pick.w][0]}”`, strength: 1 }],
+  };
+}
+
+/** Hear a real line, then put its words in order. */
+export function listenOrder(line: HeardLine, lang: string, random: () => number, key: string): ExerciseSpec<'drag-drop', DragBody> | null {
+  const answer = wordsOfLine(line.text);
+  if (answer.length < 3 || answer.length > 10) return null;
+  let tiles = shuffle(answer, random);
+  for (let i = 0; i < 5 && tiles.join(' ') === answer.join(' '); i++) tiles = shuffle(answer, random);
+  return { key, kind: 'drag-drop', lang, instruction: 'Listen, then put the words in order', body: { prompt: 'Hear the line, then drag its words into order', tiles }, listen: listenOf(line), check: { rule: 'order', answer }, trains: heardTrains(line) };
 }
 
 /** "Drag the words into order": the tiles of a sentence, shuffled so it does not already read out. */

@@ -1,5 +1,6 @@
 // A run of exercises of any kind the engine has (6-4b): one screen for matching, dragging, typing, free sentences and form
 // changes. How it asks is the learner's: hints, "how sure are you?", answers only at the end, another example after a miss.
+import { ListenBar } from './ListenBar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Settings2 } from 'lucide-react';
@@ -101,7 +102,7 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
       lang,
       at: Date.now(),
       skill: spec.trains.skill,
-      room: spec.trains.skill === 'grammar' ? 'grammatica' : 'thesaurus',
+      room: spec.trains.skill === 'grammar' ? 'grammatica' : spec.trains.skill === 'listening' ? 'sonus' : 'thesaurus',
       item: spec.trains.item,
       outcome,
       assisted: hints > 0,
@@ -208,6 +209,7 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.section key={`${run}-${spec.key}`} initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -28, transition: { duration: 0.15 } }} transition={spring.soft}>
             <p className="mb-6 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">{spec.key.endsWith('~r') ? 'Another example · ' : ''}{spec.instruction}</p>
+            {spec.listen && <ListenBar listen={spec.listen} lang={lang} />}
             {isMatch(spec) && <MatchView body={spec.body as MatchBody} lang={lang} onDone={onMatched} random={random} />}
             {spec.kind === 'drag-drop' && <DragView prompt={(spec.body as DragBody).prompt} tiles={tiles} lang={lang} value={picked} onChange={setPicked} phase={phase} />}
             {spec.kind === 'transform' && <TransformView spec={spec as TransformSpec} lang={lang} value={text} onChange={setText} phase={phase} onSubmit={() => (phase === 'answer' ? void check() : next())} onHint={setHints} />}

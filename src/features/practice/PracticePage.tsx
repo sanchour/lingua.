@@ -5,12 +5,14 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { completeDialogue, sentenceTask } from '@/core/exercise';
 import { REWRITE_TASKS } from '@/core/generate/generate';
 import type { DialogueBody, RewritesBody, RewriteTask, SentencesBody } from '@/core/generate/generate';
+import type { HeardLine } from '@/core/exercise';
 import type { Cefr } from '@/core/lang/levels';
 import { aiBlock } from '@/data/plan';
+import { heardLines } from '@/data/listening';
 import { generateMaterial } from '@/services/llm/generate';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
-import { attachRetries, correctMistake, dragSentence, gridOfGrammarTable, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, planTransforms, predictForms, rewriteFix, tenseTransforms, useInSentence } from '@/core/exercise';
+import { attachRetries, correctMistake, dragSentence, gridOfGrammarTable, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, planTransforms, predictForms, rewriteFix, tenseTransforms, useInSentence, listenGap, listenOrder, listenType } from '@/core/exercise';
 import type { ExerciseSpec } from '@/core/contracts/exercise';
 import type { FormGrid, WordFacts } from '@/core/exercise';
 import type { Topic } from '@/core/grammar/types';
@@ -30,11 +32,12 @@ interface Ctx {
   /** Words the learner finds hard, and words not seen for a long while (from their cards). */
   difficult: WordFacts[];
   rusty: WordFacts[];
+  heard: HeardLine[];
 }
 
 interface PracticeSet {
   id: string;
-  group: 'words' | 'grammar';
+  group: 'words' | 'grammar' | 'listening';
   title: string;
   detail: string;
   /** Needs, said when the set cannot be made yet. */
@@ -140,6 +143,30 @@ function buildSets(lang: string, c: Ctx, level: Cefr): PracticeSet[] {
       needs: 'words with an example sentence',
       make: () => shuffle(c.facts.filter((w) => w.sentence), random).slice(0, 6).flatMap((w, i) => useInSentence(w, lang, `use-${i}`) ?? []),
     },
+    {
+      id: 'hear-type',
+      group: 'listening',
+      title: 'Dictation of what you listened to',
+      detail: 'Hear a line from your own podcasts, songs and films, and type it.',
+      needs: 'a transcript of something you listened to',
+      make: () => shuffle(c.heard, random).slice(0, 6).map((l, i) => listenType(l, lang, `hear-type-${i}`)),
+    },
+    {
+      id: 'hear-gap',
+      group: 'listening',
+      title: 'The missing word',
+      detail: 'A line of something you listened to, with one word left out: hear it, type the word.',
+      needs: 'a transcript of something you listened to',
+      make: () => shuffle(c.heard, random).flatMap((l, i) => listenGap(l, lang, random, `hear-gap-${i}`) ?? []).slice(0, 6),
+    },
+    {
+      id: 'hear-order',
+      group: 'listening',
+      title: 'Hear it, put it in order',
+      detail: 'Hear a line you listened to, then drag its words into order.',
+      needs: 'a transcript of something you listened to',
+      make: () => shuffle(c.heard, random).flatMap((l, i) => listenOrder(l, lang, random, `hear-order-${i}`) ?? []).slice(0, 6),
+    },
     games('pictures', 'Words and pictures', 'Match each word with its picture.', 'cards with a picture', (w, r, k) => matchPictures(w, lang, r, k), (w) => Boolean(w.image)),
     ...(['difficult', 'rusty'] as const).map(
       (id): PracticeSet => ({
@@ -239,15 +266,16 @@ export default function PracticePage() {
     void (async () => {
       const random = seededRandom(Date.now() % 2 ** 31);
       const notes = await practiceNotes(lang);
-      const [facts, affixes, topics, verbs, difficult, rusty] = await Promise.all([
+      const [facts, affixes, topics, verbs, difficult, rusty, heard] = await Promise.all([
         wordFacts(lang, notes),
         affixesOfWords(lang, notes),
         practiceTopics(lang, random),
         verbGrids(lang, notes),
         trickyNotes(lang, 'difficult').then((n) => wordFacts(lang, n)),
         trickyNotes(lang, 'rusty').then((n) => wordFacts(lang, n)),
+        heardLines(lang),
       ]);
-      if (alive) setCtx({ facts, affixes, topics, verbs, difficult, rusty });
+      if (alive) setCtx({ facts, affixes, topics, verbs, difficult, rusty, heard });
     })();
     return () => {
       alive = false;
@@ -327,6 +355,7 @@ export default function PracticePage() {
         <>
           {section('words', 'Your words')}
           {section('grammar', 'Grammar')}
+          {section('listening', 'Listening')}
         </>
       )}
     </>
