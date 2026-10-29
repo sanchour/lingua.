@@ -651,7 +651,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0484` Listen and identify a change in topic · **6-9**
 - [ ] `F0485` Listen without subtitles, then with subtitles · **6-9** · partly there
 - [ ] `F0486` Compare an initial guess with the transcript · **6-9**
-- [ ] `F0487` Listen to a phrase and repeat it · **6-11** · partly there
+- [x] `F0487` Listen to a phrase and repeat it · **6-11** · partly there
 - [ ] `F0488` Transcribe a short audio clip · **6-9**
 - [ ] `F0489` Identify formal versus informal speech · **6-9**
 - [ ] `F0490` Identify the speaker’s accent · **6-9**
@@ -767,7 +767,7 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0576` Convert mistakes into flashcards · **6-11**
 - [ ] `F0577` Generate a personalized review session · **6-16**
 - [ ] `F0578` Replay the conversation · **6-11**
-- [ ] `F0579` Listen to the learner’s own recordings · **6-11**
+- [x] `F0579` Listen to the learner’s own recordings · **6-11**
 - [ ] `F0580` Compare the learner’s attempt with a model recording · **6-10**
 - [ ] `F0581` Review the conversation sentence by sentence · **6-11**
 - [ ] `F0582` Create a summary of new expressions · **6-11**
@@ -777,7 +777,7 @@ This is where an AI-powered app can become especially valuable. Learners often h
 
 *In Lingua: The course's speaking lesson compares what you said word by word.*
 
-- [ ] `F0584` Real-time transcription · **6-11** · partly there
+- [x] `F0584` Real-time transcription · **6-11** · partly there
 - [x] `F0585` Speech-to-text practice
 - [ ] `F0586` Speech shadowing · **6-10**
 - [ ] `F0587` Repeat-after-me exercises · **6-10** · partly there
@@ -800,13 +800,13 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0604` Pronunciation diary · **6-10**
 - [ ] `F0605` Record the same passage every week · **6-10**
 - [ ] `F0606` Track pronunciation development over time · **6-10**
-- [ ] `F0607` Personalized speaking challenges · **6-11** · partly there
-- [ ] `F0608` Spontaneous 30-second speaking prompts · **6-11**
-- [ ] `F0609` One-minute monologues · **6-11**
-- [ ] `F0610` Storytelling challenges · **6-11**
-- [ ] `F0611` Picture description tasks · **6-11**
-- [ ] `F0612` Explain-a-concept challenges · **6-11**
-- [ ] `F0613` Impromptu debate prompts · **6-11**
+- [x] `F0607` Personalized speaking challenges · **6-11** · partly there
+- [x] `F0608` Spontaneous 30-second speaking prompts · **6-11**
+- [x] `F0609` One-minute monologues · **6-11**
+- [x] `F0610` Storytelling challenges · **6-11**
+- [x] `F0611` Picture description tasks · **6-11**
+- [x] `F0612` Explain-a-concept challenges · **6-11**
+- [x] `F0613` Impromptu debate prompts · **6-11**
 - [ ] `F0614` Oral examination simulations · **6-18**
 
 > A useful distinction: pronunciation feedback should help users become understandable, not pressure them to eliminate their accent. Native-like pronunciation and effective communication are not the same goal.

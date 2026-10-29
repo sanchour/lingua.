@@ -25,7 +25,9 @@ import { toast } from '@/state/ui';
 import { loadChoices, markTalked, saveChoices } from './choices';
 import type { SermoChoices } from './choices';
 import { GROUP_TONE, SCENE_ICONS } from './sceneArt';
+import { SoloSpeakingView } from './SoloSpeakingView';
 
+type SermoTab = 'prompts' | 'solo' | 'review';
 type Step = 'scene' | 'how' | 'prompt';
 
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
@@ -51,6 +53,8 @@ export default function ColloquiumPage() {
   const level = language.level;
   const name = getLanguage(lang)?.name ?? lang;
   const [params] = useSearchParams();
+  const [tab, setTab] = useState<SermoTab>(params.get('tab') === 'solo' ? 'solo' : params.get('tab') === 'review' ? 'review' : 'prompts');
+  const [reviewInitialText, setReviewInitialText] = useState('');
   // Home's scene of the day and Mentis's "talk about" open on the second screen with the scene or topic picked.
   const linkedScene = asScene(params.get('scene'));
   const linkedAbout = params.get('topic')?.trim().slice(0, 160) || '';
@@ -103,42 +107,71 @@ export default function ColloquiumPage() {
   return (
     <div ref={top} className="scroll-mt-24">
       <PageHeader title="Sermo" eyebrow={`Talk in ${name}`} />
-      <ol className="-mt-1 mb-6 flex items-center gap-2 text-[13.5px] font-semibold" aria-label="Steps">
-        {steps.map((s, i) => (
-          <li key={s.id} className="flex items-center gap-2">
-            {i > 0 && <span className="h-px w-8 bg-line" aria-hidden />}
-            <button
-              type="button"
-              disabled={i > at}
-              aria-current={i === at ? 'step' : undefined}
-              onClick={() => go(s.id)}
-              className={cx('flex items-center gap-2 rounded-full py-1 pr-3 pl-1 transition-colors', i === at ? 'text-ink' : i < at ? 'text-ink-soft hover:bg-surface hover:text-ink' : 'text-ink-faint')}
-            >
-              <span className={cx('grid size-6 place-items-center rounded-full text-[12px]', i === at ? 'bg-inverse text-on-inverse' : i < at ? 'bg-sage-soft text-sage-text' : 'bg-sunken')}>
-                {i < at ? <Check size={13} aria-hidden /> : i + 1}
-              </span>
-              {s.text}
-            </button>
-          </li>
-        ))}
-      </ol>
 
-      {step === 'scene' && (
-        <ScenePicker
+      <div className="mb-6 flex items-center justify-between">
+        <Segmented<SermoTab>
+          label="Speaking mode"
+          value={tab}
+          onChange={setTab}
+          options={[
+            { value: 'prompts', label: 'AI Prompts' },
+            { value: 'solo', label: 'Solo Practice' },
+            { value: 'review', label: '“How Did It Go?”' },
+          ]}
+        />
+      </div>
+
+      {tab === 'solo' && (
+        <SoloSpeakingView
           lang={lang}
           level={level}
-          picked={about ? undefined : sceneId}
-          onScene={(id) => {
-            setSceneId(id);
-            setAbout('');
-            go('how');
-          }}
-          onAbout={(title) => {
-            setAbout(title);
-            go('how');
+          dueWords={due ?? []}
+          grammarTopic={grammar?.topic.title}
+          onSendToReview={(txt) => {
+            setReviewInitialText(txt);
+            setTab('review');
           }}
         />
       )}
+
+      {tab === 'prompts' && (
+        <>
+          <ol className="-mt-1 mb-6 flex items-center gap-2 text-[13.5px] font-semibold" aria-label="Steps">
+            {steps.map((s, i) => (
+              <li key={s.id} className="flex items-center gap-2">
+                {i > 0 && <span className="h-px w-8 bg-line" aria-hidden />}
+                <button
+                  type="button"
+                  disabled={i > at}
+                  aria-current={i === at ? 'step' : undefined}
+                  onClick={() => go(s.id)}
+                  className={cx('flex items-center gap-2 rounded-full py-1 pr-3 pl-1 transition-colors', i === at ? 'text-ink' : i < at ? 'text-ink-soft hover:bg-surface hover:text-ink' : 'text-ink-faint')}
+                >
+                  <span className={cx('grid size-6 place-items-center rounded-full text-[12px]', i === at ? 'bg-inverse text-on-inverse' : i < at ? 'bg-sage-soft text-sage-text' : 'bg-sunken')}>
+                    {i < at ? <Check size={13} aria-hidden /> : i + 1}
+                  </span>
+                  {s.text}
+                </button>
+              </li>
+            ))}
+          </ol>
+
+          {step === 'scene' && (
+            <ScenePicker
+              lang={lang}
+              level={level}
+              picked={about ? undefined : sceneId}
+              onScene={(id) => {
+                setSceneId(id);
+                setAbout('');
+                go('how');
+              }}
+              onAbout={(title) => {
+                setAbout(title);
+                go('how');
+              }}
+            />
+          )}
 
       {step === 'how' && (
         <section aria-label="How you’ll talk" className="max-w-4xl">
@@ -279,6 +312,14 @@ export default function ColloquiumPage() {
       )}
 
       {step === 'prompt' && <PromptStep lang={lang} name={name} prompt={prompt} voice={choices.mode === 'voice'} scene={scene} about={about} onBack={() => go('how')} onRestart={() => go('scene')} />}
+        </>
+      )}
+
+      {tab === 'review' && (
+        <div className="py-6">
+          <p className="text-ink-soft">Review conversation will appear here.{reviewInitialText ? ` (${reviewInitialText.length} characters ready)` : ''}</p>
+        </div>
+      )}
     </div>
   );
 }
