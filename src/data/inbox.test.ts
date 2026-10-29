@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
 import { addNote, createDeck } from './decks';
-import { deleteNotes, deckFromDrafts, duplicateDeck, fillFromDictionary, mergeDecks, moveNotes, setDeckFlag, shiftDeck, suspendNotes, tagNotes } from './deckTools';
+import { deleteNotes, deckFromDrafts, duplicateDeck, fillFromDictionary, mergeDecks, moveNotes, setDeckFlag, shiftDeck, shiftNotes, suspendNotes, tagNotes } from './deckTools';
 import { addInboxToDeck, inboxStateOf, markInboxKnown, setInboxState } from './inbox';
 import { recordSighting } from './memory';
 import { loadStudySession } from './study';
@@ -177,5 +177,17 @@ describe('the deck workshop', () => {
     expect(await fillFromDictionary([casa.id, perro.id], look, db)).toBe(1);
     expect(await db.notes.get(casa.id)).toMatchObject({ example: { text: 'Una casa.', translation: 'A casa.' }, ipa: '/casa/' });
     expect(await db.notes.get(perro.id)).toMatchObject({ example: { text: 'Mi perro.' }, ipa: '/p/' });
+  });
+
+  it('chosen cards move one place in the deck’s order, as a block, and stop at the ends', async () => {
+    const db = freshDb();
+    const deck = await deckWithWords(db, 'A', ['a', 'b', 'c', 'd']);
+    const byTerm = Object.fromEntries((await db.notes.where('deckId').equals(deck).toArray()).map((n) => [n.term, n.id]));
+    const order = async () => (await db.notes.where('deckId').equals(deck).toArray()).sort((x, y) => (x.order ?? 0) - (y.order ?? 0)).map((n) => n.term).join('');
+    const now = ['a', 'b', 'c', 'd'].map((t) => byTerm[t]);
+    await shiftNotes(now, new Set([byTerm.c, byTerm.d]), -1, db);
+    expect(await order()).toBe('acdb');
+    await shiftNotes(['a', 'c', 'd', 'b'].map((t) => byTerm[t]), new Set([byTerm.a]), -1, db);
+    expect(await order()).toBe('acdb');
   });
 });

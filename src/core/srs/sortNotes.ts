@@ -1,7 +1,7 @@
 // How a deck's cards are ordered on its page (6-2b). Pure: the page hands in the notes and their cards.
 import type { Card, Note } from '@/data/types';
 
-export type NoteSort = 'common' | 'alpha' | 'added' | 'due' | 'hardest' | 'pos';
+export type NoteSort = 'common' | 'alpha' | 'added' | 'due' | 'hardest' | 'pos' | 'topic' | 'hand';
 
 export const NOTE_SORTS: Array<{ value: NoteSort; label: string }> = [
   { value: 'common', label: 'Most common first' },
@@ -10,6 +10,8 @@ export const NOTE_SORTS: Array<{ value: NoteSort; label: string }> = [
   { value: 'due', label: 'Due soonest' },
   { value: 'hardest', label: 'Hardest first' },
   { value: 'pos', label: 'Kind of word' },
+  { value: 'topic', label: 'Tag' },
+  { value: 'hand', label: 'My order' },
 ];
 
 const first = (cards: Card[] | undefined) => cards?.find((c) => c.direction === 'recognition') ?? cards?.[0];
@@ -24,6 +26,8 @@ export function sortNotes(notes: readonly Note[], cardsByNote: ReadonlyMap<strin
     // New cards have no due date worth ordering by: they go last.
     due: (a, b) => (first(cardsByNote.get(a.id))?.state ? first(cardsByNote.get(a.id))!.due : Infinity) - (first(cardsByNote.get(b.id))?.state ? first(cardsByNote.get(b.id))!.due : Infinity) || byAdded(a, b),
     hardest: (a, b) => (first(cardsByNote.get(b.id))?.difficulty ?? 0) - (first(cardsByNote.get(a.id))?.difficulty ?? 0) || byAdded(a, b),
+    topic: (a, b) => (a.tags[0] ?? '\uffff').localeCompare(b.tags[0] ?? '\uffff') || collator.compare(a.term, b.term),
+    hand: (a, b) => (a.order ?? a.createdAt) - (b.order ?? b.createdAt) || byAdded(a, b),
     pos: (a, b) => (a.pos ?? '￿').localeCompare(b.pos ?? '￿') || collator.compare(a.term, b.term),
   };
   return [...notes].sort(key[how]);

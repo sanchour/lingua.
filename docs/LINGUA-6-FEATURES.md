@@ -129,14 +129,14 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0045` Tags and multiple tags per word · **6-2** · partly there
 - [x] `F0046` Custom deck descriptions · **6-2**
 - [ ] `F0047` Deck cover images and colors · **6-2** · partly there
-- [ ] `F0048` Reorder cards manually · **6-2**
+- [x] `F0048` Reorder cards manually · **6-2**
 - [x] `F0049` Sort alphabetically · **6-2** · partly there
 - [x] `F0050` Sort by date added · **6-2** · partly there
 - [x] `F0051` Sort by difficulty · **6-2** · partly there
 - [x] `F0052` Sort by frequency · **6-2** · partly there
 - [x] `F0053` Sort by due date · **6-2** · partly there
 - [x] `F0054` Sort by part of speech · **6-2**
-- [ ] `F0055` Sort by topic · **6-2**
+- [x] `F0055` Sort by topic · **6-2**
 - [x] `F0056` Merge decks · **6-2**
 - [x] `F0057` Duplicate decks · **6-2**
 - [x] `F0058` Split a deck into smaller decks · **6-2**

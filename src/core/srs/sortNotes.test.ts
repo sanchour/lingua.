@@ -19,5 +19,7 @@ describe('ordering a deck’s cards', () => {
   it('newest first', () => expect(ids('added')).toBe('dcba'));
   it('due soonest, with new cards last', () => expect(ids('due')).toBe('bdac'));
   it('hardest first', () => expect(ids('hardest')).toBe('dabc'));
+  it('by first tag, untagged last', () => expect(sortNotes([note('x', 'b', 1, { tags: ['z'] }), note('y', 'a', 2, { tags: [] }), note('w', 'c', 3, { tags: ['a'] })], new Map(), 'topic').map((n) => n.id).join('')).toBe('wxy'));
+  it('in the learner\'s own order, cards with no place of their own follow by when they were added', () => expect(sortNotes([note('x', 'b', 5, { order: 2 }), note('y', 'a', 1), note('w', 'c', 3, { order: 0 })], new Map(), 'hand').map((n) => n.id).join('')).toBe('wyx'));
   it('by kind of word, then A to Z', () => expect(ids('pos')).toBe('cbad'));
 });

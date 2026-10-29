@@ -122,6 +122,19 @@ export async function knownNorms(lang: string, database: LinguaDB = db): Promise
   return new Set((await database.words.where('lang').equals(lang).filter((w) => w.state === 1 && !w.deletedAt).toArray()).map((w) => w.norm));
 }
 
+/** Moves the chosen cards one place earlier (-1) or later (1) in the deck's own order. `ordered` is the deck's cards as they are now, in that order; every card is given its place again, so none shares one. */
+export async function shiftNotes(ordered: readonly string[], chosen: ReadonlySet<string>, by: -1 | 1, database: LinguaDB = db): Promise<void> {
+  const ids = [...ordered];
+  const range = by === -1 ? ids.map((_, i) => i) : ids.map((_, i) => ids.length - 1 - i);
+  // Each chosen card swaps with its neighbour unless that one is also chosen (the block moves as one).
+  for (const i of range) {
+    const j = i + by;
+    if (chosen.has(ids[i]) && j >= 0 && j < ids.length && !chosen.has(ids[j])) [ids[i], ids[j]] = [ids[j], ids[i]];
+  }
+  const now = Date.now();
+  await database.transaction('rw', database.notes, () => Promise.all(ids.map((id, i) => database.notes.update(id, { order: i, updatedAt: now }))));
+}
+
 /** Fills what the full dictionary knows into cards that lack it: a sentence (with its translation) and the pronunciation. Never changes what is written. */
 export async function fillFromDictionary(ids: readonly string[], look: (word: string) => Promise<{ ipa?: string; example?: [string, string?] } | undefined>, database: LinguaDB = db): Promise<number> {
   let filled = 0;

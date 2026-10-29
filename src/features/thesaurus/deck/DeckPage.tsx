@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
-import { Check, CheckSquare, Ellipsis, FolderInput, Layers, Pause, Pencil, Play, Plus, Puzzle, Search, Settings2, Sparkles, Tag, TextCursorInput, Trash2, Zap } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, CheckSquare, Ellipsis, FolderInput, Layers, Pause, Pencil, Play, Plus, Puzzle, Search, Settings2, Sparkles, Tag, TextCursorInput, Trash2, Zap } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatInterval, maturityOf } from '@/core/srs/scheduler';
 import { NOTE_SORTS, sortNotes } from '@/core/srs/sortNotes';
 import type { NoteSort } from '@/core/srs/sortNotes';
 import { deleteDeck, forgetDeck, updateDeck, useDeck, useDeckCards, useDeckCounts, useDecks, useDeckNotes, useFolders } from '@/data/decks';
-import { deleteNotes, moveNotes, suspendNotes, tagNotes } from '@/data/deckTools';
+import { deleteNotes, moveNotes, shiftNotes, suspendNotes, tagNotes } from '@/data/deckTools';
 import { createDeck } from '@/data/decks';
 import type { Card, Note } from '@/data/types';
 import { Button, buttonClasses, EmptyState, MenuItem, Popover } from '@/design/primitives';
@@ -317,6 +317,16 @@ export default function DeckPage() {
                 <Button variant="secondary" icon={FolderInput} disabled={!ids.length} onClick={askMove}>
                   Move
                 </Button>
+                {how === 'hand' && (
+                  <>
+                    <Button variant="secondary" icon={ArrowUp} disabled={!ids.length} onClick={() => void shiftNotes(list.map((n) => n.id), picked, -1)}>
+                      Earlier
+                    </Button>
+                    <Button variant="secondary" icon={ArrowDown} disabled={!ids.length} onClick={() => void shiftNotes(list.map((n) => n.id), picked, 1)}>
+                      Later
+                    </Button>
+                  </>
+                )}
                 <Button variant="secondary" icon={Layers} disabled={!ids.length} onClick={askSplit}>
                   Split off
                 </Button>
