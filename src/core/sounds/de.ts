@@ -47,5 +47,9 @@ export const DE: SoundSystem = {
     { title: 'Final devoicing', text: 'A b, d, g at the end of a word or syllable is said p, t, k: Hund ends in t, Tag in k, Handschuh in t. Plurals show the real sound: Hunde.' },
     { title: 'Spelling to sound', text: 'ei = ai (mein), eu and äu = oi (neu), ie = long i (Liebe), au = ow (Haus), sch = sh, z = ts, w = v, v = f (in German words), j = y, s before a vowel = z. The spelling is much more regular than English.' },
     { title: 'Glottal stop', text: 'A vowel at the start of a word, or of a stressed syllable inside one, begins with a small catch in the throat (the Knacklaut): ein Apfel is “ein ʔApfel”, not “ei-napfel”. It keeps words apart.' },
+    { title: 'Assimilation', text: 'Sounds near each other shift to ease the mouth: haben is often said “habm”, and in front of b, p or m the n of the prefix ein- or an- turns into m (anbieten → “ambieten”).' },
+    { title: 'Elision and the schwa', text: 'The e of the endings -en, -el, -em drops in speech: lesen → “lesn”, Handel → “handl”. The sound then lives in the n or l itself.' },
+    { title: 'Doubled letters', text: 'A doubled consonant is not said twice: it only shows that the vowel before it is short (Bann, Mitte). The only held consonants are at word borders: Mittag has a single t, but mit Tisch has a held one.' },
+    { title: 'Weak forms', text: 'Small words lose their strength: der, die, das, ein, und, ist are said short, and the ending -er is said as a weak “a”: Lehrer → “Lehra”, wir → “wia”. -r after a vowel almost vanishes.' },
   ],
 };

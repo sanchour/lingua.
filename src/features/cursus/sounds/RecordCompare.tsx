@@ -2,7 +2,8 @@
 // it shows the shapes, and whether the device understood the word; it gives no score. Recordings stay on this device and are not kept.
 import { useEffect, useRef, useState } from 'react';
 import { Mic, Square } from 'lucide-react';
-import { contourInSemitones, pitchContour, waveformPeaks } from '@/core/sounds/pitch';
+import { letterHints } from '@/core/sounds/articulation';
+import { contourInSemitones, pitchContour, spectrogram, waveformPeaks, type Spectrogram } from '@/core/sounds/pitch';
 import { canRecord, useRecorder } from '@/features/speech/useRecorder';
 import { recognitionSupported, listenOnce } from '@/services/speech/recognition';
 import { findRecording, recordingBlob } from '@/services/speech/recordings';
@@ -12,6 +13,8 @@ interface Shape {
   peaks: number[];
   pitch: Array<number | null>;
   url: string;
+  seconds: number;
+  spec: Spectrogram;
 }
 
 async function shapeOf(blob: Blob): Promise<Shape> {
@@ -19,13 +22,44 @@ async function shapeOf(blob: Blob): Promise<Shape> {
   try {
     const audio = await ctx.decodeAudioData(await blob.arrayBuffer());
     const samples = audio.getChannelData(0);
-    return { peaks: waveformPeaks(samples, 80), pitch: contourInSemitones(pitchContour(samples, audio.sampleRate)), url: URL.createObjectURL(blob) };
+    return { peaks: waveformPeaks(samples, 80), pitch: contourInSemitones(pitchContour(samples, audio.sampleRate)), url: URL.createObjectURL(blob), seconds: audio.duration, spec: spectrogram(samples, audio.sampleRate) };
   } finally {
     void ctx.close();
   }
 }
 
+/** Loudness at each frequency over time: dark is quiet, bright is loud; the bottom is low sounds (vowels), the top is high ones (s, sh, f). */
+function SpectrogramView({ spec, label }: { spec: Spectrogram; label: string }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = ref.current;
+    const g = canvas?.getContext('2d');
+    if (!canvas || !g || !spec.frames.length) return;
+    const bins = spec.frames[0].length;
+    canvas.width = spec.frames.length;
+    canvas.height = bins;
+    const img = g.createImageData(canvas.width, bins);
+    spec.frames.forEach((frame, x) => {
+      for (let y = 0; y < bins; y++) {
+        const v = frame[bins - 1 - y];
+        const k = (y * canvas.width + x) * 4;
+        img.data[k] = 255 * Math.min(1, v * 1.6);
+        img.data[k + 1] = 190 * v * v;
+        img.data[k + 2] = 90 * v * v * v;
+        img.data[k + 3] = 255;
+      }
+    });
+    g.putImageData(img, 0, 0);
+  }, [spec]);
+  return <canvas ref={ref} role="img" aria-label={`${label}: which frequencies are loud, over time`} className="mt-2 h-24 w-full rounded-xl bg-black" />;
+}
+
 function Shapes({ label, shape, tone }: { label: string; shape: Shape; tone: 'model' | 'yours' }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.playbackRate = slow ? 0.6 : 1;
+  }, [slow, shape.url]);
   const color = tone === 'model' ? 'var(--sage)' : 'var(--accent)';
   const maxSemi = Math.max(6, ...shape.pitch.filter((x): x is number => x !== null));
   const n = shape.pitch.length || 1;
@@ -35,9 +69,13 @@ function Shapes({ label, shape, tone }: { label: string; shape: Shape; tone: 'mo
   for (const pt of line) (pt === null ? pieces.push([]) : pieces[pieces.length - 1].push(pt));
   return (
     <div>
-      <p className="mb-1 flex items-center gap-2 text-[12.5px] font-semibold text-ink-faint">
+      <p className="mb-1 flex flex-wrap items-center gap-2 text-[12.5px] font-semibold text-ink-faint">
         {label}
-        <audio src={shape.url} controls className="h-7" aria-label={`Play ${label}`} />
+        <audio ref={audioRef} src={shape.url} controls className="h-7" aria-label={`Play ${label}`} />
+        <button type="button" aria-pressed={slow} onClick={() => setSlow((x) => !x)} className={cx('rounded-full border px-2.5 py-0.5 text-[12px]', slow ? 'border-accent bg-accent-soft' : 'border-line hover:bg-surface')}>
+          Slow
+        </button>
+        <span className="font-normal">{shape.seconds.toFixed(2)} s</span>
       </p>
       <svg viewBox="0 0 320 120" className="w-full rounded-xl bg-surface" role="img" aria-label={`${label}: loudness above, pitch below`}>
         {shape.peaks.map((p, i) => (
@@ -47,9 +85,12 @@ function Shapes({ label, shape, tone }: { label: string; shape: Shape; tone: 'mo
           <polyline key={i} points={p.join(' ')} fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
         ))}
       </svg>
+      <SpectrogramView spec={shape.spec} label={label} />
     </div>
   );
 }
+
+const understoodNow = (heard: string, word: string, lang: string) => heard.toLocaleLowerCase(lang).replace(/[^\p{L}]/gu, '') === word.toLocaleLowerCase(lang).replace(/[^\p{L}]/gu, '');
 
 export function RecordCompare({ lang, words }: { lang: string; words: string[] }) {
   const [word, setWord] = useState(words[0] ?? '');
@@ -78,6 +119,7 @@ export function RecordCompare({ lang, words }: { lang: string; words: string[] }
   }, [lang, word]);
 
   if (!canRecord() || !words.length) return null;
+  const hints = heard && !understoodNow(heard, word, lang) ? letterHints(word, heard) : null;
   const recording = status === 'recording';
 
   const go = async () => {
@@ -107,7 +149,7 @@ export function RecordCompare({ lang, words }: { lang: string; words: string[] }
     const blob = await stop();
     if (blob) setYours(await shapeOf(blob).catch(() => null));
   };
-  const understood = heard !== null && heard.toLocaleLowerCase(lang).replace(/[^\p{L}]/gu, '') === word.toLocaleLowerCase(lang).replace(/[^\p{L}]/gu, '');
+  const understood = heard !== null && understoodNow(heard, word, lang);
 
   return (
     <section aria-labelledby="rc-h" className="rounded-3xl border border-line bg-raised p-5">
@@ -139,7 +181,23 @@ export function RecordCompare({ lang, words }: { lang: string; words: string[] }
             {understood ? 'The device understood you.' : heard ? `The device heard “${heard}”.` : 'The device heard nothing.'}
           </p>
         )}
+        {yours && !recording && (
+          <button type="button" onClick={() => setModel(yours)} title="Your recording becomes the one to compare with, to hear your own progress." className="flex h-11 items-center rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
+            Use mine as the model
+          </button>
+        )}
       </div>
+      {hints && (hints.missing.length > 0 || hints.extra.length > 0) && (
+        <p className="mt-2 text-[13.5px] text-ink-soft">
+          Where it differed from “{word}”:{hints.missing.length > 0 && <> the device didn’t hear {hints.missing.map((c) => `“${c}”`).join(', ')};</>}
+          {hints.extra.length > 0 && <> it heard {hints.extra.map((c) => `“${c}”`).join(', ')} that isn’t there;</>} look those sounds up above and try again slowly. (A guess from what the device wrote down, not a measurement.)
+        </p>
+      )}
+      {model && model !== 'none' && yours && (
+        <p className="mt-2 text-[13.5px] text-ink-soft">
+          {yours.seconds > model.seconds * 1.25 ? `You took ${(yours.seconds / model.seconds).toFixed(1)}× as long as the speaker: try a little quicker.` : yours.seconds < model.seconds * 0.8 ? `You were ${(model.seconds / yours.seconds).toFixed(1)}× quicker than the speaker: try slowing down so each sound is clear.` : 'Your length is close to the speaker’s.'}
+        </p>
+      )}
       {error && <p className="mt-2 text-[13px] text-accent-text">{error}</p>}
       <div className="mt-4 space-y-4">
         {model && model !== 'none' ? <Shapes label="A real speaker" shape={model} tone="model" /> : <p className="self-center text-[13px] text-ink-faint">{model === 'none' ? 'There is no recording of this word to compare with. Your own still shows its shape.' : 'Looking for a recording…'}</p>}

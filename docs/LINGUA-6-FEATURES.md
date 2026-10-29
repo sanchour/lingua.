@@ -663,7 +663,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0493` Phoneme discrimination · **6-10**
 - [x] `F0494` Word-boundary recognition · **6-9**
 - [x] `F0495` Connected-speech training · **6-9**
-- [ ] `F0496` Reduced vowels and weak forms · **6-10**
+- [x] `F0496` Reduced vowels and weak forms · **6-10**
 - [ ] `F0497` Stress and intonation recognition · **6-10**
 - [ ] `F0498` Pitch-accent training where relevant · **6-10**
 - [x] `F0499` Tone recognition for tonal languages · **6-10** · partly there
@@ -677,7 +677,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0507` Compare slow, careful speech with natural speech · **6-9**
 - [ ] `F0508` Track listening comprehension by accent · **6-17**
 - [ ] `F0509` Track comprehension as playback speed increases · **6-17**
-- [ ] `F0510` Identify specific phonemes that are repeatedly confused · **6-10**
+- [x] `F0510` Identify specific phonemes that are repeatedly confused · **6-10**
 
 ## 06 · Speaking and conversation
 
@@ -780,21 +780,21 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [x] `F0584` Real-time transcription · **6-11** · partly there
 - [x] `F0585` Speech-to-text practice
 - [x] `F0586` Speech shadowing · **6-10**
-- [ ] `F0587` Repeat-after-me exercises · **6-10** · partly there
+- [x] `F0587` Repeat-after-me exercises · **6-10** · partly there
 - [x] `F0588` Simultaneous speech imitation · **6-10**
 - [x] `F0589` Pronunciation recording comparisons · **6-10**
-- [ ] `F0590` Phoneme-level pronunciation feedback · **6-10**
+- [x] `F0590` Phoneme-level pronunciation feedback · **6-10**
 - [x] `F0591` Word stress detection · **6-10**
 - [ ] `F0592` Sentence stress detection · **6-10**
-- [ ] `F0593` Rhythm and intonation analysis · **6-10**
+- [x] `F0593` Rhythm and intonation analysis · **6-10**
 - [x] `F0594` Tone recognition for tonal languages · **6-10**
 - [x] `F0595` Pitch contour visualization · **6-10**
-- [ ] `F0596` Vowel articulation guidance · **6-10**
-- [ ] `F0597` Consonant articulation guidance · **6-10**
-- [ ] `F0598` Minimal-pair pronunciation practice · **6-10**
-- [ ] `F0599` Slow playback of model speech · **6-10**
+- [x] `F0596` Vowel articulation guidance · **6-10**
+- [x] `F0597` Consonant articulation guidance · **6-10**
+- [x] `F0598` Minimal-pair pronunciation practice · **6-10**
+- [x] `F0599` Slow playback of model speech · **6-10**
 - [x] `F0600` Visual waveform comparison · **6-10**
-- [ ] `F0601` Spectrogram visualization · **6-10**
+- [x] `F0601` Spectrogram visualization · **6-10**
 - [x] `F0602` Speech rate measurement · **6-11**
 - [x] `F0603` Pause distribution analysis · **6-11**
 - [x] `F0604` Pronunciation diary · **6-10**
@@ -928,9 +928,9 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0702` Consonant chart · **6-10**
 - [x] `F0703` IPA reference · **6-10**
 - [ ] `F0704` Audio for every phoneme · **6-10**
-- [ ] `F0705` Mouth-position illustrations · **6-10**
-- [ ] `F0706` Tongue-position illustrations · **6-10**
-- [ ] `F0707` Voicing demonstrations · **6-10**
+- [x] `F0705` Mouth-position illustrations · **6-10**
+- [x] `F0706` Tongue-position illustrations · **6-10**
+- [x] `F0707` Voicing demonstrations · **6-10**
 - [x] `F0708` Place-of-articulation explanations · **6-10**
 - [x] `F0709` Minimal pairs · **6-10**
 - [x] `F0710` Syllable segmentation · **6-10**
@@ -940,10 +940,10 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [ ] `F0714` Rhythm patterns · **6-10**
 - [x] `F0715` Connected speech · **6-10**
 - [x] `F0716` Sound reduction · **6-10**
-- [ ] `F0717` Assimilation · **6-10**
-- [ ] `F0718` Elision · **6-10**
-- [ ] `F0719` Gemination · **6-10**
-- [ ] `F0720` Palatalization · **6-10**
+- [x] `F0717` Assimilation · **6-10**
+- [x] `F0718` Elision · **6-10**
+- [x] `F0719` Gemination · **6-10**
+- [x] `F0720` Palatalization · **6-10**
 - [x] `F0721` Aspiration · **6-10**
 - [x] `F0722` Nasal vowels · **6-10**
 - [x] `F0723` Tonal contours · **6-10** · partly there
@@ -958,27 +958,27 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0727` Listen and repeat · **6-10** · partly there
 - [x] `F0728` Record and compare · **6-10**
 - [x] `F0729` Minimal-pair discrimination · **6-10**
-- [ ] `F0730` Identify the incorrect pronunciation · **6-10**
+- [x] `F0730` Identify the incorrect pronunciation · **6-10**
 - [x] `F0731` Read a word aloud
 - [x] `F0732` Read a sentence aloud
 - [x] `F0733` Read a paragraph aloud · **6-10**
 - [x] `F0734` Shadow an audio recording · **6-10**
-- [ ] `F0735` Practice specific phonemes · **6-10**
-- [ ] `F0736` Practice consonant clusters · **6-10**
-- [ ] `F0737` Practice difficult syllables · **6-10**
+- [x] `F0735` Practice specific phonemes · **6-10**
+- [x] `F0736` Practice consonant clusters · **6-10**
+- [x] `F0737` Practice difficult syllables · **6-10**
 - [x] `F0738` Practice word stress · **6-10**
 - [ ] `F0739` Practice sentence stress · **6-10**
-- [ ] `F0740` Practice intonation patterns · **6-10**
-- [ ] `F0741` Practice speaking speed · **6-10**
+- [x] `F0740` Practice intonation patterns · **6-10**
+- [x] `F0741` Practice speaking speed · **6-10**
 - [x] `F0742` Practice connected speech · **6-10**
-- [ ] `F0743` Practice tonal contrasts · **6-10**
-- [ ] `F0744` Practice unfamiliar letter combinations · **6-10**
-- [ ] `F0745` Pronunciation drills based on personal errors · **6-10**
-- [ ] `F0746` Randomized pronunciation tests · **6-10**
+- [x] `F0743` Practice tonal contrasts · **6-10**
+- [x] `F0744` Practice unfamiliar letter combinations · **6-10**
+- [x] `F0745` Pronunciation drills based on personal errors · **6-10**
+- [x] `F0746` Randomized pronunciation tests · **6-10**
 - [x] `F0747` Weekly pronunciation recordings · **6-10**
 - [x] `F0748` Pronunciation progress history · **6-10**
 - [x] `F0749` Feedback on intelligibility · **6-10**
-- [ ] `F0750` Visual speech feedback where technically supported · **6-10**
+- [x] `F0750` Visual speech feedback where technically supported · **6-10**
 
 ## 09 · Translation and bilingual learning
 
@@ -1213,7 +1213,7 @@ This is the structured side of the app. Learners need a route through the materi
 - [x] `F0930` Speaking answers
 - [x] `F0931` Listening responses
 - [x] `F0932` Flashcards
-- [ ] `F0933` Audio repetition · **6-10** · partly there
+- [x] `F0933` Audio repetition · **6-10** · partly there
 - [x] `F0934` Interactive reading
 - [x] `F0935` Inline dictionary lookup
 - [x] `F0936` Tap-to-reveal hints · **6-4**
@@ -1540,7 +1540,7 @@ each with its definition, private and exportable. Lingua 5.2-9 already expands R
 - [x] `F1188` Grammar competitions
 - [x] `F1189` Listening quizzes
 - [ ] `F1190` Dictation races · **6-21**
-- [ ] `F1191` Pronunciation challenges · **6-10**
+- [x] `F1191` Pronunciation challenges · **6-10**
 - [ ] `F1192` Word association games · **6-21**
 - [ ] `F1193` Crossword puzzles · **6-21**
 - [ ] `F1194` Word searches · **6-21**
@@ -1682,7 +1682,7 @@ Different languages require different learning interfaces. This could become a m
 
 - [x] `F1307` Cyrillic alphabet trainer
 - [ ] `F1308` Soft and hard sign exercises · **6-23**
-- [ ] `F1309` Palatalization practice · **6-10**
+- [x] `F1309` Palatalization practice · **6-10**
 - [ ] `F1310` Stress placement · **6-23** · partly there
 - [ ] `F1311` Unstressed vowel recognition · **6-23**
 - [x] `F1312` Noun case tables
@@ -1715,7 +1715,7 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1336` Formal versus informal address
 - [ ] `F1337` Spanish dialect comparisons · **6-23**
 - [ ] `F1338` European versus Brazilian Portuguese · **6-23** · partly there
-- [ ] `F1339` Nasal vowel practice · **6-10**
+- [x] `F1339` Nasal vowel practice · **6-10**
 - [ ] `F1340` Verb-preposition combinations · **6-23**
 - [x] `F1341` False friends between Romance languages · **6-13**
 
@@ -1723,7 +1723,7 @@ Different languages require different learning interfaces. This could become a m
 
 - [x] `F1342` Pinyin or kana training
 - [ ] `F1343` Tone recognition · **6-23** · partly there
-- [ ] `F1344` Tone production · **6-10**
+- [x] `F1344` Tone production · **6-10**
 - [ ] `F1345` Character decomposition · **6-23**
 - [ ] `F1346` Radicals and components · **6-23**
 - [ ] `F1347` Stroke order · **6-23** · partly there
@@ -1754,7 +1754,7 @@ Different languages require different learning interfaces. This could become a m
 - [ ] `F1369` Formal versus colloquial registers · **6-23**
 - [x] `F1370` Arabic script handwriting
 - [ ] `F1371` Transliteration controls · **6-23**
-- [ ] `F1372` Pronunciation of emphatic consonants · **6-10**
+- [x] `F1372` Pronunciation of emphatic consonants · **6-10**
 
 ## 20 · Exams and proficiency certification
 
@@ -2101,7 +2101,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [x] `F1598` AI conversation partner
 - [x] `F1599` Writing assistant and error correction
 - [x] `F1600` Listening exercises and dictation · **6-9** · partly there
-- [ ] `F1601` Speech recording and pronunciation practice · **6-10** · partly there
+- [x] `F1601` Speech recording and pronunciation practice · **6-10** · partly there
 - [x] `F1602` Graded reading library · **6-8** · partly there
 - [ ] `F1603` Adaptive lessons · **6-16** · partly there
 - [x] `F1604` Personalized recommendations
@@ -2124,7 +2124,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [x] `F1615` Advanced integrations · **6-24** · partly there
 - [ ] `F1616` Offline-first mobile and desktop experiences · **6-27** · partly there
 - [ ] `F1617` Specialized exam preparation · **6-18**
-- [ ] `F1618` Advanced phonetics and linguistic analysis · **6-10**
+- [x] `F1618` Advanced phonetics and linguistic analysis · **6-10**
 
 > My strongest product recommendation: build a unified learning system, not a giant menu of unrelated features.
 

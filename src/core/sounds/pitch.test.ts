@@ -37,3 +37,22 @@ describe('the shape of a recording', () => {
     expect(contourInSemitones([null, null])).toEqual([null, null]);
   });
 });
+
+describe('the spectrogram', () => {
+  it('puts a steady tone in the right band, and a higher tone higher up', async () => {
+    const { spectrogram } = await import('./pitch');
+    const peakHz = (hz: number) => {
+      const s = spectrogram(tone(hz, 0.3), 16000);
+      const mid = s.frames[Math.floor(s.frames.length / 2)];
+      return mid.indexOf(Math.max(...mid)) * s.binHz;
+    };
+    expect(Math.abs(peakHz(1000) - 1000)).toBeLessThan(40);
+    expect(peakHz(2500)).toBeGreaterThan(peakHz(1000));
+  });
+  it('is quiet where the sound is quiet, and cuts at the highest frequency asked for', async () => {
+    const { spectrogram } = await import('./pitch');
+    const s = spectrogram(new Float32Array([...tone(800, 0.2), ...new Float32Array(3200)]), 16000, { maxHz: 4000 });
+    expect(Math.max(...s.frames[s.frames.length - 1])).toBeLessThan(0.05);
+    expect(s.frames[0].length * s.binHz).toBeLessThanOrEqual(4000 + s.binHz);
+  });
+});

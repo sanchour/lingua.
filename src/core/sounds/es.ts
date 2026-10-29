@@ -32,5 +32,9 @@ export const ES: SoundSystem = {
     { title: 'Spelling to sound', text: 'Spanish spelling is nearly regular: each vowel has one sound, and the consonants change only in a few set ways (c and g before e or i; qu and gu with a silent u; h is silent; ll and y). If you can read the word, you can say it.' },
     { title: 'Syllables and rhythm', text: 'Spanish is syllable-timed: every syllable takes about the same time, and vowels are not reduced to “uh” in unstressed syllables. That is the main thing that makes it sound Spanish.' },
     { title: 'Connected speech', text: 'Words run together: a final vowel and an initial vowel join into one syllable (la hora → “lahora”), and a final consonant moves to the next word (los amigos → “lo-sa-mi-gos”).' },
+    { title: 'Assimilation', text: 'Sounds take on the place of the next one: n before b, p or v becomes m (en vano, “em-bano”), and n before k or g is said at the back (tengo). b, d and g soften between vowels.' },
+    { title: 'Elision and joining', text: 'A vowel at the end of a word and one at the start of the next run into one syllable (mi amigo → “miamigo”); two of the same vowel are one long one (la abuela). Said at speed, de and a often nearly vanish after vowels.' },
+    { title: 'Doubled letters', text: 'Only a few doubled letters are heard as doubled: rr is a roll, and cc is two sounds (acción, “ak-sión”); nn in innato and similar words is held a little longer. ll is not a double l.' },
+    { title: 'Weak forms', text: 'Spanish keeps vowels full even when a word is not stressed, so there is almost no weak form: the small words (de, que, la) are short and light, but the vowel is still a, e or a full sound, never “uh”.' },
   ],
 };

@@ -43,5 +43,9 @@ export const FR: SoundSystem = {
     { title: 'Silent letters', text: 'Most final consonants are silent (petit, grand, vous) except often c, r, f, l (“CaReFuL”: parc, mer, neuf, bal). The final e is silent too. Silent letters often wake up before a vowel, in liaison.' },
     { title: 'Liaison and enchaînement', text: 'A silent final consonant is said when the next word begins with a vowel and the two belong together: les amis → “lé-z-ami” (the s sounds as z), un ami → “u-n-ami”. A pronounced final consonant moves to the next syllable: il arrive → “i-l-arrive”.' },
     { title: 'Spelling to sound', text: 'Spelling is not regular, but the sounds of letter groups are: ou = u, u = y, eu = ø or œ, ai = ɛ, au and eau = o, oi = wa, an and en = ɑ̃, in and ain = ɛ̃, on = ɔ̃. Learn the groups, not the letters.' },
+    { title: 'Assimilation', text: 'A voiced consonant next to an unvoiced one often changes to match it, mostly in quick speech: médecin is said “med-sin”, and je suis is said “chuis”.' },
+    { title: 'Elision', text: 'Before a vowel, the vowels of le, la, je, me, te, se, de, ne, que drop and an apostrophe joins the words: l’ami, j’aime, qu’il. The unstressed e (the schwa) is often dropped too: je ne sais pas → “chais pas”.' },
+    { title: 'Doubled letters', text: 'Doubled consonants are said as one, and only in a few words (illusion, irrégulier) is a consonant held a little longer. The doubled letter usually changes the vowel before it instead (nette against net).' },
+    { title: 'Weak forms and the schwa', text: 'The e in le, de, ne, que, se, me, je is a weak, rounded sound that is often left out, as long as no three consonants come together. It is kept at the start of a sentence and after two consonants.' },
   ],
 };

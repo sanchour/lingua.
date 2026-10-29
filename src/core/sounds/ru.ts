@@ -36,5 +36,9 @@ export const RU: SoundSystem = {
     { title: 'Stress and vowel reduction', text: 'Stress can fall on any syllable and is not written (except in books for learners and dictionaries), but it matters: an unstressed о is said a (молоко: malaKO) and an unstressed е is said like и (весна: viSNA). Learn the stress with each word.' },
     { title: 'Devoicing', text: 'A voiced consonant at the end of a word, or before a voiceless one, is said voiceless: хлеб → “khlyep”, сказка → “skaska”, вход → “fkhot”. Before a voiced consonant a voiceless one becomes voiced: просьба → “proz’ba”.' },
     { title: 'Letters and sounds', text: 'The letters я, ю, е, ё are a vowel preceded by the soft sign of the consonant before them, or a y at the start of a word: я = “ya” or soft + a. Ь and ъ say nothing themselves: ь softens, ъ separates.' },
+    { title: 'Assimilation', text: 'A consonant takes the voicing of the next one: вторник is “ftornik”, and вокзал is “vagzal”. The same rule decides why a word-final б, в, г, д, ж, з is said unvoiced (see Devoicing).' },
+    { title: 'Palatalization', text: 'Before и, е, ё, ю, я and ь, a consonant is soft: the middle of the tongue rises to the palate, and the sound is nearly followed by a short “y”. It is the only difference between мат (hard) and мать (soft), угол and уголь.' },
+    { title: 'Elision', text: 'Some letters are not said: the в in здравствуйте, the л in солнце, the т in честный, and the д in sound groups like сердце.' },
+    { title: 'Weak forms', text: 'Unstressed о is said “a” and unstressed е and я like a short “i”: молоко → “malako”. Short words such as в, к, с, на, по are said as one word with the next, with no stress of their own.' },
   ],
 };

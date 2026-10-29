@@ -39,5 +39,9 @@ export const ZH: SoundSystem = {
     { title: 'Tone changes', text: 'Two third tones in a row: the first becomes a second (nǐ hǎo is said “ní hǎo”). 不 (bù) is said bú before a fourth tone (bú shì). 一 (yī) is said yí before a fourth tone and yì before the others.' },
     { title: 'Aspirated and unaspirated', text: 'The difference between b and p, d and t, g and k, z and c, zh and ch, j and q is not voicing but a puff of air, as in the pairs here. A learner who says “b” with the voice of English often is understood as p.' },
     { title: 'Pinyin', text: 'Pinyin writes the sounds with the Latin alphabet but not with English values: q is “ch”, x is “sh”, c is “ts”, z is “dz”, zh is “j”, and ü is the French u. Learn it as a new alphabet.' },
+    { title: 'Assimilation', text: 'Some tones change with the next one: a third tone before another third tone is said as a second (nǐ hǎo is said “ní hǎo”). 不 and 一 change before a fourth tone (bù → bú in bú shì).' },
+    { title: 'Elision and the “r” ending', text: 'In speech, syllables get short: 不知道 is nearly “bù zhīdao”. In the north an -r ending (儿) blends with the syllable before it: 花儿 is “huār”, and the syllable’s final sound is dropped or changed.' },
+    { title: 'Doubled sounds', text: 'Mandarin has no doubled consonants, but a doubled syllable (妈妈, 谢谢) keeps its first tone and says the second as a short, light one: the neutral tone.' },
+    { title: 'Weak forms and the neutral tone', text: 'Particles such as 的, 了, 吗, 吧 and the second syllable of some words (东西, 朋友) lose their tone and are said light and short. Their pitch depends on the syllable before them.' },
   ],
 };

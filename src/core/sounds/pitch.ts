@@ -73,3 +73,68 @@ export function contourInSemitones(contour: ReadonlyArray<number | null>): Array
   const base = Math.min(...voiced);
   return contour.map((hz) => (hz === null ? null : 12 * Math.log2(hz / base)));
 }
+
+/** A real-input FFT by the radix-2 recursion: the magnitudes of the first half of the bins. `size` must be a power of two. */
+function fftMagnitudes(input: Float32Array): Float32Array {
+  const n = input.length;
+  const re = Float64Array.from(input);
+  const im = new Float64Array(n);
+  // Bit reversal.
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) [re[i], re[j]] = [re[j], re[i]];
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = (-2 * Math.PI) / len;
+    for (let i = 0; i < n; i += len) {
+      for (let k = 0; k < len / 2; k++) {
+        const wr = Math.cos(ang * k);
+        const wi = Math.sin(ang * k);
+        const a = i + k;
+        const b = i + k + len / 2;
+        const tr = re[b] * wr - im[b] * wi;
+        const ti = re[b] * wi + im[b] * wr;
+        re[b] = re[a] - tr;
+        im[b] = im[a] - ti;
+        re[a] += tr;
+        im[a] += ti;
+      }
+    }
+  }
+  const out = new Float32Array(n / 2);
+  for (let i = 0; i < n / 2; i++) out[i] = Math.hypot(re[i], im[i]);
+  return out;
+}
+
+export interface Spectrogram {
+  /** One row per time step, one value per frequency bin, 0 (quiet) to 1 (loud, on the decibel scale of this recording). */
+  frames: Float32Array[];
+  /** The width of a bin in Hz, and of a step in ms. */
+  binHz: number;
+  stepMs: number;
+}
+
+/** The loudness at each frequency over time (up to `maxHz`), for drawing where the sounds are: vowels as bands, "s" as a smear at the top. */
+export function spectrogram(samples: Float32Array, sampleRate: number, opts: { size?: number; stepMs?: number; maxHz?: number } = {}): Spectrogram {
+  const size = opts.size ?? 512;
+  const stepMs = opts.stepMs ?? 10;
+  const maxHz = opts.maxHz ?? 5000;
+  const hop = Math.max(1, Math.floor((sampleRate * stepMs) / 1000));
+  const binHz = sampleRate / size;
+  const bins = Math.min(size / 2, Math.floor(maxHz / binHz));
+  const window = Float32Array.from({ length: size }, (_, i) => 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (size - 1)));
+  const raw: Float32Array[] = [];
+  let top = 1e-9;
+  for (let start = 0; start + size <= samples.length; start += hop) {
+    const frame = new Float32Array(size);
+    for (let i = 0; i < size; i++) frame[i] = samples[start + i] * window[i];
+    const mag = fftMagnitudes(frame).slice(0, bins);
+    for (const m of mag) top = Math.max(top, m);
+    raw.push(mag);
+  }
+  // 60 dB of range below the loudest point.
+  const frames = raw.map((mag) => Float32Array.from(mag, (m) => Math.max(0, Math.min(1, 1 + (20 * Math.log10(Math.max(m, 1e-9) / top)) / 60))));
+  return { frames, binHz, stepMs: (hop / sampleRate) * 1000 };
+}

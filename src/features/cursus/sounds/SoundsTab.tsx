@@ -3,11 +3,14 @@
 import { useState } from 'react';
 import { useApp } from '@/app/context';
 import { getLanguage } from '@/core/lang/languages';
+import { guidance, voicingPartner } from '@/core/sounds/articulation';
 import { MANNERS, PLACES, soundSystemOf } from '@/core/sounds';
 import type { Consonant, Sound, Tone, Vowel } from '@/core/sounds';
 import { SpeakButton } from '@/features/speech/SpeakButton';
 import { cx } from '@/lib/cx';
-import { MinimalPairs } from './MinimalPairs';
+import { Drills } from './Drills';
+import { MinimalPairs, pairsWith } from './MinimalPairs';
+import { MouthDiagram } from './MouthDiagram';
 import { PronunciationDiary } from './PronunciationDiary';
 import { RecordCompare } from './RecordCompare';
 import { StressDrill } from './StressDrill';
@@ -113,7 +116,8 @@ function ToneCard({ tone, chosen, onChoose }: { tone: Tone; chosen?: string; onC
   );
 }
 
-function Detail({ sound, lang }: { sound: Sound; lang: string }) {
+function Detail({ sound, lang, all, onChoose, onPairs }: { sound: Sound; lang: string; all: Sound[]; onChoose: (s: Sound) => void; onPairs: (ipa: string) => void }) {
+  const partner = sound.kind === 'consonant' ? voicingPartner(sound, all) : undefined;
   return (
     <aside aria-label="About this sound" className="rounded-3xl border border-line bg-raised p-5 lg:sticky lg:top-4">
       <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">
@@ -123,6 +127,25 @@ function Detail({ sound, lang }: { sound: Sound; lang: string }) {
         {sound.ipa}
       </p>
       <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">{sound.note}</p>
+      <div className="mt-4 flex items-start gap-3">
+        <MouthDiagram sound={sound} />
+      </div>
+      <p className="mt-2 text-[14px] leading-relaxed">{guidance(sound)}</p>
+      <p className="mt-1 text-[11.5px] text-ink-faint">A sketch to think with, not a scan: the real mouth varies from person to person.</p>
+      {pairsWith(lang, [sound.ipa]).length > 0 && (
+        <button type="button" onClick={() => onPairs(sound.ipa)} className="mt-3 h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
+          Practise pairs with this sound
+        </button>
+      )}
+      {partner && (
+        <p className="mt-3 rounded-xl bg-surface p-3 text-[14px] text-ink-soft">
+          Same place and manner, other voicing:{' '}
+          <button type="button" onClick={() => onChoose(partner)} className="font-serif text-[17px] font-semibold text-ink underline decoration-line-strong underline-offset-4">
+            {partner.ipa}
+          </button>
+          . Say one, then the other with a hand on your throat: only the {sound.kind === 'consonant' && sound.voiced ? 'first' : 'second'} hums.
+        </p>
+      )}
       <ul className="mt-4 divide-y divide-line/60">
         {sound.words.map(([word, meaning]) => (
           <li key={word} className="flex items-center gap-3 py-2">
@@ -143,12 +166,15 @@ export function SoundsTab() {
   const lang = language.id;
   const system = soundSystemOf(lang);
   const [chosen, setChosen] = useState<Sound | null>(null);
+  const [focus, setFocus] = useState<string[] | null>(null);
+  const [practice, setPractice] = useState<string[] | null>(null);
   if (!system) return <p className="text-ink-soft">Sounds are written for the six core languages.</p>;
   const vowels = system.sounds.filter((s): s is Vowel => s.kind === 'vowel');
   const consonants = system.sounds.filter((s): s is Consonant => s.kind === 'consonant');
   const tones = system.sounds.filter((s): s is Tone => s.kind === 'tone');
   const selected = chosen && system.sounds.some((s) => key(s) === key(chosen)) ? chosen : (tones[0] ?? vowels[0] ?? consonants[0]);
   const name = getLanguage(lang)?.name ?? lang;
+  const sayThese = (words: string[]) => (setPractice(words), window.setTimeout(() => document.getElementById('say-it')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50));
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
@@ -198,12 +224,15 @@ export function SoundsTab() {
             ))}
           </dl>
         </section>
-        <MinimalPairs lang={lang} />
+        <MinimalPairs key={focus?.join() ?? 'all'} lang={lang} focus={focus} onFocus={setFocus} onSay={sayThese} />
+        <Drills lang={lang} onSay={sayThese} />
         <StressDrill lang={lang} />
         <PronunciationDiary lang={lang} />
-        <RecordCompare lang={lang} words={system.sounds.flatMap((s) => s.words.map(([w]) => w)).filter((w) => /^[\p{L}\p{M}]+$/u.test(w)).slice(0, 12)} />
+        <div id="say-it">
+          <RecordCompare key={practice?.join() ?? 'words'} lang={lang} words={practice ?? system.sounds.flatMap((s) => s.words.map(([w]) => w)).filter((w) => /^[\p{L}\p{M}]+$/u.test(w)).slice(0, 12)} />
+        </div>
       </div>
-      {selected && <Detail key={key(selected)} sound={selected} lang={lang} />}
+      {selected && <Detail key={key(selected)} sound={selected} lang={lang} all={system.sounds} onChoose={setChosen} onPairs={(ipa) => (setFocus([ipa]), document.getElementById('pairs-h')?.scrollIntoView({ block: 'center' }))} />}
     </div>
   );
 }

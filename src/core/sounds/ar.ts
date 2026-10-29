@@ -40,5 +40,9 @@ export const AR: SoundSystem = {
     { title: 'Short and long vowels', text: 'A long vowel is held about twice as long as a short one and is always written (ا و ي); the short vowels are not written in ordinary text. Length changes meaning: kataba (he wrote), kātaba (he wrote to).' },
     { title: 'The throat', text: 'ع, ح and the hamza (ء) are made in the throat. They are the sounds that learners find hardest; practise them slowly, on their own, before putting them in words.' },
     { title: 'Stress', text: 'In Modern Standard Arabic the stress falls on the last heavy syllable (a long vowel, or a vowel followed by two consonants), else on the first. Dialects follow their own rules; listen to the speaker you want to understand.' },
+    { title: 'Assimilation', text: 'The l of the article (al-) is not said before the “sun letters” (ت ث د ذ ر ز س ش ص ض ط ظ ل ن): it becomes the next consonant, doubled: ash-shams (the sun), not al-shams.' },
+    { title: 'Doubled letters (shadda)', text: 'A doubled consonant is really held, about twice as long, and it changes the word: darasa (he studied) against darrasa (he taught). Keep the pause: do not say it as two letters.' },
+    { title: 'Elision', text: 'The hamzat al-wasl (the glottal stop at the start of al-, ibn and some verbs) is not said in the middle of a sentence: it joins the vowel before it. Said alone it is “al-bayt”, but in the middle it is “…l-bayt”.' },
+    { title: 'Palatalization and the heavy letters', text: 'The heavy letters (ص ض ط ظ) draw the back of the tongue up and back, and the vowels near them turn dark. This spreads: a light letter beside them can sound a little heavy in some words.' },
   ],
 };
