@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.70** · 2026-10-29 · 6-13 T2: translation views (alignment, back-translation, rebuild)
 - **0.6.0-alpha.69** · 2026-10-29 · 6-13 T1: translation practice with hints, literal vs natural, and required words
 - **0.6.0-alpha.68** · 2026-10-29 · Claim 6-13 Translating and comparing languages for Antigravity-1
 - **0.6.0-alpha.67** · 2026-10-29 · 6-7 Grammar: G5 sentence explainer with device-dictionary form/ending breakdown and Max syntax parser
