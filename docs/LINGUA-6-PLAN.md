@@ -73,7 +73,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-1 | [ ] | The word record | 22 new · 23 to finish | — | L |
 | 6-2 | [ ] | The inbox and the deck workshop | 15 new · 25 to finish | 6-1 | L |
 | 6-3 | [ ] | Cards and memory | 21 new · 11 to finish | 6-1 | L |
-| 6-4 | [ ] | One exercise engine | 25 new · 3 to finish | — | L |
+| 6-4 | [~] | *claimed 2026-10-29* One exercise engine | 25 new · 3 to finish | — | L |
 | 6-5 | [ ] | The learner's record | 9 new · 2 to finish | 6-4 | M |
 | 6-6 | [ ] | Generated materials, checked | 19 new · 3 to finish | 6-1, 6-4 | M |
 | **Part B · The skills** (in parallel, after Part A) | | | | | |
