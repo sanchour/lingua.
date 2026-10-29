@@ -4,12 +4,14 @@
 import Dexie from 'dexie';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { buriedUntilTomorrow, catchUpPlan, isBuried, isLeech } from '@/core/srs/memory';
+import { normalizeWord } from '@/core/text/normalize';
 import { buildQueue } from '@/core/srs/queue';
 import { dayEnd, MATURE_DAYS, rate } from '@/core/srs/scheduler';
 import type { Grade4 } from '@/core/srs/scheduler';
 import { bumpDaily } from './activity';
 import { db } from './db';
 import type { LinguaDB } from './db';
+import { forgetEvidenceRow, recordEvidence } from './learner';
 import { getSettings } from './settings';
 import type { Card, Deck, Note, ReviewLog, ReviewMode } from './types';
 import { setWordState } from './words';
@@ -89,6 +91,8 @@ export interface AnswerUndo {
   logId: string;
   lang: string;
   counted: { reviews: number; againCount: number; newCards: number };
+  /** The learner's-record row this answer made (6-5), taken back with it. */
+  evidenceId?: string;
 }
 
 export interface AnswerOptions {
@@ -147,15 +151,31 @@ export async function answerCard(card: Card, answered: Grade4, opts: AnswerOptio
   });
   await bumpDaily(opts.lang, counted, database);
 
+  // What the learner did, for their record (6-5): a right answer with a hint or a guess counts as assisted.
+  const note = await database.notes.get(card.noteId);
+  const evidence = await recordEvidence(
+    {
+      lang: opts.lang,
+      at: now,
+      skill: 'vocabulary',
+      room: opts.mode === 'classic' ? 'thesaurus' : 'ludus',
+      item: { type: 'word', wordId: note?.wordId ?? `${opts.lang}:${note ? normalizeWord(note.term, opts.lang) : card.noteId}` },
+      outcome: grade === 1 ? 'wrong' : 'right',
+      assisted: Boolean(opts.hinted || opts.guessed),
+      kind: opts.mode,
+      contextId: opts.contextId ?? card.deckId,
+    },
+    database,
+  ).catch(() => undefined);
+
   // A card that has matured means the word is known: the reader stops highlighting it.
   if (outcome && settings.study.autoPromoteMature && updated.state === 2 && updated.scheduledDays >= MATURE_DAYS) {
-    const note = await database.notes.get(card.noteId);
     const word = note?.wordId ? await database.words.get(note.wordId) : undefined;
     if (word && !word.deletedAt && word.state === 2) await setWordState(word.lang, word.norm, 1, {}, database);
   }
   // The other direction of the same word waits until tomorrow, where the deck asks for it.
   if (outcome && deck?.config.burySiblings) await buryNote(card.noteId, now, database, card.id);
-  return { card: updated, undo: { before: card, logId: log.id, lang: opts.lang, counted }, leech: becameLeech };
+  return { card: updated, undo: { before: card, logId: log.id, lang: opts.lang, counted, evidenceId: evidence?.id }, leech: becameLeech };
 }
 
 /** Puts a note's cards away until tomorrow's first lesson (all of them, or all but `except`). */
@@ -190,6 +210,7 @@ export async function undoAnswer(undo: AnswerUndo, database: LinguaDB = db): Pro
     await database.cards.put({ ...undo.before, updatedAt: Date.now() });
     await database.reviewLogs.delete(undo.logId);
   });
+  if (undo.evidenceId) await forgetEvidenceRow(undo.evidenceId, database);
   await bumpDaily(undo.lang, { reviews: -undo.counted.reviews, againCount: -undo.counted.againCount, newCards: -undo.counted.newCards }, database);
 }
 

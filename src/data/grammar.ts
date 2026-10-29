@@ -12,6 +12,7 @@ import type { Grade4 } from '@/core/srs/scheduler';
 import { bumpDaily } from './activity';
 import { db } from './db';
 import type { LinguaDB } from './db';
+import { recordEvidence } from './learner';
 import { getSettings } from './settings';
 import type { GrammarItemRow, GrammarProgressRow, ReviewLog } from './types';
 
@@ -115,6 +116,22 @@ export async function answerGrammarItem(a: GrammarAnswer, database: LinguaDB = d
     await database.reviewLogs.add(log);
   });
   await bumpDaily(a.lang, { reviews: 1, againCount: a.grade === 1 ? 1 : 0 }, database);
+  // What the learner did, for their record (6-5).
+  await recordEvidence(
+    {
+      lang: a.lang,
+      at: now,
+      skill: 'grammar',
+      room: a.topic.startsWith('course:') ? 'cursus' : 'grammatica',
+      item: { type: 'grammar', topicId: a.topic },
+      outcome: a.grade === 1 ? 'wrong' : 'right',
+      category: a.grade === 1 ? 'grammar' : undefined,
+      assisted: false,
+      kind: 'grammar',
+      contextId: a.topic,
+    },
+    database,
+  ).catch(() => undefined);
   return row;
 }
 

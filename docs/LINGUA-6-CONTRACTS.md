@@ -55,6 +55,8 @@ add the new one and read both.
 
 - **0.6.0-alpha.14 (6-5):** `EvidenceRow` gains `itemKey` (the item as one string) and `evidence` is indexed `[lang+itemKey]` instead of `[lang+item]`, which cannot index an object.
 
+- **0.6.0-alpha.15 (6-5):** built `evidence` (Dexie 22; 21 is unused) with `itemKey`, and `evidenceDays` as a cache that is **not backed up** (`skip`, not `insertOnly`: it is rebuilt from the evidence). `LearnerRecord.record` takes a row without `itemKey`. The room is the one where the answer is taken: `answerCard` and `answerGrammarItem` write the rows.
+
 ## What was decided here (and could be reopened)
 
 - Part A's tables: `evidence`, `evidenceDays` (6-5) and `generated` (6-6) are the only new ones; 6-1 to 6-3 add fields

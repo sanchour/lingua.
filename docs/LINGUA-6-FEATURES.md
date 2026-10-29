@@ -873,7 +873,7 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [x] `F0661` Compare original and corrected versions
 - [ ] `F0662` Preserve the learner’s original voice · **6-12** · partly there
 - [ ] `F0663` Provide several alternative phrasings · **6-12**
-- [ ] `F0664` Identify recurring mistakes · **6-5** · partly there
+- [x] `F0664` Identify recurring mistakes · **6-5** · partly there
 - [ ] `F0665` Suggest more precise vocabulary · **6-12**
 - [ ] `F0666` Explain why a sentence sounds unnatural · **6-12**
 - [ ] `F0667` Identify literal translations from the native language · **6-12**
@@ -1263,7 +1263,7 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [ ] `F0971` Generate a lesson on a specific topic · **6-15**
 - [ ] `F0972` Generate a personalized study plan · **6-16**
 - [x] `F0973` Recommend a next step
-- [ ] `F0974` Diagnose recurring mistakes · **6-5**
+- [x] `F0974` Diagnose recurring mistakes · **6-5**
 - [ ] `F0975` Review a conversation · **6-11**
 - [x] `F0976` Review an essay
 - [ ] `F0977` Review a pronunciation recording · **6-10**
@@ -1290,7 +1290,7 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [x] `F0993` Remember the learner’s native language
 - [ ] `F0994` Remember known vocabulary · **6-15** · partly there
 - [ ] `F0995` Remember grammar topics already studied · **6-15** · partly there
-- [ ] `F0996` Remember recurring errors · **6-5**
+- [x] `F0996` Remember recurring errors · **6-5**
 - [x] `F0997` Remember personal interests
 - [ ] `F0998` Adjust explanation complexity · **6-15**
 - [ ] `F0999` Adjust sentence length · **6-15**
@@ -1303,7 +1303,7 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [ ] `F1006` Adapt practice to upcoming travel · **6-16**
 - [ ] `F1007` Adapt practice to exams · **6-18**
 - [ ] `F1008` Adapt to time available · **6-16** · partly there
-- [ ] `F1009` Distinguish persistent mistakes from occasional slips · **6-5**
+- [x] `F1009` Distinguish persistent mistakes from occasional slips · **6-5**
 - [ ] `F1010` Avoid repeatedly teaching mastered concepts · **6-16**
 - [ ] `F1011` Recommend prerequisite material when needed · **6-16**
 - [ ] `F1012` Explain connections between different lessons · **6-15**
@@ -1854,7 +1854,7 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1454` Personalized media recommendations
 - [x] `F1455` Personalized revision schedules
 - [ ] `F1456` Personalized daily sessions · **6-16** · partly there
-- [ ] `F1457` Detect recurring mistakes · **6-5**
+- [x] `F1457` Detect recurring mistakes · **6-5**
 - [ ] `F1458` Detect forgotten vocabulary · **6-5** · partly there
 - [ ] `F1459` Detect recognition-versus-recall gaps · **6-5**
 - [ ] `F1460` Detect weaknesses by skill · **6-5**

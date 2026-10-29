@@ -16,6 +16,7 @@ import { Button } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { LogTimeDrawer, MomentDrawer } from './forms';
 import { GrammarPanel } from './GrammarPanel';
+import { WeakSpotsPanel } from './WeakSpotsPanel';
 import { ACTIVITY_COLOR, ACTIVITY_LABEL, hours, Legend, Panel, pct, shortDate, Stat } from './common';
 
 const MODE_LABEL: Record<string, string> = { mcq: 'Choose', match: 'Match pairs', cloze: 'Fill the gap', build: 'Build sentences', type: 'Typing', listen: 'Listening', speak: 'Speaking' };
@@ -378,6 +379,7 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
       </div>
 
       <GrammarPanel lang={lang} />
+      <WeakSpotsPanel lang={lang} />
     </div>
   );
 }

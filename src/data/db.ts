@@ -1,5 +1,6 @@
 import Dexie from 'dexie';
 import type { EntityTable, Table } from 'dexie';
+import type { EvidenceDay, EvidenceRow } from '@/core/contracts/learner';
 import type { FullDictRow } from '@/core/dictionary/format';
 import type {
   ActivitySession,
@@ -174,7 +175,13 @@ export const SCHEMA_V20 = {
   cards: 'id, noteId, [deckId+due], [deckId+state], [deckId+leech], due, updatedAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16, ...SCHEMA_V17, ...SCHEMA_V18, ...SCHEMA_V19, ...SCHEMA_V20 };
+/** Version 22 (Lingua 6-5, the learner's record): one row for every thing the learner did, and a small summary kept for each finished day. (21 is unused: the engine has no table.) */
+export const SCHEMA_V22 = {
+  evidence: 'id, [lang+at], [lang+skill+at], [lang+category+at], [lang+itemKey], at',
+  evidenceDays: 'id, [lang+day]',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16, ...SCHEMA_V17, ...SCHEMA_V18, ...SCHEMA_V19, ...SCHEMA_V20, ...SCHEMA_V22 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -223,6 +230,8 @@ export type LinguaDB = Dexie & {
   fullDict: Table<FullDictRow, [string, string]>;
   courseProgress: EntityTable<CourseProgressRow, 'id'>;
   typing: EntityTable<TypingRow, 'id'>;
+  evidence: EntityTable<EvidenceRow, 'id'>;
+  evidenceDays: EntityTable<EvidenceDay, 'id'>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -246,6 +255,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(18).stores(SCHEMA_V18);
   db.version(19).stores(SCHEMA_V19);
   db.version(20).stores(SCHEMA_V20);
+  db.version(22).stores(SCHEMA_V22);
   return db;
 }
 

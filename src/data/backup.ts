@@ -59,6 +59,10 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   sightings: { policy: 'lww', key: 'id' },
   courseProgress: { policy: 'lww', key: 'id' },
   typing: { policy: 'lww', key: 'id' },
+  // What the learner did: rows are only ever added, so the two devices' are joined (6-5).
+  evidence: { policy: 'union', key: 'id' },
+  // Worked out from the evidence again when asked.
+  evidenceDays: { policy: 'skip', key: 'id' },
   // Downloaded again from the site when needed.
   fullDict: { policy: 'skip', key: '' },
 };

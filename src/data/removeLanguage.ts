@@ -7,6 +7,7 @@ import { db } from './db';
 import type { LinguaDB } from './db';
 import { deleteDeck, deleteFolder } from './decks';
 import { deleteEntry } from './journal';
+import { forgetEvidence } from './learner';
 import { removeGoal, removeMoment, removeStudyLog } from './journey';
 import { switchLanguage } from './languages';
 import { deleteText } from './library';
@@ -46,6 +47,7 @@ export async function removeLanguage(lang: string, database: LinguaDB = db): Pro
   await database.grammarProgress.where('lang').equals(lang).delete();
   await database.courseProgress.where('lang').equals(lang).delete();
   await database.typing.where('lang').equals(lang).delete();
+  await forgetEvidence(lang, database);
   await database.reviewLogs.where('[deckId+reviewedAt]').between([`grammar:${lang}`, Dexie.minKey], [`grammar:${lang}`, Dexie.maxKey]).delete();
   await removePack(lang);
 

@@ -94,8 +94,8 @@ export interface WeakSpot {
 /** The questions other rooms ask of `core/learner`. Each answers from `evidence` alone, on the device. They are the
  *  only way to read it: no room queries the table itself, so Grammatica, Ratio and the tutor can't disagree. */
 export interface LearnerRecord {
-  /** Appends one row. Resolves when it is written. */
-  record: (row: Omit<EvidenceRow, 'id' | 'day'> & { id?: string }) => Promise<void>;
+  /** Appends one row (its day and its item key are worked out). Resolves when it is written. */
+  record: (row: Omit<EvidenceRow, 'id' | 'day' | 'itemKey'> & { id?: string }) => Promise<void>;
   /** The persistent weak spots first, then slips, for a language, optionally for one skill. */
   weakSpots: (lang: Lang, opts?: { skill?: Skill; limit?: number }) => Promise<WeakSpot[]>;
   /** Words answered right but only with help, or recognised but never recalled (right in a choice, wrong when typed). */
