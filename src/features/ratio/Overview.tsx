@@ -16,6 +16,7 @@ import { Button } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { LogTimeDrawer, MomentDrawer } from './forms';
 import { GrammarPanel } from './GrammarPanel';
+import { SkillBalancePanel } from './SkillBalancePanel';
 import { WeakSpotsPanel } from './WeakSpotsPanel';
 import { ACTIVITY_COLOR, ACTIVITY_LABEL, hours, Legend, Panel, pct, shortDate, Stat } from './common';
 
@@ -380,6 +381,7 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
 
       <GrammarPanel lang={lang} />
       <WeakSpotsPanel lang={lang} />
+      <SkillBalancePanel lang={lang} />
     </div>
   );
 }

@@ -199,7 +199,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0110` Show the stability of a memory over time · **6-3**
 - [x] `F0111` Show retrievability or estimated probability of recall · **6-3**
 - [x] `F0112` Separate recognition strength from active recall strength · **6-3** · partly there
-- [ ] `F0113` Compare performance with and without hints · **6-5**
+- [x] `F0113` Compare performance with and without hints · **6-5**
 - [x] `F0114` Distinguish correct answers from lucky guesses · **6-3**
 - [x] `F0115` Reintroduce words after long absences · **6-3**
 - [x] `F0116` Mix old and new vocabulary
@@ -1856,8 +1856,8 @@ Different languages require different learning interfaces. This could become a m
 - [ ] `F1456` Personalized daily sessions · **6-16** · partly there
 - [x] `F1457` Detect recurring mistakes · **6-5**
 - [ ] `F1458` Detect forgotten vocabulary · **6-5** · partly there
-- [ ] `F1459` Detect recognition-versus-recall gaps · **6-5**
-- [ ] `F1460` Detect weaknesses by skill · **6-5**
+- [x] `F1459` Detect recognition-versus-recall gaps · **6-5**
+- [x] `F1460` Detect weaknesses by skill · **6-5**
 - [x] `F1461` Identify neglected skills
 - [ ] `F1462` Balance receptive and productive practice · **6-16** · partly there
 - [ ] `F1463` Adjust for learner confidence · **6-16**

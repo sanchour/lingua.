@@ -102,3 +102,20 @@ export function summariseDay(lang: string, day: string, rows: readonly EvidenceR
   }
   return { id: `${lang}:${day}`, lang, day, bySkill, byCategory };
 }
+
+/** Per skill over some days: answers, how many were wrong, and how many leaned on a hint, a retry or a revealed answer. */
+export function skillBalance(days: readonly EvidenceDay[]): Array<{ skill: Skill; answers: number; wrong: number; assisted: number }> {
+  return SKILLS.map((skill) => {
+    let answers = 0;
+    let wrong = 0;
+    let assisted = 0;
+    for (const d of days) {
+      const s = d.bySkill[skill];
+      if (!s) continue;
+      answers += s.right + s.wrong;
+      wrong += s.wrong;
+      assisted += s.assisted;
+    }
+    return { skill, answers, wrong, assisted };
+  });
+}

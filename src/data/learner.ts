@@ -4,7 +4,7 @@
 import Dexie from 'dexie';
 import { useLiveQuery } from 'dexie-react-hooks';
 import type { EvidenceDay, EvidenceItem, EvidenceRow, LearnerRecord, Skill, WeakSpot } from '@/core/contracts/learner';
-import { itemKeyOf, quietSkills, recognisedNotRecalled, summariseDay, weakSpotsOf } from '@/core/learner/learner';
+import { itemKeyOf, quietSkills, recognisedNotRecalled, skillBalance, summariseDay, weakSpotsOf } from '@/core/learner/learner';
 import { localDateKey } from '@/lib/format';
 import { db } from './db';
 import type { LinguaDB } from './db';
@@ -81,4 +81,16 @@ export async function forgetEvidence(lang: string, database: LinguaDB = db): Pro
 /** The weak spots of a language, live. */
 export function useWeakSpots(lang: string, opts: { skill?: Skill; limit?: number } = {}): WeakSpot[] | undefined {
   return useLiveQuery(() => learnerRecord().weakSpots(lang, opts), [lang, opts.skill, opts.limit]);
+}
+
+const BALANCE_DAYS = 14;
+
+/** Skills side by side over the last two weeks, and the words known when shown but not when asked for: for Ratio. */
+export function useSkillBalance(lang: string) {
+  return useLiveQuery(async () => {
+    const rec = learnerRecord();
+    const to = Date.now();
+    const days = await rec.days(lang, localDateKey(to - BALANCE_DAYS * 86_400_000), localDateKey(to));
+    return { balance: skillBalance(days), stuck: await rec.recognisedNotRecalled(lang, 8) };
+  }, [lang]);
 }

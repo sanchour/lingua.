@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { EvidenceRow } from '@/core/contracts/learner';
-import { itemKeyOf, quietSkills, recognisedNotRecalled, summariseDay, weakSpotsOf, wordIdOfKey } from './learner';
+import { itemKeyOf, quietSkills, recognisedNotRecalled, skillBalance, summariseDay, weakSpotsOf, wordIdOfKey } from './learner';
 
 const DAY = 86_400_000;
 const NOW = new Date(2026, 9, 29, 12).getTime();
@@ -111,5 +111,14 @@ describe('a day, summarised', () => {
       row({ skill: 'grammar', outcome: 'ungraded' }),
     ]);
     expect(day).toEqual({ id: 'es:2026-10-29', lang: 'es', day: '2026-10-29', bySkill: { vocabulary: { right: 1, wrong: 1, assisted: 1 }, grammar: { right: 1, wrong: 0, assisted: 0 } }, byCategory: { spelling: 1 } });
+  });
+});
+
+describe('skills side by side', () => {
+  it('adds the days up per skill, with the share that was helped', () => {
+    const day = (right: number, wrong: number, assisted: number) => ({ id: 'es:d', lang: 'es', day: 'd', bySkill: { listening: { right, wrong, assisted } }, byCategory: {} });
+    const listening = skillBalance([day(4, 1, 2), day(3, 0, 1)]).find((s) => s.skill === 'listening');
+    expect(listening).toEqual({ skill: 'listening', answers: 8, wrong: 1, assisted: 3 });
+    expect(skillBalance([]).every((s) => s.answers === 0)).toBe(true);
   });
 });

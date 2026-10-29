@@ -157,11 +157,13 @@ export async function answerCard(card: Card, answered: Grade4, opts: AnswerOptio
     {
       lang: opts.lang,
       at: now,
-      skill: 'vocabulary',
+      skill: opts.mode === 'listen' ? 'listening' : opts.mode === 'speak' ? 'pronunciation' : 'vocabulary',
       room: opts.mode === 'classic' ? 'thesaurus' : 'ludus',
       item: { type: 'word', wordId: note?.wordId ?? `${opts.lang}:${note ? normalizeWord(note.term, opts.lang) : card.noteId}` },
       outcome: grade === 1 ? 'wrong' : 'right',
       assisted: Boolean(opts.hinted || opts.guessed),
+      // A word misheard or mispronounced is a different mistake from one not known.
+      ...(grade === 1 && (opts.mode === 'listen' || opts.mode === 'speak') ? { category: opts.mode === 'listen' ? ('mishearing' as const) : ('pronunciation' as const) } : {}),
       kind: opts.mode,
       contextId: opts.contextId ?? card.deckId,
     },

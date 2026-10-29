@@ -86,6 +86,21 @@ describe('where the record is written', () => {
     expect(await db.evidence.count()).toBe(0);
   });
 
+  it('a word heard or spoken is a listening or a pronunciation row, and a miss says mishearing or pronunciation', async () => {
+    const db = freshDb();
+    const deckId = await createDeck('es', { name: 'D' }, db);
+    const noteId = await addNote(deckId, { term: 'Casa', meaning: 'house' }, db);
+    const card = (await db.cards.where('noteId').equals(noteId).first())!;
+    const opts = { lang: 'es', durationMs: 1000, now: NOW };
+    await answerCard(card, 1, { ...opts, mode: 'listen' }, db);
+    await answerCard((await db.cards.get(card.id))!, 1, { ...opts, now: NOW + 1000, mode: 'speak' }, db);
+    const rows = (await db.evidence.toArray()).sort((a, b) => a.at - b.at);
+    expect(rows).toMatchObject([
+      { skill: 'listening', category: 'mishearing' },
+      { skill: 'pronunciation', category: 'pronunciation' },
+    ]);
+  });
+
   it('a grammar item answered is a grammar row on its topic, in the course for a course topic', async () => {
     const db = freshDb();
     await answerGrammarItem({ lang: 'es', topic: 'present', key: 'k1', grade: 1, durationMs: 1000, now: NOW }, db);
