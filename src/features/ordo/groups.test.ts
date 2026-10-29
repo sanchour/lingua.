@@ -16,7 +16,7 @@ const SECTION_FILES: Record<string, string[]> = {
   plus: ['sections/PlanSection.tsx', '../plans/PlanCards.tsx'],
   sync: ['sections/SyncSection.tsx'],
   storage: ['sections/StorageSection.tsx'],
-  backup: ['sections/BackupSection.tsx'],
+  backup: ['sections/BackupSection.tsx', 'sections/ExportDataPanel.tsx'],
   reset: ['sections/ResetSection.tsx'],
   keyboard: ['sections/KeyboardSection.tsx'],
   performance: ['sections/PerformanceSection.tsx'],

@@ -34,6 +34,7 @@ import { entryPath } from './DictionarySearch';
 import { WordPlaces } from './WordMemory';
 import { OriginLines, SyllableBadge } from './WordOrigin';
 import { YourWord } from './YourWord';
+import { EntryToolsSection } from './DictionaryToolsPanel';
 
 const GENDER: Record<string, string> = { m: 'masculine', f: 'feminine', n: 'neuter', mf: 'masculine or feminine' };
 const POS: Record<string, string> = { adj: 'adjective', adv: 'adverb', prep: 'preposition', conj: 'conjunction', pron: 'pronoun', det: 'determiner', intj: 'interjection', num: 'numeral', particle: 'particle', phrase: 'phrase', verb: 'verb', noun: 'noun', character: 'character', suffix: 'suffix', prefix: 'prefix' };
@@ -195,6 +196,8 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
       </div>
 
       <YourWord key={`${lang}:${row.key}`} lang={lang} norm={row.key} lemma={row.key} gloss={gloss} />
+
+      <EntryToolsSection lang={lang} row={row} savedWord={saved} />
 
       <Tidy lang={lang} row={row} />
 

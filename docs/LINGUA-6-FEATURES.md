@@ -1646,12 +1646,12 @@ These are integrated activities that combine skills instead of training each one
 - [x] `F1282` Search across saved texts · **6-22**
 - [x] `F1283` Search across notes and flashcards · **6-22** · partly there
 - [x] `F1284` Dictionary history
-- [ ] `F1285` Favorites and bookmarks · **6-22**
+- [x] `F1285` Favorites and bookmarks · **6-22**
 - [x] `F1286` Offline dictionary
-- [ ] `F1287` Custom dictionary entries · **6-22**
-- [ ] `F1288` Multiple dictionaries for the same language · **6-22**
-- [ ] `F1289` Compare definitions from different sources · **6-22**
-- [ ] `F1290` Report incorrect definitions or examples · **6-22**
+- [x] `F1287` Custom dictionary entries · **6-22**
+- [x] `F1288` Multiple dictionaries for the same language · **6-22**
+- [x] `F1289` Compare definitions from different sources · **6-22**
+- [x] `F1290` Report incorrect definitions or examples · **6-22**
 
 ## 19 · Language-specific tools
 
@@ -1884,7 +1884,7 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1479` Import subtitles
 - [x] `F1480` Import transcripts · **6-24** · partly there
 - [x] `F1481` Import word lists · **6-2** · partly there
-- [ ] `F1482` Import personal dictionaries · **6-22**
+- [x] `F1482` Import personal dictionaries · **6-22**
 - [x] `F1483` Import grammar notes · **6-24**
 - [x] `F1484` Import from a clipboard
 - [x] `F1485` Import a web article
