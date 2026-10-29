@@ -69,7 +69,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | Step | Status | What | Entries | Needs | Size |
 | --- | --- | --- | --- | --- | --- |
 | **Part A · Foundations** | | | | | |
-| 6-0 | [~] | *claimed 2026-10-29* The contracts: Part A's types, tables and APIs, before any code | — | Lingua 5's check | S |
+| 6-0 | [x] | *done 2026-10-29 (0.6.0-alpha.2; [LINGUA-6-CONTRACTS.md](LINGUA-6-CONTRACTS.md), `src/core/contracts/`; typecheck, tests and build pass, nothing imports it yet)* The contracts: Part A's types, tables and APIs, before any code | — | Lingua 5's check | S |
 | 6-1 | [ ] | The word record | 22 new · 23 to finish | — | L |
 | 6-2 | [ ] | The inbox and the deck workshop | 15 new · 25 to finish | 6-1 | L |
 | 6-3 | [ ] | Cards and memory | 21 new · 11 to finish | 6-1 | L |
@@ -164,6 +164,8 @@ AIs agree without reading each other's work. Written as code, not only prose: a 
 
 #### 6-1 · The word record
 
+**Contract (6-0):** [word.ts](../src/core/contracts/word.ts) (`WordV6`, `DictEntryV6`) and [db.ts](../src/core/contracts/db.ts) (Dexie 18). Build against it; change it only as [LINGUA-6-CONTRACTS.md](LINGUA-6-CONTRACTS.md) says.
+
 **The idea.** Every room already reads words from the dictionary packs (`DictEntry`, forms, examples) and the word
 memory (`Word`, `Sighting`). 6-1 makes this one record per word with two halves: **the language** (everything the
 dictionary can say) and **you** (everything the learner did with it). Every later step reads from it.
@@ -193,6 +195,8 @@ the old packs still load. **Entries (22 new · 23 to finish):** F0121–F0125, F
 
 #### 6-2 · The inbox and the deck workshop
 
+**Contract (6-0):** [word.ts](../src/core/contracts/word.ts) (`DeckV6`, `NoteV6`, `InboxState`) and [db.ts](../src/core/contracts/db.ts) (Dexie 19). Build against it; change it only as [LINGUA-6-CONTRACTS.md](LINGUA-6-CONTRACTS.md) says.
+
 **The idea.** Saving is not scheduling. Words met and looked up wait in an inbox until the learner decides; decks
 are easy to shape; making a deck from a book, a song or a list always shows a preview first.
 
@@ -214,6 +218,8 @@ are easy to shape; making a deck from a book, a song or a list always shows a pr
 through its preview in under a minute; bulk actions undo. **Entries (15 new · 25 to finish):** F0044–F0058, F0065–F0068, F0070, F0073–F0074, F0076–F0086, F0361, F0801, F0815, F1239, F1481, F1487, F1580
 
 #### 6-3 · Cards and memory
+
+**Contract (6-0):** [word.ts](../src/core/contracts/word.ts) (`CardTemplate`, `CardV6`, `ReviewLogV6`) and [db.ts](../src/core/contracts/db.ts) (Dexie 20). Build against it; change it only as [LINGUA-6-CONTRACTS.md](LINGUA-6-CONTRACTS.md) says.
 
 **The idea.** More kinds of cards, gentler hints, and the memory shown honestly. `core/srs` already runs ts-fsrs.
 
@@ -240,6 +246,8 @@ plan spreads 300 overdue cards over a week. **Entries (21 new · 11 to finish):*
 
 #### 6-4 · One exercise engine
 
+**Contract (6-0):** [exercise.ts](../src/core/contracts/exercise.ts) (no table, Dexie 21 unused). Build against it; change it only as [LINGUA-6-CONTRACTS.md](LINGUA-6-CONTRACTS.md) says.
+
 **The idea.** Ludus (`features/thesaurus/study/exercises.tsx`), Grammatica's lessons, the course, Check yourself and
 alphabet lessons each have their own exercises today. One engine in `core/exercise`: an exercise kind is plain data
 (prompt, answer check, hints, feedback, what it trains) drawn by shared components, so a new kind works in every room
@@ -261,6 +269,8 @@ code. **Entries (25 new · 3 to finish):** F0033, F0035–F0040, F0241, F0243–
 
 #### 6-5 · The learner's record
 
+**Contract (6-0):** [learner.ts](../src/core/contracts/learner.ts) and [db.ts](../src/core/contracts/db.ts) (`evidence`, `evidenceDays`, Dexie 22). Build against it; change it only as [LINGUA-6-CONTRACTS.md](LINGUA-6-CONTRACTS.md) says.
+
 **The idea.** Lingua already logs reviews, sessions, journal corrections and grammar items. One record joins them
 into evidence: what was answered with and without help, which mistakes recur (in one set of categories across
 Diarium, conversation transcripts, Grammatica, Ludus and dictation), which words are recognised but not recalled,
@@ -278,6 +288,8 @@ summaries cached per day. **Done when:** a learner's weak spots are the same in 
 **Entries (9 new · 2 to finish):** F0113, F0281, F0664, F0974, F0996, F1009, F1127, F1457–F1460
 
 #### 6-6 · Generated materials, checked
+
+**Contract (6-0):** [db.ts](../src/core/contracts/db.ts) (`generated`, `GeneratedRow`, Dexie 23). Build against it; change it only as [LINGUA-6-CONTRACTS.md](LINGUA-6-CONTRACTS.md) says.
 
 **The idea.** Max already writes prompts, checks entries and explains. One generator service (`services/llm`
 extended) makes everything the catalogue wants made, and **checks it before it is shown**, because "language
