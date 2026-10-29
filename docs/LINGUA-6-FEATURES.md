@@ -91,9 +91,9 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0012` Word → pronunciation
 - [x] `F0013` Pronunciation → spelling
 - [ ] `F0014` Word → grammatical information · **6-3**
-- [ ] `F0015` Word → synonym · **6-3**
-- [ ] `F0016` Word → antonym · **6-3**
-- [ ] `F0017` Word → collocation · **6-3**
+- [x] `F0015` Word → synonym · **6-3**
+- [x] `F0016` Word → antonym · **6-3**
+- [x] `F0017` Word → collocation · **6-3**
 - [x] `F0018` Word → common phrase
 - [x] `F0019` Multiple-choice vocabulary questions
 - [x] `F0020` Type-the-answer cards
@@ -101,7 +101,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0022` Progressive hints · **6-3**
 - [x] `F0023` Cloze deletion cards
 - [x] `F0024` Bidirectional cards
-- [ ] `F0025` Multiple meanings on one card · **6-3**
+- [x] `F0025` Multiple meanings on one card · **6-3**
 - [ ] `F0026` Cards containing multiple related words · **6-3**
 - [x] `F0027` Sentence-based flashcards
 - [ ] `F0028` Contextual flashcards with a short paragraph · **6-3** · partly there
@@ -130,12 +130,12 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0046` Custom deck descriptions · **6-2**
 - [ ] `F0047` Deck cover images and colors · **6-2** · partly there
 - [ ] `F0048` Reorder cards manually · **6-2**
-- [ ] `F0049` Sort alphabetically · **6-2** · partly there
-- [ ] `F0050` Sort by date added · **6-2** · partly there
-- [ ] `F0051` Sort by difficulty · **6-2** · partly there
-- [ ] `F0052` Sort by frequency · **6-2** · partly there
-- [ ] `F0053` Sort by due date · **6-2** · partly there
-- [ ] `F0054` Sort by part of speech · **6-2**
+- [x] `F0049` Sort alphabetically · **6-2** · partly there
+- [x] `F0050` Sort by date added · **6-2** · partly there
+- [x] `F0051` Sort by difficulty · **6-2** · partly there
+- [x] `F0052` Sort by frequency · **6-2** · partly there
+- [x] `F0053` Sort by due date · **6-2** · partly there
+- [x] `F0054` Sort by part of speech · **6-2**
 - [ ] `F0055` Sort by topic · **6-2**
 - [x] `F0056` Merge decks · **6-2**
 - [x] `F0057` Duplicate decks · **6-2**

@@ -5,6 +5,8 @@ import { Check, CheckSquare, Ellipsis, FolderInput, Layers, Pause, Pencil, Play,
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatInterval, maturityOf } from '@/core/srs/scheduler';
+import { NOTE_SORTS, sortNotes } from '@/core/srs/sortNotes';
+import type { NoteSort } from '@/core/srs/sortNotes';
 import { deleteDeck, forgetDeck, updateDeck, useDeck, useDeckCards, useDeckCounts, useDecks, useDeckNotes, useFolders } from '@/data/decks';
 import { deleteNotes, moveNotes, suspendNotes, tagNotes } from '@/data/deckTools';
 import type { Card, Note } from '@/data/types';
@@ -44,6 +46,7 @@ export default function DeckPage() {
   const [moving, setMoving] = useState<MoveRequest | null>(null);
   const [query, setQuery] = useState('');
   const [shown, setShown] = useState(PAGE);
+  const [how, setHow] = useState<NoteSort>('common');
   const [selecting, setSelecting] = useState(false);
   const [picked, setPicked] = useState<ReadonlySet<string>>(new Set());
   const [tidying, setTidying] = useState(false);
@@ -57,9 +60,9 @@ export default function DeckPage() {
 
   const list = useMemo(() => {
     const q = query.trim().toLocaleLowerCase();
-    const all = [...(notes ?? [])].sort((a, b) => (a.freqRank ?? Infinity) - (b.freqRank ?? Infinity) || a.createdAt - b.createdAt);
+    const all = sortNotes(notes ?? [], cardsByNote, how);
     return q ? all.filter((n) => n.term.toLocaleLowerCase().includes(q) || n.meaning.toLocaleLowerCase().includes(q)) : all;
-  }, [notes, query]);
+  }, [notes, query, how, cardsByNote]);
 
   if (deck === null || deck?.deletedAt) {
     return (
@@ -221,6 +224,20 @@ export default function DeckPage() {
                 </span>
               ))}
             </p>
+          )}
+          {notes.length > 1 && (
+            <select
+              aria-label="Order the cards"
+              value={how}
+              onChange={(e) => setHow(e.target.value as NoteSort)}
+              className="h-10 cursor-pointer rounded-xl border border-line bg-raised px-3 text-[13.5px] font-medium text-ink-soft outline-none hover:border-line-strong"
+            >
+              {NOTE_SORTS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
           )}
           {notes.length > 1 && (
             <Button
