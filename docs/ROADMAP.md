@@ -2287,8 +2287,9 @@ Planned 2026-10-26 in [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md), from the audit
       speaking · 6-12 writing · 6-13 translating and comparing languages.
 - [ ] **Part C · Paths and guidance:** 6-14 courses and lessons · 6-15 the tutor, in context · 6-16 personal and
       adaptive · 6-17 goals, habits and progress · 6-18 exams and levels.
-- [ ] **Part D · More of the language:** 6-19 immersion and culture · 6-20 phrasebook, notebook and the word map ·
-      6-21 games and projects · 6-22 dictionary tools · 6-23 tools for each language.
+- [ ] **Part D · More of the language:** 6-19 immersion and culture · 6-20 phrasebook and notebook · 6-21 games and
+      projects · 6-22 dictionary tools · 6-23 tools for each language · **6-29 the word graph** (Thesaurus › Graph, "Tela":
+      your vocabulary as a bookish, Obsidian-like web, the user's idea of 2026-10-29; Opus plans and builds it).
 - [ ] **Part E · Around the app:** 6-24 import, export and integrations · 6-25 accessibility and the desktop.
 - [ ] **Part F · Further out, with the user's word:** 6-26 experiments · 6-27 together, and beyond the desk.
 - [ ] **6-28 · Lingua 6's check;** version 0.6.0.

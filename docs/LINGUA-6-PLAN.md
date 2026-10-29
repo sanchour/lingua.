@@ -99,10 +99,11 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-18 | [ ] | Exams and levels | 38 new · 1 to finish | 6-14, 6-16 | L |
 | **Part D · More of the language** (in parallel, after Part A) | | | | | |
 | 6-19 | [ ] | Immersion and culture | 23 new · 7 to finish | 6-1 | L |
-| 6-20 | [ ] | Phrasebook, notebook and the word map | 55 new · 10 to finish | 6-1, 6-2 | L |
+| 6-20 | [ ] | Phrasebook and notebook (the map is 6-29) | 35 new · 10 to finish | 6-1, 6-2 | L |
 | 6-21 | [ ] | Games and projects | 66 new · 3 to finish | 6-4, 6-6 | L |
 | 6-22 | [ ] | Dictionary tools | 15 new · 2 to finish | 6-1 | M |
 | 6-23 | [ ] | Tools for each language | 32 new · 19 to finish | 6-1, 6-4 | L |
+| 6-29 | [ ] | **The word graph** (Thesaurus › Graph, "Tela"): your vocabulary as a bookish, Obsidian-like web; **Opus plans and builds it** (the user, 2026-10-29) | 20 new | Part A | XL |
 | **Part E · Around the app** (any time after Part A) | | | | | |
 | 6-24 | [ ] | Import, export and integrations | 15 new · 7 to finish | 6-2 | M |
 | 6-25 | [ ] | Accessibility and the desktop | 3 new · 10 to finish | — | M |
@@ -110,7 +111,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-26 | [ ] | Experiments | 38 new · 2 to finish | the user | — |
 | 6-27 | [ ] | Together, and beyond the desk | 9 to finish · 47 to decide | the user | — |
 | **Part G** | | | | | |
-| 6-28 | [ ] | Lingua 6 complete: the check; version 0.6.0 | — | all | S |
+| 6-28 | [ ] | Lingua 6 complete: the check; version 0.6.0 | — | all, 6-29 included | S |
 
 Sizes are a guide: S an evening, M a session, L two or three sessions, XL more, best split into parts as Lingua 5's
 big steps were (a, b, c), each pushed on its own.
@@ -122,6 +123,7 @@ one limit never stops the work. Each step is still claimed in the table above fi
 
 | Stage | Steps | Who | Why |
 | --- | --- | --- | --- |
+| — | 6-29 The word graph | Claude Opus, in its five phases | The user asked for Opus to reason and build it: a layout worker, level of detail and a bookish canvas are where a careful model pays off; after Part A, in parallel with Part B |
 | 0 | 6-0 The contracts | Claude Opus, one session | The one place a careful model pays off: every later step and every AI builds against it |
 | 1 | Part A, 6-1 to 6-6, in order | Claude Code, Sonnet | Dexie migrations and shared types: one owner, one after the other, no parallel work |
 | 2a | Part B, 6-7 to 6-13 | Claude Code, Sonnet | The skills; deep in Part A's engine and the learner's record |
@@ -535,7 +537,7 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
   from a photo (Codex's OCR), playlists of media by level, short videos and live streams through YouTube (5.2-4).
 **Entries (23 new · 7 to finish):** F0158, F0406, F0773, F0807, F0811, F0813, F0819, F0821, F0826–F0827, F0829, F0832, F0841–F0847, F0849–F0852, F0856–F0862
 
-#### 6-20 · Phrasebook, notebook and the word map
+#### 6-20 · Phrasebook and notebook (the word map is now [6-29](#6-29--the-word-graph-thesaurus--graph-the-name-is-the-users-to-pick-tela-latin-for-web-fits-the-rooms))
 
 - **Thesaurus › Phrases:** phrases and sentence templates saved from anywhere (a drag in the reader, a line of a song,
   a subtitle, Sermo), by situation and topic; formal and informal versions, replies, openers, linking words, debate
@@ -544,11 +546,8 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
 - **Mentis › Notebook** (beside Diarium): notes in Markdown (grammar, words, confusing expressions, from reading,
   conversations and media), linked to words, topics, lessons and texts; folders, tags, search across every note; the
   error log (6-5); a summary of your notes and exercises made from one (Max).
-- **Thesaurus › Map:** your words as a map, joined by meaning, form and use (synonyms, antonyms, cognates, families,
-  roots, collocations, themes, grammar, idioms, shared sentences, the texts and mistakes where they appear, other
-  languages); pan and zoom on a desktop canvas in the handbook's line; filters; the lonely words; related words to
-  discover; a map around one idea.
-**Entries (55 new · 10 to finish):** F0146–F0147, F0159, F0683, F0691, F0795, F0835, F1076–F1095, F1097–F1118, F1120–F1123, F1130–F1137, F1140–F1141, F1595, F1607
+- **Thesaurus › Map:** moved to its own step, **6-29 The word graph**, which is much bigger than this bullet was.
+**Entries (35 new · 10 to finish):** F0146–F0147, F0159, F0683, F0691, F0795, F0835, F1097–F1118, F1120–F1123, F1130–F1137, F1140–F1141, F1595, F1607
 
 #### 6-21 · Games and projects (Ludus)
 
@@ -591,6 +590,67 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
 - **Arabic:** short vowels faded progressively, diacritics, a root explorer (words by root and pattern, from the
   dictionary), Modern Standard and dialect labelled with samples, registers, transliteration controls.
 **Entries (32 new · 19 to finish):** F1294–F1295, F1298–F1306, F1308, F1310–F1311, F1314–F1317, F1321–F1325, F1331, F1334–F1335, F1337–F1338, F1340, F1343, F1345–F1350, F1352–F1356, F1359–F1362, F1365–F1369, F1371
+
+#### 6-29 · The word graph (Thesaurus › Graph; the name is the user's to pick: **Tela**, Latin for "web", fits the rooms)
+
+**The user's idea (2026-10-29):** "In Thesaurus I was thinking of a graph view, like a beautiful, bookish, aesthetic web view, where you have an overview of your personal vocabulary and dictionary, like a second brain, kind of like Obsidian, but made for and specialised completely for languages." **Planned and reasoned by Claude Opus (the advisor), and to be built by Opus** (the user's word), in the phases below, each pushed on its own.
+
+**The idea.** Your words as a web you can see: each word a point, joined to the words it is related to by meaning, form,
+origin and use, and to the places you met it. It is the second brain of Part A made visible: how well you know a word
+(size, opacity), what is fading, where your mistakes cluster, what you have not met yet. It replaces 6-20's short
+"Thesaurus › Map" bullet (one map, not two), and holds every entry of the audit's 13.2 "Personal linguistic graph".
+
+**Why it can come right after Part A.** Every edge already exists: dictionary version 3 (`parts`, `root`, `cog`, `hom`,
+`syn`, `ant`, `derived`, `related`, easily confused, pairs), the word record (tags, favourite, important), the learner's
+record (weak spots), retrievability, sightings, decks and notes, grammar topics and the starter themes. Needs Part A only.
+
+**Nodes and edges: the one design call.**
+- *Shared things are hubs, not links between words.* A root, a theme, a text, a grammar topic, a tag and a deck each
+  become one node that its words attach to: a 200-word theme is 200 edges, not 20,000. Edges stay linear.
+- *Direct word-to-word edges* only for pairwise relations: synonym, antonym, derived or related, made-of parts, cognate
+  (to a word in another language), homophone, easily confused, aspect and gender pairs, and the learner's own links (6-1c).
+- *Which words show.* Your words by default (Known, Learning, favourite, tagged, carded); words only looked up are a
+  toggle; dictionary words you do not have appear only in the local graph, as ghost nodes ("words to discover").
+- *Tier 2 languages* have no full dictionary: their graph has the pack's and your own edges only. Said so on screen.
+
+**What it shows (Part A's data, made visible).** Node size from how well you know it; **opacity from retrievability**, so
+fading words visibly fade; colour by state (sage Known, accent Learning, faint only met); a small ink mark on persistent
+weak spots (6-5); themes as soft watercolour halos; a time slider, "how your web grew", from `Word.createdAt` and sightings.
+
+**How it looks (bookish).** A paper background, hairline ink edges, serif labels, the handbook's line and tokens, dark mode
+through the same tokens. The word you open appears as marginalia: the word's own page with the "You" card in a side
+panel (reused, not a second detail view). Read the handbook's Part One, the Thesaurus chapter, the charts chapter, dark
+mode and accessibility before drawing anything.
+
+**How you use it (desktop only, Obsidian-like).** A global graph and a **local graph** (one or two hops out from a word);
+`/` to search and jump; filters by edge family (meaning, form, origin, use, you), by state, source and theme; hover lights
+the neighbours; click opens the word beside the graph; right-click: add to deck, mark known, open dictionary; pin nodes;
+saved views ("my Latin roots", "food"); the arrow keys walk neighbours, Esc backs out. **Without a pointer:** the side
+panel's list of neighbours is the whole graph in words (keyboard and screen reader); reduced motion means no live simulation.
+
+**Engineering.**
+- The layout runs in a **Web Worker** (as `dict.worker` and `packs.worker` do), seeded so it is the same every time, settled
+  and then frozen: no constant jiggle, gentle motion only around a node being dragged.
+- **Positions are cached** (so it opens at once); a new word starts at the middle of its neighbours and only that area
+  relaxes: no whole re-layout.
+- Drawn on **Canvas 2D** with level of detail: at low zoom, labels only above a threshold and communities collapse.
+  WebGL only if a profile at 10,000 nodes demands it. Frame budget: docs/PERFORMANCE.md (16.7 ms, no per-frame React renders).
+- A force layout is not "a few lines": check `package.json` first (no graph library is installed today); `d3-force` is the
+  reasonable choice, hand-writing Barnes–Hut is not.
+- **Data:** positions and saved views need a small table. 6-29 would be Dexie **46**, outside the reserved range (6-7 to
+  6-25 are 24–42): a contract push adds its `StepSchema` and extends the reservation **before** any code.
+
+**Phases (each its own push):**
+- **G1** · `core/graph`: the pure model, nodes and edges built from the data with caps, tested (no drawing).
+- **G2** · the layout worker, cached positions, incremental placement.
+- **G3** · the canvas view, level of detail, the side panel reusing the word's page.
+- **G4** · local graph, search, filters, saved views, the time slider.
+- **G5** · the bookish polish, dark mode, reduced motion, a performance check at 1366×768.
+
+**Done when:** a learner with about 3,000 Spanish words opens it in under a second from the cache; it pans and zooms at
+60 fps at laptop size; families, roots and cognates visibly cluster; the local graph of *hacer* shows its parts, its root,
+its derived words and the texts it was met in; clicking any node opens its page beside the graph; the neighbour list
+works with the keyboard alone. **Entries (20 new):** F1076–F1095 (all of 13.2).
 
 ### Part E · Around the app
 
