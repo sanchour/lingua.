@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.17** · 2026-10-29 · 6-6 done: generated materials, checked (Dexie 23). Part A is done
 - **0.6.0-alpha.16** · 2026-10-29 · Claim 6-6: generated materials, checked
 - **0.6.0-alpha.15** · 2026-10-29 · 6-5 done: the learner's record (Dexie 22), weak spots in Ratio
 - **0.6.0-alpha.14** · 2026-10-29 · Contract: evidence rows get itemKey, indexed [lang+itemKey] (touches 6-5 only)

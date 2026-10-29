@@ -57,6 +57,8 @@ add the new one and read both.
 
 - **0.6.0-alpha.15 (6-5):** built `evidence` (Dexie 22; 21 is unused) with `itemKey`, and `evidenceDays` as a cache that is **not backed up** (`skip`, not `insertOnly`: it is rebuilt from the evidence). `LearnerRecord.record` takes a row without `itemKey`. The room is the one where the answer is taken: `answerCard` and `answerGrammarItem` write the rows.
 
+- **0.6.0-alpha.17 (6-6):** built `generated` (Dexie 23) and `GeneratedRow` as the contract has them; `checks` holds `grammar` for later, nothing writes it yet. Backed up as `insertOnly`.
+
 ## What was decided here (and could be reopened)
 
 - Part A's tables: `evidence`, `evidenceDays` (6-5) and `generated` (6-6) are the only new ones; 6-1 to 6-3 add fields

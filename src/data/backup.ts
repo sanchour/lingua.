@@ -63,6 +63,8 @@ export const BACKUP_POLICIES: Record<TableName, Policy> = {
   evidence: { policy: 'union', key: 'id' },
   // Worked out from the evidence again when asked.
   evidenceDays: { policy: 'skip', key: 'id' },
+  // What Max made: kept so nothing is paid for twice (6-6).
+  generated: { policy: 'insertOnly', key: 'id' },
   // Downloaded again from the site when needed.
   fullDict: { policy: 'skip', key: '' },
 };

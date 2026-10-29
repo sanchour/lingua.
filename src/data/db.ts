@@ -1,5 +1,6 @@
 import Dexie from 'dexie';
 import type { EntityTable, Table } from 'dexie';
+import type { GeneratedRow } from '@/core/contracts/db';
 import type { EvidenceDay, EvidenceRow } from '@/core/contracts/learner';
 import type { FullDictRow } from '@/core/dictionary/format';
 import type {
@@ -181,7 +182,12 @@ export const SCHEMA_V22 = {
   evidenceDays: 'id, [lang+day]',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16, ...SCHEMA_V17, ...SCHEMA_V18, ...SCHEMA_V19, ...SCHEMA_V20, ...SCHEMA_V22 };
+/** Version 23 (Lingua 6-6): what Max made, with its label and checks, so nothing is paid for twice. */
+export const SCHEMA_V23 = {
+  generated: 'id, [lang+kind], [lang+createdAt], hash',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16, ...SCHEMA_V17, ...SCHEMA_V18, ...SCHEMA_V19, ...SCHEMA_V20, ...SCHEMA_V22, ...SCHEMA_V23 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -232,6 +238,7 @@ export type LinguaDB = Dexie & {
   typing: EntityTable<TypingRow, 'id'>;
   evidence: EntityTable<EvidenceRow, 'id'>;
   evidenceDays: EntityTable<EvidenceDay, 'id'>;
+  generated: EntityTable<GeneratedRow, 'id'>;
 };
 
 export function createDb(name = 'lingua'): LinguaDB {
@@ -256,6 +263,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(19).stores(SCHEMA_V19);
   db.version(20).stores(SCHEMA_V20);
   db.version(22).stores(SCHEMA_V22);
+  db.version(23).stores(SCHEMA_V23);
   return db;
 }
 
