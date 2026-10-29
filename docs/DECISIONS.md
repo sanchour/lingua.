@@ -1881,3 +1881,7 @@ Codex’s Graded tab reuses TextStats (the existing frequency-based level estima
 ## 2026-10-29 — 6-7 G1: grammar browsing, plain-language search, prerequisites and notes
 
 Topics can now be browsed by grammatical category and part of speech as well as level. Plain-language search maps natural queries ('when do I use the subjunctive', 'past tense') with synonym expansion and token weighting against titles, tags, summaries, rule text, and example focus forms. Hand-crafted prerequisites and fallback foundation ordering provide 'Before this: …' guidance with visual indicators of learned status. Personal bookmarks and notebook notes are stored in settings without a new database table or schema migration, so they integrate into local-first backups and survive restarts.
+
+## 2026-10-29 — 6-7 G2: richer pages with in-language reading, exceptions and pairs
+
+Grammar rules now support target-language and side-by-side reading, allowing learners to study explanations in the language itself or dual-column. Topics in the core six languages (Spanish, French, German, Italian, Russian, Chinese) gain structured exceptions, formality contrasts (formal/informal pairings), right/wrong slip prevention cards with explicit grammatical rationales, regional variation notes, and contextual cross-references.

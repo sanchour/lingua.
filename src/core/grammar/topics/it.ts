@@ -52,6 +52,34 @@ const grammar: Grammar = {
             { s: '[Le] cose non sono sempre come sembrano.', en: 'Things are not always as they appear.', wrong: ['La', 'Gli', 'I'] },
           ],
           related: ['prepositions'],
+          targetLangRule: [
+            'In italiano i nomi sono **maschili** o **femminili**. La maggior parte dei nomi in **-o** è maschile (*il libro*), in **-a** è femminile (*la casa*); i nomi in **-e** possono essere maschili (*il fiore*) o femminili (*la notte*).',
+            'L\'articolo determinativo maschile è **il** (davanti a consonante), **lo** (davanti a *s* impura, *z*, *gn*, *ps*) e **l\'** (davanti a vocale). I plurali corrispondenti sono **i** e **gli**.',
+            'Al femminile l\'articolo è **la** (singolare), **l\'** (davanti a vocale) e **le** (plurale).',
+          ],
+          exceptions: [
+            'Nomi in -a maschili: il problema, il cinema, il clima, il programma.',
+            'Nomi in -o femminili: la mano, la foto, la moto, la radio.',
+          ],
+          formalityPairs: [
+            {
+              formal: { s: 'Come sta Lei?', en: 'How are you? (formal)' },
+              informal: { s: 'Come stai tu?', en: 'How are you? (informal)' },
+              note: 'Lei uses 3rd person singular and is capitalized in writing.',
+            },
+          ],
+          rightWrongPairs: [
+            {
+              right: 'Lo studente studia.',
+              wrong: 'Il studente studia.',
+              reason: 'Words beginning with s + consonant take lo and gli, not il.',
+            },
+            {
+              right: 'Un\'amica sincera.',
+              wrong: 'Un amica sincera.',
+              reason: 'Feminine un\' takes an apostrophe before a vowel; masculine un never does.',
+            },
+          ],
         },
         {
           id: 'essere-avere',

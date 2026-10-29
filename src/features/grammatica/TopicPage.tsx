@@ -1,35 +1,37 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router';
-import { Bookmark, Check, FileText } from 'lucide-react';
+import { Bookmark, Check, FileText, Globe, X } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { BackLink } from '@/app/BackLink';
 import { PageHeader } from '@/app/PageHeader';
+import { getLanguage } from '@/core/lang/languages';
 import { topicState } from '@/core/grammar/progress';
 import { findTopic, openingExamples } from '@/core/grammar/types';
 import { getPrerequisites } from '@/core/grammar/prerequisites';
 import { useGrammarBookmarks, toggleGrammarBookmark, useGrammarNote, saveGrammarNote } from '@/data/grammarUserData';
 import { useGrammarItems, useGrammarProgress } from '@/data/grammar';
-import { Card } from '@/design/primitives';
+import { Card, Segmented } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { LessonCard } from './LessonCard';
 import { CompareView, Rich, Section, SentenceLine, TableView, useGrammar, WatchOut } from './parts';
 
 /**
- * One grammar topic, examples first: a few real sentences (each can be played), then the rule,
- * then tables, a side-by-side comparison where two structures are easily confused, and more
- * sentences to read.
- * In 6-7: prerequisites ("Before this: …"), bookmarking, and personal notes stored to the notebook.
+ * One grammar topic: examples first, rule (with target language or side-by-side reading),
+ * exceptions, formal/informal pairs, right/wrong pairs, regional notes, cross-references,
+ * tables, comparisons, prerequisites, and personal notebook notes.
  */
 export default function TopicPage() {
   const { topicId = '' } = useParams();
   const { language } = useApp();
   const lang = language.id;
+  const info = getLanguage(lang);
   const grammar = useGrammar(lang);
   const progress = useGrammarProgress(lang);
   const items = useGrammarItems(lang);
   const bookmarks = useGrammarBookmarks(lang);
   const existingNote = useGrammarNote(lang, topicId);
 
+  const [ruleMode, setRuleMode] = useState<'en' | 'target' | 'both'>('en');
   const [noteText, setNoteText] = useState('');
   useEffect(() => {
     if (existingNote !== undefined) setNoteText(existingNote);
@@ -114,7 +116,7 @@ export default function TopicPage() {
       )}
 
       <div className="mt-8 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="min-w-0 max-w-3xl">
+        <div className="min-w-0 max-w-3xl space-y-8">
           <Section title="See it first">
             <Card className="divide-y divide-line/60 p-0">
               {opening.map((ex) => (
@@ -125,15 +127,146 @@ export default function TopicPage() {
             </Card>
           </Section>
 
+          {/* The rule with in-language or side-by-side reading */}
           <Section title="The rule">
-            <div className="space-y-3 text-[16.5px] leading-relaxed text-ink-soft">
-              {topic.rule.map((p) => (
-                <p key={p}>
-                  <Rich text={p} lang={lang} />
-                </p>
-              ))}
-            </div>
+            {topic.targetLangRule && topic.targetLangRule.length > 0 && (
+              <div className="mb-4">
+                <Segmented<'en' | 'target' | 'both'>
+                  label="Explanation language"
+                  value={ruleMode}
+                  onChange={setRuleMode}
+                  options={[
+                    { value: 'en', label: 'English' },
+                    { value: 'both', label: 'Side by side' },
+                    { value: 'target', label: `In ${info?.name ?? 'language'}` },
+                  ]}
+                />
+              </div>
+            )}
+
+            {ruleMode === 'both' && topic.targetLangRule ? (
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div className="space-y-3 rounded-2xl border border-line/60 bg-surface/50 p-4 text-[15.5px] leading-relaxed text-ink">
+                  <p className="text-[12px] font-bold tracking-wider uppercase text-ink-faint">{info?.name ?? 'Target language'}</p>
+                  {topic.targetLangRule.map((p) => (
+                    <p key={p}>
+                      <Rich text={p} lang={lang} />
+                    </p>
+                  ))}
+                </div>
+                <div className="space-y-3 rounded-2xl border border-line/60 bg-surface/50 p-4 text-[15.5px] leading-relaxed text-ink-soft">
+                  <p className="text-[12px] font-bold tracking-wider uppercase text-ink-faint">English</p>
+                  {topic.rule.map((p) => (
+                    <p key={p}>
+                      <Rich text={p} lang={lang} />
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ) : ruleMode === 'target' && topic.targetLangRule ? (
+              <div className="space-y-3 text-[16.5px] leading-relaxed text-ink">
+                {topic.targetLangRule.map((p) => (
+                  <p key={p}>
+                    <Rich text={p} lang={lang} />
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-3 text-[16.5px] leading-relaxed text-ink-soft">
+                {topic.rule.map((p) => (
+                  <p key={p}>
+                    <Rich text={p} lang={lang} />
+                  </p>
+                ))}
+              </div>
+            )}
           </Section>
+
+          {/* Exceptions */}
+          {topic.exceptions && topic.exceptions.length > 0 && (
+            <Section title="Exceptions to the rule">
+              <Card className="border-amber-500/30 bg-amber-500/5 p-4">
+                <ul className="space-y-2 text-[15px] leading-relaxed text-ink-soft">
+                  {topic.exceptions.map((exc, i) => (
+                    <li key={i} className="flex items-start gap-2.5">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-text" />
+                      <span>{exc}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </Section>
+          )}
+
+          {/* Formal and informal pairs */}
+          {topic.formalityPairs && topic.formalityPairs.length > 0 && (
+            <Section title="Formal and informal pairs">
+              <div className="space-y-3">
+                {topic.formalityPairs.map((pair, i) => (
+                  <Card key={i} className="p-4">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-xl border border-line bg-surface p-3.5">
+                        <span className="text-[11.5px] font-bold tracking-wider uppercase text-ink-faint">Formal</span>
+                        <p className="mt-1 font-serif text-[16.5px] font-medium text-ink">{pair.formal.s}</p>
+                        <p className="mt-0.5 text-[13.5px] text-ink-soft">{pair.formal.en}</p>
+                      </div>
+                      <div className="rounded-xl border border-line bg-surface p-3.5">
+                        <span className="text-[11.5px] font-bold tracking-wider uppercase text-ink-faint">Informal</span>
+                        <p className="mt-1 font-serif text-[16.5px] font-medium text-ink">{pair.informal.s}</p>
+                        <p className="mt-0.5 text-[13.5px] text-ink-soft">{pair.informal.en}</p>
+                      </div>
+                    </div>
+                    {pair.note && <p className="mt-2 text-[13px] text-ink-faint">{pair.note}</p>}
+                  </Card>
+                ))}
+              </div>
+            </Section>
+          )}
+
+          {/* Right & wrong: common slips */}
+          {topic.rightWrongPairs && topic.rightWrongPairs.length > 0 && (
+            <Section title="Right & wrong: common slips">
+              <div className="space-y-3">
+                {topic.rightWrongPairs.map((rw, i) => (
+                  <Card key={i} className="p-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2.5">
+                        <Check size={17} className="shrink-0 text-sage-text" />
+                        <span className="font-serif text-[16.5px] font-semibold text-ink">{rw.right}</span>
+                      </div>
+                      <div className="flex items-center gap-2.5">
+                        <X size={17} className="shrink-0 text-accent-text" />
+                        <span className="font-serif text-[16.5px] text-ink-faint line-through">{rw.wrong}</span>
+                      </div>
+                      <p className="pt-1 text-[14px] text-ink-soft">{rw.reason}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+          )}
+
+          {/* Regional variation notes */}
+          {topic.regionalNotes && topic.regionalNotes.length > 0 && (
+            <Section title="Regional variation">
+              <div className="space-y-3">
+                {topic.regionalNotes.map((reg, i) => (
+                  <Card key={i} className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Globe size={16} className="text-accent-text" aria-hidden />
+                      <span className="font-semibold text-[15px]">{reg.region}</span>
+                    </div>
+                    <p className="mt-1.5 text-[14.5px] leading-relaxed text-ink-soft">{reg.note}</p>
+                    {reg.example && (
+                      <p className="mt-2 rounded-lg bg-sunken/60 px-3 py-2 font-serif text-[15px] text-ink">
+                        {reg.example.s} <span className="font-sans text-[13px] text-ink-faint">— {reg.example.en}</span>
+                      </p>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            </Section>
+          )}
 
           {topic.compare && (
             <Section title={topic.compare.title}>
@@ -152,9 +285,28 @@ export default function TopicPage() {
           )}
 
           {topic.watch && (
-            <div className="mt-8">
+            <div>
               <WatchOut>{topic.watch}</WatchOut>
             </div>
+          )}
+
+          {/* Cross-references */}
+          {topic.crossReferences && topic.crossReferences.length > 0 && (
+            <Section title="Cross-references">
+              <div className="grid gap-2.5">
+                {topic.crossReferences.map((xref, i) => {
+                  const refTopic = grammar ? findTopic(grammar, xref.topicId) : undefined;
+                  return (
+                    <Card key={i} className="p-3.5">
+                      <Link to={`/cursus/grammatica/${xref.topicId}`} className="font-semibold text-accent-text hover:underline">
+                        {refTopic?.title ?? xref.topicId}
+                      </Link>
+                      <p className="mt-0.5 text-[13.5px] text-ink-soft">{xref.note}</p>
+                    </Card>
+                  );
+                })}
+              </div>
+            </Section>
           )}
 
           {more.length > 0 && (
@@ -172,7 +324,7 @@ export default function TopicPage() {
           {/* Personal note on topic (notebook) */}
           <Section title="Your notes">
             <Card className="p-4">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="mb-2 flex items-center gap-2">
                 <FileText size={16} className="text-ink-faint" aria-hidden />
                 <span className="text-[13px] font-medium text-ink-faint">Notebook entry for this rule</span>
               </div>

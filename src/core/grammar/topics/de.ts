@@ -52,6 +52,35 @@ const grammar: Grammar = {
             { s: 'Das ist [ein] großes Problem.', en: 'That is a big problem.', wrong: ['eine', 'einen', 'einer'] },
           ],
           related: ['accusative', 'adjective-endings'],
+          targetLangRule: [
+            'Im Deutschen haben Substantive drei grammatische Geschlechter: **Maskulinum** (*der*), **Femininum** (*die*) und **Neutrum** (*das*). Im Plural lautet der bestimmte Artikel für alle Geschlechter **die**.',
+            'Der unbestimmte Artikel ist **ein** (maskulin und neutral) und **eine** (feminin).',
+            'Substantive werden im Deutschen immer **großgeschrieben**.',
+          ],
+          exceptions: [
+            'Verkleinerungsformen mit -chen oder -lein sind immer sächlich: das Mädchen, das Fräulein.',
+            'Substantive auf -e sind meist feminin, aber Ausnahmen existieren: der Name, der Käse, das Auge.',
+          ],
+          formalityPairs: [
+            {
+              formal: { s: 'Wie heißen Sie?', en: 'What is your name? (formal)' },
+              informal: { s: 'Wie heißt du?', en: 'What is your name? (informal)' },
+              note: 'Sie is always capitalized and uses 3rd person plural verb endings.',
+            },
+          ],
+          rightWrongPairs: [
+            {
+              right: 'Ich sehe den Mann.',
+              wrong: 'Ich sehe der Mann.',
+              reason: 'Direct objects in the masculine accusative take den, not der.',
+            },
+          ],
+          regionalNotes: [
+            {
+              region: 'Germany vs Austria/Switzerland',
+              note: 'In Austria and Bavaria: der Tomate is sometimes die Paradeiser; Switzerland does not use the letter ß (uses ss instead).',
+            },
+          ],
         },
         {
           id: 'present',

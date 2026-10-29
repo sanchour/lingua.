@@ -49,6 +49,36 @@ const grammar: Grammar = {
             { s: '回家的路[很]远。', en: "It's a long way home.", wrong: ['是', '在', '有'] },
           ],
           related: ['negation', 'you-zai'],
+          targetLangRule: [
+            '**是** (shì) 用于连接两个名词或代词，表示身份或等同关系（例如：*我们是朋友*）。',
+            '在汉语中，形容词本身可以作谓语，通常**不加“是”**。形容词前常常使用程度副词**很**（hěn），此时“很”往往只起到弱化对比、充当系词的作用，不一定强调“非常”（例如：*他很高兴*）。',
+            '“是”的否定形式是**不是**。',
+          ],
+          formalityPairs: [
+            {
+              formal: { s: '您好，您贵姓？', en: 'Hello, what is your honorable surname? (formal)' },
+              informal: { s: '你好，你叫什么名字？', en: 'Hello, what is your name? (informal)' },
+              note: '您 (nín) is the polite formal form of 你 (nǐ).',
+            },
+          ],
+          rightWrongPairs: [
+            {
+              right: '他很高兴。',
+              wrong: '他是高兴。',
+              reason: 'Predicate adjectives do not use 是 in Chinese; use 很 instead.',
+            },
+            {
+              right: '我不是学生。',
+              wrong: '我没是学生。',
+              reason: '是 is negated by 不, never by 没.',
+            },
+          ],
+          crossReferences: [
+            {
+              topicId: 'negation',
+              note: 'Learn when to use 不 vs 没 for negating actions and verbs.',
+            },
+          ],
         },
         {
           id: 'negation',

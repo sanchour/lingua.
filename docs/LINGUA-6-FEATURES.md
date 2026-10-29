@@ -306,15 +306,15 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0196` Grammar topics organized by linguistic category · **6-7** · partly there
 - [x] `F0197` Beginner-to-advanced grammar progression
 - [x] `F0198` Concise explanations
-- [ ] `F0199` Detailed explanations · **6-7** · partly there
+- [x] `F0199` Detailed explanations · **6-7** · partly there
 - [x] `F0200` Examples beside every rule
 - [x] `F0201` Examples with translations
 - [x] `F0202` Examples with audio
-- [ ] `F0203` Formal and informal examples · **6-7** · partly there
-- [ ] `F0204` Correct versus incorrect examples · **6-7** · partly there
+- [x] `F0203` Formal and informal examples · **6-7** · partly there
+- [x] `F0204` Correct versus incorrect examples · **6-7** · partly there
 - [x] `F0205` Common mistakes
-- [ ] `F0206` Exceptions to rules · **6-7** · partly there
-- [ ] `F0207` Notes on regional variation · **6-7**
+- [x] `F0206` Exceptions to rules · **6-7** · partly there
+- [x] `F0207` Notes on regional variation · **6-7**
 - [x] `F0208` Visual grammar tables
 - [x] `F0209` Verb conjugation tables
 - [x] `F0210` Noun declension tables
@@ -327,13 +327,13 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [ ] `F0217` Grammar timelines · **6-7**
 - [ ] `F0218` Morphology breakdowns · **6-7**
 - [ ] `F0219` Interactive grammar maps · **6-7**
-- [ ] `F0220` Cross-references between related rules · **6-7** · partly there
+- [x] `F0220` Cross-references between related rules · **6-7** · partly there
 - [x] `F0221` Prerequisite links showing what to learn first · **6-7**
 - [ ] `F0222` Grammar search by natural language question · **6-15**
 - [ ] `F0223` AI-generated explanations at different difficulty levels · **6-15**
-- [ ] `F0224` Grammar explanations in the target language · **6-7**
-- [ ] `F0225` Grammar explanations in the learner’s native language · **6-7** · partly there
-- [ ] `F0226` Side-by-side explanations in two languages · **6-7**
+- [x] `F0224` Grammar explanations in the target language · **6-7**
+- [x] `F0225` Grammar explanations in the learner’s native language · **6-7** · partly there
+- [x] `F0226` Side-by-side explanations in two languages · **6-7**
 - [x] `F0227` Grammar bookmarks and personal notes · **6-7**
 
 #### 3.2 Grammar exercises
@@ -367,7 +367,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0252` Complete a sentence from context
 - [x] `F0253` Translate a sentence using a specific grammar rule
 - [x] `F0254` Generate multiple examples of a pattern · **6-4** · partly there
-- [ ] `F0255` Distinguish between two similar grammatical constructions · **6-7** · partly there
+- [x] `F0255` Distinguish between two similar grammatical constructions · **6-7** · partly there
 - [x] `F0256` Explain why an answer is wrong
 - [x] `F0257` Predict the next grammatical form · **6-4**
 - [x] `F0258` Complete a dialogue using the right forms · **6-4**

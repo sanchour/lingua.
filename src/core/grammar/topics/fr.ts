@@ -52,6 +52,41 @@ const grammar: Grammar = {
             { s: 'Il a [un] ordinateur.', en: 'He has a computer.', wrong: ['une', 'des', 'la'] },
           ],
           related: ['adjectives', 'partitive'],
+          targetLangRule: [
+            'En français, chaque nom a un genre : il est **masculin** ou **féminin**.',
+            'L\'article défini est **le** (masculin) ou **la** (féminin), qui s\'élide en **l\'** devant une voyelle ou un h muet (*l\'ami*, *l\'heure*). Au pluriel, la forme unique est **les**.',
+            'L\'article indéfini est **un** (masculin), **une** (féminin) et **des** (pluriel).',
+          ],
+          exceptions: [
+            'Mots se terminant par -e qui sont masculins : le problème, le groupe, le monde, le système.',
+            'Mots sans -e qui sont féminins : la mer, la fin, la voix, la peau.',
+            'Le h aspiré empêche l\'élision : le héros (pas l\'héros), le haricot.',
+          ],
+          formalityPairs: [
+            {
+              formal: { s: 'Comment allez-vous ?', en: 'How are you? (formal)' },
+              informal: { s: 'Comment vas-tu ?', en: 'How are you? (informal)' },
+              note: 'Vous is used for politeness or multiple people, tu for friends, family, and peers.',
+            },
+          ],
+          rightWrongPairs: [
+            {
+              right: 'J\'écoute le professeur.',
+              wrong: 'J\'écoute à le professeur.',
+              reason: 'Écouter takes a direct object in French without a preposition.',
+            },
+            {
+              right: 'L\'eau est bonne.',
+              wrong: 'La eau est bonne.',
+              reason: 'La contracts to l\' before a vowel.',
+            },
+          ],
+          regionalNotes: [
+            {
+              region: 'France vs Québec',
+              note: 'In Québec, "la fin de semaine" is preferred over the European French "le week-end".',
+            },
+          ],
         },
         {
           id: 'etre-avoir',

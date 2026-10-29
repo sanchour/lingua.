@@ -48,6 +48,35 @@ const grammar: Grammar = {
             { s: 'В [на́ше] вре́мя учи́тель никогда́ не бьёт ученика́.', en: 'In our time the teacher never beats the student.', wrong: ['наш', 'наша', 'нашу'] },
           ],
           related: ['svoy'],
+          targetLangRule: [
+            'В русском языке существительные бывают трёх родов: **мужского**, **женского** и **среднего**.',
+            'Слова мужского рода обычно оканчиваются на согласный или **-й** (*дом*, *стол*), женского — на **-а** или **-я** (*книга*, *песня*), среднего — на **-о** или **-е** (*окно*, *море*).',
+            'Притяжательные местоимения согласуются в роде и числе с существительным: *мой дом*, *моя книга*, *моё окно*, *мои книги*.',
+          ],
+          exceptions: [
+            'Существительные на -мя относятся к среднему роду: время, имя, знамя.',
+            'Слова мужского пола на -а/-я грамматически мужского рода: папа, дедушка, дядя, мужчина (мой папа).',
+            'Кофе традиционно относится к мужскому роду: горячий кофе.',
+          ],
+          formalityPairs: [
+            {
+              formal: { s: 'Как вас зовут?', en: 'What is your name? (formal)' },
+              informal: { s: 'Как тебя зовут?', en: 'What is your name? (informal)' },
+              note: 'Вы / вас is used for strangers, elders and professionals; ты / тебя for close friends and family.',
+            },
+          ],
+          rightWrongPairs: [
+            {
+              right: 'Мой папа работает.',
+              wrong: 'Моя папа работает.',
+              reason: 'Папа denotes a male person, so it takes masculine agreement despite ending in -a.',
+            },
+            {
+              right: 'Сколько сейчас времени?',
+              wrong: 'Сколько сейчас время?',
+              reason: 'Time inquiries require the genitive case form времени.',
+            },
+          ],
         },
         {
           id: 'present',

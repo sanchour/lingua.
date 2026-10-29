@@ -53,6 +53,47 @@ const grammar: Grammar = {
             { s: '[La] lluvia cae más fuerte que antes.', en: 'The rain is falling heavier than before.', wrong: ['El', 'Los', 'Las'] },
           ],
           related: ['possessives'],
+          targetLangRule: [
+            'Los sustantivos en español son **masculinos** o **femeninos**. La mayoría de las palabras terminadas en **-o** son masculinas (*el libro*) y en **-a** femeninas (*la mesa*).',
+            'El artículo determinado es **el** o **la** en singular, y **los** o **las** en plural. El artículo indeterminado es **un**, **una**, **unos**, **unas**.',
+            'Las preposiciones **a** y **de** se contraen con **el**: *a + el = al*, *de + el = del*.',
+          ],
+          exceptions: [
+            'Palabras en -a masculinas: el día, el mapa, el planeta, el problema, el sistema, el idioma.',
+            'Palabras en -o femeninas: la mano, la foto, la moto, la radio.',
+            'Sustantivos femeninos con a- tónica inicial usan el en singular: el agua fría, el águila, el hacha (pero las aguas).',
+          ],
+          formalityPairs: [
+            {
+              formal: { s: '¿Cómo está usted?', en: 'How are you? (formal)' },
+              informal: { s: '¿Cómo estás tú?', en: 'How are you? (informal)' },
+              note: 'Usted takes third-person singular and uses formal articles when introducing titles: el señor Gómez.',
+            },
+          ],
+          rightWrongPairs: [
+            {
+              right: 'Voy al cine.',
+              wrong: 'Voy a el cine.',
+              reason: 'A + el must contract to al.',
+            },
+            {
+              right: 'El agua clara es fresca.',
+              wrong: 'El agua claro es fresco.',
+              reason: 'Agua is feminine; adjectives remain feminine even when el is used.',
+            },
+          ],
+          regionalNotes: [
+            {
+              region: 'Spain vs Latin America',
+              note: 'In Spain, el ordenador and el coche are standard; in Latin America, la computadora and el carro / el auto are everyday.',
+            },
+          ],
+          crossReferences: [
+            {
+              topicId: 'possessives',
+              note: 'Possessive adjectives also agree with the gender and number of the noun.',
+            },
+          ],
         },
         {
           id: 'ser',
@@ -413,6 +454,33 @@ const grammar: Grammar = {
           ],
           related: ['ser', 'estar', 'progressive'],
           prerequisites: ['ser', 'estar'],
+          targetLangRule: [
+            '**Ser** se utiliza para definir la identidad, el origen, las cualidades inherentes y el tiempo (*Ella es médica*, *Son las tres*). Delante de un sustantivo siempre se usa ser.',
+            '**Estar** se utiliza para expresar estados físicos o emocionales temporales, ubicación en el espacio y acciones en curso (*Estoy cansado*, *Madrid está en España*, *está lloviendo*).',
+            'Ciertos adjetivos cambian según el verbo: *ser listo* (inteligente) frente a *estar listo* (preparado).',
+          ],
+          exceptions: [
+            'Los eventos y celebraciones se localizan con ser: ¿Dónde es la fiesta? (La fiesta es en mi casa).',
+            'El estado de muerte usa estar: Está muerto.',
+          ],
+          rightWrongPairs: [
+            {
+              right: 'Estoy cansado hoy.',
+              wrong: 'Soy cansado hoy.',
+              reason: 'Tiredness is a temporary state of being, requiring estar.',
+            },
+            {
+              right: 'El concierto es en el estadio.',
+              wrong: 'El concierto está en el estadio.',
+              reason: 'Events taking place use ser, not estar.',
+            },
+          ],
+          crossReferences: [
+            {
+              topicId: 'progressive',
+              note: 'Estar combines with the gerund (-ando, -iendo) to form continuous actions.',
+            },
+          ],
         },
         {
           id: 'reflexive',

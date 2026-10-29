@@ -48,6 +48,29 @@ export interface ComparisonSide {
   example?: Example;
 }
 
+export interface FormalityPair {
+  formal: Example;
+  informal: Example;
+  note?: string;
+}
+
+export interface RightWrongPair {
+  right: string;
+  wrong: string;
+  reason: string;
+}
+
+export interface RegionalNote {
+  region: string;
+  note: string;
+  example?: Example;
+}
+
+export interface CrossReference {
+  topicId: string;
+  note: string;
+}
+
 export interface Topic {
   /** Stable within the language: item keys and progress rows hang on it. */
   id: string;
@@ -75,6 +98,12 @@ export interface Topic {
   category?: string;
   pos?: string;
   prerequisites?: string[];
+  exceptions?: string[];
+  formalityPairs?: FormalityPair[];
+  rightWrongPairs?: RightWrongPair[];
+  regionalNotes?: RegionalNote[];
+  targetLangRule?: string[];
+  crossReferences?: CrossReference[];
 }
 
 export interface Unit {
