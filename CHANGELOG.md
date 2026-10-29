@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.92** · 2026-10-29 · 6-9 L1: A-B loop, line by line, pitch and bookmarks in the player
 - **0.6.0-alpha.91** · 2026-10-29 · 6-29 planned in full: the atlas and the compass
 - **0.6.0-alpha.72** · 2026-10-29 · Claim 6-11 Speaking for Antigravity-1
 - **0.6.0-alpha.71** · 2026-10-29 · 6-13 T3: language contrast tables, false friends, and personal pair notes
