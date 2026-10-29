@@ -29,6 +29,7 @@ import type { DiaryEditorHandle } from './DiaryEditor';
 import { DictateButton } from './Dictate';
 import { WritingSession } from './WritingSession';
 import { WritingMeasures } from './WritingMeasures';
+import { WritingHelp } from './WritingHelp';
 import { CorrectionList, ReviewSummary, ReviewText } from './Review';
 
 const SAVE_DELAY = 500;
@@ -66,6 +67,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
   const [checking, setChecking] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [portfolioTopic, setPortfolioTopic] = useState(entry.portfolio?.topic ?? '');
+  const [selectedWord, setSelectedWord] = useState('');
   const review = entry.review;
   const plain = toPlain(text);
   const stale = Boolean(review && review.text.trim() !== plain.trim());
@@ -298,7 +300,10 @@ function Entry({ entry }: { entry: JournalEntry }) {
       <AnimatePresence mode="wait" initial={false}>
         {mode === 'write' || !review ? (
           <motion.div key="write" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.soft}>
-            <DiaryEditor ref={editorRef} value={text} lang={lang} rtl={rtl} placeholder={emptyPage(lang)} onChange={onChange} onBlur={() => pending.current !== undefined && flush()} />
+            <div className="grid grid-cols-[minmax(0,1fr)_320px] items-start gap-6">
+              <DiaryEditor ref={editorRef} value={text} lang={lang} rtl={rtl} placeholder={emptyPage(lang)} onChange={onChange} onWord={setSelectedWord} onBlur={() => pending.current !== undefined && flush()} />
+              <WritingHelp lang={lang} selected={selectedWord} />
+            </div>
           </motion.div>
         ) : (
           <motion.div

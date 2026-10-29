@@ -1861,3 +1861,7 @@ Twenty-six hand-written briefs sit beside free writing. The brief, suggested len
 ## 2026-10-29 — 6-12 W2: local measures describe the draft, not its CEFR level
 
 The journal uses the existing language-aware tokenizer to count different word forms, words per sentence and sentences over 20 words. Diversity is the type/token ratio, explicitly sensitive to text length; sentence length is only a proxy for complexity. Neither is a grade. A portfolio marker lives on the existing journal row, carrying the study level when kept and the learner’s topic. Its table compares current drafts by date, topic, kind and measures; it is not a snapshot, and removing a marker keeps the entry. No new table or migration.
+
+## 2026-10-29 — 6-12 W3: dictionary help stays on the device
+
+Diarium reuses the reader’s WordForms with the installed pack’s form-to-lemma lookup. Full-dictionary entries supply synonyms and collocations only when present; none are generated. Selection and pointer look-up feed the same side panel, with a typed field for keyboard access. Seven hand-written phrase functions cover the core six languages. A dedicated Hunspell spellchecker is left out: no Hunspell engine/dictionary is already installed, and this slice adds no dependency.

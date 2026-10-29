@@ -891,12 +891,12 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 *In Lingua: Diarium: prompts, versions, word count, offline drafts, words and corrections to cards.*
 
 - [ ] `F0676` Target-language spellchecker · **6-12**
-- [ ] `F0677` Dictionary lookup while typing · **6-12** · partly there
-- [ ] `F0678` Conjugation helper · **6-12**
-- [ ] `F0679` Declension helper · **6-12**
-- [ ] `F0680` Synonym finder · **6-12**
-- [ ] `F0681` Collocation suggestions · **6-12**
-- [ ] `F0682` Phrase bank · **6-12**
+- [x] `F0677` Dictionary lookup while typing · **6-12** · partly there
+- [x] `F0678` Conjugation helper · **6-12**
+- [x] `F0679` Declension helper · **6-12**
+- [x] `F0680` Synonym finder · **6-12**
+- [x] `F0681` Collocation suggestions · **6-12**
+- [x] `F0682` Phrase bank · **6-12**
 - [ ] `F0683` Personal phrasebook · **6-20**
 - [ ] `F0684` Reusable sentence templates · **6-12**
 - [x] `F0685` Writing prompts

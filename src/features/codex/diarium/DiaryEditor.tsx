@@ -9,6 +9,7 @@ import type { LucideIcon } from 'lucide-react';
 import { fromDoc, toDoc } from '@/core/journal/markdown';
 import type { BlockNode } from '@/core/journal/markdown';
 import { cx } from '@/lib/cx';
+import { tokenAt } from '@/core/journal/wordHelp';
 
 export interface DiaryEditorHandle {
   /** Replaces the text (dictation, the corrected text) and leaves the caret at the end. */
@@ -20,7 +21,7 @@ export interface DiaryEditorHandle {
  * Diarium's editor (5.2-5): Tiptap with the keys a writer expects (Ctrl B/I/U, Ctrl Alt 1–3 and 0, Ctrl Shift 7/8,
  * `# ` `- ` `1. ` `> ` at the start of a line) and a small toolbar over a selection. The entry stays Markdown.
  */
-export function DiaryEditor({ value, lang, rtl, placeholder, onChange, onBlur, ref }: { value: string; lang: string; rtl?: boolean; placeholder: string; onChange: (md: string) => void; onBlur?: () => void; ref?: Ref<DiaryEditorHandle> }) {
+export function DiaryEditor({ value, lang, rtl, placeholder, onChange, onBlur, onWord, ref }: { value: string; lang: string; rtl?: boolean; placeholder: string; onChange: (md: string) => void; onBlur?: () => void; onWord?: (word: string) => void; ref?: Ref<DiaryEditorHandle> }) {
   const wrap = useRef<HTMLDivElement>(null);
   const editor = useEditor({
     extensions: [
@@ -41,6 +42,10 @@ export function DiaryEditor({ value, lang, rtl, placeholder, onChange, onBlur, r
     },
     onUpdate: ({ editor: e }) => onChange(fromDoc(e.getJSON() as BlockNode)),
     onBlur: () => onBlur?.(),
+    onSelectionUpdate: ({ editor: e }) => {
+      const { from, to } = e.state.selection;
+      if (to > from && to - from < 80) onWord?.(e.state.doc.textBetween(from, to, ' ').trim());
+    },
   });
 
   useImperativeHandle(
@@ -56,7 +61,14 @@ export function DiaryEditor({ value, lang, rtl, placeholder, onChange, onBlur, r
   );
 
   return (
-    <div ref={wrap} className="relative">
+    <div ref={wrap} className="relative" onMouseMove={(event) => {
+      if (!onWord) return;
+      const hit = editor.view.posAtCoords({ left: event.clientX, top: event.clientY });
+      if (!hit) return;
+      const pos = editor.state.doc.resolve(hit.pos);
+      const word = tokenAt(pos.parent.textContent, pos.parentOffset, lang);
+      if (word) onWord(word);
+    }}>
       <EditorContent editor={editor} />
       <SelectionBar editor={editor} wrap={wrap} />
     </div>
