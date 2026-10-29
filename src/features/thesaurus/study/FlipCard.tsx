@@ -12,6 +12,8 @@ import { ClipPlayer, useClip } from '../common/Clip';
 import { SongClip } from '../common/SongClip';
 import { articleFor, genderName, posName, splitAt } from '../common/words';
 import { SpeakButton } from '@/features/speech/SpeakButton';
+import { cardFaces } from '@/core/srs/templates';
+import type { Face } from '@/core/srs/templates';
 
 /** The flip: a soft 3D turn on a spring. Only transform animates (docs/PERFORMANCE.md). */
 const FLIP = { type: 'spring', stiffness: 230, damping: 25, mass: 0.9 } as const;
@@ -53,6 +55,52 @@ function AudioButton({ blobId }: { blobId: string }) {
     >
       <Play size={17} aria-hidden />
     </button>
+  );
+}
+
+/** A picture stored on this device, as an address the page can show (and let go of). */
+export function useBlobUrl(blobId: string | undefined): string | null | undefined {
+  const url = useLiveQuery(async () => {
+    if (!blobId) return null;
+    const row = await db.blobs.get(blobId);
+    return row ? URL.createObjectURL(row.blob) : null;
+  }, [blobId]);
+  useEffect(() => () => void (url && URL.revokeObjectURL(url)), [url]);
+  return url;
+}
+
+/** One face of a card of another kind (6-3b): a question, the word, a line, a list, a picture (with its boxes), a paragraph, or only a button to hear it. */
+function FaceBody({ face, note, lang, image, back }: { face: Face; note: Note; lang: string; image: string | null | undefined; back?: boolean }) {
+  return (
+    <div className={cx('flex flex-col items-center gap-4', back ? 'text-center' : 'text-center')}>
+      {face.ask && <p className="text-sm font-semibold text-ink-faint">{face.ask}</p>}
+      {face.listen && <SpeakButton lang={lang} text={note.term} label="Hear the word" size={34} className="size-20 rounded-full bg-sunken text-ink" />}
+      {face.image && image && (
+        <div className="relative inline-block max-w-full">
+          <img src={image} alt="" className="max-h-[min(32dvh,280px)] max-w-full rounded-2xl object-contain" />
+          {face.image === 'hidden' &&
+            note.occlusion?.map((b, i) => <span key={i} aria-hidden className="absolute rounded-md bg-ink" style={{ left: `${b.x * 100}%`, top: `${b.y * 100}%`, width: `${b.w * 100}%`, height: `${b.h * 100}%` }} />)}
+        </div>
+      )}
+      {face.paragraph && (
+        <p lang={lang} className="text-left text-[calc(clamp(1.1rem,3.2vw,1.4rem)*var(--card-scale,1))] leading-relaxed">
+          {face.paragraph[0]}
+          <span className="mx-0.5 inline-block rounded-md border-b-2 border-line-strong align-baseline" style={{ width: `${Math.max(3, face.paragraph[1].length) + 1}ch` }}>
+            {' '}
+          </span>
+          {face.paragraph[2]}
+        </p>
+      )}
+      {face.term && <Term note={note} lang={lang} size={face.lines ? 'md' : 'lg'} />}
+      {face.text && <p lang={face.listen || face.term || face.paragraph ? undefined : lang} className="text-[calc(clamp(1.25rem,4vw,1.8rem)*var(--card-scale,1))] leading-snug font-semibold text-accent-text">{face.text}</p>}
+      {face.lines && (
+        <ul className="space-y-1.5 text-[calc(1.15rem*var(--card-scale,1))] leading-snug">
+          {face.lines.map((l) => (
+            <li key={l} lang={lang}>{l}</li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
@@ -137,6 +185,8 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, fr
   const gap = !production && front === 'sentence' ? gapOf(note, lang) : null;
   const gapParts = gap ? splitAt(gap.text, gap.span) : null;
   const clip = useClip(note);
+  const image = useBlobUrl(note.imageBlobId);
+  const faces = cardFaces(note, card.direction, Boolean(image));
   const line = note.tags.includes('line');
   const details = [posName(note.pos), note.pos === 'noun' && lang === 'ru' ? genderName(note.gender) : undefined].filter(Boolean).join(' · ');
 
@@ -157,7 +207,9 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, fr
         <Face look={look} onClick={flipped ? undefined : onFlip}>
           {corner}
           <div className="flex flex-1 flex-col items-center justify-center py-6 text-center">
-            {production ? (
+            {faces ? (
+              <FaceBody face={faces.front} note={note} lang={lang} image={image} />
+            ) : production ? (
               <>
                 <p className="text-[calc(clamp(1.75rem,5vw,2.5rem)*var(--card-scale,1))] leading-tight font-semibold">{note.meaning || '—'}</p>
                 <p className="mt-3 text-sm text-ink-faint">Say it, then turn the card</p>
@@ -188,7 +240,9 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, fr
         <Face back look={look}>
           {corner}
           <div className="flex flex-1 flex-col justify-center py-4 text-center">
-            {production ? (
+            {faces ? (
+              <FaceBody face={faces.back} note={note} lang={lang} image={image} back />
+            ) : production ? (
               <>
                 <Term note={note} lang={lang} size="lg" />
                 <p className="mt-2 text-[15px] text-ink-soft">{note.meaning}</p>
@@ -211,6 +265,7 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, fr
                 {[note.ipa, details].filter(Boolean).join(' · ')}
               </p>
             )}
+            {!faces && image && <img src={image} alt="" className="mx-auto mt-4 max-h-[min(24dvh,200px)] max-w-full rounded-2xl object-contain" />}
             <Sentence note={note} lang={lang} />
             {note.mnemonic && <p className="mx-auto mt-3 max-w-md rounded-xl bg-sage-soft px-3.5 py-2 text-center text-[14px] leading-snug text-sage-text">{note.mnemonic}</p>}
             {note.context?.songId && <SongClip note={note} />}

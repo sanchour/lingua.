@@ -2,7 +2,9 @@
 // dates; this module converts both ways and adds the small pieces the UI needs (interval labels,
 // maturity). Pure: no database, no DOM.
 import { fsrs, Rating, State } from 'ts-fsrs';
-import type { Card as FsrsCard, FSRS, Grade } from 'ts-fsrs';
+import type { Card as FsrsCard, FSRS, Grade, StepUnit } from 'ts-fsrs';
+
+type FsrsSteps = readonly StepUnit[];
 import type { Card } from '@/data/types';
 
 export type Grade4 = 1 | 2 | 3 | 4;
@@ -13,12 +15,20 @@ export const GRADE_NAMES: Record<Grade4, string> = { 1: 'Again', 2: 'Hard', 3: '
 export const MATURE_DAYS = 21;
 const DAY = 86_400_000;
 
-const schedulers = new Map<number, FSRS>();
-function scheduler(retention: number): FSRS {
-  const key = Math.round(retention * 100) / 100;
+/** A deck's learning steps, as the learner types them: "1m 10m" (minutes, hours, days), at most four, each longer than the one before. Anything else is no steps (the default). */
+export function parseSteps(text: string | undefined): string[] | undefined {
+  const parts = (text ?? '').trim().split(/[\s,]+/).filter(Boolean);
+  if (!parts.length || parts.length > 4 || !parts.every((p) => /^[1-9]\d{0,3}[mhd]$/.test(p))) return undefined;
+  const minutes = parts.map((p) => Number.parseInt(p, 10) * { m: 1, h: 60, d: 1440 }[p.slice(-1) as 'm' | 'h' | 'd']);
+  return minutes.every((m, i) => i === 0 || m > minutes[i - 1]) ? parts : undefined;
+}
+
+const schedulers = new Map<string, FSRS>();
+function scheduler(retention: number, steps?: string[]): FSRS {
+  const key = `${Math.round(retention * 100) / 100}|${steps?.join(' ') ?? ''}`;
   let f = schedulers.get(key);
   if (!f) {
-    f = fsrs({ request_retention: key, enable_fuzz: true, enable_short_term: true, maximum_interval: 36500 });
+    f = fsrs({ request_retention: Math.round(retention * 100) / 100, enable_fuzz: true, enable_short_term: true, maximum_interval: 36500, ...(steps ? { learning_steps: steps as FsrsSteps } : {}) });
     schedulers.set(key, f);
   }
   return f;
@@ -66,14 +76,14 @@ export interface ReviewOutcome {
 }
 
 /** Schedules a card after an answer. */
-export function rate(card: Schedulable, grade: Grade4, now: number, retention = 0.9): ReviewOutcome {
-  const { card: next, log } = scheduler(retention).next(toFsrs(card), new Date(now), grade as Grade);
+export function rate(card: Schedulable, grade: Grade4, now: number, retention = 0.9, steps?: string[]): ReviewOutcome {
+  const { card: next, log } = scheduler(retention, steps).next(toFsrs(card), new Date(now), grade as Grade);
   return { next: fromFsrs(next), elapsedDays: log.elapsed_days };
 }
 
 /** When each answer would bring the card back, in ms from now. */
-export function previewIntervals(card: Schedulable, now: number, retention = 0.9): Record<Grade4, number> {
-  const preview = scheduler(retention).repeat(toFsrs(card), new Date(now));
+export function previewIntervals(card: Schedulable, now: number, retention = 0.9, steps?: string[]): Record<Grade4, number> {
+  const preview = scheduler(retention, steps).repeat(toFsrs(card), new Date(now));
   const out = {} as Record<Grade4, number>;
   for (const g of GRADES) out[g] = Math.max(0, preview[g as Grade].card.due.getTime() - now);
   return out;

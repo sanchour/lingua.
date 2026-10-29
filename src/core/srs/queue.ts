@@ -1,6 +1,6 @@
 // Which cards to study now, in which order. Pure: callers pass the cards and today's counts.
 import type { Card } from '@/data/types';
-import { dayEnd } from './scheduler';
+import { DAY, dayEnd } from './scheduler';
 
 /** Learning cards due within this window are shown now rather than making the learner wait. */
 export const LEARN_AHEAD_MS = 20 * 60_000;
@@ -37,8 +37,8 @@ export function buildQueue(cards: Card[], limits: QueueLimits, now: number): Car
     } else if (c.due < end) reviews.push(c);
   }
   learning.sort((a, b) => a.due - b.due);
-  // Most overdue first: they are the likeliest to be forgotten.
-  reviews.sort((a, b) => a.due - b.due);
+  // Most overdue first: they are the likeliest to be forgotten. Among those due the same day, the ones forgotten most often come first.
+  reviews.sort((a, b) => Math.floor(a.due / DAY) - Math.floor(b.due / DAY) || b.lapses - a.lapses || a.due - b.due);
   // New cards in the order they were added (frequency decks are added most-common first).
   fresh.sort((a, b) => a.due - b.due || a.createdAt - b.createdAt);
 
@@ -51,7 +51,22 @@ export function buildQueue(cards: Card[], limits: QueueLimits, now: number): Car
     for (let k = 0; k < NEW_SPACING && r < due.length; k++) mixed.push(due[r++]);
     if (n < added.length) mixed.push(added[n++]);
   }
-  return [...learning, ...mixed];
+  return spreadSiblings([...learning, ...mixed]);
+}
+
+/**
+ * Cards of one note (its two directions) never come close together: when one has just been shown, the next card from another note goes
+ * first, as long as there is one. Order is otherwise kept.
+ */
+export function spreadSiblings(queue: Card[], gap = 3): Card[] {
+  const left = [...queue];
+  const out: Card[] = [];
+  while (left.length) {
+    const recent = new Set(out.slice(-gap + 1).map((c) => c.noteId));
+    const at = left.findIndex((c) => !recent.has(c.noteId));
+    out.push(...left.splice(at < 0 ? 0 : at, 1));
+  }
+  return out;
 }
 
 export function countQueue(queue: Card[]): StudyCounts {

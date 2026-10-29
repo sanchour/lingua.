@@ -294,6 +294,8 @@ export interface DeckConfig {
   ludusOff?: string[];
   /** After one direction of a word is answered, the other waits until tomorrow (6-3). Absent: both may come the same day. */
   burySiblings?: boolean;
+  /** How long a new or forgotten card waits between its first looks, as ts-fsrs spells it: ['1m', '10m'] (6-3b). Absent: the default. */
+  learningSteps?: string[];
 }
 
 export interface Deck extends Synced {
@@ -343,6 +345,10 @@ export interface Note extends Synced {
   mnemonic?: string;
   /** What its cards show (6-3). Absent: the word and its meaning. */
   template?: CardTemplate;
+  /** Image occlusion: boxes over the picture, as fractions of its width and height (6-3b). */
+  occlusion?: Array<{ x: number; y: number; w: number; h: number; label?: string }>;
+  /** Where a picture came from and its licence, kept whenever it was found rather than taken (6-3b). */
+  imageCredit?: { source: string; licence: string; url?: string };
   tags: string[];
   source: 'manual' | 'codex' | 'sonus' | 'visio' | 'cantus' | 'starter' | 'apkg' | 'csv';
   wordId?: string;

@@ -82,8 +82,8 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0003` ⭐ Native language → target language
 - [x] `F0004` Word → definition
 - [ ] `F0005` Definition → word · **6-3** · partly there
-- [ ] `F0006` Word → image · **6-3**
-- [ ] `F0007` Image → word · **6-3**
+- [x] `F0006` Word → image · **6-3**
+- [x] `F0007` Image → word · **6-3**
 - [ ] `F0008` Audio → word · **6-3** · partly there
 - [ ] `F0009` Word → audio recognition · **6-3** · partly there
 - [x] `F0010` Word → example sentence
@@ -181,15 +181,15 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0092` Due-date calendar · **6-3** · partly there
 - [x] `F0093` New-card and review-card limits
 - [x] `F0094` Separate new learning from review
-- [ ] `F0095` Customizable learning steps · **6-3**
+- [x] `F0095` Customizable learning steps · **6-3**
 - [x] `F0096` Leech detection for repeatedly forgotten cards · **6-3**
 - [ ] `F0097` Automatic creation of extra practice for difficult words · **6-3** · partly there
 - [x] `F0098` Suspend a card temporarily
 - [ ] `F0099` Manually reschedule a card · **6-3**
 - [x] `F0100` Bury related cards until another day · **6-3**
-- [ ] `F0101` Avoid showing several nearly identical cards consecutively · **6-3** · partly there
+- [x] `F0101` Avoid showing several nearly identical cards consecutively · **6-3** · partly there
 - [x] `F0102` Prioritize overdue cards
-- [ ] `F0103` Prioritize frequently forgotten words · **6-3**
+- [x] `F0103` Prioritize frequently forgotten words · **6-3**
 - [x] `F0104` Prioritize useful words over obscure words
 - [x] `F0105` Adjust for time since last review
 - [x] `F0106` Track consecutive successful recalls

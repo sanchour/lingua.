@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Check, Eraser, Trash2 } from 'lucide-react';
 import { EXERCISE_KINDS, EXERCISE_NAME } from '@/core/srs/ludus';
+import { parseSteps } from '@/core/srs/scheduler';
 import { orderNewCards, setDeckDirections, updateDeck } from '@/data/decks';
 import { DEFAULT_SETTINGS, useSettings } from '@/data/settings';
 import type { Card, Deck, Note } from '@/data/types';
@@ -47,6 +48,7 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
   const [width, setWidth] = useState<CardWidthChoice>(deck.config.cardWidth ?? 'all');
   const [off, setOff] = useState<string[]>(deck.config.ludusOff ?? []);
   const [bury, setBury] = useState(Boolean(deck.config.burySiblings));
+  const [steps, setSteps] = useState((deck.config.learningSteps ?? []).join(' '));
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -60,12 +62,13 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
     setWidth(deck.config.cardWidth ?? 'all');
     setOff(deck.config.ludusOff ?? []);
     setBury(Boolean(deck.config.burySiblings));
+    setSteps((deck.config.learningSteps ?? []).join(' '));
   }, [open, deck]);
 
   const save = async () => {
     setBusy(true);
     await updateDeck(deck.id, {
-      config: { ...deck.config, newPerDay, maxReviews, desiredRetention: retention, front, cardWidth: width === 'all' ? undefined : width, newOrder: order, ludusOff: off.length ? off : undefined, burySiblings: bury || undefined },
+      config: { ...deck.config, newPerDay, maxReviews, desiredRetention: retention, front, cardWidth: width === 'all' ? undefined : width, newOrder: order, ludusOff: off.length ? off : undefined, burySiblings: bury || undefined, learningSteps: parseSteps(steps) },
     });
     if (ways !== toWays(deck.config.directions)) await setDeckDirections(deck.id, fromWays(ways));
     // The order is written into the cards, so a new direction's cards follow it too.
@@ -132,6 +135,11 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
             )}
           </Field>
           {ways === 'both' && <ToggleRow title="One direction a day" description="After you answer a word one way, the other way waits until tomorrow." checked={bury} onChange={setBury} />}
+          <Field label="Learning steps">
+            <input value={steps} onChange={(e) => setSteps(e.target.value)} placeholder="1m 10m (the default)" aria-label="Learning steps" className="h-10 w-full rounded-xl border border-line bg-bg px-3 text-[15px] outline-none focus:border-ink" autoComplete="off" />
+            {steps.trim() && !parseSteps(steps) && <Hint>Use up to four, each longer than the one before: 1m, 10m, 1h, 1d.</Hint>}
+            {!steps.trim() && <Hint>How long a new or forgotten card waits between its first looks.</Hint>}
+          </Field>
           <Field label="New cards">
             <Segmented<NewOrder>
               label="New cards"

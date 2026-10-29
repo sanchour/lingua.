@@ -79,7 +79,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
   }, [card?.id, card?.reps]);
 
   const intervals = useMemo(
-    () => (card && flipped && !practice ? previewIntervals(card, Date.now(), deck?.config.desiredRetention ?? 0.9) : null),
+    () => (card && flipped && !practice ? previewIntervals(card, Date.now(), deck?.config.desiredRetention ?? 0.9, deck?.config.learningSteps) : null),
     [card, flipped, deck, practice],
   );
 

@@ -120,7 +120,7 @@ export async function answerCard(card: Card, answered: Grade4, opts: AnswerOptio
   const retention = deck?.config.desiredRetention ?? settings.study.desiredRetention;
   const schedule = opts.affectSchedule ?? true;
 
-  const outcome = schedule ? rate(card, grade, now, retention) : null;
+  const outcome = schedule ? rate(card, grade, now, retention, deck?.config.learningSteps) : null;
   const updated: Card = outcome ? { ...card, ...outcome.next, updatedAt: now } : card;
   // Forgotten once too often: marked, so the learner can be offered another way in (a picture, their own sentence, a rest).
   const becameLeech = Boolean(outcome && grade === 1 && !card.leech && isLeech(updated));
