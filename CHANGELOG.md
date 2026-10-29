@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.51** · 2026-10-29 · 6-1c: common mistakes on a word's page
 - **0.6.0-alpha.50** · 2026-10-29 · 6-3b: a word in a different sentence each review
 - **0.6.0-alpha.49** · 2026-10-29 · 6-6b: listen buttons on what Max made, a Translate set in Practice
 - **0.6.0-alpha.48** · 2026-10-29 · 6-6b: quizzes from a text, notes or the learner's mistakes
