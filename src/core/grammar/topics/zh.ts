@@ -36,6 +36,20 @@ const grammar: Grammar = {
               { label: 'Adjective → 很', points: ['A 很 + adjective', '"他是高兴" is wrong'], example: { s: '他很高兴。', en: 'He is very pleased.' } },
             ],
           },
+          tables: [
+            {
+              title: 'Personal pronouns (人称代词)',
+              columns: ['person', 'singular', 'plural (-们)'],
+              rows: [
+                ['1st person', '我 (wǒ - I / me)', '我们 (wǒmen - we / us)'],
+                ['2nd person', '你 (nǐ - you) / 您 (nín - polite)', '你们 (nǐmen - you all)'],
+                ['3rd person (m)', '他 (tā - he / him)', '他们 (tāmen - they / them)'],
+                ['3rd person (f)', '她 (tā - she / her)', '她们 (tāmen - they / them)'],
+                ['3rd person (neut)', '它 (tā - it)', '它们 (tāmen - they / them)'],
+              ],
+              note: 'Chinese pronouns do not change form between subject and object (我 = I or me). Add 们 (men) for plural.',
+            },
+          ],
           why: '是 links two nouns; an adjective takes 很, not 是.',
           tags: [],
           items: [
@@ -49,6 +63,36 @@ const grammar: Grammar = {
             { s: '回家的路[很]远。', en: "It's a long way home.", wrong: ['是', '在', '有'] },
           ],
           related: ['negation', 'you-zai'],
+          targetLangRule: [
+            '**是** (shì) 用于连接两个名词或代词，表示身份或等同关系（例如：*我们是朋友*）。',
+            '在汉语中，形容词本身可以作谓语，通常**不加“是”**。形容词前常常使用程度副词**很**（hěn），此时“很”往往只起到弱化对比、充当系词的作用，不一定强调“非常”（例如：*他很高兴*）。',
+            '“是”的否定形式是**不是**。',
+          ],
+          formalityPairs: [
+            {
+              formal: { s: '您好，您贵姓？', en: 'Hello, what is your honorable surname? (formal)' },
+              informal: { s: '你好，你叫什么名字？', en: 'Hello, what is your name? (informal)' },
+              note: '您 (nín) is the polite formal form of 你 (nǐ).',
+            },
+          ],
+          rightWrongPairs: [
+            {
+              right: '他很高兴。',
+              wrong: '他是高兴。',
+              reason: 'Predicate adjectives do not use 是 in Chinese; use 很 instead.',
+            },
+            {
+              right: '我不是学生。',
+              wrong: '我没是学生。',
+              reason: '是 is negated by 不, never by 没.',
+            },
+          ],
+          crossReferences: [
+            {
+              topicId: 'negation',
+              note: 'Learn when to use 不 vs 没 for negating actions and verbs.',
+            },
+          ],
         },
         {
           id: 'negation',
@@ -220,6 +264,17 @@ const grammar: Grammar = {
           ],
           why: 'Time and place come before the verb: subject, time, place, verb, object.',
           tags: [],
+          wordOrder: {
+            title: 'Chinese Word Order (Subject + Time + Place + Verb + Object)',
+            slots: [
+              { role: 'Subject', example: '我 (Wǒ)', highlight: false },
+              { role: 'Time When', example: '每天 (měitiān)', optional: true },
+              { role: 'Place / Prep', example: '在上海 (zài Shànghǎi)', optional: true },
+              { role: 'Verb', example: '去 (qù)', highlight: true },
+              { role: 'Object', example: '上班 (shàngbān)', highlight: false },
+            ],
+            note: 'Unlike English, time and location adverbials strictly precede the verb in Chinese.',
+          },
           items: [
             { s: '我[每天坐地铁]去上班。', en: 'I take the subway to work every day.', wrong: ['坐地铁每天', '每天地铁坐', '坐每天地铁'] },
             { s: '他[每天都走路]上班。', en: 'He walks to work every day.', wrong: ['走路每天都', '每天走路都', '都每天走路'] },
@@ -248,6 +303,27 @@ const grammar: Grammar = {
           ],
           why: '了 after a verb = completed; at the end of a sentence = a change. Negative: 没, without 了.',
           tags: [],
+          timeline: {
+            title: 'Aspect timeline: completed action vs state change (了)',
+            points: [
+              { label: 'Action completed (Verb + 了)', tense: 'completion', position: 'past', kind: 'point', example: '我买了一辆新车。' },
+              { label: 'New situation / change of state (Sentence + 了)', tense: 'change of state', position: 'now', kind: 'state', example: '牛奶坏了。' },
+            ],
+            note: 'Verbal 了 marks aspectual completion; sentence-final 了 marks a change of state.',
+          },
+          decisionTree: {
+            question: 'Is 了 placed directly after the verb to indicate a completed action?',
+            yes: {
+              result: 'Verbal 了 (Completed action)',
+              rule: 'Shows an action is completed: 我吃了一个苹果 (I ate an apple). Negative: use 没 (méi) and drop 了.',
+              example: '我买了一本书。',
+            },
+            no: {
+              result: 'Sentence-final 了 (New state / change)',
+              rule: 'Marks a change of situation: 牛奶坏了 (The milk has gone bad now). Also used in expressions like 太...了.',
+              example: '下雨了 (It started raining).',
+            },
+          },
           items: [
             { s: '我吃[了]一个苹果。', en: 'I ate an apple.', wrong: ['着', '的', '在'] },
             { s: '我买[了]辆新车。', en: 'I bought a new car.', wrong: ['着', '的', '在'] },

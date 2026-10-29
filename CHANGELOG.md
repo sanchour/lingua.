@@ -3,6 +3,15 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.72** · 2026-10-29 · Claim 6-11 Speaking for Antigravity-1
+- **0.6.0-alpha.71** · 2026-10-29 · 6-13 T3: language contrast tables, false friends, and personal pair notes
+- **0.6.0-alpha.70** · 2026-10-29 · 6-13 T2: translation views (alignment, back-translation, rebuild)
+- **0.6.0-alpha.69** · 2026-10-29 · 6-13 T1: translation practice with hints, literal vs natural, and required words
+- **0.6.0-alpha.68** · 2026-10-29 · Claim 6-13 Translating and comparing languages for Antigravity-1
+- **0.6.0-alpha.67** · 2026-10-29 · 6-7 Grammar: G5 sentence explainer with device-dictionary form/ending breakdown and Max syntax parser
+- **0.6.0-alpha.66** · 2026-10-29 · 6-7 G4: interactive topic map with prerequisite DAG and error heatmap
+- **0.6.0-alpha.65** · 2026-10-29 · 6-7 G3: pictures that explain (timelines, word order, decision trees, sentence diagrams, morphology breakdowns, coloured endings)
+- **0.6.0-alpha.64** · 2026-10-29 · 6-7 G2: richer pages with in-language reading, exceptions and pairs
 - **0.6.0-alpha.63** · 2026-10-29 · Part A's last bits: easiest sentences first, Use it in a sentence, bulk edit, recurring mistakes
 - **0.6.0-alpha.62** · 2026-10-29 · 6-1c and 6-3b: common synonyms first and the rusty set looked at
 - **0.6.0-alpha.61** · 2026-10-29 · 6-1c: set phrases count as phrasal verbs and sayings

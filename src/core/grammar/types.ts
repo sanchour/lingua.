@@ -48,6 +48,96 @@ export interface ComparisonSide {
   example?: Example;
 }
 
+export interface FormalityPair {
+  formal: Example;
+  informal: Example;
+  note?: string;
+}
+
+export interface RightWrongPair {
+  right: string;
+  wrong: string;
+  reason: string;
+}
+
+export interface RegionalNote {
+  region: string;
+  note: string;
+  example?: Example;
+}
+
+export interface CrossReference {
+  topicId: string;
+  note: string;
+}
+
+export interface GrammarTimelinePoint {
+  label: string;
+  tense: string;
+  position: 'past-far' | 'past' | 'past-recent' | 'now' | 'future-near' | 'future';
+  kind?: 'point' | 'continuous' | 'habitual' | 'state';
+  example?: string;
+}
+
+export interface GrammarTimelineData {
+  title?: string;
+  points: GrammarTimelinePoint[];
+  note?: string;
+}
+
+export interface WordOrderSlot {
+  role: string;
+  example?: string;
+  optional?: boolean;
+  highlight?: boolean;
+}
+
+export interface WordOrderData {
+  title?: string;
+  slots: WordOrderSlot[];
+  note?: string;
+}
+
+export interface DecisionBranch {
+  result?: string;
+  rule?: string;
+  example?: string;
+  next?: DecisionNode;
+}
+
+export interface DecisionNode {
+  question: string;
+  yes: DecisionBranch;
+  no: DecisionBranch;
+}
+
+export interface SentenceDiagramNode {
+  word: string;
+  role: string;
+  clause?: 'main' | 'subordinate' | 'relative';
+}
+
+export interface SentenceDiagramData {
+  title?: string;
+  sentence: string;
+  translation?: string;
+  nodes: SentenceDiagramNode[];
+  note?: string;
+}
+
+export interface MorphologyPart {
+  text: string;
+  type: 'prefix' | 'stem' | 'suffix' | 'ending';
+  meaning?: string;
+}
+
+export interface MorphologyBreakdownData {
+  word: string;
+  translation: string;
+  parts: MorphologyPart[];
+  note?: string;
+}
+
 export interface Topic {
   /** Stable within the language: item keys and progress rows hang on it. */
   id: string;
@@ -72,6 +162,20 @@ export interface Topic {
    */
   tags?: string[];
   related?: string[];
+  category?: string;
+  pos?: string;
+  prerequisites?: string[];
+  exceptions?: string[];
+  formalityPairs?: FormalityPair[];
+  rightWrongPairs?: RightWrongPair[];
+  regionalNotes?: RegionalNote[];
+  targetLangRule?: string[];
+  crossReferences?: CrossReference[];
+  timeline?: GrammarTimelineData;
+  wordOrder?: WordOrderData;
+  decisionTree?: DecisionNode;
+  sentenceDiagram?: SentenceDiagramData;
+  morphology?: MorphologyBreakdownData[];
 }
 
 export interface Unit {

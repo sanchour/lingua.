@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, BookA, Check, Compass, RotateCcw, Zap } from 'lucide-react';
+import { ArrowRight, BookA, Bookmark, Check, Compass, RotateCcw, Search, X, Zap } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { getLanguage } from '@/core/lang/languages';
@@ -9,16 +9,24 @@ import type { PathStatus } from '@/core/grammar/path';
 import { nextTopic, STEPS, topicState } from '@/core/grammar/progress';
 import type { TopicState } from '@/core/grammar/progress';
 import type { GrammarLevel, Topic } from '@/core/grammar/types';
+import { topicsOf } from '@/core/grammar/types';
+import { GRAMMAR_CATEGORIES, GRAMMAR_POS_LIST, POS_LABELS, topicCategory, topicPos } from '@/core/grammar/categories';
+import { searchTopics } from '@/core/grammar/search';
+import { useGrammarBookmarks } from '@/data/grammarUserData';
 import { useGrammarItems, useGrammarProgress } from '@/data/grammar';
 import { Badge, buttonClasses, Card, EmptyState, Segmented } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { eyebrow, TopicRing, useGrammar } from './parts';
 import { LettersCard } from './letters/LettersCard';
+import { TopicMap } from './TopicMap';
+import { SentenceExplainer } from './SentenceExplainer';
+
+type ViewMode = 'path' | 'map' | 'explainer' | 'category' | 'pos' | 'all';
 
 /**
- * Grammatica (Lingua 3.0-8, a guided path in 5.2-8): the next step large with its reason, a ladder of levels, the chosen
- * level as a path, and on the right what is due, what slipped, and the placement check. All topics is one tab away.
- * Nothing is locked; the path is only a suggestion at the learner's level.
+ * Grammatica (Lingua 3.0-8, a guided path in 5.2-8, browse & search in 6-7): the next step large with its reason,
+ * a ladder of levels, the chosen level as a path, and browsing by category, part of speech, plain-word search,
+ * and bookmarks.
  */
 export default function GrammaticaPage() {
   const { language } = useApp();
@@ -27,8 +35,10 @@ export default function GrammaticaPage() {
   const grammar = useGrammar(lang);
   const progress = useGrammarProgress(lang);
   const items = useGrammarItems(lang);
-  const [tab, setTab] = useState<'path' | 'all'>('path');
+  const bookmarks = useGrammarBookmarks(lang);
+  const [tab, setTab] = useState<ViewMode>('path');
   const [picked, setPicked] = useState<GrammarLevel>();
+  const [query, setQuery] = useState('');
 
   const ready = Boolean(grammar && progress && items);
   const states = useMemo(() => {
@@ -48,6 +58,14 @@ export default function GrammaticaPage() {
   const path = useMemo(() => (grammar ? levelPath(grammar, level, learned, next?.id) : []), [grammar, level, learned, next?.id]);
   const placed = Boolean(progress && progress.size > 0);
 
+  const searchResults = useMemo(() => {
+    if (!grammar || !query.trim()) return [];
+    return searchTopics(grammar, query);
+  }, [grammar, query]);
+
+  const allTopics = useMemo(() => (grammar ? topicsOf(grammar) : []), [grammar]);
+  const bookmarkedTopics = useMemo(() => allTopics.filter((t) => bookmarks.has(t.id)), [allTopics, bookmarks]);
+
   return (
     <>
       <PageHeader title="Grammatica" eyebrow={`Grammar in ${info?.name ?? lang}`} />
@@ -65,45 +83,112 @@ export default function GrammaticaPage() {
       ) : (
         <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0">
-            <div className="mb-5">
-              <Segmented<'path' | 'all'>
-                label="View"
-                value={tab}
-                onChange={setTab}
-                options={[
-                  { value: 'path', label: 'Your path' },
-                  { value: 'all', label: 'All topics' },
-                ]}
+            {/* Search in plain words */}
+            <div className="relative mb-5">
+              <Search size={18} className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-ink-faint" aria-hidden />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search topics in plain words ('when do I use the subjunctive?', 'past tense', 'articles')…"
+                className="w-full rounded-2xl border border-line bg-surface py-2.5 pr-10 pl-10 text-[15px] leading-snug outline-none placeholder:text-ink-faint focus:border-ink"
               />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery('')}
+                  aria-label="Clear search"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-ink-faint hover:text-ink"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
-            {tab === 'path' ? (
-              <>
-                {next ? (
-                  <NextStep topic={next} state={states.get(next.id)} why={ready ? whyNext(grammar, next, states.get(next.id), language.level, learned) : ''} />
-                ) : (
-                  ready && (
-                    <Card className="p-6">
-                      <p className="font-serif text-[20px] font-semibold">Every topic is learned.</p>
-                      <p className="mt-1 text-[14.5px] text-ink-soft">Reviews keep them fresh; a Lightning round is a good way to use them.</p>
-                    </Card>
-                  )
-                )}
-                <Ladder rungs={rungs} learnerLevel={grammarLevel(language.level)} picked={level} onPick={setPicked} />
-                <ol className="mt-4 grid gap-2" aria-label={`${level} topics`}>
-                  {path.map((stop) => (
-                    <li key={stop.topic.id}>
-                      <PathRow topic={stop.topic} status={stop.status} state={states.get(stop.topic.id)} />
-                    </li>
-                  ))}
-                </ol>
-              </>
+
+            {query.trim() ? (
+              <SearchResults query={query} results={searchResults} states={states} />
             ) : (
-              <AllTopics units={grammar.units} states={states} nextId={next?.id} />
+              <>
+                <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                  <Segmented<ViewMode>
+                    label="View"
+                    value={tab}
+                    onChange={setTab}
+                    options={[
+                      { value: 'path', label: 'Your path' },
+                      { value: 'map', label: 'Topic map' },
+                      { value: 'explainer', label: 'Sentence explainer' },
+                      { value: 'category', label: 'By category' },
+                      { value: 'pos', label: 'By part of speech' },
+                      { value: 'all', label: 'All topics' },
+                    ]}
+                  />
+                </div>
+
+                {tab === 'path' && (
+                  <>
+                    {next ? (
+                      <NextStep topic={next} state={states.get(next.id)} why={ready ? whyNext(grammar, next, states.get(next.id), language.level, learned) : ''} />
+                    ) : (
+                      ready && (
+                        <Card className="p-6">
+                          <p className="font-serif text-[20px] font-semibold">Every topic is learned.</p>
+                          <p className="mt-1 text-[14.5px] text-ink-soft">Reviews keep them fresh; a Lightning round is a good way to use them.</p>
+                        </Card>
+                      )
+                    )}
+                    <Ladder rungs={rungs} learnerLevel={grammarLevel(language.level)} picked={level} onPick={setPicked} />
+                    <ol className="mt-4 grid gap-2" aria-label={`${level} topics`}>
+                      {path.map((stop) => (
+                        <li key={stop.topic.id}>
+                          <PathRow topic={stop.topic} status={stop.status} state={states.get(stop.topic.id)} />
+                        </li>
+                      ))}
+                    </ol>
+                  </>
+                )}
+
+                {tab === 'map' && (
+                  <TopicMap
+                    grammar={grammar}
+                    states={states}
+                    learnedIds={learned}
+                    weakSpots={weak}
+                    nextId={next?.id}
+                    lang={lang}
+                  />
+                )}
+
+                {tab === 'explainer' && <SentenceExplainer lang={lang} />}
+
+                {tab === 'category' && <TopicsByCategory topics={allTopics} states={states} nextId={next?.id} />}
+                {tab === 'pos' && <TopicsByPos topics={allTopics} states={states} nextId={next?.id} />}
+                {tab === 'all' && <AllTopics units={grammar.units} states={states} nextId={next?.id} />}
+              </>
             )}
+
             <Sources name={info?.name ?? lang} sources={grammar.sources} />
           </div>
 
           <aside className="grid gap-4 lg:sticky lg:top-6">
+            {bookmarkedTopics.length > 0 && (
+              <Card className="p-4">
+                <div className="flex items-center gap-2">
+                  <Bookmark size={16} className="text-accent-text" fill="currentColor" aria-hidden />
+                  <p className={eyebrow}>Bookmarks ({bookmarkedTopics.length})</p>
+                </div>
+                <ul className="mt-2 grid gap-1">
+                  {bookmarkedTopics.map((t) => (
+                    <li key={t.id}>
+                      <Link to={`/cursus/grammatica/${t.id}`} className="flex items-center gap-2 rounded-xl px-2 py-1.5 text-[14px] transition-colors hover:bg-sunken">
+                        <span className="min-w-0 flex-1 truncate font-semibold">{t.title}</span>
+                        <Badge>{t.level}</Badge>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            )}
             <Due due={dueCount} />
             {weak.length > 0 && (
               <Card className="p-4">
@@ -128,6 +213,125 @@ export default function GrammaticaPage() {
         </div>
       )}
     </>
+  );
+}
+
+function SearchResults({ query, results, states }: { query: string; results: ReturnType<typeof searchTopics>; states: Map<string, TopicState> }) {
+  if (results.length === 0) {
+    return (
+      <Card className="p-6 text-center">
+        <p className="font-serif text-[18px] font-semibold">No topics match &quot;{query}&quot;</p>
+        <p className="mt-1 text-[14px] text-ink-soft">Try searching by grammatical name (e.g. &quot;subjunctive&quot;), tense (&quot;past&quot;), or function (&quot;wishes&quot;, &quot;negation&quot;).</p>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <p className="text-[14px] text-ink-faint">
+        Found {results.length} matching {results.length === 1 ? 'topic' : 'topics'} for &quot;{query}&quot;:
+      </p>
+      <ul className="grid gap-2.5">
+        {results.map(({ topic, matchReasons }) => (
+          <li key={topic.id}>
+            <Link
+              to={`/cursus/grammatica/${topic.id}`}
+              className="flex items-center gap-3.5 rounded-2xl border border-line/60 bg-surface p-3.5 transition-colors hover:border-line-strong active:scale-[0.99]"
+            >
+              <TopicRing state={states.get(topic.id)} />
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-2">
+                  <span className="min-w-0 text-[15.5px] font-semibold">{topic.title}</span>
+                  <Badge>{topic.level}</Badge>
+                </span>
+                <span className="mt-0.5 line-clamp-1 block text-[13.5px] text-ink-soft">{topic.summary}</span>
+                {matchReasons.length > 0 && (
+                  <span className="mt-1 block text-[12px] text-accent-text">
+                    {matchReasons.join(' · ')}
+                  </span>
+                )}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function TopicsByCategory({ topics, states, nextId }: { topics: Topic[]; states: Map<string, TopicState>; nextId?: string }) {
+  const grouped = useMemo(() => {
+    const map = new Map<string, Topic[]>();
+    for (const cat of GRAMMAR_CATEGORIES) map.set(cat, []);
+    for (const t of topics) {
+      const cat = topicCategory(t);
+      const list = map.get(cat) ?? [];
+      list.push(t);
+      map.set(cat, list);
+    }
+    return map;
+  }, [topics]);
+
+  return (
+    <div className="space-y-8">
+      {GRAMMAR_CATEGORIES.map((cat) => {
+        const list = grouped.get(cat) ?? [];
+        if (list.length === 0) return null;
+        return (
+          <section key={cat}>
+            <div className="mb-3 flex items-baseline justify-between gap-3">
+              <h2 className="font-serif text-[20px] font-semibold">{cat}</h2>
+              <p className={eyebrow}>{list.length} topics</p>
+            </div>
+            <ul className="grid gap-2.5 xl:grid-cols-2">
+              {list.map((t) => (
+                <li key={t.id}>
+                  <TopicRow topic={t} state={states.get(t.id)} next={t.id === nextId} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function TopicsByPos({ topics, states, nextId }: { topics: Topic[]; states: Map<string, TopicState>; nextId?: string }) {
+  const grouped = useMemo(() => {
+    const map = new Map<string, Topic[]>();
+    for (const pos of GRAMMAR_POS_LIST) map.set(pos, []);
+    for (const t of topics) {
+      const pos = topicPos(t);
+      const list = map.get(pos) ?? [];
+      list.push(t);
+      map.set(pos, list);
+    }
+    return map;
+  }, [topics]);
+
+  return (
+    <div className="space-y-8">
+      {GRAMMAR_POS_LIST.map((pos) => {
+        const list = grouped.get(pos) ?? [];
+        if (list.length === 0) return null;
+        return (
+          <section key={pos}>
+            <div className="mb-3 flex items-baseline justify-between gap-3">
+              <h2 className="font-serif text-[20px] font-semibold">{POS_LABELS[pos]}</h2>
+              <p className={eyebrow}>{list.length} topics</p>
+            </div>
+            <ul className="grid gap-2.5 xl:grid-cols-2">
+              {list.map((t) => (
+                <li key={t.id}>
+                  <TopicRow topic={t} state={states.get(t.id)} next={t.id === nextId} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
   );
 }
 

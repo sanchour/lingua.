@@ -8,3 +8,7 @@ export { pairsOfGrid, planTransforms, transformSpec } from './transform';
 export type { FormPair, TransformSpec } from './transform';
 export { attachRetries, completeDialogue, correctMistake, dragSentence, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, pairsAcrossGrids, predictForms, rewriteFix, sentenceTask, tenseTransforms, useInSentence } from './kinds';
 export type { WordFacts } from './kinds';
+export { TRANSLATION_PAIRS, buildTranslationExercise, getTranslationTasks, validateRequirements } from './translate';
+export type { DialogueExchange, TranslateBody, TranslationCategory, TranslationTask } from './translate';
+export { ALIGNMENT_PAIRS, analyzeBackTranslation, checkReconstruction, getAlignmentPairs, scrambleWords } from './translateViews';
+export type { AlignmentPair, TokenLink } from './translateViews';

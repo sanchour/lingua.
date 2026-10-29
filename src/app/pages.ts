@@ -35,6 +35,7 @@ const loaders = {
   ratio: () => import('@/features/ratio/RatioPage'),
   ordo: () => import('@/features/ordo/OrdoPage'),
   lab: () => import('@/features/lab/LabPage'),
+  translatePractice: () => import('@/features/translate/TranslatePracticePage'),
 };
 
 export const CodexPage = lazy(loaders.codex);
@@ -69,6 +70,7 @@ export const ExploraPage = lazy(loaders.explora);
 export const RatioPage = lazy(loaders.ratio);
 export const OrdoPage = lazy(loaders.ordo);
 export const LabPage = lazy(loaders.lab);
+export const TranslatePracticePage = lazy(loaders.translatePractice);
 
 /** Fetches every section chunk when the browser is idle. Returns a cancel function. */
 export function preloadSections(): () => void {

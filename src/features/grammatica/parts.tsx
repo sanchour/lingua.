@@ -66,6 +66,28 @@ export function SentenceLine({ example, lang, size = 'md' }: { example: Example;
   );
 }
 
+/** Renders table cells with endings or affixes highlighted in terracotta accent if formatted with **ending**. */
+export function TableCellContent({ text, lang }: { text: string; lang: string }) {
+  if (!text) return null;
+  if (text.includes('**')) {
+    const parts = text.split(/(\*\*[^*]+\*\*)/g).filter(Boolean);
+    return (
+      <span lang={lang} dir="auto">
+        {parts.map((p, i) =>
+          p.startsWith('**') ? (
+            <span key={i} className="font-bold text-accent-text bg-accent-soft/40 px-[0.2em] py-[0.05em] rounded-[3px]">
+              {p.slice(2, -2)}
+            </span>
+          ) : (
+            <span key={i} className="text-ink">{p}</span>
+          ),
+        )}
+      </span>
+    );
+  }
+  return <span lang={lang} dir="auto">{text}</span>;
+}
+
 export function TableView({ table, lang }: { table: GrammarTable; lang: string }) {
   const [head, ...cols] = table.columns ?? [];
   return (
@@ -91,11 +113,11 @@ export function TableView({ table, lang }: { table: GrammarTable; lang: string }
             {table.rows.map(([label, ...cells], i) => (
               <tr key={i} className="border-t border-line/60 first:border-t-0">
                 <th scope="row" lang={lang} dir="auto" className="px-2.5 py-2 font-normal text-ink-soft sm:px-3.5">
-                  {label}
+                  <TableCellContent text={label} lang={lang} />
                 </th>
                 {cells.map((c, j) => (
                   <td key={j} lang={lang} dir="auto" className="px-2.5 py-2 font-semibold sm:px-3.5">
-                    {c}
+                    <TableCellContent text={c} lang={lang} />
                   </td>
                 ))}
               </tr>

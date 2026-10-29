@@ -52,6 +52,35 @@ const grammar: Grammar = {
             { s: 'Das ist [ein] großes Problem.', en: 'That is a big problem.', wrong: ['eine', 'einen', 'einer'] },
           ],
           related: ['accusative', 'adjective-endings'],
+          targetLangRule: [
+            'Im Deutschen haben Substantive drei grammatische Geschlechter: **Maskulinum** (*der*), **Femininum** (*die*) und **Neutrum** (*das*). Im Plural lautet der bestimmte Artikel für alle Geschlechter **die**.',
+            'Der unbestimmte Artikel ist **ein** (maskulin und neutral) und **eine** (feminin).',
+            'Substantive werden im Deutschen immer **großgeschrieben**.',
+          ],
+          exceptions: [
+            'Verkleinerungsformen mit -chen oder -lein sind immer sächlich: das Mädchen, das Fräulein.',
+            'Substantive auf -e sind meist feminin, aber Ausnahmen existieren: der Name, der Käse, das Auge.',
+          ],
+          formalityPairs: [
+            {
+              formal: { s: 'Wie heißen Sie?', en: 'What is your name? (formal)' },
+              informal: { s: 'Wie heißt du?', en: 'What is your name? (informal)' },
+              note: 'Sie is always capitalized and uses 3rd person plural verb endings.',
+            },
+          ],
+          rightWrongPairs: [
+            {
+              right: 'Ich sehe den Mann.',
+              wrong: 'Ich sehe der Mann.',
+              reason: 'Direct objects in the masculine accusative take den, not der.',
+            },
+          ],
+          regionalNotes: [
+            {
+              region: 'Germany vs Austria/Switzerland',
+              note: 'In Austria and Bavaria: der Tomate is sometimes die Paradeiser; Switzerland does not use the letter ß (uses ss instead).',
+            },
+          ],
         },
         {
           id: 'present',
@@ -150,6 +179,17 @@ const grammar: Grammar = {
               ],
             },
           ],
+          wordOrder: {
+            title: 'German V2 Rule (Main Clause)',
+            slots: [
+              { role: 'Position 1 (Topic)', example: 'Morgen / Heute', highlight: false },
+              { role: 'Finite Verb (Pos 2)', example: 'gehe / bin', highlight: true },
+              { role: 'Subject', example: 'ich / wir', optional: false },
+              { role: 'Midfield (Time/Manner/Place)', example: 'zur Schule', optional: true },
+              { role: 'Verb End (Infinitive / Prefix)', example: 'ab / machen', optional: true },
+            ],
+            note: 'The conjugated verb is strictly anchored in Position 2 of main clauses in German.',
+          },
           why: 'The verb stays in second place, so after a time or place word the subject comes after the verb.',
           tags: [],
           items: [
@@ -208,18 +248,43 @@ const grammar: Grammar = {
               ],
             },
             {
-              title: 'Pronouns',
-              columns: ['subject', 'object'],
+              title: 'Personal pronouns summary (Nominativ, Akkusativ, Dativ)',
+              columns: ['person', 'nominative', 'accusative', 'dative'],
               rows: [
-                ['ich', 'mich'],
-                ['du', 'dich'],
-                ['er / sie / es', 'ihn / sie / es'],
-                ['wir', 'uns'],
-                ['ihr', 'euch'],
-                ['sie / Sie', 'sie / Sie'],
+                ['1st sing', 'ich', 'mich', 'mir'],
+                ['2nd sing', 'du', 'dich', 'dir'],
+                ['3rd sing (m)', 'er', 'ihn', 'ihm'],
+                ['3rd sing (f)', 'sie', 'sie', 'ihr'],
+                ['3rd sing (n)', 'es', 'es', 'ihm'],
+                ['1st plur', 'wir', 'uns', 'uns'],
+                ['2nd plur', 'ihr', 'euch', 'euch'],
+                ['3rd plur / formal', 'sie / Sie', 'sie / Sie', 'ihnen / Ihnen'],
               ],
             },
           ],
+          decisionTree: {
+            question: 'Is the noun the subject performing the action?',
+            yes: {
+              result: 'Nominativ (Subject)',
+              rule: 'Der Mann, die Frau, das Kind, die Kinder.',
+              example: 'Der Hund bellt.',
+            },
+            no: {
+              next: {
+                question: 'Is it the direct object or after durch, für, gegen, ohne, um?',
+                yes: {
+                  result: 'Akkusativ (Direct Object)',
+                  rule: 'Den Mann, die Frau, das Kind, die Kinder.',
+                  example: 'Ich sehe den Hund.',
+                },
+                no: {
+                  result: 'Dativ (Indirect Object)',
+                  rule: 'Dem Mann, der Frau, dem Kind, den Kindern (prepositions: aus, bei, mit, nach, seit, von, zu).',
+                  example: 'Ich gebe dem Hund Futter.',
+                },
+              },
+            },
+          },
           why: 'The object takes the accusative: masculine der/ein become den/einen; ich → mich, du → dich, er → ihn.',
           tags: ['accusative'],
           items: [
@@ -674,20 +739,30 @@ const grammar: Grammar = {
               title: 'After der, die, das',
               columns: ['', 'masculine', 'feminine', 'neuter', 'plural'],
               rows: [
-                ['nominative', '-e', '-e', '-e', '-en'],
-                ['accusative', '-en', '-e', '-e', '-en'],
-                ['dative', '-en', '-en', '-en', '-en'],
-                ['genitive', '-en', '-en', '-en', '-en'],
+                ['nominative', '**-e**', '**-e**', '**-e**', '**-en**'],
+                ['accusative', '**-en**', '**-e**', '**-e**', '**-en**'],
+                ['dative', '**-en**', '**-en**', '**-en**', '**-en**'],
+                ['genitive', '**-en**', '**-en**', '**-en**', '**-en**'],
               ],
             },
             {
               title: 'After ein, kein, mein',
               columns: ['', 'masculine', 'feminine', 'neuter', 'plural'],
               rows: [
-                ['nominative', '-er', '-e', '-es', '-en'],
-                ['accusative', '-en', '-e', '-es', '-en'],
-                ['dative', '-en', '-en', '-en', '-en'],
-                ['genitive', '-en', '-en', '-en', '-en'],
+                ['nominative', '**-er**', '**-e**', '**-es**', '**-en**'],
+                ['accusative', '**-en**', '**-e**', '**-es**', '**-en**'],
+                ['dative', '**-en**', '**-en**', '**-en**', '**-en**'],
+                ['genitive', '**-en**', '**-en**', '**-en**', '**-en**'],
+              ],
+            },
+          ],
+          morphology: [
+            {
+              word: 'schnellen',
+              translation: 'quick / fast (accusative masculine)',
+              parts: [
+                { text: 'schnell', type: 'stem', meaning: 'fast' },
+                { text: 'en', type: 'ending', meaning: 'acc. masc. ending' },
               ],
             },
           ],

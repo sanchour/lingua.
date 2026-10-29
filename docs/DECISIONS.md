@@ -1877,3 +1877,44 @@ Study tools uses the house drawer so its nested deck picker stays open. Category
 ## 2026-10-29 — 6-8 R2: a Graded shelf is measured, source results are not
 
 Codex’s Graded tab reuses TextStats (the existing frequency-based level estimate and Known-or-Learning share), keeping manual levels separate. Without local frequency data it shows unmeasured; topic and kind are optional learner labels on the existing text row. The pure filter excludes other languages, deleted texts and shelf-only entries. Open-edition searches reuse Wikisource and Gutenberg, with translated search starting points for the core six languages, and run only when requested. An edition is imported only after Add this edition; its measured level is not promised before import. No corpus is bundled, and no source is scraped wholesale.
+
+## 2026-10-29 — 6-7 G1: grammar browsing, plain-language search, prerequisites and notes
+
+Topics can now be browsed by grammatical category and part of speech as well as level. Plain-language search maps natural queries ('when do I use the subjunctive', 'past tense') with synonym expansion and token weighting against titles, tags, summaries, rule text, and example focus forms. Hand-crafted prerequisites and fallback foundation ordering provide 'Before this: …' guidance with visual indicators of learned status. Personal bookmarks and notebook notes are stored in settings without a new database table or schema migration, so they integrate into local-first backups and survive restarts.
+
+## 2026-10-29 — 6-7 G2: richer pages with in-language reading, exceptions and pairs
+
+Grammar rules now support target-language and side-by-side reading, allowing learners to study explanations in the language itself or dual-column. Topics in the core six languages (Spanish, French, German, Italian, Russian, Chinese) gain structured exceptions, formality contrasts (formal/informal pairings), right/wrong slip prevention cards with explicit grammatical rationales, regional variation notes, and contextual cross-references.
+
+## 2026-10-29 — 6-7 G3: fine-line pictures that explain and endings coloured on stems
+
+Visual representations follow the handbook Part One principles: one fine line (stroke-width 1.3, round caps and joins, ink-soft currentColor with terracotta accent highlights). `TenseTimeline` renders past/now/future coordinates with interval brackets and clickable examples; `WordOrderVisualizer` maps sequential syntactic slots with optional badges and highlight borders; `GrammarDecisionTree` guides learners through interactive branching choices (ser vs estar, which past, accusative vs dative, verb aspect); `SentenceStructureDiagram` maps clause constituents and roles; and `MorphologyBreakdownView` dissects complex words into prefix, stem, and endings. Reference tables across all core languages now colour endings distinctly on stems using markdown bold formatting and styled cell rendering.
+
+## 2026-10-29 — 6-7 G4: interactive topic map, prerequisite DAG and error heatmap
+
+Grammatica gains an interactive topic map tab. Topics are arranged in tiered CEFR columns (A1 through C1) connected by directed prerequisite edges drawn with fine-line cubic bezier curves and arrowheads. Nodes clearly distinguish learned topics (filled in sage with checkmarks), current/next topics (accent border), and unstarted topics. Clicking any node inspects its summary, met and missing prerequisites, unlocked dependent topics, and direct lesson navigation. An error heatmap overlay highlights trouble spots using exercise lapse counts and learner weak spots, visually cueing areas that need review. No general graph engine was added (preserving 6-29 for Opus).
+
+## 2026-10-29 — 6-7 G5: sentence explainer with device forms and AI syntax
+
+The Sentence Explainer analyzes any pasted or selected sentence. On the device, tokenization, lemma identification, inflectional endings extraction and basic clause division work completely offline using local dictionary forms (`db.dictForms`). When Max is connected (or tested via injected model), Universal Dependencies roles (Subject, Predicate Verb, Direct Object, etc.), fine-line SVG dependency arcs, subordinate clause explanations, and alternative grammatically valid interpretations are merged seamlessly. When no key is set, the offline form-and-ending breakdown is presented with a clear notice that Max is needed for syntax arcs and roles.
+
+## 2026-10-29 — 6-13 T1: translation practice sets, literal contrasts, and requirement checks
+
+A dedicated Translation Practice suite is mounted at `/thesaurus/translate/:set?` using the exercise engine contracts (`buildTranslationExercise` in `src/core/exercise/translate.ts`). Translation sets cover English paired with all six core languages (Spanish, French, German, Italian, Russian, Chinese) across sentences, dialogues, paragraphs, idioms, slang, and formal correspondence. Exercises feature tiered hint reveals, side-by-side literal vs. natural comparisons, accepted alternative variations (checked offline via `judge`), and constraint validation requiring specific vocabulary words or grammatical constructions. Learners can also translate arbitrary custom passages with live metrics and log completed attempts to the learner evidence log (`recordEvidence`).
+
+## 2026-10-29 — 6-13 T2: translation views (alignment, back-translation, sentence rebuild)
+
+Four specialized translation views are integrated into `/thesaurus/translate`:
+1. `AlignmentView`: Interactive token-level alignment between English and core languages (Spanish pro-drop subjunctive, French modal structures, German V2 subject inversion, Italian piacere syntax and postpositive adjectives, Russian existential possession, Chinese pre-verbal adverbial sequencing) with fine-line visual mapping and structural shift notes.
+2. `BackTranslationView`: Guided three-stage workflow (Forward translation into target -> Blind back-translation into English -> Lexical drift analysis) calculating semantic preservation and nuance loss.
+3. `ReconstructView`: Two-stage cognitive reconstruction where the learner first translates into the target language, then rebuilds the hidden original English sentence by clicking scrambled word tiles in exact order.
+4. Reference comparison: Post-answer review juxtaposes the learner's answer against canonical and regional/stylistic reference translations.
+
+## 2026-10-29 — 6-13 T3: language contrast tables and personal pair notes
+
+A comprehensive comparative linguistic matrix is mounted under the 'Compare Languages' tab in `/thesaurus/translate`. Hand-crafted contrast tables cover English paired with all six core languages (Spanish, French, German, Italian, Russian, Chinese) as well as Romance cross-pairs (Spanish ↔ French, Spanish ↔ Italian) across eleven distinct dimensions: word order (SVO, SOV, V2 inversion, pro-drop, pre-verbal adverbials), grammatical gender, case declensions (4-case German, 6-case Russian), tense & aspect (Romance preterite/imperfect, Russian aspectual pairs, Chinese particles), articles & prepositions (Wechselpräpositionen, partitives, zero-articles), politeness & address (T-V distinctions, honorifics), false friends with deceptive lookalike warnings, shared cognate roots and word formation, pronunciation/phonetics, and cultural semantics (untranslatable words: sobremesa, Waldeinsamkeit, miànzi, toska). Learners can record and auto-save personal notes on any language pair without database migrations using `db.settings`.
+
+
+
+
+

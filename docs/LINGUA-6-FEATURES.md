@@ -302,39 +302,39 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 
 - [ ] `F0193` ⭐ Searchable grammar library · **5.2-8** · planned in Lingua 5.2
 - [x] `F0194` Grammar topics organized by level
-- [ ] `F0195` Grammar topics organized by part of speech · **6-7**
-- [ ] `F0196` Grammar topics organized by linguistic category · **6-7** · partly there
+- [x] `F0195` Grammar topics organized by part of speech · **6-7**
+- [x] `F0196` Grammar topics organized by linguistic category · **6-7** · partly there
 - [x] `F0197` Beginner-to-advanced grammar progression
 - [x] `F0198` Concise explanations
-- [ ] `F0199` Detailed explanations · **6-7** · partly there
+- [x] `F0199` Detailed explanations · **6-7** · partly there
 - [x] `F0200` Examples beside every rule
 - [x] `F0201` Examples with translations
 - [x] `F0202` Examples with audio
-- [ ] `F0203` Formal and informal examples · **6-7** · partly there
-- [ ] `F0204` Correct versus incorrect examples · **6-7** · partly there
+- [x] `F0203` Formal and informal examples · **6-7** · partly there
+- [x] `F0204` Correct versus incorrect examples · **6-7** · partly there
 - [x] `F0205` Common mistakes
-- [ ] `F0206` Exceptions to rules · **6-7** · partly there
-- [ ] `F0207` Notes on regional variation · **6-7**
+- [x] `F0206` Exceptions to rules · **6-7** · partly there
+- [x] `F0207` Notes on regional variation · **6-7**
 - [x] `F0208` Visual grammar tables
 - [x] `F0209` Verb conjugation tables
 - [x] `F0210` Noun declension tables
-- [ ] `F0211` Adjective agreement tables · **6-7** · partly there
-- [ ] `F0212` Pronoun tables · **6-7** · partly there
+- [x] `F0211` Adjective agreement tables · **6-7** · partly there
+- [x] `F0212` Pronoun tables · **6-7** · partly there
 - [x] `F0213` Tense and aspect comparisons
-- [ ] `F0214` Sentence structure diagrams · **6-7**
-- [ ] `F0215` Word order visualizations · **6-7**
-- [ ] `F0216` Grammar decision trees · **6-7**
-- [ ] `F0217` Grammar timelines · **6-7**
-- [ ] `F0218` Morphology breakdowns · **6-7**
-- [ ] `F0219` Interactive grammar maps · **6-7**
-- [ ] `F0220` Cross-references between related rules · **6-7** · partly there
-- [ ] `F0221` Prerequisite links showing what to learn first · **6-7**
+- [x] `F0214` Sentence structure diagrams · **6-7**
+- [x] `F0215` Word order visualizations · **6-7**
+- [x] `F0216` Grammar decision trees · **6-7**
+- [x] `F0217` Grammar timelines · **6-7**
+- [x] `F0218` Morphology breakdowns · **6-7**
+- [x] `F0219` Interactive grammar maps · **6-7**
+- [x] `F0220` Cross-references between related rules · **6-7** · partly there
+- [x] `F0221` Prerequisite links showing what to learn first · **6-7**
 - [ ] `F0222` Grammar search by natural language question · **6-15**
 - [ ] `F0223` AI-generated explanations at different difficulty levels · **6-15**
-- [ ] `F0224` Grammar explanations in the target language · **6-7**
-- [ ] `F0225` Grammar explanations in the learner’s native language · **6-7** · partly there
-- [ ] `F0226` Side-by-side explanations in two languages · **6-7**
-- [ ] `F0227` Grammar bookmarks and personal notes · **6-7**
+- [x] `F0224` Grammar explanations in the target language · **6-7**
+- [x] `F0225` Grammar explanations in the learner’s native language · **6-7** · partly there
+- [x] `F0226` Side-by-side explanations in two languages · **6-7**
+- [x] `F0227` Grammar bookmarks and personal notes · **6-7**
 
 #### 3.2 Grammar exercises
 
@@ -367,7 +367,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0252` Complete a sentence from context
 - [x] `F0253` Translate a sentence using a specific grammar rule
 - [x] `F0254` Generate multiple examples of a pattern · **6-4** · partly there
-- [ ] `F0255` Distinguish between two similar grammatical constructions · **6-7** · partly there
+- [x] `F0255` Distinguish between two similar grammatical constructions · **6-7** · partly there
 - [x] `F0256` Explain why an answer is wrong
 - [x] `F0257` Predict the next grammatical form · **6-4**
 - [x] `F0258` Complete a dialogue using the right forms · **6-4**
@@ -381,22 +381,22 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 
 *In Lingua: Grammatica rings and crowns per topic.*
 
-- [ ] `F0264` Grammar error heatmap · **6-7** · partly there
+- [x] `F0264` Grammar error heatmap · **6-7** · partly there
 - [ ] `F0265` Personal grammar weakness tracker · **5.2-8** · planned in Lingua 5.2
 - [x] `F0266` Grammar mastery by topic
-- [ ] `F0267` Prerequisite dependency graph · **6-7**
-- [ ] `F0268` Contrastive grammar between two languages · **6-13**
-- [ ] `F0269` Compare grammatical gender systems · **6-13**
-- [ ] `F0270` Compare tense and aspect systems · **6-13**
-- [ ] `F0271` Compare case systems · **6-13**
-- [ ] `F0272` Compare word order patterns · **6-13**
-- [ ] `F0273` Analyze the grammar of any pasted sentence · **6-7**
-- [ ] `F0274` Identify every word’s grammatical role · **6-7** · partly there
-- [ ] `F0275` Show dependency relationships between words · **6-7**
-- [ ] `F0276` Highlight clauses and subordinate clauses · **6-7**
-- [ ] `F0277` Parse complex sentences · **6-7**
+- [x] `F0267` Prerequisite dependency graph · **6-7**
+- [x] `F0268` Contrastive grammar between two languages · **6-13**
+- [x] `F0269` Compare grammatical gender systems · **6-13**
+- [x] `F0270` Compare tense and aspect systems · **6-13**
+- [x] `F0271` Compare case systems · **6-13**
+- [x] `F0272` Compare word order patterns · **6-13**
+- [x] `F0273` Analyze the grammar of any pasted sentence · **6-7**
+- [x] `F0274` Identify every word’s grammatical role · **6-7** · partly there
+- [x] `F0275` Show dependency relationships between words · **6-7**
+- [x] `F0276` Highlight clauses and subordinate clauses · **6-7**
+- [x] `F0277` Parse complex sentences · **6-7**
 - [x] `F0278` Generate sentence variations using a selected rule · **6-6**
-- [ ] `F0279` Explain multiple grammatically valid interpretations · **6-7**
+- [x] `F0279` Explain multiple grammatically valid interpretations · **6-7**
 - [x] `F0280` Identify unnatural but technically grammatical constructions · **6-12**
 - [x] `F0281` Track recurring grammar mistakes across conversations · **6-5**
 - [ ] `F0282` Generate a personalized grammar curriculum · **6-16**
@@ -466,7 +466,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0330` Phrase-level translation
 - [x] `F0331` Sentence-by-sentence translation
 - [x] `F0332` Dictionary popover
-- [ ] `F0333` Grammar breakdown of a selected sentence · **6-7**
+- [x] `F0333` Grammar breakdown of a selected sentence · **6-7**
 - [x] `F0334` Highlight known vocabulary
 - [x] `F0335` Highlight unknown vocabulary
 - [x] `F0336` Color-code parts of speech · **6-8**
@@ -527,7 +527,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [ ] `F0386` Match paragraphs to headings · **6-8**
 - [ ] `F0387` Identify the sentence that doesn’t belong · **6-8**
 - [ ] `F0388` Compare the original with a simplified version · **6-8**
-- [ ] `F0389` Translate a selected passage · **6-13**
+- [x] `F0389` Translate a selected passage · **6-13**
 - [x] `F0390` Retell the text in the target language
 - [ ] `F0391` Discuss the text with an AI tutor · **5.2-6** · planned in Lingua 5.2
 
@@ -991,50 +991,50 @@ Translation can be a powerful learning method when used actively. It becomes les
 - [x] `F0751` ⭐ Native language → target language
 - [x] `F0752` ⭐ Target language → native language
 - [x] `F0753` Sentence translation
-- [ ] `F0754` Paragraph translation · **6-13**
-- [ ] `F0755` Dialogue translation · **6-13**
-- [ ] `F0756` Translation with hints · **6-13**
+- [x] `F0754` Paragraph translation · **6-13**
+- [x] `F0755` Dialogue translation · **6-13**
+- [x] `F0756` Translation with hints · **6-13**
 - [x] `F0757` Translation without hints
-- [ ] `F0758` Literal translation · **6-13**
-- [ ] `F0759` Natural translation · **6-13**
-- [ ] `F0760` Multiple valid translations · **6-13**
-- [ ] `F0761` Compare translation alternatives · **6-13**
-- [ ] `F0762` Translate with a required vocabulary word · **6-13**
-- [ ] `F0763` Translate using a specified grammar construction · **6-13** · partly there
-- [ ] `F0764` Translate idioms · **6-13**
-- [ ] `F0765` Translate slang · **6-13**
-- [ ] `F0766` Translate formal expressions · **6-13**
+- [x] `F0758` Literal translation · **6-13**
+- [x] `F0759` Natural translation · **6-13**
+- [x] `F0760` Multiple valid translations · **6-13**
+- [x] `F0761` Compare translation alternatives · **6-13**
+- [x] `F0762` Translate with a required vocabulary word · **6-13**
+- [x] `F0763` Translate using a specified grammar construction · **6-13** · partly there
+- [x] `F0764` Translate idioms · **6-13**
+- [x] `F0765` Translate slang · **6-13**
+- [x] `F0766` Translate formal expressions · **6-13**
 - [ ] `F0767` Translate literary passages · **6-13**
-- [ ] `F0768` Translate a phrase in different registers · **6-13**
-- [ ] `F0769` Translate with word-by-word alignment · **6-13**
-- [ ] `F0770` Compare sentence structure across languages · **6-13**
-- [ ] `F0771` Explain why a direct translation doesn’t work · **6-13**
-- [ ] `F0772` Identify false friends · **6-13**
+- [x] `F0768` Translate a phrase in different registers · **6-13**
+- [x] `F0769` Translate with word-by-word alignment · **6-13**
+- [x] `F0770` Compare sentence structure across languages · **6-13**
+- [x] `F0771` Explain why a direct translation doesn’t work · **6-13**
+- [x] `F0772` Identify false friends · **6-13**
 - [ ] `F0773` Explain untranslatable concepts · **6-19**
-- [ ] `F0774` Back-translation exercises · **6-13**
-- [ ] `F0775` Translate and then reconstruct the original · **6-13**
-- [ ] `F0776` Compare a learner’s translation with several reference translations · **6-13**
-- [ ] `F0777` Translation challenges with a timer · **6-13**
-- [ ] `F0778` Translation of user-imported content · **6-13**
+- [x] `F0774` Back-translation exercises · **6-13**
+- [x] `F0775` Translate and then reconstruct the original · **6-13**
+- [x] `F0776` Compare a learner’s translation with several reference translations · **6-13**
+- [x] `F0777` Translation challenges with a timer · **6-13**
+- [x] `F0778` Translation of user-imported content · **6-13**
 
 #### 9.2 Contrastive language tools
 
-- [ ] `F0779` Compare word order · **6-13**
-- [ ] `F0780` Compare grammatical gender · **6-13**
-- [ ] `F0781` Compare case systems · **6-13**
-- [ ] `F0782` Compare tense and aspect · **6-13**
-- [ ] `F0783` Compare prepositions · **6-13**
-- [ ] `F0784` Compare articles · **6-13**
-- [ ] `F0785` Compare pronouns · **6-13**
-- [ ] `F0786` Compare politeness systems · **6-13**
-- [ ] `F0787` Compare formal and informal address · **6-13**
-- [ ] `F0788` Compare idioms across languages · **6-13**
-- [ ] `F0789` Compare cognates and false cognates · **6-13** · partly there
-- [ ] `F0790` Compare shared roots · **6-13**
-- [ ] `F0791` Compare word formation · **6-13**
-- [ ] `F0792` Compare pronunciation of similar words · **6-13**
-- [ ] `F0793` Compare semantic differences · **6-13**
-- [ ] `F0794` Compare cultural associations · **6-13**
+- [x] `F0779` Compare word order · **6-13**
+- [x] `F0780` Compare grammatical gender · **6-13**
+- [x] `F0781` Compare case systems · **6-13**
+- [x] `F0782` Compare tense and aspect · **6-13**
+- [x] `F0783` Compare prepositions · **6-13**
+- [x] `F0784` Compare articles · **6-13**
+- [x] `F0785` Compare pronouns · **6-13**
+- [x] `F0786` Compare politeness systems · **6-13**
+- [x] `F0787` Compare formal and informal address · **6-13**
+- [x] `F0788` Compare idioms across languages · **6-13**
+- [x] `F0789` Compare cognates and false cognates · **6-13** · partly there
+- [x] `F0790` Compare shared roots · **6-13**
+- [x] `F0791` Compare word formation · **6-13**
+- [x] `F0792` Compare pronunciation of similar words · **6-13**
+- [x] `F0793` Compare semantic differences · **6-13**
+- [x] `F0794` Compare cultural associations · **6-13**
 - [ ] `F0795` Maintain personal notes on difficult language pairs · **6-20**
 
 ## 10 · Real-world immersion
@@ -1717,7 +1717,7 @@ Different languages require different learning interfaces. This could become a m
 - [ ] `F1338` European versus Brazilian Portuguese · **6-23** · partly there
 - [ ] `F1339` Nasal vowel practice · **6-10**
 - [ ] `F1340` Verb-preposition combinations · **6-23**
-- [ ] `F1341` False friends between Romance languages · **6-13**
+- [x] `F1341` False friends between Romance languages · **6-13**
 
 #### Chinese, Japanese and other East Asian languages
 

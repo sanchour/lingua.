@@ -52,6 +52,41 @@ const grammar: Grammar = {
             { s: 'Il a [un] ordinateur.', en: 'He has a computer.', wrong: ['une', 'des', 'la'] },
           ],
           related: ['adjectives', 'partitive'],
+          targetLangRule: [
+            'En français, chaque nom a un genre : il est **masculin** ou **féminin**.',
+            'L\'article défini est **le** (masculin) ou **la** (féminin), qui s\'élide en **l\'** devant une voyelle ou un h muet (*l\'ami*, *l\'heure*). Au pluriel, la forme unique est **les**.',
+            'L\'article indéfini est **un** (masculin), **une** (féminin) et **des** (pluriel).',
+          ],
+          exceptions: [
+            'Mots se terminant par -e qui sont masculins : le problème, le groupe, le monde, le système.',
+            'Mots sans -e qui sont féminins : la mer, la fin, la voix, la peau.',
+            'Le h aspiré empêche l\'élision : le héros (pas l\'héros), le haricot.',
+          ],
+          formalityPairs: [
+            {
+              formal: { s: 'Comment allez-vous ?', en: 'How are you? (formal)' },
+              informal: { s: 'Comment vas-tu ?', en: 'How are you? (informal)' },
+              note: 'Vous is used for politeness or multiple people, tu for friends, family, and peers.',
+            },
+          ],
+          rightWrongPairs: [
+            {
+              right: 'J\'écoute le professeur.',
+              wrong: 'J\'écoute à le professeur.',
+              reason: 'Écouter takes a direct object in French without a preposition.',
+            },
+            {
+              right: 'L\'eau est bonne.',
+              wrong: 'La eau est bonne.',
+              reason: 'La contracts to l\' before a vowel.',
+            },
+          ],
+          regionalNotes: [
+            {
+              region: 'France vs Québec',
+              note: 'In Québec, "la fin de semaine" is preferred over the European French "le week-end".',
+            },
+          ],
         },
         {
           id: 'etre-avoir',
@@ -201,10 +236,22 @@ const grammar: Grammar = {
             {
               columns: ['masculine', 'feminine', 'masc. plural', 'fem. plural'],
               rows: [
-                ['noir', 'noire', 'noirs', 'noires'],
-                ['bon', 'bonne', 'bons', 'bonnes'],
-                ['nouveau (nouvel)', 'nouvelle', 'nouveaux', 'nouvelles'],
-                ['vieux (vieil)', 'vieille', 'vieux', 'vieilles'],
+                ['noir', 'noir**e**', 'noir**s**', 'noir**es**'],
+                ['grand', 'grand**e**', 'grand**s**', 'grand**es**'],
+                ['bon', 'bon**ne**', 'bon**s**', 'bon**nes**'],
+                ['nouveau (nouvel)', 'nouvel**le**', 'nouveau**x**', 'nouvel**les**'],
+                ['vieux (vieil)', 'vieil**le**', 'vieux', 'vieil**les**'],
+              ],
+            },
+          ],
+          morphology: [
+            {
+              word: 'grandes',
+              translation: 'tall (feminine plural)',
+              parts: [
+                { text: 'grand', type: 'stem', meaning: 'tall/big' },
+                { text: 'e', type: 'ending', meaning: 'feminine' },
+                { text: 's', type: 'ending', meaning: 'plural' },
               ],
             },
           ],
@@ -362,6 +409,28 @@ const grammar: Grammar = {
           ],
           why: 'Passé composé: avoir + participle (-é, -i, -u, or irregular).',
           tags: ['past participle'],
+          timeline: {
+            title: 'Timeline: Passé composé vs Imparfait',
+            points: [
+              { label: 'Situation continue (Il faisait beau)', tense: 'imparfait', position: 'past-far', kind: 'continuous', example: 'Il faisait beau ce matin-là.' },
+              { label: 'Événement ponctuel achevé (a sonné)', tense: 'passé composé', position: 'past', kind: 'point', example: 'Soudain, le téléphone a sonné.' },
+              { label: 'Moment présent', tense: 'présent', position: 'now', kind: 'state', example: 'Maintenant je décroche.' },
+            ],
+            note: 'L\'imparfait décrit le décor et la durée; le passé composé marque l\'événement achevé.',
+          },
+          decisionTree: {
+            question: 'Le verbe est-il un verbe de mouvement (DR & MRS VANDERTRAMP) ou un verbe pronominal (se laver)?',
+            yes: {
+              result: 'Auxiliaire ÊTRE',
+              rule: 'Accord du participe passé avec le sujet: "Elle est partie", "Ils se sont levés".',
+              example: 'Elle est venue hier.',
+            },
+            no: {
+              result: 'Auxiliaire AVOIR',
+              rule: 'La majorité des verbes utilisent avoir. Le participe ne s\'accorde pas avec le sujet: "Elle a mangé".',
+              example: 'Nous avons fini le travail.',
+            },
+          },
           items: [
             { s: 'J\'ai trop [mangé].', en: 'I have eaten too much.', wrong: ['manger', 'mangeais', 'mangez'], base: 'manger' },
             { s: 'Pierre a [perdu] sa carte d\'identité.', en: 'Pierre has lost his identity card.', wrong: ['perdé', 'perdait', 'perdre'], base: 'perdre' },
@@ -508,6 +577,21 @@ const grammar: Grammar = {
                 ['her / it (f)', 'la', 'lui'],
                 ['them', 'les', 'leur'],
               ],
+            },
+            {
+              title: 'Personal pronouns summary (Les pronoms personnels)',
+              columns: ['person', 'subject', 'direct object (COD)', 'indirect object (COI)', 'stressed (disjunctive)'],
+              rows: [
+                ['1st sing', 'je', 'me', 'me', 'moi'],
+                ['2nd sing', 'tu', 'te', 'te', 'toi'],
+                ['3rd sing (m)', 'il', 'le', 'lui', 'lui'],
+                ['3rd sing (f)', 'elle', 'la', 'lui', 'elle'],
+                ['1st plur', 'nous', 'nous', 'nous', 'nous'],
+                ['2nd plur', 'vous', 'vous', 'vous', 'vous'],
+                ['3rd plur (m)', 'ils', 'les', 'leur', 'eux'],
+                ['3rd plur (f)', 'elles', 'les', 'leur', 'elles'],
+              ],
+              note: 'Direct object pronouns replace the direct receiver; indirect object pronouns replace à + person.',
             },
           ],
           why: 'le, la, les for the direct object; lui, leur for "to him/her/them"; before the verb.',
