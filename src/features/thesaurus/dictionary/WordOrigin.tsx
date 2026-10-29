@@ -3,6 +3,7 @@
 import { Link } from 'react-router';
 import type { FullEntry } from '@/core/dictionary/format';
 import { getLanguage } from '@/core/lang/languages';
+import { spanishStress } from '@/core/lang/stress';
 import { Badge } from '@/design/primitives';
 import { entryPath } from './DictionarySearch';
 
@@ -46,13 +47,15 @@ export const etymonName = (code: string) => getLanguage(code)?.name ?? OLDER[cod
 /** The word split into syllables, the stressed one in bold. */
 export function SyllableBadge({ lang, entry }: { lang: string; entry: FullEntry | undefined }) {
   if (!entry?.syl) return null;
+  // Where the dictionary gives no stress, Spanish spelling does.
+  const stress = entry.stress ?? (lang === 'es' ? spanishStress(entry.syl) : undefined);
   return (
     <Badge>
       <span lang={lang} aria-label={`Syllables: ${entry.syl.join(' ')}`}>
         {entry.syl.map((s, i) => (
           <span key={i}>
             {i > 0 && <span className="text-ink-faint">·</span>}
-            <span className={i === entry.stress ? 'font-bold text-ink' : undefined}>{s}</span>
+            <span className={i === stress ? 'font-bold text-ink' : undefined}>{s}</span>
           </span>
         ))}
       </span>

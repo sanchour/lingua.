@@ -233,7 +233,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0137` Irregular forms · **6-1** · partly there
 - [x] `F0138` Declension tables
 - [x] `F0139` Case information
-- [ ] `F0140` Stress patterns · **6-1** · partly there
+- [x] `F0140` Stress patterns · **6-1** · partly there
 - [x] `F0141` Syllable breakdown · **6-1**
 - [x] `F0142` IPA transcription
 - [x] `F0143` Audio pronunciation
