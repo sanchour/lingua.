@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.1** · 2026-10-29 · Claim 6-0: the contracts
 - **0.5.3-alpha.7** · 2026-10-28 · Visio: Gemini transcript (Max) and YouTube captions for YouTube videos; full check passed
 - **0.5.3-alpha.6** · 2026-10-28 · Lingua 5 plan checklists ticked, handover 18 done, recall text corrected
 - **0.5.3-alpha.5** · 2026-10-28 · Roadmap: Lingua 5's last three lines ticked (5.2-5, 5.2-6, the course)

@@ -69,7 +69,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | Step | Status | What | Entries | Needs | Size |
 | --- | --- | --- | --- | --- | --- |
 | **Part A · Foundations** | | | | | |
-| 6-0 | [ ] | The contracts: Part A's types, tables and APIs, before any code | — | Lingua 5's check | S |
+| 6-0 | [~] | *claimed 2026-10-29* The contracts: Part A's types, tables and APIs, before any code | — | Lingua 5's check | S |
 | 6-1 | [ ] | The word record | 22 new · 23 to finish | — | L |
 | 6-2 | [ ] | The inbox and the deck workshop | 15 new · 25 to finish | 6-1 | L |
 | 6-3 | [ ] | Cards and memory | 21 new · 11 to finish | 6-1 | L |
