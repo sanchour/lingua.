@@ -159,7 +159,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0075` Automatically add unfamiliar words encountered in the app
 - [x] `F0076` Save words to a central vocabulary inbox · **6-2** · partly there
 - [x] `F0077` Review the inbox before adding words to a deck · **6-2**
-- [ ] `F0078` Bulk-edit word information · **6-2**
+- [x] `F0078` Bulk-edit word information · **6-2**
 - [x] `F0079` Bulk-tag, move or delete cards · **6-2**
 - [x] `F0080` Detect duplicate cards · **6-2** · partly there
 - [x] `F0081` Detect duplicate translations · **6-2**
@@ -255,7 +255,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0159` Semantic fields · **6-20** · partly there
 - [x] `F0160` Frequency-ranked synonyms · **6-1**
 - [ ] `F0161` Differences between similar words · **6-1** · partly there
-- [ ] `F0162` Example sentences ranked by difficulty · **6-1** · partly there
+- [x] `F0162` Example sentences ranked by difficulty · **6-1** · partly there
 - [x] `F0163` Corpus examples showing authentic usage
 - [x] `F0164` Connotation and emotional tone · **6-1**
 - [x] `F0165` Words that are technically correct but unnatural in context · **6-12**
@@ -366,7 +366,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0251` Simplify a complex sentence · **6-4**
 - [x] `F0252` Complete a sentence from context
 - [x] `F0253` Translate a sentence using a specific grammar rule
-- [ ] `F0254` Generate multiple examples of a pattern · **6-4** · partly there
+- [x] `F0254` Generate multiple examples of a pattern · **6-4** · partly there
 - [ ] `F0255` Distinguish between two similar grammatical constructions · **6-7** · partly there
 - [x] `F0256` Explain why an answer is wrong
 - [x] `F0257` Predict the next grammatical form · **6-4**
@@ -398,7 +398,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0278` Generate sentence variations using a selected rule · **6-6**
 - [ ] `F0279` Explain multiple grammatically valid interpretations · **6-7**
 - [x] `F0280` Identify unnatural but technically grammatical constructions · **6-12**
-- [ ] `F0281` Track recurring grammar mistakes across conversations · **6-5**
+- [x] `F0281` Track recurring grammar mistakes across conversations · **6-5**
 - [ ] `F0282` Generate a personalized grammar curriculum · **6-16**
 - [ ] `F0283` Predict which grammar topics will be hardest for a learner based on previous errors · **6-16**
 
@@ -1222,7 +1222,7 @@ This is the structured side of the app. Learners need a route through the materi
 - [x] `F0939` Short written responses
 - [x] `F0940` Open-ended responses
 - [x] `F0941` Confidence ratings · **6-4**
-- [ ] `F0942` Self-assessment · **6-4**
+- [x] `F0942` Self-assessment · **6-4**
 - [x] `F0943` Immediate feedback
 - [x] `F0944` Delayed feedback · **6-4**
 - [x] `F0945` Explanations after incorrect answers

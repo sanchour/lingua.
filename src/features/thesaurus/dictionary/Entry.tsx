@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 import { BookA, BookMarked, Check, Circle, Download, Sparkles, Volume2 } from 'lucide-react';
 import type { FullDictRow, FullEntry } from '@/core/dictionary/format';
 import { getLanguage } from '@/core/lang/languages';
+import { easiestFirst } from '@/core/dictionary/difficulty';
 import { falseFriendOf } from '@/core/lang/falseFriends';
 import { learnerErrorOf } from '@/core/lang/learnerErrors';
 import { cefrForRank } from '@/core/lang/levels';
@@ -115,6 +116,14 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
   const sensesHaveExamples = row.entries.some((e) => e.senses.some((s) => s.ex?.length));
 
   const phrases = row.entries.flatMap((e) => e.phrases ?? []);
+  // The easiest sentences first: by how common their words are (the frequency list comes with the language pack; without it, the shortest first).
+  const candidates = [...(row.tatoeba ?? []), ...(sensesHaveExamples ? [] : (packExamples ?? []))].slice(0, 40);
+  const wordRanks = useLiveQuery(async () => {
+    const words = [...new Set(candidates.flatMap((c) => sentenceWords(c[0], lang)))];
+    const found = await db.frequency.bulkGet(words.map((w) => `${lang}:${w}`));
+    return new Map(words.flatMap((w, i) => (found[i] ? [[w, found[i]!.rank] as const] : [])));
+  }, [lang, row.key, packExamples?.length]);
+  const sentences = wordRanks?.size ? easiestFirst(candidates, (c) => c[0], (t) => sentenceWords(t, lang), (w) => wordRanks.get(w)).slice(0, 6) : [...candidates].sort((x, y) => x[0].length - y[0].length).slice(0, 6);
   const grammarTopics = useLiveQuery(async () => {
     const g = await loadGrammar(lang);
     return g ? topicsForWord(g, row.entries[0]?.pos, row.entries.some((e) => e.senses.some((s) => s.tags?.includes('reflexive')))) : [];
@@ -219,8 +228,7 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
       {((row.tatoeba?.length ?? 0) > 0 || (!sensesHaveExamples && (packExamples?.length ?? 0) > 0)) && (
         <Section title="Sentences" note={row.tatoeba?.length ? 'From Tatoeba' : undefined}>
           <ul className="space-y-3">
-            {/* shortcut: a shorter sentence counts as easier; upgrade to the level measure (core/lang/levels) when sentences carry a level */}
-            {[...(row.tatoeba ?? []), ...(sensesHaveExamples ? [] : (packExamples ?? []))].sort((x, y) => x[0].length - y[0].length).slice(0, 6).map(([sentence, translation, start, end]) => (
+            {sentences.map(([sentence, translation, start, end]) => (
               <li key={sentence}>
                 <p lang={lang} className="font-serif text-[16px] leading-snug">
                   {sentence.slice(0, start)}
@@ -510,4 +518,9 @@ function InlineLinks({ lang, words }: { lang: string; words: string[] }) {
       ))}
     </>
   );
+}
+
+/** The words of a sentence as the frequency list spells them. */
+function sentenceWords(text: string, lang: string): string[] {
+  return (text.match(/[\p{L}\p{M}]+/gu) ?? []).map((w) => normalizeWord(w, lang)).filter(Boolean);
 }

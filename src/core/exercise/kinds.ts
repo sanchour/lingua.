@@ -244,6 +244,26 @@ export function sentenceTask(task: Exclude<TaskBody['task'], 'fix'>, given: stri
   };
 }
 
+/**
+ * "Use it in a sentence": the learner writes their own, then sees an example and rates themselves (the engine's `self` rule: nothing
+ * offline can say whether a free sentence is good). Needs a word with an example sentence to show.
+ */
+export function useInSentence(word: WordFacts, lang: string, key: string): ExerciseSpec<'expand', TaskBody> | null {
+  // A phrase is not a model sentence: it needs a few words.
+  if (!word.sentence || plain(word.sentence).split(/\s+/).length < 4) return null;
+  const prompt = 'Write a sentence with this word';
+  return {
+    key,
+    kind: 'expand',
+    lang,
+    instruction: prompt,
+    body: { task: 'expand', given: [word.gloss ? `${word.word}: ${word.gloss}` : word.word], prompt },
+    check: { rule: 'self', modelAnswer: plain(word.sentence) },
+    trains: { skill: 'writing', item: { type: 'word', wordId: `${lang}:${word.word.toLocaleLowerCase(lang)}` } },
+    feedback: { why: plain(word.sentence) },
+  };
+}
+
 /** "Drag the words into order": the tiles of a sentence, shuffled so it does not already read out. */
 export function dragSentence(sentence: string, translation: string, lang: string, random: () => number, key: string, trains: Trains): ExerciseSpec<'drag-drop', DragBody> | null {
   const answer = plain(sentence).split(/\s+/).filter(Boolean);

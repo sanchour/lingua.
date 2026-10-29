@@ -8,10 +8,10 @@ import { formatInterval, maturityOf } from '@/core/srs/scheduler';
 import { NOTE_SORTS, sortNotes } from '@/core/srs/sortNotes';
 import type { NoteSort } from '@/core/srs/sortNotes';
 import { deleteDeck, forgetDeck, updateDeck, useDeck, useDeckCards, useDeckCounts, useDecks, useDeckNotes, useFolders } from '@/data/decks';
-import { deleteNotes, moveNotes, shiftNotes, suspendNotes, tagNotes } from '@/data/deckTools';
+import { deleteNotes, editNotes, moveNotes, shiftNotes, suspendNotes, tagNotes } from '@/data/deckTools';
 import { createDeck } from '@/data/decks';
 import type { Card, Note } from '@/data/types';
-import { Button, buttonClasses, EmptyState, MenuItem, Popover } from '@/design/primitives';
+import { Button, buttonClasses, Dialog, EmptyState, MenuItem, Popover, Select } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { DeckGlyph } from '../common/DeckIcon';
 import { articleFor } from '../common/words';
@@ -27,6 +27,7 @@ import { TidyDialog } from './TidyDialog';
 import type { EditorTarget } from './NoteEditor';
 
 const PAGE = 120;
+const KINDS = ['noun', 'verb', 'adj', 'adv', 'prep', 'pron', 'conj', 'det', 'num', 'intj', 'phrase'];
 
 export default function DeckPage() {
   const { deckId } = useParams();
@@ -51,6 +52,7 @@ export default function DeckPage() {
   const [selecting, setSelecting] = useState(false);
   const [picked, setPicked] = useState<ReadonlySet<string>>(new Set());
   const [tidying, setTidying] = useState(false);
+  const [editing, setEditing] = useState<{ pos: string; gender: string } | null>(null);
   const [movingCards, setMovingCards] = useState<MergeRequest | null>(null);
 
   const cardsByNote = useMemo(() => {
@@ -108,6 +110,7 @@ export default function DeckPage() {
         return tagNotes(ids, remove ? { remove: tags } : { add: tags });
       },
     });
+  const askKind = () => setEditing({ pos: '', gender: '' });
   const askSplit = () =>
     setNaming({
       title: `A new deck from ${ids.length} ${ids.length === 1 ? 'card' : 'cards'}`,
@@ -327,6 +330,9 @@ export default function DeckPage() {
                     </Button>
                   </>
                 )}
+                <Button variant="secondary" icon={Pencil} disabled={!ids.length} onClick={askKind}>
+                  Edit
+                </Button>
                 <Button variant="secondary" icon={Layers} disabled={!ids.length} onClick={askSplit}>
                   Split off
                 </Button>
@@ -358,6 +364,31 @@ export default function DeckPage() {
       <ConfirmDialog request={confirming} onClose={() => setConfirming(null)} />
       <MoveDialog request={moving} onClose={() => setMoving(null)} />
       <MergeDialog request={movingCards} onClose={() => setMovingCards(null)} />
+      <Dialog
+        open={Boolean(editing)}
+        onClose={() => setEditing(null)}
+        title={`Edit ${ids.length} ${ids.length === 1 ? 'card' : 'cards'}`}
+        actions={
+          <>
+            <Button variant="ghost" onClick={() => setEditing(null)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (editing) await editNotes(ids, { ...(editing.pos !== '' && { pos: editing.pos === '-' ? '' : editing.pos }), ...(editing.gender !== '' && { gender: editing.gender === '-' ? '' : editing.gender }) });
+                setEditing(null);
+              }}
+            >
+              Apply
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4 pt-2">
+          <Select label="Kind of word" value={editing?.pos ?? ''} onChange={(pos) => setEditing((e) => (e ? { ...e, pos } : e))} options={[{ value: '', label: 'Leave as it is' }, { value: '-', label: 'Take it off' }, ...KINDS.map((k) => ({ value: k, label: k }))]} />
+          <Select label="Gender" value={editing?.gender ?? ''} onChange={(gender) => setEditing((e) => (e ? { ...e, gender } : e))} options={[{ value: '', label: 'Leave as it is' }, { value: '-', label: 'Take it off' }, { value: 'm', label: 'masculine' }, { value: 'f', label: 'feminine' }, { value: 'n', label: 'neuter' }]} />
+        </div>
+      </Dialog>
       <TidyDialog open={tidying} onClose={() => setTidying(false)} notes={notes} lang={deck.lang} />
     </>
   );

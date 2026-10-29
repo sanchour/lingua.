@@ -153,6 +153,15 @@ export async function fillFromDictionary(ids: readonly string[], look: (word: st
   return filled;
 }
 
+/** Sets the kind of word (and, where given, the gender) on every chosen card; an empty value takes it off. */
+export async function editNotes(ids: readonly string[], patch: { pos?: string; gender?: string }, database: LinguaDB = db): Promise<void> {
+  const changes: Partial<Pick<import('./types').Note, 'pos' | 'gender'>> = {};
+  if (patch.pos !== undefined) changes.pos = patch.pos || undefined;
+  if (patch.gender !== undefined) changes.gender = patch.gender || undefined;
+  const now = Date.now();
+  await database.transaction('rw', database.notes, () => Promise.all(ids.map((id) => database.notes.update(id, { ...changes, updatedAt: now }))));
+}
+
 /** Moves a deck one place up (-1) or down (1) among the decks of its folder, for a tree sorted by hand. The places are written out again, so every deck has its own. */
 export async function shiftDeck(id: string, by: -1 | 1, database: LinguaDB = db): Promise<void> {
   const deck = await database.decks.get(id);

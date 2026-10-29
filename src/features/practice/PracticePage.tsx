@@ -10,7 +10,7 @@ import { aiBlock } from '@/data/plan';
 import { generateMaterial } from '@/services/llm/generate';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
-import { attachRetries, correctMistake, dragSentence, gridOfGrammarTable, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, planTransforms, predictForms, rewriteFix, tenseTransforms } from '@/core/exercise';
+import { attachRetries, correctMistake, dragSentence, gridOfGrammarTable, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, planTransforms, predictForms, rewriteFix, tenseTransforms, useInSentence } from '@/core/exercise';
 import type { ExerciseSpec } from '@/core/contracts/exercise';
 import type { FormGrid, WordFacts } from '@/core/exercise';
 import type { Topic } from '@/core/grammar/types';
@@ -132,6 +132,14 @@ function buildSets(lang: string, c: Ctx, level: Cefr): PracticeSet[] {
     games('pos', 'Kinds of words', 'Match nouns, verbs, adjectives and the rest.', 'words of different kinds', (w, r, k) => matchPartsOfSpeech(w, lang, r, k)),
     games('sentences', 'Words in sentences', 'Match each word with the sentence it fits.', 'words with an example sentence', (w, r, k) => matchSentences(w, lang, r, k), (w) => Boolean(w.sentence)),
     games('sounds', 'Sounds and words', 'Hear a word, match it with how it is written.', 'a voice for this language', (w, r, k) => matchSounds(w, lang, r, k)),
+    {
+      id: 'use',
+      group: 'words',
+      title: 'Use it in a sentence',
+      detail: 'Write your own sentence with a word, then see an example and rate yourself. No AI needed.',
+      needs: 'words with an example sentence',
+      make: () => shuffle(c.facts.filter((w) => w.sentence), random).slice(0, 6).flatMap((w, i) => useInSentence(w, lang, `use-${i}`) ?? []),
+    },
     games('pictures', 'Words and pictures', 'Match each word with its picture.', 'cards with a picture', (w, r, k) => matchPictures(w, lang, r, k), (w) => Boolean(w.image)),
     ...(['difficult', 'rusty'] as const).map(
       (id): PracticeSet => ({

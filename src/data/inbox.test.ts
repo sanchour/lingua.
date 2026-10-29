@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
 import { addNote, createDeck } from './decks';
-import { deleteNotes, deckFromDrafts, duplicateDeck, fillFromDictionary, mergeDecks, moveNotes, setDeckFlag, shiftDeck, shiftNotes, suspendNotes, tagNotes } from './deckTools';
+import { deleteNotes, deckFromDrafts, duplicateDeck, editNotes, fillFromDictionary, mergeDecks, moveNotes, setDeckFlag, shiftDeck, shiftNotes, suspendNotes, tagNotes } from './deckTools';
 import { addInboxToDeck, inboxStateOf, markInboxKnown, setInboxState } from './inbox';
 import { recordSighting } from './memory';
 import { loadStudySession } from './study';
@@ -189,5 +189,16 @@ describe('the deck workshop', () => {
     expect(await order()).toBe('acdb');
     await shiftNotes(['a', 'c', 'd', 'b'].map((t) => byTerm[t]), new Set([byTerm.a]), -1, db);
     expect(await order()).toBe('acdb');
+  });
+
+  it('the kind of word and the gender are set on all the chosen cards at once, and taken off with an empty value', async () => {
+    const db = freshDb();
+    const deck = await deckWithWords(db, 'A', ['casa', 'perro', 'mesa']);
+    const ids = (await db.notes.where('deckId').equals(deck).toArray()).map((n) => n.id);
+    await editNotes(ids.slice(0, 2), { pos: 'noun', gender: 'f' }, db);
+    expect((await db.notes.bulkGet(ids)).map((n) => [n?.pos, n?.gender])).toEqual([['noun', 'f'], ['noun', 'f'], [undefined, undefined]]);
+    await editNotes([ids[0]], { gender: '' }, db);
+    expect((await db.notes.get(ids[0]))?.gender).toBeUndefined();
+    expect((await db.notes.get(ids[0]))?.pos).toBe('noun');
   });
 });

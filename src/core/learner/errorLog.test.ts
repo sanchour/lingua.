@@ -15,6 +15,12 @@ describe('the error log', () => {
     expect(log[1]).toMatchObject({ source: 'conversation', given: 'Yo es', expected: 'Yo soy', note: 'Ser agrees with the person.' });
     expect(log[2]).toMatchObject({ title: 'casa', given: 'cassa', expected: 'casa' });
   });
+  it('counts the same correction coming back in different conversations', () => {
+    const other = { ...chat, id: 'd', messages: [{ role: 'me', text: 'x', at: 50, corrections: [{ original: 'Tú es', suggestion: 'yo soy', explanation: '' }] }] } as unknown as Chat;
+    const times = buildErrorLog([], [chat, other], () => 'x').map((e) => e.times);
+    expect(times).toEqual([2, 2]);
+    expect(buildErrorLog([row('a', 1, 'wrong')], [], () => 'casa')[0].times).toBe(1);
+  });
   it('stops at the limit and skips deleted chats', () => {
     const rows = Array.from({ length: 10 }, (_, i) => row(`r${i}`, i, 'wrong'));
     expect(buildErrorLog(rows, [{ ...chat, deletedAt: 1 } as Chat], () => 'x', 4)).toHaveLength(4);

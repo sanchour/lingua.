@@ -66,6 +66,7 @@ export function ErrorLogPanel({ lang }: { lang: string }) {
                 </span>
               )}
               {e.category && <span className="text-[12.5px] text-ink-faint">{e.category.replace('-', ' ')}</span>}
+              {e.times > 1 && <span className={cx('rounded-full px-2 py-px text-[11.5px] font-semibold', e.times >= 3 ? 'bg-accent-soft text-accent-text' : 'bg-sunken text-ink-soft')}>{e.times >= 3 ? `keeps coming back · ${e.times}×` : `${e.times}×`}</span>}
               <span className="ml-auto text-[12.5px] text-ink-faint tabular-nums">{shortDay(e.at)}</span>
             </p>
             {(e.given || e.expected) && (

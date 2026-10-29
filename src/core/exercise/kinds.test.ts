@@ -143,3 +143,13 @@ describe('dialogue, sentence tasks and dragging', () => {
     expect(attachRetries<ExerciseSpec>([a], [dragSentence('uno dos tres cuatro', 'x', 'es', R, 'd', TRAINS)!])[0].retry).toBeUndefined();
   });
 });
+
+describe('use it in a sentence', () => {
+  it('is rated by the learner, with an example to compare, and needs a sentence to show', async () => {
+    const { useInSentence } = await import('./kinds');
+    const spec = useInSentence({ word: 'perro', gloss: 'dog', sentence: 'El [perro] come mucho hoy.' }, 'es', 'use-0');
+    expect(spec).toMatchObject({ kind: 'expand', check: { rule: 'self', modelAnswer: 'El perro come mucho hoy.' }, body: { given: ['perro: dog'] }, trains: { skill: 'writing', item: { wordId: 'es:perro' } } });
+    expect(useInSentence({ word: 'gato' }, 'es', 'k')).toBeNull();
+    expect(useInSentence({ word: 'agua', sentence: 'agua destilada' }, 'es', 'k')).toBeNull();
+  });
+});

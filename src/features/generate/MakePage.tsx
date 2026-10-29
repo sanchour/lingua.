@@ -31,7 +31,7 @@ import { toast } from '@/state/ui';
 
 const KINDS: Array<{ kind: GeneratedKind; title: string; detail: string; cost: string }> = [
   { kind: 'story', title: 'A story', detail: 'A short graded reader, with its translation.', cost: 'about 600 words in all' },
-  { kind: 'sentences', title: 'Example sentences', detail: 'Eight short sentences on the topic.', cost: 'about 250 words in all' },
+  { kind: 'sentences', title: 'Example sentences', detail: 'Eight short sentences on a topic, or showing one pattern (the preterite, “tener que” + verb).', cost: 'about 250 words in all' },
   { kind: 'dialogue', title: 'A dialogue', detail: 'Two people talking, line by line.', cost: 'about 300 words in all' },
   { kind: 'quiz', title: 'A quiz', detail: 'Five questions to answer, with the reason for each.', cost: 'about 250 words in all' },
   { kind: 'simplified', title: 'Simplify a text', detail: 'Paste a text; get it back in easier words, beside the original.', cost: 'about as long as your text, twice' },
