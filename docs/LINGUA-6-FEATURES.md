@@ -1608,9 +1608,9 @@ These are integrated activities that combine skills instead of training each one
 
 - [x] `F1245` ⭐ Bilingual dictionary
 - [x] `F1246` ⭐ Monolingual dictionary
-- [ ] `F1247` Search by word, phrase or definition · **6-22** · partly there
-- [ ] `F1248` Search with spelling mistakes · **6-22**
-- [ ] `F1249` Fuzzy search · **6-22**
+- [x] `F1247` Search by word, phrase or definition · **6-22** · partly there
+- [x] `F1248` Search with spelling mistakes · **6-22**
+- [x] `F1249` Fuzzy search · **6-22**
 - [x] `F1250` Search for inflected word forms
 - [x] `F1251` Lemmatization
 - [x] `F1252` Multiple definitions
@@ -1636,12 +1636,12 @@ These are integrated activities that combine skills instead of training each one
 - [x] `F1272` Slang labels · **6-1** · partly there
 - [x] `F1273` Corpus-based examples
 - [x] `F1274` Sentence translation
-- [ ] `F1275` Reverse dictionary, searching by concept · **6-22**
-- [ ] `F1276` Search for a word from its definition · **6-22**
-- [ ] `F1277` Search for rhymes · **6-22**
-- [ ] `F1278` Search for words with similar sounds · **6-22**
-- [ ] `F1279` Search for words with a particular prefix or suffix · **6-22**
-- [ ] `F1280` Search by grammatical category · **6-22**
+- [x] `F1275` Reverse dictionary, searching by concept · **6-22**
+- [x] `F1276` Search for a word from its definition · **6-22**
+- [x] `F1277` Search for rhymes · **6-22**
+- [x] `F1278` Search for words with similar sounds · **6-22**
+- [x] `F1279` Search for words with a particular prefix or suffix · **6-22**
+- [x] `F1280` Search by grammatical category · **6-22**
 - [x] `F1281` Search across personal vocabulary
 - [ ] `F1282` Search across saved texts · **6-22**
 - [ ] `F1283` Search across notes and flashcards · **6-22** · partly there
