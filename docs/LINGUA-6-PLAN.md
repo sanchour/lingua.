@@ -98,7 +98,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-17 | [ ] | Goals, habits and progress | 24 new · 12 to finish | 6-5 | L |
 | 6-18 | [ ] | Exams and levels | 38 new · 1 to finish | 6-14, 6-16 | L |
 | **Part D · More of the language** (in parallel, after Part A) | | | | | |
-| 6-19 | [ ] | Immersion and culture | 23 new · 7 to finish | 6-1 | L |
+| 6-19 | [~] | *claimed by Codex 2026-10-29 on codex/lingua (the user: after Reading, do 6-19, then stop).* Immersion and culture | 23 new · 7 to finish | 6-1 | L |
 | 6-20 | [ ] | Phrasebook and notebook (the map is 6-29) | 35 new · 10 to finish | 6-1, 6-2 | L |
 | 6-21 | [ ] | Games and projects | 66 new · 3 to finish | 6-4, 6-6 | L |
 | 6-22 | [ ] | Dictionary tools | 15 new · 2 to finish | 6-1 | M |
