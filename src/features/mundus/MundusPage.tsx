@@ -1,3 +1,4 @@
+import { CultureShelf } from '@/features/culture/CultureShelf';
 import { useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
@@ -38,8 +39,9 @@ const GROUP_LANE: Record<PickGroup, Lane> = { series: 'watch', films: 'watch', y
 const tint = (hue: string, amount = 16): CSSProperties => ({ background: `color-mix(in oklab, ${hue} ${amount}%, var(--color-surface))` });
 const rise = (i: number) => ({ initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, transition: { ...spring.soft, delay: 0.05 * i } });
 
-type Tab = 'guide' | 'try';
+type Tab = 'guide' | 'try' | 'culture';
 const TABS: Array<{ id: Tab; label: string; short: string; to: string }> = [
+  { id: 'culture', label: 'Culture', short: 'Culture', to: '/mentis/culture' },
   { id: 'guide', label: 'Your guide', short: 'Guide', to: '/mentis' },
   { id: 'try', label: 'Things to try', short: 'Try', to: '/mentis/try' },
 ];
@@ -52,7 +54,7 @@ const TABS: Array<{ id: Tab; label: string; short: string; to: string }> = [
  */
 export default function MundusPage() {
   const sub = useParams()['*'];
-  const tab: Tab = sub === 'try' ? sub : 'guide';
+  const tab: Tab = sub === 'try' || sub === 'culture' ? sub : 'guide';
   const { language } = useApp();
   const guide = useGuide();
   const streaming = useStreaming();
@@ -68,7 +70,7 @@ export default function MundusPage() {
     <>
       <PageHeader title="Mundus" eyebrow={`Your guide to ${guide?.langName ?? 'the language'}`} />
       <Tabs tab={tab} />
-      {guide === undefined ? (
+      {tab === 'culture' ? <CultureShelf key={language.id} lang={language.id} /> : guide === undefined ? (
         <div className="h-96" />
       ) : (
         <AnimatePresence mode="wait" initial={false}>

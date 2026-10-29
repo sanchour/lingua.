@@ -94,3 +94,13 @@ export function heardRecordings(lang: string, limit = 40): Promise<SpeechRow[]> 
     .limit(limit)
     .toArray();
 }
+
+/** Region-labelled Commons clips (Lingua Libre and Wiktionary); requested only when the learner searches. */
+export async function recordingsForWord(lang: string, text: string): Promise<SoundsRecording[]> {
+  if (!SOUNDS_LANGS.includes(lang)) return [];
+  const key = recordingKey(text, lang);
+  if (!key || key.length > 40) return [];
+  const words = await index(lang);
+  if (!words) throw new Error('The recording index is unavailable.');
+  return (words[key] ?? []).filter((r) => Boolean(r[2].trim())).slice(0, 8);
+}

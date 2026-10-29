@@ -1926,3 +1926,7 @@ Reading gets its own source-aware runner using the shared exercise views and jud
 ### 2026-10-29 · Parallel and simplified reading (6-8 R4, Codex)
 
 Side-by-side reading is reached from chapter Study tools. A learner-supplied counterpart lives on the existing Text row, anchored to its exact displayed source excerpt; chapter changes cannot silently pair an old translation with new prose. Columns keep independent paragraphs rather than inventing sentence alignment. The first 4,000 characters bound the on-demand Max request, which reuses the existing simplified generator, cache, checks, label and Report. Only injected fake-model generation was tested. No new table or dependency.
+
+### 2026-10-29 · Culture notes (6-19 C1, Codex)
+
+A small offline catalogue links culture to the same words learners meet in the reader and dictionary. The six core languages are es/fr/de/ru/zh/ar (not Italian). Explanations/examples are written for Lingua with named dictionary, museum and heritage sources; scope is stated by region or situation. Mundus uses the full desktop width for list/detail, without the unrelated Today rail. Cards retain the explanation and source in existing extra fields. Regional voices reuse the bundled sound index and Commons helpers; only region-labelled clips are offered, with no synthetic voice substituted for a regional recording. Source data is fetched only when requested; audio playback was not tested. No table or dependency added.

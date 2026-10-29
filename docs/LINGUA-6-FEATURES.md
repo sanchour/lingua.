@@ -251,7 +251,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0155` Phrasal verbs · **6-1** · partly there
 - [x] `F0156` Compound words · **6-1**
 - [x] `F0157` Proverbs and sayings · **6-1** · partly there
-- [ ] `F0158` Words that don’t translate neatly · **6-19**
+- [x] `F0158` Words that don’t translate neatly · **6-19**
 - [ ] `F0159` Semantic fields · **6-20** · partly there
 - [x] `F0160` Frequency-ranked synonyms · **6-1**
 - [ ] `F0161` Differences between similar words · **6-1** · partly there
@@ -1010,7 +1010,7 @@ Translation can be a powerful learning method when used actively. It becomes les
 - [x] `F0770` Compare sentence structure across languages · **6-13**
 - [x] `F0771` Explain why a direct translation doesn’t work · **6-13**
 - [x] `F0772` Identify false friends · **6-13**
-- [ ] `F0773` Explain untranslatable concepts · **6-19**
+- [x] `F0773` Explain untranslatable concepts · **6-19**
 - [x] `F0774` Back-translation exercises · **6-13**
 - [x] `F0775` Translate and then reconstruct the original · **6-13**
 - [x] `F0776` Compare a learner’s translation with several reference translations · **6-13**
@@ -1102,28 +1102,28 @@ Immersion is not just watching foreign films. It is building a life in which the
 
 *In Lingua: Mundus's picks for books, music and films; the course's first units.*
 
-- [ ] `F0841` Cultural notes attached to vocabulary · **6-19**
-- [ ] `F0842` Idioms with cultural explanations · **6-19**
-- [ ] `F0843` Proverbs and sayings · **6-19** · partly there
-- [ ] `F0844` Regional slang · **6-19**
-- [ ] `F0845` Politeness conventions · **6-19**
-- [ ] `F0846` Humor and wordplay · **6-19**
-- [ ] `F0847` Social etiquette · **6-19**
+- [x] `F0841` Cultural notes attached to vocabulary · **6-19**
+- [x] `F0842` Idioms with cultural explanations · **6-19**
+- [x] `F0843` Proverbs and sayings · **6-19** · partly there
+- [x] `F0844` Regional slang · **6-19**
+- [x] `F0845` Politeness conventions · **6-19**
+- [x] `F0846` Humor and wordplay · **6-19**
+- [x] `F0847` Social etiquette · **6-19**
 - [x] `F0848` Greetings and introductions
-- [ ] `F0849` Formal versus informal communication · **6-19**
-- [ ] `F0850` Regional language differences · **6-19**
-- [ ] `F0851` Dialect samples · **6-19**
-- [ ] `F0852` Historical context for expressions · **6-19**
+- [x] `F0849` Formal versus informal communication · **6-19**
+- [x] `F0850` Regional language differences · **6-19**
+- [x] `F0851` Dialect samples · **6-19**
+- [x] `F0852` Historical context for expressions · **6-19**
 - [x] `F0853` Literature recommendations
 - [x] `F0854` Music recommendations
 - [x] `F0855` Film recommendations
-- [ ] `F0856` Regional food vocabulary · **6-19**
-- [ ] `F0857` Holidays and traditions · **6-19**
+- [x] `F0856` Regional food vocabulary · **6-19**
+- [x] `F0857` Holidays and traditions · **6-19**
 - [ ] `F0858` Cultural references in news · **6-19**
-- [ ] `F0859` Differences in body language · **6-19**
-- [ ] `F0860` Common conversational conventions · **6-19**
-- [ ] `F0861` Intercultural scenarios · **6-19**
-- [ ] `F0862` Cultural misunderstandings and how to handle them · **6-19**
+- [x] `F0859` Differences in body language · **6-19**
+- [x] `F0860` Common conversational conventions · **6-19**
+- [x] `F0861` Intercultural scenarios · **6-19**
+- [x] `F0862` Cultural misunderstandings and how to handle them · **6-19**
 
 ## 11 · Interactive lessons and courses
 

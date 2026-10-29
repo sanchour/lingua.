@@ -1,3 +1,4 @@
+import { CultureWordNotes } from '@/features/culture/CultureShelf';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
@@ -194,6 +195,7 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
         <AddToDeck lang={lang} note={{ term: row.word, meaning: gloss, lemma: row.key, pos: main?.pos, gender: main?.gender, ipa: main?.ipa?.[0], source: 'codex' }} />
       </div>
 
+      <CultureWordNotes lang={lang} word={row.key} />
       <YourWord key={`${lang}:${row.key}`} lang={lang} norm={row.key} lemma={row.key} gloss={gloss} />
 
       <Tidy lang={lang} row={row} />

@@ -1,3 +1,4 @@
+import { CultureWordNotes } from '@/features/culture/CultureShelf';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -152,6 +153,7 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
         />
       )}
 
+      <CultureWordNotes lang={lang} word={main?.lemma ?? norm} />
       {dict?.form?.d && <WhyThisForm lang={lang} description={dict.form.d} />}
 
       {tab === 'forms' && dict?.hasParadigm && main ? (
