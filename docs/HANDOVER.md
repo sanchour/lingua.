@@ -194,3 +194,5 @@ adventure path like Duolingo's and HelloChinese's (ROADMAP "Cursus as an adventu
 
 
 **Codex progress, 2026-10-29:** 6-12’s assigned W1–W4 slices are finished (details and limitations in its LINGUA-6-PLAN row). 6-5b’s Diarium correction evidence hook is included. Next for Codex: 6-8 Reading, then 6-24 → 6-25 → 6-22. Antigravity-1 retains 6-7 and 6-13. No real model has been used for Writing feedback.
+
+**Antigravity-1 progress, 2026-10-29:** 6-7 Grammar is finished across all slices G1 to G5 (browse & plain-language search, richer in-language pages, fine-line pictures that explain, interactive DAG topic map with error heatmap, and sentence explainer with device-dictionary form/ending breakdown and Max syntax parser). Next for Antigravity-1: claim and build 6-13 Translating and comparing languages.

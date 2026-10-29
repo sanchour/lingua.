@@ -19,8 +19,9 @@ import { cx } from '@/lib/cx';
 import { eyebrow, TopicRing, useGrammar } from './parts';
 import { LettersCard } from './letters/LettersCard';
 import { TopicMap } from './TopicMap';
+import { SentenceExplainer } from './SentenceExplainer';
 
-type ViewMode = 'path' | 'map' | 'category' | 'pos' | 'all';
+type ViewMode = 'path' | 'map' | 'explainer' | 'category' | 'pos' | 'all';
 
 /**
  * Grammatica (Lingua 3.0-8, a guided path in 5.2-8, browse & search in 6-7): the next step large with its reason,
@@ -116,6 +117,7 @@ export default function GrammaticaPage() {
                     options={[
                       { value: 'path', label: 'Your path' },
                       { value: 'map', label: 'Topic map' },
+                      { value: 'explainer', label: 'Sentence explainer' },
                       { value: 'category', label: 'By category' },
                       { value: 'pos', label: 'By part of speech' },
                       { value: 'all', label: 'All topics' },
@@ -156,6 +158,8 @@ export default function GrammaticaPage() {
                     lang={lang}
                   />
                 )}
+
+                {tab === 'explainer' && <SentenceExplainer lang={lang} />}
 
                 {tab === 'category' && <TopicsByCategory topics={allTopics} states={states} nextId={next?.id} />}
                 {tab === 'pos' && <TopicsByPos topics={allTopics} states={states} nextId={next?.id} />}

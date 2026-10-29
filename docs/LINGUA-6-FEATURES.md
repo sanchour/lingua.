@@ -390,13 +390,13 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [ ] `F0270` Compare tense and aspect systems · **6-13**
 - [ ] `F0271` Compare case systems · **6-13**
 - [ ] `F0272` Compare word order patterns · **6-13**
-- [ ] `F0273` Analyze the grammar of any pasted sentence · **6-7**
-- [ ] `F0274` Identify every word’s grammatical role · **6-7** · partly there
-- [ ] `F0275` Show dependency relationships between words · **6-7**
-- [ ] `F0276` Highlight clauses and subordinate clauses · **6-7**
-- [ ] `F0277` Parse complex sentences · **6-7**
+- [x] `F0273` Analyze the grammar of any pasted sentence · **6-7**
+- [x] `F0274` Identify every word’s grammatical role · **6-7** · partly there
+- [x] `F0275` Show dependency relationships between words · **6-7**
+- [x] `F0276` Highlight clauses and subordinate clauses · **6-7**
+- [x] `F0277` Parse complex sentences · **6-7**
 - [x] `F0278` Generate sentence variations using a selected rule · **6-6**
-- [ ] `F0279` Explain multiple grammatically valid interpretations · **6-7**
+- [x] `F0279` Explain multiple grammatically valid interpretations · **6-7**
 - [x] `F0280` Identify unnatural but technically grammatical constructions · **6-12**
 - [x] `F0281` Track recurring grammar mistakes across conversations · **6-5**
 - [ ] `F0282` Generate a personalized grammar curriculum · **6-16**
@@ -466,7 +466,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0330` Phrase-level translation
 - [x] `F0331` Sentence-by-sentence translation
 - [x] `F0332` Dictionary popover
-- [ ] `F0333` Grammar breakdown of a selected sentence · **6-7**
+- [x] `F0333` Grammar breakdown of a selected sentence · **6-7**
 - [x] `F0334` Highlight known vocabulary
 - [x] `F0335` Highlight unknown vocabulary
 - [x] `F0336` Color-code parts of speech · **6-8**

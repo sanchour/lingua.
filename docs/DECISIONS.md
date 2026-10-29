@@ -1894,4 +1894,9 @@ Visual representations follow the handbook Part One principles: one fine line (s
 
 Grammatica gains an interactive topic map tab. Topics are arranged in tiered CEFR columns (A1 through C1) connected by directed prerequisite edges drawn with fine-line cubic bezier curves and arrowheads. Nodes clearly distinguish learned topics (filled in sage with checkmarks), current/next topics (accent border), and unstarted topics. Clicking any node inspects its summary, met and missing prerequisites, unlocked dependent topics, and direct lesson navigation. An error heatmap overlay highlights trouble spots using exercise lapse counts and learner weak spots, visually cueing areas that need review. No general graph engine was added (preserving 6-29 for Opus).
 
+## 2026-10-29 — 6-7 G5: sentence explainer with device forms and AI syntax
+
+The Sentence Explainer analyzes any pasted or selected sentence. On the device, tokenization, lemma identification, inflectional endings extraction and basic clause division work completely offline using local dictionary forms (`db.dictForms`). When Max is connected (or tested via injected model), Universal Dependencies roles (Subject, Predicate Verb, Direct Object, etc.), fine-line SVG dependency arcs, subordinate clause explanations, and alternative grammatically valid interpretations are merged seamlessly. When no key is set, the offline form-and-ending breakdown is presented with a clear notice that Max is needed for syntax arcs and roles.
+
+
 
