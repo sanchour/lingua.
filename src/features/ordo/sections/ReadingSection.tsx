@@ -24,6 +24,8 @@ const PREVIEW_SCRIPTS: Script[] = ['Latn', 'Cyrl', 'Grek'];
 export function ReadingSection({ reader, lang }: { reader: Settings['reader']; lang: string }) {
   const [size, setSize] = useDraft(reader.sizePx, (sizePx) => void patchSetting('reader', { sizePx }));
   const [lineHeight, setLineHeight] = useDraft(reader.lineHeight, (lh) => void patchSetting('reader', { lineHeight: lh }));
+  const [letterSpacing, setLetterSpacing] = useDraft(reader.letterSpacing ?? 0, (ls) => void patchSetting('reader', { letterSpacing: ls }));
+  const [wordSpacing, setWordSpacing] = useDraft(reader.wordSpacing ?? 0, (ws) => void patchSetting('reader', { wordSpacing: ws }));
   const font = getReaderFont(reader.font);
   const target = getLanguage(lang) ?? LANGUAGES[0];
   const fallback = fallbackFamily(font, target.script);
@@ -36,7 +38,14 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
       <div
         lang={target.code}
         className="rounded-2xl border border-line bg-bg px-5 py-4 text-ink transition-colors duration-200"
-        style={{ ...paperStyle(paper), fontFamily: readerFontStack(font, target.code), fontSize: size, lineHeight } as CSSProperties}
+        style={{
+          ...paperStyle(paper),
+          fontFamily: readerFontStack(font, target.code),
+          fontSize: size,
+          lineHeight,
+          letterSpacing: letterSpacing ? `${letterSpacing}em` : undefined,
+          wordSpacing: wordSpacing ? `${wordSpacing}em` : undefined,
+        } as CSSProperties}
       >
         {target.sample}
       </div>
@@ -84,6 +93,11 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
       <div className="mt-4 grid gap-x-8 sm:grid-cols-2">
         <Slider label="Text size" value={size} min={15} max={30} onChange={setSize} format={(v) => `${v} px`} />
         <Slider label="Line spacing" value={lineHeight} min={1.3} max={2.1} step={0.05} onChange={setLineHeight} format={(v) => v.toFixed(2)} />
+      </div>
+
+      <div className="mt-4 grid gap-x-8 sm:grid-cols-2">
+        <Slider label="Letter spacing" value={letterSpacing} min={0} max={0.2} step={0.01} onChange={setLetterSpacing} format={(v) => `${(v * 100).toFixed(0)}%`} />
+        <Slider label="Word spacing" value={wordSpacing} min={0} max={0.4} step={0.02} onChange={setWordSpacing} format={(v) => `${(v * 100).toFixed(0)}%`} />
       </div>
 
       <div className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2">

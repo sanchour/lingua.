@@ -43,6 +43,17 @@ export function Root() {
     document.documentElement.dataset.hints = hints ? 'on' : 'off';
   }, [hints]);
 
+  // Accessibility (6-25): high contrast and color-blind friendly indicators
+  const highContrast = Boolean(settings?.ui?.highContrast);
+  useLayoutEffect(() => {
+    document.documentElement.dataset.highContrast = highContrast ? 'true' : 'false';
+  }, [highContrast]);
+
+  const colorBlind = Boolean(settings?.ui?.colorBlindMode);
+  useLayoutEffect(() => {
+    document.documentElement.dataset.colorBlind = colorBlind ? 'true' : 'false';
+  }, [colorBlind]);
+
   useEffect(() => {
     void ensureDeviceMeta();
   }, []);

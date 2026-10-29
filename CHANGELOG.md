@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.84** · 2026-10-29 · 6-25: accessibility, high contrast, dyslexia font, desktop daily word and quick review (6-25 done)
 - **0.6.0-alpha.83** · 2026-10-29 · 6-22 slice 3.3: custom dictionary entries, personal dictionary import, multi-source comparison, and entry issue reporting (6-22 done)
 - **0.6.0-alpha.82** · 2026-10-29 · 6-22 slice 3.2: global search palette (Ctrl+K / Cmd+K) across words, decks, cards, texts, journal, and grammar
 - **0.6.0-alpha.81** · 2026-10-29 · 6-22 slice 3.1: dictionary search tools (reverse meaning, fuzzy, prefix/suffix, rhymes, similar sounds, POS filter)

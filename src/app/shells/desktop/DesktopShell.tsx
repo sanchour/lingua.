@@ -30,11 +30,13 @@ export function DesktopShell({ children }: { children: ReactNode }) {
     <div className="min-h-dvh">
       <Sidebar collapsed={collapsed} onToggle={toggle} />
       <motion.main
+        id="main-content"
+        tabIndex={-1}
         layout="position"
         layoutDependency={collapsed}
         transition={spring.soft}
         style={{ marginLeft: width }}
-        className="min-h-dvh"
+        className="min-h-dvh outline-none"
       >
         <div className="mx-auto w-full max-w-6xl px-10 pt-6 pb-8">{children}</div>
       </motion.main>

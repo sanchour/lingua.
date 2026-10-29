@@ -1930,34 +1930,34 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1520` Background audio
 - [x] `F1521` Lock-screen audio controls
 - [ ] `F1522` Home-screen widgets · **6-27** · needs the user's word
-- [ ] `F1523` Quick vocabulary review · **6-25** · partly there
-- [ ] `F1524` Daily word widget · **6-25**
+- [x] `F1523` Quick vocabulary review · **6-25**
+- [x] `F1524` Daily word widget · **6-25**
 - [ ] `F1525` Push notifications · **6-17**
 - [x] `F1526` Keyboard shortcuts
 - [x] `F1527` Dark mode
 - [x] `F1528` Light mode
 - [x] `F1529` Warm-paper reading mode
 - [x] `F1530` Font-size adjustment
-- [ ] `F1531` Dyslexia-friendly font options · **6-25** · partly there
+- [x] `F1531` Dyslexia-friendly font options · **6-25**
 - [x] `F1532` Adjustable line spacing
-- [ ] `F1533` Screen-reader support · **6-25** · partly there
-- [ ] `F1534` High-contrast mode · **6-25**
+- [x] `F1533` Screen-reader support · **6-25**
+- [x] `F1534` High-contrast mode · **6-25**
 - [x] `F1535` Reduced-motion mode
-- [ ] `F1536` Color-blind-friendly indicators · **6-25**
+- [x] `F1536` Color-blind-friendly indicators · **6-25**
 - [x] `F1537` Captions for audio and video
 - [x] `F1538` Adjustable playback speed
-- [ ] `F1539` VoiceOver support · **6-25** · partly there
+- [x] `F1539` VoiceOver support · **6-25**
 - [ ] `F1540` TalkBack support · **6-27** · needs the user's word
-- [ ] `F1541` Keyboard-only navigation · **6-25** · partly there
+- [x] `F1541` Keyboard-only navigation · **6-25**
 - [x] `F1542` Data export
 - [x] `F1543` Account deletion
-- [ ] `F1544` Privacy controls · **6-25** · partly there
+- [x] `F1544` Privacy controls · **6-25**
 - [x] `F1545` Synchronization status
-- [ ] `F1546` Storage management · **6-25** · partly there
-- [ ] `F1547` Battery-efficient audio · **6-25** · partly there
+- [x] `F1546` Storage management · **6-25**
+- [x] `F1547` Battery-efficient audio · **6-25**
 - [x] `F1548` Local data caching
-- [ ] `F1549` Clear error messages · **6-25** · partly there
-- [ ] `F1550` Undo for destructive actions · **6-25** · partly there
+- [x] `F1549` Clear error messages · **6-25**
+- [x] `F1550` Undo for destructive actions · **6-25**
 
 ## 25 · Advanced and experimental features
 
