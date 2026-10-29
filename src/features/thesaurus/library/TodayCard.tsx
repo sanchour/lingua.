@@ -4,12 +4,14 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Layers, Puzzle, Shapes, TextCursorInput, Zap } from 'lucide-react';
 import type { DeckCounts } from '@/data/decks';
 import { useToday } from '@/data/stats';
+import { useStudyMinutes } from '@/data/memoryViews';
 import { catchUp, overdueCards } from '@/data/study';
 import { Button, buttonClasses, Card, Popover } from '@/design/primitives';
 import { toast } from '@/state/ui';
 import { PlusChip } from '@/features/plans/Locked';
 import { useGate } from '@/features/plans/PlanRoute';
 import { cx } from '@/lib/cx';
+import { DueCalendar } from './DueCalendar';
 import { CARD_STATES, REVIEW } from './states';
 
 /** Ludus's ways to play, from every deck. */
@@ -38,6 +40,8 @@ interface TodayCardProps {
 export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardProps) {
   const activity = useToday(lang);
   const ludusGate = useGate('ludus');
+  const [calendar, setCalendar] = useState(false);
+  const minutes = useStudyMinutes(lang, totals ? totals.new + totals.learning + totals.due : undefined);
   if (!totals) return <Card className={rail ? 'h-[380px]' : 'h-[132px]'} />;
 
   const waiting = totals.new + totals.learning + totals.due;
@@ -63,6 +67,7 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
                 </li>
               ))
             )}
+            {waiting > 0 && minutes ? <li className="pt-0.5 text-[12.5px] text-ink-faint">About {minutes} min</li> : null}
             {done > 0 ? <li className="pt-0.5 text-[12.5px] text-ink-faint">{done.toLocaleString()} done today</li> : waiting === 0 && <li className="text-[12.5px] text-ink-soft">Nothing is due. Practise freely with Ludus.</li>}
           </ul>
         </div>
@@ -109,6 +114,10 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
       </div>
       <CatchUpOffer lang={lang} />
       {ahead && <WeekAhead forecast={ahead} />}
+      <button type="button" aria-expanded={calendar} onClick={() => setCalendar((v) => !v)} className="mt-4 text-[12.5px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
+        {calendar ? 'Hide the calendar' : 'Show the next five weeks'}
+      </button>
+      {calendar && <DueCalendar lang={lang} />}
     </Card>
   );
 }

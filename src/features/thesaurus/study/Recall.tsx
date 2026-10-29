@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { EyeOff, Pencil, Type, Undo2 } from 'lucide-react';
+import { EyeOff, Lightbulb, Pencil, Type, Undo2 } from 'lucide-react';
 import { countQueue, requeue } from '@/core/srs/queue';
 import { formatInterval, GRADE_NAMES, GRADES, previewIntervals } from '@/core/srs/scheduler';
 import type { Grade4 } from '@/core/srs/scheduler';
@@ -58,6 +58,9 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
   const [notes, setNotes] = useState<Map<string, Note>>(session.notes);
   const [flipped, setFlipped] = useState(false);
   const [busy, setBusy] = useState(false);
+  /** Letters of the word shown as a hint, one more at each tap; and "I guessed" after a right answer (6-3b). Each card starts without. */
+  const [hints, setHints] = useState(0);
+  const [guessed, setGuessed] = useState(false);
   const [editor, setEditor] = useState<EditorTarget | null>(null);
   const [styling, setStyling] = useState(false);
   const look = settings?.cards ?? DEFAULT_SETTINGS.cards;
@@ -84,6 +87,10 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
   );
 
   const flip = useCallback(() => setFlipped(true), []);
+  useEffect(() => {
+    setHints(0);
+    setGuessed(false);
+  }, [card?.id, card?.reps]);
 
   const rate = async (grade: Grade4) => {
     if (!card || !flipped || busy) return;
@@ -94,7 +101,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
       history.current.push({ queue });
       rest = grade === 1 ? [...queue.slice(1), card] : queue.slice(1);
     } else {
-      const { card: next, undo, leech } = await answerCard(card, grade, { lang, mode: 'classic', durationMs: ms });
+      const { card: next, undo, leech } = await answerCard(card, grade, { lang, mode: 'classic', durationMs: ms, hinted: hints > 0, guessed });
       if (leech && note) {
         toast(`“${note.term}” keeps slipping. Try your own sentence or a way to remember it, or put it aside for now.`, {
           action: { label: 'Put aside', onClick: () => void setSuspended(note.id, true) },
@@ -268,6 +275,12 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
 
         <div className="mx-auto mt-4 w-full sm:mt-5" style={{ maxWidth: Math.min(width, 576) }}>
           {flipped && (intervals || practice) ? (
+            <>
+            {!practice && (
+              <button type="button" aria-pressed={guessed} onClick={() => setGuessed((g) => !g)} className={cx('mx-auto mb-3 block h-8 rounded-full px-3.5 text-[13px] font-semibold transition-colors', guessed ? 'bg-ink text-bg' : 'bg-surface text-ink-soft hover:bg-sunken')}>
+                I guessed{guessed ? ': a right answer counts as Hard' : ''}
+              </button>
+            )}
             <motion.div className="grid grid-cols-4 gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>
               {GRADES.map((g) => (
                 <button
@@ -286,7 +299,19 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
                 </button>
               ))}
             </motion.div>
+            </>
           ) : (
+            <>
+            {note && card?.direction === 'production' && hints < [...note.term].length && (
+              <button type="button" onClick={() => setHints((h) => h + 1)} className="mx-auto mb-3 flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
+                <Lightbulb size={15} aria-hidden /> {hints ? 'Another letter' : 'Hint: the first letter'}
+              </button>
+            )}
+            {note && card?.direction === 'production' && hints > 0 && (
+              <p lang={lang} className="mb-3 text-center font-serif text-xl text-ink-soft">
+                {[...note.term].slice(0, hints).join('')}…
+              </p>
+            )}
             <button
               type="button"
               onClick={flip}
@@ -294,6 +319,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
             >
               Show answer {pointer === 'fine' && <Kbd tone="accent">Space</Kbd>}
             </button>
+            </>
           )}
         </div>
       </main>

@@ -11,6 +11,7 @@ import type { Topic } from '@/core/grammar/types';
 import { plain } from '@/core/grammar/types';
 import { getLanguage } from '@/core/lang/languages';
 import { seededRandom, shuffle } from '@/core/srs/ludus';
+import { trickyNotes } from '@/data/memoryViews';
 import { affixesOfWords, itemsOf, practiceNotes, practiceTopics, verbGrids, wordFacts } from '@/data/practice';
 import { buttonClasses, Card } from '@/design/primitives';
 import { ExerciseSession } from '@/features/exercise/ExerciseSession';
@@ -20,6 +21,9 @@ interface Ctx {
   affixes: Array<{ affix: string; meaning: string }>;
   topics: Topic[];
   verbs: Array<{ lemma: string; grids: FormGrid[] }>;
+  /** Words the learner finds hard, and words not seen for a long while (from their cards). */
+  difficult: WordFacts[];
+  rusty: WordFacts[];
 }
 
 interface PracticeSet {
@@ -65,6 +69,19 @@ function buildSets(lang: string, c: Ctx): PracticeSet[] {
     games('sentences', 'Words in sentences', 'Match each word with the sentence it fits.', 'words with an example sentence', (w, r, k) => matchSentences(w, lang, r, k)),
     games('sounds', 'Sounds and words', 'Hear a word, match it with how it is written.', 'a voice for this language', (w, r, k) => matchSounds(w, lang, r, k)),
     games('pictures', 'Words and pictures', 'Match each word with its picture.', 'cards with a picture', (w, r, k) => matchPictures(w, lang, r, k)),
+    ...(['difficult', 'rusty'] as const).map(
+      (id): PracticeSet => ({
+        id,
+        group: 'words',
+        title: id === 'difficult' ? 'Your difficult words' : 'Words you have not seen in a while',
+        detail: id === 'difficult' ? 'The words you forget most often, as meanings and in sentences.' : 'Words that have gone quiet: a refresher, as meanings and in sentences.',
+        needs: id === 'difficult' ? 'cards you have forgotten a few times' : 'cards not seen for six weeks',
+        make: () => {
+          const words = c[id];
+          return [...rounds(words, random, (w, k) => matchDefinitions(w, lang, random, k), `${id}-m`), ...rounds(words, random, (w, k) => matchSentences(w, lang, random, k), `${id}-s`)];
+        },
+      }),
+    ),
     {
       id: 'affixes',
       group: 'words',
@@ -146,8 +163,15 @@ export default function PracticePage() {
     void (async () => {
       const random = seededRandom(Date.now() % 2 ** 31);
       const notes = await practiceNotes(lang);
-      const [facts, affixes, topics, verbs] = await Promise.all([wordFacts(lang, notes), affixesOfWords(lang, notes), practiceTopics(lang, random), verbGrids(lang, notes)]);
-      if (alive) setCtx({ facts, affixes, topics, verbs });
+      const [facts, affixes, topics, verbs, difficult, rusty] = await Promise.all([
+        wordFacts(lang, notes),
+        affixesOfWords(lang, notes),
+        practiceTopics(lang, random),
+        verbGrids(lang, notes),
+        trickyNotes(lang, 'difficult').then((n) => wordFacts(lang, n)),
+        trickyNotes(lang, 'rusty').then((n) => wordFacts(lang, n)),
+      ]);
+      if (alive) setCtx({ facts, affixes, topics, verbs, difficult, rusty });
     })();
     return () => {
       alive = false;

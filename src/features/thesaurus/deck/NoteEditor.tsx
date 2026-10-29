@@ -2,8 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Sparkles, Trash2 } from 'lucide-react';
 import type { CardTemplate } from '@/core/contracts/word';
-import { describeRetrievability } from '@/core/srs/memory';
-import { formatInterval, maturityOf, retrievability } from '@/core/srs/scheduler';
 import { fillFromEntry } from '@/core/srs/templateFill';
 import { FIELD_LABEL, TEMPLATES, templateOf } from '@/core/srs/templates';
 import type { TemplateField } from '@/core/srs/templates';
@@ -13,6 +11,7 @@ import { addNote, deleteNote, setSuspended, updateNote } from '@/data/decks';
 import type { Card, Note } from '@/data/types';
 import { Button, Drawer, ToggleRow } from '@/design/primitives';
 import { toast } from '@/state/ui';
+import { CardMemory } from './CardMemory';
 import { OcclusionEditor } from './OcclusionEditor';
 import { PictureField } from './PictureField';
 import type { PickedPicture } from './PictureField';
@@ -88,11 +87,6 @@ export function NoteEditor({ lang, target, onClose }: { lang: string; target: Ed
     } finally {
       setFilling(false);
     }
-  };
-  // How likely a card is remembered right now, in plain words.
-  const remembered = (c: Card) => {
-    const d = describeRetrievability(retrievability(c, Date.now()));
-    return d ? `${d.words} (${d.label.toLowerCase()})` : null;
   };
   const suspended = Boolean(editing?.cards.length && editing.cards.every((c) => c.suspended));
 
@@ -212,12 +206,7 @@ export function NoteEditor({ lang, target, onClose }: { lang: string; target: Ed
       {editing && (
         <div className="mt-6 border-t border-line pt-2">
           {editing.cards.map((c) => (
-            <p key={c.id} className="py-1.5 text-[13px] text-ink-soft">
-              <span className="font-semibold text-ink">{c.direction === 'production' ? 'Meaning → word' : 'Word → meaning'}</span> · {maturityOf(c)}
-              {c.state !== 0 && ` · next in ${formatInterval(Math.max(0, c.due - Date.now()))}`} · {c.reps} reviews{c.lapses ? `, ${c.lapses} lapses` : ''}
-              {c.leech ? ' · keeps slipping' : ''}
-              {remembered(c) && ` · remembered today: ${remembered(c)}`}
-            </p>
+            <CardMemory key={c.id} card={c} onChanged={onClose} />
           ))}
           <ToggleRow title="Suspend" description="Keep the card but leave it out of reviews." checked={suspended} onChange={(v) => void setSuspended(editing.note.id, v)} />
           <Button
