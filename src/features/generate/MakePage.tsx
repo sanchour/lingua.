@@ -9,7 +9,7 @@ import { BackLink } from '@/app/BackLink';
 import { PageHeader } from '@/app/PageHeader';
 import type { GeneratedRow } from '@/core/contracts/db';
 import { labelFor } from '@/core/generate/generate';
-import type { AdventureBody, CourseBody, DialogueBody, DrillBody, GeneratedKind, PronunciationBody, QuizBody, SentencesBody, StoryBody, WordlistBody } from '@/core/generate/generate';
+import type { AdventureBody, CourseBody, DialogueBody, DrillBody, GeneratedKind, PronunciationBody, QuizBody, SentencesBody, StoryBody, TranslationsBody, WordlistBody } from '@/core/generate/generate';
 import { CEFR_LEVELS } from '@/core/lang/levels';
 import type { Cefr } from '@/core/lang/levels';
 import { textToChapters } from '@/core/parsers/text';
@@ -44,6 +44,7 @@ const KINDS: Array<{ kind: GeneratedKind; title: string; detail: string; cost: s
   { kind: 'dialogue', title: 'A dialogue', detail: 'Two people talking, line by line.', cost: 'about 300 words in all' },
   { kind: 'quiz', title: 'A quiz', detail: 'Five questions to answer, with the reason for each.', cost: 'about 250 words in all' },
   { kind: 'simplified', title: 'Simplify a text', detail: 'Paste a text; get it back in easier words, beside the original.', cost: 'about as long as your text, twice' },
+  { kind: 'translations', title: 'Compare translations', detail: 'Paste a passage you are reading (a poem, a paragraph of a novel); get it three ways, word for word, natural and literary, with where they part.', cost: 'about three times as long as your text' },
   { kind: 'adventure', title: 'An interactive story', detail: 'You choose what happens next; the story branches to its endings.', cost: 'about 700 words in all' },
   { kind: 'course', title: 'A short course', detail: 'Six lessons on a topic: a goal, eight words and a sentence each, each lesson a deck.', cost: 'about 600 words in all' },
   { kind: 'drill', title: 'A grammar drill', detail: 'Eight sentences with a gap, on one point of grammar: fill them in.', cost: 'about 250 words in all' },
@@ -79,13 +80,13 @@ export default function MakePage() {
     setRow(null);
     try {
       let basis: string | undefined;
-      if (kind === 'simplified') basis = source.trim();
+      if (kind === 'simplified' || kind === 'translations') basis = source.trim();
       if (kind === 'quiz' && from === 'notes') basis = source.trim();
       if (kind === 'quiz' && from === 'library') basis = blocksToText((await textChapters(textId)).flatMap((c) => c.blocks)).slice(0, 4000);
       if (kind === 'quiz' && from === 'mistakes') basis = await mistakesText(lang);
       if (kind === 'quiz' && from === 'mistakes' && !basis) throw new Error('Nothing to practise yet: your mistakes appear here once you have made some in a lesson or in Practice.');
       if (basis !== undefined && basis.length < 40 && from !== 'mistakes') throw new Error(from === 'library' ? 'Choose a text first.' : 'Paste a longer text first.');
-      setRow((await generateMaterial({ lang, kind, level, topic: kind === 'quiz' && from === 'mistakes' ? 'my mistakes' : kind === 'simplified' || kind === 'drill' || kind === 'pronunciation' || basis ? undefined : [kind === 'dialogue' ? style : null, topic.trim()].filter(Boolean).join(': ') || undefined, source: basis?.slice(0, 4000), style: kind === 'story' ? (storyStyle ?? undefined) : undefined, focus: kind === 'quiz' ? (focus ?? undefined) : kind === 'drill' || kind === 'pronunciation' ? topic.trim() || undefined : undefined })).row);
+      setRow((await generateMaterial({ lang, kind, level, topic: kind === 'quiz' && from === 'mistakes' ? 'my mistakes' : kind === 'simplified' || kind === 'translations' || kind === 'drill' || kind === 'pronunciation' || basis ? undefined : [kind === 'dialogue' ? style : null, topic.trim()].filter(Boolean).join(': ') || undefined, source: basis?.slice(0, 4000), style: kind === 'story' ? (storyStyle ?? undefined) : undefined, focus: kind === 'quiz' ? (focus ?? undefined) : kind === 'drill' || kind === 'pronunciation' ? topic.trim() || undefined : undefined })).row);
     } catch (e) {
       setError(e instanceof Error ? e : new Error('Something went wrong.'));
     } finally {
@@ -171,7 +172,7 @@ export default function MakePage() {
             <Select label="Text" value={textId} onChange={setTextId} options={[{ value: '', label: library?.length ? 'Choose a text…' : 'Your library is empty', disabled: true }, ...(library ?? []).map((t) => ({ value: t.id, label: t.title }))]} />
           )}
           {kind === 'quiz' && from === 'mistakes' && <p className="text-[13px] text-ink-soft">Questions on the words and grammar you keep getting wrong, taken from your record.</p>}
-          {kind === 'simplified' || (kind === 'quiz' && from === 'notes') ? (
+          {kind === 'simplified' || kind === 'translations' || (kind === 'quiz' && from === 'notes') ? (
             <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
               The text
               <textarea
@@ -282,6 +283,37 @@ function Made({
       {row.kind === 'course' && <Course body={body as CourseBody} lang={lang} onDeck={(name, words) => void run(() => deckOf(name, words))} />}
       {row.kind === 'drill' && <Drill body={body as DrillBody} lang={lang} />}
       {row.kind === 'pronunciation' && <PronunciationList body={body as PronunciationBody} lang={lang} />}
+
+      {row.kind === 'translations' && (
+        <>
+          <div className="space-y-4">
+            {(body as TranslationsBody).versions.map((v) => (
+              <div key={v.style} className="rounded-2xl border border-line bg-surface p-4">
+                <p className="text-[12px] font-bold tracking-wide text-ink-faint uppercase">{v.style === 'literal' ? 'Word for word' : v.style === 'natural' ? 'Natural' : 'Literary'}</p>
+                <div className="mt-2 space-y-2 font-serif text-[16px] leading-relaxed">
+                  {v.text.split(/\n\s*\n|\n/).map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
+                </div>
+                <p className="mt-3 text-[13px] text-ink-soft">{v.note}</p>
+              </div>
+            ))}
+          </div>
+          {(body as TranslationsBody).choices.length > 0 && (
+            <>
+              <h3 className="mt-5 text-[14px] font-bold">Where they part</h3>
+              <ul className="mt-2 space-y-2 text-[14.5px]">
+                {(body as TranslationsBody).choices.map((c) => (
+                  <li key={c.phrase}>
+                    <span lang={lang} className="font-serif font-semibold">{c.phrase}</span>
+                    <span className="text-ink-soft"> — {c.why}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
+      )}
 
       {(row.kind === 'story' || row.kind === 'simplified') && (
         <>

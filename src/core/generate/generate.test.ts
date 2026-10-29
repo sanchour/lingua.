@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cacheKey, labelFor, levelReport, readGenerated, readAdventure, readCourse, readDifference, readDrill, readPronunciation, readQuiz, readSentences, readStory, readWordlist, textOf, unknownWords, wordsOf } from './generate';
+import { cacheKey, labelFor, levelReport, readGenerated, readAdventure, readCourse, readDifference, readDrill, readPronunciation, readQuiz, readSentences, readStory, readTranslations, readWordlist, textOf, unknownWords, wordsOf } from './generate';
 
 describe('reading what the model answered', () => {
   it('accepts a story only with its title, text and translation', () => {
@@ -145,6 +145,15 @@ describe('the later kinds', () => {
     expect(readDifference({ summary: 'Ser is what, estar is how.', rows: [row('ser'), row('estar')] })?.rows).toHaveLength(2);
     expect(readDifference({ summary: 'x', rows: [row('ser')] })).toBeNull();
     expect(readDifference({ rows: [row('ser'), row('estar')] })).toBeNull();
+  });
+  it('translations are the three versions, once each, and their texts are not measured', () => {
+    const v = (style: string) => ({ style, text: `The ${style} one.`, note: 'Keeps the order.' });
+    const ok = readTranslations({ versions: [v('literal'), v('natural'), v('literary')], choices: [{ phrase: 'ni siquiera', why: 'Emphasis.' }, { phrase: '', why: 'x' }] });
+    expect(ok?.versions).toHaveLength(3);
+    expect(ok?.choices).toHaveLength(1);
+    expect(readTranslations({ versions: [v('literal'), v('literal'), v('natural')] })).toBeNull();
+    expect(readTranslations({ versions: [v('literal'), v('natural')] })).toBeNull();
+    expect(textOf('translations', ok!)).toBe('');
   });
   it('a drill needs four gapped sentences with one answer each', () => {
     const item = (answer: string) => ({ before: 'Ayer yo ', answer, after: ' al mercado.', hint: 'ir' });

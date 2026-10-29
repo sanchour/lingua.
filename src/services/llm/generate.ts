@@ -56,6 +56,8 @@ function morePrompt(req: GenerateRequest, name: string, native: string, level: s
   switch (req.kind) {
     case 'difference':
       return `You explain to a learner of ${name} (CEFR ${level}) how two easily confused words differ. Answer only with JSON: {"summary": string, "rows": [{"word": string, "use": string, "example": string}, {"word": string, "use": string, "example": string}]}. ` + `"summary" is one sentence in ${native} saying the difference. Each row is one of the two words in the user message: "use" says in ${native}, in a sentence, when it is used; "example" is one short natural sentence in ${name} with it. Be exact; if the two words are not really confusable, still answer for what they mean.${retry}`;
+    case 'translations':
+      return `You translate literary passages from ${name} into ${native} for a learner (CEFR ${level}) and show how translations differ. Answer only with JSON: {"versions": [{"style": "literal", "text": string, "note": string}, {"style": "natural", "text": string, "note": string}, {"style": "literary", "text": string, "note": string}], "choices": [{"phrase": string, "why": string}]}. ` + `Put the whole passage in the user message into ${native} three ways: "literal" follows the words and order of the original as closely as ${native} allows; "natural" is what a ${native} speaker would say; "literary" tries to keep the passage's tone, rhythm and images as a published translator would. "note" is one sentence on what that version gives up or keeps. "choices" is up to six places where the versions part: "phrase" is the original words, "why" says in one or two sentences what the choice was. Do not shorten or add to the passage.${retry}`;
     case 'drill':
       return `You write grammar drills in ${name} for learners at ${level}. Answer only with JSON: {"topic": string, "items": [{"before": string, "answer": string, "after": string, "hint": string}]}. ` + `Eight sentences on the grammar topic in the user message, each with one gap: "before" is the sentence up to the gap, "answer" is the one word or form that fills it (the only correct one), "after" is the rest, "hint" is a short ${native} clue (the dictionary form, or the tense wanted). Only the most common words a ${level} learner meets.${retry}`;
     case 'pronunciation':
@@ -107,7 +109,7 @@ function prompt(req: GenerateRequest, avoid: string[]): { system: string; user: 
       : `You write natural example sentences in ${name} for learners at ${level}. Answer only with JSON: {"sentences": [{"text": string, "translation": string}]}. ` +
         `Eight short sentences, each using only the most common words a ${level} learner meets; "translation" is ${native}.${retry}`);
   return { system: system + (req.kind === 'quiz' && req.focus ? ` The questions are about ${req.focus}.` : '') + (req.kind === 'story' && req.style ? ` Write it as ${req.style}, not as a story.` : ''), user: JSON.stringify(
-      req.kind === 'simplified' || (req.kind === 'quiz' && req.source)
+      req.kind === 'simplified' || req.kind === 'translations' || (req.kind === 'quiz' && req.source)
         ? { text: req.source, language: name, level: req.level }
         : req.kind === 'difference'
           ? { words: req.source, language: name, level: req.level }

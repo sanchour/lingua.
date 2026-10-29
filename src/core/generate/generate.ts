@@ -6,7 +6,7 @@ import { CEFR_LEVELS, cefrForRank } from '@/core/lang/levels';
 import type { Cefr } from '@/core/lang/levels';
 import { normalizeWord } from '@/core/text/normalize';
 
-export type GeneratedKind = 'story' | 'sentences' | 'dialogue' | 'rewrites' | 'wordlist' | 'quiz' | 'simplified' | 'difference' | 'drill' | 'pronunciation' | 'adventure' | 'course';
+export type GeneratedKind = 'story' | 'sentences' | 'dialogue' | 'rewrites' | 'wordlist' | 'quiz' | 'simplified' | 'difference' | 'drill' | 'pronunciation' | 'adventure' | 'course' | 'translations';
 
 /** What a made-to-order rewrite asks for (the sentence tasks of 6-4b). */
 export type RewriteTask = 'passive' | 'reported' | 'question' | 'combine' | 'expand' | 'simplify';
@@ -54,6 +54,12 @@ export interface DifferenceBody {
   rows: Array<{ word: string; use: string; example: string }>;
 }
 
+/** One passage in the target language, put into the learner's language three ways (6-13): word for word, natural, and as literature, with where they part. */
+export interface TranslationsBody {
+  versions: Array<{ style: 'literal' | 'natural' | 'literary'; text: string; note: string }>;
+  choices: Array<{ phrase: string; why: string }>;
+}
+
 /** A grammar drill: sentences with one gap each, on one topic. */
 export interface DrillBody {
   topic: string;
@@ -79,7 +85,7 @@ export interface CourseBody {
   lessons: Array<{ title: string; goal: string; words: Array<{ term: string; meaning: string }>; sentence: string }>;
 }
 
-export type GeneratedBody = StoryBody | SentencesBody | DialogueBody | RewritesBody | WordlistBody | QuizBody | DifferenceBody | DrillBody | PronunciationBody | AdventureBody | CourseBody;
+export type GeneratedBody = TranslationsBody | StoryBody | SentencesBody | DialogueBody | RewritesBody | WordlistBody | QuizBody | DifferenceBody | DrillBody | PronunciationBody | AdventureBody | CourseBody;
 
 const str = (v: unknown, max = 8000): string | null => (typeof v === 'string' && v.trim() && v.length <= max ? v.trim() : null);
 
@@ -171,6 +177,20 @@ export function readDifference(raw: unknown): DifferenceBody | null {
   return summary && rows.length === 2 ? { summary, rows } : null;
 }
 
+/** Exactly the three versions, once each, and up to six notes on where the choices were made. */
+export function readTranslations(raw: unknown): TranslationsBody | null {
+  const r = obj(raw);
+  const versions = Array.isArray(r.versions)
+    ? r.versions.flatMap((x) => {
+        const o = obj(x);
+        const style = o.style;
+        return (style === 'literal' || style === 'natural' || style === 'literary') && str(o.text, 3000) && str(o.note, 300) ? [{ style: style as TranslationsBody['versions'][number]['style'], text: str(o.text, 3000)!, note: str(o.note, 300)! }] : [];
+      })
+    : [];
+  const choices = Array.isArray(r.choices) ? r.choices.flatMap((x) => (str(obj(x).phrase, 120) && str(obj(x).why, 300) ? [{ phrase: str(obj(x).phrase, 120)!, why: str(obj(x).why, 300)! }] : [])).slice(0, 6) : [];
+  return versions.length === 3 && new Set(versions.map((v) => v.style)).size === 3 ? { versions, choices } : null;
+}
+
 /** A drill: at least four items, each with the sentence's two halves and the word for the gap between them. */
 export function readDrill(raw: unknown): DrillBody | null {
   const r = obj(raw);
@@ -227,6 +247,7 @@ export function readCourse(raw: unknown): CourseBody | null {
 }
 
 export function readGenerated(kind: GeneratedKind, raw: unknown, task?: RewriteTask): GeneratedBody | null {
+  if (kind === 'translations') return readTranslations(raw);
   if (kind === 'difference') return readDifference(raw);
   if (kind === 'drill') return readDrill(raw);
   if (kind === 'pronunciation') return readPronunciation(raw);
@@ -254,6 +275,8 @@ export function wordsOf(text: string, lang: string): Map<string, number> {
 
 /** All the target-language text of a body. */
 export function textOf(kind: GeneratedKind, body: GeneratedBody): string {
+  // The passage is the learner's own and the versions are in their language: no target-language text to measure.
+  if (kind === 'translations') return '';
   if (kind === 'difference') return (body as DifferenceBody).rows.map((r) => r.example).join('\n');
   if (kind === 'drill') return (body as DrillBody).items.map((i) => `${i.before}${i.answer}${i.after}`).join('\n');
   if (kind === 'pronunciation') return (body as PronunciationBody).items.map((i) => i.text).join('\n');
@@ -305,7 +328,7 @@ export function levelReport(words: ReadonlyMap<string, number>, rankOf: Readonly
 }
 
 /** A text is "at the level" when at most this share of its words is beyond it. */
-export const LEVEL_BEYOND_LIMIT: Record<GeneratedKind, number> = { story: 0.12, sentences: 0.15, dialogue: 0.12, rewrites: 0.15, wordlist: 0.3, quiz: 0.15, simplified: 0.12, difference: 0.3, drill: 0.15, pronunciation: 0.3, adventure: 0.12, course: 0.3 };
+export const LEVEL_BEYOND_LIMIT: Record<GeneratedKind, number> = { story: 0.12, sentences: 0.15, dialogue: 0.12, rewrites: 0.15, wordlist: 0.3, quiz: 0.15, simplified: 0.12, difference: 0.3, drill: 0.15, pronunciation: 0.3, adventure: 0.12, course: 0.3, translations: 1 };
 
 /** The cache key: the same request is answered from what was made before, and paid for once. */
 export function cacheKey(req: { lang: string; kind: GeneratedKind; level: string; topic?: string; native?: string; task?: RewriteTask; source?: string; focus?: string; style?: string }): string {

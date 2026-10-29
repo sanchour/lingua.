@@ -548,7 +548,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [ ] `F0402` Track unknown-word density by chapter · **6-8**
 - [ ] `F0403` Recommend the next text based on reading performance · **6-16**
 - [ ] `F0404` Generate discussion questions about a passage · **6-8**
-- [ ] `F0405` Compare translations of the same literary passage · **6-13**
+- [x] `F0405` Compare translations of the same literary passage · **6-13**
 - [ ] `F0406` Explain cultural and historical references · **6-19** · partly there
 - [ ] `F0407` Build a personal library of favorite passages · **6-8**
 - [x] `F0408` Export a bilingual reading journal · **6-24**
@@ -1004,7 +1004,7 @@ Translation can be a powerful learning method when used actively. It becomes les
 - [x] `F0764` Translate idioms · **6-13**
 - [x] `F0765` Translate slang · **6-13**
 - [x] `F0766` Translate formal expressions · **6-13**
-- [ ] `F0767` Translate literary passages · **6-13**
+- [x] `F0767` Translate literary passages · **6-13**
 - [x] `F0768` Translate a phrase in different registers · **6-13**
 - [x] `F0769` Translate with word-by-word alignment · **6-13**
 - [x] `F0770` Compare sentence structure across languages · **6-13**
