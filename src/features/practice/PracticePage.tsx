@@ -2,6 +2,12 @@
 // correct the mistake, rewrite, what comes next, drag the words, change a form. Each runs in one session screen.
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
+import { completeDialogue, sentenceTask } from '@/core/exercise';
+import { REWRITE_TASKS } from '@/core/generate/generate';
+import type { DialogueBody, RewritesBody, RewriteTask } from '@/core/generate/generate';
+import type { Cefr } from '@/core/lang/levels';
+import { aiBlock } from '@/data/plan';
+import { generateMaterial } from '@/services/llm/generate';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { attachRetries, correctMistake, dragSentence, gridOfGrammarTable, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, planTransforms, predictForms, rewriteFix, tenseTransforms } from '@/core/exercise';
@@ -34,6 +40,8 @@ interface PracticeSet {
   /** Needs, said when the set cannot be made yet. */
   needs: string;
   make: () => ExerciseSpec[];
+  /** Made when it is started, by Max (a story, a dialogue, rewrites): it takes a moment and the learner's key. */
+  makeLater?: () => Promise<ExerciseSpec[]>;
 }
 
 const ROUNDS = 3;
@@ -49,7 +57,50 @@ function rounds(facts: WordFacts[], random: () => number, build: (chunk: WordFac
   return out;
 }
 
-function buildSets(lang: string, c: Ctx): PracticeSet[] {
+const TASK_SET: Record<RewriteTask, { title: string; detail: string }> = {
+  passive: { title: 'Say it in the passive', detail: 'An active sentence into the passive voice.' },
+  reported: { title: 'Reported speech', detail: 'What someone said, told as reported speech.' },
+  question: { title: 'Turn it into a question', detail: 'A statement into the question that asks about it.' },
+  combine: { title: 'Combine two sentences', detail: 'Two short sentences made into one.' },
+  expand: { title: 'Add more information', detail: 'A short sentence, made fuller.' },
+  simplify: { title: 'Say it more simply', detail: 'A long sentence, said simply.' },
+};
+
+/** The sets Max makes for the learner when they start them: sentence tasks, and a dialogue with a line to fill in. */
+function madeSets(lang: string, level: Cefr): PracticeSet[] {
+  const needs = 'Lingua+ Max, and your AI key (Settings › AI)';
+  const trains = (id: string) => ({ skill: 'grammar', item: { type: 'pattern', patternId: id } }) as const;
+  const tasks = REWRITE_TASKS.map(
+    (task): PracticeSet => ({
+      id: `task-${task}`,
+      group: 'grammar',
+      ...TASK_SET[task],
+      needs,
+      make: () => [],
+      makeLater: async () => {
+        const body = (await generateMaterial({ lang, kind: 'rewrites', task, level })).row.content as RewritesBody;
+        return body.items.map((it, i) => sentenceTask(task, it.given, it.answer, lang, `task-${task}-${i}`, trains(`rewrite:${task}`), true));
+      },
+    }),
+  );
+  const dialogue: PracticeSet = {
+    id: 'dialogue',
+    group: 'grammar',
+    title: 'Complete the dialogue',
+    detail: 'A short conversation with one line missing: write it.',
+    needs,
+    make: () => [],
+    makeLater: async () => {
+      const body = (await generateMaterial({ lang, kind: 'dialogue', level })).row.content as DialogueBody;
+      // A different line is missing in each: never the first, which only opens it.
+      const missing = shuffle(body.lines.map((_, i) => i).slice(1), () => Math.random()).slice(0, 3);
+      return missing.flatMap((m, i) => completeDialogue(body.lines, m, lang, `dialogue-${i}`, trains('dialogue'), body.title) ?? []);
+    },
+  };
+  return [...tasks, dialogue];
+}
+
+function buildSets(lang: string, c: Ctx, level: Cefr): PracticeSet[] {
   const random = () => Math.random();
   const trains = (topic: string) => ({ skill: 'grammar', item: { type: 'grammar', topicId: topic } }) as const;
   const items = () => shuffle(itemsOf(c.topics), random);
@@ -138,6 +189,7 @@ function buildSets(lang: string, c: Ctx): PracticeSet[] {
       needs: 'a grammar with tables',
       make: () => c.topics.flatMap((t) => planTransforms((t.tables ?? []).map((tb) => gridOfGrammarTable(tb, t.title)), lang, random, 2, { trains: trains(t.id), keyPrefix: `forms-${t.id}` })).slice(0, 8),
     },
+    ...madeSets(lang, level),
     {
       id: 'drag',
       group: 'grammar',
@@ -150,8 +202,11 @@ function buildSets(lang: string, c: Ctx): PracticeSet[] {
 }
 
 export default function PracticePage() {
-  const { language } = useApp();
+  const { language, settings } = useApp();
   const lang = language.id;
+  const level = (language.level === 'A0' ? 'A1' : language.level) as Cefr;
+  const aiReady = aiBlock(settings, settings.llm.provider) === null;
+  const [error, setError] = useState<string | null>(null);
   const [ctx, setCtx] = useState<Ctx | null>(null);
   const navigate = useNavigate();
   const chosen = useParams().set;
@@ -178,17 +233,40 @@ export default function PracticePage() {
     };
   }, [lang]);
 
-  const sets = useMemo(() => (ctx ? buildSets(lang, ctx) : []), [ctx, lang]);
-  const ready = useMemo(() => new Map(sets.map((s) => [s.id, s.make().length > 0])), [sets]);
+  const sets = useMemo(() => (ctx ? buildSets(lang, ctx, level) : []), [ctx, lang, level]);
+  // What is made when started needs the learner's key; the rest needs enough words or grammar to make a set.
+  const ready = useMemo(() => new Map(sets.map((s) => [s.id, s.makeLater ? aiReady : s.make().length > 0])), [sets, aiReady]);
 
   useEffect(() => {
     const set = sets.find((s) => s.id === chosen);
+    setError(null);
+    if (set?.makeLater) {
+      let alive = true;
+      setRunning(null);
+      set.makeLater().then(
+        (specs) => alive && setRunning(specs.length ? { title: set.title, specs } : null),
+        (e: unknown) => alive && setError(e instanceof Error ? e.message : 'It could not be made.'),
+      );
+      return () => {
+        alive = false;
+      };
+    }
     const specs = set?.make() ?? [];
     // A set that cannot be made (too few words for it) never opens as an empty lesson.
     setRunning(set && specs.length ? { title: set.title, specs } : null);
   }, [chosen, sets]);
 
-  if (chosen && !running) return <p className="p-10 text-ink-soft">{ctx ? 'This set can’t be made yet.' : 'Getting it ready…'}</p>;
+  if (chosen && !running)
+    return (
+      <div className="p-10 text-ink-soft">
+        <p>{error ?? (sets.find((s) => s.id === chosen)?.makeLater ? 'Max is making it for you…' : ctx ? 'This set can’t be made yet.' : 'Getting it ready…')}</p>
+        {error && (
+          <Link to="/thesaurus/practice" className="mt-3 inline-block font-semibold text-ink underline decoration-line-strong underline-offset-4">
+            Back to Practice
+          </Link>
+        )}
+      </div>
+    );
   if (running) return <ExerciseSession title={running.title} lang={lang} specs={running.specs} onClose={() => navigate('/thesaurus/practice')} />;
 
   const name = getLanguage(lang)?.name ?? lang;

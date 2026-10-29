@@ -3,7 +3,7 @@
 // same request is never paid for twice. Max only (the learner's own key, Settings › AI).
 import type { GeneratedRow } from '@/core/contracts/db';
 import { cacheKey, LEVEL_BEYOND_LIMIT, levelReport, readGenerated, textOf, unknownWords, wordsOf } from '@/core/generate/generate';
-import type { GeneratedBody, GeneratedKind } from '@/core/generate/generate';
+import type { GeneratedBody, GeneratedKind, RewriteTask } from '@/core/generate/generate';
 import { getLanguage } from '@/core/lang/languages';
 import type { Cefr } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
@@ -21,6 +21,8 @@ export interface GenerateRequest {
   topic?: string;
   /** The learner's own language, for translations. Default English. */
   native?: string;
+  /** For 'rewrites': what the sentences are to be turned into. */
+  task?: RewriteTask;
 }
 
 /** What the offline dictionary says about some forms: which it knows, and how common each is (rank 1 is the most common). */
@@ -48,8 +50,22 @@ function prompt(req: GenerateRequest, avoid: string[]): { system: string; user: 
   const native = getLanguage(req.native ?? 'en')?.name ?? 'English';
   const level = `CEFR level ${req.level}`;
   const retry = avoid.length ? ` Your last text used words that are too difficult for the level (${avoid.join(', ')}): write it again with simpler, more common words instead.` : '';
+  const TASK_PROMPT: Record<RewriteTask, string> = {
+    passive: 'Each item is one active sentence and the same sentence in the passive voice.',
+    reported: 'Each item is one sentence of direct speech (with the speaker) and the same said in reported speech.',
+    question: 'Each item is one statement and the question that asks about the same thing.',
+    combine: 'Each item is two short sentences and one sentence that joins them well (a relative clause, a conjunction).',
+    expand: 'Each item is one short sentence and a fuller sentence that adds one piece of information (where, when, why or how).',
+    simplify: 'Each item is one long or complex sentence and a simpler sentence with the same meaning.',
+  };
   const system =
-    req.kind === 'story'
+    req.kind === 'dialogue'
+      ? `You write short everyday dialogues in ${name} for learners at ${level}. Answer only with JSON: {"title": string, "lines": [{"speaker": string, "text": string, "translation": string}]}. ` +
+        `Six to eight lines between two people (use two first names), only the most common words a ${level} learner meets, and each line's ${native} translation.${retry}`
+      : req.kind === 'rewrites' && req.task
+        ? `You write sentence exercises in ${name} for learners at ${level}. Answer only with JSON: {"items": [{"given": [string], "answer": string}]}. Six items. ${TASK_PROMPT[req.task]} ` +
+          `"given" is a list of the sentence or sentences to start from; "answer" is the one correct result. Only the most common words a ${level} learner meets.${retry}`
+        : req.kind === 'story'
       ? `You write short graded-reader stories in ${name} for learners at ${level}. Answer only with JSON: {"title": string, "text": string, "translation": string}. ` +
         `"text" is the story in ${name}, about ${WORDS[req.level]} words, in short paragraphs separated by a blank line, using only the most common words a ${level} learner meets and simple tenses. No notes, no glossary. ` +
         `"translation" is its ${native} translation, paragraph by paragraph.${retry}`
@@ -98,7 +114,7 @@ export async function generateMaterial(req: GenerateRequest, deps?: GenerateDeps
   let avoid: string[] = [];
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     const { system, user } = prompt(req, avoid);
-    const body = readGenerated(req.kind, await d.ask(system, user));
+    const body = readGenerated(req.kind, await d.ask(system, user), req.task);
     if (!body) continue;
 
     const words = wordsOf(textOf(req.kind, body), req.lang);

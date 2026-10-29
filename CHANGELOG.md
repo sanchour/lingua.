@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.27** · 2026-10-29 · 6-6b: dialogues and made-to-order rewrites, and the Practice sets that use them
 - **0.6.0-alpha.26** · 2026-10-29 · 6-3b: the memory on screen (calendar, minutes, fading, reschedule, forget), difficult and rusty sets, letter hint, I guessed
 - **0.6.0-alpha.25** · 2026-10-29 · 6-3b (part): kinds of card, pictures from Commons, learning steps, queue order; memory views built, not yet on screen
 - **0.6.0-alpha.24** · 2026-10-29 · 6-4b: Practice, the new exercise kinds and how it asks (matching, correct, rewrite, next form, drag, present into past)

@@ -75,3 +75,32 @@ describe('the cache key and the label', () => {
     expect(labelFor({ checks: ['schema'], level: 'A2' }).detail).toBe('Made by AI. built to a fixed shape · words not checked · level not confirmed.');
   });
 });
+
+describe('dialogues and made-to-order rewrites', () => {
+  const line = (speaker: string, text: string) => ({ speaker, text, translation: 't' });
+
+  it('accepts a dialogue of four lines or more between two people', () => {
+    const ok = { title: 'Au café', lines: [line('Ana', 'Bonjour.'), line('Luc', 'Salut.'), line('Ana', 'Un café ?'), line('Luc', 'Oui.')] };
+    expect(readGenerated('dialogue', ok)).toMatchObject({ title: 'Au café' });
+    expect(readGenerated('dialogue', { lines: ok.lines.slice(0, 3) })).toBeNull();
+    expect(readGenerated('dialogue', { lines: [...ok.lines, line('Zoé', 'Moi aussi.')] })).toBeNull();
+    expect(readGenerated('dialogue', { lines: 'none' })).toBeNull();
+    expect(textOf('dialogue', readGenerated('dialogue', ok)!)).toBe('Bonjour.\nSalut.\nUn café ?\nOui.');
+  });
+
+  it('accepts rewrites with the right number of sentences to start from, never one that answers itself', () => {
+    const one = { items: [{ given: ['El perro come.'], answer: '¿Come el perro?' }, { given: ['Ella canta.'], answer: '¿Canta ella?' }, { given: ['Ellos van.'], answer: '¿Van ellos?' }] };
+    expect((readGenerated('rewrites', one, 'question') as { items: unknown[] }).items).toHaveLength(3);
+    // A task is needed, "combine" needs two sentences, the others one.
+    expect(readGenerated('rewrites', one)).toBeNull();
+    expect(readGenerated('rewrites', one, 'combine')).toBeNull();
+    expect(readGenerated('rewrites', { items: one.items.map((i) => ({ given: [i.given[0], 'Y.'], answer: i.answer })) }, 'combine')).not.toBeNull();
+    expect(readGenerated('rewrites', { items: [{ given: ['A b c.'], answer: 'A b c.' }, ...one.items.slice(0, 2)] }, 'question')).toBeNull();
+  });
+
+  it('keeps the tasks apart in the cache', () => {
+    const base = { lang: 'es', kind: 'rewrites', level: 'A2' } as const;
+    expect(cacheKey({ ...base, task: 'passive' })).not.toBe(cacheKey({ ...base, task: 'question' }));
+    expect(cacheKey({ ...base, task: 'passive' })).toBe(cacheKey({ ...base, task: 'passive' }));
+  });
+});

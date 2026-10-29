@@ -130,3 +130,31 @@ describe('making a story, checked', () => {
     expect((await generateMaterial(REQ, deps(db, [EASY]).d)).cached).toBe(false);
   });
 });
+
+describe('dialogues and rewrites, checked and kept', () => {
+  const dialogue = { title: 'Au marché', lines: [{ speaker: 'Marie', text: 'Je vais au marché.', translation: 'I go to the market.' }, { speaker: 'Luc', text: 'Tu achètes du pain ?', translation: 'Do you buy bread?' }, { speaker: 'Marie', text: 'Oui, et du lait.', translation: 'Yes, and milk.' }, { speaker: 'Luc', text: 'Elle rentre à la maison.', translation: 'She goes home.' }] };
+
+  it('makes a dialogue that passes its checks, and gives it back from the cache', async () => {
+    const db = freshDb();
+    const { d, prompts } = deps(db, [dialogue]);
+    const first = await generateMaterial({ ...REQ, kind: 'dialogue' }, d);
+    expect(first.row).toMatchObject({ kind: 'dialogue', content: dialogue });
+    expect(first.row.checks).toContain('schema');
+    expect(prompts[0].system).toContain('dialogues');
+    expect((await generateMaterial({ ...REQ, kind: 'dialogue' }, d)).cached).toBe(true);
+  });
+
+  it('asks for the task it was given, keeps one cache for each, and refuses an answer for another task', async () => {
+    const db = freshDb();
+    const items = (n: number) => ({ items: Array.from({ length: n }, (_, i) => ({ given: [`Elle achète du pain ${i}.`], answer: `Le pain est acheté par elle ${i}.` })) });
+    const { d, prompts } = deps(db, [items(3)]);
+    const passive = await generateMaterial({ ...REQ, kind: 'rewrites', task: 'passive' }, d);
+    expect(prompts[0].system).toContain('passive');
+    expect(passive.row.content).toMatchObject({ task: 'passive' });
+    const other = await generateMaterial({ ...REQ, kind: 'rewrites', task: 'question' }, d);
+    expect(other.cached).toBe(false);
+    expect(prompts[1].system).toContain('question');
+    // "combine" needs two sentences to start from: this answer has one, so there is nothing usable.
+    await expect(generateMaterial({ ...REQ, kind: 'rewrites', task: 'combine' }, deps(db, [items(3)]).d)).rejects.toBeInstanceOf(LlmError);
+  });
+});

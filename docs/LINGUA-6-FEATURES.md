@@ -358,19 +358,19 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0243` Rewrite an incorrect sentence · **6-4**
 - [x] `F0244` Transform singular into plural · **6-4**
 - [x] `F0245` Transform present into past · **6-4**
-- [ ] `F0246` Transform active into passive · **6-4**
-- [ ] `F0247` Transform direct into reported speech · **6-4**
-- [ ] `F0248` Transform statements into questions · **6-4**
-- [ ] `F0249` Combine two simple sentences · **6-4**
-- [ ] `F0250` Expand a sentence with additional information · **6-4**
-- [ ] `F0251` Simplify a complex sentence · **6-4**
+- [x] `F0246` Transform active into passive · **6-4**
+- [x] `F0247` Transform direct into reported speech · **6-4**
+- [x] `F0248` Transform statements into questions · **6-4**
+- [x] `F0249` Combine two simple sentences · **6-4**
+- [x] `F0250` Expand a sentence with additional information · **6-4**
+- [x] `F0251` Simplify a complex sentence · **6-4**
 - [x] `F0252` Complete a sentence from context
 - [x] `F0253` Translate a sentence using a specific grammar rule
 - [ ] `F0254` Generate multiple examples of a pattern · **6-4** · partly there
 - [ ] `F0255` Distinguish between two similar grammatical constructions · **6-7** · partly there
 - [x] `F0256` Explain why an answer is wrong
 - [x] `F0257` Predict the next grammatical form · **6-4**
-- [ ] `F0258` Complete a dialogue using the right forms · **6-4**
+- [x] `F0258` Complete a dialogue using the right forms · **6-4**
 - [ ] `F0259` Dictation focused on grammatical endings · **6-9**
 - [ ] `F0260` Oral grammar drills · **6-11**
 - [x] `F0261` Timed conjugation challenges
