@@ -147,7 +147,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0063` Follow deck creators · **6-27** · needs the user's word
 - [ ] `F0064` Clone and modify shared decks · **6-27** · partly there
 - [x] `F0065` Generate decks from a text, document or book · **6-2** · partly there
-- [ ] `F0066` Generate decks from a video transcript · **6-2** · partly there
+- [x] `F0066` Generate decks from a video transcript · **6-2** · partly there
 - [ ] `F0067` Generate decks from a conversation · **6-2**
 - [x] `F0068` Generate decks from a list of unknown words · **6-2** · partly there
 - [ ] `F0069` Generate decks from exam vocabulary · **6-18**
@@ -1050,7 +1050,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0798` Interactive subtitles
 - [x] `F0799` Tap-to-translate subtitles
 - [x] `F0800` Dual subtitles
-- [ ] `F0801` Subtitle-based vocabulary extraction · **6-2** · partly there
+- [x] `F0801` Subtitle-based vocabulary extraction · **6-2** · partly there
 - [x] `F0802` Podcast learning
 - [x] `F0803` Audiobook learning
 - [x] `F0804` News reading
@@ -1064,7 +1064,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0812` Radio listening
 - [ ] `F0813` Live-stream comprehension · **6-19** · partly there
 - [x] `F0814` Video transcript reading
-- [ ] `F0815` Vocabulary lists generated from media · **6-2** · partly there
+- [x] `F0815` Vocabulary lists generated from media · **6-2** · partly there
 - [ ] `F0816` Save timestamps for difficult sections · **6-9**
 - [x] `F0817` Review phrases from favorite scenes
 - [ ] `F0818` Rewatch difficult passages with less assistance · **6-9**
@@ -1595,7 +1595,7 @@ These are integrated activities that combine skills instead of training each one
 - [ ] `F1236` Discuss a book with an AI tutor · **5.2-6** · planned in Lingua 5.2
 - [ ] `F1237` Debate an issue after reading about it · **6-21**
 - [ ] `F1238` Create a presentation from a text · **6-21**
-- [ ] `F1239` Turn a podcast into a vocabulary deck · **6-2** · partly there
+- [x] `F1239` Turn a podcast into a vocabulary deck · **6-2** · partly there
 - [ ] `F1240` Turn a conversation into a personalized lesson · **6-21**
 - [ ] `F1241` Turn writing corrections into future review exercises · **6-21**
 - [ ] `F1242` Build a weekly project around one topic · **6-21**
@@ -1994,7 +1994,7 @@ These are more ambitious ideas for a language app that could grow into a genuine
 - [ ] `F1577` AI-generated audio dramas · **6-26**
 - [ ] `F1578` Personalized audiobook difficulty · **6-26**
 - [ ] `F1579` Adaptive subtitles · **6-9**
-- [ ] `F1580` Automatic vocabulary extraction from permitted media · **6-2** · partly there
+- [x] `F1580` Automatic vocabulary extraction from permitted media · **6-2** · partly there
 - [ ] `F1581` A personal language-learning research dashboard · **6-26**
 - [ ] `F1582` Learning experiments comparing recall methods · **6-26**
 - [ ] `F1583` A personal corpus of written and spoken output · **6-26**
