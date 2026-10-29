@@ -8,6 +8,7 @@ import { PageHeader } from '@/app/PageHeader';
 import { AIS } from '@/core/colloquium/ais';
 import type { Ai } from '@/core/colloquium/ais';
 import { asScene, buildPrompt, getScene, promptInLanguage } from '@/core/colloquium/prompts';
+import type { ConversationMode } from '@/core/colloquium/prompts';
 import { fits, GROUPS, SCENES, searchScenes } from '@/core/colloquium/scenes';
 import type { Scene } from '@/core/colloquium/scenes';
 import { toPlain } from '@/core/journal/markdown';
@@ -24,7 +25,10 @@ import { toast } from '@/state/ui';
 import { loadChoices, markTalked, saveChoices } from './choices';
 import type { SermoChoices } from './choices';
 import { GROUP_TONE, SCENE_ICONS } from './sceneArt';
+import { SoloSpeakingView } from './SoloSpeakingView';
+import { ConversationReviewView } from './ConversationReviewView';
 
+type SermoTab = 'prompts' | 'solo' | 'review';
 type Step = 'scene' | 'how' | 'prompt';
 
 const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase';
@@ -50,6 +54,8 @@ export default function ColloquiumPage() {
   const level = language.level;
   const name = getLanguage(lang)?.name ?? lang;
   const [params] = useSearchParams();
+  const [tab, setTab] = useState<SermoTab>(params.get('tab') === 'solo' ? 'solo' : params.get('tab') === 'review' ? 'review' : 'prompts');
+  const [reviewInitialText, setReviewInitialText] = useState('');
   // Home's scene of the day and Mentis's "talk about" open on the second screen with the scene or topic picked.
   const linkedScene = asScene(params.get('scene'));
   const linkedAbout = params.get('topic')?.trim().slice(0, 160) || '';
@@ -80,6 +86,8 @@ export default function ColloquiumPage() {
   const prompt = buildPrompt(lang, {
     scene: sceneId,
     level,
+    mode: choices.conversationMode,
+    styles: choices.styles,
     correct: choices.correct === 'off' ? false : choices.correct,
     slow,
     help: choices.help,
@@ -100,42 +108,71 @@ export default function ColloquiumPage() {
   return (
     <div ref={top} className="scroll-mt-24">
       <PageHeader title="Sermo" eyebrow={`Talk in ${name}`} />
-      <ol className="-mt-1 mb-6 flex items-center gap-2 text-[13.5px] font-semibold" aria-label="Steps">
-        {steps.map((s, i) => (
-          <li key={s.id} className="flex items-center gap-2">
-            {i > 0 && <span className="h-px w-8 bg-line" aria-hidden />}
-            <button
-              type="button"
-              disabled={i > at}
-              aria-current={i === at ? 'step' : undefined}
-              onClick={() => go(s.id)}
-              className={cx('flex items-center gap-2 rounded-full py-1 pr-3 pl-1 transition-colors', i === at ? 'text-ink' : i < at ? 'text-ink-soft hover:bg-surface hover:text-ink' : 'text-ink-faint')}
-            >
-              <span className={cx('grid size-6 place-items-center rounded-full text-[12px]', i === at ? 'bg-inverse text-on-inverse' : i < at ? 'bg-sage-soft text-sage-text' : 'bg-sunken')}>
-                {i < at ? <Check size={13} aria-hidden /> : i + 1}
-              </span>
-              {s.text}
-            </button>
-          </li>
-        ))}
-      </ol>
 
-      {step === 'scene' && (
-        <ScenePicker
+      <div className="mb-6 flex items-center justify-between">
+        <Segmented<SermoTab>
+          label="Speaking mode"
+          value={tab}
+          onChange={setTab}
+          options={[
+            { value: 'prompts', label: 'AI Prompts' },
+            { value: 'solo', label: 'Solo Practice' },
+            { value: 'review', label: '“How Did It Go?”' },
+          ]}
+        />
+      </div>
+
+      {tab === 'solo' && (
+        <SoloSpeakingView
           lang={lang}
           level={level}
-          picked={about ? undefined : sceneId}
-          onScene={(id) => {
-            setSceneId(id);
-            setAbout('');
-            go('how');
-          }}
-          onAbout={(title) => {
-            setAbout(title);
-            go('how');
+          dueWords={due ?? []}
+          grammarTopic={grammar?.topic.title}
+          onSendToReview={(txt) => {
+            setReviewInitialText(txt);
+            setTab('review');
           }}
         />
       )}
+
+      {tab === 'prompts' && (
+        <>
+          <ol className="-mt-1 mb-6 flex items-center gap-2 text-[13.5px] font-semibold" aria-label="Steps">
+            {steps.map((s, i) => (
+              <li key={s.id} className="flex items-center gap-2">
+                {i > 0 && <span className="h-px w-8 bg-line" aria-hidden />}
+                <button
+                  type="button"
+                  disabled={i > at}
+                  aria-current={i === at ? 'step' : undefined}
+                  onClick={() => go(s.id)}
+                  className={cx('flex items-center gap-2 rounded-full py-1 pr-3 pl-1 transition-colors', i === at ? 'text-ink' : i < at ? 'text-ink-soft hover:bg-surface hover:text-ink' : 'text-ink-faint')}
+                >
+                  <span className={cx('grid size-6 place-items-center rounded-full text-[12px]', i === at ? 'bg-inverse text-on-inverse' : i < at ? 'bg-sage-soft text-sage-text' : 'bg-sunken')}>
+                    {i < at ? <Check size={13} aria-hidden /> : i + 1}
+                  </span>
+                  {s.text}
+                </button>
+              </li>
+            ))}
+          </ol>
+
+          {step === 'scene' && (
+            <ScenePicker
+              lang={lang}
+              level={level}
+              picked={about ? undefined : sceneId}
+              onScene={(id) => {
+                setSceneId(id);
+                setAbout('');
+                go('how');
+              }}
+              onAbout={(title) => {
+                setAbout(title);
+                go('how');
+              }}
+            />
+          )}
 
       {step === 'how' && (
         <section aria-label="How you’ll talk" className="max-w-4xl">
@@ -167,6 +204,19 @@ export default function ColloquiumPage() {
           </div>
 
           <div className="mt-7 grid gap-x-10 gap-y-6 md:grid-cols-2">
+            <Option title="Conversation mode" detail={choices.conversationMode === 'free' ? 'Talk about anything spontaneously without a predefined script.' : choices.conversationMode === 'tutor' ? 'The AI actively guides, teaches, and explains mistakes.' : choices.conversationMode === 'immersion' ? 'Total immersion in the language with minimal assistance.' : 'A real-world scenario with a clear goal and character roles.'}>
+              <Segmented<ConversationMode>
+                label="Conversation mode"
+                value={choices.conversationMode ?? 'scenario'}
+                onChange={(conversationMode) => choose({ conversationMode })}
+                options={[
+                  { value: 'scenario', label: 'Scenario' },
+                  { value: 'free', label: 'Free' },
+                  { value: 'tutor', label: 'Tutor' },
+                  { value: 'immersion', label: 'Immersion' },
+                ]}
+              />
+            </Option>
             <Option title="Correct my mistakes" detail={choices.correct === 'end' ? 'All together when you finish, so the talk keeps flowing.' : choices.correct === 'live' ? 'Briefly, after each of your answers.' : 'No corrections, just talking.'}>
               <Segmented<SermoChoices['correct']>
                 label="Correct my mistakes"
@@ -193,6 +243,57 @@ export default function ColloquiumPage() {
             </Option>
           </div>
 
+          <div className="mt-6">
+            <h2 className={cx(label, 'mb-2.5')}>Style & constraints</h2>
+            <div className="flex flex-wrap gap-2">
+              <Toggle
+                on={Boolean(choices.styles?.interruptions)}
+                onClick={() => choose({ styles: { ...choices.styles, interruptions: !choices.styles?.interruptions } })}
+                text="Interruptions & follow-ups"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.feignMisunderstanding)}
+                onClick={() => choose({ styles: { ...choices.styles, feignMisunderstanding: !choices.styles?.feignMisunderstanding } })}
+                text="Ask for clarification on errors"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.limitedAssistance)}
+                onClick={() => choose({ styles: { ...choices.styles, limitedAssistance: !choices.styles?.limitedAssistance } })}
+                text="Limited English assistance"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.cappedVocabulary)}
+                onClick={() => choose({ styles: { ...choices.styles, cappedVocabulary: !choices.styles?.cappedVocabulary } })}
+                text="Cap vocabulary to my level"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.gradualNewWords)}
+                onClick={() => choose({ styles: { ...choices.styles, gradualNewWords: !choices.styles?.gradualNewWords } })}
+                text="Gradual new expressions"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.multiCharacter)}
+                onClick={() => choose({ styles: { ...choices.styles, multiCharacter: !choices.styles?.multiCharacter } })}
+                text="Multi-character simulation"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.branchingOutcomes)}
+                onClick={() => choose({ styles: { ...choices.styles, branchingOutcomes: !choices.styles?.branchingOutcomes } })}
+                text="Branching outcomes"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.pronunciationFocus)}
+                onClick={() => choose({ styles: { ...choices.styles, pronunciationFocus: !choices.styles?.pronunciationFocus } })}
+                text="Pronunciation clinic"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.oralGrammarFocus)}
+                onClick={() => choose({ styles: { ...choices.styles, oralGrammarFocus: !choices.styles?.oralGrammarFocus } })}
+                text="Oral grammar drills"
+              />
+            </div>
+          </div>
+
           <div className="mt-6 flex flex-wrap gap-2">
             <Toggle on={choices.help} onClick={() => choose({ help: !choices.help })} text="Help me when I’m stuck" />
             <Toggle on={slow} onClick={() => choose({ slow: !slow })} text="Slowly and simply" />
@@ -212,6 +313,16 @@ export default function ColloquiumPage() {
       )}
 
       {step === 'prompt' && <PromptStep lang={lang} name={name} prompt={prompt} voice={choices.mode === 'voice'} scene={scene} about={about} onBack={() => go('how')} onRestart={() => go('scene')} />}
+        </>
+      )}
+
+      {tab === 'review' && (
+        <ConversationReviewView
+          lang={lang}
+          level={level}
+          initialTranscript={reviewInitialText}
+        />
+      )}
     </div>
   );
 }

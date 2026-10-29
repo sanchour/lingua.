@@ -445,14 +445,15 @@ function OptionsButton({ label, ...props }: { label: string } & Record<string, u
   );
 }
 
-/** Today's work in three columns (new, learning, to review), each in its colour; a faint 0 where there's none. */
+/** Today's work in three columns (new, learning, to review), each in its colour with its glyph (never colour alone, F1536); a faint 0 where there's none. */
 export function Counts({ counts }: { counts?: DeckCounts }) {
   return (
     <span className="grid w-[132px] shrink-0 grid-cols-3 gap-1 text-[12.5px] font-bold tabular-nums">
       {CARD_STATES.map((s) => {
         const n = counts?.[s.key] ?? 0;
         return (
-          <span key={s.key} title={counts ? `${n.toLocaleString()} ${s.label}` : undefined} className={cx('rounded-full py-0.5 text-center', n ? s.pill : 'text-ink-faint/50')}>
+          <span key={s.key} title={counts ? `${n.toLocaleString()} ${s.label}` : undefined} className={cx('inline-flex items-center justify-center gap-0.5 rounded-full py-0.5 text-center', n ? s.pill : 'text-ink-faint/50')}>
+            {n ? <span className="text-[9px] opacity-75" aria-hidden>{s.glyph}</span> : null}
             {counts ? n.toLocaleString() : ''}
           </span>
         );

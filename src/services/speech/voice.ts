@@ -157,6 +157,12 @@ export function stopSpeaking() {
   endPlaying();
 }
 
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') stopSpeaking();
+  });
+}
+
 function endPlaying() {
   if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
   if (player && playing) player.pause();

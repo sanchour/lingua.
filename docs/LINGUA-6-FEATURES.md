@@ -140,7 +140,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0056` Merge decks · **6-2**
 - [x] `F0057` Duplicate decks · **6-2**
 - [x] `F0058` Split a deck into smaller decks · **6-2**
-- [ ] `F0059` Import and export decks · **6-24** · partly there
+- [x] `F0059` Import and export decks · **6-24** · partly there
 - [ ] `F0060` Share decks with other learners · **6-27** · partly there
 - [ ] `F0061` Public community decks · **6-27** · needs the user's word
 - [ ] `F0062` Collaborative decks · **6-27** · needs the user's word
@@ -372,7 +372,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0257` Predict the next grammatical form · **6-4**
 - [x] `F0258` Complete a dialogue using the right forms · **6-4**
 - [ ] `F0259` Dictation focused on grammatical endings · **6-9**
-- [ ] `F0260` Oral grammar drills · **6-11**
+- [x] `F0260` Oral grammar drills · **6-11**
 - [x] `F0261` Timed conjugation challenges
 - [x] `F0262` Mixed grammar review
 - [ ] `F0263` Adaptive grammar exercises based on mistakes · **6-16** · partly there
@@ -551,7 +551,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [ ] `F0405` Compare translations of the same literary passage · **6-13**
 - [ ] `F0406` Explain cultural and historical references · **6-19** · partly there
 - [ ] `F0407` Build a personal library of favorite passages · **6-8**
-- [ ] `F0408` Export a bilingual reading journal · **6-24**
+- [x] `F0408` Export a bilingual reading journal · **6-24**
 
 > My favorite idea here: a reader that gradually becomes more personal. It learns which words are already familiar, remembers words the learner saves and provides just enough assistance to keep reading enjoyable.
 
@@ -651,7 +651,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0484` Listen and identify a change in topic · **6-9**
 - [x] `F0485` Listen without subtitles, then with subtitles · **6-9** · partly there
 - [x] `F0486` Compare an initial guess with the transcript · **6-9**
-- [ ] `F0487` Listen to a phrase and repeat it · **6-11** · partly there
+- [x] `F0487` Listen to a phrase and repeat it · **6-11** · partly there
 - [x] `F0488` Transcribe a short audio clip · **6-9**
 - [ ] `F0489` Identify formal versus informal speech · **6-9**
 - [ ] `F0490` Identify the speaker’s accent · **6-9**
@@ -696,7 +696,7 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [x] `F0517` Conversation based on saved vocabulary
 - [ ] `F0518` Conversation based on recent lessons · **5.2-6** · planned in Lingua 5.2
 - [x] `F0519` Conversation focused on a grammar point
-- [ ] `F0520` Conversation focused on pronunciation · **6-11**
+- [x] `F0520` Conversation focused on pronunciation · **6-11**
 - [ ] `F0521` Casual conversation with an informal persona · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0522` Formal professional conversation · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0523` Travel conversations · **5.2-6** · planned in Lingua 5.2
@@ -712,11 +712,11 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [x] `F0533` Debate practice
 - [ ] `F0534` Job interview simulations · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0535` University seminar simulations · **5.2-6** · planned in Lingua 5.2
-- [ ] `F0536` Negotiation practice · **6-11**
+- [x] `F0536` Negotiation practice · **6-11**
 - [ ] `F0537` Giving a presentation · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0538` Making a phone call · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0539` Handling an awkward situation · **5.2-6** · planned in Lingua 5.2
-- [ ] `F0540` Asking for clarification · **6-11**
+- [x] `F0540` Asking for clarification · **6-11**
 - [ ] `F0541` Expressing disagreement politely · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0542` Telling a story · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0543` Explaining an opinion · **5.2-6** · planned in Lingua 5.2
@@ -724,14 +724,14 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0545` Talking about future plans · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0546` Roleplay with a fictional character · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0547` Interactive mystery conversations · **5.2-6** · planned in Lingua 5.2
-- [ ] `F0548` Conversation with branching outcomes · **6-11**
-- [ ] `F0549` Multi-character conversations · **6-11**
-- [ ] `F0550` Group conversation simulation · **6-11**
-- [ ] `F0551` Conversations with interruptions and follow-up questions · **6-11**
-- [ ] `F0552` Conversations where the AI doesn’t automatically understand everything · **6-11**
-- [ ] `F0553` Conversation with limited target-language assistance · **6-11**
-- [ ] `F0554` Conversation where the AI uses only vocabulary the learner probably knows · **6-11**
-- [ ] `F0555` Conversation with gradual introduction of new expressions · **6-11**
+- [x] `F0548` Conversation with branching outcomes · **6-11**
+- [x] `F0549` Multi-character conversations · **6-11**
+- [x] `F0550` Group conversation simulation · **6-11**
+- [x] `F0551` Conversations with interruptions and follow-up questions · **6-11**
+- [x] `F0552` Conversations where the AI doesn’t automatically understand everything · **6-11**
+- [x] `F0553` Conversation with limited target-language assistance · **6-11**
+- [x] `F0554` Conversation where the AI uses only vocabulary the learner probably knows · **6-11**
+- [x] `F0555` Conversation with gradual introduction of new expressions · **6-11**
 
 #### 6.2 Conversation modes
 
@@ -744,40 +744,40 @@ This is where an AI-powered app can become especially valuable. Learners often h
 
 #### 6.3 Conversation feedback
 
-- [ ] `F0556` ⭐ Corrected transcript after a conversation · **6-11**
-- [ ] `F0557` ⭐ Corrections for grammatical errors · **6-11**
-- [ ] `F0558` More natural alternatives to the learner’s wording · **6-11**
-- [ ] `F0559` Vocabulary suggestions · **6-11**
-- [ ] `F0560` Suggestions for more idiomatic expressions · **6-11**
+- [x] `F0556` ⭐ Corrected transcript after a conversation · **6-11**
+- [x] `F0557` ⭐ Corrections for grammatical errors · **6-11**
+- [x] `F0558` More natural alternatives to the learner’s wording · **6-11**
+- [x] `F0559` Vocabulary suggestions · **6-11**
+- [x] `F0560` Suggestions for more idiomatic expressions · **6-11**
 - [x] `F0561` Pronunciation feedback · **6-10**
-- [ ] `F0562` Fluency feedback · **6-11**
-- [ ] `F0563` Filler-word tracking · **6-11**
-- [ ] `F0564` Repeated-word tracking · **6-11**
-- [ ] `F0565` Sentence complexity analysis · **6-11**
-- [ ] `F0566` Speaking-time analysis · **6-11**
-- [ ] `F0567` Response-length analysis · **6-11**
-- [ ] `F0568` Hesitation and pause analysis · **6-11**
-- [ ] `F0569` Self-correction tracking · **6-11**
-- [ ] `F0570` Word retrieval difficulty tracking · **6-11**
-- [ ] `F0571` Formality and register feedback · **6-11**
-- [ ] `F0572` Pragmatic appropriateness feedback · **6-11**
-- [ ] `F0573` Confidence indicators for corrections · **6-11**
-- [ ] `F0574` Separate essential errors from stylistic suggestions · **6-11** · partly there
-- [ ] `F0575` Save corrected sentences to vocabulary · **6-11** · partly there
-- [ ] `F0576` Convert mistakes into flashcards · **6-11**
+- [x] `F0562` Fluency feedback · **6-11**
+- [x] `F0563` Filler-word tracking · **6-11**
+- [x] `F0564` Repeated-word tracking · **6-11**
+- [x] `F0565` Sentence complexity analysis · **6-11**
+- [x] `F0566` Speaking-time analysis · **6-11**
+- [x] `F0567` Response-length analysis · **6-11**
+- [x] `F0568` Hesitation and pause analysis · **6-11**
+- [x] `F0569` Self-correction tracking · **6-11**
+- [x] `F0570` Word retrieval difficulty tracking · **6-11**
+- [x] `F0571` Formality and register feedback · **6-11**
+- [x] `F0572` Pragmatic appropriateness feedback · **6-11**
+- [x] `F0573` Confidence indicators for corrections · **6-11**
+- [x] `F0574` Separate essential errors from stylistic suggestions · **6-11** · partly there
+- [x] `F0575` Save corrected sentences to vocabulary · **6-11** · partly there
+- [x] `F0576` Convert mistakes into flashcards · **6-11**
 - [ ] `F0577` Generate a personalized review session · **6-16**
-- [ ] `F0578` Replay the conversation · **6-11**
-- [ ] `F0579` Listen to the learner’s own recordings · **6-11**
+- [x] `F0578` Replay the conversation · **6-11**
+- [x] `F0579` Listen to the learner’s own recordings · **6-11**
 - [x] `F0580` Compare the learner’s attempt with a model recording · **6-10**
-- [ ] `F0581` Review the conversation sentence by sentence · **6-11**
-- [ ] `F0582` Create a summary of new expressions · **6-11**
-- [ ] `F0583` Save conversation transcripts to a personal journal · **6-11**
+- [x] `F0581` Review the conversation sentence by sentence · **6-11**
+- [x] `F0582` Create a summary of new expressions · **6-11**
+- [x] `F0583` Save conversation transcripts to a personal journal · **6-11**
 
 #### 6.4 Advanced speaking features
 
 *In Lingua: The course's speaking lesson compares what you said word by word.*
 
-- [ ] `F0584` Real-time transcription · **6-11** · partly there
+- [x] `F0584` Real-time transcription · **6-11** · partly there
 - [x] `F0585` Speech-to-text practice
 - [ ] `F0586` Speech shadowing · **6-10**
 - [ ] `F0587` Repeat-after-me exercises · **6-10** · partly there
@@ -795,18 +795,18 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0599` Slow playback of model speech · **6-10**
 - [x] `F0600` Visual waveform comparison · **6-10**
 - [ ] `F0601` Spectrogram visualization · **6-10**
-- [ ] `F0602` Speech rate measurement · **6-11**
-- [ ] `F0603` Pause distribution analysis · **6-11**
+- [x] `F0602` Speech rate measurement · **6-11**
+- [x] `F0603` Pause distribution analysis · **6-11**
 - [ ] `F0604` Pronunciation diary · **6-10**
 - [ ] `F0605` Record the same passage every week · **6-10**
 - [ ] `F0606` Track pronunciation development over time · **6-10**
-- [ ] `F0607` Personalized speaking challenges · **6-11** · partly there
-- [ ] `F0608` Spontaneous 30-second speaking prompts · **6-11**
-- [ ] `F0609` One-minute monologues · **6-11**
-- [ ] `F0610` Storytelling challenges · **6-11**
-- [ ] `F0611` Picture description tasks · **6-11**
-- [ ] `F0612` Explain-a-concept challenges · **6-11**
-- [ ] `F0613` Impromptu debate prompts · **6-11**
+- [x] `F0607` Personalized speaking challenges · **6-11** · partly there
+- [x] `F0608` Spontaneous 30-second speaking prompts · **6-11**
+- [x] `F0609` One-minute monologues · **6-11**
+- [x] `F0610` Storytelling challenges · **6-11**
+- [x] `F0611` Picture description tasks · **6-11**
+- [x] `F0612` Explain-a-concept challenges · **6-11**
+- [x] `F0613` Impromptu debate prompts · **6-11**
 - [ ] `F0614` Oral examination simulations · **6-18**
 
 > A useful distinction: pronunciation feedback should help users become understandable, not pressure them to eliminate their accent. Native-like pronunciation and effective communication are not the same goal.
@@ -906,7 +906,7 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [x] `F0689` Writing timer · **6-12**
 - [x] `F0690` Offline writing journal
 - [ ] `F0691` Notebook folders and tags · **6-20** · partly there
-- [ ] `F0692` Export to Markdown, TXT or PDF · **6-24**
+- [x] `F0692` Export to Markdown, TXT or PDF · **6-24**
 - [x] `F0693` Save selected sentences to vocabulary
 - [x] `F0694` Turn corrections into flashcards
 - [x] `F0695` Compare writing samples over time · **6-12**
@@ -1264,10 +1264,10 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [ ] `F0972` Generate a personalized study plan · **6-16**
 - [x] `F0973` Recommend a next step
 - [x] `F0974` Diagnose recurring mistakes · **6-5**
-- [ ] `F0975` Review a conversation · **6-11**
+- [x] `F0975` Review a conversation · **6-11**
 - [x] `F0976` Review an essay
 - [ ] `F0977` Review a pronunciation recording · **6-10**
-- [ ] `F0978` Generate vocabulary from a conversation · **6-11**
+- [x] `F0978` Generate vocabulary from a conversation · **6-11**
 - [ ] `F0979` Turn a question into a mini-lesson · **6-15**
 - [ ] `F0980` Turn a mistake into a practice exercise · **6-16**
 - [ ] `F0981` Create analogies for difficult grammar · **6-15**
@@ -1457,7 +1457,7 @@ Think of this as a personal linguistic knowledge base.
 - [ ] `F1123` Notes about confusing expressions · **6-20**
 - [x] `F1124` Saved quotations · **6-8**
 - [x] `F1125` Notes from reading · **6-8**
-- [ ] `F1126` Notes from conversations · **6-11**
+- [x] `F1126` Notes from conversations · **6-11**
 - [x] `F1127` Personal error log · **6-5**
 - [ ] `F1128` Weekly learning reflections · **6-17**
 - [x] `F1129` Language goals
@@ -1469,7 +1469,7 @@ Think of this as a personal linguistic knowledge base.
 - [ ] `F1135` Markdown support · **6-20** · partly there
 - [ ] `F1136` Folders and tags · **6-20**
 - [ ] `F1137` Search across all notes · **6-20** · partly there
-- [ ] `F1138` Export notes · **6-24**
+- [x] `F1138` Export notes · **6-24**
 - [x] `F1139` Daily journal prompts
 - [ ] `F1140` AI-generated summaries of learning notes · **6-20**
 - [ ] `F1141` Turn notebook entries into exercises · **6-20**
@@ -1608,9 +1608,9 @@ These are integrated activities that combine skills instead of training each one
 
 - [x] `F1245` ⭐ Bilingual dictionary
 - [x] `F1246` ⭐ Monolingual dictionary
-- [ ] `F1247` Search by word, phrase or definition · **6-22** · partly there
-- [ ] `F1248` Search with spelling mistakes · **6-22**
-- [ ] `F1249` Fuzzy search · **6-22**
+- [x] `F1247` Search by word, phrase or definition · **6-22** · partly there
+- [x] `F1248` Search with spelling mistakes · **6-22**
+- [x] `F1249` Fuzzy search · **6-22**
 - [x] `F1250` Search for inflected word forms
 - [x] `F1251` Lemmatization
 - [x] `F1252` Multiple definitions
@@ -1636,22 +1636,22 @@ These are integrated activities that combine skills instead of training each one
 - [x] `F1272` Slang labels · **6-1** · partly there
 - [x] `F1273` Corpus-based examples
 - [x] `F1274` Sentence translation
-- [ ] `F1275` Reverse dictionary, searching by concept · **6-22**
-- [ ] `F1276` Search for a word from its definition · **6-22**
-- [ ] `F1277` Search for rhymes · **6-22**
-- [ ] `F1278` Search for words with similar sounds · **6-22**
-- [ ] `F1279` Search for words with a particular prefix or suffix · **6-22**
-- [ ] `F1280` Search by grammatical category · **6-22**
+- [x] `F1275` Reverse dictionary, searching by concept · **6-22**
+- [x] `F1276` Search for a word from its definition · **6-22**
+- [x] `F1277` Search for rhymes · **6-22**
+- [x] `F1278` Search for words with similar sounds · **6-22**
+- [x] `F1279` Search for words with a particular prefix or suffix · **6-22**
+- [x] `F1280` Search by grammatical category · **6-22**
 - [x] `F1281` Search across personal vocabulary
-- [ ] `F1282` Search across saved texts · **6-22**
-- [ ] `F1283` Search across notes and flashcards · **6-22** · partly there
+- [x] `F1282` Search across saved texts · **6-22**
+- [x] `F1283` Search across notes and flashcards · **6-22** · partly there
 - [x] `F1284` Dictionary history
-- [ ] `F1285` Favorites and bookmarks · **6-22**
+- [x] `F1285` Favorites and bookmarks · **6-22**
 - [x] `F1286` Offline dictionary
-- [ ] `F1287` Custom dictionary entries · **6-22**
-- [ ] `F1288` Multiple dictionaries for the same language · **6-22**
-- [ ] `F1289` Compare definitions from different sources · **6-22**
-- [ ] `F1290` Report incorrect definitions or examples · **6-22**
+- [x] `F1287` Custom dictionary entries · **6-22**
+- [x] `F1288` Multiple dictionaries for the same language · **6-22**
+- [x] `F1289` Compare definitions from different sources · **6-22**
+- [x] `F1290` Report incorrect definitions or examples · **6-22**
 
 ## 19 · Language-specific tools
 
@@ -1875,32 +1875,32 @@ Different languages require different learning interfaces. This could become a m
 
 - [x] `F1471` Import vocabulary from CSV
 - [x] `F1472` Import flashcards from Anki
-- [ ] `F1473` Import supported Quizlet exports · **6-24** · partly there
+- [x] `F1473` Import supported Quizlet exports · **6-24** · partly there
 - [x] `F1474` Import plain text
-- [ ] `F1475` Import Markdown · **6-24** · partly there
+- [x] `F1475` Import Markdown · **6-24** · partly there
 - [x] `F1476` Import TXT documents
 - [x] `F1477` Import PDFs
 - [x] `F1478` Import EPUB files where supported
 - [x] `F1479` Import subtitles
-- [ ] `F1480` Import transcripts · **6-24** · partly there
+- [x] `F1480` Import transcripts · **6-24** · partly there
 - [x] `F1481` Import word lists · **6-2** · partly there
-- [ ] `F1482` Import personal dictionaries · **6-22**
-- [ ] `F1483` Import grammar notes · **6-24**
+- [x] `F1482` Import personal dictionaries · **6-22**
+- [x] `F1483` Import grammar notes · **6-24**
 - [x] `F1484` Import from a clipboard
 - [x] `F1485` Import a web article
 - [ ] `F1486` Import text through a browser extension · **6-24** · partly there
 - [x] `F1487` Import a document and extract vocabulary · **6-2** · partly there
 - [x] `F1488` Import audio files
 - [ ] `F1489` Import video transcripts · **5.2-4** · planned in Lingua 5.2
-- [ ] `F1490` Export vocabulary to CSV · **6-24**
-- [ ] `F1491` Export flashcards to Anki-compatible formats · **6-24**
-- [ ] `F1492` Export notes to Markdown · **6-24**
-- [ ] `F1493` Export vocabulary decks · **6-24**
-- [ ] `F1494` Export learning statistics · **6-24**
-- [ ] `F1495` Export reading highlights · **6-24**
-- [ ] `F1496` Export conversation transcripts · **6-24**
-- [ ] `F1497` Export a personal phrasebook · **6-24**
-- [ ] `F1498` Export progress reports · **6-24** · partly there
+- [x] `F1490` Export vocabulary to CSV · **6-24**
+- [x] `F1491` Export flashcards to Anki-compatible formats · **6-24**
+- [x] `F1492` Export notes to Markdown · **6-24**
+- [x] `F1493` Export vocabulary decks · **6-24**
+- [x] `F1494` Export learning statistics · **6-24**
+- [x] `F1495` Export reading highlights · **6-24**
+- [x] `F1496` Export conversation transcripts · **6-24**
+- [x] `F1497` Export a personal phrasebook · **6-24**
+- [x] `F1498` Export progress reports · **6-24** · partly there
 - [x] `F1499` Backup and restore
 - [ ] `F1500` Cloud synchronization · **6-27** · partly there
 - [x] `F1501` Multi-device synchronization
@@ -1911,10 +1911,10 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1506` Text-to-speech integration
 - [x] `F1507` Speech-to-text integration
 - [x] `F1508` Dictionary API integration
-- [ ] `F1509` Calendar integration for study planning · **6-24**
+- [x] `F1509` Calendar integration for study planning · **6-24**
 - [ ] `F1510` Reminder integration · **6-17**
-- [ ] `F1511` Integration with note-taking tools · **6-24**
-- [ ] `F1512` Integration with e-readers where supported · **6-24**
+- [x] `F1511` Integration with note-taking tools · **6-24**
+- [x] `F1512` Integration with e-readers where supported · **6-24**
 
 ## 24 · Mobile, desktop and accessibility
 
@@ -1930,34 +1930,34 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1520` Background audio
 - [x] `F1521` Lock-screen audio controls
 - [ ] `F1522` Home-screen widgets · **6-27** · needs the user's word
-- [ ] `F1523` Quick vocabulary review · **6-25** · partly there
-- [ ] `F1524` Daily word widget · **6-25**
+- [x] `F1523` Quick vocabulary review · **6-25**
+- [x] `F1524` Daily word widget · **6-25**
 - [ ] `F1525` Push notifications · **6-17**
 - [x] `F1526` Keyboard shortcuts
 - [x] `F1527` Dark mode
 - [x] `F1528` Light mode
 - [x] `F1529` Warm-paper reading mode
 - [x] `F1530` Font-size adjustment
-- [ ] `F1531` Dyslexia-friendly font options · **6-25** · partly there
+- [x] `F1531` Dyslexia-friendly font options · **6-25**
 - [x] `F1532` Adjustable line spacing
-- [ ] `F1533` Screen-reader support · **6-25** · partly there
-- [ ] `F1534` High-contrast mode · **6-25**
+- [x] `F1533` Screen-reader support · **6-25**
+- [x] `F1534` High-contrast mode · **6-25**
 - [x] `F1535` Reduced-motion mode
-- [ ] `F1536` Color-blind-friendly indicators · **6-25**
+- [x] `F1536` Color-blind-friendly indicators · **6-25**
 - [x] `F1537` Captions for audio and video
 - [x] `F1538` Adjustable playback speed
-- [ ] `F1539` VoiceOver support · **6-25** · partly there
+- [x] `F1539` VoiceOver support · **6-25**
 - [ ] `F1540` TalkBack support · **6-27** · needs the user's word
-- [ ] `F1541` Keyboard-only navigation · **6-25** · partly there
+- [x] `F1541` Keyboard-only navigation · **6-25**
 - [x] `F1542` Data export
 - [x] `F1543` Account deletion
-- [ ] `F1544` Privacy controls · **6-25** · partly there
+- [x] `F1544` Privacy controls · **6-25**
 - [x] `F1545` Synchronization status
-- [ ] `F1546` Storage management · **6-25** · partly there
-- [ ] `F1547` Battery-efficient audio · **6-25** · partly there
+- [x] `F1546` Storage management · **6-25**
+- [x] `F1547` Battery-efficient audio · **6-25**
 - [x] `F1548` Local data caching
-- [ ] `F1549` Clear error messages · **6-25** · partly there
-- [ ] `F1550` Undo for destructive actions · **6-25** · partly there
+- [x] `F1549` Clear error messages · **6-25**
+- [x] `F1550` Undo for destructive actions · **6-25**
 
 ## 25 · Advanced and experimental features
 
@@ -2121,7 +2121,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [ ] `F1612` Community decks and courses · **6-27** · needs the user's word
 - [ ] `F1613` Language exchange · **6-27** · needs the user's word
 - [ ] `F1614` Collaborative learning · **6-27** · needs the user's word
-- [ ] `F1615` Advanced integrations · **6-24** · partly there
+- [x] `F1615` Advanced integrations · **6-24** · partly there
 - [ ] `F1616` Offline-first mobile and desktop experiences · **6-27** · partly there
 - [ ] `F1617` Specialized exam preparation · **6-18**
 - [ ] `F1618` Advanced phonetics and linguistic analysis · **6-10**

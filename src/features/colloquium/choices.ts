@@ -1,7 +1,11 @@
 // Sermo's choices, remembered on this device (5.2-6), and when an AI was last opened from it (Home asks).
 
+import type { ConversationMode, ConversationStyles } from '@/core/colloquium/prompts';
+
 export interface SermoChoices {
   mode: 'voice' | 'text';
+  conversationMode?: ConversationMode;
+  styles?: ConversationStyles;
   correct: 'live' | 'end' | 'off';
   help: boolean;
   slow?: boolean;
@@ -11,7 +15,7 @@ export interface SermoChoices {
 const KEY = 'lingua-sermo';
 const OPENED = 'lingua-sermo-opened';
 
-export const DEFAULT_CHOICES: SermoChoices = { mode: 'voice', correct: 'live', help: true, minutes: 10 };
+export const DEFAULT_CHOICES: SermoChoices = { mode: 'voice', conversationMode: 'scenario', styles: {}, correct: 'live', help: true, minutes: 10 };
 
 export function loadChoices(): SermoChoices {
   try {

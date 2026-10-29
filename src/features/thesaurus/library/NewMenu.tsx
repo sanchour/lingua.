@@ -11,7 +11,7 @@ const OPTIONS: Array<{ action: NewAction; icon: LucideIcon; title: string; detai
   { action: 'folder', icon: FolderPlus, title: 'New folder', detail: 'Group decks together' },
   { action: 'list', icon: ListPlus, title: 'From a list or text', detail: 'Paste words, or a text to pick words from' },
   { action: 'make', icon: Sparkles, title: 'Made by Max', detail: 'A story, sentences, a dialogue or a word list' },
-  { action: 'csv', icon: FileSpreadsheet, title: 'Import CSV', detail: 'A spreadsheet of words and meanings' },
+  { action: 'csv', icon: FileSpreadsheet, title: 'Import CSV, Quizlet, Markdown or Kindle', detail: 'Spreadsheets, Quizlet sets, Markdown notes, or My Clippings.txt' },
   { action: 'apkg', icon: Package, title: 'Import Anki deck', detail: 'An .apkg file, with its progress' },
 ];
 
