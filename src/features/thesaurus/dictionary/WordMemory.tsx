@@ -29,7 +29,7 @@ export const KIND_ICONS: Record<SightingKind, LucideIcon> = {
   cards: Layers,
 };
 
-type Strength = 'all' | 'inbox' | 'learning' | 'known' | 'met' | 'ignored';
+type Strength = 'all' | 'inbox' | 'learning' | 'known' | 'met' | 'ignored' | 'favourite';
 const STRENGTH_LABEL: Record<'learning' | 'known' | 'met', string> = { learning: 'Learning', known: 'Known', met: 'Looked up' };
 
 export interface RememberedRow extends Remembered {
@@ -38,6 +38,8 @@ export interface RememberedRow extends Remembered {
   inbox: InboxState;
   gloss?: string;
   theme?: string;
+  /** The learner starred it (6-1). */
+  favourite?: boolean;
 }
 
 export const ago = (ms: number) => {
@@ -63,7 +65,8 @@ export function useWordMemory(lang: string): RememberedRow[] | undefined {
       const inbox = inboxStateOf([...new Set([w.key, ...w.forms])].map((f) => stateOf.get(`${lang}:${f}`)));
       const strength = forms.some((s) => s?.state === 2) ? 'learning' : forms.some((s) => s?.state === 1) ? 'known' : 'met';
       const gloss = forms.find((s) => s?.gloss)?.gloss ?? freq[i]?.gloss;
-      return { ...w, strength, inbox, gloss, theme: themeOf.get(w.lemma ?? w.key) ?? themeOf.get(w.forms[0]) };
+      const favourite = forms.some((s) => s?.favourite === 1);
+      return { ...w, strength, inbox, gloss, favourite, theme: themeOf.get(w.lemma ?? w.key) ?? themeOf.get(w.forms[0]) };
     });
   }, [lang]);
 }
@@ -83,13 +86,14 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
   const q = query.trim().toLocaleLowerCase(lang);
   const shown = rows.filter(
     (r) =>
-      (strength === 'all' ? r.inbox !== 'ignored' : strength === 'inbox' ? r.inbox === 'new' : strength === 'ignored' ? r.inbox === 'ignored' : r.strength === strength && r.inbox === 'kept') &&
+      (strength === 'all' ? r.inbox !== 'ignored' : strength === 'favourite' ? Boolean(r.favourite) && r.inbox !== 'ignored' : strength === 'inbox' ? r.inbox === 'new' : strength === 'ignored' ? r.inbox === 'ignored' : r.strength === strength && r.inbox === 'kept') &&
       (kind === 'all' || r.kinds.has(kind)) &&
       (theme === 'all' || r.theme === theme) &&
       (!q || r.surface.toLocaleLowerCase(lang).includes(q) || r.forms.some((f) => f.includes(q)) || r.gloss?.toLowerCase().includes(q)),
   );
-  const counts = { inbox: 0, learning: 0, known: 0, met: 0, ignored: 0 };
+  const counts = { inbox: 0, learning: 0, known: 0, met: 0, ignored: 0, favourite: 0 };
   for (const r of rows) {
+    if (r.favourite && r.inbox !== 'ignored') counts.favourite++;
     if (r.inbox === 'new') counts.inbox++;
     else if (r.inbox === 'ignored') counts.ignored++;
     else counts[r.strength]++;
@@ -127,6 +131,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
             ['learning', `Learning ${counts.learning}`],
             ['known', `Known ${counts.known}`],
             ['met', `Looked up ${counts.met}`],
+            ...(counts.favourite ? [['favourite', `Favourites ${counts.favourite}`]] : []),
             ...(counts.ignored ? [['ignored', `Ignored ${counts.ignored}`]] : []),
           ] as Array<[Strength, string]>
         ).map(([value, label]) => (

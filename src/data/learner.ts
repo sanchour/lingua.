@@ -94,3 +94,9 @@ export function useSkillBalance(lang: string) {
     return { balance: skillBalance(days), stuck: await rec.recognisedNotRecalled(lang, 8) };
   }, [lang]);
 }
+
+/** The wrong rows of a language, newest first (for the error log in Ratio). Read here, beside the table, like every question the record answers. */
+export async function recentWrong(lang: string, limit = 120, database: LinguaDB = db): Promise<EvidenceRow[]> {
+  const rows = await database.evidence.where('[lang+at]').between([lang, Dexie.minKey], [lang, Dexie.maxKey]).reverse().filter((r) => r.outcome === 'wrong').limit(limit).toArray();
+  return rows;
+}

@@ -144,7 +144,7 @@ export default function MakePage() {
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 maxLength={80}
-                placeholder="a trip to the market, my first job…"
+                placeholder="a trip to the market, or a goal: a job interview in Spanish…"
                 className="mt-1.5 h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[15px] font-medium tracking-normal text-ink normal-case outline-none focus:border-accent"
               />
             </label>

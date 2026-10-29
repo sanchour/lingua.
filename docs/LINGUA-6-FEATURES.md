@@ -148,13 +148,13 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0064` Clone and modify shared decks · **6-27** · partly there
 - [x] `F0065` Generate decks from a text, document or book · **6-2** · partly there
 - [x] `F0066` Generate decks from a video transcript · **6-2** · partly there
-- [ ] `F0067` Generate decks from a conversation · **6-2**
+- [x] `F0067` Generate decks from a conversation · **6-2**
 - [x] `F0068` Generate decks from a list of unknown words · **6-2** · partly there
 - [ ] `F0069` Generate decks from exam vocabulary · **6-18**
 - [x] `F0070` Generate decks from a topic or situation · **6-2** · partly there
 - [x] `F0071` Generate decks from a CEFR level
 - [x] `F0072` Generate decks from frequency lists
-- [ ] `F0073` Generate decks from a personal goal · **6-2**
+- [x] `F0073` Generate decks from a personal goal · **6-2**
 - [x] `F0074` Automatically extract vocabulary from reading material · **6-2** · partly there
 - [x] `F0075` Automatically add unfamiliar words encountered in the app
 - [x] `F0076` Save words to a central vocabulary inbox · **6-2** · partly there
@@ -166,7 +166,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0082` Suggest missing example sentences · **6-2** · partly there
 - [x] `F0083` Suggest missing audio or pronunciation data · **6-2** · partly there
 - [x] `F0084` Mark a word as important · **6-2**
-- [ ] `F0085` Pin favorite words · **6-2**
+- [x] `F0085` Pin favorite words · **6-2**
 - [x] `F0086` Archive mastered vocabulary without deleting it · **6-2** · partly there
 
 #### 2.3 Spaced repetition and memory
@@ -224,7 +224,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0128` Roots and stems · **6-1**
 - [x] `F0129` Prefixes and suffixes · **6-1**
 - [x] `F0130` Inflectional forms
-- [ ] `F0131` Derivational forms · **6-1**
+- [x] `F0131` Derivational forms · **6-1**
 - [x] `F0132` Singular and plural forms
 - [x] `F0133` Gender and grammatical class
 - [x] `F0134` Countable versus uncountable nouns · **6-1**
@@ -1458,7 +1458,7 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1124` Saved quotations · **6-8**
 - [x] `F1125` Notes from reading · **6-8**
 - [ ] `F1126` Notes from conversations · **6-11**
-- [ ] `F1127` Personal error log · **6-5**
+- [x] `F1127` Personal error log · **6-5**
 - [ ] `F1128` Weekly learning reflections · **6-17**
 - [x] `F1129` Language goals
 - [ ] `F1130` Book and media notes · **6-20**

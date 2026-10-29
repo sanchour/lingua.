@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseWordList, wordsFromCounts, wordsFromText } from './deckFrom';
+import { parseWordList, wordsFromChat, wordsFromCounts, wordsFromText } from './deckFrom';
 
 describe('a deck from a list', () => {
   it('splits a line at the first separator, drops blanks and doubles', () => {
@@ -25,5 +25,15 @@ describe('a deck from a text', () => {
 describe('a deck from a text already in the library', () => {
   it('takes the counted words that are unknown, the most used first', () => {
     expect(wordsFromCounts(['el', 'gato', 'perro', 'a', '2024', 'sol'], [9, 2, 5, 4, 7, 2], new Set(['el'])).map((d) => d.term)).toEqual(['perro', 'gato', 'sol']);
+  });
+});
+
+describe('a deck from a conversation', () => {
+  it('takes the words the AI marked first, with their meaning, then the other unknown words, without doubles', () => {
+    const messages = [{ text: 'Hola, ¿qué tal? Quiero un helado.', words: [{ word: 'helado', meaning: 'ice cream' }] }, { text: 'Me gusta el helado de fresa.' }];
+    const d = wordsFromChat(messages, 'es', new Set(['hola', 'me', 'el', 'de', 'un', 'qué']));
+    expect(d[0]).toEqual({ term: 'helado', meaning: 'ice cream' });
+    expect(d.filter((x) => x.term.toLowerCase() === 'helado')).toHaveLength(1);
+    expect(d.map((x) => x.term)).toContain('fresa');
   });
 });

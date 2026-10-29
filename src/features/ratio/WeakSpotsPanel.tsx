@@ -11,7 +11,7 @@ import { useWeakSpots } from '@/data/learner';
 import { Panel } from './common';
 
 /** What a spot is about, in words: the word, the grammar topic's title, or the sound. */
-function nameOf(item: EvidenceItem, grammar: Grammar | null | undefined): string {
+export function nameOf(item: EvidenceItem, grammar: Grammar | null | undefined): string {
   switch (item.type) {
     case 'word':
       return item.wordId.split(':').slice(1).join(':');

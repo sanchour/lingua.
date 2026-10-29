@@ -27,6 +27,25 @@ export function parseWordList(text: string): Draft[] {
   return out;
 }
 
+/** The words of a conversation: the ones the AI marked as worth keeping (with their meaning) first, then the other unknown words of what was said. */
+export function wordsFromChat(messages: ReadonlyArray<{ text: string; words?: Array<{ word: string; meaning: string }> }>, lang: string, known: ReadonlySet<string>, limit = 60): Draft[] {
+  const seen = new Set<string>();
+  const out: Draft[] = [];
+  for (const m of messages) {
+    for (const w of m.words ?? []) {
+      const key = w.word.trim().toLocaleLowerCase();
+      if (key && !seen.has(key)) {
+        seen.add(key);
+        out.push({ term: w.word.trim(), meaning: w.meaning.trim() });
+      }
+    }
+  }
+  for (const d of wordsFromText(messages.map((m) => m.text).join('\n'), lang, known, limit)) {
+    if (!seen.has(d.term.toLocaleLowerCase())) out.push(d);
+  }
+  return out.slice(0, limit);
+}
+
 /** The unknown words of a text the library has already counted (norms and how often each came), most used first. */
 export function wordsFromCounts(norms: readonly string[], counts: readonly number[], known: ReadonlySet<string>, limit = 60): Draft[] {
   return norms

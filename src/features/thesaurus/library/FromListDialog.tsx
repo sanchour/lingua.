@@ -4,17 +4,19 @@ import { X } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/data/db';
 import { useLibrary } from '@/data/library';
-import { parseWordList, wordsFromCounts, wordsFromText } from '@/core/srs/deckFrom';
+import { parseWordList, wordsFromChat, wordsFromCounts, wordsFromText } from '@/core/srs/deckFrom';
+import { useChats } from '@/data/chats';
 import type { Draft } from '@/core/srs/deckFrom';
 import { deckFromDrafts, knownNorms } from '@/data/deckTools';
 import { Button, Dialog, Select } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { lookUpFull } from '@/services/dictionary/fullDict';
 
-type Source = 'list' | 'text' | 'library';
+type Source = 'list' | 'text' | 'library' | 'chat';
 const HELP: Record<Source, string> = {
   list: 'One word per line. Add its meaning after a tab, “=”, “-” or “;”: casa = house.',
   text: 'Paste a text, a chapter, a song or a conversation. The words you do not know yet, the most used first, become the cards.',
+  chat: 'Pick a conversation you had in Colloquium: the words the AI marked, then the other words you did not know yet, become the cards.',
   library: 'Pick a book, article, transcript or song you already have in Codex: its words you do not know yet, the most used first, become the cards.',
 };
 
@@ -24,6 +26,8 @@ export function FromListDialog({ open, lang, onClose, onMade }: { open: boolean;
   const [name, setName] = useState('');
   const [textId, setTextId] = useState('');
   const library = useLibrary(lang);
+  const chats = useChats(lang);
+  const [chatId, setChatId] = useState('');
   const [known, setKnown] = useState<ReadonlySet<string>>(new Set());
   const [meanings, setMeanings] = useState<Record<string, string>>({});
   const [dropped, setDropped] = useState<ReadonlySet<string>>(new Set());
@@ -39,8 +43,8 @@ export function FromListDialog({ open, lang, onClose, onMade }: { open: boolean;
 
   const vocab = useLiveQuery(async () => (textId ? await db.textVocab.get(textId) : undefined), [textId]);
   const drafts = useMemo<Draft[]>(
-    () => (source === 'list' ? parseWordList(text) : source === 'library' ? (vocab ? wordsFromCounts(vocab.norms, vocab.counts, known) : []) : wordsFromText(text, lang, known)),
-    [source, text, lang, known, vocab],
+    () => (source === 'list' ? parseWordList(text) : source === 'library' ? (vocab ? wordsFromCounts(vocab.norms, vocab.counts, known) : []) : source === 'chat' ? wordsFromChat(chats?.find((c) => c.id === chatId)?.messages ?? [], lang, known) : wordsFromText(text, lang, known)),
+    [source, text, lang, known, vocab, chats, chatId],
   );
   // A word without a meaning gets the dictionary's first one, when the full dictionary is on the device.
   useEffect(() => {
@@ -62,7 +66,7 @@ export function FromListDialog({ open, lang, onClose, onMade }: { open: boolean;
   const kept = drafts.filter((d) => !dropped.has(d.term)).map((d) => ({ ...d, meaning: d.meaning || meanings[d.term] || '' }));
   const make = async () => {
     setBusy(true);
-    const id = await deckFromDrafts(lang, name.trim() || (source === 'list' ? 'My list' : source === 'library' ? (library?.find((t) => t.id === textId)?.title ?? 'From a text') : 'From a text'), kept);
+    const id = await deckFromDrafts(lang, name.trim() || (source === 'list' ? 'My list' : source === 'library' ? (library?.find((t) => t.id === textId)?.title ?? 'From a text') : source === 'chat' ? (chats?.find((c) => c.id === chatId)?.title ?? 'From a conversation') : 'From a text'), kept);
     setBusy(false);
     onMade(id);
     onClose();
@@ -87,7 +91,7 @@ export function FromListDialog({ open, lang, onClose, onMade }: { open: boolean;
     >
       <div className="space-y-3 pt-2">
         <div className="flex gap-2" role="tablist" aria-label="Where the words come from">
-          {(['list', 'text', 'library'] as const).map((s) => (
+          {(['list', 'text', 'library', 'chat'] as const).map((s) => (
             <button
               key={s}
               type="button"
@@ -96,12 +100,19 @@ export function FromListDialog({ open, lang, onClose, onMade }: { open: boolean;
               onClick={() => setSource(s)}
               className={cx('rounded-full border px-3.5 py-1.5 text-[13.5px] font-semibold', source === s ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}
             >
-              {s === 'list' ? 'A list of words' : s === 'text' ? 'A text' : 'From my library'}
+              {s === 'list' ? 'A list of words' : s === 'text' ? 'A text' : s === 'library' ? 'From my library' : 'A conversation'}
             </button>
           ))}
         </div>
         <p className="text-[13.5px] text-ink-soft">{HELP[source]}</p>
-        {source === 'library' ? (
+        {source === 'chat' ? (
+          <Select
+            label="Conversation"
+            value={chatId}
+            onChange={setChatId}
+            options={[{ value: '', label: chats?.length ? 'Choose a conversation…' : 'No conversations yet', disabled: true }, ...(chats ?? []).map((c) => ({ value: c.id, label: c.title }))]}
+          />
+        ) : source === 'library' ? (
           <Select
             label="Text"
             value={textId}

@@ -124,7 +124,8 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
   const synRanks = useLiveQuery(async () => (await db.frequency.bulkGet(synAll.map((w) => `${lang}:${normalizeWord(w, lang)}`))).map((r) => r?.rank ?? Infinity), [lang, row.key]);
   const syn = synRanks ? synAll.map((w, i) => ({ w, r: synRanks[i] ?? Infinity })).sort((a, b) => a.r - b.r).map((x) => x.w).slice(0, 14) : synAll.slice(0, 14);
   const ant = [...new Set(row.entries.flatMap((e) => [...(e.ant ?? []), ...e.senses.flatMap((s) => s.ant ?? [])]))].slice(0, 10);
-  const derived = [...new Set(row.entries.flatMap((e) => [...(e.derived ?? []), ...(e.related ?? [])]))].slice(0, 16);
+  const made = [...new Set(row.entries.flatMap((e) => e.derived ?? []))].slice(0, 16);
+  const derived = [...new Set(row.entries.flatMap((e) => e.related ?? []))].filter((w) => !made.includes(w)).slice(0, 16);
   const ety = row.entries.find((e) => e.ety)?.ety;
   const hom = [...new Set(row.entries.flatMap((e) => e.hom ?? []))];
   const hasOrigin = row.entries.some((e) => e.parts || e.root || e.cog);
@@ -284,6 +285,11 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
         {row.confused && row.confused.length > 0 && (
           <Side title="Easily confused with">
             <WordLinks lang={lang} words={row.confused} />
+          </Side>
+        )}
+        {made.length > 0 && (
+          <Side title="Made from this word">
+            <WordLinks lang={lang} words={made} />
           </Side>
         )}
         {derived.length > 0 && (
