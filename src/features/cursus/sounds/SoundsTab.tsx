@@ -8,7 +8,9 @@ import type { Consonant, Sound, Tone, Vowel } from '@/core/sounds';
 import { SpeakButton } from '@/features/speech/SpeakButton';
 import { cx } from '@/lib/cx';
 import { MinimalPairs } from './MinimalPairs';
+import { PronunciationDiary } from './PronunciationDiary';
 import { RecordCompare } from './RecordCompare';
+import { StressDrill } from './StressDrill';
 
 const key = (s: Sound) => `${s.kind}:${s.ipa}`;
 
@@ -197,6 +199,8 @@ export function SoundsTab() {
           </dl>
         </section>
         <MinimalPairs lang={lang} />
+        <StressDrill lang={lang} />
+        <PronunciationDiary lang={lang} />
         <RecordCompare lang={lang} words={system.sounds.flatMap((s) => s.words.map(([w]) => w)).filter((w) => /^[\p{L}\p{M}]+$/u.test(w)).slice(0, 12)} />
       </div>
       {selected && <Detail key={key(selected)} sound={selected} lang={lang} />}

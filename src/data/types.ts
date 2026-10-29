@@ -587,7 +587,8 @@ export interface SpeechRow {
 
 export interface BlobRow {
   id: string;
-  kind: 'audio' | 'video' | 'image' | 'cover';
+  /** `recording`: the learner's own voice, in the pronunciation diary (6-10); it stays on the device and can be deleted. */
+  kind: 'audio' | 'video' | 'image' | 'cover' | 'recording';
   mime: string;
   size: number;
   blob: Blob;

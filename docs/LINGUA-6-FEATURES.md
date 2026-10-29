@@ -784,7 +784,7 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0588` Simultaneous speech imitation · **6-10**
 - [x] `F0589` Pronunciation recording comparisons · **6-10**
 - [ ] `F0590` Phoneme-level pronunciation feedback · **6-10**
-- [ ] `F0591` Word stress detection · **6-10**
+- [x] `F0591` Word stress detection · **6-10**
 - [ ] `F0592` Sentence stress detection · **6-10**
 - [ ] `F0593` Rhythm and intonation analysis · **6-10**
 - [x] `F0594` Tone recognition for tonal languages · **6-10**
@@ -797,9 +797,9 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0601` Spectrogram visualization · **6-10**
 - [x] `F0602` Speech rate measurement · **6-11**
 - [x] `F0603` Pause distribution analysis · **6-11**
-- [ ] `F0604` Pronunciation diary · **6-10**
-- [ ] `F0605` Record the same passage every week · **6-10**
-- [ ] `F0606` Track pronunciation development over time · **6-10**
+- [x] `F0604` Pronunciation diary · **6-10**
+- [x] `F0605` Record the same passage every week · **6-10**
+- [x] `F0606` Track pronunciation development over time · **6-10**
 - [x] `F0607` Personalized speaking challenges · **6-11** · partly there
 - [x] `F0608` Spontaneous 30-second speaking prompts · **6-11**
 - [x] `F0609` One-minute monologues · **6-11**
@@ -961,12 +961,12 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [ ] `F0730` Identify the incorrect pronunciation · **6-10**
 - [x] `F0731` Read a word aloud
 - [x] `F0732` Read a sentence aloud
-- [ ] `F0733` Read a paragraph aloud · **6-10**
+- [x] `F0733` Read a paragraph aloud · **6-10**
 - [ ] `F0734` Shadow an audio recording · **6-10**
 - [ ] `F0735` Practice specific phonemes · **6-10**
 - [ ] `F0736` Practice consonant clusters · **6-10**
 - [ ] `F0737` Practice difficult syllables · **6-10**
-- [ ] `F0738` Practice word stress · **6-10**
+- [x] `F0738` Practice word stress · **6-10**
 - [ ] `F0739` Practice sentence stress · **6-10**
 - [ ] `F0740` Practice intonation patterns · **6-10**
 - [ ] `F0741` Practice speaking speed · **6-10**
@@ -975,8 +975,8 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [ ] `F0744` Practice unfamiliar letter combinations · **6-10**
 - [ ] `F0745` Pronunciation drills based on personal errors · **6-10**
 - [ ] `F0746` Randomized pronunciation tests · **6-10**
-- [ ] `F0747` Weekly pronunciation recordings · **6-10**
-- [ ] `F0748` Pronunciation progress history · **6-10**
+- [x] `F0747` Weekly pronunciation recordings · **6-10**
+- [x] `F0748` Pronunciation progress history · **6-10**
 - [x] `F0749` Feedback on intelligibility · **6-10**
 - [ ] `F0750` Visual speech feedback where technically supported · **6-10**
 
@@ -1266,7 +1266,7 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [x] `F0974` Diagnose recurring mistakes · **6-5**
 - [x] `F0975` Review a conversation · **6-11**
 - [x] `F0976` Review an essay
-- [ ] `F0977` Review a pronunciation recording · **6-10**
+- [x] `F0977` Review a pronunciation recording · **6-10**
 - [x] `F0978` Generate vocabulary from a conversation · **6-11**
 - [ ] `F0979` Turn a question into a mini-lesson · **6-15**
 - [ ] `F0980` Turn a mistake into a practice exercise · **6-16**
