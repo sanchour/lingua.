@@ -356,7 +356,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [ ] `F0241` Correct a grammatical mistake · **6-4**
 - [x] `F0242` Identify the error in a sentence
 - [ ] `F0243` Rewrite an incorrect sentence · **6-4**
-- [ ] `F0244` Transform singular into plural · **6-4**
+- [x] `F0244` Transform singular into plural · **6-4**
 - [ ] `F0245` Transform present into past · **6-4**
 - [ ] `F0246` Transform active into passive · **6-4**
 - [ ] `F0247` Transform direct into reported speech · **6-4**
@@ -1216,8 +1216,8 @@ This is the structured side of the app. Learners need a route through the materi
 - [ ] `F0933` Audio repetition · **6-10** · partly there
 - [x] `F0934` Interactive reading
 - [x] `F0935` Inline dictionary lookup
-- [ ] `F0936` Tap-to-reveal hints · **6-4**
-- [ ] `F0937` Progressive hints · **6-4**
+- [x] `F0936` Tap-to-reveal hints · **6-4**
+- [x] `F0937` Progressive hints · **6-4**
 - [ ] `F0938` Error correction · **6-4**
 - [x] `F0939` Short written responses
 - [x] `F0940` Open-ended responses

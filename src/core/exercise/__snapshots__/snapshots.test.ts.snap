@@ -1,0 +1,860 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Ludus plans, as they were before the engine > a lesson with every extra off 1`] = `
+[
+  {
+    "answer": 1,
+    "card": "6",
+    "kind": "choose-term",
+    "options": [
+      "gato",
+      "grande",
+      "comer",
+      "perro",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "3",
+    "kind": "truefalse",
+    "options": [
+      "Yes",
+      "No",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "1",
+    "kind": "choose-term",
+    "options": [
+      "comer",
+      "perro",
+      "gato",
+      "casa",
+    ],
+  },
+  {
+    "answer": 0,
+    "card": "4",
+    "kind": "choose-meaning",
+    "options": [
+      "to eat",
+      "dog",
+      "cat",
+      "to drink",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "2",
+    "kind": "truefalse",
+    "options": [
+      "Yes",
+      "No",
+    ],
+  },
+  {
+    "answer": 2,
+    "card": "5",
+    "kind": "choose-meaning",
+    "options": [
+      "to eat",
+      "dog",
+      "to drink",
+      "cat",
+    ],
+  },
+  {
+    "answer": 0,
+    "card": "5",
+    "kind": "choose-term",
+    "options": [
+      "beber",
+      "casa",
+      "perro",
+      "comer",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "2",
+    "kind": "cloze",
+    "options": [
+      "perro",
+      "gato",
+      "casa",
+      "beber",
+    ],
+  },
+]
+`;
+
+exports[`Ludus plans, as they were before the engine > a lesson, seed 1 1`] = `
+[
+  {
+    "answer": undefined,
+    "card": [
+      "2",
+      "6",
+      "4",
+      "5",
+      "3",
+    ],
+    "kind": "match",
+    "options": undefined,
+  },
+  {
+    "answer": undefined,
+    "card": "4",
+    "kind": "type",
+    "options": undefined,
+  },
+  {
+    "answer": 2,
+    "card": "6",
+    "kind": "listen",
+    "options": [
+      "casa",
+      "comer",
+      "grande",
+      "perro",
+    ],
+  },
+  {
+    "answer": [
+      "El",
+      "perro",
+      "duerme",
+      "en",
+      "casa",
+    ],
+    "card": "1",
+    "kind": "dictation",
+    "options": undefined,
+  },
+  {
+    "answer": undefined,
+    "card": "3",
+    "kind": "type",
+    "options": undefined,
+  },
+  {
+    "answer": 0,
+    "card": "2",
+    "kind": "choose-term",
+    "options": [
+      "gato",
+      "perro",
+      "casa",
+      "comer",
+    ],
+  },
+  {
+    "answer": 0,
+    "card": "5",
+    "kind": "listen",
+    "options": [
+      "beber",
+      "gato",
+      "casa",
+      "comer",
+    ],
+  },
+]
+`;
+
+exports[`Ludus plans, as they were before the engine > a lesson, seed 7 1`] = `
+[
+  {
+    "answer": undefined,
+    "card": [
+      "4",
+      "5",
+      "3",
+      "2",
+      "6",
+    ],
+    "kind": "match",
+    "options": undefined,
+  },
+  {
+    "answer": 0,
+    "card": "2",
+    "kind": "choose-term",
+    "options": [
+      "gato",
+      "beber",
+      "perro",
+      "casa",
+    ],
+  },
+  {
+    "answer": undefined,
+    "card": "5",
+    "kind": "type",
+    "options": undefined,
+  },
+  {
+    "answer": 1,
+    "card": "6",
+    "kind": "truefalse",
+    "options": [
+      "Yes",
+      "No",
+    ],
+  },
+  {
+    "answer": undefined,
+    "card": "4",
+    "kind": "type",
+    "options": undefined,
+  },
+  {
+    "answer": 1,
+    "card": "1",
+    "kind": "listen",
+    "options": [
+      "casa",
+      "perro",
+      "beber",
+      "gato",
+    ],
+  },
+  {
+    "answer": undefined,
+    "card": "3",
+    "kind": "type",
+    "options": undefined,
+  },
+]
+`;
+
+exports[`Ludus plans, as they were before the engine > a lesson, seed 42 1`] = `
+[
+  {
+    "answer": undefined,
+    "card": [
+      "6",
+      "5",
+      "4",
+      "1",
+      "2",
+    ],
+    "kind": "match",
+    "options": undefined,
+  },
+  {
+    "answer": 3,
+    "card": "2",
+    "kind": "choose-term",
+    "options": [
+      "casa",
+      "beber",
+      "perro",
+      "gato",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "1",
+    "kind": "cloze",
+    "options": [
+      "comer",
+      "perro",
+      "casa",
+      "gato",
+    ],
+  },
+  {
+    "answer": undefined,
+    "card": "3",
+    "kind": "type",
+    "options": undefined,
+  },
+  {
+    "answer": [
+      "b",
+      "e",
+      "b",
+      "e",
+      "r",
+    ],
+    "card": "5",
+    "kind": "spell",
+    "options": undefined,
+  },
+  {
+    "answer": 3,
+    "card": "4",
+    "kind": "choose-term",
+    "options": [
+      "perro",
+      "gato",
+      "beber",
+      "comer",
+    ],
+  },
+  {
+    "answer": undefined,
+    "card": "6",
+    "kind": "type",
+    "options": undefined,
+  },
+]
+`;
+
+exports[`Ludus plans, as they were before the engine > lightning 1`] = `
+[
+  {
+    "answer": 1,
+    "card": "5",
+    "kind": "choose-term",
+    "options": [
+      "gato",
+      "beber",
+      "comer",
+      "grande",
+    ],
+  },
+  {
+    "answer": 2,
+    "card": "4",
+    "kind": "choose-term",
+    "options": [
+      "perro",
+      "casa",
+      "comer",
+      "beber",
+    ],
+  },
+  {
+    "answer": 3,
+    "card": "1",
+    "kind": "choose-meaning",
+    "options": [
+      "house",
+      "to eat",
+      "cat",
+      "dog",
+    ],
+  },
+  {
+    "answer": 0,
+    "card": "2",
+    "kind": "choose-term",
+    "options": [
+      "gato",
+      "casa",
+      "comer",
+      "perro",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "6",
+    "kind": "truefalse",
+    "options": [
+      "Yes",
+      "No",
+    ],
+  },
+  {
+    "answer": 3,
+    "card": "3",
+    "kind": "choose-term",
+    "options": [
+      "perro",
+      "gato",
+      "grande",
+      "casa",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "2",
+    "kind": "choose-meaning",
+    "options": [
+      "big",
+      "cat",
+      "dog",
+      "house",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "5",
+    "kind": "truefalse",
+    "options": [
+      "Yes",
+      "No",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "1",
+    "kind": "truefalse",
+    "options": [
+      "Yes",
+      "No",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "6",
+    "kind": "choose-meaning",
+    "options": [
+      "to eat",
+      "big",
+      "house",
+      "cat",
+    ],
+  },
+  {
+    "answer": 0,
+    "card": "3",
+    "kind": "choose-meaning",
+    "options": [
+      "house",
+      "dog",
+      "cat",
+      "to drink",
+    ],
+  },
+  {
+    "answer": 1,
+    "card": "4",
+    "kind": "choose-meaning",
+    "options": [
+      "dog",
+      "to eat",
+      "cat",
+      "to drink",
+    ],
+  },
+]
+`;
+
+exports[`grammar lessons, as they were before the engine > step 1 1`] = `
+[
+  {
+    "answer": undefined,
+    "kind": "pairs",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "recognise",
+    "topic": "articles",
+  },
+  {
+    "answer": 1,
+    "kind": "recognise",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "recognise",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "recognise",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "recognise",
+    "topic": "articles",
+  },
+  {
+    "answer": 1,
+    "kind": "hear",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "recognise",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "recognise",
+    "topic": "articles",
+  },
+]
+`;
+
+exports[`grammar lessons, as they were before the engine > step 2 1`] = `
+[
+  {
+    "answer": 0,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 1,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 1,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 3,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 1,
+    "kind": "table",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 2,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 2,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "pick",
+    "topic": "articles",
+  },
+]
+`;
+
+exports[`grammar lessons, as they were before the engine > step 2 with the table exercise off 1`] = `
+[
+  {
+    "answer": 3,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 3,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 3,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 3,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 3,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 2,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "pick",
+    "topic": "articles",
+  },
+]
+`;
+
+exports[`grammar lessons, as they were before the engine > step 3 1`] = `
+[
+  {
+    "answer": undefined,
+    "kind": "build",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "build",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "build",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "build",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "build",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "build",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "build",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "build",
+    "topic": "articles",
+  },
+]
+`;
+
+exports[`grammar lessons, as they were before the engine > step 4 1`] = `
+[
+  {
+    "answer": undefined,
+    "kind": "spot",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "El",
+      "tren",
+      "viene",
+      "a",
+      "las",
+      "2",
+    ],
+    "kind": "order",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "La",
+      "niña",
+      "se",
+      "perdió",
+      "en",
+      "el",
+      "bosque",
+    ],
+    "kind": "order",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "spot",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "spot",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "spot",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "spot",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "La",
+      "lluvia",
+      "cae",
+      "más",
+      "fuerte",
+      "que",
+      "antes",
+    ],
+    "kind": "order",
+    "topic": "articles",
+  },
+]
+`;
+
+exports[`grammar lessons, as they were before the engine > step 5 1`] = `
+[
+  {
+    "answer": [
+      "La",
+      "tierra",
+      "se",
+      "movió",
+    ],
+    "kind": "say",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "El",
+      "tren",
+      "viene",
+      "a",
+      "las",
+      "2",
+    ],
+    "kind": "say",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "La",
+      "niña",
+      "se",
+      "perdió",
+      "en",
+      "el",
+      "bosque",
+    ],
+    "kind": "say",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "Los",
+      "pasteles",
+      "modernos",
+      "son",
+      "sabrosos",
+      "porque",
+      "están",
+      "caramelizados",
+    ],
+    "kind": "say",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "Un",
+      "joven",
+      "de",
+      "trece",
+      "años",
+      "murió",
+      "en",
+      "un",
+      "accidente",
+      "aéreo",
+    ],
+    "kind": "say",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "Las",
+      "cosas",
+      "no",
+      "siempre",
+      "han",
+      "sido",
+      "así",
+    ],
+    "kind": "say",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "build",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "La",
+      "lluvia",
+      "cae",
+      "más",
+      "fuerte",
+      "que",
+      "antes",
+    ],
+    "kind": "say",
+    "topic": "articles",
+  },
+]
+`;
+
+exports[`grammar lessons, as they were before the engine > step mix 1`] = `
+[
+  {
+    "answer": [
+      "La",
+      "tierra",
+      "se",
+      "movió",
+    ],
+    "kind": "order",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "spot",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 0,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 2,
+    "kind": "table",
+    "topic": "articles",
+  },
+  {
+    "answer": [
+      "Un",
+      "joven",
+      "de",
+      "trece",
+      "años",
+      "murió",
+      "en",
+      "un",
+      "accidente",
+      "aéreo",
+    ],
+    "kind": "say",
+    "topic": "articles",
+  },
+  {
+    "answer": 1,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": 1,
+    "kind": "pick",
+    "topic": "articles",
+  },
+  {
+    "answer": undefined,
+    "kind": "spot",
+    "topic": "articles",
+  },
+]
+`;

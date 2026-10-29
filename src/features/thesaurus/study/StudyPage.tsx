@@ -3,7 +3,12 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
 import { Coffee } from 'lucide-react';
 import { useApp } from '@/app/context';
-import { EXERCISE_KINDS, EXERCISE_NAME, shuffle } from '@/core/srs/ludus';
+import { gridOfFormTable, planTransforms } from '@/core/exercise';
+import type { TransformSpec } from '@/core/exercise';
+import { formTables } from '@/core/lang/paradigm';
+import { packId } from '@/core/packs/format';
+import { EXERCISE_KINDS, EXERCISE_NAME, seededRandom, shuffle } from '@/core/srs/ludus';
+import { normalizeWord } from '@/core/text/normalize';
 import type { LudusItem } from '@/core/srs/ludus';
 import { recordSession } from '@/data/activity';
 import { db } from '@/data/db';
@@ -39,7 +44,25 @@ function toItem(card: Card, note: Note, lang: string): LudusItem {
   return { id: card.id, term: note.term, meaning: note.meaning, pos: note.pos, gender: note.gender, example, isNew: card.state === 0 };
 }
 
-async function loadLudus(lang: string, deckId: string | null, affectSchedule: boolean, size: number): Promise<{ entries: LudusEntry[]; pool: LudusItem[]; off: string[] }> {
+/** A form to change into another, for each card whose word has an inflection table in the language's pack (6-4). */
+async function transformsFor(lang: string, entries: LudusEntry[], lemmas: Map<string, string | undefined>): Promise<Map<string, TransformSpec>> {
+  const pack = packId(lang);
+  const wanted = entries.map((e) => ({ e, lemma: lemmas.get(e.card.id) ?? e.item.term }));
+  const paradigms = await db.dictParadigms.bulkGet(wanted.map((w) => [pack, w.lemma] as [string, string]));
+  const random = seededRandom(Date.now() % 2 ** 31);
+  const out = new Map<string, TransformSpec>();
+  wanted.forEach(({ e, lemma }, i) => {
+    const paradigm = paradigms[i];
+    if (!paradigm) return;
+    const grids = formTables(lang, paradigm.forms, paradigm.pos).tables.map(gridOfFormTable);
+    const trains = { skill: 'grammar', item: { type: 'word', wordId: `${lang}:${normalizeWord(e.item.term, lang)}` } } as const;
+    const [spec] = planTransforms(grids, lang, random, 1, { trains, keyPrefix: `tf-${e.card.id}`, lemma });
+    if (spec) out.set(e.item.id, spec);
+  });
+  return out;
+}
+
+async function loadLudus(lang: string, deckId: string | null, affectSchedule: boolean, size: number): Promise<{ entries: LudusEntry[]; pool: LudusItem[]; off: string[]; transforms: Map<string, TransformSpec> }> {
   const session = await loadStudySession(lang, deckId);
   const entries: LudusEntry[] = [];
   const seen = new Set<string>();
@@ -70,10 +93,10 @@ async function loadLudus(lang: string, deckId: string | null, affectSchedule: bo
   const pool = notes.slice(0, POOL).map((n) => ({ id: `pool-${n.id}`, term: n.term, meaning: n.meaning, pos: n.pos, gender: n.gender, example: n.example, isNew: false }));
   // One deck's lesson also leaves out what that deck's settings turned off.
   const off = deckId ? (session.decks.get(deckId)?.config.ludusOff ?? []) : [];
-  return { entries, pool, off };
+  return { entries, pool, off, transforms: await transformsFor(lang, entries, lemmas) };
 }
 
-type Loaded = { kind: 'recall'; session: StudySession; practice?: boolean } | { kind: 'ludus'; entries: LudusEntry[]; pool: LudusItem[]; off: string[] };
+type Loaded = { kind: 'recall'; session: StudySession; practice?: boolean } | { kind: 'ludus'; entries: LudusEntry[]; pool: LudusItem[]; off: string[]; transforms: Map<string, TransformSpec> };
 
 /** The cards of a finished session, shuffled, for a practice pass that leaves their schedule alone. */
 async function loadPass(cardIds: string[]): Promise<StudySession> {
@@ -263,6 +286,7 @@ function CardStudy() {
         entries={loaded.entries}
         pool={loaded.pool}
         deckOff={loaded.off}
+        transforms={loaded.transforms}
         onFinish={(r) => void finishLudus(r)}
         onClose={back}
         onActive={onActive}

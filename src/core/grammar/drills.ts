@@ -1,6 +1,8 @@
 // Grammatica's drills: every exercise of a grammar lesson, made from a topic's items and tables.
 // Pure and deterministic for a given random source (like core/srs/ludus.ts), so lessons can be
 // tested. The lesson screen renders them; data/grammar.ts turns each item's results into a grade.
+import { gridOfGrammarTable, planTransforms, solutionOf as engineSolution } from '@/core/exercise';
+import type { TransformSpec } from '@/core/exercise';
 import { seededRandom, shuffle } from '@/core/srs/ludus';
 import { GRAMMAR_LEVELS, plain, splitFocus, topicsOf } from './types';
 import type { Grammar, GrammarLevel, GrammarTable, Item, Topic } from './types';
@@ -13,11 +15,11 @@ export { seededRandom, shuffle };
  * match a table's pairs), 2 pick (the gap from four forms; complete the table), 3 build (type the
  * form), 4 use (put the words in order; tap the wrong word), 5 say it (build it from English).
  */
-export type DrillKind = 'recognise' | 'hear' | 'pairs' | 'pick' | 'table' | 'build' | 'order' | 'spot' | 'say' | 'own';
+export type DrillKind = 'recognise' | 'hear' | 'pairs' | 'pick' | 'table' | 'transform' | 'build' | 'order' | 'spot' | 'say' | 'own';
 
-export const DRILL_KINDS: DrillKind[] = ['recognise', 'hear', 'pairs', 'pick', 'table', 'build', 'order', 'spot', 'say', 'own'];
+export const DRILL_KINDS: DrillKind[] = ['recognise', 'hear', 'pairs', 'pick', 'table', 'transform', 'build', 'order', 'spot', 'say', 'own'];
 
-export const DRILL_STEP: Record<DrillKind, Step> = { recognise: 1, hear: 1, pairs: 1, pick: 2, table: 2, build: 3, order: 4, spot: 4, say: 5, own: 5 };
+export const DRILL_STEP: Record<DrillKind, Step> = { recognise: 1, hear: 1, pairs: 1, pick: 2, table: 2, transform: 2, build: 3, order: 4, spot: 4, say: 5, own: 5 };
 
 export const DRILL_LABEL: Record<DrillKind, string> = {
   recognise: 'Which sentence is right?',
@@ -25,6 +27,7 @@ export const DRILL_LABEL: Record<DrillKind, string> = {
   pairs: 'Match the pairs',
   pick: 'Fill the gap',
   table: 'Complete the table',
+  transform: 'Change the form',
   build: 'Type the form',
   order: 'Put the words in order',
   spot: 'Tap the wrong word',
@@ -39,6 +42,7 @@ export const DRILL_NAME: Record<DrillKind, string> = {
   pairs: 'Pairs',
   pick: 'Gaps',
   table: 'Tables',
+  transform: 'Transformations',
   build: 'Typing',
   order: 'Word order',
   spot: 'Spot the mistake',
@@ -63,6 +67,8 @@ export type Drill = Base &
     | { kind: 'say'; item: Item; tiles: string[]; answer: string[] }
     | { kind: 'table'; table: GrammarTable; row: number; col: number; options: string[]; answer: number }
     | { kind: 'pairs'; table: GrammarTable; pairs: Array<[string, string]> }
+    /** One form of a table's word changed into another (core/exercise, 6-4). */
+    | { kind: 'transform'; spec: TransformSpec }
     /** A sentence of the learner's own using the topic, checked by the AI (with a key). */
     | { kind: 'own'; example: Item }
   );
@@ -306,7 +312,7 @@ export interface DrillOptions {
 }
 
 /** What an exercise of this kind becomes when it can't be made for an item, or is turned off. */
-const FALLBACK: Record<DrillKind, DrillKind> = { recognise: 'pick', hear: 'recognise', pairs: 'recognise', pick: 'recognise', table: 'pick', build: 'pick', order: 'spot', spot: 'pick', say: 'build', own: 'say' };
+const FALLBACK: Record<DrillKind, DrillKind> = { recognise: 'pick', hear: 'recognise', pairs: 'recognise', pick: 'recognise', table: 'pick', transform: 'pick', build: 'pick', order: 'spot', spot: 'pick', say: 'build', own: 'say' };
 
 /** The kind an item gets, given the kinds wanted: unusable or switched-off kinds fall back. */
 export function resolveKind(kind: DrillKind, item: Item, lang: string, opts: DrillOptions): DrillKind {
@@ -327,6 +333,17 @@ const ITEM_KINDS: Record<Step, DrillKind[]> = {
   4: ['order', 'spot'],
   5: ['say'],
 };
+
+/**
+ * Up to `count` transformations of a topic's table forms (6-4), none when the learner switched them off or the topic has no
+ * table to make them from. The grammar lessons and the course's grammar lessons both ask for them here.
+ */
+export function transformDrills(topic: Topic, lang: string, opts: Pick<DrillOptions, 'random' | 'off'>, count: number): Drill[] {
+  if (opts.off?.has('transform')) return [];
+  const grids = (topic.tables ?? []).map((t) => gridOfGrammarTable(t, topic.title));
+  const trains = { skill: 'grammar', item: { type: 'grammar', topicId: topic.id } } as const;
+  return planTransforms(grids, lang, opts.random, count, { trains, keyPrefix: `${topic.id}-tf` }).map((spec): Drill => ({ key: spec.key, topic: topic.id, kind: 'transform', spec }));
+}
 
 /**
  * A lesson on one topic at one step: up to `size` of its items, each as an exercise of that step,
@@ -360,6 +377,10 @@ export function planTopicLesson(topic: Topic, lang: string, step: Step | 'mix', 
   if ((step === 2 || step === 'mix') && !opts.off?.has('table')) {
     const t = tableDrill(topic, random, key());
     if (t) out.splice(Math.min(out.length, 3 + Math.floor(random() * 3)), 0, t);
+  }
+  // Changing one form of a table's word into another (6-4): two a lesson, where the topic has a table to make them from.
+  if (step === 2 || step === 'mix') {
+    for (const drill of transformDrills(topic, lang, opts, 2)) out.splice(Math.min(out.length, 3 + Math.floor(random() * 4)), 0, drill);
   }
   // What's due elsewhere comes in near the end, in the steps its topics have passed.
   const due = (opts.due ?? []).filter((e) => e.topic.id !== topic.id).slice(0, 3);
@@ -416,6 +437,8 @@ export function solutionOf(d: Drill, lang: string): string {
   switch (d.kind) {
     case 'table':
       return d.options[d.answer];
+    case 'transform':
+      return engineSolution(d.spec);
     case 'pairs':
     case 'own':
       return '';

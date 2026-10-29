@@ -73,7 +73,8 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-1 | [ ] | The word record | 22 new · 23 to finish | — | L |
 | 6-2 | [ ] | The inbox and the deck workshop | 15 new · 25 to finish | 6-1 | L |
 | 6-3 | [ ] | Cards and memory | 21 new · 11 to finish | 6-1 | L |
-| 6-4 | [~] | *claimed 2026-10-29* One exercise engine | 25 new · 3 to finish | — | L |
+| 6-4 | [x] | *done 2026-10-29 (0.6.0-alpha.6): `core/exercise`, the shared transformation screen, transformations in Ludus, Grammatica and the course; 3 of its 25 new entries built (F0244, F0936, F0937), the rest is 6-4b* One exercise engine | 25 new · 3 to finish | — | L |
+| 6-4b | [ ] | The rest of 6-4's kinds and ways to answer: the matching variants, correct the mistake, rewrite, combine, expand, simplify, drag and drop, predict the form, complete a dialogue; confidence, self-assessment, delayed feedback, retry with a new example; the existing kinds moved into the engine | 22 of 6-4's new entries · 3 to finish | 6-4 | L |
 | 6-5 | [ ] | The learner's record | 9 new · 2 to finish | 6-4 | M |
 | 6-6 | [ ] | Generated materials, checked | 19 new · 3 to finish | 6-1, 6-4 | M |
 | **Part B · The skills** (in parallel, after Part A) | | | | | |

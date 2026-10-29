@@ -1,7 +1,7 @@
 // A unit's lessons as exercises for Grammatica's lesson engine: the unit's words and phrases become
 // topics of their own (a word is an item whose whole sentence is the word), so the exercises, keys
 // and feel are the same everywhere.
-import { itemDrill, resolveKind, shuffle } from '@/core/grammar/drills';
+import { itemDrill, resolveKind, shuffle, transformDrills } from '@/core/grammar/drills';
 import type { Drill, DrillKind, DrillOptions } from '@/core/grammar/drills';
 import type { Grammar, Item, Topic } from '@/core/grammar/types';
 import { findTopic } from '@/core/grammar/types';
@@ -117,7 +117,7 @@ export function planCourseLesson(lesson: LessonId, unit: UnitOutline, content: U
     if (!topics.length) return null;
     // Each topic's examples, then its items: recognised, then filled in, then typed.
     const per = Math.max(4, Math.ceil(size / topics.length));
-    const drills = topics.flatMap((t, n) => itemsAs(t, ['recognise', 'pick', 'pick', 'build'], lang, opts, Math.min(per, t.items.length * 2), `g${n}`));
+    const drills = topics.flatMap((t, n) => [...itemsAs(t, ['recognise', 'pick', 'pick', 'build'], lang, opts, Math.min(per, t.items.length * 2), `g${n}`), ...transformDrills(t, lang, opts, 1)]);
     return { drills, topics: new Map(topics.map((t) => [t.id, t])), intro: topics[0] };
   }
   if (lesson === 'check') {

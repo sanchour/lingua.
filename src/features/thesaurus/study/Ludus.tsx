@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Settings2, Zap } from 'lucide-react';
+import { judge, solutionOf as engineSolution } from '@/core/exercise';
+import type { TransformSpec } from '@/core/exercise';
 import { checkAnswer } from '@/core/srs/answer';
 import type { AnswerCheck } from '@/core/srs/answer';
 import { EXERCISE_LABEL, gradeFor, MODE_OF, planLesson, planLightning, retryOf, seededRandom } from '@/core/srs/ludus';
@@ -33,6 +35,7 @@ import {
   TrueFalseExercise,
   TypeExercise,
 } from './exercises';
+import { TransformView } from '@/features/exercise/TransformView';
 import { StudyBar } from './StudyBar';
 
 export interface LudusEntry {
@@ -84,6 +87,8 @@ function solution(ex: Exercise): string {
       return withArticle(ex.options[ex.answer], ex.item.term);
     case 'truefalse':
       return `${ex.item.term} = ${ex.item.meaning}`;
+    case 'transform':
+      return engineSolution(ex.spec);
     case 'type':
     case 'speak':
     case 'spell':
@@ -107,13 +112,15 @@ interface LudusProps {
   lightning?: boolean;
   /** Exercises the deck's own settings leave out. */
   deckOff?: string[];
+  /** Cards with a form to change into another, by card id (made from their dictionary paradigm). */
+  transforms?: ReadonlyMap<string, TransformSpec>;
 }
 
 /**
  * A Duolingo-style lesson over the chosen cards. No hearts, no penalties: mistakes come back once.
  * Right answers in a row build a combo; Lightning races the clock instead.
  */
-export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive, onSetup, lightning = false, deckOff }: LudusProps) {
+export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive, onSetup, lightning = false, deckOff, transforms }: LudusProps) {
   const look = useSettings()?.cards ?? DEFAULT_SETTINGS.cards;
   const feel = useLessonFeel();
   const { speaker } = useSpeaker(lang);
@@ -142,9 +149,10 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
               canSpell: !NO_SPELL.has(lang),
               typing: setup.current.typing,
               off: new Set([...setup.current.ludusOff, ...(deckOff ?? [])] as ExerciseKind[]),
+              transforms,
             },
           ),
-    [entries, pool, random, lang, lightning, deckOff],
+    [entries, pool, random, lang, lightning, deckOff, transforms],
   );
   const tracks = useRef<Map<string, Track> | null>(null);
   if (!tracks.current) {
@@ -161,6 +169,8 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
   const [tiles, setTiles] = useState<number[]>([]);
   const [heard, setHeard] = useState<string[]>([]);
   const [close, setClose] = useState<AnswerCheck | null>(null);
+  /** What to say about a transformation: the near miss, or which part was wrong. */
+  const [note, setNote] = useState<string | null>(null);
   const [praise, setPraise] = useState(PRAISE[0]);
   const stats = useRef({ first: 0, firstRight: 0, ms: 0 });
   const startedAt = useRef(performance.now());
@@ -225,7 +235,7 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
     }
   };
 
-  const ready = Boolean(ex) && (ex.kind === 'type' ? typed.trim().length > 0 : usesTiles(ex) ? tiles.length > 0 : ex.kind === 'speak' ? heard.length > 0 : ex.kind === 'match' ? false : choice !== null);
+  const ready = Boolean(ex) && (ex.kind === 'type' || ex.kind === 'transform' ? typed.trim().length > 0 : usesTiles(ex) ? tiles.length > 0 : ex.kind === 'speak' ? heard.length > 0 : ex.kind === 'match' ? false : choice !== null);
 
   const next = () => {
     setAnswered((n) => n + 1);
@@ -234,6 +244,7 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
     setTiles([]);
     setHeard([]);
     setClose(null);
+    setNote(null);
     setPhase('answer');
     startedAt.current = performance.now();
     setQueue((q) => {
@@ -252,6 +263,11 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
       if (!typed.trim()) return;
       near = checkAnswer(typed, ex.item.term, lang);
       right = near.verdict !== 'wrong';
+    } else if (ex.kind === 'transform') {
+      if (!typed.trim()) return;
+      const j = judge(ex.spec.check, typed, lang);
+      right = j.outcome === 'right' || j.outcome === 'close';
+      setNote(j.message ?? (j.outcome === 'close' ? `Right: ${j.expected}` : null));
     } else if (isBuild(ex)) right = buildIsRight(ex, tiles, lang);
     else if (ex.kind === 'dictation') right = dictationIsRight(ex, tiles, lang);
     else if (ex.kind === 'spell') right = spellIsRight(ex, tiles);
@@ -333,6 +349,7 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
               {ex.kind === 'article' && <ArticleExercise ex={ex} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
               {ex.kind === 'speak' && <SpeakExercise ex={ex} lang={lang} heard={heard} onHeard={onHeard} phase={phase} onSkip={skipSpeaking} />}
               {ex.kind === 'type' && <TypeExercise ex={ex} lang={lang} value={typed} onChange={setTyped} phase={phase} onSubmit={() => (phase === 'answer' ? check() : next())} />}
+              {ex.kind === 'transform' && <TransformView spec={ex.spec} lang={lang} value={typed} onChange={setTyped} phase={phase} onSubmit={() => (phase === 'answer' ? check() : next())} />}
               {ex.kind === 'match' && <MatchExercise ex={ex} lang={lang} onDone={onMatched} random={random} />}
               {ex.kind === 'listen' && <ListenExercise ex={ex} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
               {ex.kind === 'dictation' && <DictationExercise ex={ex} lang={lang} value={tiles} onChange={setTiles} phase={phase} />}
@@ -351,7 +368,9 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
         praise={praise}
         hint={ex?.kind === 'match' ? 'Tap a word, then its meaning' : lightning && ex && 'options' in ex ? 'Tap an answer' : undefined}
         rightNote={
-          close ? (
+          ex?.kind === 'transform' ? (
+            <p className="text-sm text-ink-soft">{note ?? ex.spec.feedback?.why}</p>
+          ) : close ? (
             <p className="text-sm text-ink-soft">
               {close.note === 'accent' ? 'Mind the accents: ' : 'Nearly — it’s spelled '}
               <span lang={lang} className="font-semibold text-ink">
@@ -371,7 +390,13 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
               <p lang={ex.kind === 'choose-meaning' || ex.kind === 'translate' || ex.kind === 'truefalse' ? undefined : lang} className="font-serif text-xl font-semibold">
                 {solution(ex)}
               </p>
-              {item && ex.kind !== 'truefalse' && (
+              {ex.kind === 'transform' && (
+                <p className="text-sm text-ink-soft">
+                  {note && <span className="font-semibold text-ink">{note} </span>}
+                  {ex.spec.feedback?.why}
+                </p>
+              )}
+              {item && ex.kind !== 'truefalse' && ex.kind !== 'transform' && (
                 <p className="truncate text-sm text-ink-soft">
                   {item.term} — {item.meaning}
                 </p>

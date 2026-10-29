@@ -17,6 +17,8 @@ import type { LessonResult, Phase } from '@/features/lesson/kit';
 import type { OwnSentenceCheck } from '@/services/llm/grammar';
 import { BuildView, HearView, OwnView, PairsView, PickView, RecogniseView, SpotView, TableGapView, TilesView } from './drillViews';
 import { LessonSide, RuleSheet, SeeIt } from './lessonParts';
+import { judge } from '@/core/exercise';
+import { TransformView } from '@/features/exercise/TransformView';
 import { Rich, SentenceLine } from './parts';
 
 interface Track {
@@ -97,6 +99,8 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
   const [typed, setTyped] = useState('');
   const [tiles, setTiles] = useState<number[]>([]);
   const [near, setNear] = useState<FormCheck | null>(null);
+  /** What to say about a transformation: the near miss, or which part was wrong. */
+  const [note, setNote] = useState<string | null>(null);
   const [own, setOwn] = useState<{ checking: boolean; result?: OwnSentenceCheck; error?: string }>({ checking: false });
   const [praise, setPraise] = useState(PRAISE[0]);
   const [rule, setRule] = useState<Topic | null>(null);
@@ -167,7 +171,7 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
 
   const ready =
     Boolean(d) &&
-    (d.kind === 'build' || d.kind === 'own' ? typed.trim().length > 0 && !own.checking : d.kind === 'order' || d.kind === 'say' ? tiles.length > 0 : d.kind === 'pairs' ? false : choice !== null);
+    (d.kind === 'build' || d.kind === 'own' || d.kind === 'transform' ? typed.trim().length > 0 && !own.checking : d.kind === 'order' || d.kind === 'say' ? tiles.length > 0 : d.kind === 'pairs' ? false : choice !== null);
 
   /** The AI reads the learner's own sentence; a failure leaves the exercise open to try again or skip. */
   const checkOwn = async (drill: Extract<Drill, { kind: 'own' }>) => {
@@ -190,7 +194,7 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
   const check = (picked = choice) => {
     if (!d || phase !== 'answer') return;
     // Enter with nothing given yet is not an answer.
-    if ((d.kind === 'build' && !typed.trim()) || ((d.kind === 'order' || d.kind === 'say') && !tiles.length) || (d.kind === 'spot' && picked === null)) return;
+    if (((d.kind === 'build' || d.kind === 'transform') && !typed.trim()) || ((d.kind === 'order' || d.kind === 'say') && !tiles.length) || (d.kind === 'spot' && picked === null)) return;
     let right = false;
     let close: FormCheck | null = null;
     switch (d.kind) {
@@ -201,6 +205,12 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
         close = checkForm(typed, d.item, lang);
         right = close.verdict !== 'wrong';
         break;
+      case 'transform': {
+        const j = judge(d.spec.check, typed, lang);
+        right = j.outcome === 'right' || j.outcome === 'close';
+        setNote(j.message ?? (j.outcome === 'close' ? `Right: ${j.expected}` : null));
+        break;
+      }
       case 'order':
       case 'say':
         right = tilesMatch(
@@ -231,6 +241,7 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
     setTyped('');
     setTiles([]);
     setNear(null);
+    setNote(null);
     setOwn({ checking: false });
     setPhase('answer');
     startedAt.current = performance.now();
@@ -315,6 +326,12 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
           {solutionOf(d, lang)}
         </p>
       )}
+      {d.kind === 'transform' && (
+        <p className="mt-1.5 text-[14px] leading-snug text-ink-soft">
+          {note && <span className="font-semibold text-ink">{note} </span>}
+          {d.spec.feedback?.why}
+        </p>
+      )}
       {d.kind !== 'own' && topic?.why && (
         <p className="mt-1.5 text-[14px] leading-snug text-ink-soft">
           <Rich text={topic.why} lang={lang} />
@@ -331,6 +348,8 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
         {near.expected}
       </span>
     </p>
+  ) : d?.kind === 'transform' ? (
+    <p className="text-sm leading-snug text-ink-soft">{note ?? d.spec.feedback?.why}</p>
   ) : d?.kind === 'own' && own.result ? (
     <p className="text-sm leading-snug text-ink-soft">{own.result.explanation}</p>
   ) : item ? (
@@ -369,6 +388,7 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
                   {d.kind === 'hear' && <HearView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
                   {d.kind === 'pick' && <PickView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
                   {d.kind === 'table' && <TableGapView d={d} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
+                  {d.kind === 'transform' && <TransformView spec={d.spec} lang={lang} value={typed} onChange={setTyped} phase={phase} onSubmit={() => (phase === 'answer' ? check() : next())} />}
                   {d.kind === 'build' && <BuildView d={d} lang={lang} value={typed} onChange={setTyped} phase={phase} onSubmit={() => (phase === 'answer' ? check() : next())} />}
                   {(d.kind === 'order' || d.kind === 'say') && <TilesView d={d} lang={lang} value={tiles} onChange={setTiles} phase={phase} />}
                   {d.kind === 'spot' && <SpotView d={d} lang={lang} value={choice} onChange={setChoice} phase={phase} />}

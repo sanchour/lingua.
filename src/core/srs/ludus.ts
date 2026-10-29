@@ -1,6 +1,7 @@
 // Ludus: Duolingo-style exercises generated from a deck. Pure and deterministic for a given random
 // source, so sessions can be tested. The study screen renders the exercises and reports results;
 // core/srs/scheduler.ts turns each card's results into one FSRS grade.
+import type { TransformSpec } from '@/core/exercise';
 import type { ReviewMode } from '@/data/types';
 import type { Grade4 } from './scheduler';
 
@@ -16,16 +17,17 @@ export interface LudusItem {
   isNew: boolean;
 }
 
-export type ExerciseKind = 'choose-meaning' | 'choose-term' | 'match' | 'cloze' | 'build' | 'type' | 'translate' | 'article' | 'speak' | 'listen' | 'dictation' | 'spell' | 'truefalse';
+export type ExerciseKind = 'choose-meaning' | 'choose-term' | 'match' | 'cloze' | 'build' | 'type' | 'translate' | 'article' | 'speak' | 'listen' | 'dictation' | 'spell' | 'truefalse' | 'transform';
 
 /** Every kind, in the order the setup sheet lists them. */
-export const EXERCISE_KINDS: ExerciseKind[] = ['choose-meaning', 'choose-term', 'truefalse', 'match', 'listen', 'cloze', 'type', 'spell', 'build', 'dictation', 'translate', 'article', 'speak'];
+export const EXERCISE_KINDS: ExerciseKind[] = ['choose-meaning', 'choose-term', 'truefalse', 'match', 'listen', 'cloze', 'type', 'spell', 'build', 'dictation', 'translate', 'article', 'speak', 'transform'];
 
 /** Short names for the setup sheet. */
 export const EXERCISE_NAME: Record<ExerciseKind, string> = {
   'choose-meaning': 'Meanings',
   'choose-term': 'Words',
   truefalse: 'Right or wrong',
+  transform: 'Transformations',
   match: 'Pairs',
   listen: 'Listening',
   cloze: 'Gaps',
@@ -64,6 +66,8 @@ export type Exercise = Base &
     | { kind: 'spell'; item: LudusItem; tiles: string[]; answer: string[] }
     /** Does this word mean that? `shown` is the meaning offered; options are Yes and No. */
     | { kind: 'truefalse'; item: LudusItem; shown: string; options: string[]; answer: number }
+    /** Change one form of the word into another (core/exercise, 6-4). */
+    | { kind: 'transform'; item: LudusItem; spec: TransformSpec }
   );
 
 export const MODE_OF: Record<ExerciseKind, ReviewMode> = {
@@ -80,6 +84,7 @@ export const MODE_OF: Record<ExerciseKind, ReviewMode> = {
   dictation: 'listen',
   spell: 'type',
   truefalse: 'mcq',
+  transform: 'type',
 };
 
 export const EXERCISE_LABEL: Record<ExerciseKind, string> = {
@@ -96,6 +101,7 @@ export const EXERCISE_LABEL: Record<ExerciseKind, string> = {
   dictation: 'Write what you hear',
   spell: 'Spell the word',
   truefalse: 'Right or wrong?',
+  transform: 'Change the form',
 };
 
 /** Small seeded generator (mulberry32) so a session is reproducible in tests. */
@@ -191,6 +197,8 @@ export interface PlanOptions {
   typing?: boolean;
   /** Kinds turned off in the setup sheet. */
   off?: ReadonlySet<ExerciseKind>;
+  /** Cards that have a form to change into another (their dictionary paradigm), by card id: they may get a transformation. */
+  transforms?: ReadonlyMap<string, TransformSpec>;
 }
 
 /** How often each kind comes up for a card seen before: making the word and sentences more, plain recognition less (5.1-3b). */
@@ -207,6 +215,7 @@ const SEEN_WEIGHT: Partial<Record<ExerciseKind, number>> = {
   speak: 2,
   truefalse: 1,
   'choose-meaning': 1,
+  transform: 3,
 };
 /** A new card's first look: gentle recognition (or the pairs round). */
 const FIRST_WEIGHT: Partial<Record<ExerciseKind, number>> = { 'choose-meaning': 3, truefalse: 2, listen: 1 };
@@ -236,8 +245,8 @@ function weightedPick<T extends { w: number }>(options: T[], random: () => numbe
  * among the others at least two exercises later. Never the same kind twice running, and no kind
  * more than about a third of the lesson. The same random source gives the same lesson.
  */
-export function planLesson(items: LudusItem[], pool: LudusItem[], { random, match = true, canSpeak = false, articleOf, articles = [], canHear = false, canSpell = false, typing = true, off }: PlanOptions): Exercise[] {
-  const allowed = (k: ExerciseKind) => !off?.has(k) && (typing || k !== 'type');
+export function planLesson(items: LudusItem[], pool: LudusItem[], { random, match = true, canSpeak = false, articleOf, articles = [], canHear = false, canSpell = false, typing = true, off, transforms }: PlanOptions): Exercise[] {
+  const allowed = (k: ExerciseKind) => !off?.has(k) && (typing || (k !== 'type' && k !== 'transform'));
   /** The kinds the learner kept, weighted; when none is left, the gentlest one. */
   const weigh = (kinds: ExerciseKind[], weights: Partial<Record<ExerciseKind, number>>, fallback: ExerciseKind): Weighted => {
     const left = [...new Set(kinds)].filter(allowed);
@@ -267,6 +276,7 @@ export function planLesson(items: LudusItem[], pool: LudusItem[], { random, matc
     if (canTranslate(item)) kinds.push('translate');
     if (hasArticle(item)) kinds.push('article');
     if (canSpeak) kinds.push('speak');
+    if (transforms?.has(item.id)) kinds.push('transform');
     if (!matchItems.includes(item)) kinds.push('choose-meaning');
     return weigh(kinds, SEEN_WEIGHT, 'choose-term');
   };
@@ -392,6 +402,8 @@ export function planLesson(items: LudusItem[], pool: LudusItem[], { random, matc
         return { key: key(), kind, item, ...letterTiles(item.term, random) };
       case 'truefalse':
         return trueFalse(item, others, random, key());
+      case 'transform':
+        return { key: key(), kind, item, spec: transforms!.get(item.id)! };
       case 'type':
       case 'match':
       default:
