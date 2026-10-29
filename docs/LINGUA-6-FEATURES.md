@@ -1875,17 +1875,17 @@ Different languages require different learning interfaces. This could become a m
 
 - [x] `F1471` Import vocabulary from CSV
 - [x] `F1472` Import flashcards from Anki
-- [ ] `F1473` Import supported Quizlet exports · **6-24** · partly there
+- [x] `F1473` Import supported Quizlet exports · **6-24** · partly there
 - [x] `F1474` Import plain text
-- [ ] `F1475` Import Markdown · **6-24** · partly there
+- [x] `F1475` Import Markdown · **6-24** · partly there
 - [x] `F1476` Import TXT documents
 - [x] `F1477` Import PDFs
 - [x] `F1478` Import EPUB files where supported
 - [x] `F1479` Import subtitles
-- [ ] `F1480` Import transcripts · **6-24** · partly there
+- [x] `F1480` Import transcripts · **6-24** · partly there
 - [x] `F1481` Import word lists · **6-2** · partly there
 - [ ] `F1482` Import personal dictionaries · **6-22**
-- [ ] `F1483` Import grammar notes · **6-24**
+- [x] `F1483` Import grammar notes · **6-24**
 - [x] `F1484` Import from a clipboard
 - [x] `F1485` Import a web article
 - [ ] `F1486` Import text through a browser extension · **6-24** · partly there
@@ -1914,7 +1914,7 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1509` Calendar integration for study planning · **6-24**
 - [ ] `F1510` Reminder integration · **6-17**
 - [x] `F1511` Integration with note-taking tools · **6-24**
-- [ ] `F1512` Integration with e-readers where supported · **6-24**
+- [x] `F1512` Integration with e-readers where supported · **6-24**
 
 ## 24 · Mobile, desktop and accessibility
 
@@ -2121,7 +2121,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [ ] `F1612` Community decks and courses · **6-27** · needs the user's word
 - [ ] `F1613` Language exchange · **6-27** · needs the user's word
 - [ ] `F1614` Collaborative learning · **6-27** · needs the user's word
-- [ ] `F1615` Advanced integrations · **6-24** · partly there
+- [x] `F1615` Advanced integrations · **6-24** · partly there
 - [ ] `F1616` Offline-first mobile and desktop experiences · **6-27** · partly there
 - [ ] `F1617` Specialized exam preparation · **6-18**
 - [ ] `F1618` Advanced phonetics and linguistic analysis · **6-10**
