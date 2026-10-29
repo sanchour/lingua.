@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.59** · 2026-10-29 · Contract: a deck's colour and cover picture (6-2b)
 - **0.6.0-alpha.58** · 2026-10-29 · 6-5b, 6-2b, 6-1c: error log in Ratio, decks from conversations, favourites, made-from panel
 - **0.6.0-alpha.57** · 2026-10-29 · 6-8 R2: measured Graded shelf, filters and open-edition search
 - **0.6.0-alpha.56** · 2026-10-29 · 6-2b: decks from transcripts; handover updated
