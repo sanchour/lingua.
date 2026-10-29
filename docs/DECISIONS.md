@@ -1885,3 +1885,8 @@ Topics can now be browsed by grammatical category and part of speech as well as 
 ## 2026-10-29 — 6-7 G2: richer pages with in-language reading, exceptions and pairs
 
 Grammar rules now support target-language and side-by-side reading, allowing learners to study explanations in the language itself or dual-column. Topics in the core six languages (Spanish, French, German, Italian, Russian, Chinese) gain structured exceptions, formality contrasts (formal/informal pairings), right/wrong slip prevention cards with explicit grammatical rationales, regional variation notes, and contextual cross-references.
+
+## 2026-10-29 — 6-7 G3: fine-line pictures that explain and endings coloured on stems
+
+Visual representations follow the handbook Part One principles: one fine line (stroke-width 1.3, round caps and joins, ink-soft currentColor with terracotta accent highlights). `TenseTimeline` renders past/now/future coordinates with interval brackets and clickable examples; `WordOrderVisualizer` maps sequential syntactic slots with optional badges and highlight borders; `GrammarDecisionTree` guides learners through interactive branching choices (ser vs estar, which past, accusative vs dative, verb aspect); `SentenceStructureDiagram` maps clause constituents and roles; and `MorphologyBreakdownView` dissects complex words into prefix, stem, and endings. Reference tables across all core languages now colour endings distinctly on stems using markdown bold formatting and styled cell rendering.
+

@@ -318,14 +318,14 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0208` Visual grammar tables
 - [x] `F0209` Verb conjugation tables
 - [x] `F0210` Noun declension tables
-- [ ] `F0211` Adjective agreement tables · **6-7** · partly there
-- [ ] `F0212` Pronoun tables · **6-7** · partly there
+- [x] `F0211` Adjective agreement tables · **6-7** · partly there
+- [x] `F0212` Pronoun tables · **6-7** · partly there
 - [x] `F0213` Tense and aspect comparisons
-- [ ] `F0214` Sentence structure diagrams · **6-7**
-- [ ] `F0215` Word order visualizations · **6-7**
-- [ ] `F0216` Grammar decision trees · **6-7**
-- [ ] `F0217` Grammar timelines · **6-7**
-- [ ] `F0218` Morphology breakdowns · **6-7**
+- [x] `F0214` Sentence structure diagrams · **6-7**
+- [x] `F0215` Word order visualizations · **6-7**
+- [x] `F0216` Grammar decision trees · **6-7**
+- [x] `F0217` Grammar timelines · **6-7**
+- [x] `F0218` Morphology breakdowns · **6-7**
 - [ ] `F0219` Interactive grammar maps · **6-7**
 - [x] `F0220` Cross-references between related rules · **6-7** · partly there
 - [x] `F0221` Prerequisite links showing what to learn first · **6-7**

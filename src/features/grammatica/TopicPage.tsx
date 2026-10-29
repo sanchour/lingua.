@@ -14,6 +14,7 @@ import { Card, Segmented } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { LessonCard } from './LessonCard';
 import { CompareView, Rich, Section, SentenceLine, TableView, useGrammar, WatchOut } from './parts';
+import { TenseTimeline, WordOrderVisualizer, GrammarDecisionTree, SentenceStructureDiagram, MorphologyBreakdownView } from './GrammarVisuals';
 
 /**
  * One grammar topic: examples first, rule (with target language or side-by-side reading),
@@ -265,6 +266,37 @@ export default function TopicPage() {
                   </Card>
                 ))}
               </div>
+            </Section>
+          )}
+
+          {/* Visual representations: timeline, word order, decision tree, sentence diagram, morphology */}
+          {topic.timeline && (
+            <Section title="Timeline">
+              <TenseTimeline timeline={topic.timeline} lang={lang} />
+            </Section>
+          )}
+
+          {topic.wordOrder && (
+            <Section title="Word order">
+              <WordOrderVisualizer wordOrder={topic.wordOrder} lang={lang} />
+            </Section>
+          )}
+
+          {topic.decisionTree && (
+            <Section title="Decision guide">
+              <GrammarDecisionTree node={topic.decisionTree} lang={lang} />
+            </Section>
+          )}
+
+          {topic.sentenceDiagram && (
+            <Section title="Sentence structure">
+              <SentenceStructureDiagram diagram={topic.sentenceDiagram} lang={lang} />
+            </Section>
+          )}
+
+          {topic.morphology && topic.morphology.length > 0 && (
+            <Section title="Word structure & endings">
+              <MorphologyBreakdownView breakdowns={topic.morphology} lang={lang} />
             </Section>
           )}
 

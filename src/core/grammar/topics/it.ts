@@ -37,6 +37,15 @@ const grammar: Grammar = {
               ],
               note: 'il libro → i libri; lo studente → gli studenti; l\'amico → gli amici; la casa → le case.',
             },
+            {
+              title: 'Adjective agreement: gender and number',
+              columns: ['pattern', 'masc sing', 'fem sing', 'masc plur', 'fem plur'],
+              rows: [
+                ['4-ending (-o)', 'ross**o**', 'ross**a**', 'ross**i**', 'ross**e**'],
+                ['2-ending (-e)', 'grand**e**', 'grand**e**', 'grand**i**', 'grand**i**'],
+              ],
+              note: 'Adjectives in -o have four forms; adjectives in -e have two forms (-e in singular, -i in plural).',
+            },
           ],
           watch: 'Gli is the plural of both lo and masculine l\': gli esseri, gli zii.',
           why: 'Il/i before most consonants, lo/gli before s + consonant, z and vowels; la/le for feminine nouns.',
@@ -247,6 +256,28 @@ const grammar: Grammar = {
           watch: 'Common irregular participles: fatto (fare), detto (dire), visto (vedere), preso (prendere), messo (mettere), scritto (scrivere).',
           why: 'Avere for most verbs; essere for moving, changing and reflexive verbs, with the participle agreeing.',
           tags: ['participle past'],
+          timeline: {
+            title: 'Timeline: Passato prossimo vs Imperfetto',
+            points: [
+              { label: 'Azione in corso o sfondo (Mangiavo)', tense: 'imperfetto', position: 'past-far', kind: 'continuous', example: 'Mentre mangiavo la pizza...' },
+              { label: 'Azione puntuale completata (è arrivato)', tense: 'passato prossimo', position: 'past', kind: 'point', example: '...Marco è arrivato.' },
+              { label: 'Adesso', tense: 'presente', position: 'now', kind: 'state', example: 'Ora parliamo insieme.' },
+            ],
+            note: 'L\'imperfetto fa da sfondo continuativo; il passato prossimo è l\'evento compiuto.',
+          },
+          decisionTree: {
+            question: 'Il verbo indica movimento, cambiamento di stato (andare, venire, nascere) o è riflessivo?',
+            yes: {
+              result: 'Ausiliare ESSERE',
+              rule: 'Il participio passato concorda con il soggetto in genere e numero: "Lui è andato", "Lei è andata", "Loro sono andati".',
+              example: 'Maria è arrivata ieri.',
+            },
+            no: {
+              result: 'Ausiliare AVERE',
+              rule: 'La grande maggioranza dei verbi transitivi prende avere. Il participio non cambia: "Ho mangiato", "Abbiamo mangiato".',
+              example: 'Ho visitato i miei zii.',
+            },
+          },
           items: [
             { s: '[Ho] visitato i miei zii.', en: 'I visited my uncle and aunt.', wrong: ['Sono', 'Hai', 'Abbiamo'], cue: 'io' },
             { s: 'Il cane [ha] scovato la lepre.', en: 'The dog flushed out the hare.', wrong: ['è', 'hanno', 'sono'], cue: 'lui' },
@@ -320,15 +351,16 @@ const grammar: Grammar = {
           ],
           tables: [
             {
-              columns: ['', 'direct', 'indirect'],
+              title: 'Personal pronouns summary (I pronomi personali)',
+              columns: ['person', 'subject', 'direct object', 'indirect object'],
               rows: [
-                ['me', 'mi', 'mi'],
-                ['you', 'ti', 'ti'],
-                ['him, it', 'lo', 'gli'],
-                ['her, it', 'la', 'le'],
-                ['us', 'ci', 'ci'],
-                ['you (all)', 'vi', 'vi'],
-                ['them', 'li · le', 'gli'],
+                ['1st sing (io)', 'io', 'mi', 'mi'],
+                ['2nd sing (tu)', 'tu', 'ti', 'ti'],
+                ['3rd sing (lui)', 'lui', 'lo', 'gli'],
+                ['3rd sing (lei)', 'lei', 'la', 'le'],
+                ['1st plur (noi)', 'noi', 'ci', 'ci'],
+                ['2nd plur (voi)', 'voi', 'vi', 'vi'],
+                ['3rd plur (loro)', 'loro', 'li / le', 'gli / loro'],
               ],
             },
           ],

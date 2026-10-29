@@ -37,6 +37,17 @@ const grammar: Grammar = {
                 ['some', 'unos', 'unas'],
               ],
             },
+            {
+              title: 'Adjective agreement: gender and number',
+              columns: ['pattern', 'masculine sing', 'feminine sing', 'masculine plur', 'feminine plur'],
+              rows: [
+                ['standard (-o / -a)', 'alt**o**', 'alt**a**', 'alt**os**', 'alt**as**'],
+                ['consonant (-l, -r)', 'fáci**l**', 'fáci**l**', 'fáci**les**', 'fáci**les**'],
+                ['nationality (-ol, -ón)', 'españ**ol**', 'español**a**', 'español**es**', 'español**as**'],
+                ['invariable (-e, -ista)', 'grand**e**', 'grand**e**', 'grand**es**', 'grand**es**'],
+              ],
+              note: 'Adjectives match the noun they describe in gender and number. Most follow the noun.',
+            },
           ],
           watch: 'A feminine noun that starts with a stressed a- takes el in the singular: el agua fría (the adjective stays feminine), but las aguas.',
           why: 'El and los go with masculine nouns, la and las with feminine ones.',
@@ -182,12 +193,44 @@ const grammar: Grammar = {
             {
               columns: ['', 'hablar', 'comer', 'vivir'],
               rows: [
-                ['yo', 'hablo', 'como', 'vivo'],
-                ['tú', 'hablas', 'comes', 'vives'],
-                ['él, ella, usted', 'habla', 'come', 'vive'],
-                ['nosotros', 'hablamos', 'comemos', 'vivimos'],
-                ['vosotros', 'habláis', 'coméis', 'vivís'],
-                ['ellos, ustedes', 'hablan', 'comen', 'viven'],
+                ['yo', 'habl**o**', 'com**o**', 'viv**o**'],
+                ['tú', 'habl**as**', 'com**es**', 'viv**es**'],
+                ['él, ella, usted', 'habl**a**', 'com**e**', 'viv**e**'],
+                ['nosotros', 'habl**amos**', 'com**emos**', 'viv**imos**'],
+                ['vosotros', 'habl**áis**', 'com**éis**', 'viv**ís**'],
+                ['ellos, ustedes', 'habl**an**', 'com**en**', 'viv**en**'],
+              ],
+            },
+          ],
+          wordOrder: {
+            title: 'Spanish declarative sentence order',
+            slots: [
+              { role: 'Subject', example: '(Yo / María)', optional: true },
+              { role: 'Negation', example: 'no', optional: true },
+              { role: 'Object Pronoun', example: 'te', optional: true },
+              { role: 'Conjugated Verb', example: 'llamo', highlight: true },
+              { role: 'Direct Object', example: 'una carta', optional: true },
+              { role: 'Time / Adverb', example: 'hoy', optional: true },
+            ],
+            note: 'Subject pronouns are frequently omitted in Spanish because the verb endings indicate the person.',
+          },
+          morphology: [
+            {
+              word: 'hablamos',
+              translation: 'we speak',
+              parts: [
+                { text: 'habl', type: 'stem', meaning: 'speak' },
+                { text: 'a', type: 'suffix', meaning: 'theme vowel (-ar)' },
+                { text: 'mos', type: 'ending', meaning: '1st person plural (we)' },
+              ],
+            },
+            {
+              word: 'comieron',
+              translation: 'they ate',
+              parts: [
+                { text: 'com', type: 'stem', meaning: 'eat' },
+                { text: 'ie', type: 'suffix', meaning: 'theme vowel (-er/-ir preterite)' },
+                { text: 'ron', type: 'ending', meaning: '3rd person plural preterite' },
               ],
             },
           ],
@@ -454,6 +497,29 @@ const grammar: Grammar = {
           ],
           related: ['ser', 'estar', 'progressive'],
           prerequisites: ['ser', 'estar'],
+          decisionTree: {
+            question: 'Are you describing what something is (identity, origin, inherent characteristic, profession)?',
+            yes: {
+              result: 'Use Ser (DOCTOR)',
+              rule: 'Description, Occupation, Characteristic, Time, Origin, Relationship. Always before a noun.',
+              example: 'Soy profesor y soy de Madrid.',
+            },
+            no: {
+              next: {
+                question: 'Are you describing where something is or how someone feels right now?',
+                yes: {
+                  result: 'Use Estar (PLACE)',
+                  rule: 'Position, Location, Action (-ando/-iendo), Condition, Emotion.',
+                  example: 'Estoy cansado y estoy en casa.',
+                },
+                no: {
+                  result: 'Check event location',
+                  rule: 'Events (parties, concerts) take place using SER: "¿Dónde es la fiesta?"',
+                  example: 'El concierto es en el estadio.',
+                },
+              },
+            },
+          },
           targetLangRule: [
             '**Ser** se utiliza para definir la identidad, el origen, las cualidades inherentes y el tiempo (*Ella es médica*, *Son las tres*). Delante de un sustantivo siempre se usa ser.',
             '**Estar** se utiliza para expresar estados físicos o emocionales temporales, ubicación en el espacio y acciones en curso (*Estoy cansado*, *Madrid está en España*, *está lloviendo*).',
@@ -598,6 +664,19 @@ const grammar: Grammar = {
                 ['them', 'los', 'las'],
               ],
               note: 'For people, central Spain often uses le for "him" (leísmo).',
+            },
+            {
+              title: 'Personal pronouns summary',
+              columns: ['person', 'subject', 'direct object', 'indirect object', 'prepositional'],
+              rows: [
+                ['1st sing (yo)', 'yo', 'me', 'me', 'mí / conmigo'],
+                ['2nd sing (tú)', 'tú', 'te', 'te', 'ti / contigo'],
+                ['3rd sing (él / ella / usted)', 'él / ella / usted', 'lo / la', 'le', 'él / ella / usted'],
+                ['1st plur (nosotros)', 'nosotros/-as', 'nos', 'nos', 'nosotros/-as'],
+                ['2nd plur (vosotros)', 'vosotros/-as', 'os', 'os', 'vosotros/-as'],
+                ['3rd plur (ellos / ellas / ustedes)', 'ellos / ellas / ustedes', 'los / las', 'les', 'ellos / ellas / ustedes'],
+              ],
+              note: 'Direct objects receive the action directly (lo/la/los/las); indirect objects indicate to or for whom (le/les).',
             },
           ],
           why: 'Lo, la, los, las agree with the noun they replace and go before a conjugated verb.',
@@ -859,6 +938,38 @@ const grammar: Grammar = {
           ],
           related: ['preterite', 'imperfect'],
           prerequisites: ['preterite', 'imperfect'],
+          timeline: {
+            title: 'Tense timeline: preterite vs imperfect',
+            points: [
+              { label: 'Background setting (era tarde)', tense: 'imperfect', position: 'past-far', kind: 'continuous', example: 'Era una noche fría.' },
+              { label: 'Completed event (llegó)', tense: 'preterite', position: 'past', kind: 'point', example: 'De repente llegó mi hermano.' },
+              { label: 'Present moment', tense: 'present', position: 'now', kind: 'state', example: 'Ahora estamos cenando.' },
+            ],
+            note: 'The imperfect sets the continuous stage; the preterite marks what happened at a specific point in time.',
+          },
+          decisionTree: {
+            question: 'Does the action describe a single completed event with a clear start or finish?',
+            yes: {
+              result: 'Use the Preterite',
+              rule: 'Completed events, actions that happened a specific number of times, or interruptions.',
+              example: 'Ayer compré un libro.',
+            },
+            no: {
+              next: {
+                question: 'Is it describing an ongoing background state, habit, time, or age in the past?',
+                yes: {
+                  result: 'Use the Imperfect',
+                  rule: 'Descriptions, background circumstances, habitual actions ("used to"), time and feelings.',
+                  example: 'Cuando era niño, jugaba en el parque.',
+                },
+                no: {
+                  result: 'Check time cues',
+                  rule: 'Words like "ayer", "anoche", "de repente" cue preterite; "siempre", "cada día", "mientras" cue imperfect.',
+                  example: 'Mientras leía, me dormí.',
+                },
+              },
+            },
+          },
         },
         {
           id: 'pluperfect',
@@ -1021,6 +1132,18 @@ const grammar: Grammar = {
             { s: 'Sugiero que [empecemos] por reconocer que necesitamos más ayuda.', en: 'I suggest that we start by acknowledging that we need more help.', wrong: ['empezamos', 'empiecemos', 'empezemos'], base: 'empezar', cue: 'nosotros' },
           ],
           related: ['imperative', 'imperfect-subjunctive'],
+          sentenceDiagram: {
+            title: 'Subjunctive sentence structure',
+            sentence: 'Quiero que vengas pronto.',
+            translation: 'I want you to come soon.',
+            nodes: [
+              { word: 'Quiero', role: 'Main clause verb (wishing)' },
+              { word: 'que', role: 'Subordinating conjunction' },
+              { word: 'vengas', role: 'Subordinate clause verb (subjunctive)' },
+              { word: 'pronto', role: 'Adverbial complement' },
+            ],
+            note: 'Two different subjects (yo quiero / tú vengas) joined by "que" triggers the subjunctive in the dependent clause.',
+          },
         },
         {
           id: 'imperfect-subjunctive',

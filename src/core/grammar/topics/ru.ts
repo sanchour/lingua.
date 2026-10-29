@@ -33,6 +33,29 @@ const grammar: Grammar = {
                 ['our', 'наш', 'на́ша', 'на́ше', 'на́ши'],
               ],
             },
+            {
+              title: 'Adjective agreement: gender and number (Nominative)',
+              columns: ['pattern', 'masc.', 'fem.', 'neut.', 'plural'],
+              rows: [
+                ['hard (-ый / -ой)', 'но́в**ый**', 'но́в**ая**', 'но́в**ое**', 'но́в**ые**'],
+                ['soft (-ий)', 'си́н**ий**', 'си́н**яя**', 'си́н**ее**', 'си́н**ие**'],
+                ['velar stem (-гий, -кий)', 'ру́сс**кий**', 'ру́сс**кая**', 'ру́сс**кое**', 'ру́сс**кие**'],
+              ],
+              note: 'Russian adjectives agree with the noun in gender, number, and case.',
+            },
+            {
+              title: 'Personal pronouns summary (Личные местоимения)',
+              columns: ['person', 'nominative', 'accusative', 'dative', 'instrumental'],
+              rows: [
+                ['1st sing', 'я', 'меня́', 'мне', 'мной'],
+                ['2nd sing', 'ты', 'тебя́', 'тебе́', 'тобо́й'],
+                ['3rd sing (m)', 'он', 'его́ (него́)', 'ему́ (нему́)', 'им (ним)'],
+                ['3rd sing (f)', 'она́', 'её (неё)', 'ей (ней)', 'ей (ней)'],
+                ['1st plur', 'мы', 'нас', 'нам', 'на́ми'],
+                ['2nd plur', 'вы', 'вас', 'вам', 'ва́ми'],
+                ['3rd plur', 'они́', 'их (них)', 'им (ним)', 'и́ми (ни́ми)'],
+              ],
+            },
           ],
           watch: 'Nouns in -мя are neuter: вре́мя, и́мя (на́ше вре́мя). Men\'s words in -а stay masculine: мой па́па.',
           why: 'The possessive takes the noun\'s gender: мой (masc.), моя́ (fem.), моё (neut.), мои́ (plural).',
@@ -440,6 +463,28 @@ const grammar: Grammar = {
           },
           why: 'Imperfective for a process, habit or after бу́ду; perfective for one completed action with a result.',
           tags: ['perfective'],
+          timeline: {
+            title: 'Вид глагола: Несовершенный (НСВ) vs Совершенный (СВ)',
+            points: [
+              { label: 'Процесс или регулярность (читал)', tense: 'imperfective', position: 'past-far', kind: 'continuous', example: 'Я читал книгу весь вечер.' },
+              { label: 'Завершённый результат (прочитал)', tense: 'perfective', position: 'past', kind: 'point', example: 'Наконец я прочитал всю книгу.' },
+              { label: 'Настоящее время (читаю)', tense: 'present', position: 'now', kind: 'state', example: 'Сейчас я читаю газету.' },
+            ],
+            note: 'НСВ выражает процесс или регулярность; СВ выражает однократный результат.',
+          },
+          decisionTree: {
+            question: 'Акцент делается на результате, завершённости или однократном факте действия?',
+            yes: {
+              result: 'Совершенный вид (СВ)',
+              rule: 'Действие доведено до конца или произошло однократно. В будущем не требует "буду": напишу, съем.',
+              example: 'Я уже прочитал эту статью.',
+            },
+            no: {
+              result: 'Несовершенный вид (НСВ)',
+              rule: 'Действие в процессе, повторяется регулярно или констатируется сам факт процесса. Будущее: буду читать.',
+              example: 'Я читал газету каждый день.',
+            },
+          },
           items: [
             { s: 'Мне удало́сь [реши́ть] э́ту зада́чу.', en: 'I managed to solve this problem/task.', wrong: ['решать', 'решил', 'решу'], base: 'решить / решать' },
             { s: 'Я бу́ду [петь] пе́сню че́рез пять мину́т.', en: 'I will sing a song after five minutes.', wrong: ['спеть', 'пою', 'спою'], base: 'петь / спеть' },
