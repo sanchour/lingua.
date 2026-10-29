@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.40** · 2026-10-29 · Claim 6-7 Grammar for Antigravity-1
 - **0.6.0-alpha.39** · 2026-10-29 · 6-2b and 6-3b: order a deck's cards six ways; more screens looked at
 - **0.6.0-alpha.38** · 2026-10-29 · 6-12 W3: local dictionary help and phrase bank
 - **0.6.0-alpha.37** · 2026-10-29 · 6-6b: Made by Max page, word lists, keep in Codex or a deck
