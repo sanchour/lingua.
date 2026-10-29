@@ -101,11 +101,11 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-19 | [ ] | Immersion and culture | 23 new · 7 to finish | 6-1 | L |
 | 6-20 | [ ] | Phrasebook and notebook (the map is 6-29) | 35 new · 10 to finish | 6-1, 6-2 | L |
 | 6-21 | [ ] | Games and projects | 66 new · 3 to finish | 6-4, 6-6 | L |
-| 6-22 | [ ] | Dictionary tools | 15 new · 2 to finish | 6-1 | M |
+| 6-22 | [~] | *claimed by Antigravity-1 2026-10-29* Dictionary tools | 15 new · 2 to finish | 6-1 | M |
 | 6-23 | [ ] | Tools for each language | 32 new · 19 to finish | 6-1, 6-4 | L |
 | 6-29 | [ ] | **The word graph** (Thesaurus › Graph, "Tela"): your vocabulary as a bookish, Obsidian-like web; **Opus plans and builds it** (the user, 2026-10-29) | 20 new | Part A | XL |
 | **Part E · Around the app** (any time after Part A) | | | | | |
-| 6-24 | [ ] | Import, export and integrations | 15 new · 7 to finish | 6-2 | M |
+| 6-24 | [~] | *claimed by Antigravity-1 2026-10-29* Import, export and integrations | 15 new · 7 to finish | 6-2 | M |
 | 6-25 | [ ] | Accessibility and the desktop | 3 new · 10 to finish | — | M |
 | **Part F · Further out** (each only with the user's word) | | | | | |
 | 6-26 | [ ] | Experiments | 38 new · 2 to finish | the user | — |
