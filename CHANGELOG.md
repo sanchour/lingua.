@@ -3,6 +3,13 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.83** · 2026-10-29 · 6-22 slice 3.3: custom dictionary entries, personal dictionary import, multi-source comparison, and entry issue reporting (6-22 done)
+- **0.6.0-alpha.82** · 2026-10-29 · 6-22 slice 3.2: global search palette (Ctrl+K / Cmd+K) across words, decks, cards, texts, journal, and grammar
+- **0.6.0-alpha.81** · 2026-10-29 · 6-22 slice 3.1: dictionary search tools (reverse meaning, fuzzy, prefix/suffix, rhymes, similar sounds, POS filter)
+- **0.6.0-alpha.80** · 2026-10-29 · 6-24 slice 1.4: Kindle My Clippings.txt, Quizlet, Markdown + wikilinks, and timed transcript importers (6-24 complete)
+- **0.6.0-alpha.79** · 2026-10-29 · 6-24 slice 1.3: deck export menu (.apkg, .csv, .md) and Settings export & integrations hub
+- **0.6.0-alpha.78** · 2026-10-29 · 6-24 slice 1.2: Anki .apkg deck exporter with FSRS scheduling and media round-trip
+- **0.6.0-alpha.77** · 2026-10-29 · 6-24 slice 1.1: exporter core (CSV, Markdown + wikilinks, HTML report, .ics)
 - **0.6.0-alpha.76** · 2026-10-29 · Claim 6-22 Dictionary tools and 6-24 Import and export for Antigravity-1
 - **0.6.0-alpha.75** · 2026-10-29 · 6-11 S3: How did it go conversation review, sentence breakdown, fluency metrics, replay, and Diarium notes
 - **0.6.0-alpha.74** · 2026-10-29 · 6-11 S2: solo speaking challenges, prep/speak timer, microphone recording playback, real-time transcription
