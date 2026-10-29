@@ -229,7 +229,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0133` Gender and grammatical class
 - [x] `F0134` Countable versus uncountable nouns · **6-1**
 - [x] `F0135` Verb conjugation tables
-- [ ] `F0136` Verb aspect and tense information · **6-1** · partly there
+- [x] `F0136` Verb aspect and tense information · **6-1** · partly there
 - [x] `F0137` Irregular forms · **6-1** · partly there
 - [x] `F0138` Declension tables
 - [x] `F0139` Case information
@@ -253,7 +253,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0157` Proverbs and sayings · **6-1** · partly there
 - [ ] `F0158` Words that don’t translate neatly · **6-19**
 - [ ] `F0159` Semantic fields · **6-20** · partly there
-- [ ] `F0160` Frequency-ranked synonyms · **6-1**
+- [x] `F0160` Frequency-ranked synonyms · **6-1**
 - [ ] `F0161` Differences between similar words · **6-1** · partly there
 - [ ] `F0162` Example sentences ranked by difficulty · **6-1** · partly there
 - [x] `F0163` Corpus examples showing authentic usage
@@ -1855,7 +1855,7 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1455` Personalized revision schedules
 - [ ] `F1456` Personalized daily sessions · **6-16** · partly there
 - [x] `F1457` Detect recurring mistakes · **6-5**
-- [ ] `F1458` Detect forgotten vocabulary · **6-5** · partly there
+- [x] `F1458` Detect forgotten vocabulary · **6-5** · partly there
 - [x] `F1459` Detect recognition-versus-recall gaps · **6-5**
 - [x] `F1460` Detect weaknesses by skill · **6-5**
 - [x] `F1461` Identify neglected skills
