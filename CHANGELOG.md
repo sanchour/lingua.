@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.102** · 2026-10-29 · 6-10 S4: pronunciation diary and the stress drill
 - **0.6.0-alpha.101** · 2026-10-29 · Merge ag1: Speaking, Dictionary tools, Import and export, Accessibility
 - **0.6.0-alpha.100** · 2026-10-29 · 6-10: plan row version corrected
 - **0.6.0-alpha.99** · 2026-10-29 · 6-10: Cursus Sounds, minimal pairs, record and compare
