@@ -622,8 +622,8 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0460` Bookmark difficult sections · **6-9**
 - [ ] `F0461` Create a personal audio playlist · **6-9**
 - [x] `F0462` Download permitted audio for offline use
-- [ ] `F0463` Automatically replay difficult sections · **6-9**
-- [ ] `F0464` Highlight sections with repeated mistakes · **6-9**
+- [x] `F0463` Automatically replay difficult sections · **6-9**
+- [x] `F0464` Highlight sections with repeated mistakes · **6-9**
 
 #### 5.3 Listening exercises
 
@@ -650,7 +650,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0483` Listen and predict the next phrase · **6-9**
 - [ ] `F0484` Listen and identify a change in topic · **6-9**
 - [x] `F0485` Listen without subtitles, then with subtitles · **6-9** · partly there
-- [ ] `F0486` Compare an initial guess with the transcript · **6-9**
+- [x] `F0486` Compare an initial guess with the transcript · **6-9**
 - [ ] `F0487` Listen to a phrase and repeat it · **6-11** · partly there
 - [x] `F0488` Transcribe a short audio clip · **6-9**
 - [ ] `F0489` Identify formal versus informal speech · **6-9**
@@ -667,12 +667,12 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0497` Stress and intonation recognition · **6-10**
 - [ ] `F0498` Pitch-accent training where relevant · **6-10**
 - [ ] `F0499` Tone recognition for tonal languages · **6-10** · partly there
-- [ ] `F0500` Fast-speech comprehension · **6-9**
+- [x] `F0500` Fast-speech comprehension · **6-9**
 - [ ] `F0501` Accent adaptation · **6-9**
-- [ ] `F0502` Speech-in-noise exercises · **6-9**
+- [x] `F0502` Speech-in-noise exercises · **6-9**
 - [ ] `F0503` Overlapping-speaker comprehension · **6-9**
 - [ ] `F0504` Automatic difficulty adjustment · **6-16**
-- [ ] `F0505` Listening-speed progression · **6-9**
+- [x] `F0505` Listening-speed progression · **6-9**
 - [ ] `F0506` Compare the same sentence across speakers · **6-9**
 - [x] `F0507` Compare slow, careful speech with natural speech · **6-9**
 - [ ] `F0508` Track listening comprehension by accent · **6-17**
