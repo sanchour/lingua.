@@ -116,6 +116,7 @@ export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Include audio, video and images', section: 'backup', also: 'media backup' },
   { label: 'Include API keys', section: 'backup', also: 'backup keys' },
   { label: 'Books for Goodreads', section: 'backup', also: 'export csv goodreads' },
+  { label: 'Export & integrations', find: 'Export & integrations', section: 'backup', also: 'export vocabulary csv anki apkg markdown obsidian notion highlights phrasebook statistics progress report calendar ics' },
   { label: 'Pair a device', section: 'sync', also: 'sync iphone phone desktop computer qr code devices transfer move' },
   { label: 'Sync now', section: 'sync', also: 'sync devices iphone phone desktop' },
   { label: 'Reset a language', find: 'Reset ', section: 'reset', also: 'start over progress' },

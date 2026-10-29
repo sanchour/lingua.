@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
-import { ArrowDown, ArrowUp, Check, CheckSquare, Ellipsis, FolderInput, Layers, Pause, Pencil, Play, Plus, Puzzle, Search, Settings2, Sparkles, Tag, TextCursorInput, Trash2, Zap } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, CheckSquare, Download, Ellipsis, FileCode2, FileSpreadsheet, FolderInput, Layers, Pause, Pencil, Play, Plus, Puzzle, Search, Settings2, Sparkles, Tag, TextCursorInput, Trash2, Zap } from 'lucide-react';
+import { deckToCsv, notesToMarkdown, saveFile } from '@/services/export';
+import { downloadDeckApkg } from '@/services/export/apkgBrowser';
+import { toast } from '@/state/ui';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatInterval, maturityOf } from '@/core/srs/scheduler';
@@ -185,6 +188,36 @@ export default function DeckPage() {
                     }}
                   />
                   <MenuItem icon={Sparkles} label="Tidy…" onClick={() => (close(), setTidying(true))} />
+                  <MenuItem
+                    icon={Download}
+                    label="Export to Anki (.apkg)"
+                    onClick={() => {
+                      close();
+                      void downloadDeckApkg(deck.id)
+                        .then(() => toast(`Exported “${deck.name}” (.apkg).`, { tone: 'success' }))
+                        .catch(() => toast('Could not export Anki deck.', { tone: 'error' }));
+                    }}
+                  />
+                  <MenuItem
+                    icon={FileSpreadsheet}
+                    label="Export to CSV (.csv)"
+                    onClick={() => {
+                      close();
+                      const slug = deck.name.toLowerCase().replace(/[^a-z0-9-_]+/gi, '-') || 'deck';
+                      saveFile(`${slug}.csv`, deckToCsv(deck, notes), 'text/csv;charset=utf-8');
+                      toast(`Exported “${deck.name}” (.csv).`, { tone: 'success' });
+                    }}
+                  />
+                  <MenuItem
+                    icon={FileCode2}
+                    label="Export to Markdown (.md)"
+                    onClick={() => {
+                      close();
+                      const slug = deck.name.toLowerCase().replace(/[^a-z0-9-_]+/gi, '-') || 'deck';
+                      saveFile(`${slug}.md`, notesToMarkdown(deck, notes), 'text/markdown;charset=utf-8');
+                      toast(`Exported “${deck.name}” (.md).`, { tone: 'success' });
+                    }}
+                  />
                   <MenuItem icon={Trash2} label="Delete deck" danger onClick={() => (close(), askDelete())} />
                 </div>
               )}

@@ -140,7 +140,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0056` Merge decks · **6-2**
 - [x] `F0057` Duplicate decks · **6-2**
 - [x] `F0058` Split a deck into smaller decks · **6-2**
-- [ ] `F0059` Import and export decks · **6-24** · partly there
+- [x] `F0059` Import and export decks · **6-24** · partly there
 - [ ] `F0060` Share decks with other learners · **6-27** · partly there
 - [ ] `F0061` Public community decks · **6-27** · needs the user's word
 - [ ] `F0062` Collaborative decks · **6-27** · needs the user's word
@@ -551,7 +551,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [ ] `F0405` Compare translations of the same literary passage · **6-13**
 - [ ] `F0406` Explain cultural and historical references · **6-19** · partly there
 - [ ] `F0407` Build a personal library of favorite passages · **6-8**
-- [ ] `F0408` Export a bilingual reading journal · **6-24**
+- [x] `F0408` Export a bilingual reading journal · **6-24**
 
 > My favorite idea here: a reader that gradually becomes more personal. It learns which words are already familiar, remembers words the learner saves and provides just enough assistance to keep reading enjoyable.
 
@@ -906,7 +906,7 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [x] `F0689` Writing timer · **6-12**
 - [x] `F0690` Offline writing journal
 - [ ] `F0691` Notebook folders and tags · **6-20** · partly there
-- [ ] `F0692` Export to Markdown, TXT or PDF · **6-24**
+- [x] `F0692` Export to Markdown, TXT or PDF · **6-24**
 - [x] `F0693` Save selected sentences to vocabulary
 - [x] `F0694` Turn corrections into flashcards
 - [x] `F0695` Compare writing samples over time · **6-12**
@@ -1469,7 +1469,7 @@ Think of this as a personal linguistic knowledge base.
 - [ ] `F1135` Markdown support · **6-20** · partly there
 - [ ] `F1136` Folders and tags · **6-20**
 - [ ] `F1137` Search across all notes · **6-20** · partly there
-- [ ] `F1138` Export notes · **6-24**
+- [x] `F1138` Export notes · **6-24**
 - [x] `F1139` Daily journal prompts
 - [ ] `F1140` AI-generated summaries of learning notes · **6-20**
 - [ ] `F1141` Turn notebook entries into exercises · **6-20**
@@ -1892,15 +1892,15 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1487` Import a document and extract vocabulary · **6-2** · partly there
 - [x] `F1488` Import audio files
 - [ ] `F1489` Import video transcripts · **5.2-4** · planned in Lingua 5.2
-- [ ] `F1490` Export vocabulary to CSV · **6-24**
-- [ ] `F1491` Export flashcards to Anki-compatible formats · **6-24**
-- [ ] `F1492` Export notes to Markdown · **6-24**
-- [ ] `F1493` Export vocabulary decks · **6-24**
-- [ ] `F1494` Export learning statistics · **6-24**
-- [ ] `F1495` Export reading highlights · **6-24**
-- [ ] `F1496` Export conversation transcripts · **6-24**
-- [ ] `F1497` Export a personal phrasebook · **6-24**
-- [ ] `F1498` Export progress reports · **6-24** · partly there
+- [x] `F1490` Export vocabulary to CSV · **6-24**
+- [x] `F1491` Export flashcards to Anki-compatible formats · **6-24**
+- [x] `F1492` Export notes to Markdown · **6-24**
+- [x] `F1493` Export vocabulary decks · **6-24**
+- [x] `F1494` Export learning statistics · **6-24**
+- [x] `F1495` Export reading highlights · **6-24**
+- [x] `F1496` Export conversation transcripts · **6-24**
+- [x] `F1497` Export a personal phrasebook · **6-24**
+- [x] `F1498` Export progress reports · **6-24** · partly there
 - [x] `F1499` Backup and restore
 - [ ] `F1500` Cloud synchronization · **6-27** · partly there
 - [x] `F1501` Multi-device synchronization
@@ -1911,9 +1911,9 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1506` Text-to-speech integration
 - [x] `F1507` Speech-to-text integration
 - [x] `F1508` Dictionary API integration
-- [ ] `F1509` Calendar integration for study planning · **6-24**
+- [x] `F1509` Calendar integration for study planning · **6-24**
 - [ ] `F1510` Reminder integration · **6-17**
-- [ ] `F1511` Integration with note-taking tools · **6-24**
+- [x] `F1511` Integration with note-taking tools · **6-24**
 - [ ] `F1512` Integration with e-readers where supported · **6-24**
 
 ## 24 · Mobile, desktop and accessibility
