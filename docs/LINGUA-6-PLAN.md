@@ -537,7 +537,7 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
   from a photo (Codex's OCR), playlists of media by level, short videos and live streams through YouTube (5.2-4).
 **Entries (23 new · 7 to finish):** F0158, F0406, F0773, F0807, F0811, F0813, F0819, F0821, F0826–F0827, F0829, F0832, F0841–F0847, F0849–F0852, F0856–F0862
 
-#### 6-20 · Phrasebook and notebook (the word map is now [6-29](#6-29--the-word-graph-thesaurus--graph-the-name-is-the-users-to-pick-tela-latin-for-web-fits-the-rooms))
+#### 6-20 · Phrasebook and notebook (the word map is now [6-29](#6-29--the-word-graph-thesaurus--atlas))
 
 - **Thesaurus › Phrases:** phrases and sentence templates saved from anywhere (a drag in the reader, a line of a song,
   a subtitle, Sermo), by situation and topic; formal and informal versions, replies, openers, linking words, debate
@@ -591,7 +591,7 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
   dictionary), Modern Standard and dialect labelled with samples, registers, transliteration controls.
 **Entries (32 new · 19 to finish):** F1294–F1295, F1298–F1306, F1308, F1310–F1311, F1314–F1317, F1321–F1325, F1331, F1334–F1335, F1337–F1338, F1340, F1343, F1345–F1350, F1352–F1356, F1359–F1362, F1365–F1369, F1371
 
-#### 6-29 · The word graph (Thesaurus › Graph; the name is the user's to pick: **Tela**, Latin for "web", fits the rooms)
+#### 6-29 · The word graph (Thesaurus › Atlas)
 
 **The user's idea (2026-10-29):** "In Thesaurus I was thinking of a graph view, like a beautiful, bookish, aesthetic web view, where you have an overview of your personal vocabulary and dictionary, like a second brain, kind of like Obsidian, but made for and specialised completely for languages." Then, the same day: the lines "smooth, dynamic, aesthetic", and everything "easy to overview, hover, scroll, zoom, see, all the words you know".
 
@@ -603,7 +603,7 @@ south), and is where a word opens. Shared things are hubs only when 2 to 60 of y
 lenses; size is how common a word is and ink how well you know it; the lines are curves drawn like ink, bundled between
 regions, alive when you act and still when you read; every view ends in something to do (review the fading, link the loose
 threads, discover words, practise your mix-ups). It replaces 6-20's "Thesaurus › Map" bullet (one map, not two) and holds the
-audit's 13.2. Its tables are Dexie 46, after a contract push (G3). The tab's name is the user's to pick: Atlas, Tela or Graph.
+audit's 13.2. Its tables are Dexie 46, after a contract push (G3). The tab is called **Atlas** (the user, 2026-10-29).
 
 **Entries (20 new):** F1076–F1095 (all of 13.2), traced push by push in the plan's section 12.
 

@@ -2288,7 +2288,7 @@ Planned 2026-10-26 in [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md), from the audit
 - [ ] **Part C · Paths and guidance:** 6-14 courses and lessons · 6-15 the tutor, in context · 6-16 personal and
       adaptive · 6-17 goals, habits and progress · 6-18 exams and levels.
 - [ ] **Part D · More of the language:** 6-19 immersion and culture · 6-20 phrasebook and notebook · 6-21 games and
-      projects · 6-22 dictionary tools · 6-23 tools for each language · **6-29 the word graph** (Thesaurus › Graph, "Tela":
+      projects · 6-22 dictionary tools · 6-23 tools for each language · **6-29 the word graph** (Thesaurus › Atlas:
       your vocabulary as a bookish, Obsidian-like web, the user's idea of 2026-10-29; Opus builds it, planned in full in
       [WORD-GRAPH-PLAN.md](WORD-GRAPH-PLAN.md): the atlas of all your words and the compass of one, in seven pushes).
 - [ ] **Part E · Around the app:** 6-24 import, export and integrations · 6-25 accessibility and the desktop.

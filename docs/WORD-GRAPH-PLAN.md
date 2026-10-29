@@ -484,7 +484,7 @@ export const HUB_MIN = 2, HUB_MAX = 60;
 
 ### 10.7 The tab, the address, the chunk
 
-- A fourth tab on `/thesaurus` (`?tab=` its id), with `&word=mar` for a compass and `&view=<id>` for a saved view, so a link
+- A fourth tab, *Atlas*, on `/thesaurus` (`?tab=atlas`), with `&word=mar` for a compass and `&view=<id>` for a saved view, so a link
   from anywhere opens exactly that. Key 4 opens it, as 1 to 3 open the others.
 - `ThesaurusPage` imports `DictionaryView` statically; the graph tab is `React.lazy`, so its code (and d3-force) loads only
   when the tab opens (PERFORMANCE.md, rule 8).
@@ -657,8 +657,8 @@ the keyboard alone walks the web and opens any word; all twenty audit entries ar
 - **The contract can't name step 29.** `Lingua6Step` stops at 25, and `StepSchema.policy` lacks the `'skip'` that `backup.ts`
   already uses. G3 widens both.
 
-## 16. For the user
+## 16. The tab's name
 
-- **The tab's name.** *Atlas* (the map's own words run through this plan: atlas, compass, regions, margin; and it is
-  English, as the room's other tabs are), *Tela* (Latin for web and for cloth on a loom, as the rooms are Latin, though the
-  tabs are not), or *Graph* (what Obsidian calls it; plain). Nothing else waits on the user: Opus builds G1 when told to go.
+**Atlas** (the user, 2026-10-29: "I like the name Atlas"). The tab is *Thesaurus › Atlas*, at `/thesaurus?tab=atlas`; its two
+views keep their names inside it: the atlas (every word) and the compass (one word). Nothing else waits on the user: Opus
+builds G1 when told to go.
