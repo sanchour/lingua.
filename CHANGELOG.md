@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.85** · 2026-10-29 · 6-8 R4: parallel reading and labelled simplification on the Codex branch
 - **0.6.0-alpha.84** · 2026-10-29 · 6-8 R3: chapter comprehension and reading evidence on the Codex branch
 - **0.6.0-alpha.72** · 2026-10-29 · Claim 6-11 Speaking for Antigravity-1
 - **0.6.0-alpha.71** · 2026-10-29 · 6-13 T3: language contrast tables, false friends, and personal pair notes
