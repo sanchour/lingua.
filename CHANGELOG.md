@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.19** · 2026-10-29 · Contract: DictEntryV6 says what 6-1b built, in FullEntry (touches 6-1b only)
 - **0.6.0-alpha.18** · 2026-10-29 · Claim 6-1b: the language's half of the word record
 - **0.6.0-alpha.17** · 2026-10-29 · 6-6 done: generated materials, checked (Dexie 23). Part A is done
 - **0.6.0-alpha.16** · 2026-10-29 · Claim 6-6: generated materials, checked

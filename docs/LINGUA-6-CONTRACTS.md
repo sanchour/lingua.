@@ -59,6 +59,8 @@ add the new one and read both.
 
 - **0.6.0-alpha.17 (6-6):** built `generated` (Dexie 23) and `GeneratedRow` as the contract has them; `checks` holds `grammar` for later, nothing writes it yet. Backed up as `insertOnly`.
 
+- **0.6.0-alpha.19 (6-1b):** the language's half was built in the full dictionary's `FullEntry` (version 3) with different names from `DictEntryV6`, which says so now: `syl`, `stress`, `hom`, `cog`, `parts`, `root`.
+
 ## What was decided here (and could be reopened)
 
 - Part A's tables: `evidence`, `evidenceDays` (6-5) and `generated` (6-6) are the only new ones; 6-1 to 6-3 add fields

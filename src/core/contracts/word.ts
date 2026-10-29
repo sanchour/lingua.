@@ -68,6 +68,14 @@ export interface LanguagePair {
   kind: 'falseFriend' | 'cognate';
 }
 
+/**
+ * What 6-1b built, in the full dictionary's `FullEntry` (src/core/dictionary/format.ts, DICT_VERSION 3), not in the pack's `DictEntry`:
+ * `syl` (syllables), `stress`, `hom` (homophones), `cog` (cognates: [language, word]), `parts` (what it is made of) and `root` (the word
+ * it comes from). The rest of `DictEntryV6` below was not built: word families, labels, synonyms, confusables and aspect pairs were
+ * already in the full dictionary (`derived`, `related`, sense tags, `syn`, `c`, `pair`); countable, irregular, separable, false friends
+ * and learner mistakes have no source data (6-1c).
+ */
+
 /** Fields `DictEntry` gains in 6-1. They come with a new pack format version: old packs still load, and a field
  *  a pack doesn't have is simply not shown. Tier 2 packs get what Wiktionary has for them, nothing hand-made. */
 export interface DictEntryV6 {
