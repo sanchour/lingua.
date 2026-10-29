@@ -9,6 +9,7 @@ import { NOTE_SORTS, sortNotes } from '@/core/srs/sortNotes';
 import type { NoteSort } from '@/core/srs/sortNotes';
 import { deleteDeck, forgetDeck, updateDeck, useDeck, useDeckCards, useDeckCounts, useDecks, useDeckNotes, useFolders } from '@/data/decks';
 import { deleteNotes, moveNotes, suspendNotes, tagNotes } from '@/data/deckTools';
+import { createDeck } from '@/data/decks';
 import type { Card, Note } from '@/data/types';
 import { Button, buttonClasses, EmptyState, MenuItem, Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
@@ -105,6 +106,18 @@ export default function DeckPage() {
       onConfirm: (text) => {
         const tags = text.split(',').map((t) => t.trim()).filter(Boolean);
         return tagNotes(ids, remove ? { remove: tags } : { add: tags });
+      },
+    });
+  const askSplit = () =>
+    setNaming({
+      title: `A new deck from ${ids.length} ${ids.length === 1 ? 'card' : 'cards'}`,
+      label: 'Name',
+      initial: `${deck.name}, part 2`,
+      confirm: 'Split off',
+      onConfirm: async (name) => {
+        const to = await createDeck(deck.lang, { name, folderId: deck.folderId });
+        await moveNotes(ids, to);
+        setPicked(new Set());
       },
     });
   const askMove = () =>
@@ -303,6 +316,9 @@ export default function DeckPage() {
                 </Button>
                 <Button variant="secondary" icon={FolderInput} disabled={!ids.length} onClick={askMove}>
                   Move
+                </Button>
+                <Button variant="secondary" icon={Layers} disabled={!ids.length} onClick={askSplit}>
+                  Split off
                 </Button>
                 <Button variant="secondary" icon={Pause} disabled={!ids.length} onClick={() => void suspendNotes(ids, true)}>
                   Suspend

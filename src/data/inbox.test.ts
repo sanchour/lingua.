@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
 import { addNote, createDeck } from './decks';
-import { deleteNotes, deckFromDrafts, duplicateDeck, mergeDecks, moveNotes, setDeckFlag, shiftDeck, suspendNotes, tagNotes } from './deckTools';
+import { deleteNotes, deckFromDrafts, duplicateDeck, fillFromDictionary, mergeDecks, moveNotes, setDeckFlag, shiftDeck, suspendNotes, tagNotes } from './deckTools';
 import { addInboxToDeck, inboxStateOf, markInboxKnown, setInboxState } from './inbox';
 import { recordSighting } from './memory';
 import { loadStudySession } from './study';
@@ -166,5 +166,16 @@ describe('the deck workshop', () => {
     const id = await deckFromDrafts('es', 'List', [{ term: 'casa', meaning: 'house' }, { term: 'perro', meaning: '' }], db);
     expect((await db.notes.where('deckId').equals(id).toArray()).map((n) => n.term).sort()).toEqual(['casa', 'perro']);
     expect(await db.cards.where('deckId').equals(id).count()).toBeGreaterThanOrEqual(2);
+  });
+
+  it('fills a sentence and the pronunciation into cards that lack them, and never over what is written', async () => {
+    const db = freshDb();
+    const deck = await deckWithWords(db, 'A', ['casa', 'perro']);
+    const [casa, perro] = (await db.notes.where('deckId').equals(deck).toArray()).sort((a, b) => a.term.localeCompare(b.term));
+    await db.notes.update(perro.id, { example: { text: 'Mi perro.' }, ipa: '/p/' });
+    const look = async (w: string) => ({ ipa: `/${w}/`, example: [`Una ${w}.`, `A ${w}.`] as [string, string] });
+    expect(await fillFromDictionary([casa.id, perro.id], look, db)).toBe(1);
+    expect(await db.notes.get(casa.id)).toMatchObject({ example: { text: 'Una casa.', translation: 'A casa.' }, ipa: '/casa/' });
+    expect(await db.notes.get(perro.id)).toMatchObject({ example: { text: 'Mi perro.' }, ipa: '/p/' });
   });
 });

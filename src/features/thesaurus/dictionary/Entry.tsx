@@ -12,6 +12,7 @@ import { loadGrammar } from '@/core/grammar/load';
 import { topicsForWord } from '@/core/grammar/forWord';
 import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
+import { normalizeWord } from '@/core/text/normalize';
 import { useSightings } from '@/data/memory';
 import type { WordState } from '@/data/types';
 import { setWordState, useWord } from '@/data/words';
@@ -117,7 +118,10 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
     const g = await loadGrammar(lang);
     return g ? topicsForWord(g, row.entries[0]?.pos, row.entries.some((e) => e.senses.some((s) => s.tags?.includes('reflexive')))) : [];
   }, [lang, row.key]) ?? [];
-  const syn = [...new Set(row.entries.flatMap((e) => [...(e.syn ?? []), ...e.senses.flatMap((s) => s.syn ?? [])]))].filter((w) => w.split(' ').length < 4).slice(0, 14);
+  const synAll = [...new Set(row.entries.flatMap((e) => [...(e.syn ?? []), ...e.senses.flatMap((s) => s.syn ?? [])]))].filter((w) => w.split(' ').length < 4).slice(0, 40);
+  // The most common synonym first: its words are the ones to learn (the frequency list comes with the language pack).
+  const synRanks = useLiveQuery(async () => (await db.frequency.bulkGet(synAll.map((w) => `${lang}:${normalizeWord(w, lang)}`))).map((r) => r?.rank ?? Infinity), [lang, row.key]);
+  const syn = synRanks ? synAll.map((w, i) => ({ w, r: synRanks[i] ?? Infinity })).sort((a, b) => a.r - b.r).map((x) => x.w).slice(0, 14) : synAll.slice(0, 14);
   const ant = [...new Set(row.entries.flatMap((e) => [...(e.ant ?? []), ...e.senses.flatMap((s) => s.ant ?? [])]))].slice(0, 10);
   const derived = [...new Set(row.entries.flatMap((e) => [...(e.derived ?? []), ...(e.related ?? [])]))].slice(0, 16);
   const ety = row.entries.find((e) => e.ety)?.ety;

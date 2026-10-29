@@ -122,6 +122,24 @@ export async function knownNorms(lang: string, database: LinguaDB = db): Promise
   return new Set((await database.words.where('lang').equals(lang).filter((w) => w.state === 1 && !w.deletedAt).toArray()).map((w) => w.norm));
 }
 
+/** Fills what the full dictionary knows into cards that lack it: a sentence (with its translation) and the pronunciation. Never changes what is written. */
+export async function fillFromDictionary(ids: readonly string[], look: (word: string) => Promise<{ ipa?: string; example?: [string, string?] } | undefined>, database: LinguaDB = db): Promise<number> {
+  let filled = 0;
+  for (const id of ids) {
+    const note = await database.notes.get(id);
+    if (!note) continue;
+    const found = await look(note.lemma ?? note.term);
+    const patch: Partial<typeof note> = {};
+    if (found?.example && !note.example?.text?.trim()) patch.example = { text: found.example[0], ...(found.example[1] ? { translation: found.example[1] } : {}) };
+    if (found?.ipa && !note.ipa) patch.ipa = found.ipa;
+    if (Object.keys(patch).length) {
+      await database.notes.update(id, { ...patch, updatedAt: Date.now() });
+      filled++;
+    }
+  }
+  return filled;
+}
+
 /** Moves a deck one place up (-1) or down (1) among the decks of its folder, for a tree sorted by hand. The places are written out again, so every deck has its own. */
 export async function shiftDeck(id: string, by: -1 | 1, database: LinguaDB = db): Promise<void> {
   const deck = await database.decks.get(id);

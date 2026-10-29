@@ -7,6 +7,8 @@ export interface TidyReport {
   duplicates: Note[][];
   /** The same word with different meanings: kept, but worth a look. */
   sameWord: Note[][];
+  /** Different words given the same meaning: kept, but one may be a mix-up. */
+  sameMeaning: Note[][];
   noMeaning: Note[];
   noExample: Note[];
 }
@@ -29,7 +31,10 @@ export function tidyReport(notes: readonly Note[], lang: string): TidyReport {
     for (const same of byMeaning.values()) if (same.length > 1) duplicates.push(same);
     if (byMeaning.size > 1) sameWord.push(group);
   }
-  return { duplicates, sameWord, noMeaning: live.filter((n) => !n.meaning.trim()), noExample: live.filter((n) => !n.example?.text?.trim() && !n.context?.sentence?.trim()) };
+  const byMeaning = new Map<string, Note[]>();
+  for (const n of live) if (n.meaning.trim()) byMeaning.set(norm(n.meaning), [...(byMeaning.get(norm(n.meaning)) ?? []), n]);
+  const sameMeaning = [...byMeaning.values()].filter((g) => new Set(g.map((n) => normalizeWord(n.term, lang) || norm(n.term))).size > 1);
+  return { duplicates, sameWord, sameMeaning, noMeaning: live.filter((n) => !n.meaning.trim()), noExample: live.filter((n) => !n.example?.text?.trim() && !n.context?.sentence?.trim()) };
 }
 
 /** The notes a tidy would delete: every copy after the first of each doubled word. */

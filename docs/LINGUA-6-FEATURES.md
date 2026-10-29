@@ -139,7 +139,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0055` Sort by topic · **6-2**
 - [x] `F0056` Merge decks · **6-2**
 - [x] `F0057` Duplicate decks · **6-2**
-- [ ] `F0058` Split a deck into smaller decks · **6-2**
+- [x] `F0058` Split a deck into smaller decks · **6-2**
 - [ ] `F0059` Import and export decks · **6-24** · partly there
 - [ ] `F0060` Share decks with other learners · **6-27** · partly there
 - [ ] `F0061` Public community decks · **6-27** · needs the user's word
@@ -162,9 +162,9 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0078` Bulk-edit word information · **6-2**
 - [x] `F0079` Bulk-tag, move or delete cards · **6-2**
 - [x] `F0080` Detect duplicate cards · **6-2** · partly there
-- [ ] `F0081` Detect duplicate translations · **6-2**
-- [ ] `F0082` Suggest missing example sentences · **6-2** · partly there
-- [ ] `F0083` Suggest missing audio or pronunciation data · **6-2** · partly there
+- [x] `F0081` Detect duplicate translations · **6-2**
+- [x] `F0082` Suggest missing example sentences · **6-2** · partly there
+- [x] `F0083` Suggest missing audio or pronunciation data · **6-2** · partly there
 - [x] `F0084` Mark a word as important · **6-2**
 - [ ] `F0085` Pin favorite words · **6-2**
 - [x] `F0086` Archive mastered vocabulary without deleting it · **6-2** · partly there
@@ -220,7 +220,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0124` British versus American English distinctions · **6-1**
 - [ ] `F0125` European versus Brazilian Portuguese distinctions · **6-1** · partly there
 - [x] `F0126` Etymology and word origins
-- [ ] `F0127` Word families · **6-1**
+- [x] `F0127` Word families · **6-1**
 - [x] `F0128` Roots and stems · **6-1**
 - [x] `F0129` Prefixes and suffixes · **6-1**
 - [x] `F0130` Inflectional forms
@@ -257,7 +257,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0161` Differences between similar words · **6-1** · partly there
 - [ ] `F0162` Example sentences ranked by difficulty · **6-1** · partly there
 - [x] `F0163` Corpus examples showing authentic usage
-- [ ] `F0164` Connotation and emotional tone · **6-1**
+- [x] `F0164` Connotation and emotional tone · **6-1**
 - [x] `F0165` Words that are technically correct but unnatural in context · **6-12**
 
 #### 2.5 Vocabulary games
@@ -1368,7 +1368,7 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1053` Synonyms
 - [x] `F1054` Antonyms
 - [x] `F1055` Related words · **6-1** · partly there
-- [ ] `F1056` Word families · **6-1**
+- [x] `F1056` Word families · **6-1**
 - [x] `F1057` Etymology
 - [x] `F1058` Collocations
 - [x] `F1059` Idioms

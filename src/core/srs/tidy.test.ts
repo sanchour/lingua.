@@ -18,6 +18,9 @@ describe('tidying a deck', () => {
     expect(report.duplicates.map((g) => g.map((n) => n.id))).toEqual([['a', 'b']]);
     expect(extraCopies(report).map((n) => n.id)).toEqual(['b']);
   });
+  it('lists different words with one meaning, to be looked at', () => {
+    expect(tidyReport([note('a', 'casa', 'house', 1), note('b', 'hogar', 'House', 2), note('c', 'perro', 'dog', 3)], 'es').sameMeaning.map((g) => g.map((n) => n.id))).toEqual([['a', 'b']]);
+  });
   it('lists a word with two meanings apart, and what is missing; deleted notes do not count', () => {
     expect(report.sameWord.map((g) => g.map((n) => n.id))).toEqual([['a', 'b', 'c']]);
     expect(report.noMeaning.map((n) => n.id)).toEqual(['d']);
