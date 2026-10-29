@@ -1,9 +1,10 @@
 import { Link } from 'react-router';
-import { Bike, Check, LoaderCircle, Pause, Play, Repeat, RotateCcw, RotateCw, SkipBack, SkipForward } from 'lucide-react';
+import { Bike, Check, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
-import { nextSentence, previousSentence, setRate, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
+import { loopLabel } from '@/core/audio/loop';
+import { cycleLoop, nextSentence, previousSentence, setKeepPitch, setRate, toggleLineByLine, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
 import { SleepButton } from './SleepTimer';
 
 export const RATES = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5];
@@ -33,6 +34,9 @@ export function Transport({ className }: { className?: string }) {
   const fwd = usePlayer((s) => s.skipFwdSec);
   const rate = usePlayer((s) => s.rate);
   const repeat = usePlayer((s) => s.repeat);
+  const loop = usePlayer((s) => s.abLoop);
+  const lineByLine = usePlayer((s) => s.lineByLine);
+  const keepPitch = usePlayer((s) => s.keepPitch);
   const playing = status === 'playing';
 
   return (
@@ -92,6 +96,10 @@ export function Transport({ className }: { className?: string }) {
                   {r === rate && <Check size={15} className="text-accent-text" aria-hidden />}
                 </button>
               ))}
+              <label className="mt-1 flex cursor-pointer items-center gap-2 border-t border-line/60 px-3 pt-2 text-[13px] font-semibold">
+                <input type="checkbox" checked={keepPitch} onChange={(e) => setKeepPitch(e.target.checked)} />
+                Keep the pitch
+              </label>
             </div>
           )}
         </Popover>
@@ -108,6 +116,27 @@ export function Transport({ className }: { className?: string }) {
         >
           <Repeat size={14} aria-hidden />
           {repeat > 1 ? `${repeat}×` : 'Repeat'}
+        </button>
+        <button
+          type="button"
+          title="Mark where a part starts, then where it ends: it plays again and again. A third press clears it. (key: [)"
+          aria-label={`Loop a part: ${loopLabel(loop)}`}
+          onClick={cycleLoop}
+          className={cx('flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors', loop ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong')}
+        >
+          <Repeat1 size={14} aria-hidden />
+          {loopLabel(loop)}
+        </button>
+        <button
+          type="button"
+          disabled={!hasCues}
+          title={hasCues ? 'Pause after each line; press play for the next (key: L)' : 'Line by line needs a transcript'}
+          aria-pressed={lineByLine}
+          onClick={toggleLineByLine}
+          className={cx('flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors disabled:opacity-40', lineByLine ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong')}
+        >
+          <StepForward size={14} aria-hidden />
+          Line by line
         </button>
         <SleepButton />
         <Link to="/sonus/commute" className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold transition-colors hover:border-line-strong">

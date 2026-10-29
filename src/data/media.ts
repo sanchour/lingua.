@@ -282,3 +282,19 @@ export async function transcriptText(media: Media, database: LinguaDB = db): Pro
   await database.media.update(media.id, { textId, updatedAt: Date.now() });
   return textId;
 }
+
+/** Marks a place in an item to come back to; one within two seconds of another replaces it. */
+export async function addBookmark(mediaId: string, at: number, extra: { note?: string; hard?: boolean } = {}, database: LinguaDB = db): Promise<void> {
+  await database.transaction('rw', database.media, async () => {
+    const media = await database.media.get(mediaId);
+    if (!media) return;
+    const rest = (media.bookmarks ?? []).filter((b) => Math.abs(b.at - at) > 2000);
+    const bookmarks = [...rest, { at: Math.round(at), ...extra }].sort((a, b) => a.at - b.at).slice(0, 200);
+    await database.media.update(mediaId, { bookmarks, updatedAt: Date.now() });
+  });
+}
+
+export async function removeBookmark(mediaId: string, at: number, database: LinguaDB = db): Promise<void> {
+  const media = await database.media.get(mediaId);
+  if (media) await database.media.update(mediaId, { bookmarks: (media.bookmarks ?? []).filter((b) => b.at !== at), updatedAt: Date.now() });
+}

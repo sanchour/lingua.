@@ -603,12 +603,12 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0441` ⭐ Play, pause and resume
 - [x] `F0442` ⭐ Adjustable playback speed
 - [ ] `F0443` Repeat the current sentence · **6-9** · partly there
-- [ ] `F0444` Repeat a selected segment · **6-9**
-- [ ] `F0445` Loop a word or phrase · **6-9**
+- [x] `F0444` Repeat a selected segment · **6-9**
+- [x] `F0445` Loop a word or phrase · **6-9**
 - [x] `F0446` Jump backward by a few seconds
 - [x] `F0447` Jump forward by a few seconds
-- [ ] `F0448` A-B loop between two timestamps · **6-9**
-- [ ] `F0449` Sentence-by-sentence playback · **6-9** · partly there
+- [x] `F0448` A-B loop between two timestamps · **6-9**
+- [x] `F0449` Sentence-by-sentence playback · **6-9** · partly there
 - [x] `F0450` Transcript synchronization
 - [x] `F0451` Word-level transcript highlighting
 - [x] `F0452` Show or hide the transcript
@@ -616,10 +616,10 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0454` Show translations only after listening · **6-9** · partly there
 - [x] `F0455` Show subtitles in the target language
 - [x] `F0456` Show bilingual subtitles
-- [ ] `F0457` Control playback pitch where supported · **6-9**
+- [x] `F0457` Control playback pitch where supported · **6-9**
 - [ ] `F0458` Separate speakers in a transcript · **6-9**
-- [ ] `F0459` Save timestamps · **6-9** · partly there
-- [ ] `F0460` Bookmark difficult sections · **6-9**
+- [x] `F0459` Save timestamps · **6-9** · partly there
+- [x] `F0460` Bookmark difficult sections · **6-9**
 - [ ] `F0461` Create a personal audio playlist · **6-9**
 - [x] `F0462` Download permitted audio for offline use
 - [ ] `F0463` Automatically replay difficult sections · **6-9**
@@ -1065,7 +1065,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [ ] `F0813` Live-stream comprehension · **6-19** · partly there
 - [x] `F0814` Video transcript reading
 - [x] `F0815` Vocabulary lists generated from media · **6-2** · partly there
-- [ ] `F0816` Save timestamps for difficult sections · **6-9**
+- [x] `F0816` Save timestamps for difficult sections · **6-9**
 - [x] `F0817` Review phrases from favorite scenes
 - [ ] `F0818` Rewatch difficult passages with less assistance · **6-9**
 - [ ] `F0819` Media playlists organized by level · **6-19**

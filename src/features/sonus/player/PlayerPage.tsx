@@ -4,12 +4,12 @@ import { ChevronDown, ChevronLeft, LoaderCircle, Play } from 'lucide-react';
 import { formatDuration } from '@/core/audio/cues';
 import { useBook } from '@/data/books';
 import type { Book } from '@/data/books';
-import { useMedia, useTranscript } from '@/data/media';
+import { addBookmark, useMedia, useTranscript } from '@/data/media';
 import type { Media, Transcript } from '@/data/types';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { cx } from '@/lib/cx';
-import { loadMedia, nextSentence, previousSentence, setCues, toggleRepeat, skip, toggle, unlockAudio, usePlayer } from '@/services/audio/engine';
+import { cycleLoop, currentMs, toggleLineByLine, loadMedia, nextSentence, previousSentence, setCues, toggleRepeat, skip, toggle, unlockAudio, usePlayer } from '@/services/audio/engine';
 import { Artwork } from '../library/Artwork';
 import { MediaOptions } from '../library/MediaOptions';
 import { BookBar } from './BookBar';
@@ -19,6 +19,7 @@ import { hasBookBar, partLabel } from './labels';
 import { Scrubber } from './Scrubber';
 import { createSpotifyClock, SpotifyEmbed } from './SpotifyEmbed';
 import { NoTranscript, ReadAlongButton, TranscriptBar } from './TranscriptTools';
+import { Bookmarks } from './Bookmarks';
 import { Transport } from './Transport';
 import { sonusBase, sonusHome } from '@/features/sonus/paths';
 import { OwnWordsButton } from '@/features/production/OwnWords';
@@ -104,6 +105,9 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
       arrowup: previousSentence,
       arrowdown: nextSentence,
       r: () => toggleRepeat(),
+      '[': cycleLoop,
+      l: toggleLineByLine,
+      b: () => void addBookmark(media.id, currentMs()),
     },
     isLoaded,
   );
@@ -130,6 +134,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
       {status === 'error' && <p className="mb-3 rounded-xl bg-accent-soft px-3 py-2 text-center text-[13px] font-semibold text-accent-text">{error}</p>}
       <Scrubber />
       <Transport className="mt-2" />
+      <Bookmarks mediaId={media.id} />
     </>
   ) : (
     <button type="button" onClick={playThis} className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-inverse font-semibold text-on-inverse shadow-elev-2 transition-transform active:scale-[0.98]">
