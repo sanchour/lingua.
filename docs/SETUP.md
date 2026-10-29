@@ -91,8 +91,19 @@ read, 60 MB kept) and Tatoeba's sentences (decompressed with `bunzip2`, which Gi
 
 ```bash
 node scripts/lang-data/dictionary-fetch.ts                          # → scripts/.cache/mono-*.jsonl.gz, tatoeba/
-node --max-old-space-size=3072 scripts/lang-data/dictionary.ts fr   # → public/dict/fr.v2.json.gz (no codes: all six)
+node --max-old-space-size=3072 scripts/lang-data/dictionary.ts fr   # → public/dict/fr.v3.json.gz (no codes: all six)
 ```
+
+`dictionary.ts` also reads each language's frequency list (`freq-<code>.txt`, FrequencyWords) and, for Mandarin, `Unihan_Variants.txt`; `fetch.ts <codes>` makes them with the kaikki file but also downloads the subtitle corpora the packs need. Just for the dictionary (about 580 MB of kaikki files for the six, 2026-10-29), by hand:
+
+```bash
+mkdir -p scripts/.cache && cd scripts/.cache
+curl -L -o kaikki-es.jsonl.gz https://kaikki.org/dictionary/Spanish/kaikki.org-dictionary-Spanish.jsonl.gz   # French, German, Russian, Arabic, Chinese alike
+curl -L -o freq-es.txt https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/es/es_50k.txt   # zh: zh_cn/zh_cn_50k.txt
+curl -L -o unihan.zip https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip && unzip -o unihan.zip Unihan_Variants.txt
+```
+
+Kaikki refreshes its extracts weekly, so a rebuild picks up whatever Wiktionary changed since.
 
 The recordings of common words (5.1-3c) read the same kaikki files (streamed from kaikki.org when
 they aren't in the cache) and Commons' Lingua Libre and Wiktionary categories (French takes a

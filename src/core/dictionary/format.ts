@@ -3,8 +3,9 @@
 // language and kept on the device (the `fullDict` table). Inflection tables stay in the language
 // pack (dictParadigms), which every language already has.
 
+/** 3: syllables, stress, homophones, cognates, the parts a word is made of and where it comes from (6-1b). */
 /** 2: definitions from the language's own Wiktionary, and Tatoeba's sentences (4.0-2, second pass). */
-export const DICT_VERSION = 2;
+export const DICT_VERSION = 3;
 export const DICT_LANGS = ['es', 'ru', 'zh', 'fr', 'de', 'ar'] as const;
 export const dictFileName = (lang: string) => `${lang}.v${DICT_VERSION}.json.gz`;
 export const hasFullDictionary = (lang: string) => (DICT_LANGS as readonly string[]).includes(lang);
@@ -39,6 +40,18 @@ export interface FullEntry {
   syn?: string[];
   ant?: string[];
   ety?: string;
+  /** Syllables, from Wiktionary's hyphenation points (v3); they spell the headword. */
+  syl?: string[];
+  /** Index into `syl` of the stressed syllable, where the headword is written with its stress mark (Russian). */
+  stress?: number;
+  /** Words that sound the same (v3). */
+  hom?: string[];
+  /** The same word in other languages, as Wiktionary's etymology lists them: [language code, word] (v3). */
+  cog?: Array<[lang: string, word: string]>;
+  /** What a compound or derived word is made of, as Wiktionary writes it: `des-`, `hacer`, `-ia` (v3). */
+  parts?: string[];
+  /** The word it was inherited, borrowed or derived from, in another language: [language code, word] (v3). */
+  root?: [lang: string, word: string];
 }
 
 export interface FullDictFile {

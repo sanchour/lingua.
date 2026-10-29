@@ -63,7 +63,8 @@ const PAIR_TAGS = new Set(['perfective', 'imperfective', 'feminine', 'masculine'
 const STORY = /^(From|Inherited|Borrowed|Derived|Learned|Semi-learned|Compound|Calque|Clipping|Back-formation|Uncertain|Unknown|Probably|Possibly|Perhaps|Univerbation|Ideogrammic|Phono-semantic|Pictogram|Onomatopoeic|Coined|Blend|Short for|Abbreviation|Partial calque|Named after|Ultimately)\b/;
 const IGNORED_FORM_TAGS = new Set(['canonical', 'romanization', 'error-unknown-tag', 'table-tags', 'inflection-template', 'class']);
 
-interface Sound { ipa?: string; zh_pron?: string; mp3_url?: string; tags?: string[] }
+interface Sound { ipa?: string; zh_pron?: string; mp3_url?: string; tags?: string[]; homophone?: string }
+interface Template { name?: string; args?: Record<string, string> }
 interface Example { text?: string; english?: string; translation?: string; type?: string; bold_text_offsets?: Array<[number, number]> }
 interface Sense { glosses?: string[]; tags?: string[]; qualifier?: string; examples?: Example[]; synonyms?: Array<{ word?: string }>; antonyms?: Array<{ word?: string }>; form_of?: unknown; alt_of?: unknown }
 interface Entry {
@@ -77,6 +78,8 @@ interface Entry {
   derived?: Array<{ word?: string }>;
   related?: Array<{ word?: string }>;
   etymology_text?: string;
+  hyphenations?: Array<{ parts?: string[] }>;
+  etymology_templates?: Template[];
 }
 
 async function* readLines(file: URL): AsyncGenerator<string> {
@@ -176,7 +179,96 @@ function toEntry(e: Entry, lang: string): FullEntry | null {
   if (phrases.length) entry.phrases = phrases.map((p) => [p]);
   const ety = etymology(e.etymology_text);
   if (ety) entry.ety = ety;
+  // v3 (6-1b): how it is said and what it is made of.
+  const syl = syllables(e, lang);
+  if (syl) entry.syl = syl;
+  const stress = stressedSyllable(entry.head, syl);
+  if (stress !== undefined) entry.stress = stress;
+  const hom = homophones(e, lang);
+  if (hom.length) entry.hom = hom;
+  Object.assign(entry, origin(e, lang));
   return entry;
+}
+
+/** Wiktionary's hyphenation points as syllables, when they spell the word (so a stray note or another form is not taken for them). */
+function syllables(e: Entry, lang: string): string[] | undefined {
+  const parts = e.hyphenations?.[0]?.parts?.flatMap((p) => p.split('‧')).map((p) => p.trim()).filter(Boolean);
+  if (!parts || parts.length < 2 || !e.word) return undefined;
+  const plain = (s: string) => normalizeWord(s, lang).replace(/[\s'’-]/g, '');
+  return plain(parts.join('')) === plain(e.word) ? parts : undefined;
+}
+
+/** Which syllable carries the stress mark (U+0301) of the headword as Wiktionary writes it: counted in letters, so it needs the syllables to spell it. */
+function stressedSyllable(head: string | undefined, syl: string[] | undefined): number | undefined {
+  if (!head || !syl) return undefined;
+  const at = head.normalize('NFD').indexOf('\u0301');
+  if (at < 0) return undefined;
+  // The letters before the mark, without marks, tell how far into the word it is.
+  const letters = head.normalize('NFD').slice(0, at).replace(/\p{M}/gu, '').length;
+  let seen = 0;
+  for (let i = 0; i < syl.length; i++) {
+    seen += syl[i].normalize('NFD').replace(/\p{M}/gu, '').length;
+    if (letters <= seen && letters > 0) return i;
+  }
+  return undefined;
+}
+
+/**
+ * Words that sound the same, without the notes Wiktionary puts around them: a region before ("(Latin America) pes"), a romanisation
+ * or a remark after ("ни (ni) (when unstressed)", "êtres (general)"). Another spelling of the same word (Ich, ich) is not a homophone,
+ * and for Mandarin the list is only its traditional and simplified spellings, so it is left out.
+ */
+function homophones(e: Entry, lang: string): string[] {
+  if (lang === 'zh' || !e.word) return [];
+  const own = e.word.toLocaleLowerCase();
+  const list = (e.sounds ?? [])
+    .map((s) => s.homophone?.replace(/^\([^)]*\)\s*/, '').replace(/\s*\([^)]*\)/g, '').trim())
+    .filter((w): w is string => Boolean(w) && w!.length < 30 && w!.toLocaleLowerCase() !== own);
+  return [...new Set(list)].slice(0, 4);
+}
+
+/** The languages Lingua has: cognates are shown only in these, not in every dialect and dead language Wiktionary lists. */
+const KNOWN_LANGS = new Set([...PACK_SOURCES.map((s) => s.code), 'hr', 'sr', 'bs', 'no', 'cmn', 'zh', 'grc']);
+
+/** A template's argument without its inline modifiers ("-ment<id:adverbial>" is "-ment"). */
+const plainArg = (arg: string) => arg.replace(/<[^>]*>/g, '').trim();
+
+const OWN = (lang: string) => new Set([lang, ...(lang === 'zh' ? ['cmn'] : [])]);
+const FROM = new Set(['inh', 'inh+', 'der', 'der+', 'bor', 'bor+', 'lbor', 'slbor', 'obor', 'uder']);
+const MADE_OF = new Set(['compound', 'com', 'affix', 'af', 'prefix', 'pre', 'suffix', 'suf', 'confix', 'con', 'surf', 'surface analysis']);
+const positional = (t: Template, from = 2) => Object.keys(t.args ?? {}).filter((k) => /^\d+$/.test(k) && Number(k) >= from).sort((a, b) => Number(a) - Number(b)).map((k) => (t.args![k] ?? '').trim());
+
+/** What the word is made of (its own language's affix and compound templates), and where it comes from (the first template naming another language). */
+function origin(e: Entry, lang: string): Pick<FullEntry, 'parts' | 'cog' | 'root'> {
+  const own = OWN(lang);
+  const out: Pick<FullEntry, 'parts' | 'cog' | 'root'> = {};
+  // An etymology tree is written as {{ety|es|:af|des-|decir}}: the same as {{af|es|des-|decir}}, one place on.
+  const templates = (e.etymology_templates ?? []).map((t): Template => {
+    const kind = t.name === 'ety' ? t.args?.['2'] : undefined;
+    if (!kind?.startsWith(':') || !t.args) return t;
+    const args: Record<string, string> = { '1': t.args['1'] };
+    for (const k of Object.keys(t.args)) if (/^\d+$/.test(k) && Number(k) >= 3) args[String(Number(k) - 1)] = t.args[k];
+    return { name: kind.slice(1), args };
+  });
+  const made = templates.find((t) => t.name && MADE_OF.has(t.name) && own.has(t.args?.['1'] ?? ''));
+  if (made) {
+    let parts = positional(made).map(plainArg).filter((p) => p && p !== '-' && !p.includes('='));
+    if ((made.name === 'suffix' || made.name === 'suf') && parts.length >= 2) parts = parts.map((p, i) => (i === parts.length - 1 && !p.startsWith('-') ? `-${p}` : p));
+    if ((made.name === 'prefix' || made.name === 'pre') && parts.length >= 2) parts = parts.map((p, i) => (i === 0 && !p.endsWith('-') ? `${p}-` : p));
+    if (parts.length >= 2 && parts.length <= 5 && parts.every((p) => p.length < 30)) out.parts = parts;
+  }
+  // The word it comes from: the first template naming a word (not "-", the placeholder for a form with none) in another language.
+  const from = templates.find((t) => t.name && FROM.has(t.name) && own.has(t.args?.['1'] ?? '') && t.args?.['2'] && !own.has(t.args['2']) && plainArg(t.args['3'] ?? '').replace(/^-$/, ''));
+  if (from) out.root = [from.args!['2'], plainArg(from.args!['3'])];
+  const cog: Array<[string, string]> = [];
+  for (const t of templates) {
+    if (t.name !== 'cog' && t.name !== 'cognate') continue;
+    const [l, w] = [t.args?.['1']?.trim(), plainArg(t.args?.['2'] ?? '')];
+    if (!l || !w || w === '-' || !KNOWN_LANGS.has(l) || own.has(l) || w.length > 30 || cog.some(([cl]) => cl === l)) continue;
+    cog.push([l, w]);
+  }
+  if (cog.length) out.cog = cog.slice(0, 6);
+  return out;
 }
 
 const firstGloss = (e: Entry) => e.senses?.map(sense).find((s) => s)?.g[0];

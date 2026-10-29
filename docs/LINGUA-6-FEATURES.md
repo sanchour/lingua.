@@ -221,8 +221,8 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0125` European versus Brazilian Portuguese distinctions · **6-1** · partly there
 - [x] `F0126` Etymology and word origins
 - [ ] `F0127` Word families · **6-1**
-- [ ] `F0128` Roots and stems · **6-1**
-- [ ] `F0129` Prefixes and suffixes · **6-1**
+- [x] `F0128` Roots and stems · **6-1**
+- [x] `F0129` Prefixes and suffixes · **6-1**
 - [x] `F0130` Inflectional forms
 - [ ] `F0131` Derivational forms · **6-1**
 - [x] `F0132` Singular and plural forms
@@ -234,7 +234,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0138` Declension tables
 - [x] `F0139` Case information
 - [ ] `F0140` Stress patterns · **6-1** · partly there
-- [ ] `F0141` Syllable breakdown · **6-1**
+- [x] `F0141` Syllable breakdown · **6-1**
 - [x] `F0142` IPA transcription
 - [x] `F0143` Audio pronunciation
 - [ ] `F0144` Common spelling mistakes · **6-1**
@@ -242,14 +242,14 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0146` Synonym maps · **6-20** · partly there
 - [ ] `F0147` Antonym maps · **6-20** · partly there
 - [ ] `F0148` False friends between languages · **6-1** · partly there
-- [ ] `F0149` Cognates · **6-1** · partly there
+- [x] `F0149` Cognates · **6-1** · partly there
 - [ ] `F0150` False cognates · **6-1** · partly there
-- [ ] `F0151` Homonyms and homophones · **6-1**
+- [x] `F0151` Homonyms and homophones · **6-1**
 - [x] `F0152` Polysemy and different senses
 - [x] `F0153` Idioms and fixed expressions
 - [x] `F0154` Collocations
 - [ ] `F0155` Phrasal verbs · **6-1** · partly there
-- [ ] `F0156` Compound words · **6-1**
+- [x] `F0156` Compound words · **6-1**
 - [ ] `F0157` Proverbs and sayings · **6-1** · partly there
 - [ ] `F0158` Words that don’t translate neatly · **6-19**
 - [ ] `F0159` Semantic fields · **6-20** · partly there
@@ -1620,7 +1620,7 @@ These are integrated activities that combine skills instead of training each one
 - [x] `F1256` CEFR level information
 - [x] `F1257` Pronunciation audio
 - [x] `F1258` IPA transcription
-- [ ] `F1259` Syllable division · **6-1**
+- [x] `F1259` Syllable division · **6-1**
 - [x] `F1260` Grammatical information
 - [x] `F1261` Verb conjugation
 - [x] `F1262` Noun declension

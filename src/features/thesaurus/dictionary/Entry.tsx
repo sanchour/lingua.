@@ -26,6 +26,7 @@ import { WordForms } from '@/features/codex/reader/WordForms';
 import { articleFor } from '../common/words';
 import { entryPath } from './DictionarySearch';
 import { WordPlaces } from './WordMemory';
+import { OriginLines, SyllableBadge } from './WordOrigin';
 import { YourWord } from './YourWord';
 
 const GENDER: Record<string, string> = { m: 'masculine', f: 'feminine', n: 'neuter', mf: 'masculine or feminine' };
@@ -48,7 +49,7 @@ export function InstallCard({ lang, update }: { lang: string; update?: boolean }
         <p className="font-serif text-xl font-semibold">{update ? `A better ${name} dictionary is ready` : `The ${name} dictionary`}</p>
         <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">
           {update
-            ? 'Definitions in the language itself and many more example sentences.'
+            ? 'Syllables, what words are made of and where they come from, on top of the language’s own definitions and example sentences.'
             : 'Every meaning with real examples, pronunciation, forms, phrases, synonyms and where the word comes from.'}{' '}
           About {DICT_SIZE_MB[lang] ?? 8} MB, kept on this device.
         </p>
@@ -113,6 +114,8 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
   const ant = [...new Set(row.entries.flatMap((e) => [...(e.ant ?? []), ...e.senses.flatMap((s) => s.ant ?? [])]))].slice(0, 10);
   const derived = [...new Set(row.entries.flatMap((e) => [...(e.derived ?? []), ...(e.related ?? [])]))].slice(0, 16);
   const ety = row.entries.find((e) => e.ety)?.ety;
+  const hom = [...new Set(row.entries.flatMap((e) => e.hom ?? []))];
+  const hasOrigin = row.entries.some((e) => e.parts || e.root || e.cog);
 
   return (
     <article className="min-w-0">
@@ -135,6 +138,7 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
       </div>
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
         {main?.ipa?.map((p) => <Badge key={p}>{p}</Badge>)}
+        <SyllableBadge lang={lang} entry={row.entries.find((e) => e.syl) ?? main} />
         {row.rank && (
           <Badge tone="sage">
             #{row.rank.toLocaleString()} most common · {cefrForRank(row.rank)}
@@ -251,9 +255,15 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
             <WordLinks lang={lang} words={derived} />
           </Side>
         )}
-        {ety && (
+        {hom.length > 0 && (
+          <Side title="Sounds like">
+            <WordLinks lang={lang} words={hom} />
+          </Side>
+        )}
+        {(ety || hasOrigin) && (
           <Side title="Where it comes from">
-            <p className="text-[14px] leading-relaxed text-ink-soft">{ety}</p>
+            <OriginLines lang={lang} entries={row.entries} />
+            {ety && <p className="text-[14px] leading-relaxed text-ink-soft">{ety}</p>}
           </Side>
         )}
         {sightings && sightings.length > 0 && (
