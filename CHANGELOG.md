@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.100** · 2026-10-29 · 6-10: plan row version corrected
 - **0.6.0-alpha.99** · 2026-10-29 · 6-10: Cursus Sounds, minimal pairs, record and compare
 - **0.6.0-alpha.98** · 2026-10-29 · 6-9 L4: hard parts marked and replayed, dictation diff, speed steps and noise
 - **0.6.0-alpha.97** · 2026-10-29 · 6-9 L3: heard exercises (tag moved on)
