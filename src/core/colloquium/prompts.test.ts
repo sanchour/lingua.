@@ -117,6 +117,58 @@ describe('buildPrompt', () => {
     expect(buildPrompt('ar', all)).toContain('uno، dos');
     expect(buildPrompt('es', all)).toContain('uno, dos');
   });
+
+  it('supports the four conversation modes: scenario, free, tutor, immersion', () => {
+    const free = buildPrompt('en', { ...bare, mode: 'free' });
+    expect(free).toContain('spontaneous free-flowing conversation');
+    expect(free).not.toContain('You play');
+
+    const tutor = buildPrompt('en', { ...bare, mode: 'tutor' });
+    expect(tutor).toContain('patient language tutor');
+
+    const immersion = buildPrompt('en', { ...bare, mode: 'immersion' });
+    expect(immersion).toContain('Full immersion');
+    expect(immersion).toContain('never switch to English');
+
+    // In Spanish
+    const esImmersion = buildPrompt('es', { ...bare, mode: 'immersion' });
+    expect(esImmersion).toContain('Inmersión total');
+  });
+
+  it('adds conversational styles and constraints into the prompt', () => {
+    const p = buildPrompt('en', {
+      ...bare,
+      styles: {
+        interruptions: true,
+        feignMisunderstanding: true,
+        limitedAssistance: true,
+        cappedVocabulary: true,
+        gradualNewWords: true,
+        multiCharacter: true,
+        branchingOutcomes: true,
+        pronunciationFocus: true,
+        oralGrammarFocus: true,
+      },
+    });
+    expect(p).toContain('interruptions and spontaneous follow-up');
+    expect(p).toContain('feign misunderstanding');
+    expect(p).toContain('circumlocute');
+    expect(p).toContain('Cap your vocabulary');
+    expect(p).toContain('gradually');
+    expect(p).toContain('group conversation');
+    expect(p).toContain('branching conversation');
+    expect(p).toContain('pronunciation, phonetic rhythm');
+    expect(p).toContain('oral grammar drills');
+  });
+
+  it('contains the new scenes for negotiation, clarification, pronunciation, grammar, group, and branching', () => {
+    expect(getScene('negotiate')).toBeDefined();
+    expect(getScene('clarification')).toBeDefined();
+    expect(getScene('pronunciation')).toBeDefined();
+    expect(getScene('oral-grammar')).toBeDefined();
+    expect(getScene('group-dinner')).toBeDefined();
+    expect(getScene('branching-adventure')).toBeDefined();
+  });
 });
 
 describe('the AIs', () => {

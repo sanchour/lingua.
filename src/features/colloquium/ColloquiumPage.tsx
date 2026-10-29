@@ -8,6 +8,7 @@ import { PageHeader } from '@/app/PageHeader';
 import { AIS } from '@/core/colloquium/ais';
 import type { Ai } from '@/core/colloquium/ais';
 import { asScene, buildPrompt, getScene, promptInLanguage } from '@/core/colloquium/prompts';
+import type { ConversationMode } from '@/core/colloquium/prompts';
 import { fits, GROUPS, SCENES, searchScenes } from '@/core/colloquium/scenes';
 import type { Scene } from '@/core/colloquium/scenes';
 import { toPlain } from '@/core/journal/markdown';
@@ -80,6 +81,8 @@ export default function ColloquiumPage() {
   const prompt = buildPrompt(lang, {
     scene: sceneId,
     level,
+    mode: choices.conversationMode,
+    styles: choices.styles,
     correct: choices.correct === 'off' ? false : choices.correct,
     slow,
     help: choices.help,
@@ -167,6 +170,19 @@ export default function ColloquiumPage() {
           </div>
 
           <div className="mt-7 grid gap-x-10 gap-y-6 md:grid-cols-2">
+            <Option title="Conversation mode" detail={choices.conversationMode === 'free' ? 'Talk about anything spontaneously without a predefined script.' : choices.conversationMode === 'tutor' ? 'The AI actively guides, teaches, and explains mistakes.' : choices.conversationMode === 'immersion' ? 'Total immersion in the language with minimal assistance.' : 'A real-world scenario with a clear goal and character roles.'}>
+              <Segmented<ConversationMode>
+                label="Conversation mode"
+                value={choices.conversationMode ?? 'scenario'}
+                onChange={(conversationMode) => choose({ conversationMode })}
+                options={[
+                  { value: 'scenario', label: 'Scenario' },
+                  { value: 'free', label: 'Free' },
+                  { value: 'tutor', label: 'Tutor' },
+                  { value: 'immersion', label: 'Immersion' },
+                ]}
+              />
+            </Option>
             <Option title="Correct my mistakes" detail={choices.correct === 'end' ? 'All together when you finish, so the talk keeps flowing.' : choices.correct === 'live' ? 'Briefly, after each of your answers.' : 'No corrections, just talking.'}>
               <Segmented<SermoChoices['correct']>
                 label="Correct my mistakes"
@@ -191,6 +207,57 @@ export default function ColloquiumPage() {
                 ]}
               />
             </Option>
+          </div>
+
+          <div className="mt-6">
+            <h2 className={cx(label, 'mb-2.5')}>Style & constraints</h2>
+            <div className="flex flex-wrap gap-2">
+              <Toggle
+                on={Boolean(choices.styles?.interruptions)}
+                onClick={() => choose({ styles: { ...choices.styles, interruptions: !choices.styles?.interruptions } })}
+                text="Interruptions & follow-ups"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.feignMisunderstanding)}
+                onClick={() => choose({ styles: { ...choices.styles, feignMisunderstanding: !choices.styles?.feignMisunderstanding } })}
+                text="Ask for clarification on errors"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.limitedAssistance)}
+                onClick={() => choose({ styles: { ...choices.styles, limitedAssistance: !choices.styles?.limitedAssistance } })}
+                text="Limited English assistance"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.cappedVocabulary)}
+                onClick={() => choose({ styles: { ...choices.styles, cappedVocabulary: !choices.styles?.cappedVocabulary } })}
+                text="Cap vocabulary to my level"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.gradualNewWords)}
+                onClick={() => choose({ styles: { ...choices.styles, gradualNewWords: !choices.styles?.gradualNewWords } })}
+                text="Gradual new expressions"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.multiCharacter)}
+                onClick={() => choose({ styles: { ...choices.styles, multiCharacter: !choices.styles?.multiCharacter } })}
+                text="Multi-character simulation"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.branchingOutcomes)}
+                onClick={() => choose({ styles: { ...choices.styles, branchingOutcomes: !choices.styles?.branchingOutcomes } })}
+                text="Branching outcomes"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.pronunciationFocus)}
+                onClick={() => choose({ styles: { ...choices.styles, pronunciationFocus: !choices.styles?.pronunciationFocus } })}
+                text="Pronunciation clinic"
+              />
+              <Toggle
+                on={Boolean(choices.styles?.oralGrammarFocus)}
+                onClick={() => choose({ styles: { ...choices.styles, oralGrammarFocus: !choices.styles?.oralGrammarFocus } })}
+                text="Oral grammar drills"
+              />
+            </div>
           </div>
 
           <div className="mt-6 flex flex-wrap gap-2">

@@ -372,7 +372,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0257` Predict the next grammatical form · **6-4**
 - [x] `F0258` Complete a dialogue using the right forms · **6-4**
 - [ ] `F0259` Dictation focused on grammatical endings · **6-9**
-- [ ] `F0260` Oral grammar drills · **6-11**
+- [x] `F0260` Oral grammar drills · **6-11**
 - [x] `F0261` Timed conjugation challenges
 - [x] `F0262` Mixed grammar review
 - [ ] `F0263` Adaptive grammar exercises based on mistakes · **6-16** · partly there
@@ -696,7 +696,7 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [x] `F0517` Conversation based on saved vocabulary
 - [ ] `F0518` Conversation based on recent lessons · **5.2-6** · planned in Lingua 5.2
 - [x] `F0519` Conversation focused on a grammar point
-- [ ] `F0520` Conversation focused on pronunciation · **6-11**
+- [x] `F0520` Conversation focused on pronunciation · **6-11**
 - [ ] `F0521` Casual conversation with an informal persona · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0522` Formal professional conversation · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0523` Travel conversations · **5.2-6** · planned in Lingua 5.2
@@ -712,11 +712,11 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [x] `F0533` Debate practice
 - [ ] `F0534` Job interview simulations · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0535` University seminar simulations · **5.2-6** · planned in Lingua 5.2
-- [ ] `F0536` Negotiation practice · **6-11**
+- [x] `F0536` Negotiation practice · **6-11**
 - [ ] `F0537` Giving a presentation · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0538` Making a phone call · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0539` Handling an awkward situation · **5.2-6** · planned in Lingua 5.2
-- [ ] `F0540` Asking for clarification · **6-11**
+- [x] `F0540` Asking for clarification · **6-11**
 - [ ] `F0541` Expressing disagreement politely · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0542` Telling a story · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0543` Explaining an opinion · **5.2-6** · planned in Lingua 5.2
@@ -724,14 +724,14 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0545` Talking about future plans · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0546` Roleplay with a fictional character · **5.2-6** · planned in Lingua 5.2
 - [ ] `F0547` Interactive mystery conversations · **5.2-6** · planned in Lingua 5.2
-- [ ] `F0548` Conversation with branching outcomes · **6-11**
-- [ ] `F0549` Multi-character conversations · **6-11**
-- [ ] `F0550` Group conversation simulation · **6-11**
-- [ ] `F0551` Conversations with interruptions and follow-up questions · **6-11**
-- [ ] `F0552` Conversations where the AI doesn’t automatically understand everything · **6-11**
-- [ ] `F0553` Conversation with limited target-language assistance · **6-11**
-- [ ] `F0554` Conversation where the AI uses only vocabulary the learner probably knows · **6-11**
-- [ ] `F0555` Conversation with gradual introduction of new expressions · **6-11**
+- [x] `F0548` Conversation with branching outcomes · **6-11**
+- [x] `F0549` Multi-character conversations · **6-11**
+- [x] `F0550` Group conversation simulation · **6-11**
+- [x] `F0551` Conversations with interruptions and follow-up questions · **6-11**
+- [x] `F0552` Conversations where the AI doesn’t automatically understand everything · **6-11**
+- [x] `F0553` Conversation with limited target-language assistance · **6-11**
+- [x] `F0554` Conversation where the AI uses only vocabulary the learner probably knows · **6-11**
+- [x] `F0555` Conversation with gradual introduction of new expressions · **6-11**
 
 #### 6.2 Conversation modes
 

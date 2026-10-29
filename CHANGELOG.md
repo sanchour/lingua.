@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.73** · 2026-10-29 · 6-11 S1: 4 conversation modes, styles & constraints, and 6 new scenes
 - **0.6.0-alpha.72** · 2026-10-29 · Claim 6-11 Speaking for Antigravity-1
 - **0.6.0-alpha.71** · 2026-10-29 · 6-13 T3: language contrast tables, false friends, and personal pair notes
 - **0.6.0-alpha.70** · 2026-10-29 · 6-13 T2: translation views (alignment, back-translation, rebuild)
