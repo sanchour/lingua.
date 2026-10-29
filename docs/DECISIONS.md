@@ -1902,5 +1902,14 @@ The Sentence Explainer analyzes any pasted or selected sentence. On the device, 
 
 A dedicated Translation Practice suite is mounted at `/thesaurus/translate/:set?` using the exercise engine contracts (`buildTranslationExercise` in `src/core/exercise/translate.ts`). Translation sets cover English paired with all six core languages (Spanish, French, German, Italian, Russian, Chinese) across sentences, dialogues, paragraphs, idioms, slang, and formal correspondence. Exercises feature tiered hint reveals, side-by-side literal vs. natural comparisons, accepted alternative variations (checked offline via `judge`), and constraint validation requiring specific vocabulary words or grammatical constructions. Learners can also translate arbitrary custom passages with live metrics and log completed attempts to the learner evidence log (`recordEvidence`).
 
+## 2026-10-29 — 6-13 T2: translation views (alignment, back-translation, sentence rebuild)
+
+Four specialized translation views are integrated into `/thesaurus/translate`:
+1. `AlignmentView`: Interactive token-level alignment between English and core languages (Spanish pro-drop subjunctive, French modal structures, German V2 subject inversion, Italian piacere syntax and postpositive adjectives, Russian existential possession, Chinese pre-verbal adverbial sequencing) with fine-line visual mapping and structural shift notes.
+2. `BackTranslationView`: Guided three-stage workflow (Forward translation into target -> Blind back-translation into English -> Lexical drift analysis) calculating semantic preservation and nuance loss.
+3. `ReconstructView`: Two-stage cognitive reconstruction where the learner first translates into the target language, then rebuilds the hidden original English sentence by clicking scrambled word tiles in exact order.
+4. Reference comparison: Post-answer review juxtaposes the learner's answer against canonical and regional/stylistic reference translations.
+
+
 
 

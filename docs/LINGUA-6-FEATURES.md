@@ -1006,14 +1006,14 @@ Translation can be a powerful learning method when used actively. It becomes les
 - [x] `F0766` Translate formal expressions · **6-13**
 - [ ] `F0767` Translate literary passages · **6-13**
 - [x] `F0768` Translate a phrase in different registers · **6-13**
-- [ ] `F0769` Translate with word-by-word alignment · **6-13**
-- [ ] `F0770` Compare sentence structure across languages · **6-13**
+- [x] `F0769` Translate with word-by-word alignment · **6-13**
+- [x] `F0770` Compare sentence structure across languages · **6-13**
 - [x] `F0771` Explain why a direct translation doesn’t work · **6-13**
 - [ ] `F0772` Identify false friends · **6-13**
 - [ ] `F0773` Explain untranslatable concepts · **6-19**
-- [ ] `F0774` Back-translation exercises · **6-13**
-- [ ] `F0775` Translate and then reconstruct the original · **6-13**
-- [ ] `F0776` Compare a learner’s translation with several reference translations · **6-13**
+- [x] `F0774` Back-translation exercises · **6-13**
+- [x] `F0775` Translate and then reconstruct the original · **6-13**
+- [x] `F0776` Compare a learner’s translation with several reference translations · **6-13**
 - [x] `F0777` Translation challenges with a timer · **6-13**
 - [x] `F0778` Translation of user-imported content · **6-13**
 

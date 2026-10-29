@@ -10,3 +10,5 @@ export { attachRetries, completeDialogue, correctMistake, dragSentence, matchAff
 export type { WordFacts } from './kinds';
 export { TRANSLATION_PAIRS, buildTranslationExercise, getTranslationTasks, validateRequirements } from './translate';
 export type { DialogueExchange, TranslateBody, TranslationCategory, TranslationTask } from './translate';
+export { ALIGNMENT_PAIRS, analyzeBackTranslation, checkReconstruction, getAlignmentPairs, scrambleWords } from './translateViews';
+export type { AlignmentPair, TokenLink } from './translateViews';

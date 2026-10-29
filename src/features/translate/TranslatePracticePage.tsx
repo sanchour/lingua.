@@ -23,6 +23,9 @@ import type { TranslationTask, TranslationCategory } from '@/core/exercise/trans
 import { judge } from '@/core/exercise/judge';
 import type { Judgement } from '@/core/exercise/judge';
 import { recordEvidence } from '@/data/learner';
+import { AlignmentView } from './AlignmentView';
+import { BackTranslationView } from './BackTranslationView';
+import { ReconstructView } from './ReconstructView';
 
 const CORE_LANGUAGES = [
   { id: 'es', label: 'Spanish', flag: '🇪🇸' },
@@ -33,6 +36,8 @@ const CORE_LANGUAGES = [
   { id: 'zh', label: 'Chinese', flag: '🇨🇳' },
 ];
 
+type TranslateTab = 'practice' | 'align' | 'back' | 'reconstruct' | 'custom';
+
 export default function TranslatePracticePage() {
   const { language } = useApp();
 
@@ -41,8 +46,8 @@ export default function TranslatePracticePage() {
     CORE_LANGUAGES.some((c) => c.id === language.id) ? language.id : 'es',
   );
 
-  // Tab: 'practice' | 'custom'
-  const [activeTab, setActiveTab] = useState<'practice' | 'custom'>('practice');
+  // Tab: 'practice' | 'align' | 'back' | 'reconstruct' | 'custom'
+  const [activeTab, setActiveTab] = useState<TranslateTab>('practice');
 
   // Category filter: 'all' | TranslationCategory
   const [categoryFilter, setCategoryFilter] = useState<'all' | TranslationCategory>('all');
@@ -186,9 +191,12 @@ export default function TranslatePracticePage() {
           <Segmented
             label="Translation mode"
             value={activeTab}
-            onChange={(v) => setActiveTab(v as 'practice' | 'custom')}
+            onChange={(v) => setActiveTab(v as TranslateTab)}
             options={[
               { value: 'practice', label: 'Practice Sets' },
+              { value: 'align', label: 'Word Alignment' },
+              { value: 'back', label: 'Back-Translation' },
+              { value: 'reconstruct', label: 'Rebuild Original' },
               { value: 'custom', label: 'Translate Your Own' },
             ]}
           />
@@ -218,7 +226,7 @@ export default function TranslatePracticePage() {
         </div>
       </div>
 
-      {activeTab === 'practice' ? (
+      {activeTab === 'practice' && (
         <div className="space-y-6">
           {/* Controls bar: Category filter, challenge timer */}
           <div className="flex flex-wrap items-center justify-between gap-3 bg-sand-50/70 p-3 rounded-xl border border-sand-200/60 dark:bg-sand-900/30 dark:border-sand-800/60">
@@ -485,20 +493,43 @@ export default function TranslatePracticePage() {
                         </div>
                       </div>
 
-                      {/* Alternatives & Literal comparison */}
-                      {currentTask.accepted && currentTask.accepted.length > 1 && (
-                        <div className="p-3 rounded-lg bg-sand-50/70 border border-sand-200/50 space-y-1.5 dark:bg-sand-900/30 dark:border-sand-800/50">
-                          <span className="text-xs font-semibold text-sand-600 dark:text-sand-400 block">
-                            Accepted Alternatives:
-                          </span>
-                          <ul className="text-xs text-sand-700 dark:text-sand-300 space-y-1 font-serif">
+                      {/* Reference Translations Comparison (F0776) */}
+                      {currentTask.accepted && currentTask.accepted.length > 0 && (
+                        <div className="p-4 rounded-xl bg-sand-50/70 border border-sand-200/60 space-y-2.5 dark:bg-sand-900/30 dark:border-sand-800/60">
+                          <div className="flex items-center justify-between text-xs font-semibold text-sand-600 dark:text-sand-400">
+                            <span className="flex items-center gap-1.5">
+                              <BookOpen className="w-3.5 h-3.5 text-terracotta-600 dark:text-terracotta-400" />
+                              <span>Reference Translations Comparison:</span>
+                            </span>
+                            <span className="text-[11px] font-mono text-sand-400">
+                              {currentTask.accepted.length} accepted references
+                            </span>
+                          </div>
+
+                          <div className="space-y-2">
+                            <div className="p-2.5 rounded-lg bg-white/90 border border-sand-200 text-xs dark:bg-sand-950/60 dark:border-sand-800">
+                              <div className="text-[10px] font-mono text-sand-400 uppercase tracking-wider mb-0.5">Learner Translation:</div>
+                              <div className="font-serif text-base font-medium text-sand-900 dark:text-sand-100">{userTranslation}</div>
+                            </div>
+
                             {currentTask.accepted.map((alt, i) => (
-                              <li key={i} className="flex items-start gap-1.5">
-                                <span className="text-terracotta-500 font-bold">•</span>
-                                <span>{alt}</span>
-                              </li>
+                              <div key={i} className="p-2.5 rounded-lg bg-white/70 border border-sand-200/80 text-xs dark:bg-sand-950/40 dark:border-sand-800/70 flex items-start gap-2">
+                                <span className="font-mono text-terracotta-600 dark:text-terracotta-400 text-[10px] font-bold mt-0.5 shrink-0">
+                                  Ref {i + 1}:
+                                </span>
+                                <div className="space-y-0.5 flex-1">
+                                  <div className="font-serif text-base text-sand-800 dark:text-sand-200">{alt}</div>
+                                  <div className="text-[11px] text-sand-500 italic">
+                                    {i === 0
+                                      ? 'Primary canonical translation'
+                                      : i === 1
+                                      ? 'Colloquial / alternate phrasing'
+                                      : 'Stylistic / regional variation'}
+                                  </div>
+                                </div>
+                              </div>
                             ))}
-                          </ul>
+                          </div>
                         </div>
                       )}
 
@@ -566,7 +597,21 @@ export default function TranslatePracticePage() {
             </Card>
           )}
         </div>
-      ) : (
+      )}
+
+      {activeTab === 'align' && (
+        <AlignmentView selectedLang={selectedLang} />
+      )}
+
+      {activeTab === 'back' && (
+        <BackTranslationView selectedLang={selectedLang} />
+      )}
+
+      {activeTab === 'reconstruct' && (
+        <ReconstructView selectedLang={selectedLang} />
+      )}
+
+      {activeTab === 'custom' && (
         /* Custom Translation / Translate Your Own Text (F0778, F0389) */
         <Card className="p-6 space-y-6 max-w-3xl mx-auto border-sand-300/70 dark:border-sand-800/70">
           <div className="space-y-1">
