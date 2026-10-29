@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.30** · 2026-10-29 · Plans: Antigravity (Gemini), two sessions
 - **0.6.0-alpha.29** · 2026-10-29 · Plans: Codex, Gemini and Antigravity in parallel
 - **0.6.0-alpha.28** · 2026-10-29 · 6-2b: merge decks from the deck menu
 - **0.6.0-alpha.27** · 2026-10-29 · 6-6b: dialogues and made-to-order rewrites, and the Practice sets that use them
