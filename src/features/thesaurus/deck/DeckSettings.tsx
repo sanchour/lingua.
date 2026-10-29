@@ -5,7 +5,7 @@ import { EXERCISE_KINDS, EXERCISE_NAME } from '@/core/srs/ludus';
 import { orderNewCards, setDeckDirections, updateDeck } from '@/data/decks';
 import { DEFAULT_SETTINGS, useSettings } from '@/data/settings';
 import type { Card, Deck, Note } from '@/data/types';
-import { Button, Drawer, Segmented, Slider } from '@/design/primitives';
+import { Button, Drawer, Segmented, Slider, ToggleRow } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { CARD_WIDTH, cardLookProps } from '../common/cardLook';
 import type { CardLook } from '../common/cardLook';
@@ -46,6 +46,7 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
   const [front, setFront] = useState(deck.config.front ?? 'word');
   const [width, setWidth] = useState<CardWidthChoice>(deck.config.cardWidth ?? 'all');
   const [off, setOff] = useState<string[]>(deck.config.ludusOff ?? []);
+  const [bury, setBury] = useState(Boolean(deck.config.burySiblings));
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -58,12 +59,13 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
     setFront(deck.config.front ?? 'word');
     setWidth(deck.config.cardWidth ?? 'all');
     setOff(deck.config.ludusOff ?? []);
+    setBury(Boolean(deck.config.burySiblings));
   }, [open, deck]);
 
   const save = async () => {
     setBusy(true);
     await updateDeck(deck.id, {
-      config: { ...deck.config, newPerDay, maxReviews, desiredRetention: retention, front, cardWidth: width === 'all' ? undefined : width, newOrder: order, ludusOff: off.length ? off : undefined },
+      config: { ...deck.config, newPerDay, maxReviews, desiredRetention: retention, front, cardWidth: width === 'all' ? undefined : width, newOrder: order, ludusOff: off.length ? off : undefined, burySiblings: bury || undefined },
     });
     if (ways !== toWays(deck.config.directions)) await setDeckDirections(deck.id, fromWays(ways));
     // The order is written into the cards, so a new direction's cards follow it too.
@@ -129,6 +131,7 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
               </Hint>
             )}
           </Field>
+          {ways === 'both' && <ToggleRow title="One direction a day" description="After you answer a word one way, the other way waits until tomorrow." checked={bury} onChange={setBury} />}
           <Field label="New cards">
             <Segmented<NewOrder>
               label="New cards"

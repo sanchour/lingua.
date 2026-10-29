@@ -212,6 +212,7 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, fr
               </p>
             )}
             <Sentence note={note} lang={lang} />
+            {note.mnemonic && <p className="mx-auto mt-3 max-w-md rounded-xl bg-sage-soft px-3.5 py-2 text-center text-[14px] leading-snug text-sage-text">{note.mnemonic}</p>}
             {note.context?.songId && <SongClip note={note} />}
             {clip?.kind === 'video' && (
               <div className={cx('mx-auto w-full', line ? 'mt-5 max-w-sm' : 'mt-3 max-w-xs')}>

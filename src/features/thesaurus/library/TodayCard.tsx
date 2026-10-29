@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { Layers, Puzzle, TextCursorInput, Zap } from 'lucide-react';
 import type { DeckCounts } from '@/data/decks';
 import { useToday } from '@/data/stats';
-import { buttonClasses, Card, Popover } from '@/design/primitives';
+import { catchUp, overdueCards } from '@/data/study';
+import { Button, buttonClasses, Card, Popover } from '@/design/primitives';
+import { toast } from '@/state/ui';
 import { PlusChip } from '@/features/plans/Locked';
 import { useGate } from '@/features/plans/PlanRoute';
 import { cx } from '@/lib/cx';
@@ -102,8 +106,43 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
           )}
         </div>
       </div>
+      <CatchUpOffer lang={lang} />
       {ahead && <WeekAhead forecast={ahead} />}
     </Card>
+  );
+}
+
+/** Overdue cards pile up after time away. From this many, offer to spread them over some days instead of one wall (6-3). */
+const CATCH_UP_FROM = 40;
+
+function CatchUpOffer({ lang }: { lang: string }) {
+  const overdue = useLiveQuery(async () => (await overdueCards(lang)).length, [lang]);
+  const [days, setDays] = useState(7);
+  const [busy, setBusy] = useState(false);
+  if (!overdue || overdue < CATCH_UP_FROM) return null;
+  const spread = async () => {
+    setBusy(true);
+    try {
+      const moved = await catchUp(lang, days);
+      toast(`${moved.toLocaleString()} cards spread over ${days === 1 ? 'a day' : days === 7 ? 'a week' : `${days} days`}`, { tone: 'success' });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-xl bg-sunken px-3.5 py-3 text-[13.5px]">
+      <p className="min-w-0 flex-1 basis-56 leading-snug text-ink-soft">
+        <span className="font-semibold text-ink">{overdue.toLocaleString()} cards have been waiting.</span> Spread the oldest first over some days instead of facing them at once.
+      </p>
+      <select aria-label="Spread the overdue cards over" value={days} onChange={(e) => setDays(Number(e.target.value))} className="h-9 rounded-full border border-line bg-raised px-3 text-[13px] font-semibold outline-none focus:border-ink">
+        <option value={3}>3 days</option>
+        <option value={7}>A week</option>
+        <option value={14}>Two weeks</option>
+      </select>
+      <Button variant="secondary" size="sm" loading={busy} onClick={() => void spread()}>
+        Catch up
+      </Button>
+    </div>
   );
 }
 

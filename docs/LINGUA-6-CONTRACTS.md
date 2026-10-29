@@ -51,6 +51,8 @@ add the new one and read both.
 
 - **0.6.0-alpha.10 (6-2):** built `Word.inbox`, `Deck.archived`, `pinned`, `important` and `Note.order` (the field only; nothing sorts by it yet), with Dexie 19 exactly as `PART_A_SCHEMA` says; `coverBlobId` and `madeFrom` wait for 6-2b. The inbox is worked out, not stored for new words: a word with sightings and no row is new (`inboxStateOf`).
 
+- **0.6.0-alpha.12 (6-3):** built `Card.buriedUntil` and `leech`, `ReviewLog.hinted`, `guessed` and `contextId`, `Note.mnemonic` and `template` (the field only), `DeckConfig.burySiblings`, with Dexie 20 exactly as `PART_A_SCHEMA` says. `answerCard` takes `hinted`, `guessed` and `contextId` and returns `leech`.
+
 ## What was decided here (and could be reopened)
 
 - Part A's tables: `evidence`, `evidenceDays` (6-5) and `generated` (6-6) are the only new ones; 6-1 to 6-3 add fields

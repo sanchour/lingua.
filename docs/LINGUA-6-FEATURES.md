@@ -182,11 +182,11 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0093` New-card and review-card limits
 - [x] `F0094` Separate new learning from review
 - [ ] `F0095` Customizable learning steps · **6-3**
-- [ ] `F0096` Leech detection for repeatedly forgotten cards · **6-3**
+- [x] `F0096` Leech detection for repeatedly forgotten cards · **6-3**
 - [ ] `F0097` Automatic creation of extra practice for difficult words · **6-3** · partly there
 - [x] `F0098` Suspend a card temporarily
 - [ ] `F0099` Manually reschedule a card · **6-3**
-- [ ] `F0100` Bury related cards until another day · **6-3**
+- [x] `F0100` Bury related cards until another day · **6-3**
 - [ ] `F0101` Avoid showing several nearly identical cards consecutively · **6-3** · partly there
 - [x] `F0102` Prioritize overdue cards
 - [ ] `F0103` Prioritize frequently forgotten words · **6-3**
@@ -197,14 +197,14 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0108` Predict upcoming review workload
 - [ ] `F0109` Show estimated review time · **6-3** · partly there
 - [ ] `F0110` Show the stability of a memory over time · **6-3**
-- [ ] `F0111` Show retrievability or estimated probability of recall · **6-3**
+- [x] `F0111` Show retrievability or estimated probability of recall · **6-3**
 - [ ] `F0112` Separate recognition strength from active recall strength · **6-3** · partly there
 - [ ] `F0113` Compare performance with and without hints · **6-5**
 - [ ] `F0114` Distinguish correct answers from lucky guesses · **6-3**
 - [ ] `F0115` Reintroduce words after long absences · **6-3**
 - [x] `F0116` Mix old and new vocabulary
 - [ ] `F0117` Review words in different contexts · **6-3** · partly there
-- [ ] `F0118` Generate a catch-up plan after a break · **6-3**
+- [x] `F0118` Generate a catch-up plan after a break · **6-3**
 
 > Design note: Anki-style spaced repetition is an excellent foundation, but your scheduler should be tested against actual learner outcomes. Don’t simply label a word “mastered” because it was answered correctly once.
 

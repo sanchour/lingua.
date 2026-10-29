@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Pencil, Type, Undo2 } from 'lucide-react';
+import { EyeOff, Pencil, Type, Undo2 } from 'lucide-react';
 import { countQueue, requeue } from '@/core/srs/queue';
 import { formatInterval, GRADE_NAMES, GRADES, previewIntervals } from '@/core/srs/scheduler';
 import type { Grade4 } from '@/core/srs/scheduler';
 import { db } from '@/data/db';
-import { answerCard, undoAnswer } from '@/data/study';
+import { answerCard, buryNote, undoAnswer } from '@/data/study';
+import { setSuspended } from '@/data/decks';
+import { toast } from '@/state/ui';
 import type { AnswerUndo, StudySession } from '@/data/study';
 import { useSettings } from '@/data/settings';
 import type { Card, Note } from '@/data/types';
@@ -92,7 +94,13 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
       history.current.push({ queue });
       rest = grade === 1 ? [...queue.slice(1), card] : queue.slice(1);
     } else {
-      const { card: next, undo } = await answerCard(card, grade, { lang, mode: 'classic', durationMs: ms });
+      const { card: next, undo, leech } = await answerCard(card, grade, { lang, mode: 'classic', durationMs: ms });
+      if (leech && note) {
+        toast(`“${note.term}” keeps slipping. Try your own sentence or a way to remember it, or put it aside for now.`, {
+          action: { label: 'Put aside', onClick: () => void setSuspended(note.id, true) },
+          duration: 9000,
+        });
+      }
       history.current.push({ undo, queue });
       rest = requeue(queue, next, Date.now());
     }
@@ -106,6 +114,21 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
     setDone((d) => d + 1);
     setFlipped(false);
     setBusy(false);
+    if (!rest.length) onFinish({ cards: s.cards.size, accuracy: s.answered ? 1 - s.misses / s.answered : 1, ms: s.ms, cardIds: [...s.cards] });
+  };
+
+  /** Puts the word's cards away until tomorrow: it leaves this lesson and comes back in the next day's. */
+  const bury = async () => {
+    if (!card || busy || practice) return;
+    setBusy(true);
+    await buryNote(card.noteId);
+    const rest = queue.filter((c) => c.noteId !== card.noteId);
+    history.current = [];
+    setQueue(rest);
+    setFlipped(false);
+    setBusy(false);
+    toast('Put away until tomorrow', { duration: 1800 });
+    const s = stats.current;
     if (!rest.length) onFinish({ cards: s.cards.size, accuracy: s.answered ? 1 - s.misses / s.answered : 1, ms: s.ms, cardIds: [...s.cards] });
   };
 
@@ -213,6 +236,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
         >
           <CardLookPanel look={look} compact />
         </Popover>
+        <IconButton icon={EyeOff} label="Put away until tomorrow" size="sm" disabled={!card || busy || practice} onClick={() => void bury()} />
         <IconButton icon={Pencil} label="Edit card" shortcut="E" size="sm" disabled={!note} onClick={() => card && note && setEditor({ mode: 'edit', note, cards: [card] })} />
       </StudyBar>
 

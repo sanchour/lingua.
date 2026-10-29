@@ -3,6 +3,7 @@
 // marks its word Known.
 import Dexie from 'dexie';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { buriedUntilTomorrow, catchUpPlan, isBuried, isLeech } from '@/core/srs/memory';
 import { buildQueue } from '@/core/srs/queue';
 import { dayEnd, MATURE_DAYS, rate } from '@/core/srs/scheduler';
 import type { Grade4 } from '@/core/srs/scheduler';
@@ -46,8 +47,8 @@ async function dueCards(deck: Deck, now: number, database: LinguaDB): Promise<Ca
   const reviewsLeft = Math.max(0, deck.config.maxReviews - reviewed);
   const range = database.cards.where('[deckId+due]');
   const [scheduled, fresh] = await Promise.all([
-    range.between([deck.id, Dexie.minKey], [deck.id, dayEnd(now)]).filter((c) => c.state !== 0 && !c.suspended && !c.deletedAt).toArray(),
-    newLeft ? range.between([deck.id, Dexie.minKey], [deck.id, Dexie.maxKey]).filter((c) => c.state === 0 && !c.suspended && !c.deletedAt).limit(newLeft).toArray() : [],
+    range.between([deck.id, Dexie.minKey], [deck.id, dayEnd(now)]).filter((c) => c.state !== 0 && !c.suspended && !c.deletedAt && !isBuried(c, now)).toArray(),
+    newLeft ? range.between([deck.id, Dexie.minKey], [deck.id, Dexie.maxKey]).filter((c) => c.state === 0 && !c.suspended && !c.deletedAt && !isBuried(c, now)).limit(newLeft).toArray() : [],
   ]);
   const reviews = scheduled.filter((c) => c.state === 2).sort((a, b) => a.due - b.due).slice(0, reviewsLeft);
   return [...scheduled.filter((c) => c.state !== 2), ...reviews, ...fresh];
@@ -97,11 +98,19 @@ export interface AnswerOptions {
   /** Ludus practice on a card that isn't due is logged but doesn't move the schedule. */
   affectSchedule?: boolean;
   now?: number;
+  /** A hint was used: the answer is logged as assisted (6-3, read by 6-5). */
+  hinted?: boolean;
+  /** "I guessed" after a right answer: it counts as Hard, and the guess is logged (6-3). */
+  guessed?: boolean;
+  /** Where it was reviewed: a text, a song, a deck's own session. */
+  contextId?: string;
 }
 
 /** Records an answer: reschedules the card (FSRS), logs it, counts it for today. */
-export async function answerCard(card: Card, grade: Grade4, opts: AnswerOptions, database: LinguaDB = db): Promise<{ card: Card; undo: AnswerUndo }> {
+export async function answerCard(card: Card, answered: Grade4, opts: AnswerOptions, database: LinguaDB = db): Promise<{ card: Card; undo: AnswerUndo; leech: boolean }> {
   const now = opts.now ?? Date.now();
+  // A right answer that was a guess is not known: it counts as Hard.
+  const grade: Grade4 = opts.guessed && answered > 2 ? 2 : answered;
   const settings = await getSettings(database);
   const deck = await database.decks.get(card.deckId);
   const retention = deck?.config.desiredRetention ?? settings.study.desiredRetention;
@@ -109,6 +118,9 @@ export async function answerCard(card: Card, grade: Grade4, opts: AnswerOptions,
 
   const outcome = schedule ? rate(card, grade, now, retention) : null;
   const updated: Card = outcome ? { ...card, ...outcome.next, updatedAt: now } : card;
+  // Forgotten once too often: marked, so the learner can be offered another way in (a picture, their own sentence, a rest).
+  const becameLeech = Boolean(outcome && grade === 1 && !card.leech && isLeech(updated));
+  if (becameLeech) updated.leech = 1;
   const log: ReviewLog = {
     id: crypto.randomUUID(),
     cardId: card.id,
@@ -123,6 +135,9 @@ export async function answerCard(card: Card, grade: Grade4, opts: AnswerOptions,
     difficultyAfter: updated.difficulty,
     elapsedDays: outcome?.elapsedDays ?? 0,
     scheduledDays: updated.scheduledDays,
+    ...(opts.hinted ? { hinted: 1 as const } : {}),
+    ...(opts.guessed ? { guessed: 1 as const } : {}),
+    ...(opts.contextId ? { contextId: opts.contextId } : {}),
   };
   const counted = { reviews: 1, againCount: grade === 1 ? 1 : 0, newCards: schedule && card.state === 0 ? 1 : 0 };
 
@@ -138,7 +153,36 @@ export async function answerCard(card: Card, grade: Grade4, opts: AnswerOptions,
     const word = note?.wordId ? await database.words.get(note.wordId) : undefined;
     if (word && !word.deletedAt && word.state === 2) await setWordState(word.lang, word.norm, 1, {}, database);
   }
-  return { card: updated, undo: { before: card, logId: log.id, lang: opts.lang, counted } };
+  // The other direction of the same word waits until tomorrow, where the deck asks for it.
+  if (outcome && deck?.config.burySiblings) await buryNote(card.noteId, now, database, card.id);
+  return { card: updated, undo: { before: card, logId: log.id, lang: opts.lang, counted }, leech: becameLeech };
+}
+
+/** Puts a note's cards away until tomorrow's first lesson (all of them, or all but `except`). */
+export async function buryNote(noteId: string, now = Date.now(), database: LinguaDB = db, except?: string): Promise<number> {
+  return database.cards.where('noteId').equals(noteId).filter((c) => c.id !== except && !c.deletedAt).modify({ buriedUntil: buriedUntilTomorrow(now), updatedAt: now });
+}
+
+export async function unburyNote(noteId: string, database: LinguaDB = db): Promise<void> {
+  await database.cards.where('noteId').equals(noteId).modify({ buriedUntil: undefined, updatedAt: Date.now() });
+}
+
+/** Cards that have been waiting since before today, across the language's decks. */
+export async function overdueCards(lang: string, now = Date.now(), database: LinguaDB = db): Promise<Card[]> {
+  const decks = await studyDecks(lang, null, database);
+  const start = dayEnd(now) - DAY;
+  const lists = await Promise.all(decks.map((d) => database.cards.where('[deckId+due]').between([d.id, Dexie.minKey], [d.id, start]).filter((c) => c.state !== 0 && !c.suspended && !c.deletedAt).toArray()));
+  return lists.flat();
+}
+
+/** Spreads the overdue cards over some days (core/srs/memory.ts `catchUpPlan`), most overdue first; returns how many moved. */
+export async function catchUp(lang: string, days: number, now = Date.now(), database: LinguaDB = db): Promise<number> {
+  const cards = await overdueCards(lang, now, database);
+  const plan = catchUpPlan(cards, days, now);
+  await database.transaction('rw', database.cards, async () => {
+    for (const [id, due] of plan) await database.cards.update(id, { due, updatedAt: now });
+  });
+  return plan.size;
 }
 
 export async function undoAnswer(undo: AnswerUndo, database: LinguaDB = db): Promise<void> {

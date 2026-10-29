@@ -32,7 +32,7 @@ export function newCard(noteId: string, deckId: string, now: number, direction: 
   };
 }
 
-export type NoteInput = Pick<Note, 'term' | 'meaning'> & Partial<Pick<Note, 'example' | 'tags' | 'pos' | 'gender' | 'ipa' | 'lemma' | 'wordId' | 'source' | 'freqRank' | 'context' | 'extra' | 'audioBlobId' | 'imageBlobId'>>;
+export type NoteInput = Pick<Note, 'term' | 'meaning'> & Partial<Pick<Note, 'example' | 'tags' | 'pos' | 'gender' | 'ipa' | 'lemma' | 'wordId' | 'source' | 'freqRank' | 'context' | 'extra' | 'audioBlobId' | 'imageBlobId' | 'mnemonic' | 'template'>>;
 
 /** Builds a note and its cards (one per study direction of the deck) without saving them. */
 export function makeNote(deck: Deck, input: NoteInput, now: number): { note: Note; cards: Card[] } {

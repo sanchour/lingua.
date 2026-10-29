@@ -169,7 +169,12 @@ export const SCHEMA_V19 = {
   notes: 'id, deckId, wordId, lang, [deckId+order], updatedAt, *tags',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16, ...SCHEMA_V17, ...SCHEMA_V18, ...SCHEMA_V19 };
+/** Version 20 (Lingua 6-3): leeches are found by deck. */
+export const SCHEMA_V20 = {
+  cards: 'id, noteId, [deckId+due], [deckId+state], [deckId+leech], due, updatedAt',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16, ...SCHEMA_V17, ...SCHEMA_V18, ...SCHEMA_V19, ...SCHEMA_V20 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -240,6 +245,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(17).stores(SCHEMA_V17);
   db.version(18).stores(SCHEMA_V18);
   db.version(19).stores(SCHEMA_V19);
+  db.version(20).stores(SCHEMA_V20);
   return db;
 }
 

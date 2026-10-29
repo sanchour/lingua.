@@ -1,7 +1,7 @@
 // Row types for every IndexedDB table. This file is the schema of record (docs/ARCHITECTURE.md → Data).
 // Conventions: ids are crypto.randomUUID() unless noted · times are epoch ms · indexed booleans are 0 | 1.
 
-import type { InboxState } from '@/core/contracts/word';
+import type { CardTemplate, InboxState } from '@/core/contracts/word';
 import type { Cefr, Level } from '@/core/lang/levels';
 
 export type Lang = string;
@@ -292,6 +292,8 @@ export interface DeckConfig {
   newOrder?: 'ordered' | 'shuffled';
   /** Ludus exercises this deck leaves out, on top of those turned off for every lesson (5.1-3b). */
   ludusOff?: string[];
+  /** After one direction of a word is answered, the other waits until tomorrow (6-3). Absent: both may come the same day. */
+  burySiblings?: boolean;
 }
 
 export interface Deck extends Synced {
@@ -337,6 +339,10 @@ export interface Note extends Synced {
   audioBlobId?: string;
   /** The card's place in a hand-sorted deck (6-2). Absent: the order they were added. */
   order?: number;
+  /** A way to remember it, in the learner's words (6-3). */
+  mnemonic?: string;
+  /** What its cards show (6-3). Absent: the word and its meaning. */
+  template?: CardTemplate;
   tags: string[];
   source: 'manual' | 'codex' | 'sonus' | 'visio' | 'cantus' | 'starter' | 'apkg' | 'csv';
   wordId?: string;
@@ -362,6 +368,10 @@ export interface Card extends Synced {
   state: 0 | 1 | 2 | 3;
   lastReview?: number;
   suspended: Bit;
+  /** Hidden from lessons until this time (6-3), epoch ms. */
+  buriedUntil?: number;
+  /** Forgotten too often: needs another way in (6-3). Absent reads as 0. */
+  leech?: Bit;
 }
 
 /** `grammar` is a Grammatica drill (its log's deckId is `grammar:<lang>`, so vocabulary statistics leave it out). */
@@ -382,6 +392,12 @@ export interface ReviewLog {
   difficultyAfter: number;
   elapsedDays: number;
   scheduledDays: number;
+  /** A hint was used: the answer counts as assisted (6-3, 6-5). Absent reads as 0. */
+  hinted?: Bit;
+  /** "I guessed" after a right answer: logged as Hard (6-3). Absent reads as 0. */
+  guessed?: Bit;
+  /** Where in the app it was reviewed (6-3). */
+  contextId?: string;
 }
 
 // ── Sonus & Visio ───────────────────────────────────────────────────────────
