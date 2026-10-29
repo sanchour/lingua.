@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.66** · 2026-10-29 · 6-7 G4: interactive topic map with prerequisite DAG and error heatmap
 - **0.6.0-alpha.65** · 2026-10-29 · 6-7 G3: pictures that explain (timelines, word order, decision trees, sentence diagrams, morphology breakdowns, coloured endings)
 - **0.6.0-alpha.64** · 2026-10-29 · 6-7 G2: richer pages with in-language reading, exceptions and pairs
 - **0.6.0-alpha.63** · 2026-10-29 · Part A's last bits: easiest sentences first, Use it in a sentence, bulk edit, recurring mistakes
