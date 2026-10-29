@@ -131,6 +131,7 @@ export default function ThesaurusPage() {
     else if (action === 'folder')
       setNaming({ title: 'New folder', label: 'Name', confirm: 'Create folder', folders: folders ?? [], onConfirm: (name, parent) => void createFolder(lang, name, parent) });
     else if (action === 'list') setFromList(true);
+    else if (action === 'make') navigate('/thesaurus/make');
     else if (action === 'csv') void imports.pickCsv();
     else void imports.pickApkg();
   };

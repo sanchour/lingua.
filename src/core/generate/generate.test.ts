@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cacheKey, labelFor, levelReport, readGenerated, readSentences, readStory, textOf, unknownWords, wordsOf } from './generate';
+import { cacheKey, labelFor, levelReport, readGenerated, readSentences, readStory, readWordlist, textOf, unknownWords, wordsOf } from './generate';
 
 describe('reading what the model answered', () => {
   it('accepts a story only with its title, text and translation', () => {
@@ -102,5 +102,19 @@ describe('dialogues and made-to-order rewrites', () => {
     const base = { lang: 'es', kind: 'rewrites', level: 'A2' } as const;
     expect(cacheKey({ ...base, task: 'passive' })).not.toBe(cacheKey({ ...base, task: 'question' }));
     expect(cacheKey({ ...base, task: 'passive' })).toBe(cacheKey({ ...base, task: 'passive' }));
+  });
+});
+
+describe('a word list', () => {
+  const w = (term: string) => ({ term, meaning: `the ${term}`, example: `Je vois ${term}.` });
+  it('needs five different words, each with a meaning; doubles and half-made ones are left out', () => {
+    expect(readWordlist({ words: ['pain', 'lait', 'sel', 'riz', 'thé'].map(w) })?.words).toHaveLength(5);
+    expect(readWordlist({ words: ['pain', 'Pain', 'lait', 'sel', 'riz', 'thé'].map(w) })?.words.map((x) => x.term)).toEqual(['pain', 'lait', 'sel', 'riz', 'thé']);
+    expect(readWordlist({ words: [...['pain', 'lait', 'sel', 'riz'].map(w), { term: 'thé', meaning: '' }] })).toBeNull();
+    expect(readGenerated('wordlist', { words: [] })).toBeNull();
+  });
+  it('has its words and sentences as the text that is measured', () => {
+    const body = readWordlist({ words: ['pain', 'lait', 'sel', 'riz', 'thé'].map(w) })!;
+    expect(textOf('wordlist', body)).toContain('pain Je vois pain.');
   });
 });

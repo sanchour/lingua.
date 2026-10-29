@@ -59,7 +59,10 @@ function prompt(req: GenerateRequest, avoid: string[]): { system: string; user: 
     simplify: 'Each item is one long or complex sentence and a simpler sentence with the same meaning.',
   };
   const system =
-    req.kind === 'dialogue'
+    req.kind === 'wordlist'
+      ? `You choose useful vocabulary in ${name} for learners at ${level}. Answer only with JSON: {"words": [{"term": string, "meaning": string, "example": string}]}. ` +
+        `Twelve words or short phrases a ${level} learner would really use about the topic, each in its dictionary form; "meaning" is its ${native} meaning in a few words; "example" is one short natural sentence in ${name}.${retry}`
+      : req.kind === 'dialogue'
       ? `You write short everyday dialogues in ${name} for learners at ${level}. Answer only with JSON: {"title": string, "lines": [{"speaker": string, "text": string, "translation": string}]}. ` +
         `Six to eight lines between two people (use two first names), only the most common words a ${level} learner meets, and each line's ${native} translation.${retry}`
       : req.kind === 'rewrites' && req.task

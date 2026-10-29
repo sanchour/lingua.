@@ -592,7 +592,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0435` Formal and informal speech · **6-9**
 - [x] `F0436` Authentic versus learner-oriented audio
 - [x] `F0437` User-imported audio
-- [ ] `F0438` AI-generated dialogues with transcripts · **6-6**
+- [x] `F0438` AI-generated dialogues with transcripts · **6-6**
 - [ ] `F0439` Audio generated from saved vocabulary · **6-9**
 - [ ] `F0440` Personalized listening playlists · **6-9**
 
@@ -1312,12 +1312,12 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 
 *In Lingua: Sermo's scene prompts, Diarium's prompts, Check yourself's story questions (Max).*
 
-- [ ] `F1013` Generate flashcards · **6-6** · partly there
-- [ ] `F1014` Generate vocabulary lists · **6-6**
-- [ ] `F1015` Generate example sentences · **6-6** · partly there
-- [ ] `F1016` Generate graded reading passages · **6-6**
-- [ ] `F1017` Generate short stories · **6-6**
-- [ ] `F1018` Generate dialogues · **6-6**
+- [x] `F1013` Generate flashcards · **6-6** · partly there
+- [x] `F1014` Generate vocabulary lists · **6-6**
+- [x] `F1015` Generate example sentences · **6-6** · partly there
+- [x] `F1016` Generate graded reading passages · **6-6**
+- [x] `F1017` Generate short stories · **6-6**
+- [x] `F1018` Generate dialogues · **6-6**
 - [x] `F1019` Generate roleplay scenarios
 - [ ] `F1020` Generate listening scripts · **6-6**
 - [ ] `F1021` Generate audio dialogues where supported · **6-6**

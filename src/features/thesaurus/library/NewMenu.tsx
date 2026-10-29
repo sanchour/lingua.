@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { FileSpreadsheet, FolderPlus, Layers, ListPlus, Package, Plus } from 'lucide-react';
+import { FileSpreadsheet, FolderPlus, Layers, ListPlus, Package, Plus, Sparkles } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Button, Drawer, Popover } from '@/design/primitives';
 
-export type NewAction = 'deck' | 'folder' | 'list' | 'csv' | 'apkg';
+export type NewAction = 'deck' | 'folder' | 'list' | 'make' | 'csv' | 'apkg';
 
 const OPTIONS: Array<{ action: NewAction; icon: LucideIcon; title: string; detail: string }> = [
   { action: 'deck', icon: Layers, title: 'New deck', detail: 'Add your own cards' },
   { action: 'folder', icon: FolderPlus, title: 'New folder', detail: 'Group decks together' },
   { action: 'list', icon: ListPlus, title: 'From a list or text', detail: 'Paste words, or a text to pick words from' },
+  { action: 'make', icon: Sparkles, title: 'Made by Max', detail: 'A story, sentences, a dialogue or a word list' },
   { action: 'csv', icon: FileSpreadsheet, title: 'Import CSV', detail: 'A spreadsheet of words and meanings' },
   { action: 'apkg', icon: Package, title: 'Import Anki deck', detail: 'An .apkg file, with its progress' },
 ];

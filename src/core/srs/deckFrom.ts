@@ -5,6 +5,8 @@ import { tokenize } from '@/core/text/tokenizer';
 export interface Draft {
   term: string;
   meaning: string;
+  /** A sentence that shows it, kept on the card. */
+  example?: string;
 }
 
 /** A tab, ` = `, ` - `, ` – `, ` — ` or `;` splits a line into the word and its meaning; the first one in the line wins. */

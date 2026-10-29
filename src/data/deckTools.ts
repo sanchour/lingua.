@@ -109,7 +109,7 @@ export async function deckFromDrafts(lang: string, name: string, drafts: readonl
   const now = Date.now();
   await database.transaction('rw', database.notes, database.cards, async () => {
     for (const d of drafts) {
-      const made = makeNote(deck, { term: d.term, meaning: d.meaning }, now);
+      const made = makeNote(deck, { term: d.term, meaning: d.meaning, ...(d.example ? { example: { text: d.example } } : {}) }, now);
       await database.notes.add(made.note);
       await database.cards.bulkAdd(made.cards);
     }

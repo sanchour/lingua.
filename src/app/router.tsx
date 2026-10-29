@@ -19,6 +19,7 @@ import {
   MentisPage,
   NewTextPage,
   OrdoPage,
+  MakePage,
   PracticePage,
   RatioPage,
   ReaderPage,
@@ -97,6 +98,8 @@ export const router = createBrowserRouter(
         { path: 'thesaurus/deck/:deckId', element: <DeckPage /> },
         { path: 'thesaurus/ready/:key', element: <StarterPage /> },
         { path: 'thesaurus/study/:deckId', element: <StudyPage /> },
+        // What Max makes: a story, sentences, a dialogue or a word list, checked and labelled (6-6b).
+        { path: 'thesaurus/make', element: <MakePage /> },
         // Practice sets in every kind of exercise (6-4b): Lingua+, like Ludus.
         {
           path: 'thesaurus/practice/:set?',
