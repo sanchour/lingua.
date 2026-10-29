@@ -214,9 +214,9 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 
 - [x] `F0119` Word frequency ranking
 - [x] `F0120` CEFR level estimates
-- [ ] `F0121` Formality and register labels · **6-1** · partly there
-- [ ] `F0122` Slang and colloquial labels · **6-1** · partly there
-- [ ] `F0123` Regional usage labels · **6-1** · partly there
+- [x] `F0121` Formality and register labels · **6-1** · partly there
+- [x] `F0122` Slang and colloquial labels · **6-1** · partly there
+- [x] `F0123` Regional usage labels · **6-1** · partly there
 - [ ] `F0124` British versus American English distinctions · **6-1**
 - [ ] `F0125` European versus Brazilian Portuguese distinctions · **6-1** · partly there
 - [x] `F0126` Etymology and word origins
@@ -227,7 +227,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0131` Derivational forms · **6-1**
 - [x] `F0132` Singular and plural forms
 - [x] `F0133` Gender and grammatical class
-- [ ] `F0134` Countable versus uncountable nouns · **6-1**
+- [x] `F0134` Countable versus uncountable nouns · **6-1**
 - [x] `F0135` Verb conjugation tables
 - [ ] `F0136` Verb aspect and tense information · **6-1** · partly there
 - [ ] `F0137` Irregular forms · **6-1** · partly there
@@ -241,7 +241,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0145` Common learner errors · **6-1**
 - [ ] `F0146` Synonym maps · **6-20** · partly there
 - [ ] `F0147` Antonym maps · **6-20** · partly there
-- [ ] `F0148` False friends between languages · **6-1** · partly there
+- [x] `F0148` False friends between languages · **6-1** · partly there
 - [x] `F0149` Cognates · **6-1** · partly there
 - [ ] `F0150` False cognates · **6-1** · partly there
 - [x] `F0151` Homonyms and homophones · **6-1**
@@ -1367,7 +1367,7 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1052` Example sentence translations
 - [x] `F1053` Synonyms
 - [x] `F1054` Antonyms
-- [ ] `F1055` Related words · **6-1** · partly there
+- [x] `F1055` Related words · **6-1** · partly there
 - [ ] `F1056` Word families · **6-1**
 - [x] `F1057` Etymology
 - [x] `F1058` Collocations
@@ -1375,18 +1375,18 @@ Think of this as a personal linguistic knowledge base.
 - [ ] `F1060` Common mistakes · **6-1**
 - [x] `F1061` Frequency ranking
 - [x] `F1062` CEFR estimate
-- [ ] `F1063` Formality and register · **6-1** · partly there
-- [ ] `F1064` Regional usage · **6-1** · partly there
+- [x] `F1063` Formality and register · **6-1** · partly there
+- [x] `F1064` Regional usage · **6-1** · partly there
 - [x] `F1065` Source of discovery
 - [x] `F1066` Personal notes · **6-1** · partly there
 - [x] `F1067` Tags · **6-1**
 - [x] `F1068` Favorite status · **6-1**
 - [x] `F1069` First encountered date · **6-1** · partly there
 - [x] `F1070` Last reviewed date · **6-1**
-- [ ] `F1071` Review history · **6-1**
+- [x] `F1071` Review history · **6-1**
 - [x] `F1072` Recall success rate · **6-1**
 - [ ] `F1073` Links to relevant grammar topics · **6-1** · partly there
-- [ ] `F1074` Links to other vocabulary items · **6-1**
+- [x] `F1074` Links to other vocabulary items · **6-1**
 - [x] `F1075` Links to texts in which the word appeared
 
 > Every word could have its own detailed page containing:
@@ -1631,9 +1631,9 @@ These are integrated activities that combine skills instead of training each one
 - [x] `F1267` Idioms and expressions
 - [x] `F1268` Etymology
 - [ ] `F1269` Word origin maps · **6-26**
-- [ ] `F1270` Regional variations · **6-1** · partly there
-- [ ] `F1271` Formality labels · **6-1** · partly there
-- [ ] `F1272` Slang labels · **6-1** · partly there
+- [x] `F1270` Regional variations · **6-1** · partly there
+- [x] `F1271` Formality labels · **6-1** · partly there
+- [x] `F1272` Slang labels · **6-1** · partly there
 - [x] `F1273` Corpus-based examples
 - [x] `F1274` Sentence translation
 - [ ] `F1275` Reverse dictionary, searching by concept · **6-22**

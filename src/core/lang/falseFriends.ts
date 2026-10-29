@@ -1,0 +1,91 @@
+// False friends (6-1c): words that look like an English word and mean something else. Hand-made for the core languages whose
+// words English speakers mistake most often; the entry page shows the note under the word (the dictionary's glosses are English).
+export interface FalseFriend {
+  /** The English word it is mistaken for. */
+  looks: string;
+  /** What it really means. */
+  means: string;
+}
+
+export const FALSE_FRIENDS: Record<string, Record<string, FalseFriend>> = {
+  es: {
+    actual: { looks: 'actual', means: 'current, of now' },
+    embarazado: { looks: 'embarrassed', means: 'pregnant' },
+    éxito: { looks: 'exit', means: 'success' },
+    librería: { looks: 'library', means: 'bookshop (a library is “biblioteca”)' },
+    sensible: { looks: 'sensible', means: 'sensitive' },
+    constipado: { looks: 'constipated', means: 'having a cold' },
+    asistir: { looks: 'to assist', means: 'to attend' },
+    carpeta: { looks: 'carpet', means: 'folder' },
+    soportar: { looks: 'to support', means: 'to put up with' },
+    realizar: { looks: 'to realize', means: 'to carry out' },
+    pretender: { looks: 'to pretend', means: 'to try, to aim' },
+    molestar: { looks: 'to molest', means: 'to bother' },
+    introducir: { looks: 'to introduce', means: 'to insert (to introduce a person is “presentar”)' },
+    ropa: { looks: 'rope', means: 'clothes' },
+    fábrica: { looks: 'fabric', means: 'factory' },
+    largo: { looks: 'large', means: 'long' },
+    vaso: { looks: 'vase', means: 'a drinking glass' },
+    bizarro: { looks: 'bizarre', means: 'brave, gallant' },
+    contestar: { looks: 'to contest', means: 'to answer' },
+    suceso: { looks: 'success', means: 'event' },
+  },
+  fr: {
+    actuellement: { looks: 'actually', means: 'at present' },
+    librairie: { looks: 'library', means: 'bookshop (a library is “bibliothèque”)' },
+    sensible: { looks: 'sensible', means: 'sensitive' },
+    attendre: { looks: 'to attend', means: 'to wait for' },
+    assister: { looks: 'to assist', means: 'to attend' },
+    blesser: { looks: 'to bless', means: 'to hurt, to wound' },
+    location: { looks: 'location', means: 'rental, hire' },
+    monnaie: { looks: 'money', means: 'change, coins' },
+    journée: { looks: 'journey', means: 'the length of a day' },
+    préservatif: { looks: 'preservative', means: 'condom' },
+    demander: { looks: 'to demand', means: 'to ask' },
+    déception: { looks: 'deception', means: 'disappointment' },
+    coin: { looks: 'coin', means: 'corner' },
+    rester: { looks: 'to rest', means: 'to stay' },
+    chair: { looks: 'chair', means: 'flesh (a chair is “chaise”)' },
+    sympathique: { looks: 'sympathetic', means: 'nice, likeable' },
+    formidable: { looks: 'formidable', means: 'great, wonderful' },
+    pain: { looks: 'pain', means: 'bread' },
+    prétendre: { looks: 'to pretend', means: 'to claim' },
+    crayon: { looks: 'crayon', means: 'pencil' },
+  },
+  de: {
+    bekommen: { looks: 'to become', means: 'to get, to receive' },
+    gift: { looks: 'gift', means: 'poison' },
+    rock: { looks: 'rock', means: 'skirt' },
+    handy: { looks: 'handy', means: 'mobile phone' },
+    chef: { looks: 'chef', means: 'boss' },
+    also: { looks: 'also', means: 'so, therefore' },
+    eventuell: { looks: 'eventually', means: 'possibly' },
+    sensibel: { looks: 'sensible', means: 'sensitive' },
+    brav: { looks: 'brave', means: 'well-behaved' },
+    mist: { looks: 'mist', means: 'rubbish; manure' },
+    hut: { looks: 'hut', means: 'hat' },
+    bad: { looks: 'bad', means: 'bath' },
+    fast: { looks: 'fast', means: 'almost' },
+    bald: { looks: 'bald', means: 'soon' },
+    wand: { looks: 'wand', means: 'wall' },
+    gymnasium: { looks: 'gymnasium', means: 'the academic secondary school' },
+    kind: { looks: 'kind', means: 'child' },
+    art: { looks: 'art', means: 'kind, sort' },
+    realisieren: { looks: 'to realize', means: 'to carry out' },
+    wer: { looks: 'were', means: 'who' },
+  },
+  ru: {
+    магазин: { looks: 'magazine', means: 'shop' },
+    фамилия: { looks: 'family', means: 'surname' },
+    аккуратный: { looks: 'accurate', means: 'neat, tidy' },
+    артист: { looks: 'artist', means: 'performer' },
+    кабинет: { looks: 'cabinet', means: 'an office, a study' },
+    декада: { looks: 'decade', means: 'a period of ten days' },
+    бланк: { looks: 'blank', means: 'a form to fill in' },
+    интеллигентный: { looks: 'intelligent', means: 'cultured, well-mannered' },
+    симпатичный: { looks: 'sympathetic', means: 'nice-looking, pleasant' },
+    комплимент: { looks: 'compliment', means: 'a compliment (and “комплемент” is the grammatical complement)' },
+  },
+};
+
+export const falseFriendOf = (lang: string, word: string): FalseFriend | undefined => FALSE_FRIENDS[lang]?.[word.toLocaleLowerCase()];

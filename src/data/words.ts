@@ -244,7 +244,7 @@ export async function markedWords(lang: string, flag: 'favourite' | 'important',
  * What the learner has done with a word, worked out when asked and never stored: when it was first met, how it was reviewed,
  * how often it was recalled. Its flashcards are found by the note's `wordId`; its review log is the cards' own.
  */
-export async function wordHistory(lang: string, norm: string, database: LinguaDB = db): Promise<WordHistory & { places: number }> {
+export async function wordHistory(lang: string, norm: string, database: LinguaDB = db): Promise<WordHistory & { places: number; log: Array<{ at: number; rating: number; mode: string }> }> {
   const id = wordId(lang, norm);
   const [word, sightings, notes] = await Promise.all([database.words.get(id), database.sightings.where('[lang+norm]').equals([lang, norm]).toArray(), database.notes.where('wordId').equals(id).toArray()]);
   const cardIds = (await database.cards.where('noteId').anyOf(notes.map((n) => n.id)).toArray()).filter((c) => !c.deletedAt).map((c) => c.id);
@@ -256,6 +256,7 @@ export async function wordHistory(lang: string, norm: string, database: LinguaDB
     recallRate: logs.length ? logs.filter((l) => l.rating >= 3).length / logs.length : undefined,
     reviews: logs.length,
     places: sightings.length,
+    log: logs.sort((a, b) => b.reviewedAt - a.reviewedAt).slice(0, 30).map((l) => ({ at: l.reviewedAt, rating: l.rating, mode: l.mode })),
   };
 }
 

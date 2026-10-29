@@ -138,6 +138,7 @@ describe('the learner’s half of a word (6-1)', () => {
     const h = await wordHistory('es', 'luna', db);
     expect(h).toMatchObject({ reviews: 4, lastReviewedAt: 4_000, recallRate: 0.75, places: 1 });
     expect(h.firstMetAt).toBeGreaterThan(0);
+    expect(h.log.map((l) => l.rating)).toEqual([3, 4, 1, 3]);
   });
 
   it('opens a version-17 device with its words, and the new indexes work on them', async () => {

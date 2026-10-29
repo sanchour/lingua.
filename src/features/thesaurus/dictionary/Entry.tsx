@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 import { BookA, BookMarked, Check, Circle, Download, Sparkles, Volume2 } from 'lucide-react';
 import type { FullDictRow, FullEntry } from '@/core/dictionary/format';
 import { getLanguage } from '@/core/lang/languages';
+import { falseFriendOf } from '@/core/lang/falseFriends';
 import { cefrForRank } from '@/core/lang/levels';
 import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
@@ -206,7 +207,8 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
       {((row.tatoeba?.length ?? 0) > 0 || (!sensesHaveExamples && (packExamples?.length ?? 0) > 0)) && (
         <Section title="Sentences" note={row.tatoeba?.length ? 'From Tatoeba' : undefined}>
           <ul className="space-y-3">
-            {[...(row.tatoeba ?? []), ...(sensesHaveExamples ? [] : (packExamples ?? []))].slice(0, 6).map(([sentence, translation, start, end]) => (
+            {/* shortcut: a shorter sentence counts as easier; upgrade to the level measure (core/lang/levels) when sentences carry a level */}
+            {[...(row.tatoeba ?? []), ...(sensesHaveExamples ? [] : (packExamples ?? []))].sort((x, y) => x[0].length - y[0].length).slice(0, 6).map(([sentence, translation, start, end]) => (
               <li key={sentence}>
                 <p lang={lang} className="font-serif text-[16px] leading-snug">
                   {sentence.slice(0, start)}
@@ -243,6 +245,13 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
           <Side title="Synonyms and antonyms">
             {syn.length > 0 && <WordLinks lang={lang} label="Like" words={syn} />}
             {ant.length > 0 && <WordLinks lang={lang} label="Opposite" words={ant} />}
+          </Side>
+        )}
+        {falseFriendOf(lang, row.word) && (
+          <Side title="A false friend">
+            <p className="text-[14.5px] leading-relaxed text-ink-soft">
+              It looks like the English “{falseFriendOf(lang, row.word)!.looks}”, but it means <b className="text-ink">{falseFriendOf(lang, row.word)!.means}</b>.
+            </p>
           </Side>
         )}
         {row.confused && row.confused.length > 0 && (

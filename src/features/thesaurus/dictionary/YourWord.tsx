@@ -6,6 +6,7 @@ import { changeWordTags, MAX_TAGS, setWordFavourite, setWordImportant, setWordNo
 import { Card, IconButton } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 
+const RATING: Record<number, string> = { 1: 'Again', 2: 'Hard', 3: 'Good', 4: 'Easy' };
 const day = (at: number) => new Date(at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 
 export function YourWord({ lang, norm, lemma, gloss }: { lang: string; norm: string; lemma?: string; gloss?: string }) {
@@ -124,6 +125,20 @@ export function YourWord({ lang, norm, lemma, gloss }: { lang: string; norm: str
             </ul>
           ) : (
             <p className="text-[14.5px] text-ink-soft">Nothing yet. Mark it Learning, and its reviews show here.</p>
+          )}
+          {history?.log && history.log.length > 0 && (
+            <details className="mt-2 text-[14px]">
+              <summary className="cursor-pointer text-ink-soft select-none hover:text-ink">Review by review</summary>
+              <ul className="mt-2 divide-y divide-line/60">
+                {history.log.map((l) => (
+                  <li key={l.at} className="flex items-center gap-3 py-1.5">
+                    <span className="w-28 text-ink-faint tabular-nums">{day(l.at)}</span>
+                    <span className={cx('font-semibold', l.rating >= 3 ? 'text-sage-text' : 'text-accent-text')}>{RATING[l.rating] ?? l.rating}</span>
+                    <span className="text-ink-faint">{l.mode === 'classic' ? 'flashcard' : l.mode}</span>
+                  </li>
+                ))}
+              </ul>
+            </details>
           )}
         </div>
       </div>
