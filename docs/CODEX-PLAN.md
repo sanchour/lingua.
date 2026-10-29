@@ -87,7 +87,7 @@ Plain, short, in this order: **what changed** (pushed versions, one line each) ย
 ## 6. Not Codex's (so there is no overlap)
 
 - **Part A's leftovers** (6-1c, 6-2b, 6-3b, 6-4b, 6-5b, 6-6b) and the Practice page, the exercise session, the card editor, the Thesaurus page and the generator: a Claude session is in them.
-- **6-7, 6-8, 6-12, 6-13:** Gemini and Antigravity ([GEMINI-PLAN.md](GEMINI-PLAN.md)). **6-29 The word graph:** Claude Opus, in its five phases.
+- **6-7, 6-8, 6-12, 6-13:** Antigravity-1 and Antigravity-2 ([ANTIGRAVITY-PLAN.md](ANTIGRAVITY-PLAN.md)). **6-29 The word graph:** Claude Opus, in its five phases.
 - **Part B (6-7 to 6-13)** and **Part C (6-14 to 6-18):** Claude, in order. **Lingua for Mac:** its own plan, [MAC-PLAN.md](MAC-PLAN.md).
 - **Anything that needs the owner's accounts** (Stripe, Cloudflare, the Chrome Web Store): HANDOVER ยง4. Say so and stop; never work around it.
 
