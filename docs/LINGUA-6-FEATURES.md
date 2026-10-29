@@ -302,8 +302,8 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 
 - [ ] `F0193` ⭐ Searchable grammar library · **5.2-8** · planned in Lingua 5.2
 - [x] `F0194` Grammar topics organized by level
-- [ ] `F0195` Grammar topics organized by part of speech · **6-7**
-- [ ] `F0196` Grammar topics organized by linguistic category · **6-7** · partly there
+- [x] `F0195` Grammar topics organized by part of speech · **6-7**
+- [x] `F0196` Grammar topics organized by linguistic category · **6-7** · partly there
 - [x] `F0197` Beginner-to-advanced grammar progression
 - [x] `F0198` Concise explanations
 - [ ] `F0199` Detailed explanations · **6-7** · partly there
@@ -328,13 +328,13 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [ ] `F0218` Morphology breakdowns · **6-7**
 - [ ] `F0219` Interactive grammar maps · **6-7**
 - [ ] `F0220` Cross-references between related rules · **6-7** · partly there
-- [ ] `F0221` Prerequisite links showing what to learn first · **6-7**
+- [x] `F0221` Prerequisite links showing what to learn first · **6-7**
 - [ ] `F0222` Grammar search by natural language question · **6-15**
 - [ ] `F0223` AI-generated explanations at different difficulty levels · **6-15**
 - [ ] `F0224` Grammar explanations in the target language · **6-7**
 - [ ] `F0225` Grammar explanations in the learner’s native language · **6-7** · partly there
 - [ ] `F0226` Side-by-side explanations in two languages · **6-7**
-- [ ] `F0227` Grammar bookmarks and personal notes · **6-7**
+- [x] `F0227` Grammar bookmarks and personal notes · **6-7**
 
 #### 3.2 Grammar exercises
 

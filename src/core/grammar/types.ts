@@ -72,6 +72,9 @@ export interface Topic {
    */
   tags?: string[];
   related?: string[];
+  category?: string;
+  pos?: string;
+  prerequisites?: string[];
 }
 
 export interface Unit {
