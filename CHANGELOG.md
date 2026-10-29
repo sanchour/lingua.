@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.34** · 2026-10-29 · 6-12 W1: writing tasks, length targets and timer
 - **0.6.0-alpha.33** · 2026-10-29 · 6-2b: select and bulk actions, tidy, decks from a list or text, sort by hand, deck descriptions
 - **0.6.0-alpha.32** · 2026-10-29 · Claim 6-12 Writing for Codex
 - **0.6.0-alpha.31** · 2026-10-29 · 6-5b: listening and pronunciation rows, and Skills side by side in Ratio
