@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.94** · 2026-10-29 · Contract: heard exercises (6-9)
 - **0.6.0-alpha.93** · 2026-10-29 · 6-29: the tab is called Atlas
 - **0.6.0-alpha.92** · 2026-10-29 · 6-9 L1: A-B loop, line by line, pitch and bookmarks in the player
 - **0.6.0-alpha.91** · 2026-10-29 · 6-29 planned in full: the atlas and the compass
