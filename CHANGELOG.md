@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.90** · 2026-10-29 · 6-19 C1: sourced Culture shelf, word notes, cards and regional voices
 - **0.6.0-alpha.88** · 2026-10-29 · Claim 6-19 for Codex again; culture, immersion and interface languages
 - **0.6.0-alpha.87** · 2026-10-29 · Release cancelled 6-19 claim; Codex stops after Reading
 - **0.6.0-alpha.86** · 2026-10-29 · Claim 6-19 Immersion and culture for Codex on codex/lingua
