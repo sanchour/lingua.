@@ -125,10 +125,10 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0041` ⭐ Create custom decks
 - [x] `F0042` ⭐ Add words from any part of the app
 - [x] `F0043` ⭐ Organize decks into folders
-- [ ] `F0044` Nested folders and subdecks · **6-2** · partly there
+- [x] `F0044` Nested folders and subdecks · **6-2** · partly there
 - [x] `F0045` Tags and multiple tags per word · **6-2** · partly there
 - [x] `F0046` Custom deck descriptions · **6-2**
-- [ ] `F0047` Deck cover images and colors · **6-2** · partly there
+- [x] `F0047` Deck cover images and colors · **6-2** · partly there
 - [x] `F0048` Reorder cards manually · **6-2**
 - [x] `F0049` Sort alphabetically · **6-2** · partly there
 - [x] `F0050` Sort by date added · **6-2** · partly there
@@ -230,7 +230,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0134` Countable versus uncountable nouns · **6-1**
 - [x] `F0135` Verb conjugation tables
 - [ ] `F0136` Verb aspect and tense information · **6-1** · partly there
-- [ ] `F0137` Irregular forms · **6-1** · partly there
+- [x] `F0137` Irregular forms · **6-1** · partly there
 - [x] `F0138` Declension tables
 - [x] `F0139` Case information
 - [x] `F0140` Stress patterns · **6-1** · partly there

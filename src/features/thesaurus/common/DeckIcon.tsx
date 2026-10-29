@@ -1,3 +1,4 @@
+import { useBlobUrl } from '../study/FlipCard';
 import {
   Apple,
   BedDouble,
@@ -134,10 +135,14 @@ export const THEME_HUES: Record<string, string> = {
   heard: '#b06f9a',
 };
 
+/** The colours a learner can give a deck (Deck settings). */
+export const DECK_COLOURS = ['#c4707f', '#c07a4a', '#b59a3a', '#6f9a5a', '#4f93a0', '#5f87a8', '#8a7fb0', '#b56fa0'];
+
 const SPARE_HUES = ['#5f87a8', '#8a7fb0', '#4f93a0', '#b56fa0', '#9a8466', '#7c8aa8', '#c4707f', '#6f9a5a'];
 
 /** A deck's colour: its theme's, accent for words from reading, sage for the path, and a steady one of its own for the rest. */
-export function deckHue(deck: Pick<Deck, 'id' | 'kind' | 'starter'>): string {
+export function deckHue(deck: Pick<Deck, 'id' | 'kind' | 'starter'> & { color?: string }): string {
+  if (deck.color) return deck.color;
   if (deck.kind === 'mined') return 'var(--accent)';
   if (deck.kind === 'starterFrequency') return 'var(--sage)';
   if (deck.kind === 'starterTheme') return THEME_HUES[deck.starter?.theme ?? ''] ?? 'var(--sage)';
@@ -164,8 +169,10 @@ export function deckIcon(deck: Pick<Deck, 'kind' | 'starter'>): LucideIcon {
 }
 
 /** The small rounded glyph in front of a deck's name, in the deck's colour. */
-export function DeckGlyph({ deck, size = 'md' }: { deck: Pick<Deck, 'id' | 'kind' | 'starter'>; size?: 'md' | 'lg' }) {
+export function DeckGlyph({ deck, size = 'md' }: { deck: Pick<Deck, 'id' | 'kind' | 'starter'> & { color?: string; coverBlobId?: string }; size?: 'md' | 'lg' }) {
   const Icon = deckIcon(deck);
+  const cover = useBlobUrl(deck.coverBlobId);
+  if (cover) return <img src={cover} alt="" className={cx('shrink-0 object-cover', size === 'lg' ? 'size-12 rounded-2xl' : 'size-9 rounded-xl')} />;
   return (
     <span
       style={{ '--hue': deckHue(deck) } as CSSProperties}

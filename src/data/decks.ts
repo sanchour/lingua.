@@ -155,7 +155,7 @@ export async function createDeck(lang: string, input: NewDeck, database: LinguaD
   return deck.id;
 }
 
-export async function updateDeck(id: string, patch: Partial<Pick<Deck, 'name' | 'description' | 'folderId' | 'order' | 'config'>>, database: LinguaDB = db): Promise<void> {
+export async function updateDeck(id: string, patch: Partial<Pick<Deck, 'name' | 'description' | 'folderId' | 'order' | 'config' | 'color' | 'coverBlobId'>>, database: LinguaDB = db): Promise<void> {
   await database.decks.update(id, { ...patch, updatedAt: Date.now() });
 }
 

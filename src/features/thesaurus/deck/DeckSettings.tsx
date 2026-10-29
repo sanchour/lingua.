@@ -1,3 +1,4 @@
+import { DeckLook } from './DeckLook';
 import { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Check, Eraser, Trash2 } from 'lucide-react';
@@ -106,6 +107,10 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
     >
       <div className="space-y-7">
         <Preview note={(front === 'sentence' && samples.find((n) => n.example?.text)) || samples[0]} lang={deck.lang} ways={ways} front={front} width={CARD_WIDTH[width === 'all' ? (look.width ?? 'normal') : width]} look={look} />
+
+        <Section title="Look">
+          <DeckLook deck={deck} />
+        </Section>
 
         <Section title="About">
           <label className="block">
