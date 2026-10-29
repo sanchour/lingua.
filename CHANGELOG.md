@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.76** · 2026-10-29 · Claim 6-22 Dictionary tools and 6-24 Import and export for Antigravity-1
 - **0.6.0-alpha.75** · 2026-10-29 · 6-11 S3: How did it go conversation review, sentence breakdown, fluency metrics, replay, and Diarium notes
 - **0.6.0-alpha.74** · 2026-10-29 · 6-11 S2: solo speaking challenges, prep/speak timer, microphone recording playback, real-time transcription
 - **0.6.0-alpha.73** · 2026-10-29 · 6-11 S1: 4 conversation modes, styles & constraints, and 6 new scenes
