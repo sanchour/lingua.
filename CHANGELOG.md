@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.49** · 2026-10-29 · 6-6b: listen buttons on what Max made, a Translate set in Practice
 - **0.6.0-alpha.48** · 2026-10-29 · 6-6b: quizzes from a text, notes or the learner's mistakes
 - **0.6.0-alpha.47** · 2026-10-29 · 6-2b and 6-1c: split a deck, tidy fills from the dictionary, same-meaning check, common synonyms first
 - **0.6.0-alpha.46** · 2026-10-29 · 6-2b: a deck from the words of a text in Codex
