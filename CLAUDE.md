@@ -5,51 +5,25 @@ Zustand, motion/react). It is live at https://sanchour.github.io/lingua./ and Gi
 deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [docs/SETUP.md](docs/SETUP.md).
 Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
 
-## Where the work stands (2026-10-28)
+## Where the work stands (2026-10-29)
 
 - **Start here: [docs/HANDOVER.md](docs/HANDOVER.md).** The work still open, in order, how to claim
   a step so two accounts never do the same one, what only the user can do, and the prompt to paste.
-- The user's brief up to Lingua 4.0 is [Lingua updates.txt](Lingua%20updates.txt); Lingua 5's lists
-  are in its two plan files. The plan, with what is done ticked, is [docs/ROADMAP.md](docs/ROADMAP.md).
-- **Lingua 2.0 and 3.0 are done and live** (version 3.0.0), 3.0-8 included: Grammatica for the
-  six core languages and twelve tier 2 ones, and alphabets with writing for seven scripts
-  (finished 2026-10-21; what was left out is in ROADMAP "3.0-8").
-- **Lingua 4.0:** 4.0-1 (tiers, the 35 placeholder languages, the language map, the sidebar and
-  icons, the Lingua+ placeholder) and 4.0-2 (the full dictionary for the six core languages in
-  Thesaurus › Dictionary beside the word memory, v2 with own-language definitions, Tatoeba and AI
-  tidying; Import a book / a comic; the end page and the reader's reading-goal note; sentences with
-  a gap as a Ludus mode; the word drawer as it was, with Open dictionary; Dexie v15) are done.
-  Dictionary builds: `dictionary-fetch.ts`, then `dictionary.ts` (docs/SETUP.md). Lingua 4.0 is finished: 4.0-3 was removed on 2026-10-20 (the karaoke and song games are dropped; its Visio part is Lingua 5.2-4), and on 2026-10-21 4.0-4 (Cursus, the course) moved into Lingua 5 and 4.0-5 (the 4.0 check) was removed. Only the six core languages
-  (tier 1) get a course.
-- **Lingua 5** is planned in detail: [docs/LINGUA-5.1-PLAN.md](docs/LINGUA-5.1-PLAN.md) and
-  [docs/LINGUA-5.2-PLAN.md](docs/LINGUA-5.2-PLAN.md), with the user's decisions at the top of 5.1
-  (Stripe; Max is AI with your own key; Lingua+ €24.99 once, Max €5.99 a month or €49.99 a year;
-  desktop only). The user asked on 2026-10-20 to make it ready to start: it is built step by step
-  in HANDOVER.md's order. **5.1 is four steps and the check** (the user, 2026-10-21): 5.1-1 the
-  frame (**done 2026-10-21**, with 5.2-1: Cursus, Sonus et Visio, Mentis, Settings), 5.1-2 plans,
-  onboarding and Home (**done 2026-10-21**), 5.1-3 Codex (5.1-3a **done 2026-10-22**, then Cursus, the
-  course for the six core languages, **done 2026-10-22**; 5.1-3b **done 2026-10-24**, 5.1-3c **done 2026-10-25** (recordings, device voices, Piper), then Cursus as an adventure path in the same step: HANDOVER.md section 6), Thesaurus/Ludus and sound, 5.1-4 typing and the design touch (**done 2026-10-25**: typing practice in Cursus, language touches). **Lingua 5.1 is done and checked (5.1-5, 2026-10-25): version 0.5.1.** Since then the version is 0.5.2-alpha.N, one N per push. Radio and listening (5.2-2 and 5.2-3, handover step 13) are **done 2026-10-25**, and so are all of 5.2's other room steps. **Lingua 5 is complete: checked and released as version 0.5.2 on 2026-10-28** (ROADMAP 5.2-10 says what the check did and did not cover). Next is Lingua 6 (handover 23), then Lingua 7.
-  The user asked (2026-10-21) for all of 5.1 and 5.2 to be done without needing them.
-- **Lingua 6 · Features** is planned (2026-10-26): [docs/LINGUA-6-PLAN.md](docs/LINGUA-6-PLAN.md), 28 steps that add
-  what the Lingyu feature catalogue has and Lingua doesn't, checked entry by entry in
-  [docs/LINGUA-6-FEATURES.md](docs/LINGUA-6-FEATURES.md) (handover step 23, **next after Lingua 5's check, before Lingua 7**; versions 0.6.x; the user's answers to its
-  questions are in its section 6). Its steps are claimed in
-  the plan's own table; tick the audit's entries as they are built.
-- **Lingua 7 · Design** is planned (2026-10-26): [docs/LINGUA-7-PLAN.md](docs/LINGUA-7-PLAN.md), a
-  design update page by page from the user's notes, starting with the first start (7-1, handover step
-  23, **after Lingua 6**, the user's order, 2026-10-26; versions 0.7.x). Its guide is the handbook,
-  [docs/handbook/Lingua-Design-Handbook.pdf](docs/handbook/Lingua-Design-Handbook.pdf) (source
-  `docs/handbook/handbook.html`, printed with `node scripts/handbook-pdf.ts`): read its Part One before
-  any design work, and the room's chapter before changing a room. Since 2026-10-27 the handbook is the full
-  Lingua handbook (200 pages, with an index, chapters on stores and installers, a page-by-page chapter for every route, pages drawn, and the same two for Lingua 6, chapters on what Lingua could earn and on funding it, the design chapters (icons and empty-page art, desktop frame, layout patterns, elements, where things go, how it feels, dark, charts, words, accessibility, sound and haptics, a recipe with a brief to fill in), the first start screen by screen, a cheat sheet whose numbers a test checks against the code, a design changelog, a layout page for every room, and tablet and phone guides added at the user's request on 2026-10-28: the desktop-only rule still holds for building): also the product, the people it's for, marketing and the launch, running it
-  (money, the law, support, shipping) and the whole road from start to finish; chapters are cited by name.
-- **Sandesigner 1.1** (7-0e, 2026-10-27, the user's own tool for all their apps, renamed from Sandesigning): a design canvas in `sandesigning/`, apart
-  from Lingua's code (no React, no dependencies), hosted at `/lingua./sandesigner/` (with `/lingua./sandesigning/` preserved). Features Mac vs Windows command symbols toggle (`⌘ / ⌥` vs `Ctrl / Alt`), and the floating bar can collapse to a single pen icon with optional expand on hover. Briefs and `.sandesign` files the
-  user pastes are explained in `sandesigning/FORMAT.md`; after changing the tool, `npm run sandesigner` (or `npm run sandesigning`) rebuilds
-  `public/sandesigner/` and `public/sandesigning/` (commit both). Lingua's design notes bar opens it (Canvas, Alt Shift D), collapses to one icon or expands on hover, and Settings has a Mac/Windows commands toggle.
-- Other accounts and sessions push to `main` all the time: rebase onto `origin/main` before every
-  push. Tier 2 stays cheap: only the features that cost little (automatic packs, decks, podcasts,
-  music search).
+  The plan, with what is done ticked, is [docs/ROADMAP.md](docs/ROADMAP.md); the user's original brief
+  is [Lingua updates.txt](Lingua%20updates.txt).
+- **Done and live:** Lingua 2.0 to 5 (Lingua 5 released as 0.5.2 on 2026-10-28). Details and what was
+  left out are in the ROADMAP and [docs/DECISIONS.md](docs/DECISIONS.md). Only the six core
+  languages (tier 1) get a course; tier 2 stays cheap (automatic packs, decks, podcasts, music search).
+- **Now: Lingua 6 · Features** ([docs/LINGUA-6-PLAN.md](docs/LINGUA-6-PLAN.md), 28 steps, versions 0.6.x; audit in
+  [docs/LINGUA-6-FEATURES.md](docs/LINGUA-6-FEATURES.md), tick entries as built; claim steps in the plan's table).
+  **Then Lingua 7 · Design** ([docs/LINGUA-7-PLAN.md](docs/LINGUA-7-PLAN.md), versions 0.7.x). Before any design work
+  read Part One of the handbook, [docs/handbook/Lingua-Design-Handbook.pdf](docs/handbook/Lingua-Design-Handbook.pdf)
+  (source `docs/handbook/handbook.html`, printed with `node scripts/handbook-pdf.ts`), and the chapter for the
+  room you change. Tablet and phone guides in it are reference only; the desktop-only rule still holds.
+- **Sandesigner** (the user's own design canvas for all their apps) lives in `sandesigning/`, apart from Lingua's code
+  (no React, no dependencies); format in `sandesigning/FORMAT.md`. After changing it run `npm run sandesigner` and
+  commit both `public/sandesigner/` and `public/sandesigning/`.
+- Other accounts and sessions push to `main` all the time: rebase onto `origin/main` before every push.
 - Why things are the way they are: [docs/DECISIONS.md](docs/DECISIONS.md). Structure:
   [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). The 60 fps rules: [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
 
