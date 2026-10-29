@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.105** · 2026-10-29 · Max kinds: stories, courses, drills, sounds, differences; false cognates; quiz focus
 - **0.6.0-alpha.104** · 2026-10-29 · 6-10 S5: shadowing
 - **0.6.0-alpha.103** · 2026-10-29 · 6-9 L5: playlists, your words read aloud, settings for made dialogues
 - **0.6.0-alpha.102** · 2026-10-29 · 6-10 S4: pronunciation diary and the stress drill
