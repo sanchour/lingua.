@@ -81,11 +81,11 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0002` ⭐ Target language → native language
 - [x] `F0003` ⭐ Native language → target language
 - [x] `F0004` Word → definition
-- [ ] `F0005` Definition → word · **6-3** · partly there
+- [x] `F0005` Definition → word · **6-3** · partly there
 - [x] `F0006` Word → image · **6-3**
 - [x] `F0007` Image → word · **6-3**
-- [ ] `F0008` Audio → word · **6-3** · partly there
-- [ ] `F0009` Word → audio recognition · **6-3** · partly there
+- [x] `F0008` Audio → word · **6-3** · partly there
+- [x] `F0009` Word → audio recognition · **6-3** · partly there
 - [x] `F0010` Word → example sentence
 - [x] `F0011` Example sentence → missing word
 - [x] `F0012` Word → pronunciation
@@ -104,7 +104,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0025` Multiple meanings on one card · **6-3**
 - [x] `F0026` Cards containing multiple related words · **6-3**
 - [x] `F0027` Sentence-based flashcards
-- [ ] `F0028` Contextual flashcards with a short paragraph · **6-3** · partly there
+- [x] `F0028` Contextual flashcards with a short paragraph · **6-3** · partly there
 - [x] `F0029` Image occlusion cards · **6-3**
 - [x] `F0030` Audio-only recall · **6-3** · partly there
 - [x] `F0031` Spelling reconstruction
