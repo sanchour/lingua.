@@ -137,7 +137,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0053` Sort by due date · **6-2** · partly there
 - [ ] `F0054` Sort by part of speech · **6-2**
 - [ ] `F0055` Sort by topic · **6-2**
-- [ ] `F0056` Merge decks · **6-2**
+- [x] `F0056` Merge decks · **6-2**
 - [x] `F0057` Duplicate decks · **6-2**
 - [ ] `F0058` Split a deck into smaller decks · **6-2**
 - [ ] `F0059` Import and export decks · **6-24** · partly there

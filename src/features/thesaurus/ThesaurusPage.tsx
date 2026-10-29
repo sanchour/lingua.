@@ -23,7 +23,10 @@ import { THEME_ICONS } from './common/DeckIcon';
 import { CsvImportDrawer } from './library/CsvImportDrawer';
 import { DeckCards, DeckResults, DeckTree, deckOrder, sumCounts } from './library/DeckTree';
 import type { TreeActions } from './library/DeckTree';
-import { ConfirmDialog, MoveDialog, NameDialog } from './library/dialogs';
+import { ConfirmDialog, MergeDialog, MoveDialog, NameDialog } from './library/dialogs';
+import type { MergeRequest } from './library/dialogs';
+import { mergeDecks } from '@/data/deckTools';
+import { toast } from '@/state/ui';
 import type { ConfirmRequest, MoveRequest, NameRequest } from './library/dialogs';
 import { JourneySection } from './library/JourneySection';
 import { NewMenu } from './library/NewMenu';
@@ -96,6 +99,7 @@ export default function ThesaurusPage() {
   const [naming, setNaming] = useState<NameRequest | null>(null);
   const [confirming, setConfirming] = useState<ConfirmRequest | null>(null);
   const [moving, setMoving] = useState<MoveRequest | null>(null);
+  const [merging, setMerging] = useState<MergeRequest | null>(null);
 
   const newDeck = (folderId: string | null) =>
     setNaming({
@@ -107,7 +111,17 @@ export default function ThesaurusPage() {
       onConfirm: async (name, folder) => navigate(`/thesaurus/deck/${await createDeck(lang, { name, folderId: folder })}`),
     });
 
-  const actions: TreeActions = { ask: setNaming, confirm: setConfirming, move: setMoving, newDeck };
+  const merge = (deck: Deck) =>
+    setMerging({
+      title: `Merge “${deck.name}” into…`,
+      decks: (allDecks ?? []).filter((d) => d.id !== deck.id && !d.deletedAt),
+      onConfirm: async (into) => {
+        const moved = await mergeDecks(into, [deck.id]);
+        toast(`${moved} ${moved === 1 ? 'card' : 'cards'} moved`, { tone: 'success' });
+      },
+    });
+
+  const actions: TreeActions = { ask: setNaming, confirm: setConfirming, move: setMoving, merge, newDeck };
 
   const choose = (action: NewAction) => {
     if (action === 'deck') newDeck(null);
@@ -243,6 +257,7 @@ export default function ThesaurusPage() {
       <NameDialog request={naming} onClose={() => setNaming(null)} />
       <ConfirmDialog request={confirming} onClose={() => setConfirming(null)} />
       <MoveDialog request={moving} onClose={() => setMoving(null)} />
+      <MergeDialog request={merging} onClose={() => setMerging(null)} />
     </>
   );
 }

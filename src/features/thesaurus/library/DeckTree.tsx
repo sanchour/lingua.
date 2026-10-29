@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { Archive, ArchiveRestore, ChevronRight, Copy, Ellipsis, Folder as FolderIcon, FolderInput, FolderPlus, Layers, Pencil, Pin, PinOff, Plus, Puzzle, Trash2 } from 'lucide-react';
+import { Archive, ArchiveRestore, ChevronRight, Combine, Copy, Ellipsis, Folder as FolderIcon, FolderInput, FolderPlus, Layers, Pencil, Pin, PinOff, Plus, Puzzle, Trash2 } from 'lucide-react';
 import type { DeckCounts } from '@/data/decks';
 import { deleteDeck, deleteFolder, updateDeck, updateFolder } from '@/data/decks';
 import { duplicateDeck, setDeckFlag } from '@/data/deckTools';
@@ -19,6 +19,8 @@ export interface TreeActions {
   ask: (request: NameRequest) => void;
   confirm: (request: ConfirmRequest) => void;
   move: (request: MoveRequest) => void;
+  /** Opens the merge dialog for a deck. */
+  merge: (deck: Deck) => void;
   newDeck: (folderId: string | null) => void;
 }
 
@@ -338,6 +340,14 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
             onClick={() => {
               close();
               void duplicateDeck(deck.id);
+            }}
+          />
+          <MenuItem
+            icon={Combine}
+            label="Merge into…"
+            onClick={() => {
+              close();
+              actions.merge(deck);
             }}
           />
           <MenuItem

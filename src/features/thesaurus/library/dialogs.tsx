@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
-import type { Folder } from '@/data/types';
+import type { Deck, Folder } from '@/data/types';
 import { Button, Dialog, Select } from '@/design/primitives';
 
 const NO_FOLDER = '__none';
@@ -118,6 +118,47 @@ export function ConfirmDialog({ request, onClose }: { request: ConfirmRequest | 
       }
     >
       {request?.body}
+    </Dialog>
+  );
+}
+
+export interface MergeRequest {
+  title: string;
+  /** The decks it can be merged into. */
+  decks: Deck[];
+  onConfirm: (deckId: string) => void | Promise<void>;
+}
+
+/** Folding one deck into another: its cards go into the chosen deck and it is put away. */
+export function MergeDialog({ request, onClose }: { request: MergeRequest | null; onClose: () => void }) {
+  const [target, setTarget] = useState('');
+  useEffect(() => setTarget(request?.decks[0]?.id ?? ''), [request]);
+  const none = !request?.decks.length;
+  return (
+    <Dialog
+      open={Boolean(request)}
+      onClose={onClose}
+      title={request?.title ?? ''}
+      actions={
+        <>
+          <Button variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            disabled={none}
+            onClick={async () => {
+              await request?.onConfirm(target);
+              onClose();
+            }}
+          >
+            Merge
+          </Button>
+        </>
+      }
+    >
+      <div className="pt-2">
+        {none ? <p className="text-[14px] text-ink-soft">There is no other deck in this language to merge it into.</p> : <Select label="Into" value={target} onChange={setTarget} options={(request?.decks ?? []).map((d) => ({ value: d.id, label: d.name }))} />}
+      </div>
     </Dialog>
   );
 }
