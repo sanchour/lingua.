@@ -16,6 +16,7 @@ import { aiPrompt } from '@/services/llm/journal';
 import { toPlain } from '@/core/journal/markdown';
 import { Entries } from './Entries';
 import { WritingTasks } from './WritingTasks';
+import { WritingPortfolio } from './WritingPortfolio';
 
 const DAY = 86_400_000;
 
@@ -167,6 +168,7 @@ export function DiariumHome() {
         </div>
       )}
       {entries && <Entries entries={entries} lang={lang} />}
+      {entries && <WritingPortfolio key={lang} entries={entries} />}
     </div>
   );
 }

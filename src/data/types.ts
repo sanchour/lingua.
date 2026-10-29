@@ -703,6 +703,7 @@ export interface JournalReview {
 }
 
 export interface JournalEntry extends Synced {
+  portfolio?: { level: string; topic: string; at: number };
   writingTaskId?: string;
   id: string;
   lang: Lang;

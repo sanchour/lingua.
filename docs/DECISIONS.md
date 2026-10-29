@@ -1857,3 +1857,7 @@ The sentence tasks (passive, reported speech, question, combine, expand, simplif
 ## 2026-10-29 — 6-12 W1: writing tasks use the existing journal
 
 Twenty-six hand-written briefs sit beside free writing. The brief, suggested length and any material the learner supplies are saved as the entry prompt; an optional task id keeps the length target available without a table or migration. Length is guidance, never a limit. The optional timer counts elapsed time until paused and resets when the editor is left; existing activity tracking still measures writing separately. Picture tasks ask the learner to choose a picture they can see; no image picker was built (F0617 stays unticked).
+
+## 2026-10-29 — 6-12 W2: local measures describe the draft, not its CEFR level
+
+The journal uses the existing language-aware tokenizer to count different word forms, words per sentence and sentences over 20 words. Diversity is the type/token ratio, explicitly sensitive to text length; sentence length is only a proxy for complexity. Neither is a grade. A portfolio marker lives on the existing journal row, carrying the study level when kept and the learner’s topic. Its table compares current drafts by date, topic, kind and measures; it is not a snapshot, and removing a marker keeps the entry. No new table or migration.

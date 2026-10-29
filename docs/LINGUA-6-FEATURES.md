@@ -881,10 +881,10 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [ ] `F0669` Score task completion against a rubric · **6-12**
 - [ ] `F0670` Generate follow-up exercises from errors · **6-16**
 - [x] `F0671` Evaluate writing against a chosen CEFR level
-- [ ] `F0672` Estimate vocabulary diversity · **6-12**
-- [ ] `F0673` Track sentence complexity · **6-12**
+- [x] `F0672` Estimate vocabulary diversity · **6-12**
+- [x] `F0673` Track sentence complexity · **6-12**
 - [x] `F0674` Track grammatical accuracy
-- [ ] `F0675` Maintain a personal writing portfolio · **6-12**
+- [x] `F0675` Maintain a personal writing portfolio · **6-12**
 
 #### 7.3 Writing tools
 
@@ -909,8 +909,8 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [ ] `F0692` Export to Markdown, TXT or PDF · **6-24**
 - [x] `F0693` Save selected sentences to vocabulary
 - [x] `F0694` Turn corrections into flashcards
-- [ ] `F0695` Compare writing samples over time · **6-12**
-- [ ] `F0696` Track writing by topic and genre · **6-12**
+- [x] `F0695` Compare writing samples over time · **6-12**
+- [x] `F0696` Track writing by topic and genre · **6-12**
 
 ## 08 · Pronunciation and phonetics
 

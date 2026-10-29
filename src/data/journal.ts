@@ -38,7 +38,7 @@ export async function saveEntryText(id: string, text: string, lang: string, data
   await database.journalEntries.update(id, { text, words: entryWords(text, lang), updatedAt: Date.now() });
 }
 
-export async function updateEntry(id: string, patch: Partial<Pick<JournalEntry, 'title' | 'prompt' | 'date'>>, database: LinguaDB = db): Promise<void> {
+export async function updateEntry(id: string, patch: Partial<Pick<JournalEntry, 'title' | 'prompt' | 'date' | 'portfolio'>>, database: LinguaDB = db): Promise<void> {
   await database.journalEntries.update(id, { ...patch, updatedAt: Date.now() });
 }
 

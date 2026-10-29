@@ -2341,3 +2341,5 @@ motivated and excited, i think i will like tauri a lot"). A look, not a launch: 
 - [ ] **M-0 · Rust** (the user installs it) · **M-1 · the shell** · **M-2 · behave as an app** (service worker, window, menu, links)
 - [ ] **M-3 · the check in WebKit** (data, packs, PDF and OCR, audio, Whisper and Piper, speech, other sites, YouTube; result table in the plan)
 - [ ] **M-4 · Mac touches** (optional) · **M-5 · build the app and the disk image** · **M-6 · write-up** in DECISIONS: Tauri on, Electron, or stop
+
+**6-12 progress (Codex, 2026-10-29):** W1 pushed as 0.6.0-alpha.34; W2 adds local word/sentence measures and the portfolio, checked with unit tests and a browser sample (plan row records the exact coverage). W3 dictionary/phrases and W4 feedback remain.

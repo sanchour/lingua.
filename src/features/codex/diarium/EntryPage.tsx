@@ -28,6 +28,7 @@ import { DiaryEditor } from './DiaryEditor';
 import type { DiaryEditorHandle } from './DiaryEditor';
 import { DictateButton } from './Dictate';
 import { WritingSession } from './WritingSession';
+import { WritingMeasures } from './WritingMeasures';
 import { CorrectionList, ReviewSummary, ReviewText } from './Review';
 
 const SAVE_DELAY = 500;
@@ -64,6 +65,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
   const [saved, setSaved] = useState(true);
   const [checking, setChecking] = useState(false);
   const [renaming, setRenaming] = useState(false);
+  const [portfolioTopic, setPortfolioTopic] = useState(entry.portfolio?.topic ?? '');
   const review = entry.review;
   const plain = toPlain(text);
   const stale = Boolean(review && review.text.trim() !== plain.trim());
@@ -269,6 +271,15 @@ function Entry({ entry }: { entry: JournalEntry }) {
         </Popover>
       </header>
       {mode === 'write' && <WritingSession taskId={entry.writingTaskId} words={words} />}
+      <WritingMeasures text={text} lang={lang} />
+      <details className="mb-6 rounded-xl border border-line p-4 text-sm">
+        <summary className="cursor-pointer font-semibold">{entry.portfolio ? 'Kept in your portfolio' : 'Keep in your portfolio'}</summary>
+        <div className="mt-3 flex items-end gap-3">
+          <label className="flex-1 text-ink-soft">Topic<input value={portfolioTopic} onChange={(e) => setPortfolioTopic(e.target.value)} maxLength={120} className="mt-1 block w-full rounded-xl border border-line bg-raised p-2 text-ink" /></label>
+          <Button variant="secondary" size="sm" disabled={!words} onClick={() => void updateEntry(entry.id, { portfolio: { level: entry.portfolio?.level ?? language.level, topic: portfolioTopic.trim(), at: entry.portfolio?.at ?? Date.now() } }).then(() => toast('Kept in your portfolio.', { tone: 'success' })).catch(() => toast('Could not save the portfolio choice.', { tone: 'error' }))}>{entry.portfolio ? 'Save topic' : `Keep at ${language.level}`}</Button>
+          {entry.portfolio && <Button variant="ghost" size="sm" onClick={() => void updateEntry(entry.id, { portfolio: undefined }).then(() => toast('Removed from the portfolio. Your entry is still here.')).catch(() => toast('Could not change the portfolio.', { tone: 'error' }))}>Remove from portfolio</Button>}
+        </div>
+      </details>
 
       {review && (
         <div className="mb-7">
