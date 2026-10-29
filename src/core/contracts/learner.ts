@@ -47,6 +47,8 @@ export interface EvidenceRow {
   skill: Skill;
   room: Room;
   item: EvidenceItem;
+  /** The item as one string, for the index and for grouping: `word:es:casa`, `grammar:present`, `sound:ɾ`, `pattern:x`, `text:id`. */
+  itemKey: string;
   outcome: Outcome;
   /** Hints, a retry, or a revealed answer were used: it counts less as knowing. */
   assisted: boolean;

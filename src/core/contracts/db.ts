@@ -68,7 +68,7 @@ export const PART_A_SCHEMA: StepSchema[] = [
     // 6-5: the learner's record. Append-only; summaries are derived and cached per day.
     step: 5,
     stores: {
-      evidence: 'id, [lang+at], [lang+skill+at], [lang+category+at], [lang+item], at',
+      evidence: 'id, [lang+at], [lang+skill+at], [lang+category+at], [lang+itemKey], at',
       evidenceDays: 'id, [lang+day]',
     },
     policy: { evidence: 'union', evidenceDays: 'insertOnly' },

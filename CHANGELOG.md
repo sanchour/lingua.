@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.14** · 2026-10-29 · Contract: evidence rows get itemKey, indexed [lang+itemKey] (touches 6-5 only)
 - **0.6.0-alpha.13** · 2026-10-29 · Claim 6-5: the learner's record
 - **0.6.0-alpha.12** · 2026-10-29 · 6-3 done: leeches, bury, mnemonic, remembered-today, catch-up plan (Dexie 20)
 - **0.6.0-alpha.11** · 2026-10-29 · Claim 6-3: cards and memory

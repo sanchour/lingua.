@@ -53,6 +53,8 @@ add the new one and read both.
 
 - **0.6.0-alpha.12 (6-3):** built `Card.buriedUntil` and `leech`, `ReviewLog.hinted`, `guessed` and `contextId`, `Note.mnemonic` and `template` (the field only), `DeckConfig.burySiblings`, with Dexie 20 exactly as `PART_A_SCHEMA` says. `answerCard` takes `hinted`, `guessed` and `contextId` and returns `leech`.
 
+- **0.6.0-alpha.14 (6-5):** `EvidenceRow` gains `itemKey` (the item as one string) and `evidence` is indexed `[lang+itemKey]` instead of `[lang+item]`, which cannot index an object.
+
 ## What was decided here (and could be reopened)
 
 - Part A's tables: `evidence`, `evidenceDays` (6-5) and `generated` (6-6) are the only new ones; 6-1 to 6-3 add fields
