@@ -385,11 +385,11 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [ ] `F0265` Personal grammar weakness tracker · **5.2-8** · planned in Lingua 5.2
 - [x] `F0266` Grammar mastery by topic
 - [x] `F0267` Prerequisite dependency graph · **6-7**
-- [ ] `F0268` Contrastive grammar between two languages · **6-13**
-- [ ] `F0269` Compare grammatical gender systems · **6-13**
-- [ ] `F0270` Compare tense and aspect systems · **6-13**
-- [ ] `F0271` Compare case systems · **6-13**
-- [ ] `F0272` Compare word order patterns · **6-13**
+- [x] `F0268` Contrastive grammar between two languages · **6-13**
+- [x] `F0269` Compare grammatical gender systems · **6-13**
+- [x] `F0270` Compare tense and aspect systems · **6-13**
+- [x] `F0271` Compare case systems · **6-13**
+- [x] `F0272` Compare word order patterns · **6-13**
 - [x] `F0273` Analyze the grammar of any pasted sentence · **6-7**
 - [x] `F0274` Identify every word’s grammatical role · **6-7** · partly there
 - [x] `F0275` Show dependency relationships between words · **6-7**
@@ -1009,7 +1009,7 @@ Translation can be a powerful learning method when used actively. It becomes les
 - [x] `F0769` Translate with word-by-word alignment · **6-13**
 - [x] `F0770` Compare sentence structure across languages · **6-13**
 - [x] `F0771` Explain why a direct translation doesn’t work · **6-13**
-- [ ] `F0772` Identify false friends · **6-13**
+- [x] `F0772` Identify false friends · **6-13**
 - [ ] `F0773` Explain untranslatable concepts · **6-19**
 - [x] `F0774` Back-translation exercises · **6-13**
 - [x] `F0775` Translate and then reconstruct the original · **6-13**
@@ -1019,22 +1019,22 @@ Translation can be a powerful learning method when used actively. It becomes les
 
 #### 9.2 Contrastive language tools
 
-- [ ] `F0779` Compare word order · **6-13**
-- [ ] `F0780` Compare grammatical gender · **6-13**
-- [ ] `F0781` Compare case systems · **6-13**
-- [ ] `F0782` Compare tense and aspect · **6-13**
-- [ ] `F0783` Compare prepositions · **6-13**
-- [ ] `F0784` Compare articles · **6-13**
-- [ ] `F0785` Compare pronouns · **6-13**
-- [ ] `F0786` Compare politeness systems · **6-13**
-- [ ] `F0787` Compare formal and informal address · **6-13**
-- [ ] `F0788` Compare idioms across languages · **6-13**
-- [ ] `F0789` Compare cognates and false cognates · **6-13** · partly there
-- [ ] `F0790` Compare shared roots · **6-13**
-- [ ] `F0791` Compare word formation · **6-13**
-- [ ] `F0792` Compare pronunciation of similar words · **6-13**
-- [ ] `F0793` Compare semantic differences · **6-13**
-- [ ] `F0794` Compare cultural associations · **6-13**
+- [x] `F0779` Compare word order · **6-13**
+- [x] `F0780` Compare grammatical gender · **6-13**
+- [x] `F0781` Compare case systems · **6-13**
+- [x] `F0782` Compare tense and aspect · **6-13**
+- [x] `F0783` Compare prepositions · **6-13**
+- [x] `F0784` Compare articles · **6-13**
+- [x] `F0785` Compare pronouns · **6-13**
+- [x] `F0786` Compare politeness systems · **6-13**
+- [x] `F0787` Compare formal and informal address · **6-13**
+- [x] `F0788` Compare idioms across languages · **6-13**
+- [x] `F0789` Compare cognates and false cognates · **6-13** · partly there
+- [x] `F0790` Compare shared roots · **6-13**
+- [x] `F0791` Compare word formation · **6-13**
+- [x] `F0792` Compare pronunciation of similar words · **6-13**
+- [x] `F0793` Compare semantic differences · **6-13**
+- [x] `F0794` Compare cultural associations · **6-13**
 - [ ] `F0795` Maintain personal notes on difficult language pairs · **6-20**
 
 ## 10 · Real-world immersion
@@ -1717,7 +1717,7 @@ Different languages require different learning interfaces. This could become a m
 - [ ] `F1338` European versus Brazilian Portuguese · **6-23** · partly there
 - [ ] `F1339` Nasal vowel practice · **6-10**
 - [ ] `F1340` Verb-preposition combinations · **6-23**
-- [ ] `F1341` False friends between Romance languages · **6-13**
+- [x] `F1341` False friends between Romance languages · **6-13**
 
 #### Chinese, Japanese and other East Asian languages
 

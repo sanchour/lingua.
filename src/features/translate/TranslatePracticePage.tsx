@@ -26,6 +26,7 @@ import { recordEvidence } from '@/data/learner';
 import { AlignmentView } from './AlignmentView';
 import { BackTranslationView } from './BackTranslationView';
 import { ReconstructView } from './ReconstructView';
+import { ContrastTableView } from './ContrastTableView';
 
 const CORE_LANGUAGES = [
   { id: 'es', label: 'Spanish', flag: '🇪🇸' },
@@ -36,7 +37,7 @@ const CORE_LANGUAGES = [
   { id: 'zh', label: 'Chinese', flag: '🇨🇳' },
 ];
 
-type TranslateTab = 'practice' | 'align' | 'back' | 'reconstruct' | 'custom';
+type TranslateTab = 'practice' | 'align' | 'back' | 'reconstruct' | 'compare' | 'custom';
 
 export default function TranslatePracticePage() {
   const { language } = useApp();
@@ -197,6 +198,7 @@ export default function TranslatePracticePage() {
               { value: 'align', label: 'Word Alignment' },
               { value: 'back', label: 'Back-Translation' },
               { value: 'reconstruct', label: 'Rebuild Original' },
+              { value: 'compare', label: 'Compare Languages' },
               { value: 'custom', label: 'Translate Your Own' },
             ]}
           />
@@ -609,6 +611,10 @@ export default function TranslatePracticePage() {
 
       {activeTab === 'reconstruct' && (
         <ReconstructView selectedLang={selectedLang} />
+      )}
+
+      {activeTab === 'compare' && (
+        <ContrastTableView />
       )}
 
       {activeTab === 'custom' && (

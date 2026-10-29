@@ -1910,6 +1910,11 @@ Four specialized translation views are integrated into `/thesaurus/translate`:
 3. `ReconstructView`: Two-stage cognitive reconstruction where the learner first translates into the target language, then rebuilds the hidden original English sentence by clicking scrambled word tiles in exact order.
 4. Reference comparison: Post-answer review juxtaposes the learner's answer against canonical and regional/stylistic reference translations.
 
+## 2026-10-29 — 6-13 T3: language contrast tables and personal pair notes
+
+A comprehensive comparative linguistic matrix is mounted under the 'Compare Languages' tab in `/thesaurus/translate`. Hand-crafted contrast tables cover English paired with all six core languages (Spanish, French, German, Italian, Russian, Chinese) as well as Romance cross-pairs (Spanish ↔ French, Spanish ↔ Italian) across eleven distinct dimensions: word order (SVO, SOV, V2 inversion, pro-drop, pre-verbal adverbials), grammatical gender, case declensions (4-case German, 6-case Russian), tense & aspect (Romance preterite/imperfect, Russian aspectual pairs, Chinese particles), articles & prepositions (Wechselpräpositionen, partitives, zero-articles), politeness & address (T-V distinctions, honorifics), false friends with deceptive lookalike warnings, shared cognate roots and word formation, pronunciation/phonetics, and cultural semantics (untranslatable words: sobremesa, Waldeinsamkeit, miànzi, toska). Learners can record and auto-save personal notes on any language pair without database migrations using `db.settings`.
+
+
 
 
 
