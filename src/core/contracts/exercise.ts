@@ -60,6 +60,54 @@ export interface TransformBody {
   to: { label: string };
 }
 
+/** The body of the matching kinds (6-4b): tap one side, then what goes with it. */
+export interface MatchBody {
+  /** What the pairs are: the kind of the spec says the same ('match-definition' ...). */
+  what: 'definition' | 'synonym' | 'antonym' | 'sentence' | 'affix' | 'pos' | 'sound' | 'picture';
+  /** `left` is in the language; `right` is what it goes with (a meaning, a word, a label). `say` is spoken for 'sound'; `image` is a picture's address. */
+  pairs: Array<{ left: string; right: string; say?: string; image?: string }>;
+}
+
+/** 'correct-mistake': a sentence with one wrong form in it; the learner types the right form. */
+export interface CorrectBody {
+  /** The sentence as shown, with the mistake in it. */
+  shown: string;
+  /** The wrong form, marked in the sentence. */
+  wrong: string;
+  translation?: string;
+}
+
+/** The sentence tasks (6-4b): 'rewrite' (also active to passive, direct to reported, statement to question), 'combine', 'expand', 'simplify'. */
+export interface TaskBody {
+  task: 'fix' | 'passive' | 'reported' | 'question' | 'combine' | 'expand' | 'simplify';
+  /** What is given: one sentence, or two to combine. */
+  given: string[];
+  /** Said once more above the box ("Say it in the passive"). */
+  prompt: string;
+  translation?: string;
+}
+
+/** 'predict-form': the forms so far, in order; the learner types the next one. */
+export interface PredictBody {
+  title: string;
+  lemma?: string;
+  given: Array<{ label: string; form: string }>;
+  ask: { label: string };
+}
+
+/** 'complete-dialogue': a short exchange with one line missing; the learner types it. */
+export interface DialogueBody {
+  title?: string;
+  lines: Array<{ speaker: string; text: string; missing?: boolean }>;
+}
+
+/** 'drag-drop': tiles dragged into order (the same answer as a built sentence, made with the pointer). */
+export interface DragBody {
+  /** Shown above the tiles: what to build (a translation, or the instruction). */
+  prompt: string;
+  tiles: string[];
+}
+
 /** One hint, revealed by a tap. Hints grow step by step; a used hint makes the answer "assisted" (6-5). */
 export interface Hint {
   text: string;
