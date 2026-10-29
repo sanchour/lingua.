@@ -1,7 +1,8 @@
 import { expect, it } from 'vitest';
 import { WRITING_TASKS, writingTaskPrompt } from '@/core/journal/tasks';
 import { createDb } from './db';
-import { createEntry, entryWords, saveEntryText, updateEntry } from './journal';
+import { createEntry, entryWords, saveEntryText, saveReview, updateEntry } from './journal';
+import type { JournalReview } from './types';
 
 it('saves a writing task and its material without changing free journal entries', async () => {
   const db = createDb(`journal-${crypto.randomUUID()}`);
@@ -22,4 +23,17 @@ it('saves a writing task and its material without changing free journal entries'
   } finally {
     await db.delete();
   }
+});
+
+it('stores correction evidence atomically, maps categories and does not duplicate a saved review', async () => {
+  const db = createDb(`journal-evidence-${crypto.randomUUID()}`);
+  try {
+    const id = await createEntry('es', undefined, db);
+    const review: JournalReview = { text: 'Yo es feliz', corrected: 'Yo soy feliz', natural: '', corrections: [{ original: 'es', suggestion: 'soy', category: 'word choice', explanation: 'Use the first person.', severity: 'major' }], scores: { grammar: 50, vocabulary: 50, coherence: 50, overall: 50 }, cefr: 'A1', strengths: [], tip: '', model: 'fake', reviewedAt: Date.now() };
+    await saveReview(id, review, db);
+    await saveReview(id, review, db);
+    expect(await db.evidence.count()).toBe(1);
+    expect(await db.evidence.toArray()).toMatchObject([{ skill: 'writing', room: 'diarium', category: 'word-choice', given: 'es', expected: 'soy', contextId: id }]);
+    expect((await db.journalEntries.get(id))?.review?.model).toBe('fake');
+  } finally { await db.delete(); }
 });

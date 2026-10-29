@@ -8,6 +8,10 @@ import type { LinguaDB } from './db';
 import { addNote, createDeck } from './decks';
 import type { NoteInput } from './decks';
 import type { JournalEntry, JournalReview } from './types';
+import { recordEvidence } from './learner';
+import type { MistakeCategory } from '@/core/contracts/learner';
+
+const EVIDENCE_CATEGORY: Partial<Record<string, MistakeCategory>> = { 'word choice': 'word-choice', 'word order': 'word-order', 'tense/aspect': 'tense-aspect' };
 
 export function useJournal(lang: string): JournalEntry[] | undefined {
   return useLiveQuery(
@@ -44,12 +48,17 @@ export async function updateEntry(id: string, patch: Partial<Pick<JournalEntry, 
 
 /** Stores a review; the text it replaced is kept as an earlier version when it differed. */
 export async function saveReview(id: string, review: JournalReview, database: LinguaDB = db): Promise<void> {
-  await database.transaction('rw', database.journalEntries, async () => {
+  await database.transaction('rw', [database.journalEntries, database.evidence, database.evidenceDays], async () => {
     const entry = await database.journalEntries.get(id);
     if (!entry) return;
     const versions = [...(entry.versions ?? [])];
     if (entry.review && entry.review.text !== review.text) versions.push({ text: entry.review.text, at: entry.review.reviewedAt });
     await database.journalEntries.put({ ...entry, review, versions: versions.slice(-10), updatedAt: Date.now() });
+    for (const [i, correction] of review.corrections.entries()) {
+      if (!correction.original.trim() || !review.text.includes(correction.original)) continue;
+      const category = EVIDENCE_CATEGORY[correction.category] ?? correction.category as MistakeCategory;
+      await recordEvidence({ id: `journal:${id}:${review.reviewedAt}:${i}`, lang: entry.lang, at: review.reviewedAt, skill: 'writing', room: 'diarium', item: { type: 'pattern', patternId: `writing:${category}` }, outcome: 'wrong', assisted: false, category, given: correction.original.slice(0, 500), expected: correction.suggestion.slice(0, 500), kind: 'free', contextId: id }, database);
+    }
   });
 }
 

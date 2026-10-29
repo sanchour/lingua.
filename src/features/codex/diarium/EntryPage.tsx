@@ -30,6 +30,7 @@ import { DictateButton } from './Dictate';
 import { WritingSession } from './WritingSession';
 import { WritingMeasures } from './WritingMeasures';
 import { WritingHelp } from './WritingHelp';
+import { WritingFeedback } from './WritingFeedback';
 import { CorrectionList, ReviewSummary, ReviewText } from './Review';
 
 const SAVE_DELAY = 500;
@@ -273,6 +274,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
         </Popover>
       </header>
       {mode === 'write' && <WritingSession taskId={entry.writingTaskId} words={words} />}
+      {!hasAi && <p className="mb-4 text-sm text-ink-faint">Writing feedback needs Lingua+ Max and an AI key in Settings. Local writing tools work without them.</p>}
       <WritingMeasures text={text} lang={lang} />
       <details className="mb-6 rounded-xl border border-line p-4 text-sm">
         <summary className="cursor-pointer font-semibold">{entry.portfolio ? 'Kept in your portfolio' : 'Keep in your portfolio'}</summary>
@@ -317,6 +319,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
             {!wide && <ReviewSummary review={review} />}
             <div className="min-w-0 space-y-9">
               <ReviewText review={review} lang={lang} />
+              <WritingFeedback review={review} lang={lang} />
               <div className="flex flex-wrap gap-2">
                 {review.corrected.trim() !== plain.trim() && (
                   <Button variant="secondary" icon={Wand2} onClick={() => void useCorrected()}>

@@ -258,7 +258,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0162` Example sentences ranked by difficulty · **6-1** · partly there
 - [x] `F0163` Corpus examples showing authentic usage
 - [ ] `F0164` Connotation and emotional tone · **6-1**
-- [ ] `F0165` Words that are technically correct but unnatural in context · **6-12**
+- [x] `F0165` Words that are technically correct but unnatural in context · **6-12**
 
 #### 2.5 Vocabulary games
 
@@ -397,7 +397,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [ ] `F0277` Parse complex sentences · **6-7**
 - [ ] `F0278` Generate sentence variations using a selected rule · **6-6**
 - [ ] `F0279` Explain multiple grammatically valid interpretations · **6-7**
-- [ ] `F0280` Identify unnatural but technically grammatical constructions · **6-12**
+- [x] `F0280` Identify unnatural but technically grammatical constructions · **6-12**
 - [ ] `F0281` Track recurring grammar mistakes across conversations · **6-5**
 - [ ] `F0282` Generate a personalized grammar curriculum · **6-16**
 - [ ] `F0283` Predict which grammar topics will be hardest for a learner based on previous errors · **6-16**
@@ -863,22 +863,22 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [x] `F0651` Punctuation correction
 - [x] `F0652` Word choice suggestions
 - [x] `F0653` Naturalness improvements
-- [ ] `F0654` Idiomatic expression suggestions · **6-12** · partly there
-- [ ] `F0655` Register adjustment · **6-12**
-- [ ] `F0656` Formality adjustment · **6-12**
+- [x] `F0654` Idiomatic expression suggestions · **6-12** · partly there
+- [x] `F0655` Register adjustment · **6-12**
+- [x] `F0656` Formality adjustment · **6-12**
 - [ ] `F0657` Simplification to a lower level · **6-12**
-- [ ] `F0658` Expansion to a higher level · **6-12**
+- [x] `F0658` Expansion to a higher level · **6-12**
 - [x] `F0659` Explain every correction
 - [x] `F0660` Highlight changes inline
 - [x] `F0661` Compare original and corrected versions
-- [ ] `F0662` Preserve the learner’s original voice · **6-12** · partly there
-- [ ] `F0663` Provide several alternative phrasings · **6-12**
+- [x] `F0662` Preserve the learner’s original voice · **6-12** · partly there
+- [x] `F0663` Provide several alternative phrasings · **6-12**
 - [x] `F0664` Identify recurring mistakes · **6-5** · partly there
-- [ ] `F0665` Suggest more precise vocabulary · **6-12**
-- [ ] `F0666` Explain why a sentence sounds unnatural · **6-12**
-- [ ] `F0667` Identify literal translations from the native language · **6-12**
+- [x] `F0665` Suggest more precise vocabulary · **6-12**
+- [x] `F0666` Explain why a sentence sounds unnatural · **6-12**
+- [x] `F0667` Identify literal translations from the native language · **6-12**
 - [x] `F0668` Provide a more natural native-speaker version
-- [ ] `F0669` Score task completion against a rubric · **6-12**
+- [x] `F0669` Score task completion against a rubric · **6-12**
 - [ ] `F0670` Generate follow-up exercises from errors · **6-16**
 - [x] `F0671` Evaluate writing against a chosen CEFR level
 - [x] `F0672` Estimate vocabulary diversity · **6-12**
@@ -1090,7 +1090,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0831` Simulate travel
 - [ ] `F0832` Read local advertisements and signs · **6-19** · partly there
 - [ ] `F0833` Practice common phone calls · **5.2-6** · planned in Lingua 5.2
-- [ ] `F0834` Write real messages with feedback · **6-12** · partly there
+- [x] `F0834` Write real messages with feedback · **6-12** · partly there
 - [ ] `F0835` Maintain a personal phrasebook · **6-20**
 - [x] `F0836` Set a daily target-language challenge
 - [ ] `F0837` Build a list of real-life communication goals · **6-17**

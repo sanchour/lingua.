@@ -1865,3 +1865,7 @@ The journal uses the existing language-aware tokenizer to count different word f
 ## 2026-10-29 — 6-12 W3: dictionary help stays on the device
 
 Diarium reuses the reader’s WordForms with the installed pack’s form-to-lemma lookup. Full-dictionary entries supply synonyms and collocations only when present; none are generated. Selection and pointer look-up feed the same side panel, with a typed field for keyboard access. Seven hand-written phrase functions cover the core six languages. A dedicated Hunspell spellchecker is left out: no Hunspell engine/dictionary is already installed, and this slice adds no dependency.
+
+## 2026-10-29 — 6-12 W4: feedback extends the existing review, and corrections become evidence
+
+The same AI request now asks for optional, quoted phrasing suggestions and four rubric criteria assessed against the saved task brief and length. Suggestions whose quotes are absent are discarded; scores outside 0–4 are discarded. The writer still chooses whether to adopt the existing corrected text. The model is injected for fake-model tests; no real provider was tried. Saving the review and its correction evidence is one transaction, with stable ids preventing duplicate rows for the same review. Evidence groups corrections by category, as writing patterns; it records suggested mistakes, not proof that a learner mastered a correction. No correct-answer row is inferred from silence.

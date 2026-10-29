@@ -689,6 +689,7 @@ export interface JournalCorrection {
 
 /** The AI's reading of an entry (services/llm/journal.ts). */
 export interface JournalReview {
+  writingFeedback?: import('@/core/journal/feedback').WritingFeedback;
   /** The text it reviewed (an entry may have changed since). */
   text: string;
   corrected: string;
