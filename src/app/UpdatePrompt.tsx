@@ -9,7 +9,7 @@ const LAUNCH_WINDOW = 15_000;
 const UPDATED_FLAG = 'lingua.updated';
 
 /** A study session lives in memory only: reloading would lose it. Everything else saves as you go. */
-const busy = () => location.pathname.includes('/thesaurus/study/') || usePlayer.getState().status === 'playing';
+const busy = () => location.pathname.includes('/thesaurus/study/') || location.pathname.includes('/thesaurus/practice/') || usePlayer.getState().status === 'playing';
 
 /**
  * Keeps installed apps (iPhone, desktop) up to date without asking. New versions are looked for on

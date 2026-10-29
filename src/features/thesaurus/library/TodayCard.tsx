@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Layers, Puzzle, TextCursorInput, Zap } from 'lucide-react';
+import { Layers, Puzzle, Shapes, TextCursorInput, Zap } from 'lucide-react';
 import type { DeckCounts } from '@/data/decks';
 import { useToday } from '@/data/stats';
 import { catchUp, overdueCards } from '@/data/study';
@@ -16,6 +16,7 @@ import { CARD_STATES, REVIEW } from './states';
 const LUDUS_PLAYS = [
   { to: '/thesaurus/study/all?mode=ludus', icon: Puzzle, title: 'A lesson', detail: 'Games with your cards: choose, match, build, listen, type' },
   { to: '/thesaurus/study/all?mode=ludus&lightning=1', icon: Zap, title: 'Lightning round', detail: 'As many as you can in a minute' },
+  { to: '/thesaurus/practice', icon: Shapes, title: 'Practice sets', detail: 'Matching games, correct the mistake, rewrite, what comes next, drag the words' },
   { to: '/thesaurus/study/all?mode=ludus&kind=sentences', icon: TextCursorInput, title: 'Sentences with a gap', detail: 'Real sentences with one word missing, your words first' },
 ];
 

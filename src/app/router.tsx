@@ -19,6 +19,7 @@ import {
   MentisPage,
   NewTextPage,
   OrdoPage,
+  PracticePage,
   RatioPage,
   ReaderPage,
   SonusBookPage,
@@ -96,6 +97,15 @@ export const router = createBrowserRouter(
         { path: 'thesaurus/deck/:deckId', element: <DeckPage /> },
         { path: 'thesaurus/ready/:key', element: <StarterPage /> },
         { path: 'thesaurus/study/:deckId', element: <StudyPage /> },
+        // Practice sets in every kind of exercise (6-4b): Lingua+, like Ludus.
+        {
+          path: 'thesaurus/practice/:set?',
+          element: (
+            <PlanRoute feature="ludus" fallback="/thesaurus">
+              <PracticePage />
+            </PlanRoute>
+          ),
+        },
         // Sonus & Visio: separate rooms for listening and watching.
         { path: 'sonus', element: <SonusPage /> },
         { path: 'sonus/play/:mediaId', element: <SonusPlayerPage /> },

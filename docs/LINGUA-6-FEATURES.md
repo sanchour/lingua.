@@ -109,14 +109,14 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0030` Audio-only recall · **6-3** · partly there
 - [x] `F0031` Spelling reconstruction
 - [x] `F0032` Word unscrambling
-- [ ] `F0033` Match words with definitions · **6-4** · partly there
+- [x] `F0033` Match words with definitions · **6-4** · partly there
 - [x] `F0034` Match words with translations
 - [ ] `F0035` Match words with images · **6-4**
-- [ ] `F0036` Match words with example sentences · **6-4**
-- [ ] `F0037` Match audio recordings with written words · **6-4** · partly there
-- [ ] `F0038` Match synonyms and antonyms · **6-4**
-- [ ] `F0039` Match prefixes and suffixes to their meanings · **6-4**
-- [ ] `F0040` Match words with their grammatical categories · **6-4**
+- [x] `F0036` Match words with example sentences · **6-4**
+- [x] `F0037` Match audio recordings with written words · **6-4** · partly there
+- [x] `F0038` Match synonyms and antonyms · **6-4**
+- [x] `F0039` Match prefixes and suffixes to their meanings · **6-4**
+- [x] `F0040` Match words with their grammatical categories · **6-4**
 
 #### 2.2 Vocabulary deck management
 
@@ -353,11 +353,11 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0238` Choose the correct preposition
 - [x] `F0239` Choose the correct pronoun
 - [x] `F0240` Choose the correct word order
-- [ ] `F0241` Correct a grammatical mistake · **6-4**
+- [x] `F0241` Correct a grammatical mistake · **6-4**
 - [x] `F0242` Identify the error in a sentence
-- [ ] `F0243` Rewrite an incorrect sentence · **6-4**
+- [x] `F0243` Rewrite an incorrect sentence · **6-4**
 - [x] `F0244` Transform singular into plural · **6-4**
-- [ ] `F0245` Transform present into past · **6-4**
+- [x] `F0245` Transform present into past · **6-4**
 - [ ] `F0246` Transform active into passive · **6-4**
 - [ ] `F0247` Transform direct into reported speech · **6-4**
 - [ ] `F0248` Transform statements into questions · **6-4**
@@ -369,7 +369,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [ ] `F0254` Generate multiple examples of a pattern · **6-4** · partly there
 - [ ] `F0255` Distinguish between two similar grammatical constructions · **6-7** · partly there
 - [x] `F0256` Explain why an answer is wrong
-- [ ] `F0257` Predict the next grammatical form · **6-4**
+- [x] `F0257` Predict the next grammatical form · **6-4**
 - [ ] `F0258` Complete a dialogue using the right forms · **6-4**
 - [ ] `F0259` Dictation focused on grammatical endings · **6-9**
 - [ ] `F0260` Oral grammar drills · **6-11**
@@ -1205,7 +1205,7 @@ This is the structured side of the app. Learners need a route through the materi
 
 - [x] `F0923` Multiple choice
 - [x] `F0924` Fill in the blank
-- [ ] `F0925` Drag and drop · **6-4**
+- [x] `F0925` Drag and drop · **6-4**
 - [x] `F0926` Word ordering
 - [x] `F0927` Sentence building
 - [x] `F0928` Matching
@@ -1218,16 +1218,16 @@ This is the structured side of the app. Learners need a route through the materi
 - [x] `F0935` Inline dictionary lookup
 - [x] `F0936` Tap-to-reveal hints · **6-4**
 - [x] `F0937` Progressive hints · **6-4**
-- [ ] `F0938` Error correction · **6-4**
+- [x] `F0938` Error correction · **6-4**
 - [x] `F0939` Short written responses
 - [x] `F0940` Open-ended responses
-- [ ] `F0941` Confidence ratings · **6-4**
+- [x] `F0941` Confidence ratings · **6-4**
 - [ ] `F0942` Self-assessment · **6-4**
 - [x] `F0943` Immediate feedback
-- [ ] `F0944` Delayed feedback · **6-4**
+- [x] `F0944` Delayed feedback · **6-4**
 - [x] `F0945` Explanations after incorrect answers
 - [x] `F0946` Retry without penalty
-- [ ] `F0947` Retry with a different example · **6-4**
+- [x] `F0947` Retry with a different example · **6-4**
 - [ ] `F0948` Adaptive exercise selection · **6-16**
 - [x] `F0949` Interleaved practice
 - [x] `F0950` Mixed review at the end of a lesson
