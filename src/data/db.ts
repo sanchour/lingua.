@@ -163,7 +163,13 @@ export const SCHEMA_V18 = {
   words: 'id, [lang+state], [lang+lemma], [lang+favourite], [lang+important], [lang+inbox], updatedAt',
 } as const;
 
-const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16, ...SCHEMA_V17, ...SCHEMA_V18 };
+/** Version 19 (Lingua 6-2): archived decks are found by language, cards of a deck by their place. */
+export const SCHEMA_V19 = {
+  decks: 'id, lang, folderId, kind, [lang+archived], updatedAt',
+  notes: 'id, deckId, wordId, lang, [deckId+order], updatedAt, *tags',
+} as const;
+
+const SCHEMA = { ...SCHEMA_V1, ...SCHEMA_V2, ...SCHEMA_V3, ...SCHEMA_V4, ...SCHEMA_V5, ...SCHEMA_V6, ...SCHEMA_V7, ...SCHEMA_V8, ...SCHEMA_V9, ...SCHEMA_V10, ...SCHEMA_V12, ...SCHEMA_V13, ...SCHEMA_V14, ...SCHEMA_V15, ...SCHEMA_V16, ...SCHEMA_V17, ...SCHEMA_V18, ...SCHEMA_V19 };
 export type TableName = keyof typeof SCHEMA;
 export const TABLE_NAMES = Object.keys(SCHEMA) as TableName[];
 
@@ -233,6 +239,7 @@ export function createDb(name = 'lingua'): LinguaDB {
   db.version(16).stores(SCHEMA_V16);
   db.version(17).stores(SCHEMA_V17);
   db.version(18).stores(SCHEMA_V18);
+  db.version(19).stores(SCHEMA_V19);
   return db;
 }
 

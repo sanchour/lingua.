@@ -1,6 +1,7 @@
 // Row types for every IndexedDB table. This file is the schema of record (docs/ARCHITECTURE.md → Data).
 // Conventions: ids are crypto.randomUUID() unless noted · times are epoch ms · indexed booleans are 0 | 1.
 
+import type { InboxState } from '@/core/contracts/word';
 import type { Cefr, Level } from '@/core/lang/levels';
 
 export type Lang = string;
@@ -172,6 +173,8 @@ export interface Word extends Synced {
   /** Absent reads as 0. Indexed, so a 0 | 1. */
   favourite?: Bit;
   important?: Bit;
+  /** Where a met word waits (6-2). Absent reads as 'kept' on a word that has a row; a word met with no row at all is in the inbox. */
+  inbox?: InboxState;
 }
 
 export interface FrequencyRow {
@@ -299,6 +302,10 @@ export interface Deck extends Synced {
   description?: string;
   order: number;
   kind: 'custom' | 'mined' | 'starterFrequency' | 'starterTheme' | 'apkg' | 'csv' | 'visio' | 'cantus';
+  /** Out of the way, with its history kept; its cards aren't studied with the rest (6-2). Absent reads as 0. */
+  archived?: Bit;
+  pinned?: Bit;
+  important?: Bit;
   starter?: { packId: string; rankFrom?: number; rankTo?: number; theme?: string; materialized: Bit };
   config: DeckConfig;
 }
@@ -328,6 +335,8 @@ export interface Note extends Synced {
   };
   imageBlobId?: string;
   audioBlobId?: string;
+  /** The card's place in a hand-sorted deck (6-2). Absent: the order they were added. */
+  order?: number;
   tags: string[];
   source: 'manual' | 'codex' | 'sonus' | 'visio' | 'cantus' | 'starter' | 'apkg' | 'csv';
   wordId?: string;

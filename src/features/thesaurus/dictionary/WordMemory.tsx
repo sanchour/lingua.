@@ -4,12 +4,17 @@ import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { BookOpen, Clapperboard, Headphones, Layers, MessagesSquare, Music, NotebookPen, PanelsTopLeft, Radio, TextQuote } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import type { InboxState } from '@/core/contracts/word';
 import { getTheme } from '@/core/lang/starter';
 import { db } from '@/data/db';
+import { useDecks } from '@/data/decks';
+import { addInboxToDeck, inboxStateOf, markInboxKnown, setInboxState } from '@/data/inbox';
+import type { InboxWord } from '@/data/inbox';
 import { SIGHTING_KINDS, sightingLink, wordMemory } from '@/data/memory';
 import type { Remembered } from '@/data/memory';
 import type { Sighting, SightingKind } from '@/data/types';
-import { SearchInput, Segmented } from '@/design/primitives';
+import { Button, SearchInput } from '@/design/primitives';
+import { toast } from '@/state/ui';
 import { cx } from '@/lib/cx';
 
 export const KIND_ICONS: Record<SightingKind, LucideIcon> = {
@@ -24,11 +29,13 @@ export const KIND_ICONS: Record<SightingKind, LucideIcon> = {
   cards: Layers,
 };
 
-type Strength = 'all' | 'learning' | 'known' | 'met';
-const STRENGTH_LABEL: Record<Exclude<Strength, 'all'>, string> = { learning: 'Learning', known: 'Known', met: 'Looked up' };
+type Strength = 'all' | 'inbox' | 'learning' | 'known' | 'met' | 'ignored';
+const STRENGTH_LABEL: Record<'learning' | 'known' | 'met', string> = { learning: 'Learning', known: 'Known', met: 'Looked up' };
 
 export interface RememberedRow extends Remembered {
-  strength: Exclude<Strength, 'all'>;
+  strength: 'learning' | 'known' | 'met';
+  /** Where the word waits: new in the inbox, kept, or ignored (6-2). */
+  inbox: InboxState;
   gloss?: string;
   theme?: string;
 }
@@ -45,7 +52,7 @@ export const ago = (ms: number) => {
 export function useWordMemory(lang: string): RememberedRow[] | undefined {
   return useLiveQuery(async (): Promise<RememberedRow[]> => {
     const words = await wordMemory(lang);
-    const ids = words.flatMap((w) => w.forms.map((f) => `${lang}:${f}`));
+    const ids = words.flatMap((w) => [...new Set([w.key, ...w.forms])].map((f) => `${lang}:${f}`));
     const [states, freq, starter] = await Promise.all([db.words.bulkGet(ids), db.frequency.bulkGet(words.map((w) => `${lang}:${w.forms[0]}`)), db.starterLists.get(lang)]);
     const stateOf = new Map(states.filter((w) => w && !w.deletedAt).map((w) => [w!.id, w!]));
     // A word's theme, where a ready-made theme deck has it.
@@ -53,9 +60,10 @@ export function useWordMemory(lang: string): RememberedRow[] | undefined {
     for (const [theme, items] of Object.entries(starter?.themes ?? {})) for (const [term] of items) if (!themeOf.has(term)) themeOf.set(term, theme);
     return words.map((w, i) => {
       const forms = w.forms.map((f) => stateOf.get(`${lang}:${f}`));
+      const inbox = inboxStateOf([...new Set([w.key, ...w.forms])].map((f) => stateOf.get(`${lang}:${f}`)));
       const strength = forms.some((s) => s?.state === 2) ? 'learning' : forms.some((s) => s?.state === 1) ? 'known' : 'met';
       const gloss = forms.find((s) => s?.gloss)?.gloss ?? freq[i]?.gloss;
-      return { ...w, strength, gloss, theme: themeOf.get(w.lemma ?? w.key) ?? themeOf.get(w.forms[0]) };
+      return { ...w, strength, inbox, gloss, theme: themeOf.get(w.lemma ?? w.key) ?? themeOf.get(w.forms[0]) };
     });
   }, [lang]);
 }
@@ -66,34 +74,67 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
   const [kind, setKind] = useState<SightingKind | 'all'>('all');
   const [theme, setTheme] = useState<string>('all');
   const [query, setQuery] = useState('');
+  const [picked, setPicked] = useState<ReadonlySet<string>>(new Set());
+  const decks = useDecks(lang);
+  const [busy, setBusy] = useState(false);
 
   const kinds = useMemo(() => [...new Set(rows.flatMap((r) => [...r.kinds]))], [rows]);
   const themes = useMemo(() => [...new Set(rows.map((r) => r.theme).filter(Boolean) as string[])], [rows]);
   const q = query.trim().toLocaleLowerCase(lang);
   const shown = rows.filter(
     (r) =>
-      (strength === 'all' || r.strength === strength) &&
+      (strength === 'all' ? r.inbox !== 'ignored' : strength === 'inbox' ? r.inbox === 'new' : strength === 'ignored' ? r.inbox === 'ignored' : r.strength === strength && r.inbox === 'kept') &&
       (kind === 'all' || r.kinds.has(kind)) &&
       (theme === 'all' || r.theme === theme) &&
       (!q || r.surface.toLocaleLowerCase(lang).includes(q) || r.forms.some((f) => f.includes(q)) || r.gloss?.toLowerCase().includes(q)),
   );
-  const counts = { learning: 0, known: 0, met: 0 };
-  for (const r of rows) counts[r.strength]++;
+  const counts = { inbox: 0, learning: 0, known: 0, met: 0, ignored: 0 };
+  for (const r of rows) {
+    if (r.inbox === 'new') counts.inbox++;
+    else if (r.inbox === 'ignored') counts.ignored++;
+    else counts[r.strength]++;
+  }
+
+  // The inbox and the ignored words are chosen in bulk: tick some, then decide.
+  const bulk = strength === 'inbox' || strength === 'ignored';
+  const chosen = shown.filter((r) => picked.has(r.key));
+  const formsOf = (rs: RememberedRow[]) => rs.flatMap((r) => [...new Set([r.key, ...r.forms])]);
+  const asWord = (r: RememberedRow): InboxWord => ({ key: r.key, forms: [...new Set([r.key, ...r.forms])], term: r.surface, lemma: r.lemma, gloss: r.gloss, sentence: r.sightings.find((x) => x.sentence)?.sentence });
+  const done = (message: string) => {
+    setPicked(new Set());
+    toast(message, { tone: 'success' });
+  };
+  const run = async (work: () => Promise<void>) => {
+    setBusy(true);
+    try {
+      await work();
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'That didn’t work.', { tone: 'error' });
+    } finally {
+      setBusy(false);
+    }
+  };
+  const count = (n: number) => `${n} ${n === 1 ? 'word' : 'words'}`;
+  const toggle = (key: string) => setPicked((p) => (p.has(key) ? new Set([...p].filter((k) => k !== key)) : new Set([...p, key])));
 
   return (
     <div>
-      <Segmented<Strength>
-        label="How well you know them"
-        value={strength}
-        onChange={setStrength}
-        block
-        options={[
-          { value: 'all', label: `All ${rows.length}` },
-          { value: 'learning', label: `Learning ${counts.learning}` },
-          { value: 'known', label: `Known ${counts.known}` },
-          { value: 'met', label: `Looked up ${counts.met}` },
-        ]}
-      />
+      <div role="group" aria-label="How well you know them" className="flex flex-wrap gap-1.5">
+        {(
+          [
+            ['all', `All ${rows.length - counts.ignored}`],
+            ['inbox', `Inbox ${counts.inbox}`],
+            ['learning', `Learning ${counts.learning}`],
+            ['known', `Known ${counts.known}`],
+            ['met', `Looked up ${counts.met}`],
+            ...(counts.ignored ? [['ignored', `Ignored ${counts.ignored}`]] : []),
+          ] as Array<[Strength, string]>
+        ).map(([value, label]) => (
+          <Chip key={value} active={strength === value} onClick={() => setStrength(value)}>
+            {label}
+          </Chip>
+        ))}
+      </div>
       {(kinds.length > 1 || themes.length > 0) && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           <Chip active={kind === 'all' && theme === 'all'} onClick={() => (setKind('all'), setTheme('all'))}>
@@ -120,14 +161,95 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
         </div>
       )}
 
+      {strength === 'inbox' && counts.inbox === 0 && <p className="mt-3 text-[13.5px] text-ink-soft">Nothing waiting. Words you look up while reading wait here until you decide what to do with them.</p>}
+      {bulk && shown.length > 0 && (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <label className="flex items-center gap-2 text-[13px] font-semibold text-ink-soft">
+            <input
+              type="checkbox"
+              checked={chosen.length === shown.length}
+              onChange={() => setPicked(chosen.length === shown.length ? new Set() : new Set(shown.map((r) => r.key)))}
+              className="size-4 accent-[var(--color-accent)]"
+            />
+            {chosen.length ? `${chosen.length} selected` : 'Select all'}
+          </label>
+          {chosen.length > 0 && (
+            <>
+              {strength === 'inbox' && (
+                <>
+                  <select
+                    aria-label="Add the selected words to a deck"
+                    value=""
+                    disabled={busy || !decks?.some((d) => !d.deletedAt && !d.archived)}
+                    onChange={(e) => {
+                      const deck = decks?.find((d) => d.id === e.target.value);
+                      if (deck)
+                        void run(async () => {
+                          const { added, skipped } = await addInboxToDeck(lang, deck.id, chosen.map(asWord));
+                          done(`Added ${count(added)} to ${deck.name}${skipped ? ` · ${skipped} already had a card` : ''}`);
+                        });
+                    }}
+                    className="h-9 rounded-full border border-line bg-raised px-3 text-[13px] font-semibold text-ink-soft outline-none focus:border-ink"
+                  >
+                    <option value="">{decks?.some((d) => !d.deletedAt && !d.archived) ? 'Add to deck…' : 'Make a deck first'}</option>
+                    {decks
+                      ?.filter((d) => !d.deletedAt && !d.archived)
+                      .map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name}
+                        </option>
+                      ))}
+                  </select>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={busy}
+                    onClick={() =>
+                      void run(async () => {
+                        await markInboxKnown(lang, formsOf(chosen));
+                        done(`${count(chosen.length)} marked as known`);
+                      })
+                    }
+                  >
+                    Mark known
+                  </Button>
+                </>
+              )}
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={busy}
+                onClick={() =>
+                  void run(async () => {
+                    await setInboxState(lang, formsOf(chosen), strength === 'inbox' ? 'ignored' : 'new');
+                    done(strength === 'inbox' ? `${count(chosen.length)} ignored` : `${count(chosen.length)} back in the inbox`);
+                  })
+                }
+              >
+                {strength === 'inbox' ? 'Ignore' : 'Back to the inbox'}
+              </Button>
+            </>
+          )}
+        </div>
+      )}
+
       <ul className="mt-4 divide-y divide-line/70 overflow-hidden rounded-2xl border border-line bg-raised">
         {shown.slice(0, 400).map((r) => (
-          <li key={r.key}>
+          <li key={r.key} className={cx(bulk && 'flex items-center')}>
+            {bulk && (
+              <input
+                type="checkbox"
+                aria-label={`Select ${r.surface}`}
+                checked={picked.has(r.key)}
+                onChange={() => toggle(r.key)}
+                className="mx-4 size-4 shrink-0 accent-[var(--color-accent)]"
+              />
+            )}
             <button
               type="button"
               onClick={() => onSelect(r)}
               aria-current={selected === r.key || undefined}
-              className={cx('flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface', selected === r.key && 'bg-surface')}
+              className={cx('flex w-full items-center gap-3 py-3 pr-4 text-left transition-colors hover:bg-surface', bulk ? 'pl-0' : 'pl-4', selected === r.key && 'bg-surface')}
             >
               <span className="min-w-0 flex-1">
                 <span lang={lang} className="block truncate font-serif text-[17px] font-semibold">
@@ -147,7 +269,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
             </button>
           </li>
         ))}
-        {shown.length === 0 && <li className="px-4 py-8 text-center text-[14px] text-ink-soft">No words match.</li>}
+        {shown.length === 0 && !(strength === 'inbox' && counts.inbox === 0) && <li className="px-4 py-8 text-center text-[14px] text-ink-soft">No words match.</li>}
       </ul>
     </div>
   );

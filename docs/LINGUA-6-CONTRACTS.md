@@ -49,6 +49,8 @@ add the new one and read both.
 
 - **0.6.0-alpha.8 (6-1):** `WordV6` is built as `tags`, `favourite` and `important` on `Word` (Dexie 18, as `PART_A_SCHEMA` says); `inbox` waits for 6-2, `grammarTopics` and `relatedWordIds` for 6-1b. `WordHistory` is worked out by `wordHistory` in `data/words.ts`, never stored.
 
+- **0.6.0-alpha.10 (6-2):** built `Word.inbox`, `Deck.archived`, `pinned`, `important` and `Note.order` (the field only; nothing sorts by it yet), with Dexie 19 exactly as `PART_A_SCHEMA` says; `coverBlobId` and `madeFrom` wait for 6-2b. The inbox is worked out, not stored for new words: a word with sightings and no row is new (`inboxStateOf`).
+
 ## What was decided here (and could be reopened)
 
 - Part A's tables: `evidence`, `evidenceDays` (6-5) and `generated` (6-6) are the only new ones; 6-1 to 6-3 add fields

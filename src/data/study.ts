@@ -21,7 +21,8 @@ async function studyDecks(lang: string, deckId: string | null, database: LinguaD
     const deck = await database.decks.get(deckId);
     return alive(deck) ? [deck] : [];
   }
-  return (await database.decks.where('lang').equals(lang).toArray()).filter(alive);
+  // An archived deck is out of the way: it is studied only when asked for by name.
+  return (await database.decks.where('lang').equals(lang).toArray()).filter((d) => alive(d) && !d.archived);
 }
 
 /** New cards introduced and reviews done today in a deck (scheduling answers only). */

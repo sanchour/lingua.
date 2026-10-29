@@ -138,7 +138,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0054` Sort by part of speech · **6-2**
 - [ ] `F0055` Sort by topic · **6-2**
 - [ ] `F0056` Merge decks · **6-2**
-- [ ] `F0057` Duplicate decks · **6-2**
+- [x] `F0057` Duplicate decks · **6-2**
 - [ ] `F0058` Split a deck into smaller decks · **6-2**
 - [ ] `F0059` Import and export decks · **6-24** · partly there
 - [ ] `F0060` Share decks with other learners · **6-27** · partly there
@@ -157,17 +157,17 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0073` Generate decks from a personal goal · **6-2**
 - [ ] `F0074` Automatically extract vocabulary from reading material · **6-2** · partly there
 - [x] `F0075` Automatically add unfamiliar words encountered in the app
-- [ ] `F0076` Save words to a central vocabulary inbox · **6-2** · partly there
-- [ ] `F0077` Review the inbox before adding words to a deck · **6-2**
+- [x] `F0076` Save words to a central vocabulary inbox · **6-2** · partly there
+- [x] `F0077` Review the inbox before adding words to a deck · **6-2**
 - [ ] `F0078` Bulk-edit word information · **6-2**
 - [ ] `F0079` Bulk-tag, move or delete cards · **6-2**
 - [ ] `F0080` Detect duplicate cards · **6-2** · partly there
 - [ ] `F0081` Detect duplicate translations · **6-2**
 - [ ] `F0082` Suggest missing example sentences · **6-2** · partly there
 - [ ] `F0083` Suggest missing audio or pronunciation data · **6-2** · partly there
-- [ ] `F0084` Mark a word as important · **6-2**
+- [x] `F0084` Mark a word as important · **6-2**
 - [ ] `F0085` Pin favorite words · **6-2**
-- [ ] `F0086` Archive mastered vocabulary without deleting it · **6-2** · partly there
+- [x] `F0086` Archive mastered vocabulary without deleting it · **6-2** · partly there
 
 #### 2.3 Spaced repetition and memory
 

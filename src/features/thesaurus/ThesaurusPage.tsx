@@ -57,7 +57,11 @@ export default function ThesaurusPage() {
   const lang = language.id;
   const navigate = useNavigate();
   const { layout, pointer } = useLayout();
-  const decks = useDecks(lang);
+  const allDecks = useDecks(lang);
+  // Archived decks are out of the way until asked for (6-2).
+  const [showArchived, setShowArchived] = useState(false);
+  const archivedCount = allDecks?.filter((d) => d.archived).length ?? 0;
+  const decks = useMemo(() => allDecks?.filter((d) => showArchived || !d.archived), [allDecks, showArchived]);
   const folders = useFolders(lang);
   const counts = useDeckCounts(decks);
   const outlook = useStudyOutlook(decks);
@@ -66,11 +70,11 @@ export default function ThesaurusPage() {
   const totals = useMemo(() => counts && sumCounts([...counts.values()]), [counts]);
 
   const [params, setParams] = useSearchParams();
-  const hasDecks = Boolean(decks?.length);
+  const hasDecks = Boolean(allDecks?.length);
   // The tab you pick wins; with nothing chosen, an empty treasury opens on Discover.
   const picked = params.get('tab');
   // "memory" was the word memory's own tab before it joined the dictionary.
-  const tab: Tab = picked === 'decks' || picked === 'discover' || picked === 'dictionary' ? picked : picked === 'memory' ? 'dictionary' : decks && !hasDecks ? 'discover' : 'decks';
+  const tab: Tab = picked === 'decks' || picked === 'discover' || picked === 'dictionary' ? picked : picked === 'memory' ? 'dictionary' : allDecks && !hasDecks ? 'discover' : 'decks';
   const browse = () => {
     setSearching(false);
     setQuery('');
@@ -210,6 +214,11 @@ export default function ThesaurusPage() {
                 ) : (
                   <DeckTree decks={decks!} folders={folders} counts={counts} lastStudied={outlook?.lastStudied} actions={actions} order={order} />
                 ))}
+              {archivedCount > 0 && (
+                <button type="button" onClick={() => setShowArchived((v) => !v)} className="mt-5 text-[13.5px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
+                  {showArchived ? 'Hide' : 'Show'} {archivedCount} archived {archivedCount === 1 ? 'deck' : 'decks'}
+                </button>
+              )}
               {decks && !hasDecks && <NoDecks onBrowse={browse} onNew={() => newDeck(null)} onImport={(kind) => choose(kind)} />}
               <JourneySection lang={lang} onOpen={openStarter} />
             </section>

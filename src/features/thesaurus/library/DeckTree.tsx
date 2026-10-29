@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
-import { ChevronRight, Ellipsis, Folder as FolderIcon, FolderInput, FolderPlus, Layers, Pencil, Plus, Puzzle, Trash2 } from 'lucide-react';
+import { Archive, ArchiveRestore, ChevronRight, Copy, Ellipsis, Folder as FolderIcon, FolderInput, FolderPlus, Layers, Pencil, Pin, PinOff, Plus, Puzzle, Trash2 } from 'lucide-react';
 import type { DeckCounts } from '@/data/decks';
 import { deleteDeck, deleteFolder, updateDeck, updateFolder } from '@/data/decks';
+import { duplicateDeck, setDeckFlag } from '@/data/deckTools';
 import type { DeckSort } from '@/data/settings';
 import type { Deck, Folder } from '@/data/types';
 import { buttonClasses, MenuItem, Popover } from '@/design/primitives';
@@ -60,8 +61,10 @@ export function deckOrder(sort: DeckSort, decks: Deck[], folders: Folder[], coun
     const values = within(f, decks, folders).map(metric);
     return sort === 'recent' ? Math.max(0, ...values) : values.reduce((a, b) => a + b, 0);
   };
-  if (sort === 'name') return { decks: byName, folders: byName };
-  return { decks: (a, b) => metric(b) - metric(a) || byName(a, b), folders: (a, b) => folderMetric(b) - folderMetric(a) || byName(a, b) };
+  // Pinned decks sit first, in whatever order the rest follow.
+  const pinnedFirst = (order: (a: Deck, b: Deck) => number) => (a: Deck, b: Deck) => Number(b.pinned ?? 0) - Number(a.pinned ?? 0) || order(a, b);
+  if (sort === 'name') return { decks: pinnedFirst(byName), folders: byName };
+  return { decks: pinnedFirst((a, b) => metric(b) - metric(a) || byName(a, b)), folders: (a, b) => folderMetric(b) - folderMetric(a) || byName(a, b) };
 }
 
 const roots = (folders: Folder[]) => folders.filter((f) => !f.parentId || !folders.some((p) => p.id === f.parentId));
@@ -193,7 +196,10 @@ function DeckRow({ deck, counts, last, depth, folders, actions, path }: RowProps
       >
         <DeckGlyph deck={deck} />
         <span className="min-w-0">
-          <span className="block truncate text-[15px] font-semibold">{deck.name}</span>
+          <span className="block truncate text-[15px] font-semibold">
+            {deck.name}
+            <DeckMarks deck={deck} />
+          </span>
           <span className="block truncate text-[12.5px] text-ink-faint">{[path, cardCount(counts)].filter(Boolean).join(' · ') || ' '}</span>
         </span>
       </Link>
@@ -266,7 +272,10 @@ function DeckCard({ deck, counts, last, folders, actions }: Omit<RowProps, 'dept
         <DeckMenu deck={deck} folders={folders} actions={actions} />
       </div>
       <Link to={`/thesaurus/deck/${deck.id}`} className="no-callout mt-3 min-w-0 before:absolute before:inset-0 before:rounded-2xl">
-        <span className="block truncate font-serif text-[17px] leading-tight font-semibold">{deck.name}</span>
+        <span className="block truncate font-serif text-[17px] leading-tight font-semibold">
+          {deck.name}
+          <DeckMarks deck={deck} />
+        </span>
         <span className="mt-0.5 block truncate text-[12.5px] text-ink-faint">{[cardCount(counts), last ? `studied ${studiedAgo(last).toLowerCase()}` : 'not studied yet'].filter(Boolean).join(' · ')}</span>
       </Link>
       <div className="mt-4 flex items-center justify-between gap-2">
@@ -281,6 +290,16 @@ function DeckCard({ deck, counts, last, folders, actions }: Omit<RowProps, 'dept
         </span>
       </div>
     </div>
+  );
+}
+
+/** What the learner marked a deck as: pinned, important, put away. */
+function DeckMarks({ deck }: { deck: Deck }) {
+  return (
+    <>
+      {deck.pinned ? <Pin size={12} aria-label="Pinned" className="ml-1.5 inline text-ink-faint" /> : null}
+      {deck.archived ? <span className="ml-1.5 rounded-full bg-sunken px-1.5 py-px align-middle text-[10.5px] font-semibold text-ink-faint">Archived</span> : null}
+    </>
   );
 }
 
@@ -303,6 +322,30 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
             onClick={() => {
               close();
               actions.move({ title: `Move “${deck.name}”`, folders, current: deck.folderId, onConfirm: (folderId) => updateDeck(deck.id, { folderId }) });
+            }}
+          />
+          <MenuItem
+            icon={deck.pinned ? PinOff : Pin}
+            label={deck.pinned ? 'Unpin' : 'Pin to the top'}
+            onClick={() => {
+              close();
+              void setDeckFlag(deck.id, 'pinned', !deck.pinned);
+            }}
+          />
+          <MenuItem
+            icon={Copy}
+            label="Duplicate"
+            onClick={() => {
+              close();
+              void duplicateDeck(deck.id);
+            }}
+          />
+          <MenuItem
+            icon={deck.archived ? ArchiveRestore : Archive}
+            label={deck.archived ? 'Bring back' : 'Archive'}
+            onClick={() => {
+              close();
+              void setDeckFlag(deck.id, 'archived', !deck.archived);
             }}
           />
           <MenuItem
