@@ -448,10 +448,10 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0317` Public-domain literature collection
 - [ ] `F0318` Community-created reading materials · **6-27** · needs the user's word
 - [ ] `F0319` AI-generated stories at a chosen level · **6-8**
-- [ ] `F0320` Parallel texts in two languages · **6-8**
+- [x] `F0320` Parallel texts in two languages · **6-8**
 - [ ] `F0321` Original text alongside a translation · **6-8** · partly there
 - [ ] `F0322` Simplified versions of difficult texts · **6-8**
-- [ ] `F0323` Original and adapted versions side by side · **6-8**
+- [x] `F0323` Original and adapted versions side by side · **6-8**
 
 #### 4.2 Interactive reader
 
@@ -526,7 +526,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0385` Fill in deleted words
 - [x] `F0386` Match paragraphs to headings · **6-8**
 - [x] `F0387` Identify the sentence that doesn’t belong · **6-8**
-- [ ] `F0388` Compare the original with a simplified version · **6-8**
+- [x] `F0388` Compare the original with a simplified version · **6-8**
 - [x] `F0389` Translate a selected passage · **6-13**
 - [x] `F0390` Retell the text in the target language
 - [ ] `F0391` Discuss the text with an AI tutor · **5.2-6** · planned in Lingua 5.2

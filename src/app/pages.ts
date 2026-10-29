@@ -85,3 +85,4 @@ export function preloadSections(): () => void {
 }
 
 export const ReadingPracticePage = lazy(() => import('@/features/codex/reader/ReadingPractice'));
+export const ParallelReadingPage = lazy(() => import('@/features/codex/reader/ParallelReading'));

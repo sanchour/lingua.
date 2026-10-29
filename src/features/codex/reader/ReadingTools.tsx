@@ -14,6 +14,7 @@ export function ReadingTools({ text, aids, onChange, onOpenChange, chapterIndex 
     <button type="button" aria-haspopup="dialog" aria-expanded={open} onClick={() => changeOpen(!open)} className="rounded-xl px-3 py-2 text-sm font-semibold text-ink-soft hover:bg-surface">Study tools</button>
     <Drawer open={open} onClose={() => changeOpen(false)} title="Reading tools">
     <div className="space-y-1 text-sm">
+      <Link className="my-4 block font-semibold underline underline-offset-4" to={`/codex/parallel/${text.id}/${chapterIndex}`}>Read side by side</Link>
       <Link className="my-4 block font-semibold underline underline-offset-4" to={`/codex/comprehension/${text.id}/${chapterIndex}`}>Check understanding of this chapter</Link>
       <p className="my-3 text-xs text-ink-faint">Dictionary categories can differ in context. Endings mark only a changed suffix shared with the dictionary form. No syntax is inferred.</p>
       {([['pos', 'Colour parts of speech'], ['endings', 'Mark changed endings'], ['glosses', 'Interlinear glosses'], ['hideGlosses', 'Hide glosses until revealed'], ['ruler', 'Reading ruler']] as const).map(([key, label]) => <label key={key} className="flex items-center gap-2 py-2"><input type="checkbox" checked={aids[key]} onChange={(e) => onChange({ ...aids, [key]: e.target.checked })} />{label}</label>)}

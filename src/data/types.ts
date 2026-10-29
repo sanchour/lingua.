@@ -68,6 +68,7 @@ export interface SettingRow {
 export interface Text extends Synced {
   readingTopic?: string;
   readingGenre?: string;
+  readingParallel?: import('@/core/reading/parallel').ParallelPassage[];
   readingMarks?: import('@/core/reading/aids').ReadingMark[];
   id: string;
   lang: Lang;
