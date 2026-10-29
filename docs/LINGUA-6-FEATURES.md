@@ -744,34 +744,34 @@ This is where an AI-powered app can become especially valuable. Learners often h
 
 #### 6.3 Conversation feedback
 
-- [ ] `F0556` ⭐ Corrected transcript after a conversation · **6-11**
-- [ ] `F0557` ⭐ Corrections for grammatical errors · **6-11**
-- [ ] `F0558` More natural alternatives to the learner’s wording · **6-11**
-- [ ] `F0559` Vocabulary suggestions · **6-11**
-- [ ] `F0560` Suggestions for more idiomatic expressions · **6-11**
+- [x] `F0556` ⭐ Corrected transcript after a conversation · **6-11**
+- [x] `F0557` ⭐ Corrections for grammatical errors · **6-11**
+- [x] `F0558` More natural alternatives to the learner’s wording · **6-11**
+- [x] `F0559` Vocabulary suggestions · **6-11**
+- [x] `F0560` Suggestions for more idiomatic expressions · **6-11**
 - [ ] `F0561` Pronunciation feedback · **6-10**
-- [ ] `F0562` Fluency feedback · **6-11**
-- [ ] `F0563` Filler-word tracking · **6-11**
-- [ ] `F0564` Repeated-word tracking · **6-11**
-- [ ] `F0565` Sentence complexity analysis · **6-11**
-- [ ] `F0566` Speaking-time analysis · **6-11**
-- [ ] `F0567` Response-length analysis · **6-11**
-- [ ] `F0568` Hesitation and pause analysis · **6-11**
-- [ ] `F0569` Self-correction tracking · **6-11**
-- [ ] `F0570` Word retrieval difficulty tracking · **6-11**
-- [ ] `F0571` Formality and register feedback · **6-11**
-- [ ] `F0572` Pragmatic appropriateness feedback · **6-11**
-- [ ] `F0573` Confidence indicators for corrections · **6-11**
-- [ ] `F0574` Separate essential errors from stylistic suggestions · **6-11** · partly there
-- [ ] `F0575` Save corrected sentences to vocabulary · **6-11** · partly there
-- [ ] `F0576` Convert mistakes into flashcards · **6-11**
+- [x] `F0562` Fluency feedback · **6-11**
+- [x] `F0563` Filler-word tracking · **6-11**
+- [x] `F0564` Repeated-word tracking · **6-11**
+- [x] `F0565` Sentence complexity analysis · **6-11**
+- [x] `F0566` Speaking-time analysis · **6-11**
+- [x] `F0567` Response-length analysis · **6-11**
+- [x] `F0568` Hesitation and pause analysis · **6-11**
+- [x] `F0569` Self-correction tracking · **6-11**
+- [x] `F0570` Word retrieval difficulty tracking · **6-11**
+- [x] `F0571` Formality and register feedback · **6-11**
+- [x] `F0572` Pragmatic appropriateness feedback · **6-11**
+- [x] `F0573` Confidence indicators for corrections · **6-11**
+- [x] `F0574` Separate essential errors from stylistic suggestions · **6-11** · partly there
+- [x] `F0575` Save corrected sentences to vocabulary · **6-11** · partly there
+- [x] `F0576` Convert mistakes into flashcards · **6-11**
 - [ ] `F0577` Generate a personalized review session · **6-16**
-- [ ] `F0578` Replay the conversation · **6-11**
+- [x] `F0578` Replay the conversation · **6-11**
 - [x] `F0579` Listen to the learner’s own recordings · **6-11**
 - [ ] `F0580` Compare the learner’s attempt with a model recording · **6-10**
-- [ ] `F0581` Review the conversation sentence by sentence · **6-11**
-- [ ] `F0582` Create a summary of new expressions · **6-11**
-- [ ] `F0583` Save conversation transcripts to a personal journal · **6-11**
+- [x] `F0581` Review the conversation sentence by sentence · **6-11**
+- [x] `F0582` Create a summary of new expressions · **6-11**
+- [x] `F0583` Save conversation transcripts to a personal journal · **6-11**
 
 #### 6.4 Advanced speaking features
 
@@ -795,8 +795,8 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0599` Slow playback of model speech · **6-10**
 - [ ] `F0600` Visual waveform comparison · **6-10**
 - [ ] `F0601` Spectrogram visualization · **6-10**
-- [ ] `F0602` Speech rate measurement · **6-11**
-- [ ] `F0603` Pause distribution analysis · **6-11**
+- [x] `F0602` Speech rate measurement · **6-11**
+- [x] `F0603` Pause distribution analysis · **6-11**
 - [ ] `F0604` Pronunciation diary · **6-10**
 - [ ] `F0605` Record the same passage every week · **6-10**
 - [ ] `F0606` Track pronunciation development over time · **6-10**
@@ -1264,10 +1264,10 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [ ] `F0972` Generate a personalized study plan · **6-16**
 - [x] `F0973` Recommend a next step
 - [x] `F0974` Diagnose recurring mistakes · **6-5**
-- [ ] `F0975` Review a conversation · **6-11**
+- [x] `F0975` Review a conversation · **6-11**
 - [x] `F0976` Review an essay
 - [ ] `F0977` Review a pronunciation recording · **6-10**
-- [ ] `F0978` Generate vocabulary from a conversation · **6-11**
+- [x] `F0978` Generate vocabulary from a conversation · **6-11**
 - [ ] `F0979` Turn a question into a mini-lesson · **6-15**
 - [ ] `F0980` Turn a mistake into a practice exercise · **6-16**
 - [ ] `F0981` Create analogies for difficult grammar · **6-15**
@@ -1457,7 +1457,7 @@ Think of this as a personal linguistic knowledge base.
 - [ ] `F1123` Notes about confusing expressions · **6-20**
 - [x] `F1124` Saved quotations · **6-8**
 - [x] `F1125` Notes from reading · **6-8**
-- [ ] `F1126` Notes from conversations · **6-11**
+- [x] `F1126` Notes from conversations · **6-11**
 - [x] `F1127` Personal error log · **6-5**
 - [ ] `F1128` Weekly learning reflections · **6-17**
 - [x] `F1129` Language goals

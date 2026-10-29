@@ -26,6 +26,7 @@ import { loadChoices, markTalked, saveChoices } from './choices';
 import type { SermoChoices } from './choices';
 import { GROUP_TONE, SCENE_ICONS } from './sceneArt';
 import { SoloSpeakingView } from './SoloSpeakingView';
+import { ConversationReviewView } from './ConversationReviewView';
 
 type SermoTab = 'prompts' | 'solo' | 'review';
 type Step = 'scene' | 'how' | 'prompt';
@@ -316,9 +317,11 @@ export default function ColloquiumPage() {
       )}
 
       {tab === 'review' && (
-        <div className="py-6">
-          <p className="text-ink-soft">Review conversation will appear here.{reviewInitialText ? ` (${reviewInitialText.length} characters ready)` : ''}</p>
-        </div>
+        <ConversationReviewView
+          lang={lang}
+          level={level}
+          initialTranscript={reviewInitialText}
+        />
       )}
     </div>
   );
