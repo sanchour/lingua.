@@ -111,7 +111,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0032` Word unscrambling
 - [x] `F0033` Match words with definitions · **6-4** · partly there
 - [x] `F0034` Match words with translations
-- [ ] `F0035` Match words with images · **6-4**
+- [x] `F0035` Match words with images · **6-4**
 - [x] `F0036` Match words with example sentences · **6-4**
 - [x] `F0037` Match audio recordings with written words · **6-4** · partly there
 - [x] `F0038` Match synonyms and antonyms · **6-4**
@@ -126,7 +126,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0042` ⭐ Add words from any part of the app
 - [x] `F0043` ⭐ Organize decks into folders
 - [ ] `F0044` Nested folders and subdecks · **6-2** · partly there
-- [ ] `F0045` Tags and multiple tags per word · **6-2** · partly there
+- [x] `F0045` Tags and multiple tags per word · **6-2** · partly there
 - [x] `F0046` Custom deck descriptions · **6-2**
 - [ ] `F0047` Deck cover images and colors · **6-2** · partly there
 - [ ] `F0048` Reorder cards manually · **6-2**
@@ -203,7 +203,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0114` Distinguish correct answers from lucky guesses · **6-3**
 - [x] `F0115` Reintroduce words after long absences · **6-3**
 - [x] `F0116` Mix old and new vocabulary
-- [ ] `F0117` Review words in different contexts · **6-3** · partly there
+- [x] `F0117` Review words in different contexts · **6-3** · partly there
 - [x] `F0118` Generate a catch-up plan after a break · **6-3**
 
 > Design note: Anki-style spaced repetition is an excellent foundation, but your scheduler should be tested against actual learner outcomes. Don’t simply label a word “mastered” because it was answered correctly once.
@@ -395,7 +395,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [ ] `F0275` Show dependency relationships between words · **6-7**
 - [ ] `F0276` Highlight clauses and subordinate clauses · **6-7**
 - [ ] `F0277` Parse complex sentences · **6-7**
-- [ ] `F0278` Generate sentence variations using a selected rule · **6-6**
+- [x] `F0278` Generate sentence variations using a selected rule · **6-6**
 - [ ] `F0279` Explain multiple grammatically valid interpretations · **6-7**
 - [x] `F0280` Identify unnatural but technically grammatical constructions · **6-12**
 - [ ] `F0281` Track recurring grammar mistakes across conversations · **6-5**

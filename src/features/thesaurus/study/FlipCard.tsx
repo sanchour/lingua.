@@ -12,6 +12,8 @@ import { ClipPlayer, useClip } from '../common/Clip';
 import { SongClip } from '../common/SongClip';
 import { articleFor, genderName, posName, splitAt } from '../common/words';
 import { SpeakButton } from '@/features/speech/SpeakButton';
+import { useFullEntry } from '@/services/dictionary/fullDict';
+import { contextFor, contextsOf } from '@/core/srs/contexts';
 import { cardFaces } from '@/core/srs/templates';
 import type { Face } from '@/core/srs/templates';
 
@@ -179,8 +181,23 @@ function gapOf(note: Note, lang: string): { text: string; span: [number, number]
   return at >= 0 ? { text, span: [at, at + note.term.length], translation: ex?.translation } : null;
 }
 
+/**
+ * The same word in a different sentence each time it comes (6-3b): the card's own, the one it was met in, and the dictionary's, taken in turn by
+ * how often the card has been reviewed. Only a card that already has a sentence changes; one without is left as it is.
+ */
+function useRotatedSentence(note: Note, card: Card, lang: string): Note {
+  const row = useFullEntry(lang, note.lemma ?? note.term);
+  return useMemo(() => {
+    if (!row) return note;
+    const pool = contextsOf(note, [...(row.tatoeba ?? []).map((t) => [t[0], t[1]] as const), ...row.entries.flatMap((e) => e.senses.flatMap((x) => (x.ex ?? []).map((y) => [y[0], y[1]] as const)))]);
+    const pick = pool.length > 1 ? contextFor(pool, card.reps) : undefined;
+    return !pick || pick === pool[0] ? note : { ...note, example: { text: pick.text, ...(pick.translation ? { translation: pick.translation } : {}) } };
+  }, [note, row, card.reps]);
+}
+
 /** A tactile flashcard: question in front, answer on the back, turned with a spring. */
-export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, front, width = 576 }: FlipCardProps) {
+export function FlipCard({ look, card, note: own, lang, flipped, onFlip, deckName, front, width = 576 }: FlipCardProps) {
+  const note = useRotatedSentence(own, card, lang);
   const production = card.direction === 'production';
   const gap = !production && front === 'sentence' ? gapOf(note, lang) : null;
   const gapParts = gap ? splitAt(gap.text, gap.span) : null;
