@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.37** · 2026-10-29 · 6-6b: Made by Max page, word lists, keep in Codex or a deck
 - **0.6.0-alpha.36** · 2026-10-29 · 6-12 W2: local writing measures and portfolio
 - **0.6.0-alpha.35** · 2026-10-29 · 6-1c: false friends, review by review on a word, sentences shortest first
 - **0.6.0-alpha.34** · 2026-10-29 · 6-12 W1: writing tasks, length targets and timer
