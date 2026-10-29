@@ -89,6 +89,7 @@ export const router = createBrowserRouter(
         { path: 'explora', element: <ExploraPage /> },
         { path: 'bibliotheca', element: <BibliothecaPage /> },
         { path: 'codex', element: <CodexPage /> },
+        { path: 'codex/graded', element: <CodexPage /> },
         { path: 'codex/discover', element: <CodexPage /> },
         { path: 'codex/goodreads', element: <CodexPage /> },
         { path: 'codex/read/:textId', element: <ReaderPage /> },

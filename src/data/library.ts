@@ -221,7 +221,7 @@ export async function markOpened(textId: string, database: LinguaDB = db): Promi
   await database.texts.update(textId, { lastOpenedAt: Date.now(), updatedAt: Date.now(), shelf: 'reading' });
 }
 
-export async function updateText(textId: string, patch: Partial<Pick<Text, 'title' | 'author' | 'shelf' | 'finishedAt' | 'cover' | 'level'>>, database: LinguaDB = db): Promise<void> {
+export async function updateText(textId: string, patch: Partial<Pick<Text, 'title' | 'author' | 'shelf' | 'finishedAt' | 'cover' | 'level' | 'readingTopic' | 'readingGenre'>>, database: LinguaDB = db): Promise<void> {
   await database.texts.update(textId, { ...patch, updatedAt: Date.now() });
 }
 

@@ -412,7 +412,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 
 *In Lingua: Codex: imports (EPUB, PDF, text, comics, photos), Discover (Gutenberg, Wikisource, Wikipedia, news), song lyrics as texts.*
 
-- [ ] `F0284` ⭐ Graded readers organized by CEFR level · **6-8** · partly there
+- [x] `F0284` ⭐ Graded readers organized by CEFR level · **6-8** · partly there
 - [ ] `F0285` Short stories · **6-8** · partly there
 - [x] `F0286` Novels
 - [ ] `F0287` Literary excerpts · **6-8** · partly there
@@ -499,7 +499,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0363` Track time spent reading
 - [x] `F0364` Estimate text difficulty
 - [x] `F0365` Show the proportion of known words
-- [ ] `F0366` Filter texts by topic, length, difficulty and genre · **6-8** · partly there
+- [x] `F0366` Filter texts by topic, length, difficulty and genre · **6-8** · partly there
 
 #### 4.3 Reading comprehension exercises
 
@@ -2102,7 +2102,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [x] `F1599` Writing assistant and error correction
 - [ ] `F1600` Listening exercises and dictation · **6-9** · partly there
 - [ ] `F1601` Speech recording and pronunciation practice · **6-10** · partly there
-- [ ] `F1602` Graded reading library · **6-8** · partly there
+- [x] `F1602` Graded reading library · **6-8** · partly there
 - [ ] `F1603` Adaptive lessons · **6-16** · partly there
 - [x] `F1604` Personalized recommendations
 

@@ -66,6 +66,8 @@ export interface SettingRow {
 // ── Codex ───────────────────────────────────────────────────────────────────
 
 export interface Text extends Synced {
+  readingTopic?: string;
+  readingGenre?: string;
   readingMarks?: import('@/core/reading/aids').ReadingMark[];
   id: string;
   lang: Lang;

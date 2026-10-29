@@ -26,10 +26,12 @@ import { GoodreadsTab } from './goodreads/GoodreadsTab';
 import { BookCard, BookRow } from './library/BookCard';
 import { BookCover } from './library/BookCover';
 import { useImporter } from './library/useImporter';
+import { GradedTab } from './library/GradedTab';
 
-type Tab = 'library' | 'discover' | 'goodreads';
+type Tab = 'library' | 'discover' | 'goodreads' | 'graded';
 const TABS: Array<RoomTab<Tab>> = [
   { id: 'library', label: 'Library', to: '/codex', icon: Library },
+  { id: 'graded', label: 'Graded', to: '/codex/graded', icon: BookOpenText },
   { id: 'discover', label: 'Discover', to: '/codex/discover', icon: Compass },
   { id: 'goodreads', label: 'Goodreads', to: '/codex/goodreads', icon: BookMarked },
 ];
@@ -94,7 +96,7 @@ export default function CodexPage() {
   const { pathname, search } = useLocation();
   const moved = movedPath('/codex', search);
   // Codex's tabs (5.1-3a): your library, Discover for free reading from the web, and your Goodreads shelves.
-  const tab: Tab = pathname.startsWith('/codex/discover') ? 'discover' : pathname.startsWith('/codex/goodreads') ? 'goodreads' : 'library';
+  const tab: Tab = pathname.startsWith('/codex/graded') ? 'graded' : pathname.startsWith('/codex/discover') ? 'discover' : pathname.startsWith('/codex/goodreads') ? 'goodreads' : 'library';
 
   useHotkeys({ '/': () => (searching ? searchRef.current?.focus() : setSearching(true)) }, pointer === 'fine' && Boolean(texts?.length) && tab === 'library');
 
@@ -171,6 +173,7 @@ export default function CodexPage() {
       />
       <RoomTabs label="Codex" tabs={TABS} active={tab} />
 
+      {tab === 'graded' && <GradedTab key={lang} lang={lang} texts={texts ?? []} />}
       {tab === 'discover' && <DiscoverTab lang={lang} />}
       {tab === 'goodreads' && <GoodreadsTab lang={lang} />}
       {tab === 'library' && texts && texts.length === 0 && <EmptyLibrary lang={lang} busy={busy === 'sample'} onSample={() => void run('sample')} />}
