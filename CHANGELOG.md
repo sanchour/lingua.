@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.53** · 2026-10-29 · 6-8 R1: reading aids, highlights, margin notes and passage cards
 - **0.6.0-alpha.52** · 2026-10-29 · 6-2b: order cards by tag or by hand
 - **0.6.0-alpha.51** · 2026-10-29 · 6-1c: common mistakes on a word's page
 - **0.6.0-alpha.50** · 2026-10-29 · 6-3b: a word in a different sentence each review
