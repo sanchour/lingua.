@@ -83,3 +83,5 @@ export function preloadSections(): () => void {
   const id = window.setTimeout(run, 1200);
   return () => window.clearTimeout(id);
 }
+
+export const ReadingPracticePage = lazy(() => import('@/features/codex/reader/ReadingPractice'));

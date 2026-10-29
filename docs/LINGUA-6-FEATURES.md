@@ -505,16 +505,16 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 
 *In Lingua: Check yourself at the end of a text; In your own words.*
 
-- [ ] `F0367` Main idea identification · **6-8** · partly there
+- [x] `F0367` Main idea identification · **6-8** · partly there
 - [ ] `F0368` Detail questions · **6-8** · partly there
-- [ ] `F0369` True or false · **6-8**
+- [x] `F0369` True or false · **6-8**
 - [x] `F0370` Multiple-choice comprehension
-- [ ] `F0371` Short-answer questions · **6-8**
+- [x] `F0371` Short-answer questions · **6-8**
 - [x] `F0372` Summarize the passage
-- [ ] `F0373` Choose a suitable title · **6-8**
-- [ ] `F0374` Put events in order · **6-8** · partly there
+- [x] `F0373` Choose a suitable title · **6-8**
+- [x] `F0374` Put events in order · **6-8** · partly there
 - [ ] `F0375` Identify a character’s motivation · **6-8**
-- [ ] `F0376` Infer meaning from context · **6-8**
+- [x] `F0376` Infer meaning from context · **6-8**
 - [ ] `F0377` Predict what happens next · **6-8**
 - [ ] `F0378` Identify the author’s tone · **6-8**
 - [ ] `F0379` Identify irony or humor · **6-8**
@@ -524,8 +524,8 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [ ] `F0383` Identify references to history or culture · **6-8**
 - [ ] `F0384` Reconstruct a missing paragraph · **6-8**
 - [x] `F0385` Fill in deleted words
-- [ ] `F0386` Match paragraphs to headings · **6-8**
-- [ ] `F0387` Identify the sentence that doesn’t belong · **6-8**
+- [x] `F0386` Match paragraphs to headings · **6-8**
+- [x] `F0387` Identify the sentence that doesn’t belong · **6-8**
 - [ ] `F0388` Compare the original with a simplified version · **6-8**
 - [x] `F0389` Translate a selected passage · **6-13**
 - [x] `F0390` Retell the text in the target language

@@ -527,7 +527,7 @@ export default function ReaderPage() {
       }}
     >
       <ReaderChrome
-        tools={<ReadingTools text={text} aids={aids} onChange={setAids} onOpenChange={setToolsOpen} />}
+        tools={<ReadingTools chapterIndex={chapterIndex ?? 0} text={text} aids={aids} onChange={setAids} onOpenChange={setToolsOpen} />}
         visible={chrome || toolsOpen}
         text={text}
         chapterTitle={chapterTitle}

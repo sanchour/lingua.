@@ -12,3 +12,4 @@ export { TRANSLATION_PAIRS, buildTranslationExercise, getTranslationTasks, valid
 export type { DialogueExchange, TranslateBody, TranslationCategory, TranslationTask } from './translate';
 export { ALIGNMENT_PAIRS, analyzeBackTranslation, checkReconstruction, getAlignmentPairs, scrambleWords } from './translateViews';
 export type { AlignmentPair, TokenLink } from './translateViews';
+export { readingSpec, selfReadingSpecs, readReadingQuestions } from './reading';

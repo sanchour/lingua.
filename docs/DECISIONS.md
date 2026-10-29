@@ -1918,3 +1918,7 @@ A comprehensive comparative linguistic matrix is mounted under the 'Compare Lang
 
 
 
+
+### 2026-10-29 · Reading comprehension (6-8 R3, Codex)
+
+Reading gets its own source-aware runner using the shared exercise views and judge: the Part A session currently writes non-grammar evidence to Thesaurus, so using its views lets reading record the right room without touching Claude-owned files. The builder emits existing typed, ordering and matching specs. The existing story-question request purpose supports an injected model; the material generator is unchanged. Exact quotes and response shapes are checked; interpretations are labelled unverified, with discard and self-rating. Offline free prompts show guides rather than fabricated model answers. The displayed first 6,000 characters bound cost and stay beside answers. Evidence is saved before advancing; a stable id makes retries idempotent.

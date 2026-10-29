@@ -1,3 +1,4 @@
+import { ReadingPracticePage } from './pages';
 import type { ReactNode } from 'react';
 import { createBrowserRouter, Navigate, useLocation, useParams } from 'react-router';
 import HomePage from '@/features/home/HomePage';
@@ -93,6 +94,7 @@ export const router = createBrowserRouter(
         { path: 'codex/graded', element: <CodexPage /> },
         { path: 'codex/discover', element: <CodexPage /> },
         { path: 'codex/goodreads', element: <CodexPage /> },
+        { path: 'codex/comprehension/:textId/:chapterIndex', element: <ReadingPracticePage /> },
         { path: 'codex/read/:textId', element: <ReaderPage /> },
         { path: 'codex/new', element: <NewTextPage /> },
         { path: 'codex/book/:textId', element: <BookDetailsPage /> },
