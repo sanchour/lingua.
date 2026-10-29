@@ -94,6 +94,14 @@ export function RecordCompare({ lang, words }: { lang: string; words: string[] }
       setError(e instanceof Error ? e.message : 'The microphone didn’t start.');
     }
   };
+  // Shadowing: the real speaker plays and you say it with them, both at once (headphones, or the microphone hears the speaker too).
+  const shadow = async () => {
+    if (!model || model === 'none') return;
+    await go();
+    const player = new Audio(model.url);
+    player.addEventListener('ended', () => window.setTimeout(() => void finish(), 700), { once: true });
+    void player.play().catch(() => void finish());
+  };
   const finish = async () => {
     recognition.current?.stop();
     const blob = await stop();
@@ -107,7 +115,7 @@ export function RecordCompare({ lang, words }: { lang: string; words: string[] }
         Say it, and see it
       </h2>
       <p className="mt-1 max-w-2xl text-[14px] text-ink-soft">
-        Choose a word, say it, and see how loud and how high your voice goes beside a real speaker’s. The shapes are a mirror, not a mark: what counts is being understood. Your recording stays on this device and is not kept.
+        Choose a word, say it (or shadow it: say it together with the speaker, with headphones on), and see how loud and how high your voice goes beside a real speaker’s. The shapes are a mirror, not a mark: what counts is being understood. Your recording stays on this device and is not kept.
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2" role="radiogroup" aria-label="Word">
         {words.map((w) => (
@@ -121,6 +129,11 @@ export function RecordCompare({ lang, words }: { lang: string; words: string[] }
           {recording ? <Square size={15} className="fill-current" aria-hidden /> : <Mic size={16} aria-hidden />}
           {recording ? 'Stop' : `Say “${word}”`}
         </button>
+        {model && model !== 'none' && !recording && (
+          <button type="button" onClick={() => void shadow()} title="The real speaker plays and you say it with them. Use headphones." className="flex h-11 items-center gap-2 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
+            Shadow it
+          </button>
+        )}
         {heard !== null && (
           <p className={cx('text-[14px]', understood ? 'text-sage-text' : 'text-ink-soft')} role="status">
             {understood ? 'The device understood you.' : heard ? `The device heard “${heard}”.` : 'The device heard nothing.'}

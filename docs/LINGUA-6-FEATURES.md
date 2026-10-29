@@ -779,9 +779,9 @@ This is where an AI-powered app can become especially valuable. Learners often h
 
 - [x] `F0584` Real-time transcription · **6-11** · partly there
 - [x] `F0585` Speech-to-text practice
-- [ ] `F0586` Speech shadowing · **6-10**
+- [x] `F0586` Speech shadowing · **6-10**
 - [ ] `F0587` Repeat-after-me exercises · **6-10** · partly there
-- [ ] `F0588` Simultaneous speech imitation · **6-10**
+- [x] `F0588` Simultaneous speech imitation · **6-10**
 - [x] `F0589` Pronunciation recording comparisons · **6-10**
 - [ ] `F0590` Phoneme-level pronunciation feedback · **6-10**
 - [x] `F0591` Word stress detection · **6-10**
@@ -962,7 +962,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0731` Read a word aloud
 - [x] `F0732` Read a sentence aloud
 - [x] `F0733` Read a paragraph aloud · **6-10**
-- [ ] `F0734` Shadow an audio recording · **6-10**
+- [x] `F0734` Shadow an audio recording · **6-10**
 - [ ] `F0735` Practice specific phonemes · **6-10**
 - [ ] `F0736` Practice consonant clusters · **6-10**
 - [ ] `F0737` Practice difficult syllables · **6-10**
