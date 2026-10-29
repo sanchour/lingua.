@@ -248,9 +248,9 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0152` Polysemy and different senses
 - [x] `F0153` Idioms and fixed expressions
 - [x] `F0154` Collocations
-- [ ] `F0155` Phrasal verbs · **6-1** · partly there
+- [x] `F0155` Phrasal verbs · **6-1** · partly there
 - [x] `F0156` Compound words · **6-1**
-- [ ] `F0157` Proverbs and sayings · **6-1** · partly there
+- [x] `F0157` Proverbs and sayings · **6-1** · partly there
 - [ ] `F0158` Words that don’t translate neatly · **6-19**
 - [ ] `F0159` Semantic fields · **6-20** · partly there
 - [ ] `F0160` Frequency-ranked synonyms · **6-1**
