@@ -3,7 +3,7 @@
 // can't be judged here, so they come back 'ungraded' for the screen to settle with Max or a self-rating.
 import type { AnswerRule, ExerciseSpec } from '@/core/contracts/exercise';
 import type { Outcome } from '@/core/contracts/learner';
-import { checkAnswer, normalizeAnswer } from '@/core/srs/answer';
+import { checkAnswer, foldAccents, normalizeAnswer } from '@/core/srs/answer';
 import type { AnswerCheck } from '@/core/srs/answer';
 
 export type Given = string | string[] | number;
@@ -56,6 +56,25 @@ export function judge(rule: AnswerRule, given: Given, lang: string): Judgement {
       }
       return withMessage(best, normalizeAnswer(text(given), lang), lang);
     }
+    case 'dictation': {
+      const words = (s: string, keepPunctuation: boolean) =>
+        s
+          .normalize('NFC')
+          .split(/\s+/)
+          .filter(Boolean)
+          .map((w) => (keepPunctuation ? w : w.replace(/^[¿¡"'«»„“”‚‘(]+|[.,;:!?"'«»“”’)…]+$/g, '')).toLocaleLowerCase(lang))
+          .filter(Boolean);
+      const typed = text(given);
+      const same = (a: string[], b: string[]) => a.length === b.length && a.every((w, i) => w === b[i]);
+      const fold = (list: string[]) => list.map((w) => foldAccents(w, lang));
+      const punct = Boolean(rule.punctuation);
+      if (same(words(typed, punct), words(rule.expected, punct))) return made('exact', rule.expected);
+      const bare = [words(typed, false), words(rule.expected, false)] as const;
+      if (punct && same(bare[0], bare[1])) return { ...made('close', rule.expected), message: 'Right words: check the punctuation.' };
+      if (same(fold(bare[0]), fold(bare[1]))) return { ...made('close', rule.expected, 'accent'), message: 'Right words: mind the accents.' };
+      const at = bare[1].findIndex((w, i) => bare[0][i] !== w);
+      return { ...made('wrong', rule.expected), message: at >= 0 && bare[0].length ? `Listen again from word ${at + 1}.` : undefined };
+    }
     case 'choice':
       return made(given === rule.answer ? 'exact' : 'wrong', '');
     case 'order': {
@@ -86,6 +105,7 @@ export function solutionOf(spec: ExerciseSpec): string {
   switch (rule.rule) {
     case 'exact':
     case 'accent-blind':
+    case 'dictation':
       return rule.expected;
     case 'accepted':
       return rule.accepted[0] ?? '';

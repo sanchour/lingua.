@@ -302,7 +302,7 @@ export function listenType(line: HeardLine, lang: string, key: string): Exercise
     instruction: 'Type what you hear',
     body: { task: 'fix', given: [], prompt: 'Type what you hear' },
     listen: listenOf(line),
-    check: { rule: 'accent-blind', expected: plain(line.text) },
+    check: { rule: 'dictation', expected: plain(line.text) },
     trains: heardTrains(line),
     feedback: { why: plain(line.text) },
     hints: [{ text: `${wordsOfLine(line.text).length} words`, strength: 0 }, { text: `It starts: ${wordsOfLine(line.text).slice(0, 2).join(' ')}…`, strength: 1 }],

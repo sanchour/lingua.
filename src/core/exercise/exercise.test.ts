@@ -180,3 +180,26 @@ describe('the same exercise in Ludus, Grammatica and the course', () => {
     expect(plan.drills.some((d) => d.kind === 'transform')).toBe(true);
   });
 });
+
+describe('the dictation rule', () => {
+  const rule = { rule: 'dictation' as const, expected: 'El perro come pan, todos los días.' };
+  it('counts every word, an article too, and ignores case and the punctuation at the edges of words', () => {
+    expect(judge(rule, 'el perro come pan todos los días', 'es').outcome).toBe('right');
+    expect(judge(rule, 'perro come pan todos los días', 'es').outcome).toBe('wrong');
+  });
+  it('takes a missing accent as close, and says so', () => {
+    const j = judge(rule, 'el perro come pan todos los dias', 'es');
+    expect(j.outcome).toBe('close');
+    expect(j.message).toContain('accents');
+  });
+  it('with punctuation asked, a missing comma is close and the right line is right', () => {
+    const strict = { ...rule, punctuation: true };
+    expect(judge(strict, 'El perro come pan, todos los días.', 'es').outcome).toBe('right');
+    const j = judge(strict, 'El perro come pan todos los días.', 'es');
+    expect(j.outcome).toBe('close');
+    expect(j.message).toContain('punctuation');
+  });
+  it('says where to listen again when a word is wrong', () => {
+    expect(judge(rule, 'el gato come pan todos los días', 'es').message).toContain('word 2');
+  });
+});
