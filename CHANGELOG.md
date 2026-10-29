@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.44** · 2026-10-29 · Claim 6-8 Reading for Codex
 - **0.6.0-alpha.43** · 2026-10-29 · Handover: where Part A's b rows stand
 - **0.6.0-alpha.42** · 2026-10-29 · 6-1c: grammar topics a word leads to
 - **0.6.0-alpha.41** · 2026-10-29 · 6-12 W4: task feedback and correction evidence; assigned Writing slices complete
