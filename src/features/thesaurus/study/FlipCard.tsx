@@ -186,7 +186,8 @@ export function FlipCard({ look, card, note, lang, flipped, onFlip, deckName, fr
   const gapParts = gap ? splitAt(gap.text, gap.span) : null;
   const clip = useClip(note);
   const image = useBlobUrl(note.imageBlobId);
-  const faces = cardFaces(note, card.direction, Boolean(image));
+  // A picture still loading counts as there (undefined), so the card is drawn at once and the picture fills in.
+  const faces = cardFaces(note, card.direction, image !== null);
   const line = note.tags.includes('line');
   const details = [posName(note.pos), note.pos === 'noun' && lang === 'ru' ? genderName(note.gender) : undefined].filter(Boolean).join(' · ');
 

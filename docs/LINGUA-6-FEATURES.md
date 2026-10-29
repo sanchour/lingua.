@@ -90,7 +90,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0011` Example sentence → missing word
 - [x] `F0012` Word → pronunciation
 - [x] `F0013` Pronunciation → spelling
-- [ ] `F0014` Word → grammatical information · **6-3**
+- [x] `F0014` Word → grammatical information · **6-3**
 - [x] `F0015` Word → synonym · **6-3**
 - [x] `F0016` Word → antonym · **6-3**
 - [x] `F0017` Word → collocation · **6-3**
@@ -102,11 +102,11 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0023` Cloze deletion cards
 - [x] `F0024` Bidirectional cards
 - [x] `F0025` Multiple meanings on one card · **6-3**
-- [ ] `F0026` Cards containing multiple related words · **6-3**
+- [x] `F0026` Cards containing multiple related words · **6-3**
 - [x] `F0027` Sentence-based flashcards
 - [ ] `F0028` Contextual flashcards with a short paragraph · **6-3** · partly there
-- [ ] `F0029` Image occlusion cards · **6-3**
-- [ ] `F0030` Audio-only recall · **6-3** · partly there
+- [x] `F0029` Image occlusion cards · **6-3**
+- [x] `F0030` Audio-only recall · **6-3** · partly there
 - [x] `F0031` Spelling reconstruction
 - [x] `F0032` Word unscrambling
 - [x] `F0033` Match words with definitions · **6-4** · partly there

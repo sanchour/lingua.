@@ -104,22 +104,23 @@ function buildSets(lang: string, c: Ctx, level: Cefr): PracticeSet[] {
   const random = () => Math.random();
   const trains = (topic: string) => ({ skill: 'grammar', item: { type: 'grammar', topicId: topic } }) as const;
   const items = () => shuffle(itemsOf(c.topics), random);
-  const games = (id: string, title: string, detail: string, needs: string, build: (chunk: WordFacts[], r: () => number, key: string) => ExerciseSpec | null): PracticeSet => ({
+  const games = (id: string, title: string, detail: string, needs: string, build: (chunk: WordFacts[], r: () => number, key: string) => ExerciseSpec | null, fits?: (w: WordFacts) => boolean): PracticeSet => ({
     id,
     group: 'words',
     title,
     detail,
     needs,
-    make: () => rounds(c.facts, random, (chunk, key) => build(chunk, random, key), id),
+    // Only the words that have what the game needs are dealt, so a round is not left short by words with nothing to match.
+    make: () => rounds(fits ? c.facts.filter(fits) : c.facts, random, (chunk, key) => build(chunk, random, key), id),
   });
   return [
     games('definitions', 'Words and meanings', 'Match each of your words with what it means.', 'words with a meaning in your decks', (w, r, k) => matchDefinitions(w, lang, r, k)),
-    games('synonyms', 'Words that mean the same', 'Match each word with a synonym.', 'the dictionary, and words that have synonyms', (w, r, k) => matchSynonyms(w, lang, r, k)),
-    games('antonyms', 'Opposites', 'Match each word with its opposite.', 'the dictionary, and words that have opposites', (w, r, k) => matchAntonyms(w, lang, r, k)),
+    games('synonyms', 'Words that mean the same', 'Match each word with a synonym.', 'the dictionary, and words that have synonyms', (w, r, k) => matchSynonyms(w, lang, r, k), (w) => (w.synonyms?.length ?? 0) > 0),
+    games('antonyms', 'Opposites', 'Match each word with its opposite.', 'the dictionary, and words that have opposites', (w, r, k) => matchAntonyms(w, lang, r, k), (w) => (w.antonyms?.length ?? 0) > 0),
     games('pos', 'Kinds of words', 'Match nouns, verbs, adjectives and the rest.', 'words of different kinds', (w, r, k) => matchPartsOfSpeech(w, lang, r, k)),
-    games('sentences', 'Words in sentences', 'Match each word with the sentence it fits.', 'words with an example sentence', (w, r, k) => matchSentences(w, lang, r, k)),
+    games('sentences', 'Words in sentences', 'Match each word with the sentence it fits.', 'words with an example sentence', (w, r, k) => matchSentences(w, lang, r, k), (w) => Boolean(w.sentence)),
     games('sounds', 'Sounds and words', 'Hear a word, match it with how it is written.', 'a voice for this language', (w, r, k) => matchSounds(w, lang, r, k)),
-    games('pictures', 'Words and pictures', 'Match each word with its picture.', 'cards with a picture', (w, r, k) => matchPictures(w, lang, r, k)),
+    games('pictures', 'Words and pictures', 'Match each word with its picture.', 'cards with a picture', (w, r, k) => matchPictures(w, lang, r, k), (w) => Boolean(w.image)),
     ...(['difficult', 'rusty'] as const).map(
       (id): PracticeSet => ({
         id,
