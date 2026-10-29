@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.109** · 2026-10-29 · 6-9 C4: Visio after the line and less help each time, Noise button, conversation with a voice for each speaker, label the speakers
 - **0.6.0-alpha.108** · 2026-10-29 · 6-10 C3: mouth diagram, spectrogram, slow playback, hints, drills, pair filter and weak sounds, connected-speech rules
 - **0.6.0-alpha.107** · 2026-10-29 · 6-9 L7: partial, punctuated and ending dictation, cut into words, choose meaning or picture, spell, syllables
 - **0.6.0-alpha.106** · 2026-10-29 · Contract: the dictation rule, listen-choose and listen-split (6-9)
