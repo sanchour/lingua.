@@ -1385,7 +1385,7 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1070` Last reviewed date · **6-1**
 - [x] `F1071` Review history · **6-1**
 - [x] `F1072` Recall success rate · **6-1**
-- [ ] `F1073` Links to relevant grammar topics · **6-1** · partly there
+- [x] `F1073` Links to relevant grammar topics · **6-1** · partly there
 - [x] `F1074` Links to other vocabulary items · **6-1**
 - [x] `F1075` Links to texts in which the word appeared
 

@@ -8,6 +8,8 @@ import type { FullDictRow, FullEntry } from '@/core/dictionary/format';
 import { getLanguage } from '@/core/lang/languages';
 import { falseFriendOf } from '@/core/lang/falseFriends';
 import { cefrForRank } from '@/core/lang/levels';
+import { loadGrammar } from '@/core/grammar/load';
+import { topicsForWord } from '@/core/grammar/forWord';
 import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
 import { useSightings } from '@/data/memory';
@@ -111,6 +113,10 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
   const sensesHaveExamples = row.entries.some((e) => e.senses.some((s) => s.ex?.length));
 
   const phrases = row.entries.flatMap((e) => e.phrases ?? []);
+  const grammarTopics = useLiveQuery(async () => {
+    const g = await loadGrammar(lang);
+    return g ? topicsForWord(g, row.entries[0]?.pos, row.entries.some((e) => e.senses.some((s) => s.tags?.includes('reflexive')))) : [];
+  }, [lang, row.key]) ?? [];
   const syn = [...new Set(row.entries.flatMap((e) => [...(e.syn ?? []), ...e.senses.flatMap((s) => s.syn ?? [])]))].filter((w) => w.split(' ').length < 4).slice(0, 14);
   const ant = [...new Set(row.entries.flatMap((e) => [...(e.ant ?? []), ...e.senses.flatMap((s) => s.ant ?? [])]))].slice(0, 10);
   const derived = [...new Set(row.entries.flatMap((e) => [...(e.derived ?? []), ...(e.related ?? [])]))].slice(0, 16);
@@ -245,6 +251,17 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
           <Side title="Synonyms and antonyms">
             {syn.length > 0 && <WordLinks lang={lang} label="Like" words={syn} />}
             {ant.length > 0 && <WordLinks lang={lang} label="Opposite" words={ant} />}
+          </Side>
+        )}
+        {grammarTopics.length > 0 && (
+          <Side title="Grammar for this word">
+            <div className="flex flex-wrap gap-1.5">
+              {grammarTopics.map((t) => (
+                <Link key={t.id} to={`/cursus/grammatica/${t.id}`} className="rounded-full bg-surface px-3 py-0.5 text-[14px] transition-colors hover:bg-sunken">
+                  {t.title}
+                </Link>
+              ))}
+            </div>
           </Side>
         )}
         {falseFriendOf(lang, row.word) && (
