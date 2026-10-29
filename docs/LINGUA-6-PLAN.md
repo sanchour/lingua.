@@ -70,7 +70,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | --- | --- | --- | --- | --- | --- |
 | **Part A · Foundations** | | | | | |
 | 6-0 | [x] | *done 2026-10-29 (0.6.0-alpha.2; [LINGUA-6-CONTRACTS.md](LINGUA-6-CONTRACTS.md), `src/core/contracts/`; typecheck, tests and build pass, nothing imports it yet)* The contracts: Part A's types, tables and APIs, before any code | — | Lingua 5's check | S |
-| 6-1 | [ ] | The word record | 22 new · 23 to finish | — | L |
+| 6-1 | [~] | *claimed 2026-10-29* The word record | 22 new · 23 to finish | — | L |
 | 6-2 | [ ] | The inbox and the deck workshop | 15 new · 25 to finish | 6-1 | L |
 | 6-3 | [ ] | Cards and memory | 21 new · 11 to finish | 6-1 | L |
 | 6-4 | [x] | *done 2026-10-29 (0.6.0-alpha.6): `core/exercise`, the shared transformation screen, transformations in Ludus, Grammatica and the course; 3 of its 25 new entries built (F0244, F0936, F0937), the rest is 6-4b* One exercise engine | 25 new · 3 to finish | — | L |
