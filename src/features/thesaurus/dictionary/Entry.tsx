@@ -7,6 +7,7 @@ import { BookA, BookMarked, Check, Circle, Download, Sparkles, Volume2 } from 'l
 import type { FullDictRow, FullEntry } from '@/core/dictionary/format';
 import { getLanguage } from '@/core/lang/languages';
 import { falseFriendOf } from '@/core/lang/falseFriends';
+import { learnerErrorOf } from '@/core/lang/learnerErrors';
 import { cefrForRank } from '@/core/lang/levels';
 import { loadGrammar } from '@/core/grammar/load';
 import { topicsForWord } from '@/core/grammar/forWord';
@@ -266,6 +267,11 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
                 </Link>
               ))}
             </div>
+          </Side>
+        )}
+        {learnerErrorOf(lang, row.word) && (
+          <Side title="A common mistake">
+            <p className="text-[14.5px] leading-relaxed text-ink-soft">{learnerErrorOf(lang, row.word)}</p>
           </Side>
         )}
         {falseFriendOf(lang, row.word) && (

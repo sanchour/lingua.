@@ -237,8 +237,8 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0141` Syllable breakdown · **6-1**
 - [x] `F0142` IPA transcription
 - [x] `F0143` Audio pronunciation
-- [ ] `F0144` Common spelling mistakes · **6-1**
-- [ ] `F0145` Common learner errors · **6-1**
+- [x] `F0144` Common spelling mistakes · **6-1**
+- [x] `F0145` Common learner errors · **6-1**
 - [ ] `F0146` Synonym maps · **6-20** · partly there
 - [ ] `F0147` Antonym maps · **6-20** · partly there
 - [x] `F0148` False friends between languages · **6-1** · partly there
@@ -1372,7 +1372,7 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1057` Etymology
 - [x] `F1058` Collocations
 - [x] `F1059` Idioms
-- [ ] `F1060` Common mistakes · **6-1**
+- [x] `F1060` Common mistakes · **6-1**
 - [x] `F1061` Frequency ranking
 - [x] `F1062` CEFR estimate
 - [x] `F1063` Formality and register · **6-1** · partly there
