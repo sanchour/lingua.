@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.88** · 2026-10-29 · Claim 6-19 for Codex again; culture, immersion and interface languages
 - **0.6.0-alpha.87** · 2026-10-29 · Release cancelled 6-19 claim; Codex stops after Reading
 - **0.6.0-alpha.86** · 2026-10-29 · Claim 6-19 Immersion and culture for Codex on codex/lingua
 - **0.6.0-alpha.85** · 2026-10-29 · 6-8 R4: parallel reading and labelled simplification on the Codex branch
