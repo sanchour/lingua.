@@ -1877,3 +1877,7 @@ Study tools uses the house drawer so its nested deck picker stays open. Category
 ## 2026-10-29 — 6-8 R2: a Graded shelf is measured, source results are not
 
 Codex’s Graded tab reuses TextStats (the existing frequency-based level estimate and Known-or-Learning share), keeping manual levels separate. Without local frequency data it shows unmeasured; topic and kind are optional learner labels on the existing text row. The pure filter excludes other languages, deleted texts and shelf-only entries. Open-edition searches reuse Wikisource and Gutenberg, with translated search starting points for the core six languages, and run only when requested. An edition is imported only after Add this edition; its measured level is not promised before import. No corpus is bundled, and no source is scraped wholesale.
+
+## 2026-10-29 — 6-7 G1: grammar browsing, plain-language search, prerequisites and notes
+
+Topics can now be browsed by grammatical category and part of speech as well as level. Plain-language search maps natural queries ('when do I use the subjunctive', 'past tense') with synonym expansion and token weighting against titles, tags, summaries, rule text, and example focus forms. Hand-crafted prerequisites and fallback foundation ordering provide 'Before this: …' guidance with visual indicators of learned status. Personal bookmarks and notebook notes are stored in settings without a new database table or schema migration, so they integrate into local-first backups and survive restarts.

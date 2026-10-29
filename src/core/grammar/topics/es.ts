@@ -412,6 +412,7 @@ const grammar: Grammar = {
             { s: 'El grupo de abordaje [está] listo con sus billetes en la mano.', en: 'The boarding party is ready with their tickets in hand.', wrong: ['es', 'son', 'estoy'] },
           ],
           related: ['ser', 'estar', 'progressive'],
+          prerequisites: ['ser', 'estar'],
         },
         {
           id: 'reflexive',
@@ -789,6 +790,7 @@ const grammar: Grammar = {
             { s: 'La niña se [perdió] en el bosque.', en: 'The girl got lost in the woods.', wrong: ['perdía', 'pierde', 'perdó'], base: 'perderse' },
           ],
           related: ['preterite', 'imperfect'],
+          prerequisites: ['preterite', 'imperfect'],
         },
         {
           id: 'pluperfect',
