@@ -89,7 +89,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-9 | [ ] | Listening | 49 new · 18 to finish | 6-4, 6-6 | XL |
 | 6-10 | [ ] | Sounds and pronunciation | 82 new · 7 to finish | 6-4, 6-5 | XL |
 | 6-11 | [ ] | Speaking | 46 new · 5 to finish | 6-5, 6-6 | L |
-| 6-12 | [~] | *claimed by Codex 2026-10-29; W1–W4 in ANTIGRAVITY-PLAN.md, assigned to Codex by the user* Writing | 48 new · 7 to finish | 6-1, 6-6 | L |
+| 6-12 | [~] | *claimed by Codex 2026-10-29; W1 done: 26 task briefs, optional source material, length targets, live word count and a start/pause/reset timer (resets on leaving). Typecheck, 1,219 tests and build pass; chooser and editor looked at at 1280, 1440 and 1366×768, light and dark; email creation, save and timer controls tried. No real model used. W2–W4 remain.* Writing | 48 new · 7 to finish | 6-1, 6-6 | L |
 | 6-13 | [ ] | Translating and comparing languages | 45 new · 2 to finish | 6-4, 6-6 | L |
 | **Part C · Paths and guidance** | | | | | |
 | 6-14 | [ ] | Courses and lessons | 29 new · 10 to finish | Part B's 6-8 to 6-10 | XL |

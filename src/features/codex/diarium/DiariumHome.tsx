@@ -15,6 +15,7 @@ import { localDateKey } from '@/lib/format';
 import { aiPrompt } from '@/services/llm/journal';
 import { toPlain } from '@/core/journal/markdown';
 import { Entries } from './Entries';
+import { WritingTasks } from './WritingTasks';
 
 const DAY = 86_400_000;
 
@@ -92,6 +93,7 @@ export function DiariumHome() {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Today */}
+      <div className="grid grid-cols-[minmax(0,1fr)_340px] items-start gap-6">
       <Card className="relative overflow-hidden p-5 sm:p-6">
         <span aria-hidden className="pointer-events-none absolute -top-6 right-5 font-serif text-[160px] leading-none text-sage/15 select-none">
           {quote(lang, '').trim().charAt(0)}
@@ -135,6 +137,8 @@ export function DiariumHome() {
           </>
         )}
       </Card>
+      <WritingTasks key={lang} lang={lang} />
+      </div>
 
       {/* Numbers */}
       {stats.count > 0 && (

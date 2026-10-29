@@ -23,9 +23,10 @@ export function useJournalEntry(id: string | undefined): JournalEntry | null | u
   return useLiveQuery(async () => (id ? ((await db.journalEntries.get(id)) ?? null) : null), [id]);
 }
 
-export async function createEntry(lang: string, prompt?: { text: string; en?: string }, database: LinguaDB = db): Promise<string> {
+export async function createEntry(lang: string, prompt?: { text: string; en?: string; taskId?: string }, database: LinguaDB = db): Promise<string> {
   const now = Date.now();
   const entry: JournalEntry = { id: crypto.randomUUID(), lang, date: localDateKey(now), prompt: prompt?.text, promptEn: prompt?.en, text: '', words: 0, createdAt: now, updatedAt: now };
+  if (prompt?.taskId) entry.writingTaskId = prompt.taskId;
   await database.journalEntries.add(entry);
   return entry.id;
 }

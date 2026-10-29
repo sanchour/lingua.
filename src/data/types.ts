@@ -703,6 +703,7 @@ export interface JournalReview {
 }
 
 export interface JournalEntry extends Synced {
+  writingTaskId?: string;
   id: string;
   lang: Lang;
   /** The day it belongs to (YYYY-MM-DD), local time. */

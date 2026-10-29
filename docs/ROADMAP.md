@@ -2294,6 +2294,8 @@ Planned 2026-10-26 in [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md), from the audit
 - [ ] **Part F · Further out, with the user's word:** 6-26 experiments · 6-27 together, and beyond the desk.
 - [ ] **6-28 · Lingua 6's check;** version 0.6.0.
 
+**Codex · 6-12 Writing (2026-10-29):** W1 adds task briefs and length targets beside free writing, the existing word counter and an optional timer; W2 adds local measures and a portfolio; W3 adds the dictionary and a phrase bank; W4 adds labelled, injected-model feedback and evidence rows. Each slice is checked and pushed separately; then 6-8 Reading, followed by Codex's original 6-24 → 6-25 → 6-22 queue. Antigravity-1 keeps 6-7 and 6-13.
+
 ## Lingua 7 · Design
 
 Planned 2026-10-26 in [LINGUA-7-PLAN.md](LINGUA-7-PLAN.md): a design update, page by page, from the

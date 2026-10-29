@@ -7,6 +7,7 @@ import { BackLink } from '@/app/BackLink';
 import { useDockBottom } from '@/app/dock';
 import { useApp } from '@/app/context';
 import { toPlain } from '@/core/journal/markdown';
+import { WRITING_TASKS } from '@/core/journal/tasks';
 import { emptyPage, salutation } from '@/core/journal/salutations';
 import { getLanguage } from '@/core/lang/languages';
 import { bumpDaily, recordSession } from '@/data/activity';
@@ -26,6 +27,7 @@ import { toast, useUI } from '@/state/ui';
 import { DiaryEditor } from './DiaryEditor';
 import type { DiaryEditorHandle } from './DiaryEditor';
 import { DictateButton } from './Dictate';
+import { WritingSession } from './WritingSession';
 import { CorrectionList, ReviewSummary, ReviewText } from './Review';
 
 const SAVE_DELAY = 500;
@@ -167,7 +169,8 @@ function Entry({ entry }: { entry: JournalEntry }) {
   const fontStyle = { '--entry-font': readerFontStack(getReaderFont(settings.reader.font), lang) } as CSSProperties;
   const rtl = Boolean(getLanguage(lang)?.rtl);
   // A title from Rename comes first, then the day's prompt, then "Dear diary" in the language (or the date in it).
-  const heading = entry.title || entry.prompt || salutation(lang, date);
+  const task = WRITING_TASKS.find((t) => t.id === entry.writingTaskId);
+  const heading = entry.title || task?.title || entry.prompt || salutation(lang, date);
   const saving = (
     <span className="text-[13px] text-ink-faint">
       <span className="font-semibold text-ink-soft tabular-nums">
@@ -193,12 +196,12 @@ function Entry({ entry }: { entry: JournalEntry }) {
               }}
             />
           ) : (
-            <h1 lang={entry.title ? undefined : lang} onDoubleClick={() => setRenaming(true)} className="mt-2 font-serif text-[26px] leading-snug font-semibold sm:text-[30px]">
+            <h1 lang={entry.title || task ? undefined : lang} onDoubleClick={() => setRenaming(true)} className="mt-2 font-serif text-[26px] leading-snug font-semibold sm:text-[30px]">
               {heading}
             </h1>
           )}
-          {entry.prompt && entry.title && (
-            <p lang={lang} className="mt-1.5 text-[15px] text-ink-soft">
+          {entry.prompt && (entry.title || task) && (
+            <p lang={task ? undefined : lang} className="mt-1.5 whitespace-pre-line text-[15px] text-ink-soft">
               {entry.prompt}
             </p>
           )}
@@ -265,6 +268,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
           )}
         </Popover>
       </header>
+      {mode === 'write' && <WritingSession taskId={entry.writingTaskId} words={words} />}
 
       {review && (
         <div className="mb-7">

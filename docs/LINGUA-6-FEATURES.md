@@ -824,34 +824,34 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [ ] `F0617` Describe an image · **6-12**
 - [x] `F0618` Write a diary entry
 - [x] `F0619` Write about the day
-- [ ] `F0620` Write a short story · **6-12** · partly there
+- [x] `F0620` Write a short story · **6-12** · partly there
 - [x] `F0621` Continue an unfinished story
-- [ ] `F0622` Write a dialogue · **6-12**
-- [ ] `F0623` Write an email · **6-12**
-- [ ] `F0624` Write a formal letter · **6-12**
-- [ ] `F0625` Write an informal message · **6-12**
-- [ ] `F0626` Write a review · **6-12**
-- [ ] `F0627` Write an opinion paragraph · **6-12** · partly there
-- [ ] `F0628` Write a persuasive essay · **6-12**
+- [x] `F0622` Write a dialogue · **6-12**
+- [x] `F0623` Write an email · **6-12**
+- [x] `F0624` Write a formal letter · **6-12**
+- [x] `F0625` Write an informal message · **6-12**
+- [x] `F0626` Write a review · **6-12**
+- [x] `F0627` Write an opinion paragraph · **6-12** · partly there
+- [x] `F0628` Write a persuasive essay · **6-12**
 - [x] `F0629` Write a summary
-- [ ] `F0630` Write a book review · **6-12**
-- [ ] `F0631` Write a travel journal · **6-12**
-- [ ] `F0632` Write a biography · **6-12**
-- [ ] `F0633` Write a fictional conversation · **6-12**
-- [ ] `F0634` Explain a process · **6-12**
-- [ ] `F0635` Describe a memory · **6-12**
+- [x] `F0630` Write a book review · **6-12**
+- [x] `F0631` Write a travel journal · **6-12**
+- [x] `F0632` Write a biography · **6-12**
+- [x] `F0633` Write a fictional conversation · **6-12**
+- [x] `F0634` Explain a process · **6-12**
+- [x] `F0635` Describe a memory · **6-12**
 - [x] `F0636` Write a personal introduction
-- [ ] `F0637` Write a social media post · **6-12**
-- [ ] `F0638` Write a professional message · **6-12**
-- [ ] `F0639` Write a complaint · **6-12**
-- [ ] `F0640` Write an apology · **6-12**
-- [ ] `F0641` Write an invitation · **6-12**
-- [ ] `F0642` Write a response to a news article · **6-12**
-- [ ] `F0643` Write a short argument for and against a topic · **6-12**
-- [ ] `F0644` Rewrite a paragraph using a particular grammar structure · **6-12**
-- [ ] `F0645` Write using a list of required vocabulary · **6-12**
-- [ ] `F0646` Continue a story using newly learned words · **6-12**
-- [ ] `F0647` Reconstruct a text from notes · **6-12**
+- [x] `F0637` Write a social media post · **6-12**
+- [x] `F0638` Write a professional message · **6-12**
+- [x] `F0639` Write a complaint · **6-12**
+- [x] `F0640` Write an apology · **6-12**
+- [x] `F0641` Write an invitation · **6-12**
+- [x] `F0642` Write a response to a news article · **6-12**
+- [x] `F0643` Write a short argument for and against a topic · **6-12**
+- [x] `F0644` Rewrite a paragraph using a particular grammar structure · **6-12**
+- [x] `F0645` Write using a list of required vocabulary · **6-12**
+- [x] `F0646` Continue a story using newly learned words · **6-12**
+- [x] `F0647` Reconstruct a text from notes · **6-12**
 - [x] `F0648` Write from dictation
 
 #### 7.2 AI writing assistant
@@ -903,7 +903,7 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [x] `F0686` Draft history
 - [ ] `F0687` Version comparison · **6-12** · partly there
 - [x] `F0688` Word counter
-- [ ] `F0689` Writing timer · **6-12**
+- [x] `F0689` Writing timer · **6-12**
 - [x] `F0690` Offline writing journal
 - [ ] `F0691` Notebook folders and tags · **6-20** · partly there
 - [ ] `F0692` Export to Markdown, TXT or PDF · **6-24**
