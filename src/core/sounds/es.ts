@@ -1,0 +1,36 @@
+import type { SoundSystem } from './types';
+
+export const ES: SoundSystem = {
+  lang: 'es',
+  sounds: [
+    { kind: 'vowel', ipa: 'a', frontness: 1, height: 3, words: [['casa', 'house'], ['mano', 'hand']], note: 'Always the same open sound, never “uh”. Say it with the jaw low.' },
+    { kind: 'vowel', ipa: 'e', frontness: 0, height: 1, words: [['mesa', 'table'], ['de', 'of']], note: 'Pure and short, without the “ay” glide of English. Between English “bed” and “bay”.' },
+    { kind: 'vowel', ipa: 'i', frontness: 0, height: 0, words: [['sí', 'yes'], ['mi', 'my']], note: 'Always “ee”, short; never “ih” as in “sit”.' },
+    { kind: 'vowel', ipa: 'o', frontness: 2, height: 1, rounded: true, words: [['bola', 'ball'], ['solo', 'alone']], note: 'Pure and rounded, without the “oh-w” glide of English.' },
+    { kind: 'vowel', ipa: 'u', frontness: 2, height: 0, rounded: true, words: [['luz', 'light'], ['uno', 'one']], note: 'Always “oo”, short. It is silent after q and after g before e or i (queso, guerra).' },
+    { kind: 'consonant', ipa: 'p', place: 'bilabial', manner: 'stop', voiced: false, feature: 'no puff of air', words: [['padre', 'father'], ['tapa', 'lid']], note: 'No puff of air, unlike English “p”: hold a paper in front of your mouth, it should not move.' },
+    { kind: 'consonant', ipa: 'b', place: 'bilabial', manner: 'stop', voiced: true, words: [['bola', 'ball'], ['vaca', 'cow']], note: 'B and v are the same sound. After a pause or an m it is a full “b”; between vowels the lips barely touch (written β: haba, “bean”).' },
+    { kind: 'consonant', ipa: 't', place: 'dental', manner: 'stop', voiced: false, feature: 'tongue on the teeth', words: [['tía', 'aunt'], ['pato', 'duck']], note: 'The tongue touches the back of the upper teeth, not the ridge behind them, and there is no puff of air.' },
+    { kind: 'consonant', ipa: 'd', place: 'dental', manner: 'stop', voiced: true, words: [['dedo', 'finger'], ['donde', 'where']], note: 'Between vowels it softens to “th” as in “the” (written ð: dedo, nada). After a pause or n or l it is a full “d”.' },
+    { kind: 'consonant', ipa: 'k', place: 'velar', manner: 'stop', voiced: false, feature: 'no puff of air', words: [['casa', 'house'], ['queso', 'cheese']], note: 'Written c before a, o, u; qu before e, i; k in a few loan words. No puff of air.' },
+    { kind: 'consonant', ipa: 'g', place: 'velar', manner: 'stop', voiced: true, words: [['gato', 'cat'], ['guerra', 'war']], note: 'Between vowels it softens, the back of the tongue barely touching (written ɣ: lago, “lake”). Gue and gui have a silent u.' },
+    { kind: 'consonant', ipa: 'm', place: 'bilabial', manner: 'nasal', voiced: true, words: [['madre', 'mother'], ['cama', 'bed']], note: 'As in English.' },
+    { kind: 'consonant', ipa: 'n', place: 'alveolar', manner: 'nasal', voiced: true, words: [['nada', 'nothing'], ['luna', 'moon']], note: 'It takes the place of the next sound: before b or p it is m; before k or g it is the “ng” of “sing” (un banco, “a bank”).' },
+    { kind: 'consonant', ipa: 'ɲ', place: 'palatal', manner: 'nasal', voiced: true, words: [['año', 'year'], ['niño', 'child']], note: 'The “ny” of “canyon”, one sound. It is a different letter from n and changes the word: cana (grey hair) and caña (cane).' },
+    { kind: 'consonant', ipa: 'f', place: 'labiodental', manner: 'fricative', voiced: false, words: [['foto', 'photo'], ['café', 'coffee']], note: 'As in English.' },
+    { kind: 'consonant', ipa: 's', place: 'alveolar', manner: 'fricative', voiced: false, words: [['sol', 'sun'], ['mesa', 'table']], note: 'Always unvoiced, even between vowels: mesa is “MEH-sa”, never “meh-za”. In much of Spain and the Caribbean it weakens at the end of a syllable.' },
+    { kind: 'consonant', ipa: 'θ', place: 'dental', manner: 'fricative', voiced: false, feature: 'Spain only', words: [['zapato', 'shoe'], ['cielo', 'sky']], note: 'The “th” of “thin”, for z and for c before e or i, in most of Spain. In Latin America and the Canaries it is simply s (seseo).' },
+    { kind: 'consonant', ipa: 'x', place: 'velar', manner: 'fricative', voiced: false, words: [['jamón', 'ham'], ['gente', 'people']], note: 'Written j, and g before e or i. In Spain it is rough, like the “ch” of Scottish “loch”; in much of Latin America it is a soft English “h”.' },
+    { kind: 'consonant', ipa: 'tʃ', place: 'postalveolar', manner: 'affricate', voiced: false, words: [['chico', 'boy'], ['noche', 'night']], note: 'The “ch” of “church”. It is one letter in the Spanish sound system.' },
+    { kind: 'consonant', ipa: 'ʝ', place: 'palatal', manner: 'approximant', voiced: true, words: [['yo', 'I'], ['llave', 'key']], note: 'Written y and ll, the same sound for most speakers (yeísmo): between English “y” and “j”. In Argentina and Uruguay it is “sh” or “zh”.' },
+    { kind: 'consonant', ipa: 'l', place: 'alveolar', manner: 'lateral', voiced: true, words: [['luna', 'moon'], ['sol', 'sun']], note: 'Always “clear”, as at the start of English “light”, never the dark “l” of “full”.' },
+    { kind: 'consonant', ipa: 'ɾ', place: 'alveolar', manner: 'flap', voiced: true, words: [['pero', 'but'], ['cara', 'face']], note: 'One quick tap of the tongue on the ridge, like the “tt” of American “butter”. It changes the word: pero (but), perro (dog).' },
+    { kind: 'consonant', ipa: 'r', place: 'alveolar', manner: 'trill', voiced: true, words: [['perro', 'dog'], ['rojo', 'red']], note: 'The rolled r: written rr, and r at the start of a word or after n, l, s. The tongue taps several times against the ridge.' },
+  ],
+  rules: [
+    { title: 'Stress', text: 'A word ending in a vowel, n or s is stressed on the last syllable but one (CA-sa, ha-BLAN); any other word on the last (ha-BLAR, ciu-DAD). A written accent marks every exception (café, árbol), and also tells apart words that sound the same (sí, si; él, el).' },
+    { title: 'Spelling to sound', text: 'Spanish spelling is nearly regular: each vowel has one sound, and the consonants change only in a few set ways (c and g before e or i; qu and gu with a silent u; h is silent; ll and y). If you can read the word, you can say it.' },
+    { title: 'Syllables and rhythm', text: 'Spanish is syllable-timed: every syllable takes about the same time, and vowels are not reduced to “uh” in unstressed syllables. That is the main thing that makes it sound Spanish.' },
+    { title: 'Connected speech', text: 'Words run together: a final vowel and an initial vowel join into one syllable (la hora → “lahora”), and a final consonant moves to the next word (los amigos → “lo-sa-mi-gos”).' },
+  ],
+};

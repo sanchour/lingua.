@@ -143,7 +143,7 @@ export interface Settings {
     /** Home's "first steps" list, once put away. */
     firstStepsHidden: boolean;
     /** Cursus opens on the tab used last (none yet: Course for tier 1, Grammatica otherwise). */
-    cursusTab: '' | 'course' | 'grammatica' | 'alphabets' | 'typing';
+    cursusTab: '' | 'course' | 'grammatica' | 'alphabets' | 'sounds' | 'typing';
     /** Sonus et Visio's library filter. */
     sonusShow: MediaShow;
     /** Home's layout: Today (5.1-2c) or the one before it. */

@@ -644,7 +644,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0477` Listen and identify the location · **6-9**
 - [x] `F0478` Listen and summarize
 - [ ] `F0479` Listen and answer comprehension questions · **6-9**
-- [ ] `F0480` Listen and distinguish similar sounds · **6-10**
+- [x] `F0480` Listen and distinguish similar sounds · **6-10**
 - [ ] `F0481` Listen for specific keywords · **6-9**
 - [ ] `F0482` Listen for the main idea · **6-9**
 - [ ] `F0483` Listen and predict the next phrase · **6-9**
@@ -659,14 +659,14 @@ Listening comprehension deserves its own system because recognizing a written wo
 
 #### 5.4 Advanced listening training
 
-- [ ] `F0492` Minimal-pair listening · **6-10**
-- [ ] `F0493` Phoneme discrimination · **6-10**
+- [x] `F0492` Minimal-pair listening · **6-10**
+- [x] `F0493` Phoneme discrimination · **6-10**
 - [ ] `F0494` Word-boundary recognition · **6-9**
 - [ ] `F0495` Connected-speech training · **6-9**
 - [ ] `F0496` Reduced vowels and weak forms · **6-10**
 - [ ] `F0497` Stress and intonation recognition · **6-10**
 - [ ] `F0498` Pitch-accent training where relevant · **6-10**
-- [ ] `F0499` Tone recognition for tonal languages · **6-10** · partly there
+- [x] `F0499` Tone recognition for tonal languages · **6-10** · partly there
 - [x] `F0500` Fast-speech comprehension · **6-9**
 - [ ] `F0501` Accent adaptation · **6-9**
 - [x] `F0502` Speech-in-noise exercises · **6-9**
@@ -749,7 +749,7 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0558` More natural alternatives to the learner’s wording · **6-11**
 - [ ] `F0559` Vocabulary suggestions · **6-11**
 - [ ] `F0560` Suggestions for more idiomatic expressions · **6-11**
-- [ ] `F0561` Pronunciation feedback · **6-10**
+- [x] `F0561` Pronunciation feedback · **6-10**
 - [ ] `F0562` Fluency feedback · **6-11**
 - [ ] `F0563` Filler-word tracking · **6-11**
 - [ ] `F0564` Repeated-word tracking · **6-11**
@@ -768,7 +768,7 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0577` Generate a personalized review session · **6-16**
 - [ ] `F0578` Replay the conversation · **6-11**
 - [ ] `F0579` Listen to the learner’s own recordings · **6-11**
-- [ ] `F0580` Compare the learner’s attempt with a model recording · **6-10**
+- [x] `F0580` Compare the learner’s attempt with a model recording · **6-10**
 - [ ] `F0581` Review the conversation sentence by sentence · **6-11**
 - [ ] `F0582` Create a summary of new expressions · **6-11**
 - [ ] `F0583` Save conversation transcripts to a personal journal · **6-11**
@@ -782,18 +782,18 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [ ] `F0586` Speech shadowing · **6-10**
 - [ ] `F0587` Repeat-after-me exercises · **6-10** · partly there
 - [ ] `F0588` Simultaneous speech imitation · **6-10**
-- [ ] `F0589` Pronunciation recording comparisons · **6-10**
+- [x] `F0589` Pronunciation recording comparisons · **6-10**
 - [ ] `F0590` Phoneme-level pronunciation feedback · **6-10**
 - [ ] `F0591` Word stress detection · **6-10**
 - [ ] `F0592` Sentence stress detection · **6-10**
 - [ ] `F0593` Rhythm and intonation analysis · **6-10**
-- [ ] `F0594` Tone recognition for tonal languages · **6-10**
-- [ ] `F0595` Pitch contour visualization · **6-10**
+- [x] `F0594` Tone recognition for tonal languages · **6-10**
+- [x] `F0595` Pitch contour visualization · **6-10**
 - [ ] `F0596` Vowel articulation guidance · **6-10**
 - [ ] `F0597` Consonant articulation guidance · **6-10**
 - [ ] `F0598` Minimal-pair pronunciation practice · **6-10**
 - [ ] `F0599` Slow playback of model speech · **6-10**
-- [ ] `F0600` Visual waveform comparison · **6-10**
+- [x] `F0600` Visual waveform comparison · **6-10**
 - [ ] `F0601` Spectrogram visualization · **6-10**
 - [ ] `F0602` Speech rate measurement · **6-11**
 - [ ] `F0603` Pause distribution analysis · **6-11**
@@ -923,41 +923,41 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0697` Alphabet learning
 - [x] `F0698` Letter names and sounds
 - [x] `F0699` Script recognition
-- [ ] `F0700` Phoneme inventory · **6-10**
-- [ ] `F0701` Vowel chart · **6-10**
-- [ ] `F0702` Consonant chart · **6-10**
-- [ ] `F0703` IPA reference · **6-10**
+- [x] `F0700` Phoneme inventory · **6-10**
+- [x] `F0701` Vowel chart · **6-10**
+- [x] `F0702` Consonant chart · **6-10**
+- [x] `F0703` IPA reference · **6-10**
 - [ ] `F0704` Audio for every phoneme · **6-10**
 - [ ] `F0705` Mouth-position illustrations · **6-10**
 - [ ] `F0706` Tongue-position illustrations · **6-10**
 - [ ] `F0707` Voicing demonstrations · **6-10**
-- [ ] `F0708` Place-of-articulation explanations · **6-10**
-- [ ] `F0709` Minimal pairs · **6-10**
+- [x] `F0708` Place-of-articulation explanations · **6-10**
+- [x] `F0709` Minimal pairs · **6-10**
 - [ ] `F0710` Syllable segmentation · **6-10**
-- [ ] `F0711` Stress placement · **6-10**
-- [ ] `F0712` Word-level stress rules · **6-10**
+- [x] `F0711` Stress placement · **6-10**
+- [x] `F0712` Word-level stress rules · **6-10**
 - [ ] `F0713` Sentence intonation · **6-10**
 - [ ] `F0714` Rhythm patterns · **6-10**
-- [ ] `F0715` Connected speech · **6-10**
-- [ ] `F0716` Sound reduction · **6-10**
+- [x] `F0715` Connected speech · **6-10**
+- [x] `F0716` Sound reduction · **6-10**
 - [ ] `F0717` Assimilation · **6-10**
 - [ ] `F0718` Elision · **6-10**
 - [ ] `F0719` Gemination · **6-10**
 - [ ] `F0720` Palatalization · **6-10**
-- [ ] `F0721` Aspiration · **6-10**
-- [ ] `F0722` Nasal vowels · **6-10**
-- [ ] `F0723` Tonal contours · **6-10** · partly there
+- [x] `F0721` Aspiration · **6-10**
+- [x] `F0722` Nasal vowels · **6-10**
+- [x] `F0723` Tonal contours · **6-10** · partly there
 - [ ] `F0724` Pitch accent · **6-10**
-- [ ] `F0725` Orthography-to-sound rules · **6-10**
+- [x] `F0725` Orthography-to-sound rules · **6-10**
 - [ ] `F0726` Sound-to-spelling exercises · **6-10** · partly there
 
 #### 8.2 Pronunciation practice
 
 *In Lingua: Ludus "say it out loud"; the course's speaking lesson.*
 
-- [ ] `F0727` Listen and repeat · **6-10** · partly there
-- [ ] `F0728` Record and compare · **6-10**
-- [ ] `F0729` Minimal-pair discrimination · **6-10**
+- [x] `F0727` Listen and repeat · **6-10** · partly there
+- [x] `F0728` Record and compare · **6-10**
+- [x] `F0729` Minimal-pair discrimination · **6-10**
 - [ ] `F0730` Identify the incorrect pronunciation · **6-10**
 - [x] `F0731` Read a word aloud
 - [x] `F0732` Read a sentence aloud
@@ -977,7 +977,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [ ] `F0746` Randomized pronunciation tests · **6-10**
 - [ ] `F0747` Weekly pronunciation recordings · **6-10**
 - [ ] `F0748` Pronunciation progress history · **6-10**
-- [ ] `F0749` Feedback on intelligibility · **6-10**
+- [x] `F0749` Feedback on intelligibility · **6-10**
 - [ ] `F0750` Visual speech feedback where technically supported · **6-10**
 
 ## 09 · Translation and bilingual learning
