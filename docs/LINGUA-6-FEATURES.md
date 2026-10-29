@@ -649,7 +649,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0482` Listen for the main idea · **6-9**
 - [ ] `F0483` Listen and predict the next phrase · **6-9**
 - [ ] `F0484` Listen and identify a change in topic · **6-9**
-- [ ] `F0485` Listen without subtitles, then with subtitles · **6-9** · partly there
+- [x] `F0485` Listen without subtitles, then with subtitles · **6-9** · partly there
 - [ ] `F0486` Compare an initial guess with the transcript · **6-9**
 - [ ] `F0487` Listen to a phrase and repeat it · **6-11** · partly there
 - [ ] `F0488` Transcribe a short audio clip · **6-9**

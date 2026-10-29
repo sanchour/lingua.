@@ -1,10 +1,10 @@
 import { Link } from 'react-router';
-import { Bike, Check, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
+import { Bike, Check, EyeOff, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { loopLabel } from '@/core/audio/loop';
-import { cycleLoop, nextSentence, previousSentence, setKeepPitch, setRate, toggleLineByLine, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
+import { cycleLoop, toggleListenFirst, nextSentence, previousSentence, setKeepPitch, setRate, toggleLineByLine, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
 import { SleepButton } from './SleepTimer';
 
 export const RATES = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5];
@@ -37,6 +37,7 @@ export function Transport({ className }: { className?: string }) {
   const loop = usePlayer((s) => s.abLoop);
   const lineByLine = usePlayer((s) => s.lineByLine);
   const keepPitch = usePlayer((s) => s.keepPitch);
+  const listenFirst = usePlayer((s) => s.listenFirst);
   const playing = status === 'playing';
 
   return (
@@ -137,6 +138,17 @@ export function Transport({ className }: { className?: string }) {
         >
           <StepForward size={14} aria-hidden />
           Line by line
+        </button>
+        <button
+          type="button"
+          disabled={!hasCues}
+          title={hasCues ? 'Keep the text blurred until a line has played: listen first, then read' : 'Needs a transcript'}
+          aria-pressed={listenFirst}
+          onClick={toggleListenFirst}
+          className={cx('flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors disabled:opacity-40', listenFirst ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong')}
+        >
+          <EyeOff size={14} aria-hidden />
+          Listen first
         </button>
         <SleepButton />
         <Link to="/sonus/commute" className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold transition-colors hover:border-line-strong">

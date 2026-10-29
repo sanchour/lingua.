@@ -38,6 +38,8 @@ export interface PlayerState {
   abLoop: AbLoop | null;
   /** Pauses at the end of every line of a transcript, to be started again by hand (6-9: sentence by sentence). */
   lineByLine: boolean;
+  /** The transcript stays blurred until a line has played, to listen before reading (6-9). */
+  listenFirst: boolean;
   /** Speed changes keep the pitch (the default), or change it with the speed. */
   keepPitch: boolean;
 }
@@ -56,6 +58,7 @@ export const usePlayer = create<PlayerState>(() => ({
   sleep: null,
   abLoop: null,
   lineByLine: false,
+  listenFirst: false,
   keepPitch: true,
 }));
 
@@ -553,6 +556,10 @@ export function toggleLineByLine(): void {
   stepIndex = -1;
   stepPaused = false;
   set({ lineByLine: !get().lineByLine });
+}
+
+export function toggleListenFirst(): void {
+  set({ listenFirst: !get().listenFirst });
 }
 
 export function setKeepPitch(keepPitch: boolean): void {
