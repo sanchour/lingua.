@@ -146,16 +146,16 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0062` Collaborative decks · **6-27** · needs the user's word
 - [ ] `F0063` Follow deck creators · **6-27** · needs the user's word
 - [ ] `F0064` Clone and modify shared decks · **6-27** · partly there
-- [ ] `F0065` Generate decks from a text, document or book · **6-2** · partly there
+- [x] `F0065` Generate decks from a text, document or book · **6-2** · partly there
 - [ ] `F0066` Generate decks from a video transcript · **6-2** · partly there
 - [ ] `F0067` Generate decks from a conversation · **6-2**
 - [x] `F0068` Generate decks from a list of unknown words · **6-2** · partly there
 - [ ] `F0069` Generate decks from exam vocabulary · **6-18**
-- [ ] `F0070` Generate decks from a topic or situation · **6-2** · partly there
+- [x] `F0070` Generate decks from a topic or situation · **6-2** · partly there
 - [x] `F0071` Generate decks from a CEFR level
 - [x] `F0072` Generate decks from frequency lists
 - [ ] `F0073` Generate decks from a personal goal · **6-2**
-- [ ] `F0074` Automatically extract vocabulary from reading material · **6-2** · partly there
+- [x] `F0074` Automatically extract vocabulary from reading material · **6-2** · partly there
 - [x] `F0075` Automatically add unfamiliar words encountered in the app
 - [x] `F0076` Save words to a central vocabulary inbox · **6-2** · partly there
 - [x] `F0077` Review the inbox before adding words to a deck · **6-2**
@@ -1889,7 +1889,7 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1484` Import from a clipboard
 - [x] `F1485` Import a web article
 - [ ] `F1486` Import text through a browser extension · **6-24** · partly there
-- [ ] `F1487` Import a document and extract vocabulary · **6-2** · partly there
+- [x] `F1487` Import a document and extract vocabulary · **6-2** · partly there
 - [x] `F1488` Import audio files
 - [ ] `F1489` Import video transcripts · **5.2-4** · planned in Lingua 5.2
 - [ ] `F1490` Export vocabulary to CSV · **6-24**

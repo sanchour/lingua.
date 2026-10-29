@@ -27,6 +27,16 @@ export function parseWordList(text: string): Draft[] {
   return out;
 }
 
+/** The unknown words of a text the library has already counted (norms and how often each came), most used first. */
+export function wordsFromCounts(norms: readonly string[], counts: readonly number[], known: ReadonlySet<string>, limit = 60): Draft[] {
+  return norms
+    .map((w, i) => ({ w, n: counts[i] ?? 0, i }))
+    .filter(({ w }) => [...w].length >= 2 && !known.has(w) && !/\d/.test(w))
+    .sort((a, b) => b.n - a.n || a.i - b.i)
+    .slice(0, limit)
+    .map(({ w }) => ({ term: w, meaning: '' }));
+}
+
 /** The words of a text that aren't known yet, most often used first, then in the order they appear (`known` holds normalised words). */
 export function wordsFromText(text: string, lang: string, known: ReadonlySet<string>, limit = 60): Draft[] {
   const found = new Map<string, { term: string; n: number; first: number }>();
