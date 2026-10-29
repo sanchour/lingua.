@@ -1898,5 +1898,9 @@ Grammatica gains an interactive topic map tab. Topics are arranged in tiered CEF
 
 The Sentence Explainer analyzes any pasted or selected sentence. On the device, tokenization, lemma identification, inflectional endings extraction and basic clause division work completely offline using local dictionary forms (`db.dictForms`). When Max is connected (or tested via injected model), Universal Dependencies roles (Subject, Predicate Verb, Direct Object, etc.), fine-line SVG dependency arcs, subordinate clause explanations, and alternative grammatically valid interpretations are merged seamlessly. When no key is set, the offline form-and-ending breakdown is presented with a clear notice that Max is needed for syntax arcs and roles.
 
+## 2026-10-29 — 6-13 T1: translation practice sets, literal contrasts, and requirement checks
+
+A dedicated Translation Practice suite is mounted at `/thesaurus/translate/:set?` using the exercise engine contracts (`buildTranslationExercise` in `src/core/exercise/translate.ts`). Translation sets cover English paired with all six core languages (Spanish, French, German, Italian, Russian, Chinese) across sentences, dialogues, paragraphs, idioms, slang, and formal correspondence. Exercises feature tiered hint reveals, side-by-side literal vs. natural comparisons, accepted alternative variations (checked offline via `judge`), and constraint validation requiring specific vocabulary words or grammatical constructions. Learners can also translate arbitrary custom passages with live metrics and log completed attempts to the learner evidence log (`recordEvidence`).
+
 
 

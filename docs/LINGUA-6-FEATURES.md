@@ -527,7 +527,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [ ] `F0386` Match paragraphs to headings · **6-8**
 - [ ] `F0387` Identify the sentence that doesn’t belong · **6-8**
 - [ ] `F0388` Compare the original with a simplified version · **6-8**
-- [ ] `F0389` Translate a selected passage · **6-13**
+- [x] `F0389` Translate a selected passage · **6-13**
 - [x] `F0390` Retell the text in the target language
 - [ ] `F0391` Discuss the text with an AI tutor · **5.2-6** · planned in Lingua 5.2
 
@@ -991,31 +991,31 @@ Translation can be a powerful learning method when used actively. It becomes les
 - [x] `F0751` ⭐ Native language → target language
 - [x] `F0752` ⭐ Target language → native language
 - [x] `F0753` Sentence translation
-- [ ] `F0754` Paragraph translation · **6-13**
-- [ ] `F0755` Dialogue translation · **6-13**
-- [ ] `F0756` Translation with hints · **6-13**
+- [x] `F0754` Paragraph translation · **6-13**
+- [x] `F0755` Dialogue translation · **6-13**
+- [x] `F0756` Translation with hints · **6-13**
 - [x] `F0757` Translation without hints
-- [ ] `F0758` Literal translation · **6-13**
-- [ ] `F0759` Natural translation · **6-13**
-- [ ] `F0760` Multiple valid translations · **6-13**
-- [ ] `F0761` Compare translation alternatives · **6-13**
-- [ ] `F0762` Translate with a required vocabulary word · **6-13**
-- [ ] `F0763` Translate using a specified grammar construction · **6-13** · partly there
-- [ ] `F0764` Translate idioms · **6-13**
-- [ ] `F0765` Translate slang · **6-13**
-- [ ] `F0766` Translate formal expressions · **6-13**
+- [x] `F0758` Literal translation · **6-13**
+- [x] `F0759` Natural translation · **6-13**
+- [x] `F0760` Multiple valid translations · **6-13**
+- [x] `F0761` Compare translation alternatives · **6-13**
+- [x] `F0762` Translate with a required vocabulary word · **6-13**
+- [x] `F0763` Translate using a specified grammar construction · **6-13** · partly there
+- [x] `F0764` Translate idioms · **6-13**
+- [x] `F0765` Translate slang · **6-13**
+- [x] `F0766` Translate formal expressions · **6-13**
 - [ ] `F0767` Translate literary passages · **6-13**
-- [ ] `F0768` Translate a phrase in different registers · **6-13**
+- [x] `F0768` Translate a phrase in different registers · **6-13**
 - [ ] `F0769` Translate with word-by-word alignment · **6-13**
 - [ ] `F0770` Compare sentence structure across languages · **6-13**
-- [ ] `F0771` Explain why a direct translation doesn’t work · **6-13**
+- [x] `F0771` Explain why a direct translation doesn’t work · **6-13**
 - [ ] `F0772` Identify false friends · **6-13**
 - [ ] `F0773` Explain untranslatable concepts · **6-19**
 - [ ] `F0774` Back-translation exercises · **6-13**
 - [ ] `F0775` Translate and then reconstruct the original · **6-13**
 - [ ] `F0776` Compare a learner’s translation with several reference translations · **6-13**
-- [ ] `F0777` Translation challenges with a timer · **6-13**
-- [ ] `F0778` Translation of user-imported content · **6-13**
+- [x] `F0777` Translation challenges with a timer · **6-13**
+- [x] `F0778` Translation of user-imported content · **6-13**
 
 #### 9.2 Contrastive language tools
 

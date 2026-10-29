@@ -32,6 +32,7 @@ import {
   StationPage,
   StudyPage,
   ThesaurusPage,
+  TranslatePracticePage,
   VisioPage,
   WatchPage,
 } from './pages';
@@ -107,6 +108,14 @@ export const router = createBrowserRouter(
           element: (
             <PlanRoute feature="ludus" fallback="/thesaurus">
               <PracticePage />
+            </PlanRoute>
+          ),
+        },
+        {
+          path: 'thesaurus/translate/:set?',
+          element: (
+            <PlanRoute feature="ludus" fallback="/thesaurus">
+              <TranslatePracticePage />
             </PlanRoute>
           ),
         },
