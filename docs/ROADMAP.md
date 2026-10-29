@@ -2329,3 +2329,13 @@ as its guide. It comes after Lingua 6 · Features (the user, 2026-10-26).
 - [ ] **7-11 · Lingua 7's check;** the version becomes 0.7.0 (Lingua 6 is built first, as 0.6.x).
 
 - [x] **Handbook, 2026-10-28 (0.5.2-alpha.29):** recent changes, the design chapters, tablet and phone guides, a layout page per room (141 pages; see DECISIONS 2026-10-28).
+
+## Lingua for Mac
+
+Planned 2026-10-29 in [MAC-PLAN.md](MAC-PLAN.md) (the user: "i just want to build a lingua mac version now to see, check, get
+motivated and excited, i think i will like tauri a lot"). A look, not a launch: Tauri v2 around the app as it is, an unsigned
+`Lingua.app` and `.dmg` on the user's own Mac. Parallel with Lingua 6 and 7 (handover step 25).
+
+- [ ] **M-0 · Rust** (the user installs it) · **M-1 · the shell** · **M-2 · behave as an app** (service worker, window, menu, links)
+- [ ] **M-3 · the check in WebKit** (data, packs, PDF and OCR, audio, Whisper and Piper, speech, other sites, YouTube; result table in the plan)
+- [ ] **M-4 · Mac touches** (optional) · **M-5 · build the app and the disk image** · **M-6 · write-up** in DECISIONS: Tauri on, Electron, or stop

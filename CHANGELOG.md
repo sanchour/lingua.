@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.23** · 2026-10-29 · Plan: Lingua for Mac, a look with Tauri (docs only)
 - **0.6.0-alpha.22** · 2026-10-29 · Contract: exercise bodies for 6-4b's kinds (touches 6-4b only)
 - **0.6.0-alpha.21** · 2026-10-29 · Plan: 6-29, the word graph (the user's idea), Opus plans and builds it
 - **0.6.0-alpha.20** · 2026-10-29 · 6-1b done: dictionary version 3 for the six core languages (syllables, made of, comes from, cognates, homophones)

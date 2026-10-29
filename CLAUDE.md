@@ -20,6 +20,7 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
   read Part One of the handbook, [docs/handbook/Lingua-Design-Handbook.pdf](docs/handbook/Lingua-Design-Handbook.pdf)
   (source `docs/handbook/handbook.html`, printed with `node scripts/handbook-pdf.ts`), and the chapter for the
   room you change. Tablet and phone guides in it are reference only; the desktop-only rule still holds.
+- **Lingua for Mac** (a look, not a launch; Tauri v2; the user, 2026-10-29): [docs/MAC-PLAN.md](docs/MAC-PLAN.md), handover step 25, parallel with the rest.
 - **Sandesigner** (the user's own design canvas for all their apps) lives in `sandesigning/`, apart from Lingua's code
   (no React, no dependencies); format in `sandesigning/FORMAT.md`. After changing it run `npm run sandesigner` and
   commit both `public/sandesigner/` and `public/sandesigning/`.
