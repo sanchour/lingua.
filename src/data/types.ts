@@ -418,6 +418,8 @@ export interface ReviewLog {
 
 export interface Media extends Synced {
   id: string;
+  /** Places to come back to (6-9): a time in ms, with a note, and `hard` when the learner could not make it out. */
+  bookmarks?: Array<{ at: number; note?: string; hard?: boolean }>;
   lang: Lang;
   /** `radio` is a live station: played, never stored as media (see SavedStation). */
   kind: 'audio' | 'video' | 'spotify' | 'radio';

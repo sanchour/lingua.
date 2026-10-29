@@ -73,3 +73,5 @@ add the new one and read both.
   writes them. 6-1 may adjust them, as its own contract push.
 
 - **0.6.0-alpha.59 (6-2b):** `Deck` gains `coverBlobId` (already in `DeckV6`) and `color`, both optional and not indexed, so no Dexie version.
+
+- **0.6.0-alpha.94 (6-9):** `ExerciseSpec` gains `listen` (the line to play: a clip of the learner's own audio or video, or the device's voice) and two kinds, `listen-type` (dictation of a real line) and `listen-gap` (the missing word); no Dexie version.

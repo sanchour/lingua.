@@ -70,6 +70,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
   const lang = media.lang;
   useScriptFont(lang);
   const reader = settings.reader;
+  const listenFirst = usePlayer((s) => s.listenFirst);
 
   // ── Model: one paragraph per cue, words with their states and glosses ──
   const [model, setModel] = useState<ChapterModel | null>(null);
@@ -141,6 +142,8 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
       const i = cueIndexAt(cues, ms);
       if (i !== current) {
         block?.classList.remove('is-current');
+        // A line that has played can be read, with "Listen first" on.
+        if (block) block.dataset.played = '1';
         for (const w of words) delete w.dataset.k;
         current = i;
         block = i >= 0 ? flow.querySelector<HTMLElement>(`[data-b="${i}"]`) : null;
@@ -189,6 +192,8 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
   const jumpTo = (block: HTMLElement) => {
     const cue = cues[Number(block.dataset.b)];
     if (!cue || !live) return;
+    // Tapping a blurred line says "show me": it opens and plays from there.
+    block.dataset.played = '1';
     clock.seek(cue.startMs);
     clock.play();
   };
@@ -246,7 +251,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
   return (
     <>
       <div {...handlers} onContextMenu={onContextMenu}>
-        <div ref={flowRef} lang={lang} style={style} className={cx('reader-flow karaoke', reader.highlightUnseen && 'hl-unseen', layout === 'wide' && gutter && 'has-gutter', !live && 'is-still')}>
+        <div ref={flowRef} lang={lang} style={style} className={cx('reader-flow karaoke', listenFirst && 'listen-first', reader.highlightUnseen && 'hl-unseen', layout === 'wide' && gutter && 'has-gutter', !live && 'is-still')}>
           {model && <ChapterBody model={model} lang={lang} />}
         </div>
       </div>

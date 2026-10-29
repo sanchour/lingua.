@@ -3,6 +3,8 @@
 // the playhead with `onTime` (called every frame while visible, on `timeupdate` while hidden).
 import { create } from 'zustand';
 import { cueIndexAt } from '@/core/audio/cues';
+import { loopJump, nextLoop } from '@/core/audio/loop';
+import type { AbLoop } from '@/core/audio/loop';
 import { fadeVolume, sleepAfterSeek, sleepDue, startSleep } from '@/core/audio/sleep';
 import type { SleepChoice, SleepTimer } from '@/core/audio/sleep';
 import { recordSession } from '@/data/activity';
@@ -32,6 +34,14 @@ export interface PlayerState {
   nowPlaying?: string;
   /** The sleep timer, while one is set. */
   sleep: SleepTimer | null;
+  /** The part between A and B that plays again and again, while one is set (6-9). */
+  abLoop: AbLoop | null;
+  /** Pauses at the end of every line of a transcript, to be started again by hand (6-9: sentence by sentence). */
+  lineByLine: boolean;
+  /** The transcript stays blurred until a line has played, to listen before reading (6-9). */
+  listenFirst: boolean;
+  /** Speed changes keep the pitch (the default), or change it with the speed. */
+  keepPitch: boolean;
 }
 
 export const usePlayer = create<PlayerState>(() => ({
@@ -46,6 +56,10 @@ export const usePlayer = create<PlayerState>(() => ({
   skipFwdSec: 30,
   gapMs: 1200,
   sleep: null,
+  abLoop: null,
+  lineByLine: false,
+  listenFirst: false,
+  keepPitch: true,
 }));
 
 const get = usePlayer.getState;
@@ -67,6 +81,9 @@ let cueIndex = -1;
 let repeatsDone = 0;
 let gapTimer = 0;
 let pausingForGap = false;
+// Line by line: the line that has just paused the player.
+let stepIndex = -1;
+let stepPaused = false;
 
 // Sleep timer
 let sleepTimeout = 0;
@@ -247,8 +264,14 @@ export function onTime(fn: (ms: number) => void): () => void {
 // ── Sentence repeats ─────────────────────────────────────────────────────────
 
 function handleRepeat(ms: number) {
+  const back = loopJump(get().abLoop, ms);
+  if (back !== null && audio && !audio.paused) {
+    audio.currentTime = back / 1000;
+    return;
+  }
   const { cues, repeat } = get();
   if (!cues?.length) return;
+  stepByLine(cues, ms);
   const i = cueIndexAt(cues, ms);
   if (i !== cueIndex) {
     // Ran into the next sentence while the last one still has repeats to go: go back.
@@ -264,6 +287,22 @@ function handleRepeat(ms: number) {
   const cue = cues[i];
   if (repeat > 1 && cue && repeatsDone < repeat - 1 && !gapTimer && !audio?.paused && ms >= cue.endMs - 40 && cue.endMs < (cues[i + 1]?.startMs ?? Infinity)) {
     loopBack(cue);
+  }
+}
+
+/** Line by line: stops at the end of each line of the transcript. */
+function stepByLine(cues: Cue[], ms: number) {
+  if (!get().lineByLine || !audio || audio.paused) return;
+  const i = cueIndexAt(cues, ms);
+  const cue = cues[i];
+  if (!cue) return;
+  if (i !== stepIndex) {
+    stepIndex = i;
+    stepPaused = false;
+  }
+  if (!stepPaused && ms >= cue.endMs - 40) {
+    stepPaused = true;
+    pause();
   }
 }
 
@@ -393,6 +432,7 @@ export async function loadMedia(media: Media, options: { autoplay?: boolean; sta
   const rate = progress?.rate ?? settings.audio.rate;
   a.defaultPlaybackRate = rate;
   a.playbackRate = rate;
+  a.preservesPitch = get().keepPitch;
   const start = options.startMs ?? (progress && !progress.completed ? progress.positionMs : 0);
   if (start > 0) a.currentTime = start / 1000;
   lastPosition = start;
@@ -403,6 +443,7 @@ export async function loadMedia(media: Media, options: { autoplay?: boolean; sta
     status: 'paused',
     rate,
     cues: transcript?.cues ?? null,
+    abLoop: null,
     skipBackSec: settings.audio.skipBackSec,
     skipFwdSec: settings.audio.skipFwdSec,
     gapMs: settings.audio.repeatGapMs,
@@ -481,6 +522,9 @@ export function seek(ms: number): void {
   const { cues, sleep, media } = get();
   cueIndex = cues ? cueIndexAt(cues, ms) : -1;
   repeatsDone = 0;
+  // A line played again by hand pauses at its end again.
+  stepIndex = -1;
+  stepPaused = false;
   const moved = sleepAfterSeek(sleep, a.currentTime * 1000, media?.chapters);
   if (moved !== sleep) set({ sleep: moved });
   for (const fn of listeners) fn(a.currentTime * 1000);
@@ -497,6 +541,31 @@ export function setRate(rate: number): void {
   a.defaultPlaybackRate = rate;
   set({ rate });
   void persist();
+}
+
+/** The A–B loop: marks A, then B, then clears. */
+export function cycleLoop(): void {
+  set({ abLoop: nextLoop(get().abLoop, currentMs()) });
+}
+
+export function clearLoop(): void {
+  set({ abLoop: null });
+}
+
+export function toggleLineByLine(): void {
+  stepIndex = -1;
+  stepPaused = false;
+  set({ lineByLine: !get().lineByLine });
+}
+
+export function toggleListenFirst(): void {
+  set({ listenFirst: !get().listenFirst });
+}
+
+export function setKeepPitch(keepPitch: boolean): void {
+  const a = element();
+  a.preservesPitch = keepPitch;
+  set({ keepPitch });
 }
 
 export function setRepeat(repeat: number): void {

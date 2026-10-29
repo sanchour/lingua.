@@ -27,7 +27,10 @@ export type NewExerciseKind =
   | 'expand'
   | 'simplify'
   | 'predict-form'
-  | 'complete-dialogue';
+  | 'complete-dialogue'
+  /** 6-9: hear a real line and type it (dictation), or type the word missing from it. */
+  | 'listen-type'
+  | 'listen-gap';
 
 export type ExerciseKind = ExistingExerciseKind | NewExerciseKind;
 
@@ -115,6 +118,13 @@ export interface Hint {
   strength: 0 | 1 | 2;
 }
 
+/** What to play for an exercise that is heard (6-9): a stretch of the learner's own audio or video, or the line spoken by the device's voice. */
+export interface ListenSource {
+  /** The line, for the voice (and for the clip's fallback when the file is gone). */
+  text: string;
+  clip?: { mediaId: string; startMs: number; endMs: number };
+}
+
 /** An exercise: data, no rendering. Every kind-specific field lives in `body`, typed by the kind. */
 export interface ExerciseSpec<K extends ExerciseKind = ExerciseKind, B = unknown> {
   /** Unique within a session. */
@@ -124,6 +134,8 @@ export interface ExerciseSpec<K extends ExerciseKind = ExerciseKind, B = unknown
   /** The line above the exercise ("Fill in the gap"). */
   instruction: string;
   body: B;
+  /** Heard before it is answered (6-9). */
+  listen?: ListenSource;
   check: AnswerRule;
   hints?: Hint[];
   /** What the answer says about the learner, written to `evidence` (6-5). */

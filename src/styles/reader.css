@@ -434,3 +434,10 @@
   background-color: rgb(255 255 255 / 0.3);
   box-shadow: 0 0 0 2px rgb(255 255 255 / 0.3);
 }
+
+/* Listen first (6-9): lines that have not played yet stay blurred, to hear before reading. */
+.reader-flow.karaoke.listen-first [data-b]:not([data-played]) {
+  filter: blur(7px);
+  user-select: none;
+  cursor: pointer;
+}

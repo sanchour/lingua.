@@ -86,8 +86,8 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | **Part B · The skills** (in parallel, after Part A) | | | | | |
 | 6-7 | [x] | *done by Antigravity-1 2026-10-29; G1 done (browse, plain search, prerequisites, notes; F0195, F0196, F0221, F0227); G2 done (target-language and side-by-side explanations, exceptions, formal/informal pairs, right/wrong pairs, regional notes, cross-references; F0199, F0203, F0204, F0206, F0207, F0220, F0224, F0225, F0226, F0255); G3 done (fine-line timelines, word-order slots, decision trees, sentence diagrams, morphology, coloured endings; F0211, F0212, F0214, F0215, F0216, F0217, F0218); G4 done (interactive topic map with CEFR tiers, prerequisite DAG, learned node fill, error heatmap; F0219, F0264, F0267); G5 done: sentence explainer with device-dictionary lemma/ending extraction, clause segmentation, fine-line SVG dependency arcs, Universal Dependencies roles, and ambiguous interpretations (Max-ready with faked model tested, not tried with a real model); F0273, F0274, F0275, F0276, F0277, F0279, F0333 ticked; typecheck, 1,310 tests and build pass; not looked at in a browser.* Grammar | 19 new · 12 to finish | 6-4, 6-5 | L |
 | 6-8 | [x] | *claimed by Codex 2026-10-29; R1 built: Study tools drawer with dictionary-category colours, differing suffixes, interlinear word glosses and reveal by sentence, a positionable reading ruler; selection highlights in three colours, paragraph notes and cards via the existing deck picker. Highlights keep exact quotes/offsets and are not painted when an edited passage no longer matches; stored on the existing text row (no migration). Browser: bundled Spanish story at 1280, 1440 and 1366×768, light/dark; reveal, save/reopen a highlight, note, card creation, remove and Undo tried. Pagination corrected after revealing glosses; a note typed then closed with Escape was kept. Typecheck, 1,255 tests and build pass after rebasing. Not checked: other languages, large books, comics, scroll mode, screen reader or frame timing. Category is the first dictionary sense, not contextual syntax; suffixes require a shared stem; selections stay within one paragraph. R2 built: Codex › Graded orders local texts by the existing measured level and filters by topic/title/author, kind, length, level and Known-or-Learning share. Topic/kind labels save on the text; absent word data is shown as unmeasured. Wikisource/Gutenberg genre searches reuse the existing services only on request; no bundled corpus or dependency added. Typecheck, 1,267 tests and build pass. Graded shelf looked at at 1280, 1440 and 1366×768, light/dark; label saving, combined filters and a Spanish Wikisource fable search tried. Not checked: external edition import, Gutenberg search, other languages or a large library. R3 built on codex/lingua (the user moved future pushes off main): chapter Study tools links to Check understanding, with four offline self-check guides and Max questions for main idea, true/false, events, title, context, paragraph headings, odd sentence and short answers. Specs reuse typed, drag and matching views; answers write Codex reading evidence before advancing, with explicit retry on storage failure. Fake-model/parser/shared-view tests; typecheck, 1,330 tests and build pass. Browser: all four self-checks completed on the Spanish sample; setup and free-answer views seen at 1280, 1440 and 1366×768 in light/dark. Not verified: real AI, generated question interactions in a browser, other languages, or storage-failure injection. Generated interpretations are not fact-checked; exact quotes and schema are checked. First 6,000 chapter characters only. R4 built on codex/lingua: Study tools › Read side by side shows saved learner-supplied parallel text or the existing labelled Max simplifier beside the original excerpt. Manual text is stored on the existing text row and is displayed only when the source excerpt still matches. Max reuses the existing checked/cached simplified kind and Report; target level and translation language are selectable. No new table, generator kind or dependency. Typecheck, 1,333 tests and build pass, including fake-model/cache, persistence/source-change and rendered-column tests. Browser: Spanish sample with an English parallel text saved/reopened; manual and locked-Max modes looked at at 1280, 1440 and 1366×768, light/dark. Not verified: real AI or generated result/Report interactions in a browser, other languages, large chapters or sync across devices. First 4,000 source characters only, independent columns rather than sentence alignment. Assigned R1–R4 slices are complete on the branch; remaining unticked audit entries (book projects, broader source catalogues, bookmarks, contextual syntax, additional interpretation kinds and automatic chapter-end launching) are not claimed complete.* Reading | 41 new · 31 to finish | 6-4, 6-6 | XL |
-| 6-9 | [ ] | Listening | 49 new · 18 to finish | 6-4, 6-6 | XL |
-| 6-10 | [ ] | Sounds and pronunciation | 82 new · 7 to finish | 6-4, 6-5 | XL |
+| 6-9 | [~] | *claimed by Claude 2026-10-29; slice L2 (alpha.95): Listen first keeps a transcript's lines blurred until each has played, or is tapped (F0485; looked at, dark mode). Slice L1 (alpha.92): the player loops a part between A and B (key [), pauses after every line with Line by line (key L, from a transcript), keeps or changes the pitch with the speed, and keeps bookmarks and Hard to hear marks on an item (key B), each a tap from playing again; looked at in a browser, dark mode, with a tone and a transcript: F0444, F0445, F0448, F0449, F0457, F0459, F0460, F0816 ticked.* Listening | 49 new · 18 to finish | 6-4, 6-6 | XL |
+| 6-10 | [~] | *claimed by Claude 2026-10-29* Sounds and pronunciation | 82 new · 7 to finish | 6-4, 6-5 | XL |
 | 6-11 | [~] | *claimed by Antigravity-1 2026-10-29* Speaking | 46 new · 5 to finish | 6-5, 6-6 | L |
 | 6-12 | [x] | *claimed by Codex 2026-10-29; W1 done: 26 task briefs, optional source material, length targets, live word count and a start/pause/reset timer (resets on leaving). Typecheck, 1,219 tests and build pass; chooser and editor looked at at 1280, 1440 and 1366×768, light and dark; email creation, save and timer controls tried. No real model used. W2 done: local vocabulary diversity, sentence lengths and a best-pieces portfolio with study level, topic/kind search and comparisons over time; 1,229 tests, typecheck and build pass. Portfolio looked at in both themes at all three desktop sizes; measures/editor in dark at all three, light at 1366×768. Keep and level/topic filters tried. W3 done: selected/hovered-word help, local forms and full-dictionary synonyms/collocations, seven phrase functions for all six core languages. Typecheck, 1,233 tests and build pass. Help panel looked at in light/dark at 1280, 1440 and 1366×768; tener/tengo conjugations and Spanish phrases tried. Full-dictionary synonym/collocation results, declensions, hover and other languages not tried in the browser. No dedicated Hunspell spellchecker (no dictionary/dependency added). W4 done: labelled suggestions (register/formality, a higher level, idioms, precision, unnatural/literal phrasings, alternatives) and a task rubric in the existing Check flow; model injected and faked in tests. Correction evidence is saved atomically with the review (6-5b Diarium hook), idempotently per review. 1,239 tests, typecheck and build pass. No-key message looked at; feedback panel checked by rendered-markup test, not visually in the browser, and not tried with a real model. Assigned W1–W4 slices finished; unbuilt audit items (picture picker, dedicated spellchecker, draft comparison, lower-level simplification) remain unticked.* Writing | 48 new · 7 to finish | 6-1, 6-6 | L |
 | 6-13 | [x] | *done by Antigravity-1 2026-10-29; T1 done (translation practice sets, hints, literal vs natural, required words, accepted alternatives, idioms, slang, formal registers, dialogues, paragraphs, custom passages, timed challenges; F0389, F0754–F0756, F0758–F0766, F0768, F0771, F0777, F0778); T2 done (interactive word-by-word alignment with syntactic links, round-trip back-translation with drift analysis, scrambled-tile sentence reconstruction, reference comparison; F0769, F0770, F0774–F0776); T3 done: hand-made contrast tables across English and the six core languages (es, fr, de, it, ru, zh) and Romance cross-pairs covering word order, gender systems, case declensions, tense & aspect, articles, prepositions, politeness/address, false friends, shared roots, pronunciation, and cultural semantics, with saved personal notes; F0268–F0272, F0772, F0779–F0794, F1341 ticked; typecheck, 1,326 tests and build pass; not looked at in a browser.* Translating and comparing languages | 45 new · 2 to finish | 6-4, 6-6 | L |
@@ -103,7 +103,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-21 | [ ] | Games and projects | 66 new · 3 to finish | 6-4, 6-6 | L |
 | 6-22 | [ ] | Dictionary tools | 15 new · 2 to finish | 6-1 | M |
 | 6-23 | [ ] | Tools for each language | 32 new · 19 to finish | 6-1, 6-4 | L |
-| 6-29 | [ ] | **The word graph** (Thesaurus › Graph, "Tela"): your vocabulary as a bookish, Obsidian-like web; **Opus plans and builds it** (the user, 2026-10-29) | 20 new | Part A | XL |
+| 6-29 | [ ] | *planned in full 2026-10-29: [WORD-GRAPH-PLAN.md](WORD-GRAPH-PLAN.md), seven pushes, G1 to G7* **The word graph** (a new Thesaurus tab: the atlas of all your words, the compass of one): your vocabulary as a bookish, Obsidian-like web; **Opus plans and builds it** (the user, 2026-10-29) | 20 new | Part A | XL |
 | **Part E · Around the app** (any time after Part A) | | | | | |
 | 6-24 | [ ] | Import, export and integrations | 15 new · 7 to finish | 6-2 | M |
 | 6-25 | [ ] | Accessibility and the desktop | 3 new · 10 to finish | — | M |
@@ -123,7 +123,7 @@ one limit never stops the work. Each step is still claimed in the table above fi
 
 | Stage | Steps | Who | Why |
 | --- | --- | --- | --- |
-| — | 6-29 The word graph | Claude Opus, in its five phases | The user asked for Opus to reason and build it: a layout worker, level of detail and a bookish canvas are where a careful model pays off; after Part A, in parallel with Part B |
+| — | 6-29 The word graph | Claude Opus, in its seven pushes (G1 to G7, [WORD-GRAPH-PLAN.md](WORD-GRAPH-PLAN.md)) | The user asked for Opus to reason and build it: a layout worker, level of detail and a bookish canvas are where a careful model pays off; after Part A, in parallel with Part B |
 | 0 | 6-0 The contracts | Claude Opus, one session | The one place a careful model pays off: every later step and every AI builds against it |
 | 1 | Part A, 6-1 to 6-6, in order | Claude Code, Sonnet | Dexie migrations and shared types: one owner, one after the other, no parallel work |
 | 2a | Part B, 6-7 to 6-13 | Claude Code, Sonnet | The skills; deep in Part A's engine and the learner's record |
@@ -537,7 +537,7 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
   from a photo (Codex's OCR), playlists of media by level, short videos and live streams through YouTube (5.2-4).
 **Entries (23 new · 7 to finish):** F0158, F0406, F0773, F0807, F0811, F0813, F0819, F0821, F0826–F0827, F0829, F0832, F0841–F0847, F0849–F0852, F0856–F0862
 
-#### 6-20 · Phrasebook and notebook (the word map is now [6-29](#6-29--the-word-graph-thesaurus--graph-the-name-is-the-users-to-pick-tela-latin-for-web-fits-the-rooms))
+#### 6-20 · Phrasebook and notebook (the word map is now [6-29](#6-29--the-word-graph-thesaurus--atlas))
 
 - **Thesaurus › Phrases:** phrases and sentence templates saved from anywhere (a drag in the reader, a line of a song,
   a subtitle, Sermo), by situation and topic; formal and informal versions, replies, openers, linking words, debate
@@ -591,66 +591,21 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
   dictionary), Modern Standard and dialect labelled with samples, registers, transliteration controls.
 **Entries (32 new · 19 to finish):** F1294–F1295, F1298–F1306, F1308, F1310–F1311, F1314–F1317, F1321–F1325, F1331, F1334–F1335, F1337–F1338, F1340, F1343, F1345–F1350, F1352–F1356, F1359–F1362, F1365–F1369, F1371
 
-#### 6-29 · The word graph (Thesaurus › Graph; the name is the user's to pick: **Tela**, Latin for "web", fits the rooms)
+#### 6-29 · The word graph (Thesaurus › Atlas)
 
-**The user's idea (2026-10-29):** "In Thesaurus I was thinking of a graph view, like a beautiful, bookish, aesthetic web view, where you have an overview of your personal vocabulary and dictionary, like a second brain, kind of like Obsidian, but made for and specialised completely for languages." **Planned and reasoned by Claude Opus (the advisor), and to be built by Opus** (the user's word), in the phases below, each pushed on its own.
+**The user's idea (2026-10-29):** "In Thesaurus I was thinking of a graph view, like a beautiful, bookish, aesthetic web view, where you have an overview of your personal vocabulary and dictionary, like a second brain, kind of like Obsidian, but made for and specialised completely for languages." Then, the same day: the lines "smooth, dynamic, aesthetic", and everything "easy to overview, hover, scroll, zoom, see, all the words you know".
 
-**The idea.** Your words as a web you can see: each word a point, joined to the words it is related to by meaning, form,
-origin and use, and to the places you met it. It is the second brain of Part A made visible: how well you know a word
-(size, opacity), what is fading, where your mistakes cluster, what you have not met yet. It replaces 6-20's short
-"Thesaurus › Map" bullet (one map, not two), and holds every entry of the audit's 13.2 "Personal linguistic graph".
+**The full plan is [WORD-GRAPH-PLAN.md](WORD-GRAPH-PLAN.md)** (Claude Opus, 2026-10-29, measured on the real dictionaries and
+packs; to be built by Opus in seven pushes, G1 to G7, with two sketches drawn from the data in `docs/graph/`). In short: two
+views of one web. **The atlas** shows every word you have at once, in regions named by their theme, and is where the tab
+opens; **the compass** shows one word with its neighbours in four quarters (meaning west, form east, origin north, use
+south), and is where a word opens. Shared things are hubs only when 2 to 60 of your words share them, bigger groups are
+lenses; size is how common a word is and ink how well you know it; the lines are curves drawn like ink, bundled between
+regions, alive when you act and still when you read; every view ends in something to do (review the fading, link the loose
+threads, discover words, practise your mix-ups). It replaces 6-20's "Thesaurus › Map" bullet (one map, not two) and holds the
+audit's 13.2. Its tables are Dexie 46, after a contract push (G3). The tab is called **Atlas** (the user, 2026-10-29).
 
-**Why it can come right after Part A.** Every edge already exists: dictionary version 3 (`parts`, `root`, `cog`, `hom`,
-`syn`, `ant`, `derived`, `related`, easily confused, pairs), the word record (tags, favourite, important), the learner's
-record (weak spots), retrievability, sightings, decks and notes, grammar topics and the starter themes. Needs Part A only.
-
-**Nodes and edges: the one design call.**
-- *Shared things are hubs, not links between words.* A root, a theme, a text, a grammar topic, a tag and a deck each
-  become one node that its words attach to: a 200-word theme is 200 edges, not 20,000. Edges stay linear.
-- *Direct word-to-word edges* only for pairwise relations: synonym, antonym, derived or related, made-of parts, cognate
-  (to a word in another language), homophone, easily confused, aspect and gender pairs, and the learner's own links (6-1c).
-- *Which words show.* Your words by default (Known, Learning, favourite, tagged, carded); words only looked up are a
-  toggle; dictionary words you do not have appear only in the local graph, as ghost nodes ("words to discover").
-- *Tier 2 languages* have no full dictionary: their graph has the pack's and your own edges only. Said so on screen.
-
-**What it shows (Part A's data, made visible).** Node size from how well you know it; **opacity from retrievability**, so
-fading words visibly fade; colour by state (sage Known, accent Learning, faint only met); a small ink mark on persistent
-weak spots (6-5); themes as soft watercolour halos; a time slider, "how your web grew", from `Word.createdAt` and sightings.
-
-**How it looks (bookish).** A paper background, hairline ink edges, serif labels, the handbook's line and tokens, dark mode
-through the same tokens. The word you open appears as marginalia: the word's own page with the "You" card in a side
-panel (reused, not a second detail view). Read the handbook's Part One, the Thesaurus chapter, the charts chapter, dark
-mode and accessibility before drawing anything.
-
-**How you use it (desktop only, Obsidian-like).** A global graph and a **local graph** (one or two hops out from a word);
-`/` to search and jump; filters by edge family (meaning, form, origin, use, you), by state, source and theme; hover lights
-the neighbours; click opens the word beside the graph; right-click: add to deck, mark known, open dictionary; pin nodes;
-saved views ("my Latin roots", "food"); the arrow keys walk neighbours, Esc backs out. **Without a pointer:** the side
-panel's list of neighbours is the whole graph in words (keyboard and screen reader); reduced motion means no live simulation.
-
-**Engineering.**
-- The layout runs in a **Web Worker** (as `dict.worker` and `packs.worker` do), seeded so it is the same every time, settled
-  and then frozen: no constant jiggle, gentle motion only around a node being dragged.
-- **Positions are cached** (so it opens at once); a new word starts at the middle of its neighbours and only that area
-  relaxes: no whole re-layout.
-- Drawn on **Canvas 2D** with level of detail: at low zoom, labels only above a threshold and communities collapse.
-  WebGL only if a profile at 10,000 nodes demands it. Frame budget: docs/PERFORMANCE.md (16.7 ms, no per-frame React renders).
-- A force layout is not "a few lines": check `package.json` first (no graph library is installed today); `d3-force` is the
-  reasonable choice, hand-writing Barnes–Hut is not.
-- **Data:** positions and saved views need a small table. 6-29 would be Dexie **46**, outside the reserved range (6-7 to
-  6-25 are 24–42): a contract push adds its `StepSchema` and extends the reservation **before** any code.
-
-**Phases (each its own push):**
-- **G1** · `core/graph`: the pure model, nodes and edges built from the data with caps, tested (no drawing).
-- **G2** · the layout worker, cached positions, incremental placement.
-- **G3** · the canvas view, level of detail, the side panel reusing the word's page.
-- **G4** · local graph, search, filters, saved views, the time slider.
-- **G5** · the bookish polish, dark mode, reduced motion, a performance check at 1366×768.
-
-**Done when:** a learner with about 3,000 Spanish words opens it in under a second from the cache; it pans and zooms at
-60 fps at laptop size; families, roots and cognates visibly cluster; the local graph of *hacer* shows its parts, its root,
-its derived words and the texts it was met in; clicking any node opens its page beside the graph; the neighbour list
-works with the keyboard alone. **Entries (20 new):** F1076–F1095 (all of 13.2).
+**Entries (20 new):** F1076–F1095 (all of 13.2), traced push by push in the plan's section 12.
 
 ### Part E · Around the app
 
