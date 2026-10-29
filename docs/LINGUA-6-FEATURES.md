@@ -1319,11 +1319,11 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [x] `F1017` Generate short stories · **6-6**
 - [x] `F1018` Generate dialogues · **6-6**
 - [x] `F1019` Generate roleplay scenarios
-- [ ] `F1020` Generate listening scripts · **6-6**
-- [ ] `F1021` Generate audio dialogues where supported · **6-6**
+- [x] `F1020` Generate listening scripts · **6-6**
+- [x] `F1021` Generate audio dialogues where supported · **6-6**
 - [ ] `F1022` Generate dictation exercises · **6-6**
 - [ ] `F1023` Generate grammar drills · **6-6**
-- [ ] `F1024` Generate translation exercises · **6-6**
+- [x] `F1024` Generate translation exercises · **6-6**
 - [x] `F1025` Generate writing prompts
 - [x] `F1026` Generate comprehension questions
 - [ ] `F1027` Generate pronunciation drills · **6-6**

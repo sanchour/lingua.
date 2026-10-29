@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { completeDialogue, sentenceTask } from '@/core/exercise';
 import { REWRITE_TASKS } from '@/core/generate/generate';
-import type { DialogueBody, RewritesBody, RewriteTask } from '@/core/generate/generate';
+import type { DialogueBody, RewritesBody, RewriteTask, SentencesBody } from '@/core/generate/generate';
 import type { Cefr } from '@/core/lang/levels';
 import { aiBlock } from '@/data/plan';
 import { generateMaterial } from '@/services/llm/generate';
@@ -97,7 +97,19 @@ function madeSets(lang: string, level: Cefr): PracticeSet[] {
       return missing.flatMap((m, i) => completeDialogue(body.lines, m, lang, `dialogue-${i}`, trains('dialogue'), body.title) ?? []);
     },
   };
-  return [...tasks, dialogue];
+  const translate: PracticeSet = {
+    id: 'translate',
+    group: 'grammar',
+    title: 'Translate into the language',
+    detail: 'A sentence in English: put the words of its translation in order.',
+    needs,
+    make: () => [],
+    makeLater: async () => {
+      const body = (await generateMaterial({ lang, kind: 'sentences', level, topic: 'translate' })).row.content as SentencesBody;
+      return shuffle(body.sentences, () => Math.random()).flatMap((s, i) => dragSentence(s.text, s.translation, lang, () => Math.random(), `translate-${i}`, trains('translate')) ?? []).slice(0, 6);
+    },
+  };
+  return [...tasks, dialogue, translate];
 }
 
 function buildSets(lang: string, c: Ctx, level: Cefr): PracticeSet[] {

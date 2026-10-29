@@ -26,6 +26,7 @@ import { MaxLink } from '@/features/plans/Locked';
 import { GeneratedLabel } from '@/features/generated/GeneratedLabel';
 import { LlmError } from '@/services/llm/client';
 import { generateMaterial } from '@/services/llm/generate';
+import { SpeakButton } from '@/features/speech/SpeakButton';
 import { toast } from '@/state/ui';
 
 const KINDS: Array<{ kind: GeneratedKind; title: string; detail: string; cost: string }> = [
@@ -235,6 +236,9 @@ function Made({
           <h2 lang={lang} className="font-serif text-2xl font-semibold">
             {(body as StoryBody).title}
           </h2>
+          <div className="mt-2">
+            <SpeakButton lang={lang} text={(body as StoryBody).text} label="Listen to the story" size={16} />
+          </div>
           <div className={cx('mt-3 grid gap-6', original && 'md:grid-cols-2')}>
             {original && (
               <div lang={lang} className="space-y-3 border-line/60 text-[15px] leading-relaxed text-ink-soft md:border-r md:pr-6">
@@ -286,7 +290,8 @@ function Made({
           <ul className="space-y-3">
             {(body as SentencesBody).sentences.map((s) => (
               <li key={s.text}>
-                <p lang={lang} className="font-serif text-[17px] leading-snug">
+                <p lang={lang} className="flex items-center gap-2 font-serif text-[17px] leading-snug">
+                  <SpeakButton lang={lang} text={s.text} size={16} />
                   {s.text}
                 </p>
                 {translated && <p className="text-[14px] text-ink-soft">{s.translation}</p>}
@@ -303,9 +308,12 @@ function Made({
           <ul className="mt-3 space-y-2.5">
             {(body as DialogueBody).lines.map((l, i) => (
               <li key={i}>
-                <p lang={lang} className="font-serif text-[17px] leading-snug">
-                  <b className="font-sans text-[13px] font-bold text-ink-faint">{l.speaker} </b>
-                  {l.text}
+                <p lang={lang} className="flex items-center gap-2 font-serif text-[17px] leading-snug">
+                  <SpeakButton lang={lang} text={l.text} size={16} />
+                  <span>
+                    <b className="font-sans text-[13px] font-bold text-ink-faint">{l.speaker} </b>
+                    {l.text}
+                  </span>
                 </p>
                 {translated && l.translation && <p className="text-[14px] text-ink-soft">{l.translation}</p>}
               </li>
