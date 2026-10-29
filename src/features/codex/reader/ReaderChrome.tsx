@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router';
+import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ChevronLeft, List, Type } from 'lucide-react';
 import type { Settings, Theme } from '@/data/settings';
@@ -8,6 +9,7 @@ import { Drawer, IconButton, Popover } from '@/design/primitives';
 import { TypographyPanel } from './TypographyPanel';
 
 interface ReaderChromeProps {
+  tools?: ReactNode;
   visible: boolean;
   text: Text;
   chapterTitle?: string;
@@ -20,7 +22,7 @@ interface ReaderChromeProps {
 }
 
 /** The reader's top bar: hidden until needed, fades in over the page margin. */
-export function ReaderChrome({ visible, text, chapterTitle, reader, theme, typographyOpen, setTypographyOpen, onContents, onHoverChange }: ReaderChromeProps) {
+export function ReaderChrome({ tools, visible, text, chapterTitle, reader, theme, typographyOpen, setTypographyOpen, onContents, onHoverChange }: ReaderChromeProps) {
   const navigate = useNavigate();
   const { layout } = useLayout();
 
@@ -53,6 +55,7 @@ export function ReaderChrome({ visible, text, chapterTitle, reader, theme, typog
                   </p>
                 )}
               </div>
+              {tools}
               <IconButton icon={List} label="Contents" onClick={onContents} tooltipPlacement="bottom" />
               {layout === 'wide' ? (
                 <Popover

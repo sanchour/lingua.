@@ -469,9 +469,9 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [ ] `F0333` Grammar breakdown of a selected sentence · **6-7**
 - [x] `F0334` Highlight known vocabulary
 - [x] `F0335` Highlight unknown vocabulary
-- [ ] `F0336` Color-code parts of speech · **6-8**
+- [x] `F0336` Color-code parts of speech · **6-8**
 - [x] `F0337` Display lemma or dictionary form
-- [ ] `F0338` Show grammatical endings · **6-8** · partly there
+- [x] `F0338` Show grammatical endings · **6-8** · partly there
 - [x] `F0339` Show conjugation or declension details
 - [x] `F0340` Display IPA transcription
 - [x] `F0341` Display synonyms
@@ -479,7 +479,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0343` Display word frequency
 - [x] `F0344` Display CEFR estimates
 - [ ] `F0345` Show literal versus natural translation · **6-8**
-- [ ] `F0346` Hide translations to test comprehension · **6-8** · partly there
+- [x] `F0346` Hide translations to test comprehension · **6-8** · partly there
 - [x] `F0347` Reveal translations one sentence at a time
 - [x] `F0348` Adjustable font size
 - [x] `F0349` Adjustable line spacing
@@ -487,13 +487,13 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0351` Serif and sans-serif reading modes
 - [x] `F0352` Dark mode and warm-paper mode
 - [x] `F0353` Distraction-free reading
-- [ ] `F0354` Reading ruler to focus on one line · **6-8**
+- [x] `F0354` Reading ruler to focus on one line · **6-8**
 - [ ] `F0355` Bookmark passages · **6-8** · partly there
-- [ ] `F0356` Highlight passages · **6-8**
-- [ ] `F0357` Add margin notes · **6-8**
+- [x] `F0356` Highlight passages · **6-8**
+- [x] `F0357` Add margin notes · **6-8**
 - [ ] `F0358` Export highlights · **6-8**
-- [ ] `F0359` Save quotes · **6-8**
-- [ ] `F0360` Create flashcards from highlighted text · **6-8** · partly there
+- [x] `F0359` Save quotes · **6-8**
+- [x] `F0360` Create flashcards from highlighted text · **6-8** · partly there
 - [x] `F0361` Generate vocabulary lists from a text · **6-2** · partly there
 - [x] `F0362` Track reading progress
 - [x] `F0363` Track time spent reading
@@ -543,7 +543,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0397` Track how often a word appears across all reading material
 - [ ] `F0398` Compare an author’s vocabulary across works · **6-26**
 - [ ] `F0399` Literary annotation system · **6-8**
-- [ ] `F0400` Save quotations with source information · **6-8**
+- [x] `F0400` Save quotations with source information · **6-8**
 - [x] `F0401` Read authentic literature with AI assistance
 - [ ] `F0402` Track unknown-word density by chapter · **6-8**
 - [ ] `F0403` Recommend the next text based on reading performance · **6-16**
@@ -1455,8 +1455,8 @@ Think of this as a personal linguistic knowledge base.
 - [ ] `F1121` Grammar notes · **6-20**
 - [ ] `F1122` Vocabulary notes · **6-20** · partly there
 - [ ] `F1123` Notes about confusing expressions · **6-20**
-- [ ] `F1124` Saved quotations · **6-8**
-- [ ] `F1125` Notes from reading · **6-8**
+- [x] `F1124` Saved quotations · **6-8**
+- [x] `F1125` Notes from reading · **6-8**
 - [ ] `F1126` Notes from conversations · **6-11**
 - [ ] `F1127` Personal error log · **6-5**
 - [ ] `F1128` Weekly learning reflections · **6-17**

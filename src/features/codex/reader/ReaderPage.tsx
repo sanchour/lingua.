@@ -35,6 +35,8 @@ import { PhraseSelector } from './phrase';
 import { PhraseBubble } from './PhraseBubble';
 import type { Phrase } from './PhraseBubble';
 import { ReaderChrome } from './ReaderChrome';
+import { READING_AIDS } from '@/core/reading/aids';
+import { ReadingTools } from './ReadingTools';
 import { TapGloss } from './TapGloss';
 import { usePager } from './usePager';
 import { useReadingSession } from './useReadingSession';
@@ -56,6 +58,10 @@ export default function ReaderPage() {
   const systemDark = useMediaQuery('(prefers-color-scheme: dark)');
   const theme = resolveTheme(settings.theme, systemDark);
   const reader = settings.reader;
+  const [aids, setAids] = useState(READING_AIDS);
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const [aidLayout, setAidLayout] = useState(0);
+  const onAidLayout = useCallback(() => setAidLayout((v) => v + 1), []);
   // A comic has a view of its own: the page, and its bubbles' words beside it.
   const comic = text?.kind === 'comic';
   const paged = reader.mode === 'paged' && !comic;
@@ -203,7 +209,7 @@ export default function ReaderPage() {
   );
 
   // ── Pager (page-flip mode) ──────────────────────────────────────────────
-  const layoutKey = `${model?.chapter.id ?? 'none'}|${reader.font}|${reader.sizePx}|${reader.lineHeight}|${reader.justify}`;
+  const layoutKey = `${model?.chapter.id ?? 'none'}|${reader.font}|${reader.sizePx}|${reader.lineHeight}|${reader.justify}|${aids.glosses}|${aids.hideGlosses}|${text?.updatedAt}|${aidLayout}`;
   const pager = usePager({
     enabled: paged && Boolean(ready),
     viewportRef,
@@ -330,7 +336,12 @@ export default function ReaderPage() {
     const sel = selector.current;
     if (!sel || !engine || sel.count < 2 || !sel.first || !sel.last) return closePhrase();
     const ctx = engine.context(sel.first);
-    setPhrase({ text: sel.text(), anchor: sel.last, context: { sentence: ctx.sentence, textId: ctx.textId, chapterIndex: ctx.chapterIndex, blockIndex: ctx.blockIndex } });
+    const firstBlock = sel.first.closest('[data-b]');
+    const lastBlock = sel.last.closest('[data-b]');
+    const start = Number(sel.first.dataset.o);
+    const end = Number(sel.last.dataset.o) + (sel.last.textContent?.length ?? 0);
+    const source = model?.blocks[ctx.blockIndex ?? -1]?.block;
+    setPhrase({ range: firstBlock === lastBlock && source && source.t !== 'img' ? { start, end, quote: source.text.slice(start, end) } : undefined, text: sel.text(), anchor: sel.last, context: { sentence: ctx.sentence, textId: ctx.textId, chapterIndex: ctx.chapterIndex, blockIndex: ctx.blockIndex } });
   };
 
   // While a touch is choosing words, the page must not scroll.
@@ -501,7 +512,7 @@ export default function ReaderPage() {
   }
   if (!text) return null;
 
-  const body = ready ? <ChapterBody model={model} lang={lang} images={!comic} /> : null;
+  const body = ready ? <ChapterBody model={model} lang={lang} images={!comic} aids={aids} marks={text?.readingMarks} onLayout={onAidLayout} /> : null;
 
   return (
     <motion.div
@@ -516,7 +527,8 @@ export default function ReaderPage() {
       }}
     >
       <ReaderChrome
-        visible={chrome}
+        tools={<ReadingTools text={text} aids={aids} onChange={setAids} onOpenChange={setToolsOpen} />}
+        visible={chrome || toolsOpen}
         text={text}
         chapterTitle={chapterTitle}
         reader={reader}
@@ -530,6 +542,8 @@ export default function ReaderPage() {
         }}
       />
 
+      {aids.glosses && <style>{`.reader-flow .w[data-gloss] { display: inline-block; vertical-align: top; text-indent: 0; } .reader-flow .w[data-gloss]::after { content: attr(data-gloss); display: block; max-width: 12em; overflow: hidden; text-overflow: ellipsis; font: 11px/1.5 sans-serif; color: var(--ink-soft); white-space: nowrap; }`}</style>}
+      {aids.ruler && <div aria-hidden className="pointer-events-none fixed inset-x-0 z-20 h-8 border-y border-accent/40 bg-accent/10" style={{ top: `${aids.rulerY}%` }} />}
       {comic ? (
         <ComicView
           text={text}

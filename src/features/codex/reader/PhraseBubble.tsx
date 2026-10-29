@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
 import { BookmarkPlus, Check, Copy, X } from 'lucide-react';
 import { savePhrase } from '@/data/phrases';
+import { saveReadingMark } from '@/data/readingMarks';
+import type { MarkColour } from '@/core/reading/aids';
 import type { PhraseContext } from '@/data/phrases';
 import { usePortalRoot } from '@/design/hooks/usePortalRoot';
 import { spring } from '@/design/motion';
@@ -13,6 +15,7 @@ import { toast } from '@/state/ui';
 import { SpeakButton } from '@/features/speech/SpeakButton';
 
 export interface Phrase {
+  range?: { start: number; end: number; quote: string };
   text: string;
   /** The last selected word, to place the bubble by. */
   anchor: HTMLElement;
@@ -25,6 +28,7 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
   const ref = useRef<HTMLDivElement>(null);
   const [result, setResult] = useState<PhraseTranslation | null | undefined>(undefined);
   const [saved, setSaved] = useState(false);
+  const [colour, setColour] = useState<MarkColour>('amber');
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
@@ -81,6 +85,10 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
       <p className={cx('mt-2 text-[16.5px] leading-snug font-semibold', result === undefined && 'animate-pulse opacity-60')}>
         {result === undefined ? 'Translating…' : (result?.text ?? 'No translation came back. Check the connection.')}
       </p>
+      {phrase.range && phrase.context.textId && <div className="mt-3 flex items-center gap-2">
+        <label className="text-xs">Highlight colour<select value={colour} onChange={(e) => setColour(e.target.value as MarkColour)} className="ml-2 rounded-md bg-bg p-1 text-ink"><option value="amber">Amber</option><option value="sage">Sage</option><option value="blue">Blue</option></select></label>
+        <button type="button" className={action} onClick={() => void saveReadingMark(phrase.context.textId!, { id: crypto.randomUUID(), chapterIndex: phrase.context.chapterIndex!, blockIndex: phrase.context.blockIndex!, ...phrase.range!, quote: phrase.range!.quote, colour, note: '' }).then(() => { toast('Highlight saved. Open Study tools for its margin note or card.'); onClose(); }).catch((e: unknown) => toast(e instanceof Error ? e.message : 'Could not save the highlight.', { tone: 'error' }))}>Highlight</button>
+      </div>}
       <div className="mt-3 -mb-1 flex flex-wrap gap-1">
         <button
           type="button"

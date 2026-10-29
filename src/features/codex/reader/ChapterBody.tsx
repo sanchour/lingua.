@@ -1,4 +1,9 @@
 import { memo, useEffect, useState } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '@/data/db';
+import { packId } from '@/core/packs/format';
+import { endingStart, markMatches, MARK_COLOURS, POS_COLOURS } from '@/core/reading/aids';
+import type { ReadingAids, ReadingMark } from '@/core/reading/aids';
 import { READING_LANGS } from '@/core/lang/languages';
 import { blobUrl } from '@/data/library';
 import type { ChapterModel } from './model';
@@ -8,29 +13,44 @@ import type { ChapterModel } from './model';
  * (data-o) and state (data-s). Rendered once per chapter; after that the word engine updates
  * spans directly, so word clicks never re-render this tree.
  */
-export const ChapterBody = memo(function ChapterBody({ model, lang, images = true }: { model: ChapterModel; lang: string; images?: boolean }) {
+export const ChapterBody = memo(function ChapterBody({ model, lang, images = true, aids, marks = [], onLayout }: { model: ChapterModel; lang: string; images?: boolean; aids?: ReadingAids; marks?: ReadingMark[]; onLayout?: () => void }) {
   const readings = READING_LANGS.has(lang);
+  const [revealed, setRevealed] = useState<Set<string>>(() => new Set());
+  useEffect(() => setRevealed(new Set()), [model.chapter.id]);
+  const categories = useLiveQuery(async () => {
+    if (!aids?.pos) return new Map<string, string>();
+    const rows = await db.dictEntries.bulkGet(model.norms.map((n) => [packId(lang), model.glosses.get(n)?.lemma ?? n] as [string, string]));
+    return new Map(model.norms.map((n, i) => [n, rows[i]?.senses[0]?.pos ?? '']));
+  }, [lang, model, aids?.pos]);
   return (
     <>
       {model.blocks.map(({ block, tokens }, b) => {
         // A comic's page is drawn beside its words, not among them.
         if (block.t === 'img') return images ? <ReaderImage key={b} index={b} blobId={block.blobId} alt={block.alt} /> : null;
-        const children = tokens!.map((t, i) =>
-          t.isWord ? (
-            <span
-              key={i}
-              className="w"
-              data-n={t.norm}
-              data-o={t.start}
-              data-s={model.states.get(t.norm!) ?? 0}
-              data-r={readings ? readingFor(lang, t.text, model.glosses.get(t.norm!)?.reading) : undefined}
-            >
-              {t.text}
-            </span>
-          ) : (
-            t.text
-          ),
-        );
+        const localMarks = marks.filter((m) => m.chapterIndex === model.chapter.index && m.blockIndex === b && markMatches(m, block.text));
+        const sentences = new Intl.Segmenter(lang, { granularity: 'sentence' }).segment(block.text);
+        const children = <>
+          {tokens!.map((t, i) => {
+            if (!t.isWord) return t.text;
+            const gloss = model.glosses.get(t.norm!);
+            const ending = aids?.endings && gloss?.lemma ? endingStart(t.text, gloss.lemma) : undefined;
+            const pos = categories?.get(t.norm!) ?? '';
+            const mark = localMarks.find((m) => t.start < m.end && t.start + t.text.length > m.start);
+            const sentence = `${b}:${sentences.containing(t.start)?.index ?? 0}`;
+            return <span key={i} className="w" data-n={t.norm} data-o={t.start} data-s={model.states.get(t.norm!) ?? 0}
+              data-r={readings ? readingFor(lang, t.text, gloss?.reading) : undefined}
+              data-gloss={aids?.glosses ? (!aids.hideGlosses || revealed.has(sentence) ? gloss?.text ?? '—' : '…') : undefined}
+              title={aids?.pos ? `${pos || 'Category not listed'}${ending !== undefined ? ` · dictionary form: ${gloss?.lemma}` : ''}` : ending !== undefined ? `Dictionary form: ${gloss?.lemma}` : undefined}
+              style={{ color: aids?.pos ? POS_COLOURS[pos] : undefined, backgroundColor: mark ? MARK_COLOURS[mark.colour] : undefined, boxShadow: mark ? 'inset 0 -2px currentColor' : undefined }}>
+              {ending === undefined ? t.text : <>{t.text.slice(0, ending)}<u className="decoration-dotted decoration-2 underline-offset-4">{t.text.slice(ending)}</u></>}
+            </span>;
+          })}
+          {aids?.glosses && aids.hideGlosses && <span className="mt-2 block text-sm">{[...sentences].map((s, i) => {
+            const key = `${b}:${s.index}`;
+            return <button key={key} type="button" className="mr-3 rounded-md border border-line bg-raised px-2 py-1 text-xs font-sans text-ink-soft" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); setRevealed((old) => { const next = new Set(old); if (next.has(key)) next.delete(key); else next.add(key); return next; }); onLayout?.(); }}>{revealed.has(key) ? 'Hide' : 'Reveal'} sentence {i + 1}</button>;
+          })}</span>}
+          {localMarks.filter((m) => m.note).map((m) => <small key={m.id} className="my-2 block border-l-2 border-line pl-3 font-sans text-sm leading-normal text-ink-soft">Margin note: {m.note}</small>)}
+        </>;
         if (block.t === 'h') {
           return (
             <h2 key={b} data-b={b} lang={lang}>

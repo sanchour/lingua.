@@ -66,6 +66,7 @@ export interface SettingRow {
 // ── Codex ───────────────────────────────────────────────────────────────────
 
 export interface Text extends Synced {
+  readingMarks?: import('@/core/reading/aids').ReadingMark[];
   id: string;
   lang: Lang;
   /** 'comic': one chapter per page, the page's picture first and its speech bubbles after it. */
