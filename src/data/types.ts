@@ -264,7 +264,7 @@ export interface TranslationCacheRow {
 export interface LlmCacheRow {
   /** hash(kind + model + prompt) */
   id: string;
-  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine' | 'journalCheck' | 'journalPrompt' | 'lyrics' | 'grammarSentence' | 'dictTidy' | 'storyQuestions' | 'mundusReply' | 'exerciseJudge';
+  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine' | 'journalCheck' | 'journalPrompt' | 'lyrics' | 'grammarSentence' | 'dictTidy' | 'storyQuestions' | 'mundusReply' | 'exerciseJudge' | 'speakers';
   model: string;
   response: unknown;
   createdAt: number;
@@ -455,6 +455,8 @@ export interface Media extends Synced {
   readAlongTextId?: string;
   /** Visio: a YouTube video, played from YouTube's own embed. */
   youtubeId?: string;
+  /** Visio: how many times it was watched to the end (6-9): "Less help each time" weakens the English line with each one. */
+  watches?: number;
 }
 
 /** Colloquium: a conversation with the learner's own AI, in the language. */
@@ -516,6 +518,8 @@ export interface Cue {
   endMs: number;
   text: string;
   words?: { w: string; startMs: number; endMs: number }[];
+  /** Who says it (6-9): a short label from "Label the speakers"; a guess from the words. */
+  speaker?: string;
 }
 
 export interface Transcript extends Synced {

@@ -584,9 +584,9 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0427` Casual conversations · **6-9** · partly there
 - [x] `F0428` Formal speeches · **6-9** · partly there
 - [x] `F0429` Telephone conversations · **6-9**
-- [ ] `F0430` Background-noise recordings · **6-9**
+- [x] `F0430` Background-noise recordings · **6-9**
 - [x] `F0431` Real-world announcements · **6-9**
-- [ ] `F0432` Different speaker ages and voices · **6-9** · partly there
+- [x] `F0432` Different speaker ages and voices · **6-9** · partly there
 - [x] `F0433` Male, female and other available voice options
 - [x] `F0434` Different emotional tones · **6-9**
 - [x] `F0435` Formal and informal speech · **6-9**
@@ -613,11 +613,11 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0451` Word-level transcript highlighting
 - [x] `F0452` Show or hide the transcript
 - [x] `F0453` Show or hide translations
-- [ ] `F0454` Show translations only after listening · **6-9** · partly there
+- [x] `F0454` Show translations only after listening · **6-9** · partly there
 - [x] `F0455` Show subtitles in the target language
 - [x] `F0456` Show bilingual subtitles
 - [x] `F0457` Control playback pitch where supported · **6-9**
-- [ ] `F0458` Separate speakers in a transcript · **6-9**
+- [x] `F0458` Separate speakers in a transcript · **6-9**
 - [x] `F0459` Save timestamps · **6-9** · partly there
 - [x] `F0460` Bookmark difficult sections · **6-9**
 - [x] `F0461` Create a personal audio playlist · **6-9**
@@ -1067,7 +1067,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0815` Vocabulary lists generated from media · **6-2** · partly there
 - [x] `F0816` Save timestamps for difficult sections · **6-9**
 - [x] `F0817` Review phrases from favorite scenes
-- [ ] `F0818` Rewatch difficult passages with less assistance · **6-9**
+- [x] `F0818` Rewatch difficult passages with less assistance · **6-9**
 - [ ] `F0819` Media playlists organized by level · **6-19**
 - [x] `F0820` Authentic media recommendations based on interests
 
@@ -1993,7 +1993,7 @@ These are more ambitious ideas for a language app that could grow into a genuine
 - [ ] `F1576` Personalized textbook generation · **6-26**
 - [ ] `F1577` AI-generated audio dramas · **6-26**
 - [ ] `F1578` Personalized audiobook difficulty · **6-26**
-- [ ] `F1579` Adaptive subtitles · **6-9**
+- [x] `F1579` Adaptive subtitles · **6-9**
 - [x] `F1580` Automatic vocabulary extraction from permitted media · **6-2** · partly there
 - [ ] `F1581` A personal language-learning research dashboard · **6-26**
 - [ ] `F1582` Learning experiments comparing recall methods · **6-26**

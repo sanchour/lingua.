@@ -27,6 +27,7 @@ import { GeneratedLabel } from '@/features/generated/GeneratedLabel';
 import { LlmError } from '@/services/llm/client';
 import { generateMaterial } from '@/services/llm/generate';
 import { SpeakButton } from '@/features/speech/SpeakButton';
+import { speakConversation, stopSpeaking } from '@/services/speech/voice';
 import { Adventure, Course, Drill, PronunciationList } from './MadeViews';
 import { toast } from '@/state/ui';
 
@@ -255,6 +256,7 @@ function Made({
   original?: string;
 }) {
   const [busy, setBusy] = useState(false);
+  const [hearing, setHearing] = useState(false);
   const label = labelFor(row);
   const body = row.content;
   const run = async (job: () => Promise<unknown>) => {
@@ -371,6 +373,20 @@ function Made({
           </ul>
           <div className="mt-5 flex flex-wrap gap-2">
             {toggle}
+            <button
+              type="button"
+              onClick={() => {
+                if (hearing) return void (stopSpeaking(), setHearing(false));
+                setHearing(true);
+                void speakConversation(lang, (body as DialogueBody).lines).then((voices) => {
+                  setHearing(false);
+                  if (voices === 1) toast('This device has one voice for this language, so both speakers sound the same.');
+                });
+              }}
+              className="inline-flex h-10 items-center rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"
+            >
+              {hearing ? 'Stop' : 'Hear the conversation'}
+            </button>
             <Link to="/thesaurus/practice/dialogue" className="inline-flex h-10 items-center rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
               Practise it: complete the dialogue
             </Link>

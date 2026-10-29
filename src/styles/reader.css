@@ -260,6 +260,17 @@
   transition: opacity 160ms ease;
 }
 
+.reader-flow.karaoke.has-gutter [data-b][data-speaker]::after {
+  content: attr(data-speaker);
+  position: absolute;
+  top: 0.62em;
+  left: calc(100% + 0.6rem);
+  font: 700 11px/1 var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
 .reader-flow.karaoke.has-gutter [data-b]:hover::before,
 .reader-flow.karaoke.has-gutter [data-b].is-current::before {
   opacity: 1;

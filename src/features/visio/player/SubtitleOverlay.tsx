@@ -17,7 +17,7 @@ import type { DrawerWord } from '@/features/codex/reader/WordDrawer';
 import { ClipEngine } from '@/features/sonus/player/ClipEngine';
 import { translateLine } from '@/services/translate/gloss';
 import type { VideoClock } from './clock';
-import { lineAt } from './lines';
+import { adaptiveMode, lineAt, matchingLine } from './lines';
 
 interface OverlayProps {
   media: Media;
@@ -35,7 +35,8 @@ interface OverlayProps {
 export function SubtitleOverlay({ media, target, native, clock, onHold }: OverlayProps) {
   const { settings } = useApp();
   const { pointer } = useLayout();
-  const { native: nativeMode, subtitleScale } = settings.visio;
+  const { native: nativeSetting, subtitleScale } = settings.visio;
+  const nativeMode = nativeSetting === 'adaptive' ? adaptiveMode(media.watches ?? 0) : nativeSetting;
   const lang = media.lang;
 
   const [model, setModel] = useState<ChapterModel | null>(null);
@@ -81,11 +82,18 @@ export function SubtitleOverlay({ media, target, native, clock, onHold }: Overla
   // ── Your own line: a track, or a translation on request ──
   const [revealed, setRevealed] = useState(-1);
   const [machine, setMachine] = useState<{ line: number; text: string | null } | null>(null);
-  const targetCue = target?.[line];
-  const nativeText = native ? native[nativeLine]?.text : machine && machine.line === line ? machine.text : undefined;
+  // After the line (6-9): the English comes only once the line has been heard, in the gap that follows it.
+  const [lastLine, setLastLine] = useState(-1);
+  useEffect(() => {
+    if (line >= 0) setLastLine(line);
+  }, [line]);
+  const after = nativeMode === 'after';
+  const shown = after ? (line < 0 ? lastLine : -1) : line;
+  const targetCue = target?.[shown];
+  const nativeText = !targetCue ? undefined : native ? (after ? matchingLine(native, targetCue)?.text : native[nativeLine]?.text) : machine && machine.line === shown ? machine.text : undefined;
   const translate = () => {
     if (!targetCue) return;
-    const at = line;
+    const at = shown;
     setMachine({ line: at, text: null });
     void translateLine(lang, targetCue.text).then((t) => setMachine((m) => (m?.line === at ? { line: at, text: t ?? '—' } : m)));
   };
@@ -152,7 +160,7 @@ export function SubtitleOverlay({ media, target, native, clock, onHold }: Overla
 
   const block = model && line >= 0 ? model.blocks[line] : null;
   const showNative = nativeMode !== 'hide' && (nativeText !== undefined || (!native && targetCue));
-  const blurred = nativeMode === 'blur' && revealed !== line && nativeText !== undefined;
+  const blurred = nativeMode === 'blur' && revealed !== shown && nativeText !== undefined;
 
   return (
     <>
@@ -199,7 +207,7 @@ export function SubtitleOverlay({ media, target, native, clock, onHold }: Overla
           </p>
         )}
         {!block && targetCue && <p className="visio-line"><span className="visio-line-box">{targetCue.text}</span></p>}
-        {showNative && line >= 0 && (
+        {showNative && shown >= 0 && (
           <p lang="en" className="visio-native pointer-events-auto" onClick={(e) => e.stopPropagation()}>
             {nativeText === undefined ? (
               <button type="button" onClick={translate} className="visio-native-box inline-flex items-center gap-1.5 opacity-80 hover:opacity-100">
@@ -213,7 +221,7 @@ export function SubtitleOverlay({ media, target, native, clock, onHold }: Overla
               <button
                 type="button"
                 aria-label={blurred ? 'Show your subtitle' : undefined}
-                onClick={() => setRevealed((r) => (r === line ? -1 : line))}
+                onClick={() => setRevealed((r) => (r === shown ? -1 : shown))}
                 className={cx('visio-native-box transition-[filter] duration-200', blurred && 'blur-[0.32em] hover:blur-none')}
               >
                 {nativeText}

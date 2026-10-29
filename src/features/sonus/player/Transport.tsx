@@ -1,10 +1,12 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { Bike, Check, EyeOff, Undo2, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
+import { Bike, Check, EyeOff, Undo2, AudioLines, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { loopLabel } from '@/core/audio/loop';
 import { cycleLoop, replaySentence, toggleListenFirst, nextSentence, previousSentence, setKeepPitch, setRate, toggleLineByLine, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
+import { startNoise } from '@/services/audio/noise';
 import { SleepButton } from './SleepTimer';
 
 export const RATES = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5];
@@ -38,6 +40,8 @@ export function Transport({ className }: { className?: string }) {
   const lineByLine = usePlayer((s) => s.lineByLine);
   const keepPitch = usePlayer((s) => s.keepPitch);
   const listenFirst = usePlayer((s) => s.listenFirst);
+  const [noisy, setNoisy] = useState(false);
+  useEffect(() => (noisy ? startNoise() : undefined), [noisy]);
   const playing = status === 'playing';
 
   return (
@@ -159,6 +163,16 @@ export function Transport({ className }: { className?: string }) {
         >
           <EyeOff size={14} aria-hidden />
           Listen first
+        </button>
+        <button
+          type="button"
+          title="Listen through a soft room noise, as in a café or on a train: harder, and nearer to real life"
+          aria-pressed={noisy}
+          onClick={() => setNoisy((n) => !n)}
+          className={cx('flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors', noisy ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong')}
+        >
+          <AudioLines size={14} aria-hidden />
+          Noise
         </button>
         <SleepButton />
         <Link to="/sonus/commute" className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold transition-colors hover:border-line-strong">

@@ -101,6 +101,9 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
     flow.querySelectorAll<HTMLElement>('[data-b]').forEach((p) => {
       const cue = cues[Number(p.dataset.b)];
       if (cue) p.dataset.time = formatClock(cue.startMs);
+      const i = Number(p.dataset.b);
+      if (cue?.speaker && cue.speaker !== cues[i - 1]?.speaker) p.dataset.speaker = cue.speaker;
+      else delete p.dataset.speaker;
     });
     const e = new ClipEngine(text, model, cues, media, onWordChange);
     e.attach(flow);

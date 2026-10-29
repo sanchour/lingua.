@@ -170,6 +170,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     const onEnded = () => {
       flush();
       save(true);
+      void updateMedia(media.id, { watches: (media.watches ?? 0) + 1 });
     };
     // iPhone's own full-screen player draws the subtitles from the <track>s.
     const onNativeFs = (showing: boolean) => () => {
@@ -294,10 +295,10 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     else v.pause();
   };
   const cycleNative = () => {
-    const order = ['show', 'blur', 'hide'] as const;
-    const next = order[(order.indexOf(settings.visio.native) + 1) % order.length];
+    const order = ['show', 'blur', 'after', 'hide'] as const;
+    const next = order[(order.indexOf(settings.visio.native as (typeof order)[number]) + 1) % order.length];
     void patchSetting('visio', { native: next });
-    toast(next === 'show' ? 'English line shown.' : next === 'blur' ? 'English line blurred.' : 'English line hidden.');
+    toast(next === 'show' ? 'English line shown.' : next === 'blur' ? 'English line blurred.' : next === 'after' ? 'English line comes after the line.' : 'English line hidden.');
   };
   useHotkeys(
     {

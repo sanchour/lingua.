@@ -114,7 +114,7 @@ export interface Settings {
     deviceModel: 'tiny' | 'base' | 'small';
   };
   /** Visio's player. */
-  visio: { native: 'show' | 'blur' | 'hide'; autoPause: boolean; subtitleScale: number };
+  visio: { native: 'show' | 'blur' | 'after' | 'hide' | 'adaptive'; autoPause: boolean; subtitleScale: number };
   /**
    * Natural voices: off, or which voice speaks each locale (a Gemini voice-library id the learner
    * picked; the first good one when unset), and without a key which of the device's voices (its
