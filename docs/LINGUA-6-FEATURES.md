@@ -1332,10 +1332,10 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [ ] `F1030` Generate topic-specific courses · **6-14**
 - [x] `F1031` Generate parallel texts · **6-6**
 - [x] `F1032` Generate simplified versions of difficult articles · **6-6**
-- [ ] `F1033` Generate exercises from uploaded documents · **6-6**
-- [ ] `F1034` Generate exercises from notes · **6-6**
-- [ ] `F1035` Generate exercises from transcripts · **6-6**
-- [ ] `F1036` Generate exercises from conversation mistakes · **6-6**
+- [x] `F1033` Generate exercises from uploaded documents · **6-6**
+- [x] `F1034` Generate exercises from notes · **6-6**
+- [x] `F1035` Generate exercises from transcripts · **6-6**
+- [x] `F1036` Generate exercises from conversation mistakes · **6-6**
 - [ ] `F1037` Generate a personalized daily lesson · **6-16**
 
 > Important: AI-generated content should be checked for grammatical accuracy, natural usage, suitable difficulty and reliable translations. Language learners can easily internalize a confident but incorrect explanation.

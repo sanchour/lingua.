@@ -16,7 +16,9 @@ import { textToChapters } from '@/core/parsers/text';
 import { wordsFromText } from '@/core/srs/deckFrom';
 import type { Draft } from '@/core/srs/deckFrom';
 import { deckFromDrafts, knownNorms } from '@/data/deckTools';
-import { addText } from '@/data/library';
+import { addText, textChapters, useLibrary } from '@/data/library';
+import { mistakesText } from '@/data/mistakesText';
+import { blocksToText } from '@/core/parsers/text';
 import { aiBlock } from '@/data/plan';
 import { Button, Select } from '@/design/primitives';
 import { cx } from '@/lib/cx';
@@ -42,6 +44,10 @@ export default function MakePage() {
   const [kind, setKind] = useState<GeneratedKind>('story');
   const [topic, setTopic] = useState('');
   const [source, setSource] = useState('');
+  // What a quiz is about: a topic, one of the learner's texts, pasted notes, or their own mistakes.
+  const [from, setFrom] = useState<'topic' | 'library' | 'notes' | 'mistakes'>('topic');
+  const [textId, setTextId] = useState('');
+  const library = useLibrary(lang);
   const [level, setLevel] = useState<Cefr>((language.level === 'A0' ? 'A1' : language.level) as Cefr);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -55,8 +61,14 @@ export default function MakePage() {
     setError(null);
     setRow(null);
     try {
-      if (kind === 'simplified' && source.trim().length < 40) throw new Error('Paste a longer text first.');
-      setRow((await generateMaterial({ lang, kind, level, topic: kind === 'simplified' ? undefined : topic.trim() || undefined, source: kind === 'simplified' ? source.trim().slice(0, 4000) : undefined })).row);
+      let basis: string | undefined;
+      if (kind === 'simplified') basis = source.trim();
+      if (kind === 'quiz' && from === 'notes') basis = source.trim();
+      if (kind === 'quiz' && from === 'library') basis = blocksToText((await textChapters(textId)).flatMap((c) => c.blocks)).slice(0, 4000);
+      if (kind === 'quiz' && from === 'mistakes') basis = await mistakesText(lang);
+      if (kind === 'quiz' && from === 'mistakes' && !basis) throw new Error('Nothing to practise yet: your mistakes appear here once you have made some in a lesson or in Practice.');
+      if (basis !== undefined && basis.length < 40 && from !== 'mistakes') throw new Error(from === 'library' ? 'Choose a text first.' : 'Paste a longer text first.');
+      setRow((await generateMaterial({ lang, kind, level, topic: kind === 'quiz' && from === 'mistakes' ? 'my mistakes' : kind === 'simplified' || basis ? undefined : topic.trim() || undefined, source: basis?.slice(0, 4000) })).row);
     } catch (e) {
       setError(e instanceof Error ? e : new Error('Something went wrong.'));
     } finally {
@@ -98,7 +110,20 @@ export default function MakePage() {
               </button>
             ))}
           </div>
-          {kind === 'simplified' ? (
+          {kind === 'quiz' && (
+            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="What the quiz is about">
+              {([['topic', 'A topic'], ['library', 'A text of mine'], ['notes', 'My notes'], ['mistakes', 'My mistakes']] as const).map(([v, label]) => (
+                <button key={v} type="button" role="radio" aria-checked={from === v} onClick={() => setFrom(v)} className={cx('rounded-full border px-3 py-1 text-[13px] font-semibold', from === v ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
+          {kind === 'quiz' && from === 'library' && (
+            <Select label="Text" value={textId} onChange={setTextId} options={[{ value: '', label: library?.length ? 'Choose a text…' : 'Your library is empty', disabled: true }, ...(library ?? []).map((t) => ({ value: t.id, label: t.title }))]} />
+          )}
+          {kind === 'quiz' && from === 'mistakes' && <p className="text-[13px] text-ink-soft">Questions on the words and grammar you keep getting wrong, taken from your record.</p>}
+          {kind === 'simplified' || (kind === 'quiz' && from === 'notes') ? (
             <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
               The text
               <textarea
@@ -111,7 +136,7 @@ export default function MakePage() {
                 className="mt-1.5 w-full resize-y rounded-xl border border-line bg-raised p-3 text-[15px] font-normal tracking-normal text-ink normal-case outline-none focus:border-accent"
               />
             </label>
-          ) : (
+          ) : kind === 'quiz' && from !== 'topic' ? null : (
             <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
               About
               <input

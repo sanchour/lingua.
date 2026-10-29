@@ -23,7 +23,7 @@ export interface GenerateRequest {
   native?: string;
   /** For 'rewrites': what the sentences are to be turned into. */
   task?: RewriteTask;
-  /** For 'simplified': the text to be made easier. */
+  /** For 'simplified': the text to be made easier. For 'quiz': the text (or the list of mistakes) the questions are about. */
   source?: string;
 }
 
@@ -66,7 +66,7 @@ function prompt(req: GenerateRequest, avoid: string[]): { system: string; user: 
         `"text" is the text rewritten with shorter sentences and only the most common words a ${level} learner meets, in short paragraphs separated by a blank line; "translation" is its ${native} translation, paragraph by paragraph.${retry}`
       : req.kind === 'quiz'
         ? `You write multiple-choice quizzes in ${name} for learners at ${level}. Answer only with JSON: {"title": string, "questions": [{"question": string, "options": [string], "answer": number, "why": string}]}. ` +
-          `Five questions on the topic, each with four different options in ${name} and "answer" the index (0 to 3) of the one right option; "why" is one short ${native} sentence saying why. Only the most common words a ${level} learner meets.${retry}`
+          `${req.source ? (req.topic === 'my mistakes' ? 'The user message lists words and grammar the learner keeps getting wrong, with what they wrote where known: write questions that practise exactly those. ' : 'The questions must be about the text in the user message (its facts, its words), not about anything else. ') : ''}Five questions${req.source ? '' : ' on the topic'}, each with four different options in ${name} and "answer" the index (0 to 3) of the one right option; "why" is one short ${native} sentence saying why. Only the most common words a ${level} learner meets.${retry}`
         : req.kind === 'wordlist'
       ? `You choose useful vocabulary in ${name} for learners at ${level}. Answer only with JSON: {"words": [{"term": string, "meaning": string, "example": string}]}. ` +
         `Twelve words or short phrases a ${level} learner would really use about the topic, each in its dictionary form; "meaning" is its ${native} meaning in a few words; "example" is one short natural sentence in ${name}.${retry}`
@@ -82,7 +82,7 @@ function prompt(req: GenerateRequest, avoid: string[]): { system: string; user: 
         `"translation" is its ${native} translation, paragraph by paragraph.${retry}`
       : `You write natural example sentences in ${name} for learners at ${level}. Answer only with JSON: {"sentences": [{"text": string, "translation": string}]}. ` +
         `Eight short sentences, each using only the most common words a ${level} learner meets; "translation" is ${native}.${retry}`;
-  return { system, user: JSON.stringify(req.kind === 'simplified' ? { text: req.source, language: name, level: req.level } : { topic: req.topic?.trim() || 'everyday life', language: name, level: req.level }) };
+  return { system, user: JSON.stringify(req.kind === 'simplified' || (req.kind === 'quiz' && req.source) ? { text: req.source, language: name, level: req.level } : { topic: req.topic?.trim() || 'everyday life', language: name, level: req.level }) };
 }
 
 /** The dictionary's view of some forms, from the language pack on this device (empty when it is not installed). */
