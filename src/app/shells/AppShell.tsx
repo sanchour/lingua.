@@ -1,3 +1,4 @@
+import { ReferenceHelp } from '@/features/culture/ReferenceHelp';
 import { Suspense, useEffect, useLayoutEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
@@ -74,6 +75,7 @@ export function AppShell() {
         <Suspense fallback={null}>
           <Outlet />
         </Suspense>
+        <ReferenceHelp />
         <ShortcutsDialog />
         <PlansSheet />
       </>
@@ -92,6 +94,7 @@ export function AppShell() {
     <>
       {layout === 'wide' ? <DesktopShell>{content}</DesktopShell> : <TouchShell>{content}</TouchShell>}
       {showMini && <MiniPlayer />}
+      <ReferenceHelp />
       <ShortcutsDialog />
       <PlansSheet />
     </>

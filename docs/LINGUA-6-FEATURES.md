@@ -549,7 +549,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [ ] `F0403` Recommend the next text based on reading performance · **6-16**
 - [ ] `F0404` Generate discussion questions about a passage · **6-8**
 - [ ] `F0405` Compare translations of the same literary passage · **6-13**
-- [ ] `F0406` Explain cultural and historical references · **6-19** · partly there
+- [x] `F0406` Explain cultural and historical references · **6-19** · partly there
 - [ ] `F0407` Build a personal library of favorite passages · **6-8**
 - [ ] `F0408` Export a bilingual reading journal · **6-24**
 
@@ -1056,19 +1056,19 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0804` News reading
 - [x] `F0805` Music listening
 - [x] `F0806` Film and television study
-- [ ] `F0807` Short-form video comprehension · **6-19** · partly there
+- [x] `F0807` Short-form video comprehension · **6-19** · partly there
 - [x] `F0808` Documentary learning
 - [x] `F0809` Interviews and talk shows
 - [ ] `F0810` Lectures and educational videos · **5.2-4** · planned in Lingua 5.2
-- [ ] `F0811` Public speeches · **6-19** · partly there
+- [x] `F0811` Public speeches · **6-19** · partly there
 - [x] `F0812` Radio listening
-- [ ] `F0813` Live-stream comprehension · **6-19** · partly there
+- [x] `F0813` Live-stream comprehension · **6-19** · partly there
 - [x] `F0814` Video transcript reading
 - [x] `F0815` Vocabulary lists generated from media · **6-2** · partly there
 - [ ] `F0816` Save timestamps for difficult sections · **6-9**
 - [x] `F0817` Review phrases from favorite scenes
 - [ ] `F0818` Rewatch difficult passages with less assistance · **6-9**
-- [ ] `F0819` Media playlists organized by level · **6-19**
+- [x] `F0819` Media playlists organized by level · **6-19**
 - [x] `F0820` Authentic media recommendations based on interests
 
 > For third-party media, integration should respect copyright, platform terms and content-access restrictions.
@@ -1082,13 +1082,13 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0823` Follow creators who use the target language
 - [x] `F0824` Keep a diary in the target language
 - [x] `F0825` Think-aloud exercises
-- [ ] `F0826` Describe your surroundings · **6-19** · partly there
-- [ ] `F0827` Narrate daily activities · **6-19**
+- [x] `F0826` Describe your surroundings · **6-19** · partly there
+- [x] `F0827` Narrate daily activities · **6-19**
 - [x] `F0828` Label objects in your home
-- [ ] `F0829` Use a target-language shopping list · **6-19**
+- [x] `F0829` Use a target-language shopping list · **6-19**
 - [x] `F0830` Simulate ordering food
 - [x] `F0831` Simulate travel
-- [ ] `F0832` Read local advertisements and signs · **6-19** · partly there
+- [x] `F0832` Read local advertisements and signs · **6-19** · partly there
 - [ ] `F0833` Practice common phone calls · **5.2-6** · planned in Lingua 5.2
 - [x] `F0834` Write real messages with feedback · **6-12** · partly there
 - [ ] `F0835` Maintain a personal phrasebook · **6-20**
@@ -1119,7 +1119,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0855` Film recommendations
 - [x] `F0856` Regional food vocabulary · **6-19**
 - [x] `F0857` Holidays and traditions · **6-19**
-- [ ] `F0858` Cultural references in news · **6-19**
+- [x] `F0858` Cultural references in news · **6-19**
 - [x] `F0859` Differences in body language · **6-19**
 - [x] `F0860` Common conversational conventions · **6-19**
 - [x] `F0861` Intercultural scenarios · **6-19**

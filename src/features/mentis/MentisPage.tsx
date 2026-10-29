@@ -19,7 +19,7 @@ const TABS: Array<RoomTab<Tab>> = [
   { id: 'sermo', label: 'Sermo', to: '/mentis/sermo', icon: MessagesSquare },
   { id: 'diarium', label: 'Diarium', to: '/mentis/diarium', icon: Feather },
 ];
-const MUNDUS_TABS = new Set(['', 'try', 'culture']);
+const MUNDUS_TABS = new Set(['', 'try', 'culture', 'immerse']);
 
 /**
  * Mentis (Lingua 5.1-1), the room for thinking in the language: Mundus the guide, Sermo for talking
@@ -38,7 +38,7 @@ export default function MentisPage() {
     <>
       <PageHeader title="Mentis" eyebrow={`Think, talk and write in ${name}`} actions={tab === 'diarium' ? <NewEntryButton /> : undefined} />
       <RoomTabs label="Mentis" tabs={tabs} active={tab} />
-      <div className={sub === 'culture' ? '' : 'grid gap-10 lg:grid-cols-[minmax(0,1fr)_288px]'}>
+      <div className={(sub === 'culture' || sub === 'immerse') ? '' : 'grid gap-10 lg:grid-cols-[minmax(0,1fr)_288px]'}>
         <div className="min-w-0">
           <InRoom.Provider value>
             {tab === 'mundus' && <MundusPage />}
@@ -50,7 +50,7 @@ export default function MentisPage() {
             {tab === 'diarium' && <DiariumHome />}
           </InRoom.Provider>
         </div>
-        {sub !== 'culture' && <TodayRail inDiarium={tab === 'diarium'} />}
+        {sub !== 'culture' && sub !== 'immerse' && <TodayRail inDiarium={tab === 'diarium'} />}
       </div>
     </>
   );

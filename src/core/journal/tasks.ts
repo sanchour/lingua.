@@ -7,6 +7,8 @@ export interface WritingTask {
 }
 
 export const WRITING_TASKS: WritingTask[] = [
+  { id: 'surroundings', title: 'Describe your surroundings', brief: 'Describe five things around you: where they are, what they look like, and how you use them.', minWords: 40, maxWords: 100 },
+  { id: 'daily-narration', title: 'Narrate your day', brief: 'Tell the story of your day in order. Include one feeling or opinion and a detail you noticed.', minWords: 40, maxWords: 120 },
   { id: 'picture', title: 'Describe a picture', brief: 'Choose a picture you can see. Describe its people, setting and small details, then imagine what happened just before it.', minWords: 60, maxWords: 120 },
   { id: 'story', title: 'A short story', brief: 'A visitor leaves something unexpected at your door. Write a beginning, a turning point and an ending.', minWords: 120, maxWords: 250 },
   { id: 'dialogue', title: 'A dialogue', brief: 'Two people need to change a plan. Give each a different reason, and let them reach an agreement.', minWords: 80, maxWords: 160 },

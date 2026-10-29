@@ -3,8 +3,8 @@ import { WRITING_TASKS, writingTaskPrompt, writingTimerMs } from './tasks';
 
 describe('writing tasks', () => {
   it('keeps a stable id, brief and positive length for every task', () => {
-    expect(WRITING_TASKS).toHaveLength(26);
-    expect(new Set(WRITING_TASKS.map((t) => t.id)).size).toBe(26);
+    expect(WRITING_TASKS).toHaveLength(28);
+    expect(new Set(WRITING_TASKS.map((t) => t.id)).size).toBe(28);
     expect(WRITING_TASKS.every((t) => t.title && t.brief && t.minWords > 0 && t.maxWords >= t.minWords)).toBe(true);
   });
 

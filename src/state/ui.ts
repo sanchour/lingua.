@@ -19,6 +19,9 @@ interface UIState {
   pageTitle: string;
   /** Measured height of the touch header (incl. safe area), used for title-collapse detection. */
   topBarHeight: number;
+  reference: string | null;
+  openReference: (text?: string) => void;
+  closeReference: () => void;
   shortcutsOpen: boolean;
   /** The plans sheet: open for a locked feature, for all plans, or closed. */
   plansFor: Feature | 'all' | null;
@@ -39,6 +42,9 @@ export const useUI = create<UIState>((set) => ({
   pageTitleHidden: false,
   pageTitle: '',
   topBarHeight: 56,
+  reference: null,
+  openReference: (text = '') => set({ reference: text.slice(0, 3000) }),
+  closeReference: () => set({ reference: null }),
   shortcutsOpen: false,
   plansFor: null,
   openPlans: (feature) => set({ plansFor: feature ?? 'all' }),

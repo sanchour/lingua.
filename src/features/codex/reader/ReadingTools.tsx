@@ -1,3 +1,4 @@
+import { ReferenceButton } from '@/features/culture/ReferenceHelp';
 import { Link } from 'react-router';
 import { useEffect, useRef, useState } from 'react';
 import type { ReadingAids, ReadingMark } from '@/core/reading/aids';
@@ -14,6 +15,7 @@ export function ReadingTools({ text, aids, onChange, onOpenChange, chapterIndex 
     <button type="button" aria-haspopup="dialog" aria-expanded={open} onClick={() => changeOpen(!open)} className="rounded-xl px-3 py-2 text-sm font-semibold text-ink-soft hover:bg-surface">Study tools</button>
     <Drawer open={open} onClose={() => changeOpen(false)} title="Reading tools">
     <div className="space-y-1 text-sm">
+      <ReferenceButton />
       <Link className="my-4 block font-semibold underline underline-offset-4" to={`/codex/parallel/${text.id}/${chapterIndex}`}>Read side by side</Link>
       <Link className="my-4 block font-semibold underline underline-offset-4" to={`/codex/comprehension/${text.id}/${chapterIndex}`}>Check understanding of this chapter</Link>
       <p className="my-3 text-xs text-ink-faint">Dictionary categories can differ in context. Endings mark only a changed suffix shared with the dictionary form. No syntax is inferred.</p>

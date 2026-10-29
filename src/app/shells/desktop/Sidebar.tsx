@@ -1,3 +1,4 @@
+import { ReferenceButton } from '@/features/culture/ReferenceHelp';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -118,6 +119,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       <nav aria-label="Statistics and settings" className="mt-2 flex shrink-0 flex-col gap-0.5 border-t border-line pt-2">
+        <ReferenceButton compact={collapsed} />
         {BOTTOM_SECTIONS.map((section) => (
           <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
         ))}
