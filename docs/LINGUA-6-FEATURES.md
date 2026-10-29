@@ -371,7 +371,7 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0256` Explain why an answer is wrong
 - [x] `F0257` Predict the next grammatical form · **6-4**
 - [x] `F0258` Complete a dialogue using the right forms · **6-4**
-- [ ] `F0259` Dictation focused on grammatical endings · **6-9**
+- [x] `F0259` Dictation focused on grammatical endings · **6-9**
 - [x] `F0260` Oral grammar drills · **6-11**
 - [x] `F0261` Timed conjugation challenges
 - [x] `F0262` Mixed grammar review
@@ -602,7 +602,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 
 - [x] `F0441` ⭐ Play, pause and resume
 - [x] `F0442` ⭐ Adjustable playback speed
-- [ ] `F0443` Repeat the current sentence · **6-9** · partly there
+- [x] `F0443` Repeat the current sentence · **6-9** · partly there
 - [x] `F0444` Repeat a selected segment · **6-9**
 - [x] `F0445` Loop a word or phrase · **6-9**
 - [x] `F0446` Jump backward by a few seconds
@@ -629,16 +629,16 @@ Listening comprehension deserves its own system because recognizing a written wo
 
 *In Lingua: Ludus listening and dictation; In your own words after listening.*
 
-- [ ] `F0465` Listen and choose the correct meaning · **6-9** · partly there
+- [x] `F0465` Listen and choose the correct meaning · **6-9** · partly there
 - [x] `F0466` Listen and identify the word
-- [ ] `F0467` Listen and select the matching image · **6-9**
+- [x] `F0467` Listen and select the matching image · **6-9**
 - [x] `F0468` Listen and reconstruct a sentence · **6-9**
 - [x] `F0469` Listen and arrange words in order · **6-9**
 - [x] `F0470` Listen and fill in missing words · **6-9** · partly there
 - [x] `F0471` Full dictation
-- [ ] `F0472` Partial dictation · **6-9**
-- [ ] `F0473` Dictation with punctuation · **6-9**
-- [ ] `F0474` Dictation with grammatical endings · **6-9**
+- [x] `F0472` Partial dictation · **6-9**
+- [x] `F0473` Dictation with punctuation · **6-9**
+- [x] `F0474` Dictation with grammatical endings · **6-9**
 - [x] `F0475` Listen and identify the speaker · **6-9**
 - [x] `F0476` Listen and identify the emotion · **6-9**
 - [x] `F0477` Listen and identify the location · **6-9**
@@ -661,8 +661,8 @@ Listening comprehension deserves its own system because recognizing a written wo
 
 - [x] `F0492` Minimal-pair listening · **6-10**
 - [x] `F0493` Phoneme discrimination · **6-10**
-- [ ] `F0494` Word-boundary recognition · **6-9**
-- [ ] `F0495` Connected-speech training · **6-9**
+- [x] `F0494` Word-boundary recognition · **6-9**
+- [x] `F0495` Connected-speech training · **6-9**
 - [ ] `F0496` Reduced vowels and weak forms · **6-10**
 - [ ] `F0497` Stress and intonation recognition · **6-10**
 - [ ] `F0498` Pitch-accent training where relevant · **6-10**
@@ -933,7 +933,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [ ] `F0707` Voicing demonstrations · **6-10**
 - [x] `F0708` Place-of-articulation explanations · **6-10**
 - [x] `F0709` Minimal pairs · **6-10**
-- [ ] `F0710` Syllable segmentation · **6-10**
+- [x] `F0710` Syllable segmentation · **6-10**
 - [x] `F0711` Stress placement · **6-10**
 - [x] `F0712` Word-level stress rules · **6-10**
 - [ ] `F0713` Sentence intonation · **6-10**
@@ -949,7 +949,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0723` Tonal contours · **6-10** · partly there
 - [ ] `F0724` Pitch accent · **6-10**
 - [x] `F0725` Orthography-to-sound rules · **6-10**
-- [ ] `F0726` Sound-to-spelling exercises · **6-10** · partly there
+- [x] `F0726` Sound-to-spelling exercises · **6-10** · partly there
 
 #### 8.2 Pronunciation practice
 
@@ -970,7 +970,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [ ] `F0739` Practice sentence stress · **6-10**
 - [ ] `F0740` Practice intonation patterns · **6-10**
 - [ ] `F0741` Practice speaking speed · **6-10**
-- [ ] `F0742` Practice connected speech · **6-10**
+- [x] `F0742` Practice connected speech · **6-10**
 - [ ] `F0743` Practice tonal contrasts · **6-10**
 - [ ] `F0744` Practice unfamiliar letter combinations · **6-10**
 - [ ] `F0745` Pronunciation drills based on personal errors · **6-10**

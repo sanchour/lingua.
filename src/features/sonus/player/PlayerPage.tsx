@@ -9,7 +9,7 @@ import type { Media, Transcript } from '@/data/types';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { cx } from '@/lib/cx';
-import { cycleLoop, currentMs, toggleLineByLine, loadMedia, nextSentence, previousSentence, setCues, toggleRepeat, skip, toggle, unlockAudio, usePlayer } from '@/services/audio/engine';
+import { cycleLoop, replaySentence, currentMs, toggleLineByLine, loadMedia, nextSentence, previousSentence, setCues, toggleRepeat, skip, toggle, unlockAudio, usePlayer } from '@/services/audio/engine';
 import { Artwork } from '../library/Artwork';
 import { MediaOptions } from '../library/MediaOptions';
 import { BookBar } from './BookBar';
@@ -106,6 +106,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
       arrowdown: nextSentence,
       r: () => toggleRepeat(),
       '[': cycleLoop,
+      a: replaySentence,
       l: toggleLineByLine,
       b: () => void addBookmark(media.id, currentMs()),
     },

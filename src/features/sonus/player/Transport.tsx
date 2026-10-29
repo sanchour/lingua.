@@ -1,10 +1,10 @@
 import { Link } from 'react-router';
-import { Bike, Check, EyeOff, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
+import { Bike, Check, EyeOff, Undo2, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { loopLabel } from '@/core/audio/loop';
-import { cycleLoop, toggleListenFirst, nextSentence, previousSentence, setKeepPitch, setRate, toggleLineByLine, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
+import { cycleLoop, replaySentence, toggleListenFirst, nextSentence, previousSentence, setKeepPitch, setRate, toggleLineByLine, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
 import { SleepButton } from './SleepTimer';
 
 export const RATES = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5];
@@ -117,6 +117,16 @@ export function Transport({ className }: { className?: string }) {
         >
           <Repeat size={14} aria-hidden />
           {repeat > 1 ? `${repeat}×` : 'Repeat'}
+        </button>
+        <button
+          type="button"
+          disabled={!hasCues}
+          title={hasCues ? 'Hear this sentence once more (key: A)' : 'Needs a transcript'}
+          onClick={replaySentence}
+          className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold transition-colors hover:border-line-strong disabled:opacity-40"
+        >
+          <Undo2 size={14} aria-hidden />
+          Again
         </button>
         <button
           type="button"

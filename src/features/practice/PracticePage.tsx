@@ -9,10 +9,11 @@ import type { HeardLine } from '@/core/exercise';
 import type { Cefr } from '@/core/lang/levels';
 import { aiBlock } from '@/data/plan';
 import { heardLines } from '@/data/listening';
+import { lookUpFull } from '@/services/dictionary/fullDict';
 import { generateMaterial } from '@/services/llm/generate';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
-import { attachRetries, correctMistake, dragSentence, gridOfGrammarTable, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, planTransforms, predictForms, rewriteFix, tenseTransforms, useInSentence, drillGap, listenGap, listenOrder, listenType } from '@/core/exercise';
+import { attachRetries, correctMistake, dragSentence, gridOfGrammarTable, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, planTransforms, predictForms, rewriteFix, tenseTransforms, useInSentence, drillGap, listenEndings, listenGap, listenMeaning, listenOrder, listenPicture, listenPunctuated, listenSplit, listenType, syllableSplit } from '@/core/exercise';
 import type { ExerciseSpec } from '@/core/contracts/exercise';
 import type { FormGrid, WordFacts } from '@/core/exercise';
 import type { Topic } from '@/core/grammar/types';
@@ -45,6 +46,8 @@ interface PracticeSet {
   make: () => ExerciseSpec[];
   /** Made when it is started, by Max (a story, a dialogue, rewrites): it takes a moment and the learner's key. */
   makeLater?: () => Promise<ExerciseSpec[]>;
+  /** Made when started, but without Max: it only looks things up on the device. */
+  local?: boolean;
 }
 
 const ROUNDS = 3;
@@ -192,6 +195,81 @@ function buildSets(lang: string, c: Ctx, level: Cefr): PracticeSet[] {
       needs: 'a transcript of something you listened to',
       make: () => shuffle(c.heard, random).flatMap((l, i) => listenOrder(l, lang, random, `hear-order-${i}`) ?? []).slice(0, 6),
     },
+    {
+      id: 'hear-partial',
+      group: 'listening',
+      title: 'Partial dictation',
+      detail: 'A line of something you listened to with three words left out: hear it, type the three.',
+      needs: 'a transcript of something you listened to, with longer lines',
+      make: () => shuffle(c.heard, random).flatMap((l, i) => listenGap(l, lang, random, `hear-partial-${i}`, 3) ?? []).slice(0, 6),
+    },
+    {
+      id: 'hear-punct',
+      group: 'listening',
+      title: 'Dictation with punctuation',
+      detail: 'Hear a line you listened to and type it with its commas and full stops.',
+      needs: 'a transcript of something you listened to, with punctuation',
+      make: () => shuffle(c.heard.filter((l) => /[,.;:!?¿¡]/.test(l.text.replace(/[.!?]$/, '')) || /[,;:]/.test(l.text)), random).slice(0, 6).map((l, i) => listenPunctuated(l, lang, `hear-punct-${i}`)),
+    },
+    {
+      id: 'hear-endings',
+      group: 'listening',
+      title: 'Dictation: the endings',
+      detail: 'The stems are shown and the endings are not: hear the line and type it whole, endings and all.',
+      needs: 'a transcript of something you listened to',
+      make: () => shuffle(c.heard, random).flatMap((l, i) => listenEndings(l, lang, `hear-endings-${i}`) ?? []).slice(0, 6),
+    },
+    {
+      id: 'hear-split',
+      group: 'listening',
+      title: 'Where do the words begin?',
+      detail: 'A line you listened to, written without spaces: hear it and cut it into its words. This is connected speech.',
+      needs: 'a transcript of something you listened to',
+      make: () => shuffle(c.heard, random).flatMap((l, i) => listenSplit(l, lang, `hear-split-${i}`) ?? []).slice(0, 6),
+    },
+    {
+      id: 'hear-meaning',
+      group: 'listening',
+      title: 'Hear it, choose the meaning',
+      detail: 'A word of yours is said: choose what it means from four.',
+      needs: 'at least four words with a meaning',
+      make: () => { const w = shuffle(c.facts, random); return w.slice(0, 8).flatMap((x, i) => listenMeaning(x, w, lang, random, `hear-meaning-${i}`) ?? []); },
+    },
+    {
+      id: 'hear-picture',
+      group: 'listening',
+      title: 'Hear it, choose the picture',
+      detail: 'A word of yours is said: choose its picture from four.',
+      needs: 'cards with a picture',
+      make: () => { const w = shuffle(c.facts.filter((x) => x.image), random); return w.slice(0, 8).flatMap((x, i) => listenPicture(x, w, lang, random, `hear-picture-${i}`) ?? []); },
+    },
+    {
+      id: 'hear-spell',
+      group: 'listening',
+      title: 'Hear it, spell it',
+      detail: 'A word of yours is said, in your device’s voice: type how it is written.',
+      needs: 'words in your decks and a voice for this language',
+      make: () => shuffle(c.facts, random).slice(0, 8).map((x, i) => listenType({ text: x.word }, lang, `hear-spell-${i}`)),
+    },
+    {
+      id: 'syllables',
+      group: 'listening',
+      local: true,
+      title: 'Cut it into syllables',
+      detail: 'A word of yours, written without breaks: say it, and cut it where each syllable begins.',
+      needs: 'the full dictionary and words of two or more syllables',
+      make: () => [],
+      makeLater: async () => {
+        const out: ExerciseSpec[] = [];
+        for (const x of shuffle(c.facts, random).slice(0, 24)) {
+          const syl = (await lookUpFull(lang, x.word).catch(() => undefined))?.entries.find((e) => e.syl && e.syl.length >= 2)?.syl;
+          const spec = syl ? syllableSplit(x.word, syl.map((s) => s.replace(/\u0301/g, '')), lang, `syllables-${out.length}`) : null;
+          if (spec) out.push(spec);
+          if (out.length >= 6) break;
+        }
+        return out;
+      },
+    },
     games('pictures', 'Words and pictures', 'Match each word with its picture.', 'cards with a picture', (w, r, k) => matchPictures(w, lang, r, k), (w) => Boolean(w.image)),
     ...(['difficult', 'rusty'] as const).map(
       (id): PracticeSet => ({
@@ -309,7 +387,7 @@ export default function PracticePage() {
 
   const sets = useMemo(() => (ctx ? buildSets(lang, ctx, level) : []), [ctx, lang, level]);
   // What is made when started needs the learner's key; the rest needs enough words or grammar to make a set.
-  const ready = useMemo(() => new Map(sets.map((s) => [s.id, s.makeLater ? aiReady : s.make().length > 0])), [sets, aiReady]);
+  const ready = useMemo(() => new Map(sets.map((s) => [s.id, s.makeLater && !s.local ? aiReady : s.makeLater ? true : s.make().length > 0])), [sets, aiReady]);
 
   useEffect(() => {
     const set = sets.find((s) => s.id === chosen);
@@ -333,7 +411,7 @@ export default function PracticePage() {
   if (chosen && !running)
     return (
       <div className="p-10 text-ink-soft">
-        <p>{error ?? (sets.find((s) => s.id === chosen)?.makeLater ? 'Max is making it for you…' : ctx ? 'This set can’t be made yet.' : 'Getting it ready…')}</p>
+        <p>{error ?? (sets.find((s) => s.id === chosen)?.makeLater && !sets.find((s) => s.id === chosen)?.local ? 'Max is making it for you…' : ctx ? 'This set can’t be made yet.' : 'Getting it ready…')}</p>
         {error && (
           <Link to="/thesaurus/practice" className="mt-3 inline-block font-semibold text-ink underline decoration-line-strong underline-offset-4">
             Back to Practice

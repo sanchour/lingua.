@@ -199,3 +199,55 @@ describe('a drill gap', () => {
     expect(spec.hints).toHaveLength(2);
   });
 });
+
+describe('more heard exercises', () => {
+  const line = { text: 'Por la tarde voy al mercado con mi hermana.', mediaId: 'm1', startMs: 0, endMs: 3000 };
+  it('partial dictation hides three words that are not next to each other, and expects them in order', async () => {
+    const { listenGap } = await import('./kinds');
+    for (let r = 0; r < 6; r++) {
+      const spec = listenGap(line, 'es', () => (r + 1) / 8, `p${r}`, 3)!;
+      const shown = (spec.body as { given: string[] }).given[0];
+      expect(shown.split('_____')).toHaveLength(4);
+      const expected = (spec.check as { expected: string }).expected.split(' ');
+      expect(expected).toHaveLength(3);
+      expect(shown.replace(/_____/g, () => expected.shift()!)).toBe(line.text);
+    }
+    expect(listenGap({ text: 'Mi perro come pan hoy' }, 'es', () => 0, 'k', 3)).toBeNull();
+  });
+  it('the endings dictation hides two letters of the long words and needs at least two of them', async () => {
+    const { listenEndings } = await import('./kinds');
+    const spec = listenEndings(line, 'es', 'e')!;
+    expect((spec.body as { given: string[] }).given[0]).toContain('…');
+    expect(spec.check).toMatchObject({ rule: 'dictation', expected: line.text });
+    expect(listenEndings({ text: 'Mi perro es mío' }, 'es', 'e')).toBeNull();
+  });
+  it('the punctuated dictation asks for punctuation', async () => {
+    const { listenPunctuated } = await import('./kinds');
+    expect(listenPunctuated(line, 'es', 'x').check).toMatchObject({ rule: 'dictation', punctuation: true });
+  });
+  it('cutting a line into words: the words run together, and cutting them right is the answer', async () => {
+    const { listenSplit, syllableSplit } = await import('./kinds');
+    const { judge } = await import('./judge');
+    const spec = listenSplit({ text: 'Vivo en una casa.' }, 'es', 's')!;
+    expect((spec.body as { given: string[] }).given[0]).toBe('Vivoenunacasa');
+    expect(judge(spec.check, 'Vivo en una casa', 'es').outcome).toBe('right');
+    expect(judge(spec.check, 'Vivoen una casa', 'es').outcome).toBe('wrong');
+    expect(listenSplit({ text: 'Hola amigo' }, 'es', 's')).toBeNull();
+    const syl = syllableSplit('hablar', ['ha', 'blar'], 'es', 'y')!;
+    expect(judge(syl.check, 'ha blar', 'es').outcome).toBe('right');
+    expect(syllableSplit('sol', ['sol'], 'es', 'y')).toBeNull();
+  });
+  it('hear a word and choose its meaning or picture: the right one among distinct others', async () => {
+    const { listenMeaning, listenPicture } = await import('./kinds');
+    const w = (word: string, gloss: string, image?: string) => ({ word, gloss, image });
+    const all = [w('casa', 'house', 'a'), w('perro', 'dog', 'b'), w('gato', 'cat', 'c'), w('mesa', 'table', 'd'), w('libro', 'book', 'e')];
+    const m = listenMeaning(all[0], all, 'es', () => 0.3, 'm')!;
+    expect(m.listen?.text).toBe('casa');
+    expect((m.body.options[(m.check as { answer: number }).answer] as { text: string }).text).toBe('house');
+    expect(new Set(m.body.options.map((o) => o.text)).size).toBe(4);
+    expect(listenMeaning(all[0], all.slice(0, 3), 'es', () => 0.3, 'm')).toBeNull();
+    const p = listenPicture(all[0], all, 'es', () => 0.3, 'p')!;
+    expect(p.body.options[(p.check as { answer: number }).answer].image).toBe('a');
+    expect(listenPicture({ word: 'x', gloss: 'x' }, all, 'es', () => 0, 'p')).toBeNull();
+  });
+});

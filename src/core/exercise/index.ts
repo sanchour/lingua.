@@ -7,7 +7,7 @@ export type { Given, Judgement } from './judge';
 export { pairsOfGrid, planTransforms, transformSpec } from './transform';
 export type { FormPair, TransformSpec } from './transform';
 export { attachRetries, completeDialogue, correctMistake, dragSentence, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, pairsAcrossGrids, predictForms, rewriteFix, sentenceTask, tenseTransforms, useInSentence } from './kinds';
-export { drillGap, listenGap, listenOrder, listenType } from './kinds';
+export { drillGap, listenEndings, listenGap, listenMeaning, listenOrder, listenPicture, listenPunctuated, listenSplit, listenType, syllableSplit } from './kinds';
 export type { HeardLine, WordFacts } from './kinds';
 export { TRANSLATION_PAIRS, buildTranslationExercise, getTranslationTasks, validateRequirements } from './translate';
 export type { DialogueExchange, TranslateBody, TranslationCategory, TranslationTask } from './translate';
