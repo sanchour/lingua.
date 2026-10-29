@@ -153,3 +153,35 @@ describe('use it in a sentence', () => {
     expect(useInSentence({ word: 'agua', sentence: 'agua destilada' }, 'es', 'k')).toBeNull();
   });
 });
+
+describe('exercises from a line that was heard', () => {
+  const line = { text: 'Mi perro come pan todos los días.', mediaId: 'm1', startMs: 4000, endMs: 7000 };
+  it('dictation: the clip to play, and the line as the answer (a missing accent is only close)', async () => {
+    const { listenType } = await import('./kinds');
+    const { judge } = await import('./judge');
+    const spec = listenType(line, 'es', 'k');
+    expect(spec).toMatchObject({ kind: 'listen-type', listen: { text: line.text, clip: { mediaId: 'm1', startMs: 4000, endMs: 7000 } }, trains: { skill: 'listening', item: { type: 'text', textId: 'm1' } } });
+    expect(judge(spec.check, 'mi perro come pan todos los dias', 'es').outcome).toBe('close');
+    expect(judge(spec.check, 'Mi perro come pan todos los días', 'es').outcome).toBe('right');
+    expect(judge(spec.check, 'mi gato come', 'es').outcome).toBe('wrong');
+  });
+  it('the missing word: never the first, a word of size, and the line is what is shown with a gap', async () => {
+    const { listenGap } = await import('./kinds');
+    for (let r = 0; r < 6; r++) {
+      const spec = listenGap(line, 'es', () => r / 6, `g${r}`)!;
+      const given = (spec.body as { given: string[] }).given[0];
+      expect(given.split(' ')[0]).toBe('Mi');
+      expect(given).toContain('_____');
+      expect(spec.check).toMatchObject({ rule: 'accent-blind' });
+      expect(given.replace('_____', (spec.check as { expected: string }).expected)).toBe(line.text.replace('días.', 'días.'));
+    }
+    expect(listenGap({ text: 'Hola, qué tal' }, 'es', () => 0, 'k')).toBeNull();
+  });
+  it('putting the words in order: the same words, in another order, and no spoken-only line outside 3 to 10 words', async () => {
+    const { listenOrder } = await import('./kinds');
+    const spec = listenOrder({ text: 'Mi perro come pan' }, 'es', () => 0.3, 'o')!;
+    expect([...(spec.body as { tiles: string[] }).tiles].sort()).toEqual(['Mi', 'come', 'pan', 'perro'].sort());
+    expect(listenOrder({ text: 'Hola' }, 'es', () => 0, 'o')).toBeNull();
+    expect(spec.listen).toMatchObject({ text: 'Mi perro come pan' });
+  });
+});

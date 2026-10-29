@@ -16,7 +16,12 @@ export interface ClipSource {
 
 /** Where a card's line can be heard again: its video or audio, from the stored file or its link. */
 export function useClip(note: Note): ClipSource | null | undefined {
-  const ctx = note.context;
+  return useClipAt(note.context?.mediaId, note.context?.startMs, note.context?.endMs);
+}
+
+/** The same for any stretch of an item (a line of a transcript heard in an exercise). */
+export function useClipAt(mediaId: string | undefined, startMs: number | undefined, endMs?: number): ClipSource | null | undefined {
+  const ctx = mediaId && startMs !== undefined ? { mediaId, startMs, endMs } : undefined;
   const source = useLiveQuery(async () => {
     if (!ctx?.mediaId || ctx.startMs === undefined) return null;
     const media = await db.media.get(ctx.mediaId);
@@ -39,7 +44,7 @@ export function useClip(note: Note): ClipSource | null | undefined {
 }
 
 /** Plays exactly the clip (with a moment either side) and stops. */
-function useClipPlayback(clip: ClipSource, el: () => HTMLMediaElement | null) {
+function useClipPlayback(clip: ClipSource, el: () => HTMLMediaElement | null, rate = 1) {
   const [playing, setPlaying] = useState(false);
   const frame = useRef(0);
   const stop = () => {
@@ -53,6 +58,7 @@ function useClipPlayback(clip: ClipSource, el: () => HTMLMediaElement | null) {
     if (!m) return;
     if (playing) return stop();
     if (usePlayer.getState().status === 'playing') pauseAudio();
+    m.playbackRate = rate;
     const from = Math.max(0, clip.startMs - 150) / 1000;
     const to = (clip.endMs + 250) / 1000;
     const seek = () => (m.currentTime = from);
@@ -70,10 +76,10 @@ function useClipPlayback(clip: ClipSource, el: () => HTMLMediaElement | null) {
 }
 
 /** The card's clip: a small round button for audio, the picture itself for video lines. */
-export function ClipPlayer({ clip, large = false }: { clip: ClipSource; large?: boolean }) {
+export function ClipPlayer({ clip, large = false, rate = 1 }: { clip: ClipSource; large?: boolean; rate?: number }) {
   const audio = useRef<HTMLAudioElement>(null);
   const video = useRef<HTMLVideoElement>(null);
-  const { playing, play } = useClipPlayback(clip, () => (clip.kind === 'video' ? video.current : audio.current));
+  const { playing, play } = useClipPlayback(clip, () => (clip.kind === 'video' ? video.current : audio.current), rate);
   const [shown, setShown] = useState(false);
 
   // The picture waits on the clip's first frame.
@@ -98,11 +104,12 @@ export function ClipPlayer({ clip, large = false }: { clip: ClipSource; large?: 
             play();
           }}
           className={cx(
-            'no-callout grid size-10 shrink-0 place-items-center rounded-full text-ink-soft transition-[transform,background-color,color] hover:bg-sunken hover:text-ink active:scale-90',
+            large ? 'size-20 bg-sunken' : 'size-10',
+            'no-callout grid shrink-0 place-items-center rounded-full text-ink-soft transition-[transform,background-color,color] hover:bg-sunken hover:text-ink active:scale-90',
             playing && 'bg-sage-soft text-sage-text',
           )}
         >
-          {playing ? <Square size={15} className="fill-current" aria-hidden /> : <Headphones size={18} aria-hidden />}
+          {playing ? <Square size={large ? 26 : 15} className="fill-current" aria-hidden /> : <Headphones size={large ? 34 : 18} aria-hidden />}
         </button>
       </>
     );

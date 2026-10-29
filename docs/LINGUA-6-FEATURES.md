@@ -566,7 +566,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0409` ⭐ Word pronunciation recordings
 - [x] `F0410` ⭐ Phrase pronunciation recordings
 - [x] `F0411` Sentence recordings
-- [ ] `F0412` Slow and natural-speed audio · **6-9** · partly there
+- [x] `F0412` Slow and natural-speed audio · **6-9** · partly there
 - [ ] `F0413` Beginner listening exercises · **6-9** · partly there
 - [ ] `F0414` Everyday conversations · **6-9** · partly there
 - [ ] `F0415` Dialogues between multiple speakers · **6-9**
@@ -622,8 +622,8 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0460` Bookmark difficult sections · **6-9**
 - [ ] `F0461` Create a personal audio playlist · **6-9**
 - [x] `F0462` Download permitted audio for offline use
-- [ ] `F0463` Automatically replay difficult sections · **6-9**
-- [ ] `F0464` Highlight sections with repeated mistakes · **6-9**
+- [x] `F0463` Automatically replay difficult sections · **6-9**
+- [x] `F0464` Highlight sections with repeated mistakes · **6-9**
 
 #### 5.3 Listening exercises
 
@@ -632,9 +632,9 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0465` Listen and choose the correct meaning · **6-9** · partly there
 - [x] `F0466` Listen and identify the word
 - [ ] `F0467` Listen and select the matching image · **6-9**
-- [ ] `F0468` Listen and reconstruct a sentence · **6-9**
-- [ ] `F0469` Listen and arrange words in order · **6-9**
-- [ ] `F0470` Listen and fill in missing words · **6-9** · partly there
+- [x] `F0468` Listen and reconstruct a sentence · **6-9**
+- [x] `F0469` Listen and arrange words in order · **6-9**
+- [x] `F0470` Listen and fill in missing words · **6-9** · partly there
 - [x] `F0471` Full dictation
 - [ ] `F0472` Partial dictation · **6-9**
 - [ ] `F0473` Dictation with punctuation · **6-9**
@@ -650,9 +650,9 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0483` Listen and predict the next phrase · **6-9**
 - [ ] `F0484` Listen and identify a change in topic · **6-9**
 - [x] `F0485` Listen without subtitles, then with subtitles · **6-9** · partly there
-- [ ] `F0486` Compare an initial guess with the transcript · **6-9**
+- [x] `F0486` Compare an initial guess with the transcript · **6-9**
 - [ ] `F0487` Listen to a phrase and repeat it · **6-11** · partly there
-- [ ] `F0488` Transcribe a short audio clip · **6-9**
+- [x] `F0488` Transcribe a short audio clip · **6-9**
 - [ ] `F0489` Identify formal versus informal speech · **6-9**
 - [ ] `F0490` Identify the speaker’s accent · **6-9**
 - [ ] `F0491` Distinguish native speech from synthetic speech · **6-26**
@@ -667,14 +667,14 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0497` Stress and intonation recognition · **6-10**
 - [ ] `F0498` Pitch-accent training where relevant · **6-10**
 - [ ] `F0499` Tone recognition for tonal languages · **6-10** · partly there
-- [ ] `F0500` Fast-speech comprehension · **6-9**
+- [x] `F0500` Fast-speech comprehension · **6-9**
 - [ ] `F0501` Accent adaptation · **6-9**
-- [ ] `F0502` Speech-in-noise exercises · **6-9**
+- [x] `F0502` Speech-in-noise exercises · **6-9**
 - [ ] `F0503` Overlapping-speaker comprehension · **6-9**
 - [ ] `F0504` Automatic difficulty adjustment · **6-16**
-- [ ] `F0505` Listening-speed progression · **6-9**
+- [x] `F0505` Listening-speed progression · **6-9**
 - [ ] `F0506` Compare the same sentence across speakers · **6-9**
-- [ ] `F0507` Compare slow, careful speech with natural speech · **6-9**
+- [x] `F0507` Compare slow, careful speech with natural speech · **6-9**
 - [ ] `F0508` Track listening comprehension by accent · **6-17**
 - [ ] `F0509` Track comprehension as playback speed increases · **6-17**
 - [ ] `F0510` Identify specific phonemes that are repeatedly confused · **6-10**
@@ -2100,7 +2100,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 
 - [x] `F1598` AI conversation partner
 - [x] `F1599` Writing assistant and error correction
-- [ ] `F1600` Listening exercises and dictation · **6-9** · partly there
+- [x] `F1600` Listening exercises and dictation · **6-9** · partly there
 - [ ] `F1601` Speech recording and pronunciation practice · **6-10** · partly there
 - [x] `F1602` Graded reading library · **6-8** · partly there
 - [ ] `F1603` Adaptive lessons · **6-16** · partly there

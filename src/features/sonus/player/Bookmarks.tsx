@@ -1,10 +1,10 @@
 // Places in an item to come back to (6-9): bookmarks, and the parts that were hard to hear, each a tap away from playing again.
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Bookmark, EarOff, X } from 'lucide-react';
+import { Bookmark, EarOff, Repeat1, X } from 'lucide-react';
 import { formatClock } from '@/core/audio/cues';
 import { db } from '@/data/db';
 import { addBookmark, removeBookmark } from '@/data/media';
-import { currentMs, seek } from '@/services/audio/engine';
+import { currentMs, replayHardPart, seek } from '@/services/audio/engine';
 import { cx } from '@/lib/cx';
 
 export function Bookmarks({ mediaId }: { mediaId: string }) {
@@ -18,6 +18,11 @@ export function Bookmarks({ mediaId }: { mediaId: string }) {
         <button type="button" title="Mark this place as hard to hear: it comes back for another go" onClick={() => void addBookmark(mediaId, currentMs(), { hard: true })} className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold hover:border-line-strong">
           <EarOff size={14} aria-hidden /> Hard to hear
         </button>
+        {marks.some((m) => m.hard) && (
+          <button type="button" title="Play the places marked hard to hear again, one after another, each on a loop" onClick={() => void replayHardPart()} className="flex h-9 items-center gap-1.5 rounded-full border border-accent/40 bg-accent-soft px-3 text-[13px] font-bold text-accent-text">
+            <Repeat1 size={14} aria-hidden /> Replay the hard parts
+          </button>
+        )}
       </div>
       {marks.length > 0 && (
         <ul className="mt-2 flex flex-wrap items-center justify-center gap-1.5">

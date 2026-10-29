@@ -1,5 +1,7 @@
 // A run of exercises of any kind the engine has (6-4b): one screen for matching, dragging, typing, free sentences and form
 // changes. How it asks is the learner's: hints, "how sure are you?", answers only at the end, another example after a miss.
+import { HeardDiff } from './HeardDiff';
+import { ListenBar } from './ListenBar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Settings2 } from 'lucide-react';
@@ -9,6 +11,7 @@ import { judge, solutionOf } from '@/core/exercise';
 import type { Judgement } from '@/core/exercise';
 import { seededRandom } from '@/core/srs/ludus';
 import { recordEvidence } from '@/data/learner';
+import { addBookmark } from '@/data/media';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { Button, IconButton, Popover, ToggleRow } from '@/design/primitives';
 import { spring } from '@/design/motion';
@@ -62,6 +65,12 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
 
   const spec = queue[0];
   const tiles = spec?.kind === 'drag-drop' ? (spec.body as DragBody).tiles : [];
+  // The speed of what is heard steps up with every right answer in a row (from 0.8×, up to 1.5×) and drops back after a miss.
+  const listenRate = (() => {
+    let streak = 0;
+    for (const t of taken.filter((x) => x.spec.listen)) streak = isRight(t.outcome) ? streak + 1 : 0;
+    return Math.min(1.5, Math.round((0.8 + 0.1 * streak) * 10) / 10);
+  })();
   const progress = taken.length / Math.max(1, taken.length + queue.length);
 
   /** A fresh page for the next exercise. */
@@ -97,11 +106,13 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
     const first = !retried.current.has(spec.key);
     setTaken((t) => [...t, { spec, given, outcome, solution, first }]);
     feel.answered(right);
+    // A line that was not made out is marked in the recording it comes from, to be played again.
+    if (!right && spec.listen?.clip) void addBookmark(spec.listen.clip.mediaId, spec.listen.clip.startMs, { hard: true });
     void recordEvidence({
       lang,
       at: Date.now(),
       skill: spec.trains.skill,
-      room: spec.trains.skill === 'grammar' ? 'grammatica' : 'thesaurus',
+      room: spec.trains.skill === 'grammar' ? 'grammatica' : spec.trains.skill === 'listening' ? 'sonus' : 'thesaurus',
       item: spec.trains.item,
       outcome,
       assisted: hints > 0,
@@ -208,6 +219,7 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.section key={`${run}-${spec.key}`} initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -28, transition: { duration: 0.15 } }} transition={spring.soft}>
             <p className="mb-6 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">{spec.key.endsWith('~r') ? 'Another example · ' : ''}{spec.instruction}</p>
+            {spec.listen && <ListenBar listen={spec.listen} lang={lang} rate={listenRate} />}
             {isMatch(spec) && <MatchView body={spec.body as MatchBody} lang={lang} onDone={onMatched} random={random} />}
             {spec.kind === 'drag-drop' && <DragView prompt={(spec.body as DragBody).prompt} tiles={tiles} lang={lang} value={picked} onChange={setPicked} phase={phase} />}
             {spec.kind === 'transform' && <TransformView spec={spec as TransformSpec} lang={lang} value={text} onChange={setText} phase={phase} onSubmit={() => (phase === 'answer' ? void check() : next())} onHint={setHints} />}
@@ -250,6 +262,7 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
           <div>
             <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase">Answer</p>
             <p lang={lang} className="font-serif text-xl font-semibold">{solutionOf(spec) || model}</p>
+            {spec.kind === 'listen-type' && taken.at(-1)?.spec.key === spec.key && <HeardDiff given={taken.at(-1)!.given} said={solutionOf(spec)} lang={lang} />}
             {(message || why) && <p className="mt-1 text-[14px] leading-snug text-ink-soft">{message ? `${message} ` : ''}{why}</p>}
           </div>
         }

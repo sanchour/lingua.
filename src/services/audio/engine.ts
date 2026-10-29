@@ -548,6 +548,21 @@ export function cycleLoop(): void {
   set({ abLoop: nextLoop(get().abLoop, currentMs()) });
 }
 
+/** Plays a place marked hard to hear again and again (the next one each time it is called): from just before it to a few seconds after. */
+let hardIndex = -1;
+export async function replayHardPart(): Promise<number> {
+  const id = get().media?.id;
+  const hard = id ? ((await db.media.get(id))?.bookmarks ?? []).filter((b) => b.hard) : [];
+  if (!hard.length) return 0;
+  hardIndex = (hardIndex + 1) % hard.length;
+  const at = hard[hardIndex].at;
+  const a = Math.max(0, at - 2000);
+  set({ abLoop: { a, b: a + 5500 } });
+  seek(a);
+  void play();
+  return hard.length;
+}
+
 export function clearLoop(): void {
   set({ abLoop: null });
 }
