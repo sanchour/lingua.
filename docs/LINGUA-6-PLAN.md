@@ -80,7 +80,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-4b | [ ] | The rest of 6-4's kinds and ways to answer: the matching variants, correct the mistake, rewrite, combine, expand, simplify, drag and drop, predict the form, complete a dialogue; confidence, self-assessment, delayed feedback, retry with a new example; the existing kinds moved into the engine | 22 of 6-4's new entries · 3 to finish | 6-4 | L |
 | 6-5 | [x] | *the record and its first reader done 2026-10-29 (0.6.0-alpha.15; Dexie 22; written where cards and grammar items are answered; weak spots in Ratio; 5 of its entries ticked); the rest is 6-5b* The learner's record | 9 new · 2 to finish | 6-4 | M |
 | 6-5b | [ ] | The rest of the learner's record: rows from Diarium's corrections, Sermo, Sonus dictation and pronunciation, one row per exercise instead of per card; the readers the API already has (recognised but not recalled, quiet skills, with and without hints) shown to the learner; the error log in Mentis (6-20) and its export (6-24) | 4 of 6-5's entries | 6-5 | M |
-| 6-6 | [ ] | Generated materials, checked | 19 new · 3 to finish | 6-1, 6-4 | M |
+| 6-6 | [~] | *claimed 2026-10-29* Generated materials, checked | 19 new · 3 to finish | 6-1, 6-4 | M |
 | **Part B · The skills** (in parallel, after Part A) | | | | | |
 | 6-7 | [ ] | Grammar | 19 new · 12 to finish | 6-4, 6-5 | L |
 | 6-8 | [ ] | Reading | 41 new · 31 to finish | 6-4, 6-6 | XL |
