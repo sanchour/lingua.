@@ -569,7 +569,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0412` Slow and natural-speed audio · **6-9** · partly there
 - [ ] `F0413` Beginner listening exercises · **6-9** · partly there
 - [ ] `F0414` Everyday conversations · **6-9** · partly there
-- [ ] `F0415` Dialogues between multiple speakers · **6-9**
+- [x] `F0415` Dialogues between multiple speakers · **6-9**
 - [ ] `F0416` Short stories in audio format · **6-9** · partly there
 - [x] `F0417` Audiobooks
 - [x] `F0418` Podcasts
@@ -583,18 +583,18 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0426` Regional accent samples · **6-9**
 - [ ] `F0427` Casual conversations · **6-9** · partly there
 - [ ] `F0428` Formal speeches · **6-9** · partly there
-- [ ] `F0429` Telephone conversations · **6-9**
+- [x] `F0429` Telephone conversations · **6-9**
 - [ ] `F0430` Background-noise recordings · **6-9**
-- [ ] `F0431` Real-world announcements · **6-9**
+- [x] `F0431` Real-world announcements · **6-9**
 - [ ] `F0432` Different speaker ages and voices · **6-9** · partly there
 - [x] `F0433` Male, female and other available voice options
-- [ ] `F0434` Different emotional tones · **6-9**
-- [ ] `F0435` Formal and informal speech · **6-9**
+- [x] `F0434` Different emotional tones · **6-9**
+- [x] `F0435` Formal and informal speech · **6-9**
 - [x] `F0436` Authentic versus learner-oriented audio
 - [x] `F0437` User-imported audio
 - [x] `F0438` AI-generated dialogues with transcripts · **6-6**
-- [ ] `F0439` Audio generated from saved vocabulary · **6-9**
-- [ ] `F0440` Personalized listening playlists · **6-9**
+- [x] `F0439` Audio generated from saved vocabulary · **6-9**
+- [x] `F0440` Personalized listening playlists · **6-9**
 
 #### 5.2 Audio player
 
@@ -620,7 +620,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0458` Separate speakers in a transcript · **6-9**
 - [x] `F0459` Save timestamps · **6-9** · partly there
 - [x] `F0460` Bookmark difficult sections · **6-9**
-- [ ] `F0461` Create a personal audio playlist · **6-9**
+- [x] `F0461` Create a personal audio playlist · **6-9**
 - [x] `F0462` Download permitted audio for offline use
 - [x] `F0463` Automatically replay difficult sections · **6-9**
 - [x] `F0464` Highlight sections with repeated mistakes · **6-9**

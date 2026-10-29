@@ -29,6 +29,9 @@ import { generateMaterial } from '@/services/llm/generate';
 import { SpeakButton } from '@/features/speech/SpeakButton';
 import { toast } from '@/state/ui';
 
+/** The settings a made dialogue can be put in (6-9): each is said to Max as part of the topic, so the voices and words change with it. */
+const STYLES = ['a phone call', 'a public announcement at a station', 'a formal conversation at work', 'a casual chat between friends', 'a cheerful conversation', 'an upset conversation'];
+
 const KINDS: Array<{ kind: GeneratedKind; title: string; detail: string; cost: string }> = [
   { kind: 'story', title: 'A story', detail: 'A short graded reader, with its translation.', cost: 'about 600 words in all' },
   { kind: 'sentences', title: 'Example sentences', detail: 'Eight short sentences on a topic, or showing one pattern (the preterite, “tener que” + verb).', cost: 'about 250 words in all' },
@@ -45,6 +48,7 @@ export default function MakePage() {
   const [kind, setKind] = useState<GeneratedKind>('story');
   const [topic, setTopic] = useState('');
   const [source, setSource] = useState('');
+  const [style, setStyle] = useState<string | null>(null);
   // What a quiz is about: a topic, one of the learner's texts, pasted notes, or their own mistakes.
   const [from, setFrom] = useState<'topic' | 'library' | 'notes' | 'mistakes'>('topic');
   const [textId, setTextId] = useState('');
@@ -69,7 +73,7 @@ export default function MakePage() {
       if (kind === 'quiz' && from === 'mistakes') basis = await mistakesText(lang);
       if (kind === 'quiz' && from === 'mistakes' && !basis) throw new Error('Nothing to practise yet: your mistakes appear here once you have made some in a lesson or in Practice.');
       if (basis !== undefined && basis.length < 40 && from !== 'mistakes') throw new Error(from === 'library' ? 'Choose a text first.' : 'Paste a longer text first.');
-      setRow((await generateMaterial({ lang, kind, level, topic: kind === 'quiz' && from === 'mistakes' ? 'my mistakes' : kind === 'simplified' || basis ? undefined : topic.trim() || undefined, source: basis?.slice(0, 4000) })).row);
+      setRow((await generateMaterial({ lang, kind, level, topic: kind === 'quiz' && from === 'mistakes' ? 'my mistakes' : kind === 'simplified' || basis ? undefined : [kind === 'dialogue' ? style : null, topic.trim()].filter(Boolean).join(': ') || undefined, source: basis?.slice(0, 4000) })).row);
     } catch (e) {
       setError(e instanceof Error ? e : new Error('Something went wrong.'));
     } finally {
@@ -111,6 +115,18 @@ export default function MakePage() {
               </button>
             ))}
           </div>
+          {kind === 'dialogue' && (
+            <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="What kind of conversation">
+              <button type="button" role="radio" aria-checked={style === null} onClick={() => setStyle(null)} className={cx('rounded-full border px-3 py-1 text-[13px] font-semibold', style === null ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}>
+                Everyday
+              </button>
+              {STYLES.map((st) => (
+                <button key={st} type="button" role="radio" aria-checked={style === st} onClick={() => setStyle(st)} className={cx('rounded-full border px-3 py-1 text-[13px] font-semibold', style === st ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}>
+                  {st.replace(/^an? /, '')}
+                </button>
+              ))}
+            </div>
+          )}
           {kind === 'quiz' && (
             <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="What the quiz is about">
               {([['topic', 'A topic'], ['library', 'A text of mine'], ['notes', 'My notes'], ['mistakes', 'My mistakes']] as const).map(([v, label]) => (

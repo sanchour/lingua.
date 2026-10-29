@@ -7,7 +7,7 @@ import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { RoomTabs } from '@/app/RoomTabs';
 import type { RoomTab } from '@/app/RoomTabs';
-import { useFeeds, useMediaList, usePlaybackMap, useTranscribedIds } from '@/data/media';
+import { playlistNames, useFeeds, useMediaList, usePlaybackMap, useTranscribedIds } from '@/data/media';
 import { patchSetting } from '@/data/settings';
 import type { MediaSort } from '@/data/settings';
 import type { Media } from '@/data/types';
@@ -108,6 +108,7 @@ export default function SonusPage() {
   };
   const listsMedia = !view || view === 'episodes' || view === 'audio';
 
+  const [playlist, setPlaylist] = useState<string | null>(null);
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
@@ -115,8 +116,9 @@ export default function SonusPage() {
 
   const visible = useMemo(() => {
     const q = searchKey(query.trim());
-    return (media ?? []).filter((m) => !q || searchKey(`${m.title} ${m.collection ?? ''} ${m.artist ?? ''}`).includes(q)).sort(sorter(sort));
-  }, [media, query, sort]);
+    return (media ?? []).filter((m) => (!playlist || m.playlists?.includes(playlist)) && (!q || searchKey(`${m.title} ${m.collection ?? ''} ${m.artist ?? ''}`).includes(q))).sort(sorter(sort));
+  }, [media, query, sort, playlist]);
+  const lists = useMemo(() => playlistNames(media ?? []), [media]);
 
   const closeSearch = () => {
     setQuery('');
@@ -148,7 +150,18 @@ export default function SonusPage() {
     </div>
   );
 
-  const results = query.trim() ? (
+  const chips = lists.length > 0 && (
+    <div role="group" aria-label="Playlists" className="mb-4 flex flex-wrap items-center gap-1.5">
+      <span className="mr-1 text-[12.5px] font-semibold text-ink-faint">Playlists</span>
+      {[null, ...lists].map((n) => (
+        <button key={n ?? 'all'} type="button" aria-pressed={playlist === n} onClick={() => setPlaylist(n)} className={`rounded-full border px-3 py-1 text-[13px] font-semibold ${playlist === n ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface'}`}>
+          {n ?? 'Everything'}
+        </button>
+      ))}
+    </div>
+  );
+
+  const results = query.trim() || playlist ? (
     visible.length ? (
       <div className="-mx-2 flex flex-col">
         {visible.map((m) => (
@@ -158,7 +171,7 @@ export default function SonusPage() {
     ) : (
       <div className="flex flex-col items-center py-14 text-center text-ink-soft">
         <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-        <p className="font-semibold text-ink">Nothing matches “{query.trim()}”</p>
+        <p className="font-semibold text-ink">{query.trim() ? `Nothing matches “${query.trim()}”` : 'Nothing in this playlist yet'}</p>
       </div>
     )
   ) : null;
@@ -172,6 +185,15 @@ export default function SonusPage() {
       />
 
       <RoomTabs label="Sonus" tabs={TABS} active={tab} keys={!searching} end={<SonusPlusLink />} />
+
+      {tab === 'library' && !view && (
+        <p className="-mt-2 mb-4 text-[13.5px] text-ink-soft">
+          <Link to="/sonus/words" className="font-semibold text-ink underline decoration-line-strong underline-offset-4">
+            Your words, read aloud
+          </Link>{' '}
+          for the commute.
+        </p>
+      )}
 
       {tab !== 'library' && (
         <Suspense fallback={null}>
@@ -191,7 +213,12 @@ export default function SonusPage() {
             view={view}
             onView={setView}
             show="listen"
-            toolbar={toolbar}
+            toolbar={
+              <>
+                {toolbar}
+                {chips}
+              </>
+            }
             results={results}
             onMusic={() => navigate('/cantus/music')}
             onPodcasts={findPodcasts}
