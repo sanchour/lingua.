@@ -1643,8 +1643,8 @@ These are integrated activities that combine skills instead of training each one
 - [x] `F1279` Search for words with a particular prefix or suffix · **6-22**
 - [x] `F1280` Search by grammatical category · **6-22**
 - [x] `F1281` Search across personal vocabulary
-- [ ] `F1282` Search across saved texts · **6-22**
-- [ ] `F1283` Search across notes and flashcards · **6-22** · partly there
+- [x] `F1282` Search across saved texts · **6-22**
+- [x] `F1283` Search across notes and flashcards · **6-22** · partly there
 - [x] `F1284` Dictionary history
 - [ ] `F1285` Favorites and bookmarks · **6-22**
 - [x] `F1286` Offline dictionary

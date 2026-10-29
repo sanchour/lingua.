@@ -20,6 +20,7 @@ interface UIState {
   /** Measured height of the touch header (incl. safe area), used for title-collapse detection. */
   topBarHeight: number;
   shortcutsOpen: boolean;
+  globalSearchOpen: boolean;
   /** The plans sheet: open for a locked feature, for all plans, or closed. */
   plansFor: Feature | 'all' | null;
   openPlans: (feature?: Feature) => void;
@@ -28,6 +29,7 @@ interface UIState {
   setTopBarHeight: (height: number) => void;
   setPageTitleHidden: (hidden: boolean) => void;
   setShortcutsOpen: (open: boolean) => void;
+  setGlobalSearchOpen: (open: boolean) => void;
   pushToast: (toast: Omit<ToastItem, 'id'>) => number;
   dismissToast: (id: number) => void;
 }
@@ -40,6 +42,7 @@ export const useUI = create<UIState>((set) => ({
   pageTitle: '',
   topBarHeight: 56,
   shortcutsOpen: false,
+  globalSearchOpen: false,
   plansFor: null,
   openPlans: (feature) => set({ plansFor: feature ?? 'all' }),
   closePlans: () => set({ plansFor: null }),
@@ -47,6 +50,7 @@ export const useUI = create<UIState>((set) => ({
   setTopBarHeight: (topBarHeight) => set({ topBarHeight }),
   setPageTitleHidden: (pageTitleHidden) => set({ pageTitleHidden }),
   setShortcutsOpen: (shortcutsOpen) => set({ shortcutsOpen }),
+  setGlobalSearchOpen: (globalSearchOpen) => set({ globalSearchOpen }),
   pushToast: (toast) => {
     const id = nextToastId++;
     set((s) => ({ toasts: [...s.toasts.slice(-2), { ...toast, id }] }));

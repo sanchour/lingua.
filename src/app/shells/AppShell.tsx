@@ -9,6 +9,7 @@ import { ShortcutsDialog } from '@/app/ShortcutsDialog';
 import { MiniPlayer } from '@/features/sonus/MiniPlayer';
 import { PlansSheet } from '@/features/plans/PlansSheet';
 import { usePlanUpkeep } from '@/features/plans/usePlan';
+import { GlobalSearchModal } from '@/features/search/GlobalSearchModal';
 import { loadScriptFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
@@ -41,6 +42,7 @@ export function AppShell() {
   const { pathname, hash } = useLocation();
   const navigate = useNavigate();
   const setShortcutsOpen = useUI((s) => s.setShortcutsOpen);
+  const setGlobalSearchOpen = useUI((s) => s.setGlobalSearchOpen);
   const immersive = isImmersive(pathname, layout === 'wide');
   // The mini player shows everywhere except where the full player is on screen.
   const showMini = !immersive && !pathname.startsWith('/sonus/play/') && !pathname.startsWith('/sonus/station/') && !pathname.startsWith('/visio/watch/');
@@ -66,6 +68,7 @@ export function AppShell() {
   useHotkeys({
     ...Object.fromEntries(SECTIONS.slice(0, 10).map((s, i) => [`alt+${sectionKey(i)}`, () => navigate(s.path)])),
     '?': () => setShortcutsOpen(true),
+    'mod+k': () => setGlobalSearchOpen(true),
   });
 
   if (immersive) {
@@ -75,6 +78,7 @@ export function AppShell() {
           <Outlet />
         </Suspense>
         <ShortcutsDialog />
+        <GlobalSearchModal />
         <PlansSheet />
       </>
     );
@@ -93,6 +97,7 @@ export function AppShell() {
       {layout === 'wide' ? <DesktopShell>{content}</DesktopShell> : <TouchShell>{content}</TouchShell>}
       {showMini && <MiniPlayer />}
       <ShortcutsDialog />
+      <GlobalSearchModal />
       <PlansSheet />
     </>
   );
