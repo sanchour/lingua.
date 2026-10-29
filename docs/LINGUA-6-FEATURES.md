@@ -243,7 +243,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0147` Antonym maps · **6-20** · partly there
 - [x] `F0148` False friends between languages · **6-1** · partly there
 - [x] `F0149` Cognates · **6-1** · partly there
-- [ ] `F0150` False cognates · **6-1** · partly there
+- [x] `F0150` False cognates · **6-1** · partly there
 - [x] `F0151` Homonyms and homophones · **6-1**
 - [x] `F0152` Polysemy and different senses
 - [x] `F0153` Idioms and fixed expressions
@@ -254,7 +254,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [ ] `F0158` Words that don’t translate neatly · **6-19**
 - [ ] `F0159` Semantic fields · **6-20** · partly there
 - [x] `F0160` Frequency-ranked synonyms · **6-1**
-- [ ] `F0161` Differences between similar words · **6-1** · partly there
+- [x] `F0161` Differences between similar words · **6-1** · partly there
 - [x] `F0162` Example sentences ranked by difficulty · **6-1** · partly there
 - [x] `F0163` Corpus examples showing authentic usage
 - [x] `F0164` Connotation and emotional tone · **6-1**
@@ -567,22 +567,22 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0410` ⭐ Phrase pronunciation recordings
 - [x] `F0411` Sentence recordings
 - [x] `F0412` Slow and natural-speed audio · **6-9** · partly there
-- [ ] `F0413` Beginner listening exercises · **6-9** · partly there
-- [ ] `F0414` Everyday conversations · **6-9** · partly there
+- [x] `F0413` Beginner listening exercises · **6-9** · partly there
+- [x] `F0414` Everyday conversations · **6-9** · partly there
 - [x] `F0415` Dialogues between multiple speakers · **6-9**
-- [ ] `F0416` Short stories in audio format · **6-9** · partly there
+- [x] `F0416` Short stories in audio format · **6-9** · partly there
 - [x] `F0417` Audiobooks
 - [x] `F0418` Podcasts
 - [x] `F0419` News broadcasts
 - [x] `F0420` Interviews
-- [ ] `F0421` Speeches · **6-9** · partly there
-- [ ] `F0422` Lectures · **6-9** · partly there
-- [ ] `F0423` Documentary narration · **6-9** · partly there
+- [x] `F0421` Speeches · **6-9** · partly there
+- [x] `F0422` Lectures · **6-9** · partly there
+- [x] `F0423` Documentary narration · **6-9** · partly there
 - [x] `F0424` Radio programs
 - [x] `F0425` Public-domain recordings
 - [ ] `F0426` Regional accent samples · **6-9**
-- [ ] `F0427` Casual conversations · **6-9** · partly there
-- [ ] `F0428` Formal speeches · **6-9** · partly there
+- [x] `F0427` Casual conversations · **6-9** · partly there
+- [x] `F0428` Formal speeches · **6-9** · partly there
 - [x] `F0429` Telephone conversations · **6-9**
 - [ ] `F0430` Background-noise recordings · **6-9**
 - [x] `F0431` Real-world announcements · **6-9**
@@ -639,21 +639,21 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [ ] `F0472` Partial dictation · **6-9**
 - [ ] `F0473` Dictation with punctuation · **6-9**
 - [ ] `F0474` Dictation with grammatical endings · **6-9**
-- [ ] `F0475` Listen and identify the speaker · **6-9**
-- [ ] `F0476` Listen and identify the emotion · **6-9**
-- [ ] `F0477` Listen and identify the location · **6-9**
+- [x] `F0475` Listen and identify the speaker · **6-9**
+- [x] `F0476` Listen and identify the emotion · **6-9**
+- [x] `F0477` Listen and identify the location · **6-9**
 - [x] `F0478` Listen and summarize
-- [ ] `F0479` Listen and answer comprehension questions · **6-9**
+- [x] `F0479` Listen and answer comprehension questions · **6-9**
 - [x] `F0480` Listen and distinguish similar sounds · **6-10**
-- [ ] `F0481` Listen for specific keywords · **6-9**
-- [ ] `F0482` Listen for the main idea · **6-9**
-- [ ] `F0483` Listen and predict the next phrase · **6-9**
-- [ ] `F0484` Listen and identify a change in topic · **6-9**
+- [x] `F0481` Listen for specific keywords · **6-9**
+- [x] `F0482` Listen for the main idea · **6-9**
+- [x] `F0483` Listen and predict the next phrase · **6-9**
+- [x] `F0484` Listen and identify a change in topic · **6-9**
 - [x] `F0485` Listen without subtitles, then with subtitles · **6-9** · partly there
 - [x] `F0486` Compare an initial guess with the transcript · **6-9**
 - [x] `F0487` Listen to a phrase and repeat it · **6-11** · partly there
 - [x] `F0488` Transcribe a short audio clip · **6-9**
-- [ ] `F0489` Identify formal versus informal speech · **6-9**
+- [x] `F0489` Identify formal versus informal speech · **6-9**
 - [ ] `F0490` Identify the speaker’s accent · **6-9**
 - [ ] `F0491` Distinguish native speech from synthetic speech · **6-26**
 
@@ -1321,12 +1321,12 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [x] `F1019` Generate roleplay scenarios
 - [x] `F1020` Generate listening scripts · **6-6**
 - [x] `F1021` Generate audio dialogues where supported · **6-6**
-- [ ] `F1022` Generate dictation exercises · **6-6**
-- [ ] `F1023` Generate grammar drills · **6-6**
+- [x] `F1022` Generate dictation exercises · **6-6**
+- [x] `F1023` Generate grammar drills · **6-6**
 - [x] `F1024` Generate translation exercises · **6-6**
 - [x] `F1025` Generate writing prompts
 - [x] `F1026` Generate comprehension questions
-- [ ] `F1027` Generate pronunciation drills · **6-6**
+- [x] `F1027` Generate pronunciation drills · **6-6**
 - [x] `F1028` Generate quizzes · **6-6**
 - [ ] `F1029` Generate mock exams · **6-18**
 - [ ] `F1030` Generate topic-specific courses · **6-14**
@@ -2112,7 +2112,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [x] `F1606` Authentic media library
 - [ ] `F1607` Personal linguistic knowledge graph · **6-20**
 - [ ] `F1608` Advanced learning analytics · **6-17** · partly there
-- [ ] `F1609` AI-generated courses and interactive stories · **6-6** · partly there
+- [x] `F1609` AI-generated courses and interactive stories · **6-6** · partly there
 - [ ] `F1610` Deep personalization · **6-16**
 - [x] `F1611` Multi-language learning workspace
 

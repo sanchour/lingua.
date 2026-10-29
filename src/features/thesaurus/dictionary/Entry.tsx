@@ -8,6 +8,7 @@ import type { FullDictRow, FullEntry } from '@/core/dictionary/format';
 import { getLanguage } from '@/core/lang/languages';
 import { easiestFirst } from '@/core/dictionary/difficulty';
 import { falseFriendOf } from '@/core/lang/falseFriends';
+import { falseCognateOf } from '@/core/lang/falseCognates';
 import { learnerErrorOf } from '@/core/lang/learnerErrors';
 import { cefrForRank } from '@/core/lang/levels';
 import { loadGrammar } from '@/core/grammar/load';
@@ -31,6 +32,7 @@ import { AddToDeck } from '@/features/codex/reader/AddToDeck';
 import { WordForms } from '@/features/codex/reader/WordForms';
 import { articleFor } from '../common/words';
 import { entryPath } from './DictionarySearch';
+import { Difference } from './Difference';
 import { WordPlaces } from './WordMemory';
 import { OriginLines, SyllableBadge } from './WordOrigin';
 import { YourWord } from './YourWord';
@@ -281,6 +283,11 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
             </div>
           </Side>
         )}
+        {falseCognateOf(lang, row.word) && (
+          <Side title="Not the cousin it looks like">
+            <p className="text-[14.5px] leading-relaxed text-ink-soft">It looks like the English “{falseCognateOf(lang, row.word)!.looks}”. {falseCognateOf(lang, row.word)!.note}</p>
+          </Side>
+        )}
         {learnerErrorOf(lang, row.word) && (
           <Side title="A common mistake">
             <p className="text-[14.5px] leading-relaxed text-ink-soft">{learnerErrorOf(lang, row.word)}</p>
@@ -296,6 +303,9 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
         {row.confused && row.confused.length > 0 && (
           <Side title="Easily confused with">
             <WordLinks lang={lang} words={row.confused} />
+            {row.confused.slice(0, 3).map((w) => (
+              <Difference key={w} lang={lang} word={row.word} other={w} />
+            ))}
           </Side>
         )}
         {made.length > 0 && (

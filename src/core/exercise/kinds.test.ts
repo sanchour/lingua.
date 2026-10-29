@@ -185,3 +185,17 @@ describe('exercises from a line that was heard', () => {
     expect(spec.listen).toMatchObject({ text: 'Mi perro come pan' });
   });
 });
+
+describe('a drill gap', () => {
+  it('shows the sentence with a gap, takes the word (a missing accent is close), and gives hints', async () => {
+    const { drillGap } = await import('./kinds');
+    const { judge } = await import('./judge');
+    const spec = drillGap({ before: 'Ayer ella ', answer: 'comió', after: ' pan.', hint: 'comer' }, 'es', 'd0', { skill: 'grammar', item: { type: 'grammar', topicId: 'preterite' } });
+    expect((spec.body as { given: string[] }).given[0]).toBe('Ayer ella _____ pan.');
+    expect(judge(spec.check, 'comió', 'es').outcome).toBe('right');
+    expect(judge(spec.check, 'comio', 'es').outcome).toBe('close');
+    expect(judge(spec.check, 'fue', 'es').outcome).toBe('wrong');
+    expect(spec.instruction).toBe('Fill the gap (comer)');
+    expect(spec.hints).toHaveLength(2);
+  });
+});

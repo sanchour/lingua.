@@ -264,6 +264,21 @@ export function useInSentence(word: WordFacts, lang: string, key: string): Exerc
   };
 }
 
+/** A drill sentence with its gap: the learner types the word that fills it. A missing accent is close, not wrong. */
+export function drillGap(item: { before: string; answer: string; after: string; hint?: string }, lang: string, key: string, trains: Trains): ExerciseSpec<'rewrite', TaskBody> {
+  return {
+    key,
+    kind: 'rewrite',
+    lang,
+    instruction: item.hint ? `Fill the gap (${item.hint})` : 'Fill the gap',
+    body: { task: 'fix', given: [`${item.before}_____${item.after}`.trim()], prompt: 'Fill the gap' },
+    check: { rule: 'accent-blind', expected: item.answer },
+    trains,
+    feedback: { why: `${item.before}${item.answer}${item.after}`.trim() },
+    hints: item.hint ? [{ text: item.hint, strength: 0 }, { text: `It starts with “${[...item.answer][0]}”`, strength: 1 }] : undefined,
+  };
+}
+
 // ── Listening (6-9) ─────────────────────────────────────────────────────────
 
 /** A line of something the learner listened to: its words, and where in the audio or video it is heard. */

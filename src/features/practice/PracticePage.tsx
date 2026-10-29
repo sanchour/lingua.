@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { completeDialogue, sentenceTask } from '@/core/exercise';
 import { REWRITE_TASKS } from '@/core/generate/generate';
-import type { DialogueBody, RewritesBody, RewriteTask, SentencesBody } from '@/core/generate/generate';
+import type { DialogueBody, DrillBody, RewritesBody, RewriteTask, SentencesBody } from '@/core/generate/generate';
 import type { HeardLine } from '@/core/exercise';
 import type { Cefr } from '@/core/lang/levels';
 import { aiBlock } from '@/data/plan';
@@ -12,7 +12,7 @@ import { heardLines } from '@/data/listening';
 import { generateMaterial } from '@/services/llm/generate';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
-import { attachRetries, correctMistake, dragSentence, gridOfGrammarTable, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, planTransforms, predictForms, rewriteFix, tenseTransforms, useInSentence, listenGap, listenOrder, listenType } from '@/core/exercise';
+import { attachRetries, correctMistake, dragSentence, gridOfGrammarTable, matchAffixes, matchAntonyms, matchDefinitions, matchPartsOfSpeech, matchPictures, matchSentences, matchSounds, matchSynonyms, planTransforms, predictForms, rewriteFix, tenseTransforms, useInSentence, drillGap, listenGap, listenOrder, listenType } from '@/core/exercise';
 import type { ExerciseSpec } from '@/core/contracts/exercise';
 import type { FormGrid, WordFacts } from '@/core/exercise';
 import type { Topic } from '@/core/grammar/types';
@@ -70,7 +70,7 @@ const TASK_SET: Record<RewriteTask, { title: string; detail: string }> = {
 };
 
 /** The sets Max makes for the learner when they start them: sentence tasks, and a dialogue with a line to fill in. */
-function madeSets(lang: string, level: Cefr): PracticeSet[] {
+function madeSets(lang: string, level: Cefr, topics: Topic[]): PracticeSet[] {
   const needs = 'Lingua+ Max, and your AI key (Settings › AI)';
   const trains = (id: string) => ({ skill: 'grammar', item: { type: 'pattern', patternId: id } }) as const;
   const tasks = REWRITE_TASKS.map(
@@ -112,7 +112,32 @@ function madeSets(lang: string, level: Cefr): PracticeSet[] {
       return shuffle(body.sentences, () => Math.random()).flatMap((s, i) => dragSentence(s.text, s.translation, lang, () => Math.random(), `translate-${i}`, trains('translate')) ?? []).slice(0, 6);
     },
   };
-  return [...tasks, dialogue, translate];
+  const dictation: PracticeSet = {
+    id: 'hear-max',
+    group: 'listening',
+    title: 'Dictation made for you',
+    detail: 'Short sentences at your level, read by your device’s voice: type what you hear.',
+    needs,
+    make: () => [],
+    makeLater: async () => {
+      const body = (await generateMaterial({ lang, kind: 'sentences', level, topic: 'dictation' })).row.content as SentencesBody;
+      return body.sentences.slice(0, 6).map((s, i) => listenType({ text: s.text }, lang, `hear-max-${i}`));
+    },
+  };
+  const drill: PracticeSet = {
+    id: 'drill',
+    group: 'grammar',
+    title: 'A grammar drill made for you',
+    detail: 'Sentences with a gap on a point of grammar from Grammatica, made to your level.',
+    needs,
+    make: () => [],
+    makeLater: async () => {
+      const topic = shuffle(topics, () => Math.random())[0];
+      const body = (await generateMaterial({ lang, kind: 'drill', level, focus: topic?.title ?? 'the present tense' })).row.content as DrillBody;
+      return body.items.slice(0, 8).map((it, i) => drillGap(it, lang, `drill-${i}`, topic ? ({ skill: 'grammar', item: { type: 'grammar', topicId: topic.id } } as const) : trains('drill')));
+    },
+  };
+  return [...tasks, dialogue, translate, dictation, drill];
 }
 
 function buildSets(lang: string, c: Ctx, level: Cefr): PracticeSet[] {
@@ -237,7 +262,7 @@ function buildSets(lang: string, c: Ctx, level: Cefr): PracticeSet[] {
       needs: 'a grammar with tables',
       make: () => c.topics.flatMap((t) => planTransforms((t.tables ?? []).map((tb) => gridOfGrammarTable(tb, t.title)), lang, random, 2, { trains: trains(t.id), keyPrefix: `forms-${t.id}` })).slice(0, 8),
     },
-    ...madeSets(lang, level),
+    ...madeSets(lang, level, c.topics),
     {
       id: 'drag',
       group: 'grammar',
