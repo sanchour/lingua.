@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.1** · 2026-10-29 · Contract: exercise.ts gains TransformBody and accent-blind rejects (6-4)
 - **0.6.0-alpha.3** · 2026-10-29 · Claim 6-4: one exercise engine
 - **0.6.0-alpha.2** · 2026-10-29 · 6-0 done: the contracts (word, db, exercise, learner) and LINGUA-6-CONTRACTS.md
 - **0.6.0-alpha.1** · 2026-10-29 · Claim 6-0: the contracts

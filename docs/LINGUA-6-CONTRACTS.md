@@ -42,6 +42,11 @@ a step's big commit, so another account that rebases can see it. If a step alrea
 is fixed in the same push or the next, and its row in the plan says so. Never rename a field a built step already stores:
 add the new one and read both.
 
+## Changes since 6-0
+
+- **0.6.0-alpha.4 (6-4):** `exercise.ts` gains `TransformBody` and `AnswerRule`'s `accent-blind` gains `rejects`. From 6-4 on,
+  `src/core/exercise/` imports `exercise.ts` and `learner.ts` for its types; the contract stays the single source.
+
 ## What was decided here (and could be reopened)
 
 - Part A's tables: `evidence`, `evidenceDays` (6-5) and `generated` (6-6) are the only new ones; 6-1 to 6-3 add fields

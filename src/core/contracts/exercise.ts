@@ -36,8 +36,9 @@ export type ExerciseKind = ExistingExerciseKind | NewExerciseKind;
 export type AnswerRule =
   /** Case, punctuation, stress marks and a leading article never count (core/srs/answer.ts `normalizeAnswer`). */
   | { rule: 'exact'; expected: string }
-  /** As 'exact', and a missing accent is "close", where the language has accents (`foldAccents`). */
-  | { rule: 'accent-blind'; expected: string }
+  /** As 'exact', and a missing accent is "close", where the language has accents (`foldAccents`). `rejects` are other
+   *  real forms that differ from the answer only by an accent or a letter (habló / hablo): never close, always wrong. */
+  | { rule: 'accent-blind'; expected: string; rejects?: string[] }
   /** Any of these is right; the first is shown as the model answer. */
   | { rule: 'accepted'; accepted: string[] }
   /** One option of several, by index (multiple choice, true or false). */
@@ -48,6 +49,16 @@ export type AnswerRule =
   | { rule: 'ai'; modelAnswer: string; criteria?: string }
   /** The learner rates their own: the model answer is shown. */
   | { rule: 'self'; modelAnswer: string };
+
+/** The body of a 'transform' exercise (6-4): one form of a word to be changed into another form of the same word. */
+export interface TransformBody {
+  /** The table it comes from ("Present indicative"). */
+  title: string;
+  /** The word's dictionary form, when known. */
+  lemma?: string;
+  from: { form: string; label: string };
+  to: { label: string };
+}
 
 /** One hint, revealed by a tap. Hints grow step by step; a used hint makes the answer "assisted" (6-5). */
 export interface Hint {
