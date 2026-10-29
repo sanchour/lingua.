@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.56** · 2026-10-29 · 6-2b: decks from transcripts; handover updated
 - **0.6.0-alpha.55** · 2026-10-29 · 6-3b: the last card kinds looked at
 - **0.6.0-alpha.54** · 2026-10-29 · 6-1c: Spanish stress from the spelling
 - **0.6.0-alpha.53** · 2026-10-29 · 6-8 R1: reading aids, highlights, margin notes and passage cards
