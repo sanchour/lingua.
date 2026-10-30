@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { ChevronRight, PanelLeftClose, PanelLeftOpen, Shapes } from 'lucide-react';
-import { BOTTOM_SECTIONS, PRIMARY_SECTIONS, SECTIONS, sectionKey, TOOL_SECTIONS } from '@/app/sections';
+import { BOTTOM_SECTIONS, PRIMARY_SECTIONS, SHORTCUT_SECTIONS, sectionKey, TOOL_SECTIONS } from '@/app/sections';
 import type { Section } from '@/app/sections';
 import { IconButton, Tooltip } from '@/design/primitives';
 import { spring } from '@/design/motion';
@@ -66,7 +66,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       <nav aria-label="Sections" className="mt-3 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain [scrollbar-width:none]">
         {PRIMARY_SECTIONS.map((section) => (
-          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
+          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SHORTCUT_SECTIONS.indexOf(section))} />
         ))}
 
         <div className="mt-1.5 pt-1.5 border-t border-line/60">
@@ -108,7 +108,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               >
                 <div className={cx('mt-0.5 flex flex-col gap-0.5', !collapsed && 'pl-1.5')}>
                   {TOOL_SECTIONS.map((section) => (
-                    <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} compact />
+                    <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SHORTCUT_SECTIONS.indexOf(section))} compact />
                   ))}
                 </div>
               </motion.div>
@@ -119,7 +119,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       <nav aria-label="Statistics and settings" className="mt-2 flex shrink-0 flex-col gap-0.5 border-t border-line pt-2">
         {BOTTOM_SECTIONS.map((section) => (
-          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
+          <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SHORTCUT_SECTIONS.indexOf(section))} />
         ))}
       </nav>
     </motion.aside>
@@ -128,6 +128,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
 function SidebarLink({ section, collapsed, index, compact = false }: { section: Section; collapsed: boolean; index: number; compact?: boolean }) {
   const Icon = section.icon;
+  const { pathname } = useLocation();
+  // Ludus lives under Thesaurus' address, so Thesaurus is not also lit while the games are open.
+  const lit = (isActive: boolean) => isActive && !(section.id === 'thesaurus' && pathname.startsWith('/thesaurus/games'));
   return (
     <Tooltip label={section.name} shortcut={index ? `Alt ${index}` : undefined} placement="right" disabled={!collapsed}>
       <NavLink
@@ -137,11 +140,13 @@ function SidebarLink({ section, collapsed, index, compact = false }: { section: 
           cx(
             'group relative flex shrink-0 items-center gap-3 rounded-xl px-2.5 transition-colors duration-150',
             compact ? 'h-9' : 'h-10',
-            isActive ? 'text-ink' : 'text-ink-soft hover:bg-raised/70 hover:text-ink',
+            lit(isActive) ? 'text-ink' : 'text-ink-soft hover:bg-raised/70 hover:text-ink',
           )
         }
       >
-        {({ isActive }) => (
+        {({ isActive: linked }) => {
+          const isActive = lit(linked);
+          return (
           <>
             {isActive && (
               <motion.span layoutId="sidebar-active" className="absolute inset-0 rounded-xl bg-raised shadow-elev-1" transition={spring.snappy} />
@@ -160,7 +165,8 @@ function SidebarLink({ section, collapsed, index, compact = false }: { section: 
               {section.name}
             </motion.span>
           </>
-        )}
+          );
+        }}
       </NavLink>
     </Tooltip>
   );

@@ -6,6 +6,7 @@ import type { GameDef } from './defs';
 
 export interface GameItem {
   term: string;
+  lemma?: string;
   meaning?: string;
   example?: string;
   synonyms: string[];
@@ -18,15 +19,32 @@ export const itemsOfFacts = (facts: WordFacts[]): GameItem[] =>
 
 /** The items a game can really use. */
 export function usable(def: GameDef, items: GameItem[], lang: string): GameItem[] {
-  return items.filter((i) => (!def.needs.meaning || !!i.meaning) && (!def.needs.letters || letterWord(i.term, { lang }) !== null));
+  const { meaning, letters, maxLetters = 14 } = def.needs;
+  return items.filter((i) => {
+    if (meaning && !i.meaning) return false;
+    if (!letters) return true;
+    const w = letterWord(i.term, { lang });
+    return !!w && w.keys.filter((k) => k !== null).length <= maxLetters;
+  });
+}
+
+/** What the learner has to play with: their words, the texts they could hunt in, and how many words of the language's own list there are. */
+export interface GameSource {
+  items: GameItem[];
+  texts: number;
+  listWords: number;
 }
 
 export type CanPlay = { ok: true } | { ok: false; reason: string };
 
-export function canPlay(def: GameDef, items: GameItem[], lang: string): CanPlay {
-  if (def.needs.letters && !hasLetters(lang)) return { ok: false, reason: NO_LETTERS };
-  const have = usable(def, items, lang).length;
-  if (have >= def.needs.count) return { ok: true };
-  const what = def.needs.letters ? 'words with 3 to 14 letters' : 'words';
-  return { ok: false, reason: `Needs ${def.needs.count} of your ${what}${def.needs.meaning ? ' that have a meaning' : ''}; you have ${have}. Add words to a deck, or look for more in Codex.` };
+export function canPlay(def: GameDef, src: GameSource, lang: string): CanPlay {
+  const { needs } = def;
+  if (needs.letters && !hasLetters(lang)) return { ok: false, reason: NO_LETTERS };
+  if (needs.list && src.listWords < needs.list) return { ok: false, reason: 'Needs the language’s word list, which comes with its dictionary pack. Wait for the pack to finish installing, or install it.' };
+  if (needs.texts && src.texts < 1) return { ok: false, reason: 'Needs a text in Codex to hunt in. Add or open one first.' };
+  if (!needs.count) return { ok: true };
+  const have = usable(def, src.items, lang).length;
+  if (have >= needs.count) return { ok: true };
+  const what = needs.letters ? `words with 3 to ${needs.maxLetters ?? 14} letters` : 'words';
+  return { ok: false, reason: `Needs ${needs.count} of your ${what}${needs.meaning ? ' that have a meaning' : ''}; you have ${have}. Add words to a deck, or look for more in Codex.` };
 }

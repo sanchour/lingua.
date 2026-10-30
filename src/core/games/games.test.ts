@@ -6,9 +6,11 @@ import { guess, hideIn, hint, isShown, MAX_HINTS, MAX_MISTAKES, startHangman, st
 import { alphabetFor, graphemes, hasLetters, letterKey, letterWord } from './letters';
 import { dailySeed, isoWeek, weekKey, weekSeed } from './seeds';
 import { canPlay, usable } from './source';
+import type { GameItem } from './source';
 
 const hangman = GAMES[0];
-const item = (term: string, meaning: string | undefined = 'x') => ({ term, meaning, synonyms: [], antonyms: [] });
+const src = (items: GameItem[], texts = 0, listWords = 0) => ({ items, texts, listWords });
+const item = (term: string, meaning: string | undefined = 'x'): GameItem => ({ term, meaning, synonyms: [], antonyms: [] });
 
 describe('seeds', () => {
   it('the same language and day give the same puzzle, others do not', () => {
@@ -118,14 +120,14 @@ describe('hangman', () => {
 describe('what a game is dealt', () => {
   const five = ['gato', 'perro', 'casa', 'libro', 'mesa'].map((t) => item(t));
   it('needs enough words with a meaning, and says what is missing', () => {
-    expect(canPlay(hangman, five, 'es')).toEqual({ ok: true });
-    const few = canPlay(hangman, [...five.slice(0, 3), { ...item('sol'), meaning: undefined }, item('ab')], 'es');
+    expect(canPlay(hangman, src(five), 'es')).toEqual({ ok: true });
+    const few = canPlay(hangman, src([...five.slice(0, 3), { ...item('sol'), meaning: undefined }, item('ab')]), 'es');
     expect(few.ok).toBe(false);
     expect(few.ok === false && few.reason).toMatch(/Needs 5 .*you have 3/);
     expect(usable(hangman, five, 'es')).toHaveLength(5);
   });
   it('is not offered where there are no letters', () => {
-    const r = canPlay(hangman, five, 'ja');
+    const r = canPlay(hangman, src(five), 'ja');
     expect(r.ok === false && r.reason).toMatch(/letters/);
   });
 });

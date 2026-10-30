@@ -1,19 +1,35 @@
 // Thesaurus › Games (6-21): the shelf of games played on the learner's own words, and each game on its own address. The words are
 // the same ones Practice draws on; a game that cannot be made from them says what is missing instead of opening empty.
 import { useEffect, useState } from 'react';
+import type { ComponentType } from 'react';
 import { Link, useParams } from 'react-router';
 import { Gamepad2, Trophy } from 'lucide-react';
 import { clock } from '@/core/games/bests';
-import { GAME_GROUPS, GAMES, gameById } from '@/core/games/defs';
-import type { GameGroup } from '@/core/games/defs';
+import type { Best } from '@/core/games/bests';
+import { GAME_GROUPS, GAMES as ALL_GAMES, gameById } from '@/core/games/defs';
+import type { GameDef, GameGroup } from '@/core/games/defs';
 import { canPlay } from '@/core/games/source';
-import type { GameItem } from '@/core/games/source';
+import type { GameItem, GameSource } from '@/core/games/source';
 import { getLanguage } from '@/core/lang/languages';
-import { gameItems, useBests } from '@/data/games';
+import { gameSource, useBests } from '@/data/games';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { buttonClasses, Card, EmptyState } from '@/design/primitives';
+import { Anagram } from './Anagram';
+import { Clues } from './Clues';
 import { Hangman } from './Hangman';
+import { MissingLetters } from './MissingLetters';
+
+interface ScreenProps {
+  lang: string;
+  def: GameDef;
+  items: GameItem[];
+  best?: Best;
+}
+
+/** The screen of each game that has one; a game without one is not on the shelf yet. */
+const SCREENS: Record<string, ComponentType<ScreenProps>> = { hangman: Hangman, anagram: Anagram, missing: MissingLetters, clues: Clues };
+const GAMES = ALL_GAMES.filter((g) => g.id in SCREENS);
 
 export default function GamesPage() {
   const { language } = useApp();
@@ -22,18 +38,18 @@ export default function GamesPage() {
   const gameId = useParams().game;
   const def = gameById(gameId);
   const bests = useBests(lang);
-  const [items, setItems] = useState<GameItem[] | null>(null);
+  const [source, setSource] = useState<GameSource | null>(null);
 
   useEffect(() => {
     let alive = true;
-    setItems(null);
-    void gameItems(lang).then((i) => alive && setItems(i));
+    setSource(null);
+    void gameSource(lang).then((i) => alive && setSource(i));
     return () => {
       alive = false;
     };
   }, [lang]);
 
-  if (gameId && !def)
+  if (gameId && !(def && def.id in SCREENS))
     return (
       <EmptyState icon={Gamepad2} title="No such game" action={<Link to="/thesaurus/games" className={buttonClasses('secondary', 'md')}>All games</Link>}>
         That game is not on the shelf.
@@ -41,15 +57,16 @@ export default function GamesPage() {
     );
 
   if (def) {
-    if (!items) return <p className="p-10 text-ink-soft">Looking at your words…</p>;
-    const can = canPlay(def, items, lang);
+    if (!source) return <p className="p-10 text-ink-soft">Looking at your words…</p>;
+    const can = canPlay(def, source, lang);
     if (!can.ok)
       return (
         <EmptyState icon={Gamepad2} title={`${def.title} can’t be made yet`} action={<Link to="/thesaurus/games" className={buttonClasses('secondary', 'md')}>All games</Link>}>
           {can.reason}
         </EmptyState>
       );
-    return <Hangman key={lang} lang={lang} def={def} items={items} best={bests?.[def.id]} />;
+    const Screen = SCREENS[def.id];
+    return <Screen key={`${lang}:${def.id}`} lang={lang} def={def} items={source.items} best={bests?.[def.id]} />;
   }
 
   const played = GAMES.filter((g) => bests?.[g.id]);
@@ -61,7 +78,7 @@ export default function GamesPage() {
         <h2 className="mb-3 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">{GAME_GROUPS[group].title}</h2>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {games.map((g) => {
-            const can = items ? canPlay(g, items, lang) : null;
+            const can = source ? canPlay(g, source, lang) : null;
             const best = bests?.[g.id];
             return (
               <Card key={g.id} className="flex flex-col p-5">
