@@ -265,7 +265,7 @@ function SectionView({ id }: { id: SectionId }) {
     case 'language':
       return <LanguageSection active={language} />;
     case 'ai':
-      return <AiSection llm={settings.llm} apiKeys={settings.apiKeys} translation={settings.translation} />;
+      return <AiSection llm={settings.llm} apiKeys={settings.apiKeys} translation={settings.translation} tutor={settings.tutor} />;
     case 'plus':
       return <PlanSection meta={settings.meta} />;
     case 'sync':

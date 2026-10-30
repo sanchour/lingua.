@@ -329,8 +329,8 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0219` Interactive grammar maps · **6-7**
 - [x] `F0220` Cross-references between related rules · **6-7** · partly there
 - [x] `F0221` Prerequisite links showing what to learn first · **6-7**
-- [ ] `F0222` Grammar search by natural language question · **6-15**
-- [ ] `F0223` AI-generated explanations at different difficulty levels · **6-15**
+- [x] `F0222` Grammar search by natural language question · **6-15**
+- [x] `F0223` AI-generated explanations at different difficulty levels · **6-15**
 - [x] `F0224` Grammar explanations in the target language · **6-7**
 - [x] `F0225` Grammar explanations in the learner’s native language · **6-7** · partly there
 - [x] `F0226` Side-by-side explanations in two languages · **6-7**
@@ -1244,23 +1244,23 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 
 *In Lingua: Sentence translation (S), Mundus's next steps, Diarium's review, Sermo for conversation and debate.*
 
-- [ ] `F0955` ⭐ Ask any language question · **6-15** · partly there
-- [ ] `F0956` ⭐ Explain grammar in simple terms · **6-15** · partly there
-- [ ] `F0957` ⭐ Explain vocabulary nuances · **6-15** · partly there
-- [ ] `F0958` ⭐ Generate examples on demand · **6-15** · partly there
+- [x] `F0955` ⭐ Ask any language question · **6-15** · partly there
+- [x] `F0956` ⭐ Explain grammar in simple terms · **6-15** · partly there
+- [x] `F0957` ⭐ Explain vocabulary nuances · **6-15** · partly there
+- [x] `F0958` ⭐ Generate examples on demand · **6-15** · partly there
 - [x] `F0959` Translate difficult sentences
-- [ ] `F0960` Explain idioms · **6-15**
-- [ ] `F0961` Explain slang · **6-15**
-- [ ] `F0962` Compare similar words · **6-15**
-- [ ] `F0963` Explain pronunciation · **6-15**
-- [ ] `F0964` Explain regional differences · **6-15**
-- [ ] `F0965` Explain cultural references · **6-15**
-- [ ] `F0966` Answer questions about an active lesson · **6-15**
-- [ ] `F0967` Explain why an answer was incorrect · **6-15** · partly there
-- [ ] `F0968` Create additional examples · **6-15**
+- [x] `F0960` Explain idioms · **6-15**
+- [x] `F0961` Explain slang · **6-15**
+- [x] `F0962` Compare similar words · **6-15**
+- [x] `F0963` Explain pronunciation · **6-15**
+- [x] `F0964` Explain regional differences · **6-15**
+- [x] `F0965` Explain cultural references · **6-15**
+- [x] `F0966` Answer questions about an active lesson · **6-15**
+- [x] `F0967` Explain why an answer was incorrect · **6-15** · partly there
+- [x] `F0968` Create additional examples · **6-15**
 - [ ] `F0969` Give progressively harder exercises · **6-16**
-- [ ] `F0970` Simplify difficult material · **6-15**
-- [ ] `F0971` Generate a lesson on a specific topic · **6-15**
+- [x] `F0970` Simplify difficult material · **6-15**
+- [x] `F0971` Generate a lesson on a specific topic · **6-15**
 - [ ] `F0972` Generate a personalized study plan · **6-16**
 - [x] `F0973` Recommend a next step
 - [x] `F0974` Diagnose recurring mistakes · **6-5**
@@ -1268,45 +1268,45 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [x] `F0976` Review an essay
 - [x] `F0977` Review a pronunciation recording · **6-10**
 - [x] `F0978` Generate vocabulary from a conversation · **6-11**
-- [ ] `F0979` Turn a question into a mini-lesson · **6-15**
+- [x] `F0979` Turn a question into a mini-lesson · **6-15**
 - [ ] `F0980` Turn a mistake into a practice exercise · **6-16**
-- [ ] `F0981` Create analogies for difficult grammar · **6-15**
-- [ ] `F0982` Explain a concept using the learner’s native language · **6-15** · partly there
-- [ ] `F0983` Explain a concept entirely in the target language · **6-15**
-- [ ] `F0984` Provide hints without giving away the answer · **6-15**
-- [ ] `F0985` Simulate a patient teacher · **6-15**
+- [x] `F0981` Create analogies for difficult grammar · **6-15**
+- [x] `F0982` Explain a concept using the learner’s native language · **6-15** · partly there
+- [x] `F0983` Explain a concept entirely in the target language · **6-15**
+- [x] `F0984` Provide hints without giving away the answer · **6-15**
+- [x] `F0985` Simulate a patient teacher · **6-15**
 - [ ] `F0986` Simulate an examiner · **6-18**
 - [x] `F0987` Simulate a conversation partner
 - [x] `F0988` Simulate a debate opponent
-- [ ] `F0989` Simulate a writing editor · **6-15**
-- [ ] `F0990` Simulate a language coach · **6-15**
-- [ ] `F0991` Provide encouragement without exaggerated praise · **6-15**
+- [x] `F0989` Simulate a writing editor · **6-15**
+- [x] `F0990` Simulate a language coach · **6-15**
+- [x] `F0991` Provide encouragement without exaggerated praise · **6-15**
 
 #### 12.2 Tutor personalization
 
 *In Lingua: The translation language; what you enjoy (Settings › Languages).*
 
-- [ ] `F0992` Remember the learner’s preferred explanation style · **6-15**
+- [x] `F0992` Remember the learner’s preferred explanation style · **6-15**
 - [x] `F0993` Remember the learner’s native language
-- [ ] `F0994` Remember known vocabulary · **6-15** · partly there
-- [ ] `F0995` Remember grammar topics already studied · **6-15** · partly there
+- [x] `F0994` Remember known vocabulary · **6-15** · partly there
+- [x] `F0995` Remember grammar topics already studied · **6-15** · partly there
 - [x] `F0996` Remember recurring errors · **6-5**
 - [x] `F0997` Remember personal interests
-- [ ] `F0998` Adjust explanation complexity · **6-15**
-- [ ] `F0999` Adjust sentence length · **6-15**
-- [ ] `F1000` Adjust vocabulary difficulty · **6-15**
-- [ ] `F1001` Adjust speech speed · **6-15** · partly there
-- [ ] `F1002` Adjust correction frequency · **6-15**
-- [ ] `F1003` Adjust the amount of target-language exposure · **6-15**
-- [ ] `F1004` Adjust how much translation is shown · **6-15**
-- [ ] `F1005` Adapt examples to hobbies and interests · **6-15** · partly there
+- [x] `F0998` Adjust explanation complexity · **6-15**
+- [x] `F0999` Adjust sentence length · **6-15**
+- [x] `F1000` Adjust vocabulary difficulty · **6-15**
+- [x] `F1001` Adjust speech speed · **6-15** · partly there
+- [x] `F1002` Adjust correction frequency · **6-15**
+- [x] `F1003` Adjust the amount of target-language exposure · **6-15**
+- [x] `F1004` Adjust how much translation is shown · **6-15**
+- [x] `F1005` Adapt examples to hobbies and interests · **6-15** · partly there
 - [ ] `F1006` Adapt practice to upcoming travel · **6-16**
 - [ ] `F1007` Adapt practice to exams · **6-18**
 - [ ] `F1008` Adapt to time available · **6-16** · partly there
 - [x] `F1009` Distinguish persistent mistakes from occasional slips · **6-5**
 - [ ] `F1010` Avoid repeatedly teaching mastered concepts · **6-16**
 - [ ] `F1011` Recommend prerequisite material when needed · **6-16**
-- [ ] `F1012` Explain connections between different lessons · **6-15**
+- [x] `F1012` Explain connections between different lessons · **6-15**
 
 #### 12.3 AI-generated learning materials
 

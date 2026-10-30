@@ -10,6 +10,8 @@ import { MiniPlayer } from '@/features/sonus/MiniPlayer';
 import { PlansSheet } from '@/features/plans/PlansSheet';
 import { usePlanUpkeep } from '@/features/plans/usePlan';
 import { GlobalSearchModal } from '@/features/search/GlobalSearchModal';
+import { AskPanel } from '@/features/tutor/AskPanel';
+import { AskButton } from '@/features/tutor/AskButton';
 import { loadScriptFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
@@ -69,6 +71,7 @@ export function AppShell() {
     ...Object.fromEntries(SECTIONS.slice(0, 10).map((s, i) => [`alt+${sectionKey(i)}`, () => navigate(s.path)])),
     '?': () => setShortcutsOpen(true),
     'mod+k': () => setGlobalSearchOpen(true),
+    'alt+t': () => { const s = useUI.getState(); if (s.tutorOpen) s.closeTutor(); else s.openTutor(); },
   });
 
   if (immersive) {
@@ -80,6 +83,7 @@ export function AppShell() {
         <ShortcutsDialog />
         <GlobalSearchModal />
         <PlansSheet />
+        <AskPanel />
       </>
     );
   }
@@ -105,6 +109,10 @@ export function AppShell() {
       <ShortcutsDialog />
       <GlobalSearchModal />
       <PlansSheet />
+      <AskPanel />
+      {showMini && !pathname.startsWith('/settings') && !pathname.startsWith('/ordo') && (
+        <AskButton variant="floating" />
+      )}
     </>
   );
 }

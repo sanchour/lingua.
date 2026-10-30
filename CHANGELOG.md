@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.113** · 2026-10-30 · 6-15: The tutor, in context (everywhere, with Max)
 - **0.6.0-alpha.112** · 2026-10-30 · Claim step 6-15 (The tutor, in context)
 - **0.6.0-alpha.111** · 2026-10-30 · 6-10: melody and stress; fixes for long translations, accents in Say it, watch count, speech cache
 - **0.6.0-alpha.110** · 2026-10-29 · 6-13: Compare translations (Max): a passage three ways and where they part

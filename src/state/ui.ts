@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { Feature } from '@/data/plan';
+import type { TutorContext } from '@/core/tutor/types';
 
 export type ToastTone = 'default' | 'success' | 'error';
 
@@ -21,6 +22,10 @@ interface UIState {
   topBarHeight: number;
   shortcutsOpen: boolean;
   globalSearchOpen: boolean;
+  tutorOpen: boolean;
+  tutorContext: TutorContext | null;
+  openTutor: (context?: TutorContext) => void;
+  closeTutor: () => void;
   /** The plans sheet: open for a locked feature, for all plans, or closed. */
   plansFor: Feature | 'all' | null;
   openPlans: (feature?: Feature) => void;
@@ -43,6 +48,10 @@ export const useUI = create<UIState>((set) => ({
   topBarHeight: 56,
   shortcutsOpen: false,
   globalSearchOpen: false,
+  tutorOpen: false,
+  tutorContext: null,
+  openTutor: (tutorContext) => set({ tutorOpen: true, tutorContext: tutorContext ?? null }),
+  closeTutor: () => set({ tutorOpen: false }),
   plansFor: null,
   openPlans: (feature) => set({ plansFor: feature ?? 'all' }),
   closePlans: () => set({ plansFor: null }),
