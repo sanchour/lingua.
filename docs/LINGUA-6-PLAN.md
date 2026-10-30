@@ -567,7 +567,7 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
 - Games never move a card's schedule unless they are reviews (as Lightning).
 **Entries (66 new · 3 to finish):** F0168–F0173, F0175–F0177, F0179–F0184, F0186–F0190, F0313–F0314, F0885, F1185, F1190, F1192–F1201, F1203–F1216, F1220–F1225, F1228–F1232, F1234–F1235, F1237–F1238, F1240–F1244
 
-**The plan (2026-10-30, Claude Sonnet 5.5; seven pushes, G1 to G7, each its own version; Opus checks G1's engine and G6's story format).**
+**The plan (2026-10-30, Claude Sonnet 5.5; seven pushes, G1 to G7, each its own version).**
 Build on what is there, don't double it: `core/srs/ludus` (seededRandom, shuffle, the lesson planner), `core/exercise` (6-4), Practice
 (`/thesaurus/practice`: matching games, 6-4b), Cantus' `SongGames`, Home's `DailyWordCard`, and 6-6/6-6b's checked generation, whose
 *adventure* kind (scenes, choices, endings checked to lead somewhere) is the story-game format. Desktop only.
@@ -601,8 +601,7 @@ Build on what is there, don't double it: `core/srs/ludus` (seededRandom, shuffle
   tab. Entries moved to "partly done" only; the first game, **Hangman-style spelling** (F0172, F1196), proves the frame.
 - Done when: the tab is there, hangman plays with the keyboard, the best is kept, light and dark at 1280/1440/1366×768.
 
-**G2 · Letter games** (all pure, no key): anagrams (F0173 finished, F1195), missing letters (F0175), word hunting through a
-tangle of letters (F0168), word search (F0171, F1194), word ladders (F0169; steps must be words in the pack, one letter apart,
+**G2 · Letter games** (all pure, no key): anagrams (F0173 finished, F1195), missing letters (F0175), word hunting (F0168: find the learner's words inside a text they have read, the words marked as found, with the sentence shown), word search (F0171, F1194), word ladders (F0169; steps must be words in the pack, one letter apart,
 built by search over the pack's words of one length), progressively revealed clues (F0189). Layout makers
 (`wordsearch.ts`, `ladder.ts`) are tested for: every word placed, no overlaps that break a word, a ladder that exists.
 
@@ -638,7 +637,7 @@ built by search over the pack's words of one length), progressively revealed clu
   without Max). The checker grows: every ending reachable, no dead scene, every needed item obtainable.
 - Story and dialogue completion (F1203, F1204): the end of a story, or a missing line, chosen or written; judged with options
   (no key) or by Max.
-- **Ready-made set:** for the six core languages, hand-made, three small stories per level at A1 and A2 (a mystery, an escape
+- **Ready-made set:** for the six core languages, hand-made, three stories per level from A1 to B1 (a mystery, an escape
   room, a city), checked by the same checker; written in the course's language and format, listed with their source.
 - Games from your words and custom games (F1220, F1221): the learner picks words and a kind; Max writes the story round them
   (checked: the words are in it); "your own game" is an editor for a scene list saved as a deck-like record, exported with 6-24.
@@ -655,6 +654,14 @@ built by search over the pack's words of one length), progressively revealed clu
   record); a weekly project on one topic (F0885, F1242); a short story with your new words (F1243); your own podcast (F1244,
   with Made by Max's audio and 6-9's recording). A project can be made from scratch: pick steps from the list.
 - Steps that need Max say so and are skipped over without it (the rest of the chain still works).
+
+**The quality bar (every game, every push):** played to the end with the keyboard alone; a clear empty state when the
+words are too few, and a way to widen the set; no frame drops on the biggest grid (docs/PERFORMANCE.md: layout makers run
+off the render path and are cached by seed); right-to-left and non-Latin scripts work in every letter game (Arabic, Hebrew,
+Japanese, Chinese: letter games use the script's own units, and games that cannot say so instead of being broken);
+sound and speech only where the device has them, as elsewhere; a test for each maker (same seed gives the same puzzle, every
+puzzle is solvable) and for the story checker; the game's cards ticked in LINGUA-6-FEATURES.md only when it is
+finished, not when it opens.
 
 **Not in this step:** other players, a public daily board, anything with a server (6-27); phone widgets (D6). Hand-made story
 sets for tier 2 languages (tier 2 gets the word games and the generated stories only).
