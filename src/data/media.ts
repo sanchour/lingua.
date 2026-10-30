@@ -258,9 +258,25 @@ export async function shiftTranscript(mediaId: string, deltaMs: number, database
   await database.transcripts.update(t.id, { cues, offsetMs: t.offsetMs + deltaMs, updatedAt: Date.now() });
 }
 
-/** Puts speaker labels on the cues of a transcript (the words and timings stay). */
-export async function saveSpeakers(mediaId: string, cues: Cue[], database: LinguaDB = db): Promise<void> {
-  await database.transcripts.update(transcriptId(mediaId), { cues, updatedAt: Date.now() });
+/**
+ * Puts speaker labels on the transcript as it is now: a cue gets its label only if it still says the same thing at the same place, so a
+ * transcript that was moved or made again while the AI worked is not overwritten. Returns the cues, or null when none could be labelled.
+ */
+export async function saveSpeakers(mediaId: string, labelled: readonly Cue[], database: LinguaDB = db): Promise<Cue[] | null> {
+  return database.transaction('rw', database.transcripts, async () => {
+    const t = await getTranscript(mediaId, database);
+    if (!t) return null;
+    let n = 0;
+    const cues = t.cues.map((c, i) => {
+      const speaker = labelled[i]?.text === c.text ? labelled[i].speaker : undefined;
+      if (!speaker) return c;
+      n++;
+      return { ...c, speaker };
+    });
+    if (!n) return null;
+    await database.transcripts.update(t.id, { cues, updatedAt: Date.now() });
+    return cues;
+  });
 }
 
 export async function deleteTranscript(mediaId: string, database: LinguaDB = db): Promise<void> {

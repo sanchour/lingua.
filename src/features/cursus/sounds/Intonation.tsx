@@ -10,6 +10,7 @@ import { SpeakButton } from '@/features/speech/SpeakButton';
 import { cx } from '@/lib/cx';
 
 type Expect = Record<string, 'rise' | 'fall'>;
+type Stress = Record<string, string>;
 
 function StatementOrQuestion({ lang, items, rule, onSay }: { lang: string; items: IntonationItem[]; rule: string; onSay: () => void }) {
   const [queue, setQueue] = useState(() => shuffle(items, Math.random));
@@ -74,7 +75,7 @@ function StatementOrQuestion({ lang, items, rule, onSay }: { lang: string; items
   );
 }
 
-function WhichWord({ lang }: { lang: string }) {
+function WhichWord({ lang, onSay }: { lang: string; onSay: (words: string[], expect?: Expect, stress?: Stress) => void }) {
   const items = useMemo(() => stressOf(lang), [lang]);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
@@ -104,6 +105,9 @@ function WhichWord({ lang }: { lang: string }) {
       {picked && (
         <p className="mt-2 flex items-center gap-3 text-[14px] text-ink-soft" role="status">
           {isStressed(picked, item) ? 'Yes: ' : 'Not quite: '}“{item.stressed}” is what the question asks for, so it carries the stress.
+          <button type="button" onClick={() => onSay([item.answer], undefined, { [item.answer]: item.stressed })} className="h-9 rounded-xl border border-line px-3 text-[13.5px] font-semibold hover:bg-surface">
+            Say the answer
+          </button>
           <button type="button" onClick={() => (setPicked(null), setI((n) => n + 1))} className="h-9 rounded-xl bg-inverse px-3 text-[13.5px] font-semibold text-on-inverse">
             Next
           </button>
@@ -113,7 +117,7 @@ function WhichWord({ lang }: { lang: string }) {
   );
 }
 
-export function Intonation({ lang, onSay }: { lang: string; onSay: (words: string[], expect?: Expect) => void }) {
+export function Intonation({ lang, onSay }: { lang: string; onSay: (words: string[], expect?: Expect, stress?: Stress) => void }) {
   const into = intonationOf(lang);
   if (!into) return null;
   const say = () => onSay(into.items.map((i) => i.text), into.measurable ? Object.fromEntries(into.items.map((i) => [i.text, i.kind === 'question' ? 'rise' : 'fall'])) : undefined);
@@ -123,7 +127,7 @@ export function Intonation({ lang, onSay }: { lang: string; onSay: (words: strin
         Melody and stress
       </h2>
       <StatementOrQuestion lang={lang} items={into.items} rule={into.rule} onSay={say} />
-      <WhichWord lang={lang} />
+      <WhichWord lang={lang} onSay={onSay} />
     </section>
   );
 }

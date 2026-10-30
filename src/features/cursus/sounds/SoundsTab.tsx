@@ -14,7 +14,7 @@ import { MinimalPairs, pairsWith } from './MinimalPairs';
 import { MouthDiagram } from './MouthDiagram';
 import { PronunciationDiary } from './PronunciationDiary';
 import { RecordCompare } from './RecordCompare';
-import type { EndExpect } from './RecordCompare';
+import type { EndExpect, StressExpect } from './RecordCompare';
 import { StressDrill } from './StressDrill';
 
 const key = (s: Sound) => `${s.kind}:${s.ipa}`;
@@ -171,13 +171,14 @@ export function SoundsTab() {
   const [focus, setFocus] = useState<string[] | null>(null);
   const [practice, setPractice] = useState<string[] | null>(null);
   const [expect, setExpect] = useState<EndExpect | undefined>();
+  const [stress, setStress] = useState<StressExpect | undefined>();
   if (!system) return <p className="text-ink-soft">Sounds are written for the six core languages.</p>;
   const vowels = system.sounds.filter((s): s is Vowel => s.kind === 'vowel');
   const consonants = system.sounds.filter((s): s is Consonant => s.kind === 'consonant');
   const tones = system.sounds.filter((s): s is Tone => s.kind === 'tone');
   const selected = chosen && system.sounds.some((s) => key(s) === key(chosen)) ? chosen : (tones[0] ?? vowels[0] ?? consonants[0]);
   const name = getLanguage(lang)?.name ?? lang;
-  const sayThese = (words: string[], ends?: EndExpect) => (setPractice(words), setExpect(ends), window.setTimeout(() => document.getElementById('say-it')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50));
+  const sayThese = (words: string[], ends?: EndExpect, stressed?: StressExpect) => (setPractice(words), setExpect(ends), setStress(stressed), window.setTimeout(() => document.getElementById('say-it')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50));
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
@@ -233,7 +234,7 @@ export function SoundsTab() {
         <StressDrill lang={lang} />
         <PronunciationDiary lang={lang} />
         <div id="say-it">
-          <RecordCompare key={practice?.join() ?? 'words'} lang={lang} expect={expect} words={practice ?? system.sounds.flatMap((s) => s.words.map(([w]) => w)).filter((w) => /^[\p{L}\p{M}]+$/u.test(w)).slice(0, 12)} />
+          <RecordCompare key={practice?.join() ?? 'words'} lang={lang} expect={expect} stress={stress} words={practice ?? system.sounds.flatMap((s) => s.words.map(([w]) => w)).filter((w) => /^[\p{L}\p{M}]+$/u.test(w)).slice(0, 12)} />
         </div>
       </div>
       {selected && <Detail key={key(selected)} sound={selected} lang={lang} all={system.sounds} onChoose={setChosen} onPairs={(ipa) => (setFocus([ipa]), document.getElementById('pairs-h')?.scrollIntoView({ block: 'center' }))} />}

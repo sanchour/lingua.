@@ -785,7 +785,7 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [x] `F0589` Pronunciation recording comparisons · **6-10**
 - [x] `F0590` Phoneme-level pronunciation feedback · **6-10**
 - [x] `F0591` Word stress detection · **6-10**
-- [ ] `F0592` Sentence stress detection · **6-10**
+- [x] `F0592` Sentence stress detection · **6-10**
 - [x] `F0593` Rhythm and intonation analysis · **6-10**
 - [x] `F0594` Tone recognition for tonal languages · **6-10**
 - [x] `F0595` Pitch contour visualization · **6-10**
@@ -937,7 +937,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0711` Stress placement · **6-10**
 - [x] `F0712` Word-level stress rules · **6-10**
 - [x] `F0713` Sentence intonation · **6-10**
-- [ ] `F0714` Rhythm patterns · **6-10**
+- [x] `F0714` Rhythm patterns · **6-10**
 - [x] `F0715` Connected speech · **6-10**
 - [x] `F0716` Sound reduction · **6-10**
 - [x] `F0717` Assimilation · **6-10**

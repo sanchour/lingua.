@@ -28,7 +28,7 @@ import { toast } from '@/state/ui';
 import { OwnWordsButton } from '@/features/production/OwnWords';
 import { VideoOptions } from '../library/VideoOptions';
 import { createVideoClock } from './clock';
-import { lineAt, matchingLine, nextLineStart, previousLineStart } from './lines';
+import { FULL_WATCH, heardMore, lineAt, matchingLine, nextLineStart, previousLineStart } from './lines';
 import { SubtitleSettings } from './SubtitleSettings';
 import { TrackPanel } from './TrackPanel';
 import { VideoStage } from './VideoStage';
@@ -133,6 +133,8 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     let startedAt = Date.now();
     let savedAt = 0;
     let first = true;
+    let heard = 0;
+    let last = 0;
     const flush = () => {
       if (since) watchedMs += performance.now() - since;
       since = v.paused ? 0 : performance.now();
@@ -163,6 +165,8 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
       save();
     };
     const onTime = () => {
+      heard = heardMore(heard, last, v.currentTime);
+      last = v.currentTime;
       if (performance.now() - savedAt > 5000) {
         savedAt = performance.now();
         save();
@@ -171,7 +175,9 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     const onEnded = () => {
       flush();
       save(true);
-      // Read the count now: `media` here is the one from when this page opened.
+      // A watch counts when most of it was heard in order (a seek to the end is not one). Read the count now: `media` here is from when this page opened.
+      if (heard < FULL_WATCH * v.duration) return;
+      heard = 0;
       void db.media.get(media.id).then((m) => updateMedia(media.id, { watches: (m?.watches ?? 0) + 1 }));
     };
     // iPhone's own full-screen player draws the subtitles from the <track>s.
