@@ -1,3 +1,4 @@
+import { capturePhrase } from '@/features/phrasebook/Capture';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
@@ -397,6 +398,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
       )}
       <span className="flex-1" />
       <Button size="sm" variant="secondary" icon={Bookmark} onClick={() => void lines.save()} disabled={!lines.hasLines || !ready}><UiText source={'Save line'} /></Button>
+      <Button size="sm" variant="ghost" disabled={!lines.hasLines} onClick={() => { const cue = currentCue(); if (cue) capturePhrase(media.lang, cue.text, matchingLine(native, cue)?.text ?? ''); }}><UiText source="Save phrase" /></Button>
       <SubtitleSettings />
     </div>
   );

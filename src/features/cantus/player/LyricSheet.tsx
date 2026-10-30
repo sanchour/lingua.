@@ -1,3 +1,4 @@
+import { capturePhrase } from '@/features/phrasebook/Capture';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent, RefObject } from 'react';
@@ -312,6 +313,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
             onSaveLine(picked);
             setPicked(null);
           }}
+          onPhrase={() => { capturePhrase(lang, lines[picked].text, song.translation?.lines[picked] ?? ''); setPicked(null); }}
           onCopy={() => void copyLine(picked)}
           onClose={() => setPicked(null)}
         />
@@ -419,6 +421,7 @@ function LineActions({
   onPlay,
   onSave,
   onCopy,
+  onPhrase,
   onClose,
 }: {
   anchor: () => HTMLElement | null;
@@ -427,6 +430,7 @@ function LineActions({
   onPlay: () => void;
   onSave: () => void;
   onCopy: () => void;
+  onPhrase: () => void;
   onClose: () => void;
 }) {
   const translateUi = useUi();
@@ -465,6 +469,7 @@ function LineActions({
       <button type="button" className={item} onClick={onSave} disabled={saved}>
         {saved ? <BookmarkCheck size={16} aria-hidden /> : <BookmarkPlus size={16} aria-hidden />} {saved ? translateUi('Saved') : translateUi('Save line')}
       </button>
+      <button type="button" className={item} onClick={onPhrase}><UiText source="Phrasebook" /></button>
       <button type="button" className={item} onClick={onCopy} aria-label={translateUi('Copy line')}>
         <Copy size={15} aria-hidden />
       </button>

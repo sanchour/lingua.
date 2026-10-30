@@ -1,3 +1,4 @@
+import { PhraseCaptureButton } from '@/features/phrasebook/Capture';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { ReferenceButton } from '@/features/culture/ReferenceHelp';
 import { useEffect, useState } from 'react';
@@ -118,6 +119,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       <nav aria-label={translateUi('Statistics and settings')} className="mt-2 flex shrink-0 flex-col gap-0.5 border-t border-line pt-2">
+        <PhraseCaptureButton compact={collapsed} />
         <ReferenceButton compact={collapsed} />
         {BOTTOM_SECTIONS.map((section) => (
           <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SHORTCUT_SECTIONS.indexOf(section))} />

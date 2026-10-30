@@ -31,6 +31,7 @@ export function formatKeySymbol(key: string, isMac: boolean): string {
 }
 
 const GENERAL: Array<[string[], string]> = [
+  [['Mod', 'Shift', 'P'], 'Save selected text to your phrasebook'],
   [['Mod', 'Shift', 'E'], 'Explain a selected cultural or historical reference'],
   [['Mod', 'K'], 'Search across all of Lingua'],
   [['Alt', 'T'], 'Ask the contextual tutor'],

@@ -14,3 +14,5 @@ export type { DialogueExchange, TranslateBody, TranslationCategory, TranslationT
 export { ALIGNMENT_PAIRS, analyzeBackTranslation, checkReconstruction, getAlignmentPairs, scrambleWords } from './translateViews';
 export type { AlignmentPair, TokenLink } from './translateViews';
 export { readingSpec, selfReadingSpecs, readReadingQuestions } from './reading';
+
+export { phrasebookSpecs } from './phrasebook';

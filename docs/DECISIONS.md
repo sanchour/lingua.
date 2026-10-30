@@ -1991,3 +1991,7 @@ Phrasebook and notebook records use one keyed settings row each, so existing bac
 ### 2026-10-30 · Notebook workspace (6-20 N1, Codex)
 
 Notebook reuses Diarium’s Markdown editor/parser, rendering text as React nodes rather than interpreting learner HTML. Notes have explicit internal links, with backlinks computed from the same records. Existing grammar/pair notes remain in their original storage and are copied only on request; no silent migration. Unfinished drafts are local device drafts, outside backups until saved. Mentis exposes the existing learner error log and weak spots rather than duplicating evidence. No new table or dependency.
+
+### 2026-10-30 · Capturing and recalling phrases (6-20 P2, Codex)
+
+Global capture and source actions open an editable local draft, never an automatic model request. The source address is retained. Recall reuses the shared typed view/judge and learner record; revealing an answer is assisted and no SRS schedule is altered. A stable per-run evidence id makes saving retryable without duplicate rows. Phrase-to-card creation is transactional and deduplicates overlapping requests. Template expansion is literal substitution with a review step, not a claim of grammatical generation.

@@ -1,3 +1,4 @@
+import { PhraseCapture } from '@/features/phrasebook/Capture';
 import { UiText } from '@/design/i18n/UiText';
 import { ReferenceHelp } from '@/features/culture/ReferenceHelp';
 import { Suspense, useEffect, useLayoutEffect } from 'react';
@@ -83,6 +84,7 @@ export function AppShell() {
           <Outlet />
         </Suspense>
         <ReferenceHelp />
+      <PhraseCapture />
         <ShortcutsDialog />
         <GlobalSearchModal />
         <PlansSheet />
@@ -108,6 +110,7 @@ export function AppShell() {
       {layout === 'wide' ? <DesktopShell>{content}</DesktopShell> : <TouchShell>{content}</TouchShell>}
       {showMini && <MiniPlayer />}
       <ReferenceHelp />
+      <PhraseCapture />
       <ShortcutsDialog />
       <GlobalSearchModal />
       <PlansSheet />

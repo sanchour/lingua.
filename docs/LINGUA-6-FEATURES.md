@@ -1439,9 +1439,9 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1110` Attach translations · **6-20**
 - [x] `F1111` Add personal notes · **6-20**
 - [x] `F1112` Search saved phrases · **6-20**
-- [ ] `F1113` Practice phrases through recall · **6-20** · partly there
-- [ ] `F1114` Convert phrases into flashcards · **6-20** · partly there
-- [ ] `F1115` Generate new phrases from templates · **6-20**
+- [x] `F1113` Practice phrases through recall · **6-20** · partly there
+- [x] `F1114` Convert phrases into flashcards · **6-20** · partly there
+- [x] `F1115` Generate new phrases from templates · **6-20**
 - [x] `F1116` Build a phrasebook for an upcoming trip · **6-20**
 - [x] `F1117` Export the phrasebook · **6-20**
 - [x] `F1118` Make selected phrases available offline · **6-20**

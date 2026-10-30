@@ -40,3 +40,10 @@ it('keeps notebook links, tags, Markdown and tombstone undo independently', asyn
   await saveLibrary('notebook', saved, undefined, database);
   expect((await listLibrary('notebook', 'es', database))[0].links[0].target).toBe('casa');
 });
+
+it('makes only one phrase card when requests overlap', async () => {
+  const p = newPhrase('es', 'Gracias', 'Thank you');
+  const decks = await Promise.all([phraseToCard(p, database), phraseToCard(p, database)]);
+  expect(decks[0]).toBe(decks[1]);
+  expect(await database.notes.filter((n) => n.extra?.phrasebookId === p.id).count()).toBe(1);
+});

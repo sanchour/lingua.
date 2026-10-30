@@ -1,3 +1,4 @@
+import { capturePhrase } from '@/features/phrasebook/Capture';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -92,6 +93,7 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
         <button type="button" className={action} onClick={() => void saveReadingMark(phrase.context.textId!, { id: crypto.randomUUID(), chapterIndex: phrase.context.chapterIndex!, blockIndex: phrase.context.blockIndex!, ...phrase.range!, quote: phrase.range!.quote, colour, note: '' }).then(() => { toast('Highlight saved. Open Study tools for its margin note or card.'); onClose(); }).catch((e: unknown) => toast(e instanceof Error ? e.message : 'Could not save the highlight.', { tone: 'error' }))}><UiText source={'Highlight'} /></button>
       </div>}
       <div className="mt-3 -mb-1 flex flex-wrap gap-1">
+        <button type="button" className={action} onClick={() => { capturePhrase(lang, phrase.text, result?.text ?? ''); onClose(); }}><UiText source="Save phrase" /></button>
         <button
           type="button"
           disabled={!result || saved}

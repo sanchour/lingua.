@@ -45,13 +45,17 @@ export function newPhrase(lang: string, text = '', translation = '', source = ''
   return { id: crypto.randomUUID(), lang, title: text.slice(0, 200), text, translation, source, kind: 'General', situation: '', topic: '', formal: '', informal: '', notes: '', folder: '', tags: [], createdAt: Date.now(), updatedAt: Date.now() };
 }
 export async function phraseToCard(phrase: SavedPhrase, database: LinguaDB = db): Promise<string> {
-  const name = 'From my phrasebook';
-  const deck = await database.decks.where('lang').equals(phrase.lang).filter((d) => !d.deletedAt && d.name === name).first();
-  const deckId = deck?.id ?? await createDeck(phrase.lang, { name }, database);
-  const existing = await database.notes.where('deckId').equals(deckId).filter((n) => !n.deletedAt && n.extra?.phrasebookId === phrase.id).first();
-  if (existing) return deckId;
-  await addNote(deckId, { term: phrase.text, meaning: phrase.translation, tags: ['phrase', ...phrase.tags], audioBlobId: phrase.audioBlobId, extra: { phrasebookId: phrase.id, source: phrase.source, notes: phrase.notes } }, database);
-  return deckId;
+  validate('phrasebook', phrase, phrase.lang);
+  if (!phrase.translation.trim()) throw new Error('Add a translation before making a card.');
+  return database.transaction('rw', [database.decks, database.notes, database.cards, database.settings], async () => {
+    const name = 'From my phrasebook';
+    const deck = await database.decks.where('lang').equals(phrase.lang).filter((d) => !d.deletedAt && d.name === name).first();
+    const deckId = deck?.id ?? await createDeck(phrase.lang, { name }, database);
+    const existing = await database.notes.where('deckId').equals(deckId).filter((n) => !n.deletedAt && n.extra?.phrasebookId === phrase.id).first();
+    if (existing) return deckId;
+    await addNote(deckId, { term: phrase.text, meaning: phrase.translation, tags: ['phrase', ...phrase.tags], audioBlobId: phrase.audioBlobId, extra: { phrasebookId: phrase.id, source: phrase.source, notes: phrase.notes } }, database);
+    return deckId;
+  });
 }
 
 export function useLibrary<K extends Kind>(kind: K, lang: string) {
