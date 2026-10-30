@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { useApp } from '@/app/context';
 import { resolveTheme } from '@/app/theme';
 import { getLanguage, LANGUAGES, READING_LANGS } from '@/core/lang/languages';
+import { TRANSLIT_LANGS } from '@/core/script/reading';
 import type { Script } from '@/core/lang/languages';
 import { patchSetting } from '@/data/settings';
 import type { Settings } from '@/data/settings';
@@ -124,18 +125,19 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
         />
       </div>
 
-      {READING_LANGS.has(target.code) && (
+      {(READING_LANGS.has(target.code) || TRANSLIT_LANGS.has(target.code)) && (
         <div className="mt-5">
-          <p className="text-[15px] font-semibold">{target.code === 'ja' ? 'Furigana over words' : 'Pinyin over words'}</p>
+          <p className="text-[15px] font-semibold">{target.code === 'ja' ? 'Furigana over words' : READING_LANGS.has(target.code) ? 'Pinyin over words' : 'Transliteration over words'}</p>
           <p data-hint="" className="mt-0.5 mb-2 text-[13px] text-ink-soft">
-            {target.code === 'ja' ? 'Kana above words written with kanji.' : 'The pinyin of each word, with its tones, above the characters.'}
+            {target.code === 'ja' ? 'Kana above words written with kanji.' : READING_LANGS.has(target.code) ? 'The pinyin of each word, with its tones, above the characters.' : 'The word in Latin letters above it. Arabic needs the vowel marks to be read.'} “Fading” shows it in full on new words, faintly on words you are learning, and not at all on known ones.
           </p>
           <Segmented
-            label={target.code === 'ja' ? 'Furigana' : 'Pinyin'}
+            label="Reading above words"
             value={reader.readings}
             onChange={(readings) => void patchSetting('reader', { readings })}
             options={[
               { value: 'new', label: 'New words' },
+              { value: 'fade', label: 'Fading' },
               { value: 'all', label: 'All words' },
               { value: 'off', label: 'Off' },
             ]}

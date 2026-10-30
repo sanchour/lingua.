@@ -1668,15 +1668,15 @@ Different languages require different learning interfaces. This could become a m
 - [ ] `F1295` Character decomposition · **6-23**
 - [x] `F1296` Character recognition quizzes
 - [x] `F1297` Keyboard training
-- [ ] `F1298` Transliteration · **6-23** · partly there
+- [x] `F1298` Transliteration · **6-23** · partly there
 - [ ] `F1299` Script conversion · **6-23** · partly there
-- [ ] `F1300` Reading without transliteration · **6-23** · partly there
-- [ ] `F1301` Gradually hide transliteration · **6-23**
+- [x] `F1300` Reading without transliteration · **6-23** · partly there
+- [x] `F1301` Gradually hide transliteration · **6-23**
 - [ ] `F1302` Diacritic training · **6-23**
 - [ ] `F1303` Accent-mark exercises · **6-23**
 - [ ] `F1304` Ligature recognition · **6-23**
 - [ ] `F1305` Cursive recognition · **6-23**
-- [ ] `F1306` Unicode character reference · **6-23**
+- [x] `F1306` Unicode character reference · **6-23**
 
 #### Russian and other Slavic languages
 

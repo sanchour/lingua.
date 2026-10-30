@@ -187,3 +187,14 @@ describe('ink', () => {
     expect(n.data.reduce((a, v) => a + v, 0)).toBeGreaterThan(20);
   });
 });
+
+describe('reading aids (6-23)', () => {
+  it('transliterates Cyrillic, leaves languages with readings of their own alone, and skips what it cannot read', async () => {
+    const { translitFor, codePoints } = await import('./reading');
+    expect(translitFor('ru', 'Привет')).toBe('privet');
+    expect(translitFor('ru', 'cat')).toBeUndefined();
+    expect(translitFor('zh', '你好')).toBeUndefined();
+    expect(translitFor('ar', 'كتب')).toBeUndefined();
+    expect(codePoints('Жж')).toBe('U+0416 U+0436');
+  });
+});

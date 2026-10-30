@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
 import { loadScript } from '@/core/script/load';
+import { codePoints } from '@/core/script/reading';
 import type { Letter, Script } from '@/core/script/types';
 import { Ring } from '@/design/charts/Ring';
 import { Drawer } from '@/design/primitives';
@@ -60,6 +61,7 @@ export function LetterSheet({ letter, script, onClose }: { letter: Letter | null
               </p>
             )}
             <p className="mx-auto mt-2 max-w-sm text-[15.5px] leading-snug text-ink-soft">{letter.sound}</p>
+            <p className="mt-2 font-mono text-[12.5px] text-ink-faint" dir="ltr" title="Unicode code points">{codePoints(shown(letter))}</p>
           </div>
           {script.joins && <JoinedForms letter={letter} lang={lang} />}
           {letter.words.length > 0 && (
