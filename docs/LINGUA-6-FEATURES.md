@@ -905,7 +905,7 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [x] `F0688` Word counter
 - [x] `F0689` Writing timer · **6-12**
 - [x] `F0690` Offline writing journal
-- [x] `F0691` Notebook folders and tags · **6-20** · partly there
+- [x] `F0691` Notebook folders and tags · **6-20**
 - [x] `F0692` Export to Markdown, TXT or PDF · **6-24**
 - [x] `F0693` Save selected sentences to vocabulary
 - [x] `F0694` Turn corrections into flashcards
@@ -1439,8 +1439,8 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1110` Attach translations · **6-20**
 - [x] `F1111` Add personal notes · **6-20**
 - [x] `F1112` Search saved phrases · **6-20**
-- [x] `F1113` Practice phrases through recall · **6-20** · partly there
-- [x] `F1114` Convert phrases into flashcards · **6-20** · partly there
+- [x] `F1113` Practice phrases through recall · **6-20**
+- [x] `F1114` Convert phrases into flashcards · **6-20**
 - [x] `F1115` Generate new phrases from templates · **6-20**
 - [x] `F1116` Build a phrasebook for an upcoming trip · **6-20**
 - [x] `F1117` Export the phrasebook · **6-20**
@@ -1453,7 +1453,7 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1119` Daily language journal
 - [x] `F1120` Free-form notes · **6-20**
 - [x] `F1121` Grammar notes · **6-20**
-- [x] `F1122` Vocabulary notes · **6-20** · partly there
+- [x] `F1122` Vocabulary notes · **6-20**
 - [x] `F1123` Notes about confusing expressions · **6-20**
 - [x] `F1124` Saved quotations · **6-8**
 - [x] `F1125` Notes from reading · **6-8**
@@ -1466,13 +1466,13 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1132` Link notes to grammar topics · **6-20**
 - [x] `F1133` Link notes to lessons · **6-20**
 - [x] `F1134` Link notes to texts · **6-20**
-- [x] `F1135` Markdown support · **6-20** · partly there
+- [x] `F1135` Markdown support · **6-20**
 - [x] `F1136` Folders and tags · **6-20**
-- [x] `F1137` Search across all notes · **6-20** · partly there
+- [x] `F1137` Search across all notes · **6-20**
 - [x] `F1138` Export notes · **6-24**
 - [x] `F1139` Daily journal prompts
-- [ ] `F1140` AI-generated summaries of learning notes · **6-20**
-- [ ] `F1141` Turn notebook entries into exercises · **6-20**
+- [x] `F1140` AI-generated summaries of learning notes · **6-20**
+- [x] `F1141` Turn notebook entries into exercises · **6-20**
 
 ## 14 · Learning analytics and progress
 
@@ -2092,7 +2092,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [x] `F1592` Grammar reference and exercises
 - [x] `F1593` Interactive reading with word lookup
 - [x] `F1594` Audio pronunciation
-- [x] `F1595` Personal notes and phrasebook · **6-20** · partly there
+- [x] `F1595` Personal notes and phrasebook · **6-20**
 - [x] `F1596` Basic progress tracking
 - [x] `F1597` Import and export
 
@@ -2110,7 +2110,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 
 - [x] `F1605` Video and subtitle learning
 - [x] `F1606` Authentic media library
-- [ ] `F1607` Personal linguistic knowledge graph · **6-20**
+- [x] `F1607` Personal linguistic knowledge graph · **6-20**
 - [x] `F1608` Advanced learning analytics · **6-17** · partly there
 - [x] `F1609` AI-generated courses and interactive stories · **6-6** · partly there
 - [ ] `F1610` Deep personalization · **6-16**

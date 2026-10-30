@@ -311,3 +311,12 @@ describe('services/export', () => {
     expect(ics).toContain('END:VCALENDAR\r\n');
   });
 });
+
+it('includes phrasebook folders, alternatives and sources in both open-format exports', async () => {
+  const { savedPhrasesForExport } = await import('./index');
+  const { newPhrase } = await import('@/data/notebook');
+  const items = savedPhrasesForExport([{ ...newPhrase('es', 'Hola', 'Hello', '/codex/read/one'), folder: 'Trip', formal: 'Buenos días', topic: 'Greetings' }]);
+  expect(phrasebookToMarkdown(items, 'es')).toContain('Folder: Trip');
+  expect(phrasebookToCsv(items)).toContain('Formal: Buenos días');
+  expect(phrasebookToMarkdown(items, 'es')).toContain('/codex/read/one');
+});

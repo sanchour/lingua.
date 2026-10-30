@@ -2,7 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from './db';
 import type { LinguaDB } from './db';
 import type { LibraryItem, NotebookNote, SavedPhrase } from '@/core/notebook/library';
-import { NOTE_KINDS, PHRASE_KINDS } from '@/core/notebook/library';
+import { NOTE_KINDS, PHRASE_KINDS, templateSlots } from '@/core/notebook/library';
 import { addNote, createDeck } from './decks';
 
 type Kind = 'phrasebook' | 'notebook';
@@ -18,6 +18,7 @@ function validate(kind: Kind, value: unknown, lang: string): void {
   if (kind === 'phrasebook') {
     const p = value as SavedPhrase;
     if (!PHRASE_KINDS.includes(p.kind) || !p.text?.trim() || p.text.length > 4000 || !['translation', 'situation', 'topic', 'formal', 'informal', 'notes', 'source'].every((k) => typeof p[k as keyof SavedPhrase] === 'string' && String(p[k as keyof SavedPhrase]).length <= 10000) || (p.audioBlobId !== undefined && typeof p.audioBlobId !== 'string')) throw new Error('Use a phrase under 4,000 characters and fields under 10,000.');
+    if (new Set([...templateSlots(p.text), ...templateSlots(p.translation)]).size > 20) throw new Error('Use at most 20 template slots.');
   } else {
     const n = value as NotebookNote;
     if (!NOTE_KINDS.includes(n.kind) || typeof n.body !== 'string' || n.body.length > 100000 || !Array.isArray(n.links) || n.links.length > 50 || n.links.some((l) => !l || !['word', 'grammar', 'lesson', 'text', 'note'].includes(l.kind) || typeof l.target !== 'string' || !l.target || l.target.length > 300 || typeof l.label !== 'string' || l.label.length > 200)) throw new Error('Use a note under 100,000 characters and at most 50 valid links.');

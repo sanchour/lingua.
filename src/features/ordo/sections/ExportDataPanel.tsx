@@ -1,3 +1,5 @@
+import { listLibrary } from '@/data/notebook';
+import { savedPhrasesForExport } from '@/services/export';
 import { UiText } from '@/design/i18n/UiText';
 // Export & integrations hub in Settings › Your data (6-24): vocabulary CSV, Anki decks, Markdown
 // notes with [[wikilinks]], reading highlights & bilingual reading journal, conversation transcripts,
@@ -103,15 +105,17 @@ export function ExportDataPanel({ language }: { language: LanguageProfile }) {
   const exportPhrasebook = (format: 'md' | 'csv') =>
     run(`phrases-${format}`, async () => {
       const notes = await db.notes.where('lang').equals(lang).toArray();
-      const phrases = notes
-        .filter((n) => !n.deletedAt && (/\s/.test(n.term.trim()) || n.pos === 'phrase'))
+      const saved = await listLibrary('phrasebook', lang);
+      const savedIds = new Set(saved.map((p) => p.id));
+      const phrases = [...savedPhrasesForExport(saved), ...notes
+        .filter((n) => !n.deletedAt && !savedIds.has(n.extra?.phrasebookId ?? '') && (/\s/.test(n.term.trim()) || n.pos === 'phrase'))
         .map((n) => ({
           phrase: n.term,
           meaning: n.meaning,
           usageNote: n.mnemonic,
           example: n.example?.text ?? n.context?.sentence,
           tags: n.tags,
-        }));
+        }))];
       if (!phrases.length) return void toast('No multi-word phrases saved yet.');
       if (format === 'md') {
         saveFile(`lingua-phrasebook-${lang}.md`, phrasebookToMarkdown(phrases, lang), 'text/markdown;charset=utf-8');

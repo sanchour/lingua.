@@ -12,7 +12,7 @@ import { filterLibrary, PHRASE_KINDS, tagsOf } from '@/core/notebook/library';
 import type { SavedPhrase } from '@/core/notebook/library';
 import { db } from '@/data/db';
 import { newPhrase, removeLibrary, saveLibrary, useLibrary } from '@/data/notebook';
-import { phrasebookToCsv, phrasebookToMarkdown, saveFile } from '@/services/export';
+import { phrasebookToCsv, phrasebookToMarkdown, saveFile, savedPhrasesForExport } from '@/services/export';
 import { Button, Drawer } from '@/design/primitives';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { SpeakButton } from '@/features/speech/SpeakButton';
@@ -28,7 +28,7 @@ export function Phrasebook({ lang }: { lang: string }) {
   const phrase = list.find((p) => p.id === selected) ?? list[0];
   const folders = [...new Set((data?.items ?? []).map((p) => p.folder).filter(Boolean))].sort();
   const exportList = (csv: boolean) => {
-    const items = list.map((p) => ({ phrase: p.text, meaning: p.translation, category: p.kind, tags: p.tags, usageNote: [p.notes, p.formal && `Formal: ${p.formal}`, p.informal && `Informal: ${p.informal}`, p.source && `Source: ${p.source}`].filter(Boolean).join('\n') }));
+    const items = savedPhrasesForExport(list);
     void saveFile(`phrasebook-${lang}.${csv ? 'csv' : 'md'}`, new Blob([csv ? phrasebookToCsv(items) : phrasebookToMarkdown(items, lang)], { type: csv ? 'text/csv;charset=utf-8' : 'text/markdown;charset=utf-8' }));
   };
   if (practice) return <PhraseRecall phrases={practice} onDone={() => setPractice(null)} />;

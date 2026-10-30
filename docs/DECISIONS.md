@@ -1995,3 +1995,7 @@ Notebook reuses Diarium’s Markdown editor/parser, rendering text as React node
 ### 2026-10-30 · Capturing and recalling phrases (6-20 P2, Codex)
 
 Global capture and source actions open an editable local draft, never an automatic model request. The source address is retained. Recall reuses the shared typed view/judge and learner record; revealing an answer is assisted and no SRS schedule is altered. A stable per-run evidence id makes saving retryable without duplicate rows. Phrase-to-card creation is transactional and deduplicates overlapping requests. Template expansion is literal substitution with a review step, not a claim of grammatical generation.
+
+### 2026-10-30 · Notebook study and connections (6-20 N2, Codex)
+
+Max receives only the source preview the learner explicitly submits (up to 6,000 characters, at most ten filtered notes). Output is temporary and tied to that exact source; original notes are unchanged. Every exercise answer must quote the source exactly; questions remain self-rated because exact quotes do not establish linguistic correctness. The shared recall runner records retry-safe evidence. Tests inject a fake model; no real key/model was used. Connections visualizes explicit saved links only, bounded to 40 notes, 40 destinations and 120 edges, without a graph engine. Settings export now includes saved phrases alongside legacy phrase cards, deduplicating converted records. New Markdown/recall DOM tests use .test.ts so the existing runner actually discovers them; unrelated test configuration was not broadened.

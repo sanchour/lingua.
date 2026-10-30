@@ -16,3 +16,4 @@ export type { AlignmentPair, TokenLink } from './translateViews';
 export { readingSpec, selfReadingSpecs, readReadingQuestions } from './reading';
 
 export { phrasebookSpecs } from './phrasebook';
+export { notebookSpecs } from './notebook';

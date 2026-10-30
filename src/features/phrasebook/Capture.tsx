@@ -4,6 +4,7 @@ import { BookMarked } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useApp } from '@/app/context';
 import { newPhrase } from '@/data/notebook';
+import { sourcePath } from '@/core/notebook/library';
 import type { SavedPhrase } from '@/core/notebook/library';
 import { matchesCombo } from '@/design/hooks/useHotkeys';
 import { IconButton } from '@/design/primitives';
@@ -12,7 +13,7 @@ import { selectedText } from '@/features/culture/ReferenceHelp';
 import { toast } from '@/state/ui';
 import { PhraseEditor } from './Phrasebook';
 const useCapture = create<{ item: SavedPhrase | null }>(() => ({ item: null }));
-export function capturePhrase(lang: string, text: string, translation = '', source = window.location.pathname + window.location.search) {
+export function capturePhrase(lang: string, text: string, translation = '', source = sourcePath(window.location.pathname, window.location.search, import.meta.env.BASE_URL)) {
   useCapture.setState({ item: newPhrase(lang, text.slice(0, 4000), translation.slice(0, 10000), source) });
 }
 export function PhraseCaptureButton({ compact = false }: { compact?: boolean }) {

@@ -1,3 +1,4 @@
+import type { SavedPhrase } from '@/core/notebook/library';
 // Exporting Lingua's records to open formats: CSV (RFC 4180), Markdown with YAML front matter
 // and [[wikilinks]], plain text, printable HTML reports, and iCalendar (.ics, RFC 5545).
 import type { Chat, DailyStat, Deck, Goal, JournalEntry, Note, Text, Word } from '@/data/types';
@@ -397,6 +398,10 @@ export interface PhraseExportItem {
   category?: string;
   example?: string;
   tags?: string[];
+}
+
+export function savedPhrasesForExport(phrases: SavedPhrase[]): PhraseExportItem[] {
+  return phrases.filter((p) => !p.deletedAt).map((p) => ({ phrase: p.text, meaning: p.translation, category: p.kind, tags: p.tags, usageNote: [p.folder && `Folder: ${p.folder}`, p.situation && `Situation: ${p.situation}`, p.topic && `Topic: ${p.topic}`, p.formal && `Formal: ${p.formal}`, p.informal && `Informal: ${p.informal}`, p.notes, p.source && `Source: ${p.source}`].filter(Boolean).join('\n') }));
 }
 
 export function phrasebookToMarkdown(phrases: PhraseExportItem[], lang: string): string {
