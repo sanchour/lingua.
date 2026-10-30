@@ -8,6 +8,7 @@ import { TimerVideo } from '@/core/visio/videoLike';
 import type { VideoLike } from '@/core/visio/videoLike';
 import { getLanguage, GLOSS_LANG } from '@/core/lang/languages';
 import { recordSession } from '@/data/activity';
+import { db } from '@/data/db';
 import { savePlayback, updateMedia, useMedia, usePlaybackMap } from '@/data/media';
 import { patchSetting } from '@/data/settings';
 import type { Cue, Media } from '@/data/types';
@@ -170,7 +171,8 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     const onEnded = () => {
       flush();
       save(true);
-      void updateMedia(media.id, { watches: (media.watches ?? 0) + 1 });
+      // Read the count now: `media` here is the one from when this page opened.
+      void db.media.get(media.id).then((m) => updateMedia(media.id, { watches: (m?.watches ?? 0) + 1 }));
     };
     // iPhone's own full-screen player draws the subtitles from the <track>s.
     const onNativeFs = (showing: boolean) => () => {

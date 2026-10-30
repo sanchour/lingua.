@@ -151,6 +151,8 @@ describe('the later kinds', () => {
     const ok = readTranslations({ versions: [v('literal'), v('natural'), v('literary')], choices: [{ phrase: 'ni siquiera', why: 'Emphasis.' }, { phrase: '', why: 'x' }] });
     expect(ok?.versions).toHaveLength(3);
     expect(ok?.choices).toHaveLength(1);
+    // A 4,000-character passage can come back longer in the learner's language.
+    expect(readTranslations({ versions: [{ ...v('literal'), text: 'x'.repeat(5000) }, v('natural'), v('literary')] })?.versions).toHaveLength(3);
     expect(readTranslations({ versions: [v('literal'), v('literal'), v('natural')] })).toBeNull();
     expect(readTranslations({ versions: [v('literal'), v('natural')] })).toBeNull();
     expect(textOf('translations', ok!)).toBe('');

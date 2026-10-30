@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Mic, Square } from 'lucide-react';
 import { letterHints } from '@/core/sounds/articulation';
-import { contourInSemitones, pitchContour, spectrogram, waveformPeaks, type Spectrogram } from '@/core/sounds/pitch';
+import { contourInSemitones, endDirection, pitchContour, spectrogram, waveformPeaks, type Spectrogram } from '@/core/sounds/pitch';
+import { speechMatch } from '@/core/course/speech';
 import { canRecord, useRecorder } from '@/features/speech/useRecorder';
 import { recognitionSupported, listenOnce } from '@/services/speech/recognition';
 import { findRecording, recordingBlob } from '@/services/speech/recordings';
@@ -54,6 +55,17 @@ function SpectrogramView({ spec, label }: { spec: Spectrogram; label: string }) 
   return <canvas ref={ref} role="img" aria-label={`${label}: which frequencies are loud, over time`} className="mt-2 h-24 w-full rounded-xl bg-black" />;
 }
 
+function EndNote({ shape, want }: { shape: Shape; want: 'rise' | 'fall' }) {
+  const got = endDirection(shape.pitch);
+  if (!got) return <p className="mt-2 text-[13.5px] text-ink-soft">Not enough of your voice was heard to see which way it goes at the end. Say it a little louder.</p>;
+  const word = { rise: 'rose', fall: 'fell', level: 'stayed level' }[got];
+  return (
+    <p className="mt-2 text-[13.5px] text-ink-soft">
+      {want === 'rise' ? 'A question rises at the end' : 'A statement falls at the end'}: your voice {word}{got === want ? ', as it should.' : '. Try again, and let it ' + (want === 'rise' ? 'go up' : 'come down') + ' on the last word.'} (Measured from your recording; a guide, not a mark.)
+    </p>
+  );
+}
+
 function Shapes({ label, shape, tone }: { label: string; shape: Shape; tone: 'model' | 'yours' }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [slow, setSlow] = useState(false);
@@ -90,9 +102,12 @@ function Shapes({ label, shape, tone }: { label: string; shape: Shape; tone: 'mo
   );
 }
 
-const understoodNow = (heard: string, word: string, lang: string) => heard.toLocaleLowerCase(lang).replace(/[^\p{L}]/gu, '') === word.toLocaleLowerCase(lang).replace(/[^\p{L}]/gu, '');
+const understoodNow = (heard: string, word: string, lang: string) => speechMatch(word, [heard], lang).score === 1;
 
-export function RecordCompare({ lang, words }: { lang: string; words: string[] }) {
+/** For sentences said as a statement or a question: which way the voice should go at the end. */
+export type EndExpect = Record<string, 'rise' | 'fall'>;
+
+export function RecordCompare({ lang, words, expect }: { lang: string; words: string[]; expect?: EndExpect }) {
   const [word, setWord] = useState(words[0] ?? '');
   const [model, setModel] = useState<Shape | null | 'none'>(null);
   const [yours, setYours] = useState<Shape | null>(null);
@@ -193,6 +208,7 @@ export function RecordCompare({ lang, words }: { lang: string; words: string[] }
           {hints.extra.length > 0 && <> it heard {hints.extra.map((c) => `“${c}”`).join(', ')} that isn’t there;</>} look those sounds up above and try again slowly. (A guess from what the device wrote down, not a measurement.)
         </p>
       )}
+      {yours && expect?.[word] && <EndNote shape={yours} want={expect[word]} />}
       {model && model !== 'none' && yours && (
         <p className="mt-2 text-[13.5px] text-ink-soft">
           {yours.seconds > model.seconds * 1.25 ? `You took ${(yours.seconds / model.seconds).toFixed(1)}× as long as the speaker: try a little quicker.` : yours.seconds < model.seconds * 0.8 ? `You were ${(model.seconds / yours.seconds).toFixed(1)}× quicker than the speaker: try slowing down so each sound is clear.` : 'Your length is close to the speaker’s.'}

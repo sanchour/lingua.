@@ -664,7 +664,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0494` Word-boundary recognition · **6-9**
 - [x] `F0495` Connected-speech training · **6-9**
 - [x] `F0496` Reduced vowels and weak forms · **6-10**
-- [ ] `F0497` Stress and intonation recognition · **6-10**
+- [x] `F0497` Stress and intonation recognition · **6-10**
 - [ ] `F0498` Pitch-accent training where relevant · **6-10**
 - [x] `F0499` Tone recognition for tonal languages · **6-10** · partly there
 - [x] `F0500` Fast-speech comprehension · **6-9**
@@ -936,7 +936,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0710` Syllable segmentation · **6-10**
 - [x] `F0711` Stress placement · **6-10**
 - [x] `F0712` Word-level stress rules · **6-10**
-- [ ] `F0713` Sentence intonation · **6-10**
+- [x] `F0713` Sentence intonation · **6-10**
 - [ ] `F0714` Rhythm patterns · **6-10**
 - [x] `F0715` Connected speech · **6-10**
 - [x] `F0716` Sound reduction · **6-10**
@@ -967,7 +967,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0736` Practice consonant clusters · **6-10**
 - [x] `F0737` Practice difficult syllables · **6-10**
 - [x] `F0738` Practice word stress · **6-10**
-- [ ] `F0739` Practice sentence stress · **6-10**
+- [x] `F0739` Practice sentence stress · **6-10**
 - [x] `F0740` Practice intonation patterns · **6-10**
 - [x] `F0741` Practice speaking speed · **6-10**
 - [x] `F0742` Practice connected speech · **6-10**

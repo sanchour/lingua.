@@ -184,7 +184,7 @@ export function readTranslations(raw: unknown): TranslationsBody | null {
     ? r.versions.flatMap((x) => {
         const o = obj(x);
         const style = o.style;
-        return (style === 'literal' || style === 'natural' || style === 'literary') && str(o.text, 3000) && str(o.note, 300) ? [{ style: style as TranslationsBody['versions'][number]['style'], text: str(o.text, 3000)!, note: str(o.note, 300)! }] : [];
+        return (style === 'literal' || style === 'natural' || style === 'literary') && str(o.text) && str(o.note, 300) ? [{ style: style as TranslationsBody['versions'][number]['style'], text: str(o.text)!, note: str(o.note, 300)! }] : [];
       })
     : [];
   const choices = Array.isArray(r.choices) ? r.choices.flatMap((x) => (str(obj(x).phrase, 120) && str(obj(x).why, 300) ? [{ phrase: str(obj(x).phrase, 120)!, why: str(obj(x).why, 300)! }] : [])).slice(0, 6) : [];

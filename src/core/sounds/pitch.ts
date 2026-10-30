@@ -138,3 +138,16 @@ export function spectrogram(samples: Float32Array, sampleRate: number, opts: { s
   const frames = raw.map((mag) => Float32Array.from(mag, (m) => Math.max(0, Math.min(1, 1 + (20 * Math.log10(Math.max(m, 1e-9) / top)) / 60))));
   return { frames, binHz, stepMs: (hop / sampleRate) * 1000 };
 }
+
+/**
+ * Which way the voice goes at the end (6-10, for questions and statements): the last quarter of the voiced frames against the quarter before it,
+ * in semitones. Null when too little was voiced to say; 'level' within a semitone and a half.
+ */
+export function endDirection(semitones: ReadonlyArray<number | null>): 'rise' | 'fall' | 'level' | null {
+  const voiced = semitones.filter((x): x is number => x !== null);
+  if (voiced.length < 8) return null;
+  const q = Math.floor(voiced.length / 4);
+  const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
+  const move = mean(voiced.slice(-q)) - mean(voiced.slice(-2 * q, -q));
+  return move > 1.5 ? 'rise' : move < -1.5 ? 'fall' : 'level';
+}

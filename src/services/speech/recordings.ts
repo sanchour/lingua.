@@ -4,6 +4,7 @@
 import { pickRecording, recordingKey, recordingPage, recordingUrl, SOUNDS_LANGS, soundsFileName, speakerOf } from '@/core/audio/recordings';
 import type { SoundsFile, SoundsRecording } from '@/core/audio/recordings';
 import { db } from '@/data/db';
+import { putSpeech } from '@/data/speechCache';
 import type { SpeechRow } from '@/data/types';
 
 /** The `voice` of a kept recording in db.speech. */
@@ -81,7 +82,7 @@ export async function recordingBlob(lang: string, text: string, found: Recorded)
   if (!res.ok) throw new Error(`Commons answered ${res.status}.`);
   const blob = await res.blob();
   const key = recordingKey(text, lang);
-  await db.speech.put({ id: `${COMMONS}|${key}`, lang, text: key, voice: COMMONS, blob, createdAt: Date.now(), credit: who }).catch(() => undefined);
+  await putSpeech({ id: `${COMMONS}|${key}`, lang, text: key, voice: COMMONS, blob, createdAt: Date.now(), credit: who }).catch(() => undefined);
   return blob;
 }
 

@@ -40,5 +40,6 @@ describe('letterHints', () => {
     expect(letterHints('perro', 'pero')).toEqual({ missing: ['r'], extra: [] });
     expect(letterHints('casa', 'caza')).toEqual({ missing: ['s'], extra: ['z'] });
     expect(letterHints('hola', 'Hola!')).toEqual({ missing: [], extra: [] });
+    expect(letterHints('más', 'mas')).toEqual({ missing: [], extra: [] });
   });
 });
