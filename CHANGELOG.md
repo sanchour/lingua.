@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.119** · 2026-10-30 · Audit leftovers: no HTML string in the daily-word window, translation label, safe CSP parts, optional claim limit
 - **0.6.0-alpha.118** · 2026-10-30 · 6-17: Goals, habits and progress (Ratio and Home)
 - **0.6.0-alpha.117** · 2026-10-30 · Claim step 6-17 (Goals, habits and progress)
 - **0.6.0-alpha.116** · 2026-10-30 · 6-15: The tutor, in context (everywhere, with Max)
