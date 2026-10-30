@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.141** · 2026-10-30 · 6-20 N1: Notebook, Markdown, links and draft recovery
 - **0.6.0-alpha.140** · 2026-10-30 · 6-20 P1: local phrasebook, organization, audio and export
 - **0.6.0-alpha.139** · 2026-10-30 · Safely merge Codex and main before continuing 6-20
 - **0.6.0-alpha.138** · 2026-10-30 · Claim 6-20: phrasebook and notebook (Codex)
