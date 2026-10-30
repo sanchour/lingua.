@@ -1,3 +1,5 @@
+import { contrastPaletteToCss, HIGH_CONTRAST_NOCTURNE, HIGH_CONTRAST_PAPER } from './contrast';
+
 // Themes for Paper (light) and Nocturne (dark): a background and the element colours that belong
 // with it. Text keeps the theme's own ink, so reading stays as clear; each accent's text colour is
 // chosen to stay at 4.5 : 1 or more on its background. The first of each list is the original look.
@@ -69,7 +71,12 @@ export function installPaletteStyles(): void {
     `[data-theme='${theme}'][data-palette='${p.id}']{${Object.entries(p.vars)
       .map(([k, v]) => `${k}:${v}`)
       .join(';')}}`;
-  const css = [...PAPER_PALETTES.filter((p) => Object.keys(p.vars).length).map((p) => rule('paper', p)), ...NOCTURNE_PALETTES.filter((p) => Object.keys(p.vars).length).map((p) => rule('nocturne', p))].join('\n');
+  const css = [
+    ...PAPER_PALETTES.filter((p) => Object.keys(p.vars).length).map((p) => rule('paper', p)),
+    ...NOCTURNE_PALETTES.filter((p) => Object.keys(p.vars).length).map((p) => rule('nocturne', p)),
+    contrastPaletteToCss(HIGH_CONTRAST_PAPER, 'paper'),
+    contrastPaletteToCss(HIGH_CONTRAST_NOCTURNE, 'nocturne'),
+  ].join('\n');
   const style = document.createElement('style');
   style.id = 'lingua-palettes';
   style.textContent = css;

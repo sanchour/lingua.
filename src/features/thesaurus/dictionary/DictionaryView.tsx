@@ -7,6 +7,7 @@ import { Card } from '@/design/primitives';
 import { removeDictionary, useDictionaryState } from '@/services/dictionary/fullDict';
 import { toast } from '@/state/ui';
 import { DictionarySearch, entryPath } from './DictionarySearch';
+import { PersonalDictionaryToolbar } from './DictionaryToolsPanel';
 import { EntryView, InstallCard } from './Entry';
 import { MemoryList, useWordMemory, WordPlaces } from './WordMemory';
 import type { RememberedRow } from './WordMemory';
@@ -46,6 +47,8 @@ export function DictionaryView({ lang }: { lang: string }) {
         </div>
       )}
 
+      <PersonalDictionaryToolbar lang={lang} onOpenWord={(w) => setParams({ tab: 'dictionary', word: w })} />
+
       <div className="grid grid-cols-[minmax(300px,380px)_minmax(0,1fr)] items-start gap-8">
         <section aria-label={translateUi('Your words')}>
           <h2 className="mb-3 flex items-baseline gap-2 font-serif text-xl font-semibold"><UiText source={'Your words {0}'} values={[<span className="font-sans text-sm font-bold text-ink-faint tabular-nums">{rows?.length ?? ''}</span>]} /></h2>
@@ -59,7 +62,7 @@ export function DictionaryView({ lang }: { lang: string }) {
         </section>
 
         <div className="sticky top-6 max-h-[calc(100dvh-48px)] min-w-0 overflow-y-auto overscroll-contain rounded-3xl border border-line bg-raised p-7 [scrollbar-width:thin]">
-          {word && ready ? (
+          {word ? (
             <EntryView lang={lang} word={word} />
           ) : selected ? (
             <div>

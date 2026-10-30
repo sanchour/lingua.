@@ -63,7 +63,9 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
             ) : (
               CARD_STATES.map((s) => (
                 <li key={s.key} className={cx('flex items-center gap-2', !totals[s.key] && 'opacity-45')}>
-                  <span className="size-2.5 shrink-0 rounded-full" style={{ background: s.color }} aria-hidden />
+                  <span className="flex size-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white shadow-xs" style={{ background: s.color }} aria-hidden>
+                    {s.glyph}
+                  </span>
                   <span className="font-bold tabular-nums">{totals[s.key].toLocaleString()}</span>
                   <span className="text-ink-soft">{s.label}</span>
                 </li>

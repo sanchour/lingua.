@@ -1,4 +1,7 @@
 import { parseGoodreadsCsv } from '@/core/parsers/goodreads';
+import { groupKindleByBook, looksLikeKindleClippings, parseKindleClippings } from '@/core/parsers/kindle';
+import { parseMarkdownDocument } from '@/core/parsers/markdownImport';
+import { looksTimed, parseSubtitles } from '@/core/parsers/subtitles';
 import { decodeText, textToChapters } from '@/core/parsers/text';
 import type { ChapterDraft } from '@/core/parsers/text';
 import { SAMPLES } from '@/core/lang/samples';
@@ -10,12 +13,12 @@ import { parseEpub } from './epub';
 import { parsePdf } from './pdf';
 
 /** The books Lingua can read from a file. */
-export const BOOK_FILE_ACCEPT = '.epub,application/epub+zip,.pdf,application/pdf,.txt,text/plain';
+export const BOOK_FILE_ACCEPT = '.epub,application/epub+zip,.pdf,application/pdf,.txt,.md,.srt,.vtt,text/plain,text/markdown,text/vtt';
 
 export function bookFileKind(file: File): 'epub' | 'pdf' | 'txt' | null {
   if (/\.epub$/i.test(file.name) || file.type === 'application/epub+zip') return 'epub';
   if (/\.pdf$/i.test(file.name) || file.type === 'application/pdf') return 'pdf';
-  if (/\.txt$/i.test(file.name) || file.type.startsWith('text/')) return 'txt';
+  if (/\.(txt|md|markdown|srt|vtt)$/i.test(file.name) || file.type.startsWith('text/')) return 'txt';
   return null;
 }
 
@@ -42,12 +45,47 @@ export async function importPasted(lang: string, title: string, body: string, ex
   });
 }
 
+export function parseRichTextChapters(text: string, fallbackTitle: string, isMarkdown = false): { title: string; kind: Text['kind']; chapters: ChapterDraft[] } {
+  if (looksLikeKindleClippings(text)) {
+    const groups = groupKindleByBook(parseKindleClippings(text));
+    if (groups.length > 0) {
+      const chapters: ChapterDraft[] = groups.map((g) => ({
+        title: g.author ? `${g.bookTitle} (${g.author})` : g.bookTitle,
+        blocks: [
+          { t: 'h' as const, text: g.author ? `${g.bookTitle} — ${g.author}` : g.bookTitle },
+          ...g.clippings.map((c) => ({ t: (c.kind === 'note' ? 'p' : 'quote') as 'p' | 'quote', text: c.text })),
+        ],
+      }));
+      return { title: groups.length === 1 ? groups[0].bookTitle : 'Kindle Clippings', kind: chapters.length > 1 ? 'book' : 'article', chapters };
+    }
+  }
+  if (looksTimed(text)) {
+    const cues = parseSubtitles(text);
+    if (cues.length > 0) {
+      return {
+        title: fallbackTitle,
+        kind: 'transcript',
+        chapters: [{ title: fallbackTitle, blocks: cues.map((c, idx) => ({ t: 'p' as const, text: c.text, cue: idx })) }],
+      };
+    }
+  }
+  if (isMarkdown || /^---\r?\n/.test(text) || /\[\[[^[\]]+\]\]/.test(text)) {
+    const md = parseMarkdownDocument(text, fallbackTitle);
+    if (md.chapters.length > 0) {
+      return { title: md.title || fallbackTitle, kind: md.chapters.length > 1 ? 'book' : 'article', chapters: md.chapters };
+    }
+  }
+  const chapters = textToChapters(text, fallbackTitle);
+  return { title: fallbackTitle, kind: chapters.length > 1 ? 'book' : 'article', chapters };
+}
+
 export async function importTxtFile(lang: string, file: File): Promise<string> {
   const text = decodeText(new Uint8Array(await file.arrayBuffer()), lang);
-  const title = file.name.replace(/\.txt$/i, '');
-  const chapters = textToChapters(text, title);
-  if (!chapters.length) throw new Error('This file is empty.');
-  return addText({ lang, title, kind: chapters.length > 1 ? 'book' : 'article', source: 'txt', chapters });
+  const rawTitle = file.name.replace(/\.(txt|md|markdown|srt|vtt)$/i, '');
+  const isMd = /\.(md|markdown)$/i.test(file.name);
+  const parsed = parseRichTextChapters(text, rawTitle, isMd);
+  if (!parsed.chapters.length) throw new Error('This file is empty.');
+  return addText({ lang, title: parsed.title, kind: parsed.kind, source: 'txt', chapters: parsed.chapters });
 }
 
 export async function importEpubFile(lang: string, file: File, onProgress?: (fraction: number) => void): Promise<string> {

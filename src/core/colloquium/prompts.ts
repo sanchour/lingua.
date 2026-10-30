@@ -14,7 +14,30 @@ const TRANSLATED = ['cafe', 'market', 'way', 'meet', 'day', 'doctor', 'hotel', '
 type TranslatedId = (typeof TRANSLATED)[number];
 const isTranslated = (id: string): id is TranslatedId => (TRANSLATED as readonly string[]).includes(id);
 
-/** Lines added in Lingua 5.2-6, written for the six core languages; the others use the English ones. */
+export type ConversationMode = 'scenario' | 'free' | 'tutor' | 'immersion';
+
+export interface ConversationStyles {
+  /** Conversations with interruptions and follow-up questions (F0551). */
+  interruptions?: boolean;
+  /** Conversations where the AI doesn’t automatically understand everything (F0552). */
+  feignMisunderstanding?: boolean;
+  /** Conversation with limited target-language assistance (F0553). */
+  limitedAssistance?: boolean;
+  /** Conversation where the AI uses only vocabulary the learner probably knows (F0554). */
+  cappedVocabulary?: boolean;
+  /** Conversation with gradual introduction of new expressions (F0555). */
+  gradualNewWords?: boolean;
+  /** Multi-character conversations (F0549) / group conversation simulation (F0550). */
+  multiCharacter?: boolean;
+  /** Conversation with branching outcomes (F0548). */
+  branchingOutcomes?: boolean;
+  /** Conversation focused on pronunciation (F0520). */
+  pronunciationFocus?: boolean;
+  /** Oral grammar drills (F0260). */
+  oralGrammarFocus?: boolean;
+}
+
+/** Lines added in Lingua 5.2-6 and Lingua 6 (6-11), written for the core languages; others use the English ones. */
 interface Extra {
   /** Leads into a scene written in English. */
   scene: string;
@@ -23,6 +46,18 @@ interface Extra {
   end: string;
   help: string;
   minutes: string;
+  freeMode?: string;
+  tutorMode?: string;
+  immersionMode?: string;
+  styleInterruptions?: string;
+  styleMisunderstanding?: string;
+  styleLimitedAssistance?: string;
+  styleCappedVocab?: string;
+  styleGradualWords?: string;
+  styleMultiCharacter?: string;
+  styleBranching?: string;
+  stylePronunciation?: string;
+  styleOralGrammar?: string;
 }
 
 const EN_EXTRA: Extra = {
@@ -31,6 +66,18 @@ const EN_EXTRA: Extra = {
   end: 'Don’t interrupt me with corrections; when we finish, list my mistakes with the right forms.',
   help: 'If I get stuck, offer me two or three words or the start of a sentence I could use.',
   minutes: 'Let’s talk for about {minutes} minutes, then end the scene and tell me how I did.',
+  freeMode: 'We don’t need a fixed scenario: let’s have a spontaneous free-flowing conversation about whatever comes up.',
+  tutorMode: 'Act as a patient language tutor: guide our dialogue, teach and explain key vocabulary and grammar rules as they arise, and ask questions to help me practice.',
+  immersionMode: 'Full immersion: speak strictly in {name} with minimal assistance, never switch to English or provide direct translations unless I am completely stuck, and push me to work through misunderstandings myself.',
+  styleInterruptions: 'React naturally with realistic conversational interruptions and spontaneous follow-up questions instead of waiting for long turns.',
+  styleMisunderstanding: 'Don’t automatically understand everything: if my grammar, phrasing, or pronunciation is unclear, feign misunderstanding and ask me to rephrase or clarify.',
+  styleLimitedAssistance: 'Provide minimal assistance: don’t translate into English, and push me to circumlocute and describe unknown words in {name}.',
+  styleCappedVocab: 'Cap your vocabulary: use only words an early learner at my level would know, avoiding obscure idioms and overly complex sentence structures.',
+  styleGradualWords: 'Introduce new expressions gradually—at most one new expression per turn—and explain it briefly in context.',
+  styleMultiCharacter: 'Simulate a group conversation: play two or three distinct characters with different speaking styles and perspectives who talk with each other and with me.',
+  styleBranching: 'Create a branching conversation where every choice and response I give branches into different narrative outcomes.',
+  stylePronunciation: 'Focus closely on my pronunciation, phonetic rhythm, and oral delivery; point out any awkward sounds or rhythm issues.',
+  styleOralGrammar: 'Conduct oral grammar drills: ask rapid-fire questions that require me to practice and form the target grammar patterns in my spoken responses.',
 };
 
 const EXTRAS: Record<string, Extra> = {
@@ -40,6 +87,18 @@ const EXTRAS: Record<string, Extra> = {
     end: 'No me interrumpas para corregirme; al terminar, haz una lista de mis errores con la forma correcta.',
     help: 'Si me atasco, ofréceme dos o tres palabras o el comienzo de una frase.',
     minutes: 'Hablemos unos {minutes} minutos; después termina la escena y dime cómo lo he hecho.',
+    freeMode: 'No necesitamos un escenario fijo: tengamos una conversación libre y espontánea sobre cualquier tema.',
+    tutorMode: 'Actúa como un tutor paciente: guía nuestro diálogo, explícame vocabulario y reglas gramaticales cuando surjan, y hazme preguntas para practicar.',
+    immersionMode: 'Inmersión total: habla estrictamente en español con mínima ayuda, sin traducir al inglés, y anímame a resolver los malentendidos por mí mismo.',
+    styleInterruptions: 'Reacciona de forma natural con interrupciones conversacionales y preguntas de seguimiento espontáneas.',
+    styleMisunderstanding: 'No entiendas todo automáticamente: si cometo errores o mi frase no queda clara, finge no entender y pídeme que la reformule.',
+    styleLimitedAssistance: 'Ayuda mínima: no recurras al inglés y anímame a explicar las palabras difíciles con perífrasis en español.',
+    styleCappedVocab: 'Limita tu vocabulario: utiliza únicamente palabras adecuadas a mi nivel, evitando modismos oscuros y estructuras complejas.',
+    styleGradualWords: 'Introduce nuevas expresiones de forma gradual: como máximo una por turno, explicándola en su contexto.',
+    styleMultiCharacter: 'Simula una conversación en grupo: interpreta a dos o tres personajes distintos que interactúen entre sí y conmigo.',
+    styleBranching: 'Crea una conversación interactiva con decisiones bifurcadas donde mis respuestas cambien el rumbo de la historia.',
+    stylePronunciation: 'Presta especial atención a mi pronunciación y ritmo oral; señala cualquier sonido o entonación poco natural.',
+    styleOralGrammar: 'Haz ejercicios orales de gramática: hazme preguntas rápidas que me obliguen a emplear la estructura gramatical elegida.',
   },
   fr: {
     scene: 'Voici la scène, écrite en anglais pour que je la comprenne, mais parle-moi uniquement en français : {scene}',
@@ -47,6 +106,18 @@ const EXTRAS: Record<string, Extra> = {
     end: 'Ne m’interromps pas pour me corriger ; à la fin, fais la liste de mes fautes avec la bonne forme.',
     help: 'Si je bloque, propose-moi deux ou trois mots ou un début de phrase.',
     minutes: 'Parlons environ {minutes} minutes, puis termine la scène et dis-moi comment je m’en suis sorti.',
+    freeMode: 'Pas besoin de scénario fixe : ayons une conversation libre et spontanée sur n’importe quel sujet.',
+    tutorMode: 'Agis comme un tuteur bienveillant : guide notre dialogue, explique-moi le vocabulaire et la grammaire au fil de l’eau, et pose-moi des questions d’entraînement.',
+    immersionMode: 'Immersion totale : parle exclusivement en français avec une aide minimale, sans traduire en anglais, et pousse-moi à surmonter les incompréhensions moi-même.',
+    styleInterruptions: 'Réagis naturellement avec de vraies interruptions et des relances spontanées au lieu d’attendre de longues tirades.',
+    styleMisunderstanding: 'Ne comprends pas tout du premier coup : si ma phrase est inexacte ou confuse, feins de ne pas comprendre et demande-moi de reformuler.',
+    styleLimitedAssistance: 'Aide minimale : ne traduis pas en anglais et pousse-moi à contourner la difficulté en français.',
+    styleCappedVocab: 'Limite ton vocabulaire : utilise uniquement des mots courants adaptés à mon niveau, sans tournures rares.',
+    styleGradualWords: 'Introduis de nouvelles expressions progressivement : une seule par réplique au maximum, en l’expliquant en contexte.',
+    styleMultiCharacter: 'Simule une conversation de groupe : incarne deux ou trois personnages distincts qui échangent entre eux et avec moi.',
+    styleBranching: 'Crée une histoire à embranchements où chaque réponse et décision influence la suite des événements.',
+    stylePronunciation: 'Accorde une attention particulière à ma prononciation, au rythme et aux liaisons ; signale tout manque de naturel.',
+    styleOralGrammar: 'Mène des exercices oraux de grammaire : pose-moi des questions vives exigeant la structure ciblée dans mes réponses.',
   },
   de: {
     scene: 'Hier ist die Szene, auf Englisch, damit ich sie verstehe, aber sprich mit mir nur Deutsch: {scene}',
@@ -54,6 +125,18 @@ const EXTRAS: Record<string, Extra> = {
     end: 'Unterbrich mich nicht mit Korrekturen; liste am Ende meine Fehler mit der richtigen Form auf.',
     help: 'Wenn ich nicht weiterweiß, biete mir zwei oder drei Wörter oder einen Satzanfang an.',
     minutes: 'Lass uns etwa {minutes} Minuten sprechen; beende dann die Szene und sag mir, wie es lief.',
+    freeMode: 'Wir brauchen kein festes Szenario: lass uns ein spontanes, freies Gespräch über beliebige Themen führen.',
+    tutorMode: 'Handle wie ein geduldiger Sprachtutor: leite das Gespräch, erkläre mir Vokabeln und Grammatikregeln, und stelle mir Übungsfragen.',
+    immersionMode: 'Vollständige Immersion: sprich ausschließlich Deutsch mit minimaler Hilfe, wechsle nicht ins Englische, und lass mich Unklarheiten selbst umschreiben.',
+    styleInterruptions: 'Reagiere natürlich mit Zwischenbemerkungen und spontanen Nachfragen statt langer Monologe.',
+    styleMisunderstanding: 'Verstehe nicht automatisch alles: wenn mein Satz unklar oder fehlerhaft ist, tu so als würdest du mich nicht verstehen und bitte mich um Neuformulierung.',
+    styleLimitedAssistance: 'Minimale Hilfe: verzichte auf Englisch und fordere mich auf, unbekannte Wörter auf Deutsch zu umschreiben.',
+    styleCappedVocab: 'Begrenze deinen Wortschatz: verwende nur für mein Niveau typische Wörter und verzichte auf seltene Redewendungen.',
+    styleGradualWords: 'Führe neue Ausdrücke behutsam ein: höchstens eine neue Redewendung pro Runde, im Kontext erklärt.',
+    styleMultiCharacter: 'Simuliere ein Gruppengespräch: spiele zwei oder drei verschiedene Charaktere mit eigener Sprechweise.',
+    styleBranching: 'Erstelle eine verzweigte Handlung, in der meine Entscheidungen und Antworten den Fortgang direkt bestimmen.',
+    stylePronunciation: 'Achte genau auf meine Aussprache, Betonung und Satzmelodie; weise mich auf unklare Laute hin.',
+    styleOralGrammar: 'Führe mündliche Grammatikübungen durch: stelle mir gezielte Fragen, die die Zielstruktur in der Antwort fordern.',
   },
   ru: {
     scene: 'Вот сцена — по-английски, чтобы я её понял, но говори со мной только по-русски: {scene}',
@@ -61,6 +144,18 @@ const EXTRAS: Record<string, Extra> = {
     end: 'Не перебивай меня исправлениями; в конце перечисли мои ошибки с правильными формами.',
     help: 'Если я застряну, предложи мне два-три слова или начало фразы.',
     minutes: 'Давай поговорим минут {minutes}, потом закончи сцену и скажи, как у меня получилось.',
+    freeMode: 'Нам не нужен фиксированный сценарий: давай просто свободно и спонтанно поговорим на любую тему.',
+    tutorMode: 'Веди себя как терпеливый преподаватель: направляй диалог, объясняй грамматику и слова и задавай тренировочные вопросы.',
+    immersionMode: 'Полное погружение: говори только по-русски с минимальной помощью, не переходи на английский и помогай мне подбирать описания самостоятельно.',
+    styleInterruptions: 'Реагируй живо, с естественными перебиваниями и спонтанными встречными вопросами.',
+    styleMisunderstanding: 'Не понимай всё автоматически: если фраза грамматически неточна или неясна, покажи непонимание и попроси перефразировать.',
+    styleLimitedAssistance: 'Минимум подсказок: без английского языка, побуждай меня объяснять незнакомые слова по-русски.',
+    styleCappedVocab: 'Ограничь словарный запас: используй только слова моего уровня, избегая редких идиом.',
+    styleGradualWords: 'Вводи новые выражения постепенно: не больше одного за реплику, поясняя его в контексте.',
+    styleMultiCharacter: 'Смоделируй разговор в группе: играй двух-трёх разных персонажей со своими характерами.',
+    styleBranching: 'Строй интерактивную ветвящуюся историю, где мои решения определяют развитие сюжета.',
+    stylePronunciation: 'Обращай особое внимание на моё произношение, ударение и интонацию; указывай на неточности.',
+    styleOralGrammar: 'Проводи устные грамматические разминки: задавай вопросы, вынуждающие меня строить ответы с нужной конструкцией.',
   },
   ar: {
     scene: 'هذا هو المشهد، مكتوبًا بالإنجليزية لأفهمه، لكن تكلّم معي بالعربية فقط: {scene}',
@@ -68,6 +163,18 @@ const EXTRAS: Record<string, Extra> = {
     end: 'لا تقاطعني بالتصحيحات؛ وفي النهاية اذكر أخطائي مع الصيغة الصحيحة.',
     help: 'إذا توقفت، فاقترح عليّ كلمتين أو ثلاثًا أو بداية جملة.',
     minutes: 'لنتحدث مدة {minutes} دقائق تقريبًا، ثم أنهِ المشهد وأخبرني كيف كان أدائي.',
+    freeMode: 'لا نحتاج إلى مشهد محدد: لنتحدث بحرية وعفوية عن أي موضوع.',
+    tutorMode: 'تصرّف كمعلم لغة صبور: وجّه الحديث، واشرح المفردات والقواعد عند الحاجة، واطرح أسئلة للممارسة.',
+    immersionMode: 'انغماس كامل: تكلّم بالعربية فقط وبأقل قدر من المساعدة، ولا تنتقل للإنجليزية، وشجعني على توضيح أفكاري بنفسي.',
+    styleInterruptions: 'تفاعل بعفوية مع مقاطعات طبيعية وأسئلة متابعة واقعية.',
+    styleMisunderstanding: 'لا تفهم كل شيء تلقائيًا: إذا كانت صياغتي غير واضحة، أظهر عدم الفهم واطلب مني إعادة الصياغة.',
+    styleLimitedAssistance: 'مساعدة محدودة: لا تستخدم الإنجليزية وحفّزني على شرح الكلمات الصعبة بالعربية.',
+    styleCappedVocab: 'اقتصر على مفردات تناسب مستواي، وتجنب التراكيب المعقدة والأمثال الغامضة.',
+    styleGradualWords: 'أدخل تعبيرات جديدة تدريجيًا: تعبير واحد فقط في كل رد مع شرحه في السياق.',
+    styleMultiCharacter: 'حاكِ محادثة جماعية: مثّل شخصيتين أو ثلاثًا بطباع وطرق كلام مختلفة.',
+    styleBranching: 'اصنع قصة ذات مسارات متفرعة تعتمد نهايتها على اختياراتي وإجاباتي.',
+    stylePronunciation: 'ركّز على نطقي ومخارج الحروف والتنغيم؛ ونبّهني إلى الأخطاء الصوتية.',
+    styleOralGrammar: 'أجرِ تدريبات نحوية شفهية: اطرح أسئلة سريعة تتطلب استخدام القاعدة المطلوبة.',
   },
   zh: {
     scene: '这是场景，用英文写的，方便我理解，但请你只用中文跟我说话：{scene}',
@@ -75,6 +182,18 @@ const EXTRAS: Record<string, Extra> = {
     end: '聊天时不要打断我来纠错；结束后，把我的错误列出来，并给出正确的说法。',
     help: '如果我卡住了，给我两三个词或者一句话的开头。',
     minutes: '我们聊大约{minutes}分钟，然后结束这个场景，告诉我表现得怎么样。',
+    freeMode: '我们不需要固定场景：就轻松自如地随心聊聊任何话题吧。',
+    tutorMode: '请扮演一位耐心的语言导师：引导对话，遇到生词或语法时适时点拨，多提问让我练习。',
+    immersionMode: '全中文沉浸：全程只说中文，尽量少给英文翻译或提示，鼓励我自己用中文把意思表达清楚。',
+    styleInterruptions: '对话时更自然一些，适度插话和追问，而不是每次都等我说一大段。',
+    styleMisunderstanding: '不要自动理解一切：如果我的语法或用词不准确，请假装听不懂，让我换种方式重新说一遍。',
+    styleLimitedAssistance: '给予有限的帮助：不直接给英文翻译，引导我用中文打比方或用已知的简单词描述。',
+    styleCappedVocab: '控制词汇难度：尽量只使用符合我水平的常用词汇，避免生僻成语和过于复杂的长句。',
+    styleGradualWords: '循序渐进地引入新词新表达：每次回复最多引入一个新说法，并在语境中顺带解释。',
+    styleMultiCharacter: '模拟群聊场景：扮演两三个性格和说话风格不同的人物，他们之间互相交流也跟我对话。',
+    styleBranching: '进行分支式互动对话：我的每个选择和回答都会带来不同的剧情走向与结局。',
+    stylePronunciation: '重点关注我的发音、语调和节奏：指出听起来不够自然的地方。',
+    styleOralGrammar: '进行口语语法快练：提出连珠炮式的简短问题，要求我必须用指定的语法句型来回答。',
   },
 };
 
@@ -567,6 +686,10 @@ export interface PromptOptions {
   /** A scene's id (scenes/). */
   scene: string;
   level: Level;
+  /** Conversation mode (F0548–F0555): 'scenario' (default), 'free', 'tutor', 'immersion'. */
+  mode?: ConversationMode;
+  /** Conversational constraints and styles (F0520, F0260, F0548–F0555). */
+  styles?: ConversationStyles;
   /** Correct my mistakes after each answer (true or 'live'), all at the end ('end'), or not at all. */
   correct: boolean | 'live' | 'end';
   /** Speak slowly and simply. */
@@ -592,6 +715,7 @@ export const promptInLanguage = (lang: string): boolean => lang === 'en' || lang
 export function buildPrompt(lang: string, o: PromptOptions): string {
   const kit = KITS[lang] ?? EN;
   const extra = EXTRAS[lang] ?? EN_EXTRA;
+  const getExtra = (key: keyof Extra): string => (EXTRAS[lang] && EXTRAS[lang][key]) || EN_EXTRA[key] || '';
   const name = getLanguage(lang)?.name ?? lang;
   const level = o.level === 'A0' ? 'A1' : o.level;
   const scene = getScene(o.scene) ?? getScene('cafe')!;
@@ -605,11 +729,43 @@ export function buildPrompt(lang: string, o: PromptOptions): string {
       .replaceAll('{minutes}', String(o.minutes ?? ''))
       .replaceAll('{goals}', scene.goals.join('; '))
       .replaceAll('{scene}', sceneInEnglish(scene));
+
+  const convMode = o.mode ?? 'scenario';
+
   // The first ten scenes in the language, with their goals; the others in English inside the language's frame.
-  const sceneLines = o.about ? [kit.about] : isTranslated(scene.id) ? [kit.scenes[scene.id], extra.goals] : [extra.scene];
+  let sceneLines: string[];
+  if (o.about) {
+    sceneLines = [kit.about];
+  } else if (convMode === 'free') {
+    sceneLines = [getExtra('freeMode')];
+  } else if (isTranslated(scene.id)) {
+    sceneLines = [kit.scenes[scene.id], extra.goals];
+  } else {
+    sceneLines = [extra.scene];
+  }
+
+  const modeLine =
+    convMode === 'tutor' ? getExtra('tutorMode') :
+    convMode === 'immersion' ? getExtra('immersionMode') :
+    undefined;
+
+  const st = o.styles ?? {};
+  const styleLines = [
+    st.interruptions && getExtra('styleInterruptions'),
+    st.feignMisunderstanding && getExtra('styleMisunderstanding'),
+    st.limitedAssistance && getExtra('styleLimitedAssistance'),
+    st.cappedVocabulary && getExtra('styleCappedVocab'),
+    st.gradualNewWords && getExtra('styleGradualWords'),
+    st.multiCharacter && getExtra('styleMultiCharacter'),
+    st.branchingOutcomes && getExtra('styleBranching'),
+    st.pronunciationFocus && getExtra('stylePronunciation'),
+    st.oralGrammarFocus && getExtra('styleOralGrammar'),
+  ].filter((s): s is string => Boolean(s));
+
   const parts = [
     kit.open,
     ...sceneLines,
+    modeLine,
     kit.level,
     o.slow && kit.slow,
     o.correct === 'end' ? extra.end : o.correct && kit.correct,
@@ -618,6 +774,7 @@ export function buildPrompt(lang: string, o: PromptOptions): string {
     o.topic && kit.grammar,
     o.voice && kit.voice,
     o.minutes && extra.minutes,
+    ...styleLines,
     kit.start,
   ].filter((p): p is string => Boolean(p));
   return parts.map(fill).join(UNSPACED.has(lang) ? '' : ' ');

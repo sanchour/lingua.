@@ -1,12 +1,14 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
 // A run of exercises of any kind the engine has (6-4b): one screen for matching, dragging, typing, free sentences and form
 // changes. How it asks is the learner's: hints, "how sure are you?", answers only at the end, another example after a miss.
+import { ChooseView } from './ChooseView';
+import { SplitView } from './SplitView';
 import { HeardDiff } from './HeardDiff';
 import { ListenBar } from './ListenBar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Settings2 } from 'lucide-react';
-import type { DragBody, ExerciseSpec, MatchBody, SessionOptions } from '@/core/contracts/exercise';
+import type { ChooseBody, DragBody, ExerciseSpec, MatchBody, SessionOptions, TaskBody } from '@/core/contracts/exercise';
 import type { Outcome } from '@/core/contracts/learner';
 import { judge, solutionOf } from '@/core/exercise';
 import type { Judgement } from '@/core/exercise';
@@ -76,7 +78,9 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
   const progress = taken.length / Math.max(1, taken.length + queue.length);
 
   /** A fresh page for the next exercise. */
+  const [choicePicked, setChoicePicked] = useState<number | null>(null);
   const clear = useCallback(() => {
+    setChoicePicked(null);
     setText('');
     setPicked([]);
     setHints(0);
@@ -136,6 +140,13 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
     setPhase(right ? 'right' : 'wrong');
   };
 
+  // A choice is answered by tapping it: the index is judged, and what was chosen is what the record keeps.
+  const onChoose = (i: number) => {
+    if (!spec || phase !== 'answer' || answered.current === spec.key) return;
+    setChoicePicked(i);
+    const o = (spec.body as ChooseBody).options[i];
+    fromJudgement(judge(spec.check, i, lang), o.text ?? 'a picture');
+  };
   const fromJudgement = (j: Judgement, given: string) => settle(j.outcome === 'ungraded' ? 'wrong' : j.outcome, given, j.message);
 
   const check = async () => {
@@ -202,7 +213,7 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
 
   const free = !isMatch(spec) && spec.kind !== 'drag-drop' && spec.kind !== 'transform' && isFreeText(spec);
   const model = spec.check.rule === 'self' || spec.check.rule === 'ai' ? spec.check.modelAnswer : '';
-  const ready = isMatch(spec) ? false : spec.kind === 'drag-drop' ? picked.length === tiles.length : Boolean(text.trim()) && !judging;
+  const ready = isMatch(spec) || spec.kind === 'listen-choose' ? false : spec.kind === 'drag-drop' ? picked.length === tiles.length : Boolean(text.trim()) && !judging;
   const why = spec.feedback?.why;
 
   return (
@@ -225,7 +236,9 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
             {isMatch(spec) && <MatchView body={spec.body as MatchBody} lang={lang} onDone={onMatched} random={random} />}
             {spec.kind === 'drag-drop' && <DragView prompt={(spec.body as DragBody).prompt} tiles={tiles} lang={lang} value={picked} onChange={setPicked} phase={phase} />}
             {spec.kind === 'transform' && <TransformView spec={spec as TransformSpec} lang={lang} value={text} onChange={setText} phase={phase} onSubmit={() => (phase === 'answer' ? void check() : next())} onHint={setHints} />}
-            {!isMatch(spec) && spec.kind !== 'drag-drop' && spec.kind !== 'transform' && <TypedView spec={options.hints ? spec : { ...spec, hints: undefined }} lang={lang} value={text} onChange={setText} phase={phase} onSubmit={() => (phase === 'answer' ? void check() : next())} onHint={setHints} />}
+            {spec.kind === 'listen-choose' && <ChooseView body={spec.body as ChooseBody} lang={lang} answer={(spec.check as { answer: number }).answer} picked={choicePicked} phase={phase} onPick={onChoose} />}
+            {spec.kind === 'listen-split' && <SplitView raw={(spec.body as TaskBody).given[0]} lang={lang} value={text} onChange={setText} phase={phase} prompt={(spec.body as TaskBody).prompt} />}
+            {!isMatch(spec) && spec.kind !== 'drag-drop' && spec.kind !== 'transform' && spec.kind !== 'listen-choose' && spec.kind !== 'listen-split' && <TypedView spec={options.hints ? spec : { ...spec, hints: undefined }} lang={lang} value={text} onChange={setText} phase={phase} onSubmit={() => (phase === 'answer' ? void check() : next())} onHint={setHints} />}
             {options.confidence && phase === 'answer' && !isMatch(spec) && (
               <div className="mt-6 flex items-center justify-center gap-2" role="group" aria-label={translateUi('How sure are you?')}>
                 <span className="text-[13px] text-ink-faint"><UiText source={'How sure?'} /></span>

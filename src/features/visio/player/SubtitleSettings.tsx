@@ -44,11 +44,13 @@ export function SubtitleSettings({ className, dark = false }: { className?: stri
               options={[
                 { value: 'show', label: translateUi('Show') },
                 { value: 'blur', label: translateUi('Blur') },
+                { value: 'after', label: translateUi('After') },
                 { value: 'hide', label: translateUi('Hide') },
               ]}
             />
-            <p className="mt-1.5 text-[12.5px] text-ink-faint"><UiText source={'Blurred lines sharpen when you hover or tap them.'} /></p>
+            <p className="mt-1.5 text-[12.5px] text-ink-faint"><UiText source={'Blurred lines sharpen when you hover or tap them. After: the English comes once the line has been heard.'} /></p>
           </div>
+          <ToggleRow title={translateUi('Less help each time')} description={translateUi('Each time you watch it to the end, the English line goes from shown to blurred, to after the line, to hidden.')} checked={visio.native === 'adaptive'} onChange={(on) => set({ native: on ? 'adaptive' : 'blur' })} />
           <ToggleRow title={translateUi('Pause after each line')} description={translateUi('Time to read, repeat or save it.')} checked={visio.autoPause} onChange={(autoPause) => set({ autoPause })} />
           <Slider label={translateUi('Subtitle size')} value={visio.subtitleScale} min={0.8} max={1.6} step={0.05} onChange={(subtitleScale) => set({ subtitleScale })} format={(v) => `${Math.round(v * 100)}%`} />
         </div>

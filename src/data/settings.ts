@@ -5,7 +5,7 @@ import type { LinguaDB } from './db';
 import type { SettingRow } from './types';
 import type { NocturnePaletteId, PaperPaletteId } from '@/design/palettes';
 
-export const READER_FONT_IDS = ['literata', 'lora', 'newsreader', 'merriweather', 'atkinson', 'comfortaa'] as const;
+export const READER_FONT_IDS = ['literata', 'lora', 'newsreader', 'merriweather', 'atkinson', 'comfortaa', 'lexend'] as const;
 export type ReaderFontId = (typeof READER_FONT_IDS)[number];
 export type ThemePref = 'paper' | 'nocturne' | 'system';
 export const PAPER_LIGHT_IDS = ['cream', 'ivory', 'parchment', 'sepia', 'sage', 'blush', 'stone'] as const;
@@ -52,6 +52,10 @@ export interface Settings {
     font: ReaderFontId;
     sizePx: number;
     lineHeight: number;
+    /** Extra letter spacing in em (0..0.2), especially for dyslexia-friendly reading (6-25, F1531). */
+    letterSpacing?: number;
+    /** Extra word spacing in em (0..0.4), especially for dyslexia-friendly reading (6-25, F1531). */
+    wordSpacing?: number;
     maxWidthCh: number;
     mode: 'paged' | 'scroll';
     justify: boolean;
@@ -110,7 +114,7 @@ export interface Settings {
     deviceModel: 'tiny' | 'base' | 'small';
   };
   /** Visio's player. */
-  visio: { native: 'show' | 'blur' | 'hide'; autoPause: boolean; subtitleScale: number };
+  visio: { native: 'show' | 'blur' | 'after' | 'hide' | 'adaptive'; autoPause: boolean; subtitleScale: number };
   /**
    * Natural voices: off, or which voice speaks each locale (a Gemini voice-library id the learner
    * picked; the first good one when unset), and without a key which of the device's voices (its
@@ -144,7 +148,7 @@ export interface Settings {
     /** Home's "first steps" list, once put away. */
     firstStepsHidden: boolean;
     /** Cursus opens on the tab used last (none yet: Course for tier 1, Grammatica otherwise). */
-    cursusTab: '' | 'course' | 'grammatica' | 'alphabets' | 'typing';
+    cursusTab: '' | 'course' | 'grammatica' | 'alphabets' | 'sounds' | 'typing';
     /** Sonus et Visio's library filter. */
     sonusShow: MediaShow;
     /** Home's layout: Today (5.1-2c) or the one before it. */
@@ -159,6 +163,10 @@ export interface Settings {
     settingsMode: 'simple' | 'full';
     /** Command symbols in shortcuts: auto-detect from platform, or force mac / windows. */
     keyboardStyle: 'auto' | 'mac' | 'windows';
+    /** High-contrast mode with WCAG AAA 7:1 text-to-background contrast (6-25, F1534). */
+    highContrast?: boolean;
+    /** Shapes and patterns beside colors so state is never conveyed by color alone (6-25, F1536). */
+    colorBlindMode?: boolean;
   };
   /** Device-only. */
   meta: {
@@ -219,6 +227,8 @@ export const DEFAULT_SETTINGS: Settings = {
     font: 'literata',
     sizePx: 20,
     lineHeight: 1.65,
+    letterSpacing: 0,
+    wordSpacing: 0,
     maxWidthCh: 62,
     mode: 'paged',
     justify: false,
@@ -244,7 +254,7 @@ export const DEFAULT_SETTINGS: Settings = {
   voice: { off: false, chosen: {} },
   cantus: { translation: 'show' },
   spotify: { clientId: '', accessToken: '', refreshToken: '', expiresAt: 0, user: '' },
-  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today', flavour: true, designNotes: false, hints: true, settingsMode: 'simple', keyboardStyle: 'auto' },
+  ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today', flavour: true, designNotes: false, hints: true, settingsMode: 'simple', keyboardStyle: 'auto', highContrast: false, colorBlindMode: false },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null, plan: null },
   sync: { devices: [], includeApiKeys: false },
 };

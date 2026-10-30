@@ -52,7 +52,27 @@ export function PaletteRow({ title, palettes, value, onChange }: { title: string
   );
 }
 
-export function AppearanceSection({ theme, motion, palette, homeLayout, flavour, hints, lang }: { theme: ThemePref; motion: MotionPref; palette: Settings['palette']; homeLayout: Settings['ui']['homeLayout']; flavour: boolean; hints: boolean; lang: string }) {
+export function AppearanceSection({
+  theme,
+  motion,
+  palette,
+  homeLayout,
+  flavour,
+  hints,
+  highContrast,
+  colorBlindMode,
+  lang,
+}: {
+  theme: ThemePref;
+  motion: MotionPref;
+  palette: Settings['palette'];
+  homeLayout: Settings['ui']['homeLayout'];
+  flavour: boolean;
+  hints: boolean;
+  highContrast?: boolean;
+  colorBlindMode?: boolean;
+  lang: string;
+}) {
   const translateUi = useUi();
   const touch = flavourOf(lang);
   const settings = useSettings();
@@ -132,6 +152,22 @@ export function AppearanceSection({ theme, motion, palette, homeLayout, flavour,
           description={translateUi('The small lines under a setting or a card that say what it is and what it does. Off keeps the pages quieter.')}
           checked={hints}
           onChange={(on) => void patchSetting('ui', { hints: on })}
+        />
+      </div>
+
+      <div className="mt-6 space-y-4">
+        <p className="text-[15px] font-semibold">Accessibility</p>
+        <ToggleRow
+          title="High contrast"
+          description="Increases contrast across all surfaces and text to WCAG 2.1 AAA (7:1 text-to-background ratio) for maximum legibility."
+          checked={Boolean(highContrast)}
+          onChange={(on) => void patchSetting('ui', { highContrast: on })}
+        />
+        <ToggleRow
+          title="Accessible indicators"
+          description="Shows distinct shapes, glyphs, and patterns beside colors so state is never conveyed by color alone."
+          checked={Boolean(colorBlindMode)}
+          onChange={(on) => void patchSetting('ui', { colorBlindMode: on })}
         />
       </div>
     </SettingsSection>

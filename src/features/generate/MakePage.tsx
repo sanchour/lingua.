@@ -10,7 +10,7 @@ import { BackLink } from '@/app/BackLink';
 import { PageHeader } from '@/app/PageHeader';
 import type { GeneratedRow } from '@/core/contracts/db';
 import { labelFor } from '@/core/generate/generate';
-import type { DialogueBody, GeneratedKind, QuizBody, SentencesBody, StoryBody, WordlistBody } from '@/core/generate/generate';
+import type { AdventureBody, CourseBody, DialogueBody, DrillBody, GeneratedKind, PronunciationBody, QuizBody, SentencesBody, StoryBody, TranslationsBody, WordlistBody } from '@/core/generate/generate';
 import { CEFR_LEVELS } from '@/core/lang/levels';
 import type { Cefr } from '@/core/lang/levels';
 import { textToChapters } from '@/core/parsers/text';
@@ -28,7 +28,16 @@ import { GeneratedLabel } from '@/features/generated/GeneratedLabel';
 import { LlmError } from '@/services/llm/client';
 import { generateMaterial } from '@/services/llm/generate';
 import { SpeakButton } from '@/features/speech/SpeakButton';
+import { speakConversation, stopSpeaking } from '@/services/speech/voice';
+import { Adventure, Course, Drill, PronunciationList } from './MadeViews';
 import { toast } from '@/state/ui';
+
+/** The settings a made dialogue can be put in (6-9): each is said to Max as part of the topic, so the voices and words change with it. */
+/** What a story can be written as, and what a quiz can ask about (6-9): said to Max, so the same page makes speeches, lectures and questions to listen for. */
+const STORY_STYLES = ['a short formal speech', 'a lecture excerpt', 'documentary narration', 'a casual monologue to a friend'];
+const QUIZ_FOCUS = ['the main idea', 'keywords', 'who is speaking', 'where it happens', 'how the speakers feel', 'what comes next', 'where the topic changes', 'whether it is formal or informal'];
+
+const STYLES = ['a phone call', 'a public announcement at a station', 'a formal conversation at work', 'a casual chat between friends', 'a cheerful conversation', 'an upset conversation'];
 
 const KINDS: Array<{ kind: GeneratedKind; title: string; detail: string; cost: string }> = [
   { kind: 'story', title: 'A story', detail: 'A short graded reader, with its translation.', cost: 'about 600 words in all' },
@@ -36,6 +45,11 @@ const KINDS: Array<{ kind: GeneratedKind; title: string; detail: string; cost: s
   { kind: 'dialogue', title: 'A dialogue', detail: 'Two people talking, line by line.', cost: 'about 300 words in all' },
   { kind: 'quiz', title: 'A quiz', detail: 'Five questions to answer, with the reason for each.', cost: 'about 250 words in all' },
   { kind: 'simplified', title: 'Simplify a text', detail: 'Paste a text; get it back in easier words, beside the original.', cost: 'about as long as your text, twice' },
+  { kind: 'translations', title: 'Compare translations', detail: 'Paste a passage you are reading (a poem, a paragraph of a novel); get it three ways, word for word, natural and literary, with where they part.', cost: 'about three times as long as your text' },
+  { kind: 'adventure', title: 'An interactive story', detail: 'You choose what happens next; the story branches to its endings.', cost: 'about 700 words in all' },
+  { kind: 'course', title: 'A short course', detail: 'Six lessons on a topic: a goal, eight words and a sentence each, each lesson a deck.', cost: 'about 600 words in all' },
+  { kind: 'drill', title: 'A grammar drill', detail: 'Eight sentences with a gap, on one point of grammar: fill them in.', cost: 'about 250 words in all' },
+  { kind: 'pronunciation', title: 'Sounds to practise', detail: 'Words, pairs and a tongue twister for one sound, to hear and say.', cost: 'about 200 words in all' },
   { kind: 'wordlist', title: 'A word list', detail: 'Twelve useful words, each with a sentence, for a deck.', cost: 'about 350 words in all' },
 ];
 
@@ -47,6 +61,9 @@ export default function MakePage() {
   const [kind, setKind] = useState<GeneratedKind>('story');
   const [topic, setTopic] = useState('');
   const [source, setSource] = useState('');
+  const [style, setStyle] = useState<string | null>(null);
+  const [storyStyle, setStoryStyle] = useState<string | null>(null);
+  const [focus, setFocus] = useState<string | null>(null);
   // What a quiz is about: a topic, one of the learner's texts, pasted notes, or their own mistakes.
   const [from, setFrom] = useState<'topic' | 'library' | 'notes' | 'mistakes'>('topic');
   const [textId, setTextId] = useState('');
@@ -65,13 +82,13 @@ export default function MakePage() {
     setRow(null);
     try {
       let basis: string | undefined;
-      if (kind === 'simplified') basis = source.trim();
+      if (kind === 'simplified' || kind === 'translations') basis = source.trim();
       if (kind === 'quiz' && from === 'notes') basis = source.trim();
       if (kind === 'quiz' && from === 'library') basis = blocksToText((await textChapters(textId)).flatMap((c) => c.blocks)).slice(0, 4000);
       if (kind === 'quiz' && from === 'mistakes') basis = await mistakesText(lang);
       if (kind === 'quiz' && from === 'mistakes' && !basis) throw new Error('Nothing to practise yet: your mistakes appear here once you have made some in a lesson or in Practice.');
       if (basis !== undefined && basis.length < 40 && from !== 'mistakes') throw new Error(from === 'library' ? 'Choose a text first.' : 'Paste a longer text first.');
-      setRow((await generateMaterial({ lang, kind, level, topic: kind === 'quiz' && from === 'mistakes' ? 'my mistakes' : kind === 'simplified' || basis ? undefined : topic.trim() || undefined, source: basis?.slice(0, 4000) })).row);
+      setRow((await generateMaterial({ lang, kind, level, topic: kind === 'quiz' && from === 'mistakes' ? 'my mistakes' : kind === 'simplified' || kind === 'translations' || kind === 'drill' || kind === 'pronunciation' || basis ? undefined : [kind === 'dialogue' ? style : null, topic.trim()].filter(Boolean).join(': ') || undefined, source: basis?.slice(0, 4000), style: kind === 'story' ? (storyStyle ?? undefined) : undefined, focus: kind === 'quiz' ? (focus ?? undefined) : kind === 'drill' || kind === 'pronunciation' ? topic.trim() || undefined : undefined })).row);
     } catch (e) {
       setError(e instanceof Error ? e : new Error('Something went wrong.'));
     } finally {
@@ -90,7 +107,7 @@ export default function MakePage() {
 
   return (
     <>
-      <BackLink to="/thesaurus">Thesaurus</BackLink>
+      <BackLink to="/thesaurus"><UiText source={'Thesaurus'} /></BackLink>
       <PageHeader title={translateUi('Made by Max')} />
       <p className="mb-6 max-w-2xl text-[15px] text-ink-soft"><UiText source={'Max writes it at your level, in short, common words; every word is looked up in the dictionary and the level is measured before you see it. It says so on the page, and you can report what is wrong.'} /></p>
 
@@ -111,6 +128,35 @@ export default function MakePage() {
               </button>
             ))}
           </div>
+          {kind === 'story' && (
+            <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={translateUi('What kind of text')}>
+              {[null, ...STORY_STYLES].map((st) => (
+                <button key={st ?? 'story'} type="button" role="radio" aria-checked={storyStyle === st} onClick={() => setStoryStyle(st)} className={cx('rounded-full border px-3 py-1 text-[13px] font-semibold', storyStyle === st ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}>
+                  {st ? st.replace(/^an? /, '') : translateUi('A story')}
+                </button>
+              ))}
+            </div>
+          )}
+          {kind === 'quiz' && (
+            <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={translateUi('What the questions are about')}>
+              <span className="w-full text-[12px] font-semibold text-ink-faint"><UiText source={'The questions are about'} /></span>
+              {[null, ...QUIZ_FOCUS].map((f) => (
+                <button key={f ?? 'any'} type="button" role="radio" aria-checked={focus === f} onClick={() => setFocus(f)} className={cx('rounded-full border px-3 py-1 text-[13px] font-semibold', focus === f ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}>
+                  {f ?? translateUi('Anything')}
+                </button>
+              ))}
+            </div>
+          )}
+          {kind === 'dialogue' && (
+            <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={translateUi('What kind of conversation')}>
+              <button type="button" role="radio" aria-checked={style === null} onClick={() => setStyle(null)} className={cx('rounded-full border px-3 py-1 text-[13px] font-semibold', style === null ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}><UiText source={'Everyday'} /></button>
+              {STYLES.map((st) => (
+                <button key={st} type="button" role="radio" aria-checked={style === st} onClick={() => setStyle(st)} className={cx('rounded-full border px-3 py-1 text-[13px] font-semibold', style === st ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}>
+                  {st.replace(/^an? /, '')}
+                </button>
+              ))}
+            </div>
+          )}
           {kind === 'quiz' && (
             <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={translateUi('What the quiz is about')}>
               {([['topic', 'A topic'], ['library', 'A text of mine'], ['notes', 'My notes'], ['mistakes', 'My mistakes']] as const).map(([v, label]) => (
@@ -121,10 +167,10 @@ export default function MakePage() {
             </div>
           )}
           {kind === 'quiz' && from === 'library' && (
-            <Select label={translateUi('Text')} value={textId} onChange={setTextId} options={[{ value: '', label: library?.length ? 'Choose a text…' : 'Your library is empty', disabled: true }, ...(library ?? []).map((t) => ({ value: t.id, label: t.title }))]} />
+            <Select label={translateUi('Text')} value={textId} onChange={setTextId} options={[{ value: '', label: library?.length ? translateUi('Choose a text…') : translateUi('Your library is empty'), disabled: true }, ...(library ?? []).map((t) => ({ value: t.id, label: t.title }))]} />
           )}
           {kind === 'quiz' && from === 'mistakes' && <p className="text-[13px] text-ink-soft"><UiText source={'Questions on the words and grammar you keep getting wrong, taken from your record.'} /></p>}
-          {kind === 'simplified' || (kind === 'quiz' && from === 'notes') ? (
+          {kind === 'simplified' || kind === 'translations' || (kind === 'quiz' && from === 'notes') ? (
             <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'The text{0}'} values={[<textarea
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
@@ -135,13 +181,16 @@ export default function MakePage() {
                 className="mt-1.5 w-full resize-y rounded-xl border border-line bg-raised p-3 text-[15px] font-normal tracking-normal text-ink normal-case outline-none focus:border-accent"
               />]} /></label>
           ) : kind === 'quiz' && from !== 'topic' ? null : (
-            <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'About{0}'} values={[<input
+            <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
+              {kind === 'drill' ? translateUi('Grammar point') : kind === 'pronunciation' ? translateUi('Sound') : translateUi('About')}
+              <input
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 maxLength={80}
-                placeholder={translateUi('a trip to the market, or a goal: a job interview in Spanish…')}
+                placeholder={kind === 'drill' ? translateUi('the preterite, ser or estar, the subjunctive…') : kind === 'pronunciation' ? translateUi('the rolled r, ñ, the vowels, the tones…') : kind === 'course' ? translateUi('travel, work, the family…') : translateUi('a trip to the market, or a goal: a job interview in Spanish…')}
                 className="mt-1.5 h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[15px] font-medium tracking-normal text-ink normal-case outline-none focus:border-accent"
-              />]} /></label>
+              />
+            </label>
           )}
           <Select<Cefr> label={translateUi('Level')} value={level} onChange={setLevel} options={CEFR_LEVELS.map((l) => ({ value: l, label: l }))} />
           <div>
@@ -195,6 +244,7 @@ function Made({
 }) {
   const translateUi = useUi();
   const [busy, setBusy] = useState(false);
+  const [hearing, setHearing] = useState(false);
   const label = labelFor(row);
   const body = row.content;
   const run = async (job: () => Promise<unknown>) => {
@@ -216,6 +266,41 @@ function Made({
       </div>
 
       {row.kind === 'quiz' && <Quiz body={body as QuizBody} lang={lang} />}
+      {row.kind === 'adventure' && <Adventure body={body as AdventureBody} lang={lang} />}
+      {row.kind === 'course' && <Course body={body as CourseBody} lang={lang} onDeck={(name, words) => void run(() => deckOf(name, words))} />}
+      {row.kind === 'drill' && <Drill body={body as DrillBody} lang={lang} />}
+      {row.kind === 'pronunciation' && <PronunciationList body={body as PronunciationBody} lang={lang} />}
+
+      {row.kind === 'translations' && (
+        <>
+          <div className="space-y-4">
+            {(body as TranslationsBody).versions.map((v) => (
+              <div key={v.style} className="rounded-2xl border border-line bg-surface p-4">
+                <p className="text-[12px] font-bold tracking-wide text-ink-faint uppercase">{v.style === 'literal' ? translateUi('Word for word') : v.style === 'natural' ? translateUi('Natural') : translateUi('Literary')}</p>
+                <div className="mt-2 space-y-2 font-serif text-[16px] leading-relaxed">
+                  {v.text.split(/\n\s*\n|\n/).map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
+                </div>
+                <p className="mt-3 text-[13px] text-ink-soft">{v.note}</p>
+              </div>
+            ))}
+          </div>
+          {(body as TranslationsBody).choices.length > 0 && (
+            <>
+              <h3 className="mt-5 text-[14px] font-bold"><UiText source={'Where they part'} /></h3>
+              <ul className="mt-2 space-y-2 text-[14.5px]">
+                {(body as TranslationsBody).choices.map((c) => (
+                  <li key={c.phrase}>
+                    <span lang={lang} className="font-serif font-semibold">{c.phrase}</span>
+                    <span className="text-ink-soft"> — {c.why}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
+      )}
 
       {(row.kind === 'story' || row.kind === 'simplified') && (
         <>
@@ -303,6 +388,20 @@ function Made({
           </ul>
           <div className="mt-5 flex flex-wrap gap-2">
             {toggle}
+            <button
+              type="button"
+              onClick={() => {
+                if (hearing) return void (stopSpeaking(), setHearing(false));
+                setHearing(true);
+                void speakConversation(lang, (body as DialogueBody).lines).then((voices) => {
+                  setHearing(false);
+                  if (voices === 1) toast('This device has one voice for this language, so both speakers sound the same.');
+                });
+              }}
+              className="inline-flex h-10 items-center rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"
+            >
+              {hearing ? translateUi('Stop') : translateUi('Hear the conversation')}
+            </button>
             <Link to="/thesaurus/practice/dialogue" className="inline-flex h-10 items-center rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"><UiText source={'Practise it: complete the dialogue'} /></Link>
           </div>
         </>

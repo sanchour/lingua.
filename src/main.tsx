@@ -13,6 +13,7 @@ import '@fontsource-variable/noto-serif';
 import '@fontsource-variable/comfortaa';
 import '@fontsource/atkinson-hyperlegible/400.css';
 import '@fontsource/atkinson-hyperlegible/700.css';
+import '@fontsource-variable/lexend';
 import './styles/index.css';
 
 import { reloadForUpdate, settleReload } from './app/AppError';

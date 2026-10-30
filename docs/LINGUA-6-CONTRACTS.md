@@ -75,3 +75,5 @@ add the new one and read both.
 - **0.6.0-alpha.59 (6-2b):** `Deck` gains `coverBlobId` (already in `DeckV6`) and `color`, both optional and not indexed, so no Dexie version.
 
 - **0.6.0-alpha.94 (6-9):** `ExerciseSpec` gains `listen` (the line to play: a clip of the learner's own audio or video, or the device's voice) and two kinds, `listen-type` (dictation of a real line) and `listen-gap` (the missing word); no Dexie version.
+
+- **0.6.0-alpha.106 (6-9):** `AnswerRule` gains `dictation` (every word counts, case and accents are only close, punctuation too when asked); two more kinds, `listen-choose` (hear a word, choose its meaning or picture, with `ChooseBody`) and `listen-split` (mark where the breaks of a line or a word go); no Dexie version.

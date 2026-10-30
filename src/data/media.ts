@@ -258,6 +258,11 @@ export async function shiftTranscript(mediaId: string, deltaMs: number, database
   await database.transcripts.update(t.id, { cues, offsetMs: t.offsetMs + deltaMs, updatedAt: Date.now() });
 }
 
+/** Puts speaker labels on the cues of a transcript (the words and timings stay). */
+export async function saveSpeakers(mediaId: string, cues: Cue[], database: LinguaDB = db): Promise<void> {
+  await database.transcripts.update(transcriptId(mediaId), { cues, updatedAt: Date.now() });
+}
+
 export async function deleteTranscript(mediaId: string, database: LinguaDB = db): Promise<void> {
   await database.transcripts.update(transcriptId(mediaId), { deletedAt: Date.now(), updatedAt: Date.now() });
 }
@@ -298,3 +303,13 @@ export async function removeBookmark(mediaId: string, at: number, database: Ling
   const media = await database.media.get(mediaId);
   if (media) await database.media.update(mediaId, { bookmarks: (media.bookmarks ?? []).filter((b) => b.at !== at), updatedAt: Date.now() });
 }
+
+/** The playlists an item is in (6-9). Names are the learner's own words; a name is kept once, whatever its case. */
+export async function setMediaPlaylists(mediaId: string, names: readonly string[], database: LinguaDB = db): Promise<void> {
+  const seen = new Set<string>();
+  const clean = names.map((n) => n.trim().replace(/\s+/g, ' ')).filter((n) => n && !seen.has(n.toLocaleLowerCase()) && seen.add(n.toLocaleLowerCase())).slice(0, 12);
+  await database.media.update(mediaId, { playlists: clean.length ? clean : undefined, updatedAt: Date.now() });
+}
+
+/** Every playlist name in use, in order of first use. */
+export const playlistNames = (media: readonly Pick<Media, 'playlists'>[]): string[] => [...new Set(media.flatMap((m) => m.playlists ?? []))];

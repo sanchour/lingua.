@@ -1,8 +1,11 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
-import { BookOpenText, CloudDownload, CloudOff, Ellipsis, Paperclip, Sparkles, Trash2 } from 'lucide-react';
+import { BookOpenText, CloudDownload, CloudOff, Ellipsis, ListMusic, Paperclip, Sparkles, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { attachDownload, deleteMedia, removeDownload, transcriptText } from '@/data/media';
+import { attachDownload, deleteMedia, playlistNames, removeDownload, transcriptText } from '@/data/media';
+import { db } from '@/data/db';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { PlaylistDialog } from './PlaylistDialog';
 import type { Media } from '@/data/types';
 import { Button, Dialog, MenuItem, Popover } from '@/design/primitives';
 import { closePlayer, usePlayer } from '@/services/audio/engine';
@@ -16,6 +19,8 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
   const translateUi = useUi();
   const navigate = useNavigate();
   const [confirm, setConfirm] = useState(false);
+  const [listing, setListing] = useState(false);
+  const everyList = useLiveQuery(async () => playlistNames(await db.media.toArray()), []) ?? [];
   const downloading = useJobs((s) => s.downloads[media.id]);
   const transcribing = useJobs((s) => s.transcribing[media.id]);
   const spotify = media.kind === 'spotify';
@@ -103,6 +108,15 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
               />
             )}
             <MenuItem
+              icon={ListMusic}
+              label="Playlists…"
+              detail={media.playlists?.length ? media.playlists.join(', ') : 'Your own lists'}
+              onClick={() => {
+                close();
+                setListing(true);
+              }}
+            />
+            <MenuItem
               icon={Trash2}
               label={translateUi('Remove')}
               danger
@@ -115,6 +129,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
         )}
       </Popover>
 
+      <PlaylistDialog open={listing} onClose={() => setListing(false)} media={media} existing={everyList} />
       <Dialog
         open={confirm}
         onClose={() => setConfirm(false)}

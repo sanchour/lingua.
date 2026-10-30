@@ -245,7 +245,19 @@ function SectionView({ id }: { id: SectionId }) {
   const { settings, language } = useApp();
   switch (id) {
     case 'appearance':
-      return <AppearanceSection theme={settings.theme} motion={settings.ui.motion} palette={settings.palette} homeLayout={settings.ui.homeLayout} flavour={settings.ui.flavour} hints={settings.ui.hints} lang={language.id} />;
+      return (
+        <AppearanceSection
+          theme={settings.theme}
+          motion={settings.ui.motion}
+          palette={settings.palette}
+          homeLayout={settings.ui.homeLayout}
+          flavour={settings.ui.flavour}
+          hints={settings.ui.hints}
+          highContrast={settings.ui.highContrast}
+          colorBlindMode={settings.ui.colorBlindMode}
+          lang={language.id}
+        />
+      );
     case 'reading':
       return <ReadingSection reader={settings.reader} lang={language.id} />;
     case 'study':

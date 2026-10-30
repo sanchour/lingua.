@@ -15,6 +15,7 @@ export function Toaster() {
   return createPortal(
     <div
       className="pointer-events-none fixed inset-x-0 z-[80] flex flex-col items-center gap-2 px-4"
+      aria-live="polite"
       style={{ bottom: layout === 'wide' ? 24 : 'calc(env(safe-area-inset-bottom) + 100px)' }}
     >
       <AnimatePresence initial={false}>

@@ -1,8 +1,8 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useNavigate } from 'react-router';
-import { BookOpenText, Captions, Clock, Ellipsis, FileText, KeyRound, Sparkles, Trash2 } from 'lucide-react';
+import { BookOpenText, Captions, Clock, Ellipsis, FileText, KeyRound, Sparkles, Trash2, Users } from 'lucide-react';
 import { useApp } from '@/app/context';
-import { deleteTranscript, saveTranscript, shiftTranscript, transcriptText } from '@/data/media';
+import { deleteTranscript, saveSpeakers, saveTranscript, shiftTranscript, transcriptText } from '@/data/media';
 import type { Media, Transcript } from '@/data/types';
 import { Button, buttonClasses, Card, MenuItem, Popover } from '@/design/primitives';
 import { setCues } from '@/services/audio/engine';
@@ -11,6 +11,7 @@ import { TRANSCRIPT_ACCEPT, readTranscriptFile } from '@/services/sonus/files';
 import { startTranscription, useJobs } from '@/services/sonus/jobs';
 import { aiBlock } from '@/data/plan';
 import { MaxLink } from '@/features/plans/Locked';
+import { labelSpeakers } from '@/services/llm/speakers';
 import { toast } from '@/state/ui';
 
 const SOURCE: Record<Transcript['source'], string> = {
@@ -171,6 +172,22 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
                 }}
               />
             )}
+            <MenuItem
+              icon={Users}
+              label="Label the speakers"
+              detail="Max: a guess from the words"
+              onClick={async () => {
+                close();
+                try {
+                  const cues = await labelSpeakers(transcript.cues);
+                  await saveSpeakers(media.id, cues);
+                  setCues(media.id, cues);
+                  toast('Speakers labelled: a guess from the words, not from the voices.', { tone: 'success' });
+                } catch (e) {
+                  toast(e instanceof Error ? e.message : 'That did not work.', { tone: 'error' });
+                }
+              }}
+            />
             <MenuItem
               icon={FileText}
               label={translateUi('Replace with a file')}

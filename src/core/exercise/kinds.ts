@@ -1,7 +1,7 @@
 // The kinds 6-4b adds, made from what the app already has: a word's dictionary entry (meaning, synonyms, antonyms, part of
 // speech, affixes, example), a grammar item with its wrong forms, a table of forms, and (with Max) sentences made to order.
 // Each builder returns specs (contracts/exercise.ts): data, no drawing. Pure and deterministic for a given random source.
-import type { CorrectBody, DialogueBody, DragBody, ExerciseSpec, ListenSource, MatchBody, PredictBody, TaskBody } from '@/core/contracts/exercise';
+import type { ChooseBody, CorrectBody, DialogueBody, DragBody, ExerciseSpec, ListenSource, MatchBody, PredictBody, TaskBody } from '@/core/contracts/exercise';
 import { plain, splitFocus } from '@/core/grammar/types';
 import type { Item } from '@/core/grammar/types';
 import { shuffle } from '@/core/srs/ludus';
@@ -264,6 +264,21 @@ export function useInSentence(word: WordFacts, lang: string, key: string): Exerc
   };
 }
 
+/** A drill sentence with its gap: the learner types the word that fills it. A missing accent is close, not wrong. */
+export function drillGap(item: { before: string; answer: string; after: string; hint?: string }, lang: string, key: string, trains: Trains): ExerciseSpec<'rewrite', TaskBody> {
+  return {
+    key,
+    kind: 'rewrite',
+    lang,
+    instruction: item.hint ? `Fill the gap (${item.hint})` : 'Fill the gap',
+    body: { task: 'fix', given: [`${item.before}_____${item.after}`.trim()], prompt: 'Fill the gap' },
+    check: { rule: 'accent-blind', expected: item.answer },
+    trains,
+    feedback: { why: `${item.before}${item.answer}${item.after}`.trim() },
+    hints: item.hint ? [{ text: item.hint, strength: 0 }, { text: `It starts with “${[...item.answer][0]}”`, strength: 1 }] : undefined,
+  };
+}
+
 // ── Listening (6-9) ─────────────────────────────────────────────────────────
 
 /** A line of something the learner listened to: its words, and where in the audio or video it is heard. */
@@ -287,7 +302,7 @@ export function listenType(line: HeardLine, lang: string, key: string): Exercise
     instruction: 'Type what you hear',
     body: { task: 'fix', given: [], prompt: 'Type what you hear' },
     listen: listenOf(line),
-    check: { rule: 'accent-blind', expected: plain(line.text) },
+    check: { rule: 'dictation', expected: plain(line.text) },
     trains: heardTrains(line),
     feedback: { why: plain(line.text) },
     hints: [{ text: `${wordsOfLine(line.text).length} words`, strength: 0 }, { text: `It starts: ${wordsOfLine(line.text).slice(0, 2).join(' ')}…`, strength: 1 }],
@@ -295,26 +310,80 @@ export function listenType(line: HeardLine, lang: string, key: string): Exercise
 }
 
 /** A real line with one word taken out: hear it whole, type the missing word. Needs a line of at least five words. */
-export function listenGap(line: HeardLine, lang: string, random: () => number, key: string): ExerciseSpec<'listen-gap', TaskBody> | null {
+export function listenGap(line: HeardLine, lang: string, random: () => number, key: string, count = 1): ExerciseSpec<'listen-gap', TaskBody> | null {
   const words = wordsOfLine(line.text);
-  if (words.length < 5) return null;
+  if (words.length < 4 + count) return null;
   // Not the first word, and a word of some size: the gap should be a word to hear, not "a".
   const candidates = words.map((w, i) => ({ w: w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ''), i })).filter((x) => x.i > 0 && [...x.w].length >= 4);
-  if (!candidates.length) return null;
-  const pick = candidates[Math.floor(random() * candidates.length)];
-  const shown = words.map((w, i) => (i === pick.i ? w.replace(pick.w, '_____') : w)).join(' ');
+  if (candidates.length < count) return null;
+  // `count` words, never next to each other, in the order they come in the line.
+  const picks = shuffle(candidates, random).reduce<typeof candidates>((got, c) => (got.length < count && !got.some((g) => Math.abs(g.i - c.i) < 2) ? [...got, c] : got), []).sort((a, b) => a.i - b.i);
+  if (picks.length < count) return null;
+  const shown = words.map((w, i) => { const p = picks.find((x) => x.i === i); return p ? w.replace(p.w, '_____') : w; }).join(' ');
   return {
     key,
     kind: 'listen-gap',
     lang,
-    instruction: 'Type the missing word',
-    body: { task: 'fix', given: [shown], prompt: 'Type the missing word' },
+    instruction: count > 1 ? 'Type the missing words, in order' : 'Type the missing word',
+    body: { task: 'fix', given: [shown], prompt: count > 1 ? 'Type the missing words, in order' : 'Type the missing word' },
     listen: listenOf(line),
-    check: { rule: 'accent-blind', expected: pick.w },
+    check: { rule: 'accent-blind', expected: picks.map((p) => p.w).join(' ') },
     trains: heardTrains(line),
     feedback: { why: plain(line.text) },
-    hints: [{ text: `It has ${[...pick.w].length} letters`, strength: 0 }, { text: `It starts with “${[...pick.w][0]}”`, strength: 1 }],
+    hints: [{ text: picks.map((p) => `${[...p.w].length} letters`).join(', '), strength: 0 }, { text: `It starts with “${picks.map((p) => [...p.w][0]).join('”, “')}”`, strength: 1 }],
   };
+}
+
+/** Dictation with its punctuation: the same, and a missing comma or full stop is only close. */
+export function listenPunctuated(line: HeardLine, lang: string, key: string): ExerciseSpec<'listen-type', TaskBody> {
+  const spec = listenType(line, lang, key);
+  return { ...spec, instruction: 'Type what you hear, with its punctuation', body: { task: 'fix', given: [], prompt: 'Type what you hear, with its punctuation' }, check: { rule: 'dictation', expected: plain(line.text), punctuation: true } };
+}
+
+/** Dictation with the endings hidden: the stems of the longer words are shown, the last two letters are not; type the whole line. */
+export function listenEndings(line: HeardLine, lang: string, key: string): ExerciseSpec<'listen-type', TaskBody> | null {
+  const words = wordsOfLine(line.text);
+  let hidden = 0;
+  const shown = words.map((w) => {
+    const bare = w.replace(/[^\p{L}\p{M}]+$/u, '');
+    if ([...bare].length < 5) return w;
+    hidden++;
+    return `${[...bare].slice(0, -2).join('')}…${w.slice(bare.length)}`;
+  });
+  if (hidden < 2) return null;
+  const spec = listenType(line, lang, key);
+  return { ...spec, instruction: 'Type the whole line: the endings are hidden', body: { task: 'fix', given: [shown.join(' ')], prompt: 'Type the whole line: the endings are hidden' } };
+}
+
+/** Mark the breaks of a heard line (connected speech): the words run together, the learner cuts them. */
+export function listenSplit(line: HeardLine, lang: string, key: string): ExerciseSpec<'listen-split', TaskBody> | null {
+  const words = wordsOfLine(line.text).map((w) => w.replace(/^[^\p{L}\p{M}]+|[^\p{L}\p{M}]+$/gu, '')).filter(Boolean);
+  if (words.length < 3 || words.length > 8) return null;
+  return { key, kind: 'listen-split', lang, instruction: 'Hear it, then cut it into words', body: { task: 'fix', given: [words.join('')], prompt: 'Hear the line, then tap between the letters where each word begins' }, listen: listenOf(line), check: { rule: 'dictation', expected: words.join(' ') }, trains: heardTrains(line), feedback: { why: words.join(' ') } };
+}
+
+/** Mark the syllable breaks of a word. `syllables` come from the dictionary. */
+export function syllableSplit(word: string, syllables: string[], lang: string, key: string): ExerciseSpec<'listen-split', TaskBody> | null {
+  if (syllables.length < 2 || syllables.length > 6) return null;
+  return { key, kind: 'listen-split', lang, instruction: 'Cut it into syllables', body: { task: 'fix', given: [syllables.join('')], prompt: 'Say it, then tap between the letters where a new syllable begins' }, listen: { text: word }, check: { rule: 'dictation', expected: syllables.join(' ') }, trains: { skill: 'pronunciation', item: { type: 'sound', soundId: 'syllables' } }, feedback: { why: syllables.join(' · ') } };
+}
+
+/** Hear a word, choose its meaning from four. The wrong ones are other words' meanings. */
+export function listenMeaning(word: WordFacts, others: WordFacts[], lang: string, random: () => number, key: string): ExerciseSpec<'listen-choose', ChooseBody> | null {
+  if (!word.gloss) return null;
+  const wrong = shuffle(others.filter((o) => o.gloss && o.gloss.toLocaleLowerCase() !== word.gloss!.toLocaleLowerCase()), random).slice(0, 3);
+  if (wrong.length < 3) return null;
+  const options = shuffle([{ text: word.gloss }, ...wrong.map((o) => ({ text: o.gloss! }))], random);
+  return { key, kind: 'listen-choose', lang, instruction: 'Hear the word, choose its meaning', body: { prompt: 'What does it mean?', options }, listen: { text: word.word }, check: { rule: 'choice', answer: options.findIndex((o) => o.text === word.gloss) }, trains: { skill: 'listening', item: { type: 'word', wordId: `${lang}:${word.word.toLocaleLowerCase(lang)}` } }, feedback: { why: `${word.word}: ${word.gloss}` } };
+}
+
+/** Hear a word, choose its picture from four. Needs a word with a picture and three others. */
+export function listenPicture(word: WordFacts, others: WordFacts[], lang: string, random: () => number, key: string): ExerciseSpec<'listen-choose', ChooseBody> | null {
+  if (!word.image) return null;
+  const wrong = shuffle(others.filter((o) => o.image && o.image !== word.image), random).slice(0, 3);
+  if (wrong.length < 2) return null;
+  const options = shuffle([{ image: word.image }, ...wrong.map((o) => ({ image: o.image }))], random);
+  return { key, kind: 'listen-choose', lang, instruction: 'Hear the word, choose its picture', body: { prompt: 'Which picture is it?', options }, listen: { text: word.word }, check: { rule: 'choice', answer: options.findIndex((o) => o.image === word.image) }, trains: { skill: 'listening', item: { type: 'word', wordId: `${lang}:${word.word.toLocaleLowerCase(lang)}` } }, feedback: { why: word.word } };
 }
 
 /** Hear a real line, then put its words in order. */

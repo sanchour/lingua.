@@ -97,6 +97,8 @@ export default defineConfig({
     }),
   ],
   build: {
+    // Separate offline catalogues so each stays below the service worker's asset-size limit.
+    rolldownOptions: { output: { manualChunks: (id) => { const locale = /\/core\/i18n\/(es|fr|de|ru|zh|ar)\.json$/.exec(id); return locale ? `interface-${locale[1]}` : undefined; } } },
     target: 'es2022',
   },
   // Module workers: Whisper's engine loads its WebAssembly with dynamic imports.

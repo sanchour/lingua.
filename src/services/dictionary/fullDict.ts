@@ -4,6 +4,8 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { create } from 'zustand';
 import { DICT_VERSION, dictFileName } from '@/core/dictionary/format';
 import type { FullDictRow } from '@/core/dictionary/format';
+import { searchDictionaryRows } from '@/core/dictionary/searchTools';
+import type { DictSearchOptions, ScoredDictRow } from '@/core/dictionary/searchTools';
 import { foldKey, normalizeWord } from '@/core/text/normalize';
 import { db } from '@/data/db';
 import type { DictWorkerMessage } from '@/workers/dict.worker';
@@ -88,4 +90,26 @@ export async function searchFull(lang: string, query: string, limit = 12): Promi
     .filter((r) => r.key !== VERSION_KEY)
     .sort((a, b) => Number(b.fold === q) - Number(a.fold === q) || (a.rank ?? 1e9) - (b.rank ?? 1e9) || a.word.length - b.word.length)
     .slice(0, limit);
+}
+
+/** Advanced dictionary search across modes (meaning/reverse, fuzzy, prefix, suffix, rhyme, sound, POS filter). */
+export async function searchFullAdvanced(lang: string, query: string, options: DictSearchOptions): Promise<ScoredDictRow[]> {
+  const limit = options.limit ?? 20;
+  const q = foldKey(query.trim(), lang);
+  if (options.mode === 'word' && (!options.pos || options.pos === 'all') && q) {
+    const fast = await searchFull(lang, query, limit);
+    if (fast.length >= Math.min(4, limit)) {
+      return fast.map((row, idx) => ({ row, score: 100 - idx }));
+    }
+  }
+  if (options.mode === 'prefix' && q) {
+    const prefRows = await db.fullDict
+      .where('[lang+fold]')
+      .between([lang, q], [lang, `${q}`])
+      .limit(600)
+      .toArray();
+    return searchDictionaryRows(prefRows, query, { ...options, limit });
+  }
+  const rows = await db.fullDict.where('lang').equals(lang).limit(12000).toArray();
+  return searchDictionaryRows(rows, query, { ...options, limit });
 }

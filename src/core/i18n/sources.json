@@ -59,7 +59,8 @@
     "src/features/ordo/sections/KeyboardSection.tsx"
   ],
   "Done": [
-    "src/features/mundus/TipsView.tsx"
+    "src/features/mundus/TipsView.tsx",
+    "src/features/thesaurus/deck/DeckPage.tsx"
   ],
   "Lingua is waiting for its data": [
     "src/app/StartingUp.tsx"
@@ -1307,7 +1308,8 @@
     "src/features/codex/NewTextPage.tsx"
   ],
   "Text": [
-    "src/features/codex/reader/TypographyPanel.tsx"
+    "src/features/codex/reader/TypographyPanel.tsx",
+    "src/features/generate/MakePage.tsx"
   ],
   "Fix a typo, tidy a chapter, take one out, or add more from a file.": [
     "src/features/codex/BookDetailsPage.tsx"
@@ -3325,7 +3327,8 @@
     "src/features/sonus/radio/RadioTab.tsx"
   ],
   "Everything": [
-    "src/features/ordo/OrdoPage.tsx"
+    "src/features/ordo/OrdoPage.tsx",
+    "src/features/sonus/SonusPage.tsx"
   ],
   "Level": [
     "src/features/explora/ExploreAll.tsx",
@@ -4141,7 +4144,8 @@
     "src/features/home/HomeToday.tsx"
   ],
   "Free": [
-    "src/features/lab/PretendCard.tsx"
+    "src/features/lab/PretendCard.tsx",
+    "src/features/colloquium/ColloquiumPage.tsx"
   ],
   "Audio": [
     "src/features/home/HomeToday.tsx"
@@ -6352,7 +6356,8 @@
     "src/features/sonus/SonusPage.tsx"
   ],
   "Listen": [
-    "src/features/sonus/library/LibraryHome.tsx"
+    "src/features/sonus/library/LibraryHome.tsx",
+    "src/features/sonus/SonusPage.tsx"
   ],
   "Nothing matches “{0}”": [
     "src/features/sonus/SonusPage.tsx",
@@ -6735,7 +6740,8 @@
   ],
   "Normal": [
     "src/features/thesaurus/common/CardLookPanel.tsx",
-    "src/features/thesaurus/deck/DeckSettings.tsx"
+    "src/features/thesaurus/deck/DeckSettings.tsx",
+    "src/features/sonus/player/Transport.tsx"
   ],
   "{0}Keep the pitch": [
     "src/features/sonus/player/Transport.tsx"
@@ -6892,7 +6898,8 @@
     "src/features/sonus/radio/Tuner.tsx"
   ],
   "Stop": [
-    "src/features/speech/SpeakButton.tsx"
+    "src/features/speech/SpeakButton.tsx",
+    "src/features/generate/MakePage.tsx"
   ],
   "{0} (recorded by {1}, Wikimedia Commons)": [
     "src/features/speech/SpeakButton.tsx"
@@ -7152,7 +7159,8 @@
     "src/features/thesaurus/deck/DeckPage.tsx"
   ],
   "Cards": [
-    "src/features/thesaurus/ThesaurusPage.tsx"
+    "src/features/thesaurus/ThesaurusPage.tsx",
+    "src/features/thesaurus/deck/DeckPage.tsx"
   ],
   "Order the cards": [
     "src/features/thesaurus/deck/DeckPage.tsx"
@@ -7223,7 +7231,8 @@
     "src/features/thesaurus/deck/DeckPage.tsx"
   ],
   "About": [
-    "src/features/thesaurus/deck/DeckSettings.tsx"
+    "src/features/thesaurus/deck/DeckSettings.tsx",
+    "src/features/generate/MakePage.tsx"
   ],
   "Description": [
     "src/features/thesaurus/deck/DeckSettings.tsx"
@@ -8998,7 +9007,8 @@
     "src/features/ordo/sections/AppearanceSection.tsx"
   ],
   "Lingua+": [
-    "src/features/lab/PretendCard.tsx"
+    "src/features/lab/PretendCard.tsx",
+    "src/features/sonus/SonusPage.tsx"
   ],
   "Max": [
     "src/features/lab/PretendCard.tsx"
@@ -9162,6 +9172,175 @@
     "src/features/translate/TranslatePracticePage.tsx"
   ],
   "Blur": [
+    "src/features/visio/player/SubtitleSettings.tsx"
+  ],
+  "Sermo": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Speaking mode": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "AI Prompts": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Solo Practice": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "“How Did It Go?”": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Conversation mode": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Scenario": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Tutor": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Immersion": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Style & constraints": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "For {0}": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Thesaurus": [
+    "src/features/generate/MakePage.tsx",
+    "src/features/thesaurus/deck/DeckPage.tsx"
+  ],
+  "What kind of text": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "A story": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "What the questions are about": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "The questions are about": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Anything": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "What kind of conversation": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Everyday": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Choose a text…": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Your library is empty": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Grammar point": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Sound": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "the preterite, ser or estar, the subjunctive…": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "the rolled r, ñ, the vowels, the tones…": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "travel, work, the family…": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Word for word": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Natural": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Literary": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Where they part": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Hear the conversation": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  " You can also drop a backup file here.": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "Playlists": [
+    "src/features/sonus/SonusPage.tsx"
+  ],
+  "Nothing in this playlist yet": [
+    "src/features/sonus/SonusPage.tsx"
+  ],
+  "Sonus": [
+    "src/features/sonus/SonusPage.tsx"
+  ],
+  "Your words, read aloud": [
+    "src/features/sonus/SonusPage.tsx"
+  ],
+  "{0}{1}for the commute.": [
+    "src/features/sonus/SonusPage.tsx"
+  ],
+  "Sonus{0}": [
+    "src/features/sonus/SonusPage.tsx"
+  ],
+  "Hear this sentence once more (key: A)": [
+    "src/features/sonus/player/Transport.tsx"
+  ],
+  "{0}Again": [
+    "src/features/sonus/player/Transport.tsx"
+  ],
+  "Listen through a soft room noise, as in a café or on a train: harder, and nearer to real life": [
+    "src/features/sonus/player/Transport.tsx"
+  ],
+  "{0}Noise": [
+    "src/features/sonus/player/Transport.tsx"
+  ],
+  "Export to Anki (.apkg)": [
+    "src/features/thesaurus/deck/DeckPage.tsx"
+  ],
+  "Export to CSV (.csv)": [
+    "src/features/thesaurus/deck/DeckPage.tsx"
+  ],
+  "Export to Markdown (.md)": [
+    "src/features/thesaurus/deck/DeckPage.tsx"
+  ],
+  "{0}Ludus{1}": [
+    "src/features/thesaurus/deck/DeckPage.tsx"
+  ],
+  "Dictionary search tools": [
+    "src/features/thesaurus/dictionary/DictionarySearch.tsx"
+  ],
+  "Search tools": [
+    "src/features/thesaurus/dictionary/DictionarySearch.tsx"
+  ],
+  "Search mode": [
+    "src/features/thesaurus/dictionary/DictionarySearch.tsx"
+  ],
+  "Filter by grammatical category": [
+    "src/features/thesaurus/dictionary/DictionarySearch.tsx"
+  ],
+  "No matching dictionary entries found.": [
+    "src/features/thesaurus/dictionary/DictionarySearch.tsx"
+  ],
+  "No favourites yet. Star any word in its dictionary entry to keep it bookmarked here.": [
+    "src/features/thesaurus/dictionary/WordMemory.tsx"
+  ],
+  "After": [
+    "src/features/visio/player/SubtitleSettings.tsx"
+  ],
+  "Blurred lines sharpen when you hover or tap them. After: the English comes once the line has been heard.": [
+    "src/features/visio/player/SubtitleSettings.tsx"
+  ],
+  "Less help each time": [
+    "src/features/visio/player/SubtitleSettings.tsx"
+  ],
+  "Each time you watch it to the end, the English line goes from shown to blurred, to after the line, to hidden.": [
     "src/features/visio/player/SubtitleSettings.tsx"
   ]
 }

@@ -30,7 +30,11 @@ export type NewExerciseKind =
   | 'complete-dialogue'
   /** 6-9: hear a real line and type it (dictation), or type the word missing from it. */
   | 'listen-type'
-  | 'listen-gap';
+  | 'listen-gap'
+  /** 6-9: hear a word and choose its meaning or its picture. */
+  | 'listen-choose'
+  /** 6-9: a line or a word written without its breaks (spaces, syllables): mark where they go. */
+  | 'listen-split';
 
 export type ExerciseKind = ExistingExerciseKind | NewExerciseKind;
 
@@ -44,6 +48,8 @@ export type AnswerRule =
   | { rule: 'accent-blind'; expected: string; rejects?: string[] }
   /** Any of these is right; the first is shown as the model answer. */
   | { rule: 'accepted'; accepted: string[] }
+  /** A line heard and written down. Every word counts, an article too; case and accents are only close, and with `punctuation` so is a missing comma or full stop. */
+  | { rule: 'dictation'; expected: string; punctuation?: boolean }
   /** One option of several, by index (multiple choice, true or false). */
   | { rule: 'choice'; answer: number }
   /** Tiles in order (build, translate, dictation, spell). */
@@ -102,6 +108,12 @@ export interface PredictBody {
 export interface DialogueBody {
   title?: string;
   lines: Array<{ speaker: string; text: string; missing?: boolean }>;
+}
+
+/** 'listen-choose': what to choose from (a meaning or a picture each), after hearing the word. */
+export interface ChooseBody {
+  prompt: string;
+  options: Array<{ text?: string; image?: string }>;
 }
 
 /** 'drag-drop': tiles dragged into order (the same answer as a built sentence, made with the pointer). */

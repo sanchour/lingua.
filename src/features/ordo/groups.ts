@@ -58,12 +58,16 @@ export interface SettingEntry {
 /** Every setting, in page order. */
 export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Theme', section: 'appearance', also: 'paper nocturne dark mode light night colour color system appearance' },
+  { label: 'High contrast', section: 'appearance', also: 'accessibility contrast wcag aaa legibility visibility stark 7:1' },
+  { label: 'Accessible indicators', section: 'appearance', also: 'color blind shapes patterns glyphs symbols never alone' },
   { label: 'Motion', section: 'appearance', also: 'animation reduce motion transitions movement' },
   { label: 'Tips and explanations', section: 'appearance', also: 'hints subtitles descriptions help text quiet' },
 
-  { label: 'Reading font', section: 'reading', also: 'typeface literata lora newsreader merriweather atkinson comfortaa serif sans' },
+  { label: 'Reading font', section: 'reading', also: 'typeface literata lora newsreader merriweather atkinson comfortaa lexend dyslexia serif sans' },
   { label: 'Text size', section: 'reading', also: 'font size bigger smaller zoom' },
   { label: 'Line spacing', section: 'reading', also: 'line height leading' },
+  { label: 'Letter spacing', section: 'reading', also: 'tracking dyslexia visual stress spacing' },
+  { label: 'Word spacing', section: 'reading', also: 'dyslexia reading fluency gap spacing' },
   { label: 'Day paper', section: 'reading', also: 'page colour background cream sepia ivory parchment' },
   { label: 'Night paper', section: 'reading', also: 'page colour dark background charcoal' },
   { label: 'Page style', section: 'reading', also: 'page flip smooth scroll paged scrolling' },
@@ -111,11 +115,14 @@ export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Online fallback: Lingva', section: 'ai', also: 'translation translator online google' },
 
   { label: 'Storage used', section: 'storage', also: 'space disk quota protect persist' },
+  { label: 'Storage by kind', section: 'storage', also: 'storage breakdown dictionaries texts flashcards media cache clear' },
+  { label: 'Privacy & destinations', section: 'storage', also: 'privacy destination tracking zero telemetry security data offline' },
   { label: 'Create backup', section: 'backup', also: 'export save move devices sync transfer phone computer' },
   { label: 'Restore from file', section: 'backup', also: 'import backup move devices' },
   { label: 'Include audio, video and images', section: 'backup', also: 'media backup' },
   { label: 'Include API keys', section: 'backup', also: 'backup keys' },
   { label: 'Books for Goodreads', section: 'backup', also: 'export csv goodreads' },
+  { label: 'Export & integrations', find: 'Export & integrations', section: 'backup', also: 'export vocabulary csv anki apkg markdown obsidian notion highlights phrasebook statistics progress report calendar ics' },
   { label: 'Pair a device', section: 'sync', also: 'sync iphone phone desktop computer qr code devices transfer move' },
   { label: 'Sync now', section: 'sync', also: 'sync devices iphone phone desktop' },
   { label: 'Reset a language', find: 'Reset ', section: 'reset', also: 'start over progress' },

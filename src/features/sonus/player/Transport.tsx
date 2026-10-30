@@ -1,11 +1,13 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { Bike, Check, EyeOff, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
+import { Bike, Check, EyeOff, Undo2, AudioLines, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Popover } from '@/design/primitives';
 import { cx } from '@/lib/cx';
 import { loopLabel } from '@/core/audio/loop';
-import { cycleLoop, toggleListenFirst, nextSentence, previousSentence, setKeepPitch, setRate, toggleLineByLine, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
+import { cycleLoop, replaySentence, toggleListenFirst, nextSentence, previousSentence, setKeepPitch, setRate, toggleLineByLine, toggleRepeat, skip, toggle, usePlayer } from '@/services/audio/engine';
+import { startNoise } from '@/services/audio/noise';
 import { SleepButton } from './SleepTimer';
 
 export const RATES = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5];
@@ -40,6 +42,8 @@ export function Transport({ className }: { className?: string }) {
   const lineByLine = usePlayer((s) => s.lineByLine);
   const keepPitch = usePlayer((s) => s.keepPitch);
   const listenFirst = usePlayer((s) => s.listenFirst);
+  const [noisy, setNoisy] = useState(false);
+  useEffect(() => (noisy ? startNoise() : undefined), [noisy]);
   const playing = status === 'playing';
 
   return (
@@ -119,6 +123,13 @@ export function Transport({ className }: { className?: string }) {
         </button>
         <button
           type="button"
+          disabled={!hasCues}
+          title={hasCues ? translateUi('Hear this sentence once more (key: A)') : translateUi('Needs a transcript')}
+          onClick={replaySentence}
+          className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold transition-colors hover:border-line-strong disabled:opacity-40"
+        ><UiText source={'{0}Again'} values={[<Undo2 size={14} aria-hidden />]} /></button>
+        <button
+          type="button"
           title={translateUi('Mark where a part starts, then where it ends: it plays again and again. A third press clears it. (key: [)')}
           aria-label={translateUi('Loop a part: {0}', [loopLabel(loop)])}
           onClick={cycleLoop}
@@ -143,6 +154,13 @@ export function Transport({ className }: { className?: string }) {
           onClick={toggleListenFirst}
           className={cx('flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors disabled:opacity-40', listenFirst ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong')}
         ><UiText source={'{0}Listen first'} values={[<EyeOff size={14} aria-hidden />]} /></button>
+        <button
+          type="button"
+          title={translateUi('Listen through a soft room noise, as in a café or on a train: harder, and nearer to real life')}
+          aria-pressed={noisy}
+          onClick={() => setNoisy((n) => !n)}
+          className={cx('flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors', noisy ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong')}
+        ><UiText source={'{0}Noise'} values={[<AudioLines size={14} aria-hidden />]} /></button>
         <SleepButton />
         <Link to="/sonus/commute" className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold transition-colors hover:border-line-strong"><UiText source={'{0} Commute'} values={[<Bike size={15} aria-hidden />]} /></Link>
       </div>

@@ -265,7 +265,7 @@ export interface TranslationCacheRow {
 export interface LlmCacheRow {
   /** hash(kind + model + prompt) */
   id: string;
-  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine' | 'journalCheck' | 'journalPrompt' | 'lyrics' | 'grammarSentence' | 'dictTidy' | 'storyQuestions' | 'mundusReply' | 'exerciseJudge';
+  kind: 'wordInContext' | 'sentence' | 'cloze' | 'subtitleLine' | 'journalCheck' | 'journalPrompt' | 'lyrics' | 'grammarSentence' | 'dictTidy' | 'storyQuestions' | 'mundusReply' | 'exerciseJudge' | 'speakers';
   model: string;
   response: unknown;
   createdAt: number;
@@ -420,6 +420,8 @@ export interface Media extends Synced {
   id: string;
   /** Places to come back to (6-9): a time in ms, with a note, and `hard` when the learner could not make it out. */
   bookmarks?: Array<{ at: number; note?: string; hard?: boolean }>;
+  /** The learner's own playlists this item is in (6-9), by name. */
+  playlists?: string[];
   lang: Lang;
   /** `radio` is a live station: played, never stored as media (see SavedStation). */
   kind: 'audio' | 'video' | 'spotify' | 'radio';
@@ -454,6 +456,8 @@ export interface Media extends Synced {
   readAlongTextId?: string;
   /** Visio: a YouTube video, played from YouTube's own embed. */
   youtubeId?: string;
+  /** Visio: how many times it was watched to the end (6-9): "Less help each time" weakens the English line with each one. */
+  watches?: number;
 }
 
 /** Colloquium: a conversation with the learner's own AI, in the language. */
@@ -515,6 +519,8 @@ export interface Cue {
   endMs: number;
   text: string;
   words?: { w: string; startMs: number; endMs: number }[];
+  /** Who says it (6-9): a short label from "Label the speakers"; a guess from the words. */
+  speaker?: string;
 }
 
 export interface Transcript extends Synced {
@@ -588,7 +594,8 @@ export interface SpeechRow {
 
 export interface BlobRow {
   id: string;
-  kind: 'audio' | 'video' | 'image' | 'cover';
+  /** `recording`: the learner's own voice, in the pronunciation diary (6-10); it stays on the device and can be deleted. */
+  kind: 'audio' | 'video' | 'image' | 'cover' | 'recording';
   mime: string;
   size: number;
   blob: Blob;

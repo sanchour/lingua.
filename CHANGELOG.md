@@ -3,21 +3,45 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
-- **0.6.0-alpha.98** · 2026-10-29 · 6-9 L4: hard parts marked and replayed, dictation diff, speed steps and noise
-- **0.6.0-alpha.97** · 2026-10-29 · 6-9 L3: heard exercises (tag moved on)
-- **0.6.0-alpha.96** · 2026-10-29 · 6-9 L3: heard exercises from the learner's own transcripts
 - **0.6.0-alpha.96** · 2026-10-29 · 6-19 C2: daily immersion and reference help on the Codex branch
-- **0.6.0-alpha.95** · 2026-10-29 · 6-9 L2: Listen first blurs the transcript until a line has played
-- **0.6.0-alpha.94** · 2026-10-29 · Contract: heard exercises (6-9)
-- **0.6.0-alpha.93** · 2026-10-29 · 6-29: the tab is called Atlas
-- **0.6.0-alpha.92** · 2026-10-29 · 6-9 L1: A-B loop, line by line, pitch and bookmarks in the player
-- **0.6.0-alpha.91** · 2026-10-29 · 6-29 planned in full: the atlas and the compass
 - **0.6.0-alpha.90** · 2026-10-29 · 6-19 C1: sourced Culture shelf, word notes, cards and regional voices
 - **0.6.0-alpha.88** · 2026-10-29 · Claim 6-19 for Codex again; culture, immersion and interface languages
 - **0.6.0-alpha.87** · 2026-10-29 · Release cancelled 6-19 claim; Codex stops after Reading
 - **0.6.0-alpha.86** · 2026-10-29 · Claim 6-19 Immersion and culture for Codex on codex/lingua
 - **0.6.0-alpha.85** · 2026-10-29 · 6-8 R4: parallel reading and labelled simplification on the Codex branch
 - **0.6.0-alpha.84** · 2026-10-29 · 6-8 R3: chapter comprehension and reading evidence on the Codex branch
+- **0.6.0-alpha.110** · 2026-10-29 · 6-13: Compare translations (Max): a passage three ways and where they part
+- **0.6.0-alpha.109** · 2026-10-29 · 6-9 C4: Visio after the line and less help each time, Noise button, conversation with a voice for each speaker, label the speakers
+- **0.6.0-alpha.108** · 2026-10-29 · 6-10 C3: mouth diagram, spectrogram, slow playback, hints, drills, pair filter and weak sounds, connected-speech rules
+- **0.6.0-alpha.107** · 2026-10-29 · 6-9 L7: partial, punctuated and ending dictation, cut into words, choose meaning or picture, spell, syllables
+- **0.6.0-alpha.106** · 2026-10-29 · Contract: the dictation rule, listen-choose and listen-split (6-9)
+- **0.6.0-alpha.105** · 2026-10-29 · Max kinds: stories, courses, drills, sounds, differences; false cognates; quiz focus
+- **0.6.0-alpha.104** · 2026-10-29 · 6-10 S5: shadowing
+- **0.6.0-alpha.103** · 2026-10-29 · 6-9 L5: playlists, your words read aloud, settings for made dialogues
+- **0.6.0-alpha.102** · 2026-10-29 · 6-10 S4: pronunciation diary and the stress drill
+- **0.6.0-alpha.101** · 2026-10-29 · Merge ag1: Speaking, Dictionary tools, Import and export, Accessibility
+- **0.6.0-alpha.100** · 2026-10-29 · 6-10: plan row version corrected
+- **0.6.0-alpha.99** · 2026-10-29 · 6-10: Cursus Sounds, minimal pairs, record and compare
+- **0.6.0-alpha.98** · 2026-10-29 · 6-9 L4: hard parts marked and replayed, dictation diff, speed steps and noise
+- **0.6.0-alpha.97** · 2026-10-29 · 6-9 L3: heard exercises (tag moved on)
+- **0.6.0-alpha.96** · 2026-10-29 · 6-9 L3: heard exercises from the learner's own transcripts
+- **0.6.0-alpha.95** · 2026-10-29 · 6-9 L2: Listen first blurs the transcript until a line has played
+- **0.6.0-alpha.94** · 2026-10-29 · Contract: heard exercises (6-9)
+- **0.6.0-alpha.93** · 2026-10-29 · 6-29: the tab is called Atlas
+- **0.6.0-alpha.92** · 2026-10-29 · 6-9 L1: A-B loop, line by line, pitch and bookmarks in the player
+- **0.6.0-alpha.91** · 2026-10-29 · 6-29 planned in full: the atlas and the compass
+- **0.6.0-alpha.89** · 2026-10-29 · 6-25: accessibility, high contrast, dyslexia font, desktop daily word and quick review (6-25 done)
+- **0.6.0-alpha.83** · 2026-10-29 · 6-22 slice 3.3: custom dictionary entries, personal dictionary import, multi-source comparison, and entry issue reporting (6-22 done)
+- **0.6.0-alpha.82** · 2026-10-29 · 6-22 slice 3.2: global search palette (Ctrl+K / Cmd+K) across words, decks, cards, texts, journal, and grammar
+- **0.6.0-alpha.81** · 2026-10-29 · 6-22 slice 3.1: dictionary search tools (reverse meaning, fuzzy, prefix/suffix, rhymes, similar sounds, POS filter)
+- **0.6.0-alpha.80** · 2026-10-29 · 6-24 slice 1.4: Kindle My Clippings.txt, Quizlet, Markdown + wikilinks, and timed transcript importers (6-24 complete)
+- **0.6.0-alpha.79** · 2026-10-29 · 6-24 slice 1.3: deck export menu (.apkg, .csv, .md) and Settings export & integrations hub
+- **0.6.0-alpha.78** · 2026-10-29 · 6-24 slice 1.2: Anki .apkg deck exporter with FSRS scheduling and media round-trip
+- **0.6.0-alpha.77** · 2026-10-29 · 6-24 slice 1.1: exporter core (CSV, Markdown + wikilinks, HTML report, .ics)
+- **0.6.0-alpha.76** · 2026-10-29 · Claim 6-22 Dictionary tools and 6-24 Import and export for Antigravity-1
+- **0.6.0-alpha.75** · 2026-10-29 · 6-11 S3: How did it go conversation review, sentence breakdown, fluency metrics, replay, and Diarium notes
+- **0.6.0-alpha.74** · 2026-10-29 · 6-11 S2: solo speaking challenges, prep/speak timer, microphone recording playback, real-time transcription
+- **0.6.0-alpha.73** · 2026-10-29 · 6-11 S1: 4 conversation modes, styles & constraints, and 6 new scenes
 - **0.6.0-alpha.72** · 2026-10-29 · Claim 6-11 Speaking for Antigravity-1
 - **0.6.0-alpha.71** · 2026-10-29 · 6-13 T3: language contrast tables, false friends, and personal pair notes
 - **0.6.0-alpha.70** · 2026-10-29 · 6-13 T2: translation views (alignment, back-translation, rebuild)

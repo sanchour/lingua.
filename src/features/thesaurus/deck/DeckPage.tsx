@@ -2,7 +2,10 @@ import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
-import { ArrowDown, ArrowUp, Check, CheckSquare, Ellipsis, FolderInput, Layers, Pause, Pencil, Play, Plus, Puzzle, Search, Settings2, Sparkles, Tag, TextCursorInput, Trash2, Zap } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, CheckSquare, Download, Ellipsis, FileCode2, FileSpreadsheet, FolderInput, Layers, Pause, Pencil, Play, Plus, Puzzle, Search, Settings2, Sparkles, Tag, TextCursorInput, Trash2, Zap } from 'lucide-react';
+import { deckToCsv, notesToMarkdown, saveFile } from '@/services/export';
+import { downloadDeckApkg } from '@/services/export/apkgBrowser';
+import { toast } from '@/state/ui';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { formatInterval, maturityOf } from '@/core/srs/scheduler';
@@ -149,7 +152,7 @@ export default function DeckPage() {
 
   return (
     <>
-      <BackLink to="/thesaurus">Thesaurus</BackLink>
+      <BackLink to="/thesaurus"><UiText source={'Thesaurus'} /></BackLink>
       <PageHeader
         title={deck.name}
         actions={
@@ -187,6 +190,36 @@ export default function DeckPage() {
                     }}
                   />
                   <MenuItem icon={Sparkles} label={translateUi('Tidy…')} onClick={() => (close(), setTidying(true))} />
+                  <MenuItem
+                    icon={Download}
+                    label={translateUi('Export to Anki (.apkg)')}
+                    onClick={() => {
+                      close();
+                      void downloadDeckApkg(deck.id)
+                        .then(() => toast(`Exported “${deck.name}” (.apkg).`, { tone: 'success' }))
+                        .catch(() => toast('Could not export Anki deck.', { tone: 'error' }));
+                    }}
+                  />
+                  <MenuItem
+                    icon={FileSpreadsheet}
+                    label={translateUi('Export to CSV (.csv)')}
+                    onClick={() => {
+                      close();
+                      const slug = deck.name.toLowerCase().replace(/[^a-z0-9-_]+/gi, '-') || 'deck';
+                      saveFile(`${slug}.csv`, deckToCsv(deck, notes), 'text/csv;charset=utf-8');
+                      toast(`Exported “${deck.name}” (.csv).`, { tone: 'success' });
+                    }}
+                  />
+                  <MenuItem
+                    icon={FileCode2}
+                    label={translateUi('Export to Markdown (.md)')}
+                    onClick={() => {
+                      close();
+                      const slug = deck.name.toLowerCase().replace(/[^a-z0-9-_]+/gi, '-') || 'deck';
+                      saveFile(`${slug}.md`, notesToMarkdown(deck, notes), 'text/markdown;charset=utf-8');
+                      toast(`Exported “${deck.name}” (.md).`, { tone: 'success' });
+                    }}
+                  />
                   <MenuItem icon={Trash2} label={translateUi('Delete deck')} danger onClick={() => (close(), askDelete())} />
                 </div>
               )}
@@ -210,11 +243,7 @@ export default function DeckPage() {
             <Layers size={18} aria-hidden />
             {due ? translateUi('Review {0}', [due]) : translateUi('Nothing due')}
           </Link>
-          <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')}>
-            <Puzzle size={18} aria-hidden />
-            Ludus
-            {ludusGate && <PlusChip feature="ludus" />}
-          </Link>
+          <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')}><UiText source={'{0}Ludus{1}'} values={[<Puzzle size={18} aria-hidden />, ludusGate && <PlusChip feature="ludus" />]} /></Link>
           <Link to={`/thesaurus/study/${deck.id}?mode=ludus&lightning=1`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')}><UiText source={'{0}Lightning'} values={[<Zap size={18} aria-hidden />]} /></Link>
           <Link to={`/thesaurus/study/${deck.id}?mode=ludus&kind=sentences`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')} title={translateUi('Real sentences with one of the deck\'s words missing')}><UiText source={'{0}Sentences'} values={[<TextCursorInput size={18} aria-hidden />]} /></Link>
         </div>

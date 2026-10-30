@@ -1940,3 +1940,5 @@ Every day reuses Diarium tasks, Sermo topics, the on-device photo OCR and Visioâ
 ### 2026-10-30 Â· Offline interface catalogue (6-19 C3, Codex)
 
 Use explicit React message sites rather than changing DOM text or translating arbitrary learner strings. Numeric/rich values remain React nodes; Latin room names stay recognizable. English is the default and fallback. The user approved two exact batches of source interface copy for one-time Google translation drafts; the application ships their JSON and makes no translation requests for its interface. Core navigation labels were corrected locally; broad linguistic review remains outstanding. This checkpoint does not claim every dynamic UI string is migrated.
+
+The catalogues are separate bundled chunks so the service worker can cache every language under its existing per-asset limit. No limit increase or external runtime translator is needed. Current main was merged without rewriting the published Codex branch; new generator, export, accessibility and audio behavior is retained.

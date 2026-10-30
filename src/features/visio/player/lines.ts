@@ -30,6 +30,9 @@ export function matchingLine(native: readonly Cue[] | null | undefined, cue: Cue
   return best;
 }
 
+/** "Less help each time" (6-9): the English line shown, then blurred, then only after the line, then hidden, one step per full watch. */
+export const adaptiveMode = (watches: number) => (['show', 'blur', 'after', 'hide'] as const)[Math.max(0, Math.min(3, watches))];
+
 /** A line stays up a moment after it ends, so short ones can still be read. */
 const LINGER_MS = 350;
 

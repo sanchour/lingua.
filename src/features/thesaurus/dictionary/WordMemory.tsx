@@ -133,7 +133,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
             ['learning', `Learning ${counts.learning}`],
             ['known', `Known ${counts.known}`],
             ['met', `Looked up ${counts.met}`],
-            ...(counts.favourite ? [['favourite', `Favourites ${counts.favourite}`]] : []),
+            ['favourite', `Favourites ${counts.favourite}`],
             ...(counts.ignored ? [['ignored', `Ignored ${counts.ignored}`]] : []),
           ] as Array<[Strength, string]>
         ).map(([value, label]) => (
@@ -167,6 +167,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
       )}
 
       {strength === 'inbox' && counts.inbox === 0 && <p className="mt-3 text-[13.5px] text-ink-soft"><UiText source={'Nothing waiting. Words you look up while reading wait here until you decide what to do with them.'} /></p>}
+      {strength === 'favourite' && counts.favourite === 0 && <p className="mt-3 text-[13.5px] text-ink-soft"><UiText source={'No favourites yet. Star any word in its dictionary entry to keep it bookmarked here.'} /></p>}
       {bulk && shown.length > 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <label className="flex items-center gap-2 text-[13px] font-semibold text-ink-soft">

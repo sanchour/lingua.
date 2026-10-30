@@ -157,6 +157,12 @@ export function stopSpeaking() {
   endPlaying();
 }
 
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') stopSpeaking();
+  });
+}
+
 function endPlaying() {
   if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
   if (player && playing) player.pause();
@@ -245,6 +251,28 @@ export function sayOnDevice(voice: SpeechSynthesisVoice, text: string, onStart?:
     };
     speechSynthesis.speak(say);
   });
+}
+
+/**
+ * Says a conversation with a different device voice for each speaker, as far as the device has voices (6-9). Returns how many voices were used,
+ * and 0 when it was stopped. Other kinds of voice (Gemini, Piper) say it as one text.
+ */
+export async function speakConversation(lang: string, lines: ReadonlyArray<{ speaker: string; text: string }>, opts: { flag?: string } = {}): Promise<number> {
+  const speaker = await speakerFor(lang, opts.flag);
+  if (speaker.kind !== 'device') {
+    await speak(lang, lines.map((l) => l.text).join(' '), opts);
+    return 1;
+  }
+  const own = [speaker.voice, ...voicesForLocale(await deviceVoices(), speaker.locale).filter((v) => v.voiceURI !== speaker.voice.voiceURI)];
+  const names = [...new Set(lines.map((l) => l.speaker))];
+  for (const l of lines) {
+    const said = sayOnDevice(own[names.indexOf(l.speaker) % own.length], l.text);
+    const mine = turn;
+    await said;
+    // Someone pressed stop, or another voice button: leave the rest unsaid.
+    if (turn !== mine) return 0;
+  }
+  return Math.min(names.length, own.length);
 }
 
 /** Says `text` with one Gemini library voice (also to try a voice before choosing it). */

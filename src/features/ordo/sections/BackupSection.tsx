@@ -6,6 +6,7 @@ import { BackupError, exportBackup, readBackup, restoreBackup } from '@/data/bac
 import { finishedBooksCsv } from '@/data/library';
 import type { ParsedBackup } from '@/data/backup';
 import type { Settings } from '@/data/settings';
+import { useApp } from '@/app/context';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Button, Dialog, ToggleRow } from '@/design/primitives';
 import { cx } from '@/lib/cx';
@@ -13,6 +14,7 @@ import { formatBytes, formatDateTime } from '@/lib/format';
 import { canShareFile, downloadFile, pickFile, shareFile } from '@/services/files/files';
 import { toast } from '@/state/ui';
 import { SettingsSection } from '../SettingsSection';
+import { ExportDataPanel } from './ExportDataPanel';
 
 const COUNT_LABELS: Array<[string, string]> = [
   ['words', 'words'],
@@ -25,6 +27,7 @@ const COUNT_LABELS: Array<[string, string]> = [
 
 export function BackupSection({ meta }: { meta: Settings['meta'] }) {
   const translateUi = useUi();
+  const { language } = useApp();
   const { layout } = useLayout();
   const [includeMedia, setIncludeMedia] = useState(true);
   const [includeKeys, setIncludeKeys] = useState(false);
@@ -129,7 +132,7 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
         </div>
         <p className="mt-3 text-[13px] text-ink-soft">
           {meta.lastBackupAt ? translateUi('Last backup: {0}.', [formatDateTime(meta.lastBackupAt)]) : translateUi('No backup yet.')}
-          {layout === 'wide' && ' You can also drop a backup file here.'}
+          {layout === 'wide' && translateUi(' You can also drop a backup file here.')}
         </p>
       </div>
 
@@ -154,6 +157,8 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
           }}
         ><UiText source={'Export finished books'} /></Button>
       </div>
+
+      <ExportDataPanel language={language} />
 
       <Dialog
         open={incoming !== null}

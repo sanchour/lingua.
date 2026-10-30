@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
-import { addBookmark, removeBookmark } from './media';
+import { addBookmark, playlistNames, removeBookmark, setMediaPlaylists } from './media';
 import type { Media } from './types';
 
 const open: LinguaDB[] = [];
@@ -20,5 +20,17 @@ describe('bookmarks in an item', () => {
     expect((await db.media.get('m'))?.bookmarks).toEqual([{ at: 10_000, hard: true }, { at: 31_000, note: 'again' }]);
     await removeBookmark('m', 10_000, db);
     expect((await db.media.get('m'))?.bookmarks).toEqual([{ at: 31_000, note: 'again' }]);
+  });
+
+  it('playlists keep each name once, trim it, and are listed across items', async () => {
+    const db = createDb(`playlists-${Math.random().toString(36).slice(2)}`);
+    open.push(db);
+    await db.media.bulkAdd([{ id: 'a', lang: 'es', kind: 'audio', title: 'A', createdAt: 1, updatedAt: 1 }, { id: 'b', lang: 'es', kind: 'audio', title: 'B', createdAt: 1, updatedAt: 1 }] as Media[]);
+    await setMediaPlaylists('a', ['  Commute ', 'commute', 'Slow  songs'], db);
+    await setMediaPlaylists('b', ['Commute'], db);
+    expect((await db.media.get('a'))?.playlists).toEqual(['Commute', 'Slow songs']);
+    expect(playlistNames(await db.media.toArray())).toEqual(['Commute', 'Slow songs']);
+    await setMediaPlaylists('a', [], db);
+    expect((await db.media.get('a'))?.playlists).toBeUndefined();
   });
 });

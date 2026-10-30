@@ -61,6 +61,7 @@ import { useUI } from '@/state/ui';
 import { studyMinutes, useHomeFacts } from './facts';
 import type { HomeFacts } from './facts';
 import { enter, homeGreeting, label, TONE, useNextSteps } from './HomeClassic';
+import { DailyWordCard } from './DailyWordCard';
 
 const DATE = new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long' });
 
@@ -129,13 +130,18 @@ export function HomeToday() {
           </motion.div>
         </div>
 
-        {/* Middle section: Continue learning > (opens Bibliotheca) */}
+        {/* Word of the day & Quick review (6-25, F1523, F1524) */}
         <motion.div {...enter(2)}>
+          <DailyWordCard lang={language.id} />
+        </motion.div>
+
+        {/* Middle section: Continue learning > (opens Bibliotheca) */}
+        <motion.div {...enter(3)}>
           <ContinueLearningSection lang={language.id} level={language.level} />
         </motion.div>
 
         {/* Bottom section: Discover your next content > (opens Explora) */}
-        <motion.div {...enter(3)}>
+        <motion.div {...enter(4)}>
           <DiscoverContentSection lang={language.id} level={language.level} />
         </motion.div>
       </div>

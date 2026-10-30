@@ -2,11 +2,11 @@
 const LEARNING = '#d49b54';
 export const REVIEW = '#6a90b4';
 
-/** Today's three kinds of work, in Anki's order, with one colour each in the pills, the Today ring and the card list (5.1-3b). */
+/** Today's three kinds of work, in Anki's order, with one colour each in the pills, the Today ring and the card list (5.1-3b, 6-25 F1536). */
 export const CARD_STATES = [
-  { key: 'new', label: 'new', color: 'var(--sage)', pill: 'bg-sage-soft text-sage-text' },
-  { key: 'learning', label: 'learning', color: LEARNING, pill: 'bg-[color-mix(in_oklab,#d49b54_20%,transparent)] text-[color-mix(in_oklab,#d49b54_62%,var(--ink))]' },
-  { key: 'due', label: 'to review', color: REVIEW, pill: 'bg-[color-mix(in_oklab,#6a90b4_20%,transparent)] text-[color-mix(in_oklab,#6a90b4_62%,var(--ink))]' },
+  { key: 'new', label: 'new', glyph: '✦', symbol: 'spark', color: 'var(--sage)', pill: 'bg-sage-soft text-sage-text' },
+  { key: 'learning', label: 'learning', glyph: '◒', symbol: 'half-circle', color: LEARNING, pill: 'bg-[color-mix(in_oklab,#d49b54_20%,transparent)] text-[color-mix(in_oklab,#d49b54_62%,var(--ink))]' },
+  { key: 'due', label: 'to review', glyph: '↻', symbol: 'cycle', color: REVIEW, pill: 'bg-[color-mix(in_oklab,#6a90b4_20%,transparent)] text-[color-mix(in_oklab,#6a90b4_62%,var(--ink))]' },
 ] as const;
 
 /** A card's stage in the deck's card grid: new, learning, then young and settled in the colour of review. */

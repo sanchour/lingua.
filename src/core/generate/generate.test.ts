@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cacheKey, labelFor, levelReport, readGenerated, readQuiz, readSentences, readStory, readWordlist, textOf, unknownWords, wordsOf } from './generate';
+import { cacheKey, labelFor, levelReport, readGenerated, readAdventure, readCourse, readDifference, readDrill, readPronunciation, readQuiz, readSentences, readStory, readTranslations, readWordlist, textOf, unknownWords, wordsOf } from './generate';
 
 describe('reading what the model answered', () => {
   it('accepts a story only with its title, text and translation', () => {
@@ -136,5 +136,53 @@ describe('a quiz', () => {
     const base = { lang: 'es', kind: 'simplified' as const, level: 'A2' };
     expect(cacheKey({ ...base, source: 'uno' })).not.toBe(cacheKey({ ...base, source: 'dos' }));
     expect(cacheKey({ ...base, source: 'uno' })).toBe(cacheKey({ ...base, source: 'uno' }));
+  });
+});
+
+describe('the later kinds', () => {
+  it('a difference has two rows and a summary', () => {
+    const row = (word: string) => ({ word, use: `when you ${word}`, example: `Yo ${word}.` });
+    expect(readDifference({ summary: 'Ser is what, estar is how.', rows: [row('ser'), row('estar')] })?.rows).toHaveLength(2);
+    expect(readDifference({ summary: 'x', rows: [row('ser')] })).toBeNull();
+    expect(readDifference({ rows: [row('ser'), row('estar')] })).toBeNull();
+  });
+  it('translations are the three versions, once each, and their texts are not measured', () => {
+    const v = (style: string) => ({ style, text: `The ${style} one.`, note: 'Keeps the order.' });
+    const ok = readTranslations({ versions: [v('literal'), v('natural'), v('literary')], choices: [{ phrase: 'ni siquiera', why: 'Emphasis.' }, { phrase: '', why: 'x' }] });
+    expect(ok?.versions).toHaveLength(3);
+    expect(ok?.choices).toHaveLength(1);
+    expect(readTranslations({ versions: [v('literal'), v('literal'), v('natural')] })).toBeNull();
+    expect(readTranslations({ versions: [v('literal'), v('natural')] })).toBeNull();
+    expect(textOf('translations', ok!)).toBe('');
+  });
+  it('a drill needs four gapped sentences with one answer each', () => {
+    const item = (answer: string) => ({ before: 'Ayer yo ', answer, after: ' al mercado.', hint: 'ir' });
+    expect(readDrill({ topic: 'the preterite', items: ['fui', 'fui', 'fui', 'fui'].map(item) })?.items).toHaveLength(4);
+    expect(readDrill({ topic: 't', items: [item('fui')] })).toBeNull();
+    expect(readDrill({ topic: 't', items: Array.from({ length: 4 }, () => ({ before: 'a', answer: '', after: 'b' })) })).toBeNull();
+  });
+  it('pronunciation needs six items', () => {
+    const items = Array.from({ length: 6 }, (_, i) => ({ text: `perro ${i}`, note: 'roll it' }));
+    expect(readPronunciation({ sound: 'rr', items })?.items).toHaveLength(6);
+    expect(readPronunciation({ sound: 'rr', items: items.slice(0, 3) })).toBeNull();
+  });
+  it('an adventure must lead somewhere: a start, scenes that exist, and an ending', () => {
+    const scene = (to: string[]) => ({ text: 'Una puerta se abre.', choices: to.map((t) => ({ label: `Ir a ${t}`, to: t })) });
+    const good = { title: 'La puerta', start: 's1', scenes: { s1: scene(['s2', 's3']), s2: scene(['s4', 's3']), s3: scene([]), s4: scene([]) } };
+    expect(readAdventure(good)?.start).toBe('s1');
+    expect(readAdventure({ ...good, start: 'nope' })).toBeNull();
+    expect(readAdventure({ ...good, scenes: { ...good.scenes, s2: scene(['s9']) } })).toBeNull();
+    expect(readAdventure({ ...good, scenes: { s1: scene(['s2']), s2: scene(['s1']), s3: scene(['s1']), s4: scene(['s1']) } })).toBeNull();
+  });
+  it('a course needs four lessons with five words and a sentence each', () => {
+    const lesson = (n: number) => ({ title: `Lección ${n}`, goal: 'You will say hello.', words: Array.from({ length: 5 }, (_, i) => ({ term: `w${i}`, meaning: `m${i}` })), sentence: 'Hola, ¿qué tal?' });
+    expect(readCourse({ title: 'Básico', lessons: [1, 2, 3, 4].map(lesson) })?.lessons).toHaveLength(4);
+    expect(readCourse({ title: 'Básico', lessons: [1, 2].map(lesson) })).toBeNull();
+  });
+  it('a request with a focus or a style is kept apart from one without, and an old key is unchanged', () => {
+    const base = { lang: 'es', kind: 'quiz' as const, level: 'A2' };
+    expect(cacheKey({ ...base, focus: 'the main idea' })).not.toBe(cacheKey(base));
+    expect(cacheKey({ ...base, style: 'a lecture' })).not.toBe(cacheKey({ ...base, focus: 'a lecture' }));
+    expect(cacheKey(base)).toBe(cacheKey({ ...base, focus: undefined }));
   });
 });
