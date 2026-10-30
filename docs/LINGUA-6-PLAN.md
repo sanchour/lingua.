@@ -100,7 +100,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | **Part D · More of the language** (in parallel, after Part A) | | | | | |
 | 6-19 | [~] | *claimed by Codex 2026-10-30* Immersion and culture | 23 new · 7 to finish | 6-1 | L |
 | 6-20 | [ ] | Phrasebook and notebook (the map is 6-29) | 35 new · 10 to finish | 6-1, 6-2 | L |
-| 6-21 | [ ] | Games and projects | 66 new · 3 to finish | 6-4, 6-6 | L |
+| 6-21 | [~] | *claimed by Claude Sonnet 5.5 2026-10-30; planned in full (seven pushes, G1 to G7, in this step's section below), nothing built yet* Games and projects | 66 new · 3 to finish | 6-4, 6-6 | L |
 | 6-22 | [x] | *done by Antigravity-1 2026-10-29; Slice 3.1 done (advanced dictionary search in `src/core/dictionary/searchTools.ts` and `DictionarySearch.tsx`: reverse dictionary by meaning/concept, Damerau-Levenshtein typo-tolerant search, rhyme search by phonological tail, similar-sound/homophone search by IPA/phonetic key, prefix & suffix search, and part-of-speech filter; `F1247`–`F1249`, `F1275`–`F1280` ticked); Slice 3.2 done (one search across Lingua via `Ctrl+K` / `⌘K` palette in `src/core/search/globalSearch.ts` and `GlobalSearchModal.tsx` searching words, decks, flashcards, Codex texts, Diarium journal entries, and Grammatica topics with kind chips; `F1282`, `F1283` ticked); Slice 3.3 done (your dictionary in `src/core/dictionary/userDictionary.ts` and `DictionaryToolsPanel.tsx`: always-accessible Favourites filter in `WordMemory.tsx`, custom dictionary headword/sense creation and editing synced to `db.fullDict`, personal dictionary importer for JSON/CSV/TSV/Markdown, side-by-side multi-source comparison across English Wiktionary, monolingual Wiktionary, Lingua Core Pack, and Personal Dictionary, and "Report or fix entry" with immediate local correction override; `F1285`, `F1287`–`F1290`, `F1482` ticked; typecheck, tests and build pass; not looked at in a browser).* Dictionary tools | 15 new · 2 to finish | 6-1 | M |
 | 6-23 | [~] | *claimed by Claude Sonnet 5.5 2026-10-30* Tools for each language | 32 new · 19 to finish | 6-1, 6-4 | L |
 | 6-29 | [ ] | *planned in full 2026-10-29: [WORD-GRAPH-PLAN.md](WORD-GRAPH-PLAN.md), seven pushes, G1 to G7* **The word graph** (a new Thesaurus tab: the atlas of all your words, the compass of one): your vocabulary as a bookish, Obsidian-like web; **Opus plans and builds it** (the user, 2026-10-29) | 20 new | Part A | XL |
@@ -566,6 +566,102 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
   from a text; a podcast into a deck; a week around one topic; a short story with your new words; your own podcast.
 - Games never move a card's schedule unless they are reviews (as Lightning).
 **Entries (66 new · 3 to finish):** F0168–F0173, F0175–F0177, F0179–F0184, F0186–F0190, F0313–F0314, F0885, F1185, F1190, F1192–F1201, F1203–F1216, F1220–F1225, F1228–F1232, F1234–F1235, F1237–F1238, F1240–F1244
+
+**The plan (2026-10-30, Claude Sonnet 5.5; seven pushes, G1 to G7, each its own version; Opus checks G1's engine and G6's story format).**
+Build on what is there, don't double it: `core/srs/ludus` (seededRandom, shuffle, the lesson planner), `core/exercise` (6-4), Practice
+(`/thesaurus/practice`: matching games, 6-4b), Cantus' `SongGames`, Home's `DailyWordCard`, and 6-6/6-6b's checked generation, whose
+*adventure* kind (scenes, choices, endings checked to lead somewhere) is the story-game format. Desktop only.
+
+1. **Where it lives.** One new tab, **Thesaurus › Games** (`/thesaurus/games`), beside Practice: a shelf of cards by group (Word
+   games, Story games, Projects), a "Today" strip on top (the daily puzzle, the weekly theme, your bests), and a game opens in
+   the room's own wide layout with a side panel (rules, timer, best, a hint) and keyboard play (letters typed, Enter, Esc,
+   arrows). Projects open as a chain page, not a game. Code: `src/core/games` (pure, tested) and `src/features/games`.
+2. **The words come from the learner.** A game asks `core/games/source` for items: the learner's own words first (deck, folder,
+   tag, "due soon", "weak spots" from 6-5), then the language's pack. Each item carries only what exists: term, meaning, example,
+   synonyms, opposites, morphemes (if the dictionary has them), a picture (6-1 cards with pictures), a category (tag, or the
+   dictionary's). A game says what it needs and is greyed with the reason when the set has too few (as 6-4b's matching games
+   already do). Tier 2 languages get every game that needs only words and meanings.
+3. **Games never touch the schedule** (this step's rule). A game writes an exercise-log row (6-5) *as practice*, and the words
+   it used count toward "seen in a game" in the word's history, nothing more. Only a game that *is* a review (a Lightning-style
+   round the learner starts from Recall) moves a card, and it says so in its panel. Streaks stay optional (Q5): bests and stamps
+   only, no points.
+4. **Daily and weekly are the same for everyone, made from the date.** `dailySeed(lang, yyyy-mm-dd)` picks the game, the word
+   set (from the language's frequency list, not the learner's, so two learners see one puzzle) and the seed; a week's theme comes
+   from a fixed list of 52 topics per language, indexed by ISO week. No server, no clock trust beyond the device's date;
+   done-today is a local stamp. (F1215, F1216, F0188 finished.)
+5. **Max only where the entry says so.** Word games, bingo, memory, ladders, crosswords, the daily and the weekly work without a
+   key. Story games, "AI-generated games on your vocabulary" and custom games use 6-6's pipeline (checked, cached, fakeable in
+   tests); without Max they play from the **ready-made set** (below) and say the rest needs Max.
+
+**G1 · The engine and the shelf** (no game yet but one)
+- `core/games`: `GameDef` (id, group, needs, play component key, scoring: time, mistakes, hints), `seeds.ts` (dailySeed, weekSeed,
+  `seededRandom` reused), `source.ts` (the item shapes above and `canPlay(def, items)`), `bests.ts` (a best per game and
+  language, kept in settings), tests for all three.
+- `features/games`: `GamesPage` (shelf, Today strip), `GameFrame` (side panel, timer, keyboard, a hint that costs a star), route and
+  tab. Entries moved to "partly done" only; the first game, **Hangman-style spelling** (F0172, F1196), proves the frame.
+- Done when: the tab is there, hangman plays with the keyboard, the best is kept, light and dark at 1280/1440/1366×768.
+
+**G2 · Letter games** (all pure, no key): anagrams (F0173 finished, F1195), missing letters (F0175), word hunting through a
+tangle of letters (F0168), word search (F0171, F1194), word ladders (F0169; steps must be words in the pack, one letter apart,
+built by search over the pack's words of one length), progressively revealed clues (F0189). Layout makers
+(`wordsearch.ts`, `ladder.ts`) are tested for: every word placed, no overlaps that break a word, a ladder that exists.
+
+**G3 · Crossword, and the word-link games**
+- Crossword (F0170, F1193): `crossword.ts` places 8 to 14 of the learner's words on a grid (a greedy crossing search with a time
+  budget; falls back to fewer words; never a grid with two answers); clues are the meaning, then the example with the word hidden,
+  then the first letter; arrow-key and typing play, check-a-word, reveal-a-letter.
+- Word association (F0179, F1192), synonym races (F0180), antonym races (F0181): a chain game on the thesaurus data (6-7/6-22),
+  scored against the pack's relations; a typed answer is accepted when the pack, or the learner's own links, relate the words.
+- Category sorting (F0182, F1200) and odd one out (F0183, F1201): categories from tags, deck names and the dictionary's
+  topics; odd one out only when a set has three words of one category and one of another.
+
+**G4 · Picture, meaning and match**
+- Guess the definition (F0176), guess the word (F1197), picture vocabulary (F0177, F1198; cards that have a picture; credit shown
+  as 6-1 stores it), memory-matching cards (F0186, F1199; word to meaning, word to picture, word to sound), vocabulary bingo
+  (F0187; a 5×5 card from the learner's words, "called" as meaning or sound), build a word from morphemes (F0184; only where the
+  dictionary has parts, and says so otherwise).
+
+**G5 · Races, the daily, the weekly and the tournament**
+- Timed translation (F1185) and dictation races (F1190): run on 6-4's translate and dictation exercise kinds with a clock, a
+  best, and 6-5's log (writing and listening); no new judging.
+- Daily puzzle (F1215, F0188 finished) and weekly theme (F1216) per rule 4; a shareable result as text (Wordle-style grid), copied,
+  not posted. Beating your best (shown on every game card).
+- Mini tournaments (F0190): a round of 3 to 5 games chained with one score, local only (solo against your own best and a
+  "ghost" of your last run; no other player, no server: the user decides about community in 6-27).
+
+**G6 · Story games (Max, with a ready-made set)**
+- One format, the existing `AdventureBody` (scenes, choices, endings), extended with *state* that choices can set and test: an
+  item, a clue, a number. That one change carries choose-your-own (F0313, F0314, F1207), text adventures (F1206), mysteries and
+  the detective case (F1205, F1210: clues gate the accusation), the escape room (F1209: puzzles in the language gate the door),
+  a journey and the city to explore (F1211, F1212: places as scenes), survival challenges (F1213: a clock/health counter),
+  quests (F1208) and conversation quests (F1214: a scene asks for a line, judged by 6-11's feedback or by a pick from options
+  without Max). The checker grows: every ending reachable, no dead scene, every needed item obtainable.
+- Story and dialogue completion (F1203, F1204): the end of a story, or a missing line, chosen or written; judged with options
+  (no key) or by Max.
+- **Ready-made set:** for the six core languages, hand-made, three small stories per level at A1 and A2 (a mystery, an escape
+  room, a city), checked by the same checker; written in the course's language and format, listed with their source.
+- Games from your words and custom games (F1220, F1221): the learner picks words and a kind; Max writes the story round them
+  (checked: the words are in it); "your own game" is an editor for a scene list saved as a deck-like record, exported with 6-24.
+
+**G7 · Projects**
+- A project is a **chain**: ordered steps, each a link into a room that exists, with what the step needs carried along (the text,
+  the words, the recording). Stored as one record (`projects`, a Dexie table with the next version after 6-16's; chain, step
+  states, the made things attached by id), shown in Mentis › Notebook's neighbour tab or Thesaurus › Games › Projects (decide at
+  G7 after 6-20 lands), with a progress strip. Templates, each a chain: read a story, discuss it, write your opinion (F1222,
+  F1224); listen, summarize aloud (F1223); watch, explain the argument (F1225); listen and recreate a dialogue, perform both
+  roles (F1228, F1229); idioms then a story (F1230); translate and compare (F1231, with 6-13); record then transcript (F1232);
+  write then read aloud (F1234 finished); spoken answer then transcript (F1235); debate after reading (F1237); a presentation
+  from a text (F1238); a conversation into a lesson (F1240); writing corrections into review exercises (F1241, uses 6-5's
+  record); a weekly project on one topic (F0885, F1242); a short story with your new words (F1243); your own podcast (F1244,
+  with Made by Max's audio and 6-9's recording). A project can be made from scratch: pick steps from the list.
+- Steps that need Max say so and are skipped over without it (the rest of the chain still works).
+
+**Not in this step:** other players, a public daily board, anything with a server (6-27); phone widgets (D6). Hand-made story
+sets for tier 2 languages (tier 2 gets the word games and the generated stories only).
+
+**Checks per push:** typecheck, tests (the makers and the story checker carry the most), build, a look at every new game at
+1280, 1440, 1366×768, light and dark; a faked model for anything Max. Tick entries in LINGUA-6-FEATURES.md as built; add the
+decisions (the shelf's place, the story state format, the daily seed) to DECISIONS.md at G1 and G6.
 
 #### 6-22 · Dictionary tools (Thesaurus › Dictionary)
 
