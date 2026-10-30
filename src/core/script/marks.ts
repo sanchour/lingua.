@@ -1,6 +1,6 @@
 // Marks and shapes (6-23): small multiple-choice drills for what the alphabet chart doesn't teach. Accent marks and
 // where they go, diacritics, ligatures, and Russian cursive. Hand-written, one fact per item, checked in marks.test.ts.
-export type MarkKind = 'accent' | 'diacritic' | 'ligature' | 'cursive' | 'signs' | 'vowels' | 'stress' | 'aspect' | 'motion' | 'numerals' | 'participles' | 'reflexive' | 'order';
+export type MarkKind = 'accent' | 'diacritic' | 'ligature' | 'cursive' | 'signs' | 'vowels' | 'stress' | 'aspect' | 'motion' | 'numerals' | 'participles' | 'reflexive' | 'order' | 'clitics' | 'prepositions' | 'regional' | 'variety';
 export interface MarkItem {
   kind: MarkKind;
   prompt: string;
@@ -10,7 +10,7 @@ export interface MarkItem {
 }
 export const MARK_LABEL: Record<MarkKind, string> = {
   accent: 'Accent marks', diacritic: 'Diacritics', ligature: 'Ligatures', cursive: 'Cursive',
-  signs: 'Soft and hard signs', vowels: 'Unstressed vowels', stress: 'Stress', aspect: 'Aspect', motion: 'Verbs of motion', numerals: 'Numerals', participles: 'Participles', reflexive: 'Reflexive verbs', order: 'Word order',
+  signs: 'Soft and hard signs', vowels: 'Unstressed vowels', stress: 'Stress', aspect: 'Aspect', motion: 'Verbs of motion', numerals: 'Numerals', participles: 'Participles', reflexive: 'Reflexive verbs', order: 'Word order', clitics: 'Clitic pronouns', prepositions: 'Verbs and prepositions', regional: 'Regional words', variety: 'European and Brazilian',
 };
 
 const a = (prompt: string, ok: string, wrong: string, why: string): MarkItem => ({ kind: 'accent', prompt, options: [ok, wrong], why });
@@ -65,6 +65,69 @@ const RU: MarkItem[] = [
   r('order', 'The neutral order for “The student is reading a book”:', 'Студент читает книгу', 'Читает книгу студент', 'Subject, verb, object is neutral; moving the subject to the end stresses it.'),
 ];
 
+/** The Romance languages (6-23, slice 5): clitics, verbs and their prepositions, and where words differ. */
+const ROM: Record<string, MarkItem[]> = {
+  es: [
+    r('clitics', '“I give it (the book) to him”', 'Se lo doy', 'Le lo doy', 'Le and les become se before lo, la, los, las.'),
+    r('clitics', '“I want to see it (the film)”', 'Quiero verla', 'Quiero la ver', 'A pronoun goes after an infinitive and is written with it (verla), or before the conjugated verb (la quiero ver).'),
+    r('clitics', '“Buy it!” (tú, the book)', 'Cómpralo', 'Lo compra', 'In an affirmative command the pronoun is attached, and the stress keeps its place, so the accent is written. “Lo compra” is “he buys it”.'),
+    r('clitics', '“Don’t buy it!”', 'No lo compres', 'No cómpralo', 'In a negative command the pronoun goes before the verb.'),
+    r('prepositions', '“I think about you”: Pienso ___ ti.', 'en', 'de', 'pensar en is “to think about”; pensar de is “to have an opinion of”.'),
+    r('prepositions', '“I dream about you”: Sueño ___ ti.', 'con', 'de', 'soñar con.'),
+    r('prepositions', '“It depends on you”: Depende ___ ti.', 'de', 'en', 'depender de.'),
+    r('prepositions', '“I am marrying her”: Me caso ___ ella.', 'con', 'a', 'casarse con.'),
+    r('prepositions', '“I remember you”: Me acuerdo ___ ti.', 'de', 'a', 'acordarse de.'),
+    r('prepositions', '“I fell in love with her”: Me enamoré ___ ella.', 'de', 'con', 'enamorarse de.'),
+    r('regional', 'In Spain, a computer is usually…', 'ordenador', 'computadora', 'Latin America says computadora or computador.'),
+    r('regional', 'In Spain, a mobile phone is…', 'móvil', 'celular', 'Latin America says celular.'),
+    r('regional', 'In Spain, orange juice is…', 'zumo', 'jugo', 'Latin America says jugo.'),
+    r('regional', 'In Latin America, “you all” (even among friends)', 'ustedes', 'vosotros', 'vosotros is used in Spain only.'),
+    r('regional', 'In Latin America, “to take the bus”', 'tomar el autobús', 'coger el autobús', 'coger is common in Spain, but vulgar in much of Latin America.'),
+    r('regional', 'In Argentina, “you speak” (informal, singular)', 'vos hablás', 'tú hablas', 'Argentina and some other regions use vos (voseo), with its own verb forms.'),
+  ],
+  fr: [
+    r('clitics', '“I give it to him”', 'Je le lui donne', 'Je lui le donne', 'The direct pronoun (le, la, les) comes before lui and leur.'),
+    r('clitics', '“Give it to me!”', 'Donne-le-moi', 'Donne-moi-le', 'In an affirmative command, the direct pronoun comes first and moi follows (and me becomes moi).'),
+    r('clitics', '“I am going to do it”', 'Je vais le faire', 'Je le vais faire', 'The pronoun goes before the infinitive it belongs to.'),
+    r('clitics', '“I am going there”', 'J’y vais', 'Je y vais', 'y and en come right before the verb, and je elides before them.'),
+    r('prepositions', '“I think of you”: Je pense ___ toi.', 'à', 'de', 'penser à: to think of someone. penser de asks for an opinion.'),
+    r('prepositions', '“I dream of you”: Je rêve ___ toi.', 'de', 'à', 'rêver de.'),
+    r('prepositions', '“It depends on you”: Ça dépend ___ toi.', 'de', 'sur', 'dépendre de.'),
+    r('prepositions', '“I play football”: Je joue ___ football.', 'au', 'du', 'jouer à a game or sport; jouer de an instrument.'),
+    r('prepositions', '“I play the guitar”: Je joue ___ guitare.', 'de la', 'à la', 'jouer de an instrument.'),
+    r('prepositions', '“I count on you”: Je compte ___ toi.', 'sur', 'à', 'compter sur.'),
+    r('regional', 'In Belgium and Switzerland, “seventy”', 'septante', 'soixante-dix', 'Septante and nonante are used there; France says soixante-dix, quatre-vingt-dix.'),
+    r('regional', 'In Québec, “the evening meal”', 'souper', 'dîner', 'In Québec: déjeuner is breakfast, dîner lunch, souper dinner. In France dîner is the evening meal.'),
+    r('regional', 'In Québec, “weekend”', 'fin de semaine', 'week-end', 'Québec prefers its own words to English loans; France says le week-end.'),
+    r('regional', 'In France, “breakfast”', 'petit déjeuner', 'déjeuner', 'In France déjeuner is lunch; in Québec it is breakfast.'),
+  ],
+  pt: [
+    r('clitics', '“He told me” (European Portuguese)', 'Ele disse-me', 'Ele me disse', 'In Portugal the pronoun usually follows the verb with a hyphen; in Brazil it goes before.'),
+    r('clitics', '“He told me” (Brazilian Portuguese)', 'Ele me disse', 'Ele disse-me', 'Brazilians put the pronoun before the verb.'),
+    r('clitics', '“He did not tell me” (both)', 'Ele não me disse', 'Ele não disse-me', 'After não, a pronoun goes before the verb in both.'),
+    r('prepositions', '“I think about you”: Penso ___ ti.', 'em', 'de', 'pensar em.'),
+    r('prepositions', '“I like you”: Gosto ___ ti.', 'de', 'em', 'gostar de.'),
+    r('prepositions', '“I dream about you”: Sonho ___ ti.', 'com', 'de', 'sonhar com.'),
+    r('prepositions', '“I am marrying her”: Caso-me ___ ela.', 'com', 'a', 'casar com.'),
+    r('variety', '“bus” in Portugal', 'autocarro', 'ônibus', 'Brazil says ônibus.'),
+    r('variety', '“train” in Brazil', 'trem', 'comboio', 'Portugal says comboio.'),
+    r('variety', '“breakfast” in Portugal', 'pequeno-almoço', 'café da manhã', 'Brazil says café da manhã.'),
+    r('variety', '“mobile phone” in Brazil', 'celular', 'telemóvel', 'Portugal says telemóvel.'),
+    r('variety', '“I am speaking” in Portugal', 'Estou a falar', 'Estou falando', 'Portugal: estar a + infinitive. Brazil: the gerund (falando).'),
+    r('variety', '“you” (one person, everyday) in Brazil', 'você', 'tu', 'Brazil uses você in most regions; in Portugal tu is for friends and você can sound distant.'),
+    r('variety', '“fact” in Portugal', 'facto', 'fato', 'Brazil writes fato (and Portugal uses fato for “suit”).'),
+  ],
+  it: [
+    r('clitics', '“I give it to him”', 'Glielo do', 'Gli lo do', 'gli + lo is written as one word: glielo.'),
+    r('clitics', '“Give it to me!”', 'Dammelo', 'Da mi lo', 'In an affirmative command the pronouns join the verb: da’ + mi + lo, with the m doubled.'),
+    r('clitics', '“I want to see it”', 'Voglio vederlo', 'Voglio lo vedere', 'The pronoun joins the infinitive (vederlo), or goes before the first verb (lo voglio vedere).'),
+    r('prepositions', '“I think about you”: Penso ___ te.', 'a', 'di', 'pensare a.'),
+    r('prepositions', '“It depends on you”: Dipende ___ te.', 'da', 'di', 'dipendere da.'),
+    r('prepositions', '“I fell in love with her”: Mi sono innamorato ___ lei.', 'di', 'con', 'innamorarsi di.'),
+    r('prepositions', '“I believe in God”: Credo ___ Dio.', 'in', 'a', 'credere in: to believe in. credere a is to believe someone.'),
+  ],
+};
+
 export const MARKS: Record<string, MarkItem[]> = {
   es: [
     a('“he/she is” (the verb estar)', 'está', 'esta', 'esta without a mark is “this”.'),
@@ -77,6 +140,7 @@ export const MARKS: Record<string, MarkItem[]> = {
     a('“tree”', 'árbol', 'arbol', 'Stress on the first syllable of a word ending in l: written.'),
     d('“Spain”', 'España', 'Espana', 'ñ is its own letter, not n with a mark.'),
     d('“bilingual” (the ü)', 'pingüino', 'pinguino', 'ü makes the u sound after g before e or i.'),
+    ...ROM.es,
   ],
   fr: [
     a('“where”', 'où', 'ou', 'ou without a mark is “or”.'),
@@ -87,6 +151,7 @@ export const MARKS: Record<string, MarkItem[]> = {
     d('“boy” (the cedilla)', 'garçon', 'garcon', 'ç is a soft s before a, o and u.'),
     d('“Noël”', 'Noël', 'Noel', 'The trema ë says: pronounce the e separately from the o.'),
     d('“heart”', 'cœur', 'coeur', 'œ is one letter, a ligature of o and e.'),
+    ...ROM.fr,
   ],
   pt: [
     a('“mother”', 'mãe', 'mae', 'The tilde nasalises the vowel.'),
@@ -94,6 +159,7 @@ export const MARKS: Record<string, MarkItem[]> = {
     a('“coffee”', 'café', 'cafe', 'Final stressed vowels are written with an accent.'),
     a('“grandmother”', 'avó', 'avo', 'avô (circumflex) is “grandfather”: the mark tells them apart.'),
     d('“heart” (the cedilla)', 'coração', 'coracao', 'ç and the tilde: the ending -ção is always written so.'),
+    ...ROM.pt,
   ],
   it: [
     a('“is”', 'è', 'e', 'e without a mark is “and”.'),
@@ -101,6 +167,7 @@ export const MARKS: Record<string, MarkItem[]> = {
     a('“there”', 'là', 'la', 'la without a mark is “the”.'),
     a('“yes”', 'sì', 'si', 'si without a mark is “oneself”.'),
     a('“coffee”', 'caffè', 'caffe', 'Final stressed vowels are written with a grave accent.'),
+    ...ROM.it,
   ],
   de: [
     d('“beautiful”', 'schön', 'schon', 'schon means “already”: the umlaut changes the word.'),

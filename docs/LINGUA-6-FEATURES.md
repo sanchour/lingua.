@@ -1707,16 +1707,16 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1328` Tense selection
 - [x] `F1329` Ser versus estar
 - [x] `F1330` Por versus para
-- [ ] `F1331` Clitic pronouns · **6-23** · partly there
+- [x] `F1331` Clitic pronouns · **6-23** · partly there
 - [x] `F1332` Gender and agreement
 - [x] `F1333` Contractions
 - [x] `F1334` Accent placement · **6-23**
-- [ ] `F1335` Regional vocabulary · **6-23** · partly there
+- [x] `F1335` Regional vocabulary · **6-23** · partly there
 - [x] `F1336` Formal versus informal address
-- [ ] `F1337` Spanish dialect comparisons · **6-23**
-- [ ] `F1338` European versus Brazilian Portuguese · **6-23** · partly there
+- [x] `F1337` Spanish dialect comparisons · **6-23**
+- [x] `F1338` European versus Brazilian Portuguese · **6-23** · partly there
 - [x] `F1339` Nasal vowel practice · **6-10**
-- [ ] `F1340` Verb-preposition combinations · **6-23**
+- [x] `F1340` Verb-preposition combinations · **6-23**
 - [x] `F1341` False friends between Romance languages · **6-13**
 
 #### Chinese, Japanese and other East Asian languages
