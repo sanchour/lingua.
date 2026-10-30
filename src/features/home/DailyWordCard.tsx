@@ -65,11 +65,12 @@ export function DailyWordCard({ lang }: { lang: string }) {
       };
     }
 
-    // 2. Fallback to frequency table
-    const freqCount = await db.frequency.where('id').startsWith(`${lang}:`).count();
-    if (freqCount > 0) {
-      const idx = getDailyWordKey(lang, todayStr, Math.min(freqCount, 300));
-      const found = await db.frequency.where('id').startsWith(`${lang}:`).offset(idx).first();
+    // 2. Fallback to frequency table: take a bounded sample without full-table scanning
+    const prefix = `${lang}:`;
+    const sample = await db.frequency.where('id').between(prefix, `${prefix}\uffff`).limit(100).toArray();
+    if (sample.length > 0) {
+      const idx = getDailyWordKey(lang, todayStr, sample.length);
+      const found = sample[idx];
       if (found) {
         return {
           word: found.norm,

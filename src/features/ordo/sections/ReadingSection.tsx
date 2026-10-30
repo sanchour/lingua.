@@ -145,6 +145,22 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
         </div>
       )}
 
+      {target.code === 'ar' && (
+        <div className="mt-5">
+          <p className="text-[15px] font-semibold">Transliteration letters</p>
+          <p data-hint="" className="mt-0.5 mb-2 text-[13px] text-ink-soft">Scholarly keeps ā, ḥ and ʿ; plain drops the marks. With “Fading”, the short vowel marks on Arabic words also fade as you learn them: full on new words, faint while learning, gone once known.</p>
+          <Segmented
+            label="Transliteration letters"
+            value={reader.translit ?? 'scholarly'}
+            onChange={(translit) => void patchSetting('reader', { translit })}
+            options={[
+              { value: 'scholarly', label: 'Scholarly' },
+              { value: 'plain', label: 'Plain' },
+            ]}
+          />
+        </div>
+      )}
+
       <div className="mt-3 divide-y divide-line">
         <ToggleRow
           title={translateUi('Highlight unseen words')}

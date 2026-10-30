@@ -163,6 +163,8 @@ export interface Settings {
     contextGlosses: boolean;
     /** Pinyin, kana or a transliteration over words you don't know yet, over every word, fading as a word is learned (full while unseen, faint while learning, gone once known), or none. */
     readings: 'new' | 'all' | 'fade' | 'off';
+    /** Transliteration letters: scholarly (ā, ḥ, ʿ) or plain (a, h, '). Arabic's scheme is the one with marks. */
+    translit?: 'scholarly' | 'plain';
     /** How Known, Learning and Unseen words look; unset is the usual look. Unseen marks show with `highlightUnseen`. */
     words?: Partial<Record<WordLookState, WordLook>>;
     /** The end page of a text: "Check yourself", the two story questions with AI, and "In your own words". */

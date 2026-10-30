@@ -5,6 +5,20 @@ Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIO
 <!-- new versions go here -->
 - **0.6.0-alpha.137** · 2026-10-30 · Correct 6-19 status: incomplete, remaining translation and verification gaps
 - **0.6.0-alpha.136** · 2026-10-30 · 6-19: offline interface languages, culture and immersion; Ratio live-query fix
+
+- **0.6.0-alpha.135** · 2026-10-30 · Smoothness: 60+ FPS enforcement, zero-jank startup pipeline, and macOS Low Power Mode handling
+- **0.6.0-alpha.134** · 2026-10-30 · 6-21 G2: word search, word hunt, word ladder
+- **0.6.0-alpha.133** · 2026-10-30 · 6-21 G2 checkpoint: Ludus in the sidebar, anagrams, missing letters, guess from clues
+- **0.6.0-alpha.132** · 2026-10-30 · 6-21 G1: Thesaurus › Games, the engine and Hangman
+- **0.6.0-alpha.131** · 2026-10-30 · 6-23 reopened: the deep plan (LINGUA-6-23-PLAN.md), entries open again
+- **0.6.0-alpha.130** · 2026-10-30 · 6-21 plan: word hunting from texts, ready-made stories to B1, a written quality bar
+- **0.6.0-alpha.129** · 2026-10-30 · Docs: 6-23's version numbers
+- **0.6.0-alpha.128** · 2026-10-30 · 6-23 slices 6 and 7: East Asian quizzes, hanja, write pad and Arabic root explorer; 6-23 done
+- **0.6.0-alpha.127** · 2026-10-30 · Claim 6-21 and plan it: games and projects, seven pushes
+- **0.6.0-alpha.126** · 2026-10-30 · Docs: Sonus+ music streaming/sharing, 6-8 done and 6-19 claimed by Codex
+- **0.6.0-alpha.125** · 2026-10-30 · 6-23 slice 5: Romance practice (clitic pronouns, verbs and prepositions, regional words, European and Brazilian Portuguese)
+- **0.6.0-alpha.124** · 2026-10-30 · 6-23: kanji stroke order (KanjiVG) and slice 4: Russian practice (signs, vowels, stress, aspect, motion, numerals, participles, reflexives, word order)
+- **0.6.0-alpha.123** · 2026-10-30 · 6-23 slice 3: stroke order animation and character parts for Mandarin (Make Me a Hanzi)
 - **0.6.0-alpha.122** · 2026-10-30 · 6-23 slice 2: Cursus › Marks: Serbian and Chinese script conversion, accent, diacritic, ligature and cursive drills
 - **0.6.0-alpha.121** · 2026-10-30 · 6-23 slice 1: transliteration over Russian, Greek, Arabic, Korean and Georgian words (new, fading, all), code points in the letter sheet
 - **0.6.0-alpha.120** · 2026-10-30 · Claim step 6-23 (Tools for each language)

@@ -1331,7 +1331,7 @@ listen to: songs to sing and learn, and now **podcasts**, in its dark design,
 with one now-playing bar for whatever plays. (The user moved Radio, then Audiobooks, back out of Sonus+.)
 
 - [x] Sonus+: the room's tabs are Today, Music (your songs and new ones; Explore and the room's
-  Library merged) and Podcasts, with Search in the header. Its address stays `/cantus`.
+  Library merged) and Podcasts, with Search in the header. Its address stays `/cantus`. Easily stream or share from **YouTube Music, Amazon Music, Spotify, or Apple Music**; the song opens cleanly and immediately in Sonus+ with synchronized lyrics.
 - [x] Podcasts, episodes and audiobooks open over the room (`/cantus/podcast|play|book/…`, Sonus's
   own pages with a Back button); their links stay in the room (`features/sonus/paths.ts`).
 - [x] The now-playing bar shows an episode or a book while it plays; starting one stops the song.

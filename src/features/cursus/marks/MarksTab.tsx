@@ -4,20 +4,31 @@ import { useApp } from '@/app/context';
 import { CONVERSIONS, convertScript } from '@/core/script/convert';
 import type { Conversion } from '@/core/script/convert';
 import { MARK_LABEL, marksOf } from '@/core/script/marks';
+import { charRound, QUIZ_LABEL, QUIZ_MODES, toneRound } from '@/core/script/hanzi';
+import type { CharData, QuizMode } from '@/core/script/hanzi';
+import { applyPattern, loadDictRoots, PATTERNS, ROOTS } from '@/core/script/arabic';
+import { loadReadings, loadStrokes } from '@/core/script/strokes';
+import type { StrokeData } from '@/core/script/strokes';
 import type { MarkItem, MarkKind } from '@/core/script/marks';
 import { shuffle } from '@/core/srs/ludus';
 import { Card, Segmented } from '@/design/primitives';
+import { StrokeOrder } from './StrokeOrder';
 import { cx } from '@/lib/cx';
 
 /** Whether a language has anything on the Marks tab. */
-export const hasMarks = (lang: string) => marksOf(lang).length > 0 || CONVERSIONS.some((c) => c.lang === lang);
+export const hasMarks = (lang: string) => marksOf(lang).length > 0 || CONVERSIONS.some((c) => c.lang === lang) || lang === 'ja' || lang === 'ko' || lang === 'ar';
 
 export function MarksTab() {
   const { language } = useApp();
   const lang = language.id;
   return (
     <div className="space-y-8">
-      <Converter lang={lang} />
+      {(lang === 'zh' || lang === 'ja') && <Hanzi set={lang} />}
+      {lang in QUIZ_MODES && <CharQuiz lang={lang} />}
+      {lang === 'zh' && <Tones />}
+      {lang === 'ko' && <HanjaLookup />}
+      {lang === 'ar' && <RootExplorer />}
+      {CONVERSIONS.some((c) => c.lang === lang) && <Converter lang={lang} />}
       {marksOf(lang).length > 0 && <Drill lang={lang} />}
     </div>
   );
@@ -57,10 +68,14 @@ function Drill({ lang }: { lang: string }) {
   const items = useMemo(() => shuffle(all.filter((i) => i.kind === kind), Math.random), [all, kind]);
   return (
     <Card>
-      <h2 className="font-serif text-[22px] font-semibold">Marks and shapes</h2>
+      <h2 className="font-serif text-[22px] font-semibold">Practice</h2>
       {kinds.length > 1 && (
-        <div className="mt-3">
-          <Segmented label="Kind" value={kind} onChange={setKind} options={kinds.map((k) => ({ value: k, label: MARK_LABEL[k] }))} />
+        <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label="Kind">
+          {kinds.map((k) => (
+            <button key={k} type="button" aria-pressed={k === kind} onClick={() => setKind(k)} className={cx('rounded-full border px-3 py-1 text-[13.5px]', k === kind ? 'border-accent-text bg-accent-soft' : 'border-line bg-surface hover:border-line-strong')}>
+              {MARK_LABEL[k]}
+            </button>
+          ))}
         </div>
       )}
       <Questions key={kind + lang} lang={lang} items={items} />
@@ -68,7 +83,7 @@ function Drill({ lang }: { lang: string }) {
   );
 }
 
-function Questions({ lang, items }: { lang: string; items: MarkItem[] }) {
+function Questions({ lang, items, onAgain }: { lang: string; items: MarkItem[]; onAgain?: () => void }) {
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
   const [right, setRight] = useState(0);
@@ -78,7 +93,7 @@ function Questions({ lang, items }: { lang: string; items: MarkItem[] }) {
     return (
       <p className="mt-4 text-[15px]">
         {right} of {items.length} right.{' '}
-        <button type="button" className="underline" onClick={() => { setI(0); setPicked(null); setRight(0); }}>Again</button>
+        <button type="button" className="underline" onClick={() => { if (onAgain) onAgain(); setI(0); setPicked(null); setRight(0); }}>Again</button>
       </p>
     );
   return (
@@ -105,5 +120,151 @@ function Questions({ lang, items }: { lang: string; items: MarkItem[] }) {
         </div>
       )}
     </div>
+  );
+}
+
+function Hanzi({ set }: { set: 'zh' | 'ja' }) {
+  const [char, setChar] = useState(set === 'ja' ? '語' : '好');
+  return (
+    <Card>
+      <h2 className="font-serif text-[22px] font-semibold">Stroke order</h2>
+      <p className="mt-1 mb-4 max-w-2xl text-[14px] text-ink-soft">Type a {set === 'ja' ? 'kanji' : 'character'} to see it drawn stroke by stroke and what it is built from; tap a part to open it. Covers the 1,000 most used.</p>
+      <input aria-label="Character" lang={set} value={char} maxLength={2} onChange={(e) => setChar([...e.target.value].slice(-1).join(''))} className="mb-4 w-24 rounded-2xl border border-line bg-surface p-2 text-center font-serif text-[32px]" />
+      {char && <StrokeOrder key={set} char={char} set={set} onOpen={setChar} />}
+      <p className="mt-4 text-[12.5px] text-ink-faint">
+        {set === 'ja' ? 'Stroke order from KanjiVG (CC BY-SA 3.0).' : 'Stroke shapes from Make Me a Hanzi (Arphic Public License); parts and meanings from its dictionary (LGPL).'}
+      </p>
+    </Card>
+  );
+}
+
+/** Practice made from the character data: radicals, parts, meanings, readings, Traditional forms, hanja. */
+function CharQuiz({ lang }: { lang: string }) {
+  const modes = QUIZ_MODES[lang];
+  const [mode, setMode] = useState<QuizMode>(modes[0]);
+  const [data, setData] = useState<CharData | null | undefined>();
+  const [trad, setTrad] = useState<Array<[string, string]>>([]);
+  const [round, setRound] = useState(0);
+  useEffect(() => {
+    let live = true;
+    const set = lang === 'ja' ? 'ja' : 'zh';
+    void Promise.all([loadStrokes(set), loadReadings(), lang === 'zh' ? import('@/core/script/variants.data') : null]).then(
+      ([strokes, readings, v]) => {
+        if (!live) return;
+        setData({ strokes: strokes as Record<string, StrokeData>, readings });
+        if (v) { const [from, to] = v.HANS_TO_HANT; const f = [...from]; const t = [...to]; setTrad(f.map((c, i) => [c, t[i]] as [string, string]).filter(([a]) => strokes[a] || strokes[t[f.indexOf(a)]])); }
+      },
+      () => live && setData(null),
+    );
+    return () => { live = false; };
+  }, [lang]);
+  const items = useMemo(() => (data ? charRound(mode, data, Math.random, 8, trad) : []), [data, mode, trad, round]);
+  return (
+    <Card>
+      <h2 className="font-serif text-[22px] font-semibold">Characters</h2>
+      <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label="Kind">
+        {modes.map((m) => (
+          <button key={m} type="button" aria-pressed={m === mode} onClick={() => setMode(m)} className={cx('rounded-full border px-3 py-1 text-[13.5px]', m === mode ? 'border-accent-text bg-accent-soft' : 'border-line bg-surface hover:border-line-strong')}>
+            {QUIZ_LABEL[m]}
+          </button>
+        ))}
+      </div>
+      {data === undefined && <p className="mt-4 text-[14px] text-ink-faint">Loading…</p>}
+      {data === null && <p className="mt-4 text-[14px] text-ink-faint">The character data could not be loaded (it needs a connection the first time).</p>}
+      {data && <Questions key={`${mode}-${round}`} lang={mode === 'hanja' ? 'ko' : lang === 'ja' ? 'ja' : 'zh'} items={items} onAgain={() => setRound((r) => r + 1)} />}
+    </Card>
+  );
+}
+
+function Tones() {
+  const [round, setRound] = useState(0);
+  const items = useMemo(() => toneRound(Math.random, 8), [round]);
+  return (
+    <Card>
+      <h2 className="font-serif text-[22px] font-semibold">Tones</h2>
+      <p className="mt-1 text-[14px] text-ink-soft">Read the tone mark and name the tone. (Listening practice is in Sounds.)</p>
+      <Questions key={round} lang="zh" items={items} onAgain={() => setRound((r) => r + 1)} />
+    </Card>
+  );
+}
+
+/** Hanja: type a hanja to see its reading and meaning, or a hangul syllable to see the hanja read that way. */
+function HanjaLookup() {
+  const [q, setQ] = useState('학');
+  const [readings, setReadings] = useState<Record<string, import('@/core/script/hanzi').CharReadings> | null>(null);
+  useEffect(() => {
+    void loadReadings().then(setReadings, () => setReadings({}));
+  }, []);
+  const rows = useMemo(() => {
+    if (!readings || !q) return [];
+    const hit = /\p{Script=Han}/u.test(q) ? [...q].filter((c) => readings[c]?.ko) : Object.keys(readings).filter((c) => readings[c].ko?.includes(q));
+    return hit.slice(0, 40);
+  }, [readings, q]);
+  return (
+    <Card>
+      <h2 className="font-serif text-[22px] font-semibold">Hanja</h2>
+      <p className="mt-1 mb-4 max-w-2xl text-[14px] text-ink-soft">Much of Korean vocabulary is built from Chinese characters (hanja), each read as one syllable. Type a syllable in hangul to see hanja read that way, or a hanja to see its reading. Covers the 1,500 most used characters.</p>
+      <input aria-label="Hangul syllable or hanja" lang="ko" value={q} onChange={(e) => setQ(e.target.value.trim())} className="mb-4 w-32 rounded-2xl border border-line bg-surface p-2 text-center font-serif text-[28px]" />
+      {readings === null && <p className="text-[14px] text-ink-faint">Loading…</p>}
+      {readings && !rows.length && <p className="text-[14px] text-ink-faint">Nothing for “{q}”.</p>}
+      <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {rows.map((c) => (
+          <li key={c} className="flex items-baseline gap-3 rounded-2xl border border-line/70 bg-surface px-4 py-2.5">
+            <button type="button" lang="zh" className="font-serif text-[30px]" onClick={() => setQ(c)} aria-label={`Show ${c}`}>{c}</button>
+            <span className="min-w-0 text-[14px]"><span lang="ko" className="font-semibold">{readings![c].ko!.join(', ')}</span><span className="block truncate text-ink-soft">{readings![c].d}</span></span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-4 text-[12.5px] text-ink-faint">Readings and meanings from the Unicode Unihan database.</p>
+    </Card>
+  );
+}
+
+/** Arabic words are a root of three letters fitted into a pattern: pick a root to see its words and the patterns. */
+function RootExplorer() {
+  const [root, setRoot] = useState('ك ت ب');
+  const [dict, setDict] = useState<Awaited<ReturnType<typeof loadDictRoots>> | null>(null);
+  useEffect(() => {
+    void loadDictRoots().then(setDict, () => setDict({}));
+  }, []);
+  const known = ROOTS[root];
+  const fromDict = dict?.[root] ?? [];
+  const letters = Object.keys(ROOTS).concat(Object.keys(dict ?? {}).filter((r) => !ROOTS[r]).slice(0, 40));
+  return (
+    <Card>
+      <h2 className="font-serif text-[22px] font-semibold">Roots and patterns</h2>
+      <p className="mt-1 mb-4 max-w-2xl text-[14px] text-ink-soft">Most Arabic words are a root of three consonants (ك ت ب, about writing) fitted into a pattern, which says whether the word is a doer, a place, a thing done. Pick a root, or type three letters separated by spaces.</p>
+      <input aria-label="Root" dir="rtl" lang="ar" value={root} onChange={(e) => setRoot(e.target.value.replace(/[^\u0621-\u064A ]/g, ''))} className="mb-3 w-40 rounded-2xl border border-line bg-surface p-2 text-center font-serif text-[26px]" />
+      <div className="mb-4 flex flex-wrap gap-1.5" role="group" aria-label="Roots">
+        {letters.map((r) => (
+          <button key={r} type="button" lang="ar" dir="rtl" aria-pressed={r === root} onClick={() => setRoot(r)} className={cx('rounded-full border px-3 py-0.5 text-[17px]', r === root ? 'border-accent-text bg-accent-soft' : 'border-line bg-surface hover:border-line-strong')}>{r}</button>
+        ))}
+      </div>
+      {known && <p className="mb-2 text-[14px] text-ink-soft">Root meaning: {known.en}</p>}
+      <div className="grid gap-5 lg:grid-cols-2">
+        <div>
+          <p className="mb-1.5 text-[12.5px] font-semibold tracking-wide text-ink-faint uppercase">Words</p>
+          <ul className="divide-y divide-line rounded-2xl border border-line/70">
+            {(known?.words ?? []).map((w) => (
+              <li key={w.w} className="flex items-center gap-3 px-4 py-2"><span lang="ar" dir="rtl" className="font-serif text-[22px]">{w.w}</span><span className="text-[14px] text-ink-soft">{w.en}</span></li>
+            ))}
+            {fromDict.map(([w, pos, gloss]) => (
+              <li key={`${w}${pos}`} className="flex items-center gap-3 px-4 py-2"><span lang="ar" dir="rtl" className="font-serif text-[22px]">{w}</span><span className="min-w-0 truncate text-[14px] text-ink-soft">{pos} · {gloss}</span></li>
+            ))}
+            {!known && !fromDict.length && <li className="px-4 py-3 text-[14px] text-ink-faint">{dict ? 'No words known for this root yet: the dictionary links only some words to a root.' : 'Loading…'}</li>}
+          </ul>
+        </div>
+        <div>
+          <p className="mb-1.5 text-[12.5px] font-semibold tracking-wide text-ink-faint uppercase">The root in each pattern</p>
+          <ul className="divide-y divide-line rounded-2xl border border-line/70">
+            {PATTERNS.map((p) => (
+              <li key={p.pattern} className="flex items-center gap-3 px-4 py-2"><span lang="ar" dir="rtl" className="w-24 shrink-0 font-serif text-[22px]">{applyPattern(root, p.pattern) ?? '—'}</span><span className="text-[13.5px] text-ink-soft"><span lang="ar" className="text-[15px]">{p.pattern}</span> · {p.name}</span></li>
+            ))}
+          </ul>
+          <p className="mt-2 text-[12.5px] text-ink-faint">A pattern fitted to a root is not always a word in use.</p>
+        </div>
+      </div>
+      <p className="mt-4 text-[12.5px] text-ink-faint">Dictionary roots from Wiktionary (CC BY-SA); the words listed first are written by hand.</p>
+    </Card>
   );
 }

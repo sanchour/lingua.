@@ -62,9 +62,14 @@ export function SmoothnessTest({ perfHud }: { perfHud: boolean }) {
               ['95% of frames under', `${stats.p95.toFixed(1)} ms`],
               ['Slowest frame', `${stats.worst.toFixed(1)} ms`],
               ['Dropped frames', `${stats.dropped} of ${stats.frames}`],
-              ['Display', `~${stats.refreshHz} Hz`],
+              ['Display', `~${stats.refreshHz} Hz${stats.refreshHz <= 32 ? ' (Low Power Mode)' : ''}`],
             ]}
           />
+          {stats.refreshHz <= 32 && (
+            <p className="mt-2 text-[12px] text-ink-soft">
+              macOS Low Power Mode caps display refresh to 30 Hz. Turn off in System Settings › Battery to unlock 60 fps or 120 fps ProMotion.
+            </p>
+          )}
         </div>
       )}
       <div className="mt-3 border-t border-line">

@@ -20,4 +20,11 @@ describe('summarizeFrames', () => {
   it('handles an empty run', () => {
     expect(summarizeFrames([]).fps).toBe(0);
   });
+
+  it('identifies a 30 Hz Low Power Mode run cleanly', () => {
+    const stats = summarizeFrames(Array(150).fill(1000 / 30));
+    expect(stats.fps).toBeCloseTo(30, 5);
+    expect(stats.refreshHz).toBe(30);
+    expect(stats.dropped).toBe(0);
+  });
 });

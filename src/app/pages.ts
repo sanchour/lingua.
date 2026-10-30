@@ -13,6 +13,7 @@ const loaders = {
   starter: () => import('@/features/thesaurus/StarterPage'),
   study: () => import('@/features/thesaurus/study/StudyPage'),
   practice: () => import('@/features/practice/PracticePage'),
+  games: () => import('@/features/games/GamesPage'),
   wordsAloud: () => import('@/features/sonus/WordsAloud'),
   make: () => import('@/features/generate/MakePage'),
   sonus: () => import('@/features/sonus/SonusPage'),
@@ -49,6 +50,7 @@ export const DeckPage = lazy(loaders.deck);
 export const StarterPage = lazy(loaders.starter);
 export const StudyPage = lazy(loaders.study);
 export const PracticePage = lazy(loaders.practice);
+export const GamesPage = lazy(loaders.games);
 export const WordsAloudPage = lazy(loaders.wordsAloud);
 export const MakePage = lazy(loaders.make);
 export const SonusPage = lazy(loaders.sonus);
@@ -74,16 +76,28 @@ export const OrdoPage = lazy(loaders.ordo);
 export const LabPage = lazy(loaders.lab);
 export const TranslatePracticePage = lazy(loaders.translatePractice);
 
-/** Fetches every section chunk when the browser is idle. Returns a cancel function. */
+/** Fetches every section chunk when the browser is idle, staggered to preserve 60 fps. Returns a cancel function. */
 export function preloadSections(): () => void {
-  const run = () => Object.values(loaders).forEach((load) => void load());
-  // Safari has no requestIdleCallback; fall back to a short delay.
-  if (typeof window.requestIdleCallback === 'function') {
-    const id = window.requestIdleCallback(run, { timeout: 3000 });
-    return () => window.cancelIdleCallback(id);
-  }
-  const id = window.setTimeout(run, 1200);
-  return () => window.clearTimeout(id);
+  const entries = Object.values(loaders);
+  let stepTimer: number | undefined;
+  let index = 0;
+
+  const loadNext = () => {
+    if (index >= entries.length) return;
+    const load = entries[index++];
+    void load();
+    if (index < entries.length) {
+      stepTimer = window.setTimeout(loadNext, 120);
+    }
+  };
+
+  // Wait 4 seconds for the initial screen to render and settle entrance animations at 60 fps
+  const startTimer = window.setTimeout(loadNext, 4000);
+
+  return () => {
+    window.clearTimeout(startTimer);
+    if (stepTimer !== undefined) window.clearTimeout(stepTimer);
+  };
 }
 
 export const ReadingPracticePage = lazy(() => import('@/features/codex/reader/ReadingPractice'));

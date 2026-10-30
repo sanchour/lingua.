@@ -1,5 +1,5 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
@@ -162,7 +162,7 @@ export function HomeToday() {
 
 // ── Top Left: Today + Goal + Where you left off ──────────────────────────────
 
-function TodayCard({
+const TodayCard = memo(function TodayCard({
   lang,
   level,
   goal,
@@ -321,7 +321,7 @@ function TodayCard({
       </div>
     </Card>
   );
-}
+});
 
 // ── Top Right: Choose a mode (Bookish fine-line icons from handbook/onboarding) ─
 
@@ -428,7 +428,7 @@ const MODES: ModeItem[] = [
   },
 ];
 
-function ChooseModeCard() {
+const ChooseModeCard = memo(function ChooseModeCard() {
   return (
     <Card className="flex h-full flex-col justify-between p-4 sm:p-5">
       <div className="mb-2.5 flex items-baseline justify-between gap-2">
@@ -451,7 +451,7 @@ function ChooseModeCard() {
       </div>
     </Card>
   );
-}
+});
 
 // ── Middle Section: Continue learning > (links to /bibliotheca) ──────────────
 

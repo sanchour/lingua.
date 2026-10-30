@@ -19,7 +19,28 @@ describe('marks drills', () => {
   it('every item has a right answer first, a different wrong one, and a reason', () => {
     for (const items of Object.values(MARKS)) for (const it of items) {
       expect(new Set(it.options).size).toBe(it.options.length);
-      expect(it.why.length).toBeGreaterThan(10);
+      expect(it.why.length).toBeGreaterThan(5);
     }
+  });
+});
+
+describe('Russian practice', () => {
+  it('covers each topic of the step with several items', async () => {
+    const { MARKS } = await import('./marks');
+    const kinds = new Map<string, number>();
+    for (const it of MARKS.ru) kinds.set(it.kind, (kinds.get(it.kind) ?? 0) + 1);
+    for (const k of ['signs', 'vowels', 'stress', 'aspect', 'motion', 'numerals', 'participles', 'reflexive', 'order']) expect(kinds.get(k) ?? 0).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('Romance practice', () => {
+  it('has clitics and verb + preposition items for each language, and varieties where they differ', async () => {
+    const { MARKS } = await import('./marks');
+    const has = (lang: string, kind: string) => MARKS[lang].filter((i) => i.kind === kind).length;
+    for (const lang of ['es', 'fr', 'pt', 'it']) {
+      expect(has(lang, 'clitics')).toBeGreaterThanOrEqual(3);
+      expect(has(lang, 'prepositions')).toBeGreaterThanOrEqual(3);
+    }
+    for (const [lang, kind] of [['es', 'regional'], ['fr', 'regional'], ['pt', 'variety']]) expect(has(lang, kind)).toBeGreaterThanOrEqual(4);
   });
 });

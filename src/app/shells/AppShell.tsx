@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 import { useApp } from '@/app/context';
 import { useFullMotion } from '@/app/motion';
 import { roomKey } from '@/app/redirects';
-import { sectionKey, SECTIONS } from '@/app/sections';
+import { sectionKey, SHORTCUT_SECTIONS } from '@/app/sections';
 import { ShortcutsDialog } from '@/app/ShortcutsDialog';
 import { MiniPlayer } from '@/features/sonus/MiniPlayer';
 import { PlansSheet } from '@/features/plans/PlansSheet';
@@ -70,7 +70,7 @@ export function AppShell() {
   }, [pathname, hash]);
 
   useHotkeys({
-    ...Object.fromEntries(SECTIONS.slice(0, 10).map((s, i) => [`alt+${sectionKey(i)}`, () => navigate(s.path)])),
+    ...Object.fromEntries(SHORTCUT_SECTIONS.slice(0, 10).map((s, i) => [`alt+${sectionKey(i)}`, () => navigate(s.path)])),
     '?': () => setShortcutsOpen(true),
     'mod+k': () => setGlobalSearchOpen(true),
     'alt+t': () => { const s = useUI.getState(); if (s.tutorOpen) s.closeTutor(); else s.openTutor(); },

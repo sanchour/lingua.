@@ -35,3 +35,18 @@ so 60 fps is the ceiling there; desktop browsers follow the monitor's refresh ra
 9. **Measure.** Ordo → Performance → "FPS monitor" shows a live overlay; Ordo → Device lab runs a
    5-second animation benchmark and reports average fps, p95 frame time and dropped frames.
    Every phase ends with this check on both devices.
+10. **Zero-jank startup pipeline.** Non-critical background work (checking journey milestones,
+    preloading code-split section chunks, and full-table index scans) is deferred until 3.5–4 seconds
+    after startup so initial route mounts and card entrance spring animations hold 60/120 fps cleanly.
+
+## macOS Low Power Mode & 30 Hz Throttling
+
+When **Low Power Mode** is enabled on macOS (*System Settings › Battery › Low Power Mode*), the OS
+intentionally throttles Safari, WebKit, and Tauri WebViews by capping hardware `requestAnimationFrame`
+dispatch from 60 Hz / 120 Hz down to **30 Hz** to preserve battery life.
+
+- **Detection**: The live FPS monitor (`PerfHud`) and the Smoothness benchmark detect this clean, uniform
+  30 Hz cadence (intervals consistently ~33.3 ms with 0 dropped frames) and display `30 fps (LPM)` with
+  an amber indicator and tooltip instead of treating it as application lag.
+- **Full rate**: To run at 60 fps or 120 fps (ProMotion), set macOS *Low Power Mode* to *Never* or
+  *Only on Battery* (while plugged in). Lingua will immediately render at the monitor's full 60/120 Hz.

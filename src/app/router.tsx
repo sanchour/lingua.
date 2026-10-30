@@ -23,6 +23,7 @@ import {
   OrdoPage,
   MakePage,
   PracticePage,
+  GamesPage,
   WordsAloudPage,
   RatioPage,
   ReaderPage,
@@ -113,6 +114,15 @@ export const router = createBrowserRouter(
           element: (
             <PlanRoute feature="ludus" fallback="/thesaurus">
               <PracticePage />
+            </PlanRoute>
+          ),
+        },
+        // Games on the learner's words (6-21): Lingua+, like Ludus.
+        {
+          path: 'thesaurus/games/:game?',
+          element: (
+            <PlanRoute feature="ludus" fallback="/thesaurus">
+              <GamesPage />
             </PlanRoute>
           ),
         },

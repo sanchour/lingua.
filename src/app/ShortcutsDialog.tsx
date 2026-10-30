@@ -1,5 +1,5 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
-import { sectionKey, SECTIONS } from '@/app/sections';
+import { sectionKey, SHORTCUT_SECTIONS } from '@/app/sections';
 import { useApp } from '@/app/context';
 import { patchSetting } from '@/data/settings';
 import { Button, Dialog, Kbd, Segmented } from '@/design/primitives';
@@ -92,7 +92,7 @@ export function ShortcutList({ style }: { style?: KeyboardStyle }) {
 
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      <Group isMac={isMac} title={translateUi('Navigate')} rows={[...SECTIONS.slice(0, 10).map((s, i): [string[], string] => [['Alt', String(sectionKey(i))], s.name]), ...GENERAL]} />
+      <Group isMac={isMac} title={translateUi('Navigate')} rows={[...SHORTCUT_SECTIONS.slice(0, 10).map((s, i): [string[], string] => [['Alt', String(sectionKey(i))], s.name]), ...GENERAL]} />
       <Group isMac={isMac} title={translateUi('Reading')} rows={READER_SHORTCUTS} />
       <Group isMac={isMac} title={translateUi('Studying')} rows={STUDY_SHORTCUTS} />
       <Group isMac={isMac} title={translateUi('Listening')} rows={LISTENING_SHORTCUTS} />

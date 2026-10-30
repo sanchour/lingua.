@@ -304,6 +304,7 @@ below, first called Cantus) is where you find things to listen to: Today, Music 
 Library is laid out like Apple Music's: your kinds of things with counts (Songs, Podcasts,
 Episodes, Audiobooks, Stations, Your audio; each opens its own page or tab), then Recently
 played, Recently added and New episodes. Episodes open and play inside Sonus+; the now-playing bar shows whatever plays.
+When listening to music on **YouTube Music, Amazon Music, Spotify, or Apple Music**, you can easily stream or share the song straight to Sonus+; the song opens cleanly and immediately in Sonus+ with synchronized lyrics and vocabulary tools.
 
 **Cantus, a room of its own (design handoff, 2026-10-20).** Music opens Cantus full screen:
 no Lingua sidebar, tab bar or mini player; always dark, whatever the theme; the open song's
@@ -330,8 +331,8 @@ kind, Enter to open the top result; with the field empty, recent searches and st
 **Whole songs.** A song opened in Cantus finds a whole recording by itself on YouTube (with your
 own key from Ordo › Music, or through public Piped and Invidious servers without one), official
 audio first, the right length, never live, covers or sped-up. "Playing from YouTube · Official
-audio"; "Not this one" finds the next. Paste a link from YouTube, SoundCloud, Spotify, Apple Music,
-Vimeo, Dailymotion or Bandcamp. SoundCloud's player tells the lyrics where it is, like YouTube's.
+audio"; "Not this one" finds the next. Easily stream or share from **YouTube Music, Amazon Music, Spotify, or Apple Music** (or paste a link from YouTube, SoundCloud, Spotify, Apple Music,
+Vimeo, Dailymotion or Bandcamp); the song resolves immediately and opens cleanly in Sonus+. SoundCloud's player tells the lyrics where it is, like YouTube's.
 Apple and Spotify say "30-second preview". Changing source carries on from the same place.
 
 
