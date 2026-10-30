@@ -182,41 +182,65 @@ export function MomentDrawer({ open, onClose, languages, lang }: { open: boolean
 }
 
 const GOAL_KINDS: Array<{ id: Goal['kind']; label: string }> = [
-  { id: 'level', label: 'Reach a level' },
+  { id: 'words', label: 'Words learned' },
+  { id: 'lessons', label: 'Lessons completed' },
+  { id: 'books', label: 'Books read' },
+  { id: 'conversations', label: 'Conversations' },
+  { id: 'writing', label: 'Writing practice' },
+  { id: 'listening-hours', label: 'Listening hours' },
+  { id: 'travel', label: 'Travel countdown' },
   { id: 'hours-week', label: 'Hours a week' },
   { id: 'words-week', label: 'New words a week' },
+  { id: 'level', label: 'Reach a level' },
   { id: 'books-year', label: 'Books this year' },
 ];
 
-export function GoalDrawer({ open, onClose, languages, lang, editing, startKind = 'level' }: { open: boolean; onClose: () => void; languages: LanguageProfile[]; lang: string; editing?: Goal | null; startKind?: Goal['kind'] }) {
-  const [kind, setKind] = useState<Goal['kind']>('level');
+export function GoalDrawer({ open, onClose, languages, lang, editing, startKind = 'words' }: { open: boolean; onClose: () => void; languages: LanguageProfile[]; lang: string; editing?: Goal | null; startKind?: Goal['kind'] }) {
+  const [kind, setKind] = useState<Goal['kind']>('words');
   const [target, setTarget] = useState<string>(lang);
   const [level, setLevel] = useState<CefrLevel>('B1');
-  const [amount, setAmount] = useState(5);
+  const [amount, setAmount] = useState(500);
+  const [textTarget, setTextTarget] = useState('Trip to Spain');
   const [by, setBy] = useState('');
   useEffect(() => {
     if (!open) return;
     setKind(editing?.kind ?? startKind);
     setTarget(editing?.lang ?? lang);
     setLevel(editing?.kind === 'level' ? (editing.target as CefrLevel) : 'B1');
-    setAmount(editing && editing.kind !== 'level' ? Number(editing.target) : 5);
+    setAmount(editing && typeof editing.target === 'number' ? editing.target : 500);
+    setTextTarget(editing && typeof editing.target === 'string' ? editing.target : 'Trip to Spain');
     setBy(editing?.by ?? '');
   }, [open, lang, editing, startKind]);
   useEffect(() => {
     if (editing) return;
-    setAmount(kind === 'hours-week' ? 5 : kind === 'words-week' ? 50 : 12);
-    // The reading challenge counts books in every language unless one is picked.
+    if (kind === 'words') setAmount(500);
+    else if (kind === 'lessons') setAmount(10);
+    else if (kind === 'books') setAmount(3);
+    else if (kind === 'conversations') setAmount(5);
+    else if (kind === 'writing') setAmount(10);
+    else if (kind === 'listening-hours') setAmount(20);
+    else if (kind === 'hours-week') setAmount(5);
+    else if (kind === 'words-week') setAmount(50);
+    else if (kind === 'books-year') setAmount(12);
     setTarget(kind === 'books-year' ? '*' : lang);
   }, [kind, editing, lang]);
 
   const save = async () => {
-    await saveGoal({ id: editing?.id, kind, lang: kind === 'books-year' ? target : target === '*' ? lang : target, target: kind === 'level' ? level : amount, by: kind === 'level' && by ? by : undefined, year: kind === 'books-year' ? new Date().getFullYear() : undefined });
+    const finalTarget = kind === 'level' ? level : kind === 'travel' ? textTarget : amount;
+    await saveGoal({
+      id: editing?.id,
+      kind,
+      lang: kind === 'books-year' ? target : target === '*' ? lang : target,
+      target: finalTarget,
+      by: by || undefined,
+      year: kind === 'books-year' ? new Date().getFullYear() : undefined,
+    });
     onClose();
   };
   return (
     <Drawer open={open} onClose={onClose} title={editing ? 'Edit goal' : 'New goal'} footer={<Button block onClick={() => void save()}>{editing ? 'Save goal' : 'Set goal'}</Button>}>
       <div className="space-y-6">
-        <Field title="Goal">
+        <Field title="Goal kind">
           <Chips value={kind} onChange={setKind} options={GOAL_KINDS} />
         </Field>
         <LanguageField languages={languages} value={target} onChange={setTarget} all={kind === 'books-year'} />
@@ -225,14 +249,38 @@ export function GoalDrawer({ open, onClose, languages, lang, editing, startKind 
             <Field title="Level">
               <Chips value={level} onChange={setLevel} options={CEFR_LEVELS.filter((l) => l !== 'A0').map((l) => ({ id: l, label: l }))} />
             </Field>
-            <Field title="By (optional)">
+            <Field title="By (target date)">
+              <input type="date" className={input} value={by} onChange={(e) => setBy(e.target.value)} />
+            </Field>
+          </>
+        ) : kind === 'travel' ? (
+          <>
+            <Field title="Destination or Event">
+              <input type="text" className={input} value={textTarget} onChange={(e) => setTextTarget(e.target.value)} placeholder="e.g. Trip to Barcelona, Conference in Paris" />
+            </Field>
+            <Field title="Travel date">
               <input type="date" className={input} value={by} onChange={(e) => setBy(e.target.value)} />
             </Field>
           </>
         ) : (
-          <Field title={kind === 'hours-week' ? 'Hours each week' : kind === 'words-week' ? 'New words each week' : `Books in ${new Date().getFullYear()}`}>
-            <input type="number" min={1} inputMode="numeric" className={input} value={amount} onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 1))} />
-          </Field>
+          <>
+            <Field title={
+              kind === 'words' ? 'Target words' :
+              kind === 'lessons' ? 'Lessons to complete' :
+              kind === 'books' ? 'Books to read' :
+              kind === 'conversations' ? 'Conversations to hold' :
+              kind === 'writing' ? 'Journal entries' :
+              kind === 'listening-hours' ? 'Hours of listening' :
+              kind === 'hours-week' ? 'Hours each week' :
+              kind === 'words-week' ? 'New words each week' :
+              `Books in ${new Date().getFullYear()}`
+            }>
+              <input type="number" min={1} inputMode="numeric" className={input} value={amount} onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 1))} />
+            </Field>
+            <Field title="By (optional deadline)">
+              <input type="date" className={input} value={by} onChange={(e) => setBy(e.target.value)} />
+            </Field>
+          </>
         )}
       </div>
     </Drawer>

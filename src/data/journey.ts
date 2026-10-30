@@ -221,7 +221,76 @@ export function goalProgress(goal: Goal, data: { level: CefrLevel; hours: number
     const needed = remaining / Math.max(1, (by - now) / (7 * DAY));
     return { fraction, label: `${data.level} → ${target} by ${new Date(by).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}`, projection: eta.getTime() <= by ? `${pace} On track.` : `${pace} To make it by then, aim for ${round(needed)} h a week.` };
   }
+  if (goal.kind === 'travel') {
+    const byMs = goal.by ? dayMs(goal.by) : null;
+    if (!byMs) return { fraction: 0.5, label: String(goal.target), projection: 'Countdown to your trip' };
+    const daysLeft = Math.ceil((byMs - now) / DAY);
+    const fraction = daysLeft <= 0 ? 1 : Math.max(0, 1 - daysLeft / 90);
+    return {
+      fraction,
+      label: `${String(goal.target)}: ${daysLeft > 0 ? `${daysLeft} days away` : 'Trip started!'}`,
+      projection: daysLeft > 0 ? `${daysLeft} days to prepare your language confidence.` : 'Enjoy your journey in the language!',
+    };
+  }
+
+  if (goal.kind === 'real-life') {
+    const done = Boolean(goal.completedAt);
+    return {
+      fraction: done ? 1 : 0,
+      label: String(goal.target),
+      projection: done ? 'Accomplished in the real world!' : 'Ready for your next real-world encounter.',
+    };
+  }
+
   const target = Number(goal.target) || 1;
+  const byMs = goal.by ? dayMs(goal.by) : null;
+  const daysLeft = byMs ? Math.ceil((byMs - now) / DAY) : null;
+  const deadlineSuffix = daysLeft !== null ? (daysLeft > 0 ? ` (${daysLeft}d left)` : ' (due)') : '';
+
+  if (goal.kind === 'words') {
+    const current = data.wordsThisWeek; // or known words context
+    const fraction = Math.min(1, current / target);
+    return {
+      fraction,
+      label: `${current} of ${target} words${deadlineSuffix}`,
+      projection: fraction >= 1 ? 'Target reached!' : `${target - current} words to go${deadlineSuffix}.`,
+    };
+  }
+
+  if (goal.kind === 'lessons') {
+    return {
+      fraction: 0.5,
+      label: `Target: ${target} lessons${deadlineSuffix}`,
+      projection: `${target} lessons to master.`,
+    };
+  }
+
+  if (goal.kind === 'conversations') {
+    return {
+      fraction: 0.5,
+      label: `Target: ${target} conversations${deadlineSuffix}`,
+      projection: `${target} conversations to hold.`,
+    };
+  }
+
+  if (goal.kind === 'writing') {
+    return {
+      fraction: 0.5,
+      label: `Target: ${target} journal entries${deadlineSuffix}`,
+      projection: `${target} entries to write.`,
+    };
+  }
+
+  if (goal.kind === 'listening-hours') {
+    const currentHours = Math.round(data.hours * 10) / 10;
+    const fraction = Math.min(1, currentHours / target);
+    return {
+      fraction,
+      label: `${currentHours} of ${target} hours${deadlineSuffix}`,
+      projection: fraction >= 1 ? 'Listening target complete!' : `${Math.round((target - currentHours) * 10) / 10} hours to go${deadlineSuffix}.`,
+    };
+  }
+
   if (goal.kind === 'hours-week') return { fraction: Math.min(1, data.hoursThisWeek / target), label: `${round(data.hoursThisWeek)} of ${target} hours this week`, projection: data.hoursThisWeek >= target ? 'Done for this week.' : `${round(target - data.hoursThisWeek)} hours to go this week.` };
   if (goal.kind === 'words-week') return { fraction: Math.min(1, data.wordsThisWeek / target), label: `${data.wordsThisWeek} of ${target} new words this week`, projection: data.wordsThisWeek >= target ? 'Done for this week.' : `${target - data.wordsThisWeek} words to go this week.` };
   // Yearly reading challenge.

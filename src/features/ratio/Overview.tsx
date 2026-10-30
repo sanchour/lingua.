@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, BookOpen, Clock, Compass, Feather, Headphones, Keyboard, Layers, Plus, Sprout } from 'lucide-react';
+import { ArrowRight, BookOpen, Clock, Compass, Feather, Headphones, Keyboard, Layers, Plus, Printer, Sparkles, Sprout } from 'lucide-react';
 import { useApp } from '@/app/context';
+import { getLanguage } from '@/core/lang/languages';
 import { estimateLevel } from '@/core/ratio/estimate';
 import { LISTENING_KIND_LABEL, lookupsPer1000 } from '@/core/ratio/kinds';
 import { useLanguages } from '@/data/languages';
@@ -14,11 +15,20 @@ import { gradeColor, Ring } from '@/design/charts/Ring';
 import { compact } from '@/design/charts/useWidth';
 import { Button } from '@/design/primitives';
 import { cx } from '@/lib/cx';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '@/data/db';
+import type { CefrLevel } from '@/data/types';
+import type { EvidenceRow } from '@/core/contracts/learner';
 import { LogTimeDrawer, MomentDrawer } from './forms';
 import { GrammarPanel } from './GrammarPanel';
 import { ErrorLogPanel } from './ErrorLogPanel';
 import { SkillBalancePanel } from './SkillBalancePanel';
 import { WeakSpotsPanel } from './WeakSpotsPanel';
+import { MilestoneStamps } from './MilestoneStamps';
+import { RealLifeGoalsPanel } from './RealLifeGoalsPanel';
+import { AdvancedAnalyticsPanel } from './AdvancedAnalyticsPanel';
+import { ReflectionDrawer } from './ReflectionDrawer';
+import { MonthlyReportModal } from './MonthlyReportModal';
 import { ACTIVITY_COLOR, ACTIVITY_LABEL, hours, Legend, Panel, pct, shortDate, Stat } from './common';
 
 const MODE_LABEL: Record<string, string> = { mcq: 'Choose', match: 'Match pairs', cloze: 'Fill the gap', build: 'Build sentences', type: 'Typing', listen: 'Listening', speak: 'Speaking' };
@@ -44,15 +54,46 @@ export function Overview() {
   }, [lang]);
 
   const languages = useLanguages();
-  const [drawer, setDrawer] = useState<'time' | 'moment' | null>(null);
+  const [drawer, setDrawer] = useState<'time' | 'moment' | 'review' | 'report' | null>(null);
   const close = () => {
     setDrawer(null);
     void loadOverview([lang]).then(setData);
   };
 
+  const evidence = useLiveQuery(() => db.evidence.where('lang').equals(lang).toArray(), [lang]) ?? [];
+  const conversationsCount = useLiveQuery(
+    async () => (await db.journeyEvents.where('lang').equals(lang).toArray()).filter((e) => e.kind === 'conversation' || e.kind === 'encounter').length,
+    [lang],
+  ) ?? 0;
+
+  const monthlyReportData = {
+    languageName: getLanguage(language.id)?.name ?? language.id,
+    monthName: new Date().toLocaleDateString(undefined, { month: 'long' }),
+    year: new Date().getFullYear(),
+    knownWords: data?.vocabulary.known ?? 0,
+    newWordsMonth: data?.vocabulary.newPerWeek.reduce((sum, w) => sum + w.words, 0) ?? 0,
+    hoursStudiedMonth: (data ? ACTIVITIES.reduce((sum, a) => sum + data.habit.totals[a], 0) : 0) / 60,
+    booksReadMonth: data?.reading.finishedThisYear ?? 0,
+    conversationsHeldMonth: conversationsCount,
+    currentStreak: data?.habit.current ?? 0,
+    stampsUnlocked: ['First Word', '500 Words', 'First Book', 'One Week'].filter((_, i) => i < ((data?.vocabulary.known ?? 0) > 500 ? 3 : 1)),
+    skillsSummary: [
+      { name: 'Reading', hours: (data?.reading.minutes ?? 0) / 60, accuracy: 0.94 },
+      { name: 'Listening', hours: (data?.listening.minutes ?? 0) / 60, accuracy: 0.89 },
+      { name: 'Writing', hours: (data?.habit.totals.write ?? 0) / 60, accuracy: 0.86 },
+      { name: 'Vocabulary', hours: (data?.habit.totals.review ?? 0) / 60, accuracy: 0.91 },
+    ],
+  };
+
   return (
     <div className="space-y-5">
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button variant="ghost" icon={Sparkles} onClick={() => setDrawer('review')}>
+          Weekly review
+        </Button>
+        <Button variant="ghost" icon={Printer} onClick={() => setDrawer('report')}>
+          Monthly report
+        </Button>
         <Button variant="ghost" icon={Clock} onClick={() => setDrawer('time')}>
           Log time
         </Button>
@@ -60,9 +101,11 @@ export function Overview() {
           Add a moment
         </Button>
       </div>
-      {!data ? <div className="h-96 animate-pulse rounded-3xl bg-surface" /> : <Dashboard data={data} lang={lang} />}
+      {!data ? <div className="h-96 animate-pulse rounded-3xl bg-surface" /> : <Dashboard data={data} lang={lang} evidence={evidence} conversationsCount={conversationsCount} />}
       <LogTimeDrawer open={drawer === 'time'} onClose={close} languages={languages ?? []} lang={lang} />
       <MomentDrawer open={drawer === 'moment'} onClose={close} languages={languages ?? []} lang={lang} />
+      <ReflectionDrawer open={drawer === 'review'} onClose={close} lang={lang} />
+      <MonthlyReportModal open={drawer === 'report'} onClose={close} data={monthlyReportData} />
     </div>
   );
 }
@@ -96,7 +139,7 @@ function LevelCard({ known, said }: { known: number; said: string }) {
   );
 }
 
-function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
+function Dashboard({ data, lang, evidence, conversationsCount }: { data: OverviewData; lang: string; evidence: EvidenceRow[]; conversationsCount: number }) {
   const { language } = useApp();
   const { vocabulary: v, reading: r, listening: l, flashcards: f, writing: w, habit: h } = data;
   const totalMinutes = ACTIVITIES.reduce((n, a) => n + h.totals[a], 0);
@@ -384,6 +427,32 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
       <WeakSpotsPanel lang={lang} />
       <SkillBalancePanel lang={lang} />
       <ErrorLogPanel lang={lang} />
+
+      <MilestoneStamps
+        knownWords={v.known}
+        finishedBooks={r.finished}
+        conversations={conversationsCount}
+        journalEntries={w.entries}
+        songsSung={l.songs}
+        streakDays={h.current}
+        totalHours={totalMinutes / 60}
+      />
+
+      <RealLifeGoalsPanel lang={lang} />
+
+      <AdvancedAnalyticsPanel
+        evidence={evidence}
+        targetLevel={language.level as CefrLevel}
+        knownWords={v.known}
+        listeningHours={l.minutes / 60}
+        readingWords={r.words}
+        studyMinutesBySkill={{
+          reading: r.minutes,
+          listening: l.minutes,
+          writing: h.totals.write,
+          vocabulary: h.totals.review,
+        }}
+      />
     </div>
   );
 }

@@ -112,6 +112,31 @@ export const TUTOR_PRESETS: Record<TutorPreset, {
   },
 };
 
+export interface HabitSettings {
+  /** Optional streak tracking (6-17, F1157). Default true. When false, streak badges and flame indicators are hidden. */
+  streakEnabled: boolean;
+  /** Rest days (0=Sun, 1=Mon, ..., 6=Sat) where not studying does not break a streak (6-17, F1160). Default []. */
+  restDays: number[];
+  /** Flexible weekly targets that bend (6-17, F1159): weekly target in minutes that dynamically spreads over remaining active days. */
+  flexibleWeeklyMinutes: number;
+  /** Study reminders (6-17, F1161, F1510, F1525). Off by default per Q5. */
+  remindersEnabled: boolean;
+  /** Reminder times in 24h HH:mm format, e.g. ['09:00', '19:30'] (6-17, F1162). */
+  reminderTimes: string[];
+  /** Quiet hours during which notifications are suppressed (6-17, F1163), e.g. '22:00' to '08:00'. */
+  quietHours: { enabled: boolean; start: string; end: string };
+  /** Custom self-set learner rewards (6-17, F1178), e.g. "Buy book in target language when 1000 words reached". */
+  rewards: Array<{ id: string; milestone: string; reward: string; unlockedAt?: number }>;
+  /** Active habit formation plan (F1173) or restart plan (F1174). */
+  activePlan?: {
+    type: 'habit' | 'restart';
+    title: string;
+    description: string;
+    steps: Array<{ day: number; label: string; done?: boolean }>;
+    startedAt: number;
+  };
+}
+
 export interface Settings {
   theme: ThemePref;
   /** The look within Paper and within Nocturne (design/palettes): a page colour and its accent. */
@@ -253,6 +278,8 @@ export interface Settings {
    * device is, and when they last synced), and whether API keys go along. Never in backups.
    */
   sync: { devices: PairedDevice[]; includeApiKeys: boolean };
+  /** Goals, habits, streaks, reminders and rewards (6-17). */
+  habits: HabitSettings;
 }
 
 /** Sonus et Visio's library: everything, or only what you listen to or watch. */
@@ -339,6 +366,15 @@ export const DEFAULT_SETTINGS: Settings = {
   ui: { motion: 'system', sidebarCollapsed: false, perfHud: false, librarySort: 'recent', libraryView: 'grid', goodreadsSort: 'added', goodreadsGroup: 'shelf', deckSort: 'due', deckView: 'list', discoverSort: 'suggested', discoverGroup: 'kind', mediaSort: 'recent', firstStepsHidden: false, cursusTab: '', sonusShow: 'all', homeLayout: 'today', flavour: true, designNotes: false, hints: true, settingsMode: 'simple', keyboardStyle: 'auto', highContrast: false, colorBlindMode: false },
   meta: { deviceId: '', onboardedAt: null, lastBackupAt: null, plusAt: null, plan: null },
   sync: { devices: [], includeApiKeys: false },
+  habits: {
+    streakEnabled: true,
+    restDays: [],
+    flexibleWeeklyMinutes: 120,
+    remindersEnabled: false,
+    reminderTimes: ['19:30'],
+    quietHours: { enabled: true, start: '22:00', end: '08:00' },
+    rewards: [],
+  },
 };
 
 /** Settings that describe this device rather than the learner; excluded from backup merges. */

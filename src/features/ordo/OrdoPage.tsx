@@ -255,7 +255,7 @@ function SectionView({ id }: { id: SectionId }) {
     case 'reading':
       return <ReadingSection reader={settings.reader} lang={language.id} />;
     case 'study':
-      return <StudySection study={settings.study} />;
+      return <StudySection study={settings.study} habits={settings.habits} langName={getLanguage(language.id)?.name ?? language.id} />;
     case 'cards':
       return <CardsSection look={settings.cards} lang={language.id} />;
     case 'listening':

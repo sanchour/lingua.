@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.118** · 2026-10-30 · 6-17: Goals, habits and progress (Ratio and Home)
 - **0.6.0-alpha.117** · 2026-10-30 · Claim step 6-17 (Goals, habits and progress)
 - **0.6.0-alpha.116** · 2026-10-30 · 6-15: The tutor, in context (everywhere, with Max)
 - **0.6.0-alpha.115** · 2026-10-30 · 6-10: beats, rhythm and sentence stress; fixes for blob URLs, speaker labels, watch counts
