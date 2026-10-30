@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.122** · 2026-10-30 · 6-23 slice 2: Cursus › Marks: Serbian and Chinese script conversion, accent, diacritic, ligature and cursive drills
 - **0.6.0-alpha.121** · 2026-10-30 · 6-23 slice 1: transliteration over Russian, Greek, Arabic, Korean and Georgian words (new, fading, all), code points in the letter sheet
 - **0.6.0-alpha.120** · 2026-10-30 · Claim step 6-23 (Tools for each language)
 - **0.6.0-alpha.119** · 2026-10-30 · Audit leftovers: no HTML string in the daily-word window, translation label, safe CSP parts, optional claim limit

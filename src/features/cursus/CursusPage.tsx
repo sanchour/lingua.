@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Navigate, useParams } from 'react-router';
-import { AudioLines, BookA, Keyboard, Languages, Route } from 'lucide-react';
+import { AudioLines, BookA, Keyboard, Languages, Route, Type } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { PageHeader } from '@/app/PageHeader';
 import { InRoom } from '@/app/room';
@@ -16,6 +16,7 @@ import { PlusChip, RequirePlan } from '@/features/plans/Locked';
 import { usePlan } from '@/features/plans/usePlan';
 import { can } from '@/data/plan';
 import type { Feature, PlanKind } from '@/data/plan';
+import { hasMarks, MarksTab } from './marks/MarksTab';
 import { CourseTab } from './course/CourseTab';
 import { SoundsTab } from './sounds/SoundsTab';
 import { TypingTab } from './TypingTab';
@@ -31,6 +32,7 @@ export function cursusTabs(lang: string, plan: PlanKind = 'max'): Array<RoomTab<
     { id: 'grammatica', label: 'Grammatica', to: '/cursus/grammatica', icon: BookA, badge: chip('grammatica') },
     core && { id: 'sounds', label: 'Sounds', to: '/cursus/sounds', icon: AudioLines },
     hasScript(lang) && { id: 'alphabets', label: 'Alphabets', to: '/cursus/alphabets', icon: Languages },
+    hasMarks(lang) && { id: 'marks', label: 'Marks', to: '/cursus/marks', icon: Type },
     core && { id: 'typing', label: 'Typing', to: '/cursus/typing', icon: Keyboard, badge: chip('typing') },
   ];
   return tabs.filter((t): t is RoomTab<Tab> => Boolean(t));
@@ -75,6 +77,7 @@ export default function CursusPage() {
           </RequirePlan>
         )}
         {tab === 'alphabets' && <LettersPage />}
+        {tab === 'marks' && <MarksTab />}
         {tab === 'sounds' && <SoundsTab />}
         {tab === 'typing' && (
           <RequirePlan feature="typing">
