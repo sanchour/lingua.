@@ -26,7 +26,7 @@ export function WritingPortfolio({ entries }: { entries: JournalEntry[] }) {
           <thead><tr>{['Date / piece', 'Level', 'Topic / kind', 'Words', 'Diversity', 'Words / sentence'].map((h) => <th scope="col" key={h} className="p-2 text-xs text-ink-faint">{h}</th>)}</tr></thead>
           <tbody>{shown.map((e) => {
             const m = writingMeasures(e.text, e.lang);
-            return <tr key={e.id} className="border-t border-line"><td className="p-2"><Link className="font-semibold text-accent-text" to={`/mentis/diarium/${e.id}`}>{e.date} · {e.title || WRITING_TASKS.find((t) => t.id === e.writingTaskId)?.title || 'Free entry'}</Link></td><td className="p-2">{e.portfolio!.level}</td><td className="p-2">{e.portfolio!.topic || 'No topic'} · {e.writingTaskId || 'free'}</td><td className="p-2">{m.words}</td><td className="p-2">{Math.round(m.diversity * 100)}%</td><td className="p-2">{m.averageLength.toFixed(1)}</td></tr>;
+            return <tr key={e.id} className="border-t border-line"><td className="p-2"><Link className="font-semibold text-accent-text" to={`/mentis/diarium/${e.id}`}>{e.date} · {e.title || WRITING_TASKS.find((t) => t.id === e.writingTaskId)?.title || translateUi('Free entry')}</Link></td><td className="p-2">{e.portfolio!.level}</td><td className="p-2">{e.portfolio!.topic || translateUi('No topic')} · {e.writingTaskId || translateUi('free')}</td><td className="p-2">{m.words}</td><td className="p-2">{Math.round(m.diversity * 100)}%</td><td className="p-2">{m.averageLength.toFixed(1)}</td></tr>;
           })}</tbody>
         </table>
       </div>

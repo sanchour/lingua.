@@ -22,17 +22,17 @@ export function AddToDeck({ lang, note, move }: { lang: string; note: NoteInput;
   const add = async (deckId: string, deckName: string, close: () => void) => {
     if (move) {
       close();
-      if (deckId === move.deckId) return toast(`“${note.term}” is already in ${deckName}.`);
+      if (deckId === move.deckId) return toast({ source: '“{0}” is already in {1}.', values: [String(note.term), String(deckName)] });
       await moveNote(move.noteId, deckId);
       setAdded(deckName);
-      return toast(`Moved “${note.term}” to ${deckName}.`, { tone: 'success' });
+      return toast({ source: 'Moved “{0}” to {1}.', values: [String(note.term), String(deckName)] }, { tone: 'success' });
     }
     const existing = (await db.notes.where('deckId').equals(deckId).toArray()).find((n) => !n.deletedAt && n.term.toLocaleLowerCase(lang) === note.term.toLocaleLowerCase(lang));
     close();
-    if (existing) return toast(`“${note.term}” is already in ${deckName}.`);
+    if (existing) return toast({ source: '“{0}” is already in {1}.', values: [String(note.term), String(deckName)] });
     await addNote(deckId, note);
     setAdded(deckName);
-    toast(`Added “${note.term}” to ${deckName}.`, { tone: 'success' });
+    toast({ source: 'Added “{0}” to {1}.', values: [String(note.term), String(deckName)] }, { tone: 'success' });
   };
 
   return (

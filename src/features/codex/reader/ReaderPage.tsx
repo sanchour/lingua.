@@ -124,7 +124,7 @@ export default function ReaderPage() {
     if (goalWasMet.current !== false || readTodayRef.current === undefined) return;
     if (readTodayRef.current + session.pendingMs() < goal * 60_000) return;
     goalWasMet.current = true;
-    toast(`Today’s reading goal is reached: ${goal} minutes. Read on as long as you like.`, { tone: 'success', duration: 6000 });
+    toast({ source: 'Today’s reading goal is reached: {0} minutes. Read on as long as you like.', values: [String(goal)] }, { tone: 'success', duration: 6000 });
   };
 
   const onWordChange = useCallback((norm: string, state: WordState) => {

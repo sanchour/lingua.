@@ -368,7 +368,7 @@ export function TopicMap({
 
                 {/* Level and Error Indicator */}
                 <text x={rx + 34} y={y + 14} className="fill-ink-faint text-[10.5px]">
-                  {topic.level} · {topic.category ?? 'grammar'}
+                  {topic.level} · {topic.category ?? translateUi('grammar')}
                 </text>
 
                 {/* Heatmap Error Badge */}
@@ -402,7 +402,7 @@ export function TopicMap({
                   {selectedTopic.level}
                 </span>
                 <span className="text-[12px] font-medium text-ink-faint">
-                  {selectedTopic.category ?? 'grammar'}
+                  {selectedTopic.category ?? translateUi('grammar')}
                 </span>
                 {learnedIds.has(selectedTopic.id) && (
                   <span className="flex items-center gap-1 text-[11.5px] font-semibold text-sage-text"><UiText source={'{0}Learned'} values={[<Check size={13} strokeWidth={2.6} />]} /></span>

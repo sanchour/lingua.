@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Columns2, Flag, Plus, Upload } from 'lucide-react';
@@ -23,6 +24,7 @@ import { toast } from '@/state/ui';
  * or import a personal dictionary file in JSON, CSV, TSV, or Markdown format (F1482, F1288).
  */
 export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; onOpenWord: (word: string) => void }) {
+  const translateUi = useUi();
   const [adding, setAdding] = useState(false);
   const [word, setWord] = useState('');
   const [pos, setPos] = useState('noun');
@@ -43,7 +45,7 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
       examples: example.trim() ? [[example.trim(), translation.trim()]] : [],
       sourceLabel: 'Personal dictionary',
     });
-    toast(`Saved “${saved.word}” to your personal dictionary.`, { tone: 'success' });
+    toast({ source: 'Saved “{0}” to your personal dictionary.', values: [String(saved.word)] }, { tone: 'success' });
     setAdding(false);
     setWord('');
     setMeaning('');
@@ -61,7 +63,7 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
         toast('No valid dictionary entries found in that file.', { tone: 'error' });
         return;
       }
-      toast(`Imported ${imported.length.toLocaleString()} entries from ${file.name}.`, { tone: 'success' });
+      toast({ source: 'Imported {0} entries from {1}.', values: [String(imported.length.toLocaleString()), String(file.name)] }, { tone: 'success' });
       onOpenWord(imported[0].key);
     } catch (e) {
       toast(e instanceof Error ? e.message : 'Could not import personal dictionary.', { tone: 'error' });
@@ -71,12 +73,8 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
   return (
     <div className="mb-5">
       <div className="flex flex-wrap items-center gap-2">
-        <Button variant="secondary" size="sm" icon={Plus} onClick={() => setAdding((v) => !v)}>
-          Custom entry
-        </Button>
-        <Button variant="ghost" size="sm" icon={Upload} onClick={() => fileRef.current?.click()}>
-          Import personal dictionary
-        </Button>
+        <Button variant="secondary" size="sm" icon={Plus} onClick={() => setAdding((v) => !v)}><UiText source={'Custom entry'} /></Button>
+        <Button variant="ghost" size="sm" icon={Upload} onClick={() => fileRef.current?.click()}><UiText source={'Import personal dictionary'} /></Button>
         <input
           ref={fileRef}
           type="file"
@@ -89,15 +87,13 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
           }}
         />
         {customEntries.length > 0 && (
-          <span className="text-[12.5px] font-semibold text-ink-faint">
-            {customEntries.length} custom {customEntries.length === 1 ? 'entry' : 'entries'}
-          </span>
+          <span className="text-[12.5px] font-semibold text-ink-faint"><UiText source={'{0} custom {1}'} values={[customEntries.length, customEntries.length === 1 ? 'entry' : 'entries']} /></span>
         )}
       </div>
 
       {adding && (
         <Card className="mt-3 space-y-3 p-4">
-          <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">New custom dictionary entry</p>
+          <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'New custom dictionary entry'} /></p>
           <div className="grid grid-cols-[1fr_140px] gap-2.5">
             <input
               type="text"
@@ -108,7 +104,7 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
               className="h-9 rounded-xl border border-line bg-surface px-3 font-serif text-[15px] text-ink outline-none focus:border-ink"
             />
             <select
-              aria-label="Part of speech"
+              aria-label={translateUi('Part of speech')}
               value={pos}
               onChange={(e) => setPos(e.target.value)}
               className="h-9 rounded-xl border border-line bg-surface px-2.5 text-[13px] font-semibold text-ink-soft outline-none focus:border-ink"
@@ -124,7 +120,7 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
             type="text"
             value={meaning}
             onChange={(e) => setMeaning(e.target.value)}
-            placeholder="Definition (separate multiple senses with ;)"
+            placeholder={translateUi('Definition (separate multiple senses with ;)')}
             className="h-9 w-full rounded-xl border border-line bg-surface px-3 text-[14px] text-ink outline-none focus:border-ink"
           />
           <div className="grid grid-cols-2 gap-2.5">
@@ -140,17 +136,13 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
               type="text"
               value={translation}
               onChange={(e) => setTranslation(e.target.value)}
-              placeholder="Example translation (optional)"
+              placeholder={translateUi('Example translation (optional)')}
               className="h-9 rounded-xl border border-line bg-surface px-3 text-[14px] text-ink outline-none focus:border-ink"
             />
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setAdding(false)}>
-              Cancel
-            </Button>
-            <Button size="sm" onClick={() => void handleSave()} disabled={!word.trim() || !meaning.trim()}>
-              Save entry
-            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setAdding(false)}><UiText source={'Cancel'} /></Button>
+            <Button size="sm" onClick={() => void handleSave()} disabled={!word.trim() || !meaning.trim()}><UiText source={'Save entry'} /></Button>
           </div>
         </Card>
       )}
@@ -165,6 +157,7 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
  * - Report or fix inaccurate definition / example (F1290)
  */
 export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row: FullDictRow; savedWord?: Word | null }) {
+  const translateUi = useUi();
   const [showCompare, setShowCompare] = useState(false);
   const [showCustom, setShowCustom] = useState(false);
   const [showReport, setShowReport] = useState(false);
@@ -217,7 +210,7 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
       examples: customEx.trim() ? [[customEx.trim(), customExTr.trim()]] : [],
       sourceLabel: 'Personal dictionary',
     });
-    toast(`Updated your personal dictionary entry for “${row.word}”.`, { tone: 'success' });
+    toast({ source: 'Updated your personal dictionary entry for “{0}”.', values: [String(row.word)] }, { tone: 'success' });
     setShowCustom(false);
   };
 
@@ -242,20 +235,16 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
     <section className="mt-8 border-t border-line pt-6">
       <div className="flex flex-wrap items-center gap-2">
         {sources.length > 1 && (
-          <Button variant={showCompare ? 'secondary' : 'ghost'} size="sm" icon={Columns2} onClick={() => setShowCompare((v) => !v)}>
-            Compare {sources.length} sources
-          </Button>
+          <Button variant={showCompare ? 'secondary' : 'ghost'} size="sm" icon={Columns2} onClick={() => setShowCompare((v) => !v)}><UiText source={'Compare {0} sources'} values={[sources.length]} /></Button>
         )}
         <Button variant={showCustom ? 'secondary' : 'ghost'} size="sm" icon={Plus} onClick={() => setShowCustom((v) => !v)}>
-          {existingCustom ? 'Edit custom entry' : 'Add custom sense'}
+          {existingCustom ? translateUi('Edit custom entry') : translateUi('Add custom sense')}
         </Button>
-        <Button variant={showReport ? 'secondary' : 'ghost'} size="sm" icon={Flag} onClick={() => setShowReport((v) => !v)}>
-          Report or fix entry
-        </Button>
+        <Button variant={showReport ? 'secondary' : 'ghost'} size="sm" icon={Flag} onClick={() => setShowReport((v) => !v)}><UiText source={'Report or fix entry'} /></Button>
       </div>
 
       {showCompare && sources.length > 0 && (
-        <div className="mt-4 grid grid-cols-2 gap-4" aria-label="Dictionary source comparison">
+        <div className="mt-4 grid grid-cols-2 gap-4" aria-label={translateUi('Dictionary source comparison')}>
           {sources.map((src) => (
             <Card key={src.id} className="p-4">
               <div className="flex items-baseline justify-between gap-2">
@@ -288,12 +277,10 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
 
       {showCustom && (
         <Card className="mt-4 space-y-3 p-4">
-          <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">
-            Personal dictionary sense for “<span lang={lang}>{row.word}</span>”
-          </p>
+          <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Personal dictionary sense for “{0}”'} values={[<span lang={lang}>{row.word}</span>]} /></p>
           <div className="grid grid-cols-[140px_1fr] gap-2.5">
             <select
-              aria-label="Part of speech"
+              aria-label={translateUi('Part of speech')}
               value={customPos}
               onChange={(e) => setCustomPos(e.target.value)}
               className="h-9 rounded-xl border border-line bg-surface px-2.5 text-[13px] font-semibold text-ink-soft outline-none focus:border-ink"
@@ -308,7 +295,7 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
               type="text"
               value={customDefs}
               onChange={(e) => setCustomDefs(e.target.value)}
-              placeholder="Your definition(s), separated by ;"
+              placeholder={translateUi('Your definition(s), separated by ;')}
               className="h-9 rounded-xl border border-line bg-surface px-3 text-[14px] text-ink outline-none focus:border-ink"
             />
           </div>
@@ -325,29 +312,23 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
               type="text"
               value={customExTr}
               onChange={(e) => setCustomExTr(e.target.value)}
-              placeholder="Translation (optional)"
+              placeholder={translateUi('Translation (optional)')}
               className="h-9 rounded-xl border border-line bg-surface px-3 text-[14px] text-ink outline-none focus:border-ink"
             />
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setShowCustom(false)}>
-              Cancel
-            </Button>
-            <Button size="sm" onClick={() => void saveCustomForWord()} disabled={!customDefs.trim()}>
-              Save to personal dictionary
-            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setShowCustom(false)}><UiText source={'Cancel'} /></Button>
+            <Button size="sm" onClick={() => void saveCustomForWord()} disabled={!customDefs.trim()}><UiText source={'Save to personal dictionary'} /></Button>
           </div>
         </Card>
       )}
 
       {showReport && (
         <Card className="mt-4 space-y-3 p-4">
-          <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">
-            Report or fix an issue with “<span lang={lang}>{row.word}</span>”
-          </p>
+          <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Report or fix an issue with “{0}”'} values={[<span lang={lang}>{row.word}</span>]} /></p>
           <div className="grid grid-cols-[170px_1fr] gap-2.5">
             <select
-              aria-label="What is wrong?"
+              aria-label={translateUi('What is wrong?')}
               value={issueKind}
               onChange={(e) => setIssueKind(e.target.value as DictIssueKind)}
               className="h-9 rounded-xl border border-line bg-surface px-2.5 text-[13px] font-semibold text-ink-soft outline-none focus:border-ink"
@@ -362,7 +343,7 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
               type="text"
               value={issueDetail}
               onChange={(e) => setIssueDetail(e.target.value)}
-              placeholder="What looks wrong?"
+              placeholder={translateUi('What looks wrong?')}
               className="h-9 rounded-xl border border-line bg-surface px-3 text-[14px] text-ink outline-none focus:border-ink"
             />
           </div>
@@ -371,7 +352,7 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
               type="text"
               value={correctedGloss}
               onChange={(e) => setCorrectedGloss(e.target.value)}
-              placeholder="Replacement definition (applied immediately, optional)"
+              placeholder={translateUi('Replacement definition (applied immediately, optional)')}
               className="h-9 rounded-xl border border-line bg-surface px-3 text-[14px] text-ink outline-none focus:border-ink"
             />
             <input
@@ -384,12 +365,8 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
             />
           </div>
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setShowReport(false)}>
-              Cancel
-            </Button>
-            <Button size="sm" onClick={() => void submitReport()} disabled={!issueDetail.trim() && !correctedGloss.trim()}>
-              Save report & fix
-            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setShowReport(false)}><UiText source={'Cancel'} /></Button>
+            <Button size="sm" onClick={() => void submitReport()} disabled={!issueDetail.trim() && !correctedGloss.trim()}><UiText source={'Save report & fix'} /></Button>
           </div>
         </Card>
       )}

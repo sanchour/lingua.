@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 // "How are they different?" (6-1c): Max says how a word differs from one it is easily mixed up with, in a line and a row each with an
 // example. Checked and kept like everything Max makes, and labelled. Without Max and a key it says so.
 import { useState } from 'react';
@@ -38,19 +39,13 @@ export function Difference({ lang, word, other }: { lang: string; word: string; 
   return (
     <div className="mt-1.5">
       {!body && (
-        <Button variant="ghost" size="sm" icon={Sparkles} loading={busy} disabled={block !== null} onClick={() => void ask()}>
-          {word} or {other}?
-        </Button>
+        <Button variant="ghost" size="sm" icon={Sparkles} loading={busy} disabled={block !== null} onClick={() => void ask()}><UiText source={'{0} or {1}?'} values={[word, other]} /></Button>
       )}
       {block === 'max' && !body && (
-        <span className="ml-2 text-[12.5px] text-ink-faint">
-          Needs Lingua+ Max. <MaxLink className="underline" />
-        </span>
+        <span className="ml-2 text-[12.5px] text-ink-faint"><UiText source={'Needs Lingua+ Max. {0}'} values={[<MaxLink className="underline" />]} /></span>
       )}
       {block === 'key' && !body && (
-        <span className="ml-2 text-[12.5px] text-ink-faint">
-          Needs your AI key: <Link to="/settings/ai" className="font-semibold underline">Settings › AI</Link>
-        </span>
+        <span className="ml-2 text-[12.5px] text-ink-faint"><UiText source={'Needs your AI key: {0}'} values={[<Link to="/settings/ai" className="font-semibold underline"><UiText source={'Settings › AI'} /></Link>]} /></span>
       )}
       {error && <p className="mt-1 text-[12.5px] text-accent-text">{error.message} {error instanceof LlmError && error.kind === 'no-plan' && <MaxLink className="underline" />}</p>}
       {body && row && (

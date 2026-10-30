@@ -13,6 +13,8 @@ describe('bundled interface messages', () => {
   it('keeps values literal, reorders placeholders and falls back to English', () => {
     expect(interpolate('{1}: {0} / {0}', ['<script>$&</script>', 3])).toBe('3: <script>$&</script> / <script>$&</script>');
     expect(message('xx', 'My own text')).toBe('My own text');
+    expect(message('__proto__', 'constructor')).toBe('constructor');
+    expect(message('es', 'constructor')).toBe('constructor');
     expect(uiLanguage('it')).toBe('en');
     expect(uiLanguage('ar')).toBe('ar');
   });

@@ -196,7 +196,7 @@ export default function DeckPage() {
                     onClick={() => {
                       close();
                       void downloadDeckApkg(deck.id)
-                        .then(() => toast(`Exported “${deck.name}” (.apkg).`, { tone: 'success' }))
+                        .then(() => toast({ source: 'Exported “{0}” (.apkg).', values: [String(deck.name)] }, { tone: 'success' }))
                         .catch(() => toast('Could not export Anki deck.', { tone: 'error' }));
                     }}
                   />
@@ -207,7 +207,7 @@ export default function DeckPage() {
                       close();
                       const slug = deck.name.toLowerCase().replace(/[^a-z0-9-_]+/gi, '-') || 'deck';
                       saveFile(`${slug}.csv`, deckToCsv(deck, notes), 'text/csv;charset=utf-8');
-                      toast(`Exported “${deck.name}” (.csv).`, { tone: 'success' });
+                      toast({ source: 'Exported “{0}” (.csv).', values: [String(deck.name)] }, { tone: 'success' });
                     }}
                   />
                   <MenuItem
@@ -217,7 +217,7 @@ export default function DeckPage() {
                       close();
                       const slug = deck.name.toLowerCase().replace(/[^a-z0-9-_]+/gi, '-') || 'deck';
                       saveFile(`${slug}.md`, notesToMarkdown(deck, notes), 'text/markdown;charset=utf-8');
-                      toast(`Exported “${deck.name}” (.md).`, { tone: 'success' });
+                      toast({ source: 'Exported “{0}” (.md).', values: [String(deck.name)] }, { tone: 'success' });
                     }}
                   />
                   <MenuItem icon={Trash2} label={translateUi('Delete deck')} danger onClick={() => (close(), askDelete())} />

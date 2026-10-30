@@ -108,7 +108,7 @@ export default function MakePage() {
   return (
     <>
       <BackLink to="/thesaurus"><UiText source={'Thesaurus'} /></BackLink>
-      <PageHeader title={translateUi('Made by Max')} />
+      <PageHeader title={translateUi('Made by Max')} englishTitle={'Made by Max'} />
       <p className="mb-6 max-w-2xl text-[15px] text-ink-soft"><UiText source={'Max writes it at your level, in short, common words; every word is looked up in the dictionary and the level is measured before you see it. It says so on the page, and you can report what is wrong.'} /></p>
 
       <div className="grid gap-8 lg:grid-cols-[22rem_minmax(0,1fr)]">

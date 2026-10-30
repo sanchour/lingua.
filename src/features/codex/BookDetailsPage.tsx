@@ -1,3 +1,4 @@
+import type { ToastMessage } from '@/state/ui';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
@@ -56,7 +57,7 @@ function Details({ text, fresh }: { text: Text; fresh: boolean }) {
 
   return (
     <>
-      <BackLink to="/codex">Codex</BackLink>
+      <BackLink to="/codex"><UiText source={'Codex'} /></BackLink>
       <header className="mb-7">
         <p className="mb-1.5 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{fresh ? translateUi('On your shelf') : translateUi('Edit')}</p>
         <h1 lang={text.lang} className="font-serif text-[32px] leading-tight font-semibold tracking-tight sm:text-[38px]">
@@ -139,7 +140,7 @@ function Chapters({ text }: { text: Text }) {
   const [removing, setRemoving] = useState<Chapter | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
 
-  const done = (message: string) => {
+  const done = (message: ToastMessage) => {
     forgetChapterModels(text.id);
     toast(message, { tone: 'success' });
   };
@@ -179,7 +180,7 @@ function Chapters({ text }: { text: Text }) {
       const { chapters: drafts, images } = await readFileChapters(text.lang, file);
       if (!drafts.length) throw new Error('No text was found in that file.');
       await appendChapters(text.id, drafts, images);
-      done(`Added ${drafts.length} ${drafts.length === 1 ? 'chapter' : 'chapters'} from “${file.name}”.`);
+      done({ source: 'Added {0} {1} from “{2}”.', values: [String(drafts.length), drafts.length === 1 ? { source: 'chapter' } : { source: 'chapters' }, String(file.name)] });
     } catch (error) {
       toast(error instanceof Error ? error.message : 'That file couldn’t be read.', { tone: 'error' });
     }

@@ -48,9 +48,9 @@ export function AddMenu({ lang, onDiscover, label = 'Add' }: { lang: string; onD
     setBusy(true);
     try {
       const { ids, skipped } = await importAudioFiles(lang, files);
-      if (skipped.length) toast(`${skipped.length === 1 ? `“${skipped[0]}” isn’t` : `${skipped.length} files aren’t`} audio this device can play.`, { tone: 'error' });
+      if (skipped.length) toast({ source: '{0} audio this device can play.', values: [skipped.length === 1 ? { source: '“{0}” isn’t', values: [String(skipped[0])] } : { source: '{0} files aren’t', values: [String(skipped.length)] }] }, { tone: 'error' });
       if (ids.length === 1) navigate(`${sonusBase()}/play/${ids[0]}`);
-      else if (ids.length) toast(`${ids.length} files added.`, { tone: 'success' });
+      else if (ids.length) toast({ source: '{0} files added.', values: [String(ids.length)] }, { tone: 'success' });
     } finally {
       setBusy(false);
     }

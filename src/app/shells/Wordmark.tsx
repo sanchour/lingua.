@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { cx } from '@/lib/cx';
 
 /** App mark: two solid pages with a ribbon cut out of one (same drawing as public/logo.svg). */
@@ -15,7 +16,7 @@ export function Wordmark({ className, size = 'md' }: { className?: string; size?
   return (
     <span className={cx('flex items-center gap-2', className)}>
       <LogoMark size={size === 'sm' ? 24 : 28} />
-      <span className={cx('font-serif font-semibold tracking-tight', size === 'sm' ? 'text-lg' : 'text-[22px]')}>Lingua</span>
+      <span className={cx('font-serif font-semibold tracking-tight', size === 'sm' ? 'text-lg' : 'text-[22px]')}><UiText source={'Lingua'} /></span>
     </span>
   );
 }

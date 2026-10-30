@@ -87,9 +87,7 @@ export function PlanPitch({ current, onFree, replay = false }: { current: PlanKi
       <div className="grid grid-cols-2 gap-5">
         <motion.section {...rise(0)} className="relative flex flex-col overflow-hidden rounded-[28px] border border-accent/45 bg-gradient-to-br from-accent-soft via-raised to-raised p-5 shadow-elev-3">
           <div className="flex items-start justify-between gap-3">
-            <h2 className="font-serif text-[28px] leading-none font-semibold">
-              Lingua<span className="text-accent-text">+</span>
-            </h2>
+            <h2 className="font-serif text-[28px] leading-none font-semibold"><UiText source={'Lingua{0}'} values={[<span className="text-accent-text">+</span>]} /></h2>
             <span className="rounded-full bg-accent-fill px-3 py-1 text-[11.5px] font-bold tracking-wide text-on-accent"><UiText source={'Pay once, keep it'} /></span>
           </div>
           <p className="mt-3 flex items-baseline gap-2">
@@ -113,9 +111,7 @@ export function PlanPitch({ current, onFree, replay = false }: { current: PlanKi
           <span className="pointer-events-none absolute -top-24 -right-20 size-72 rounded-full bg-accent/25 blur-3xl" aria-hidden />
           <div className="relative flex items-start justify-between gap-3">
             <h2 className="flex items-center gap-2.5 font-serif text-[28px] leading-none font-semibold">
-              <span>
-                Lingua<span className="text-accent-text">+</span>
-              </span>
+              <span><UiText source={'Lingua{0}'} values={[<span className="text-accent-text">+</span>]} /></span>
               <span className="plan-max-word font-sans text-[16px] font-bold tracking-[0.32em]"><UiText source={'MAX'} /></span>
             </h2>
             <Segmented<'month' | 'year'>

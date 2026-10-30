@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
@@ -43,8 +44,8 @@ export default function ExploraPage() {
   return (
     <>
       <PageHeader
-        title={translateUi('Explora')}
-        eyebrow={`Discover content for your ${langName} tools · ${language.level}`}
+        title={translateUi('Explora')} englishTitle={'Explora'}
+        eyebrow={translateUi('Discover content for your {0} tools · {1}', [translateUi(langName), language.level])} englishEyebrow={interpolate('Discover content for your {0} tools · {1}', [langName, language.level])}
         actions={
           <Link to="/bibliotheca" className={buttonClasses('secondary', 'md')}><UiText source={'{0} Bibliotheca'} values={[<Library size={17} aria-hidden />]} /></Link>
         }

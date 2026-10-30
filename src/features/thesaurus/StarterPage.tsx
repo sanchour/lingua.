@@ -87,7 +87,7 @@ function Booklet({ spec }: { spec: StarterSpec }) {
     setBusy(true);
     try {
       const result = await addStarterDeck(lang, spec, { skipKnown });
-      toast(`${starterName(spec)} is ready · ${result.added.toLocaleString()} cards`, {
+      toast({ source: '{0} is ready · {1} cards', values: [String(starterName(spec)), String(result.added.toLocaleString())] }, {
         tone: 'success',
         action: { label: 'Study', onClick: () => navigate(`/thesaurus/study/${result.deckId}?mode=recall`) },
       });

@@ -200,7 +200,7 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
           <Hint><UiText source={'The style, colour and font are the same for every card: Settings › Study and cards.'} /></Hint>
         </Section>
 
-        <Section title="Ludus">
+        <Section title={translateUi('Ludus')}>
           <Hint><UiText source={'The exercises in this deck’s lessons. Click one to leave it out here; greyed ones are off for every lesson.'} /></Hint>
           <div className="flex flex-wrap gap-1.5">
             {EXERCISE_KINDS.map((kind) => {
@@ -229,8 +229,8 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
         </Section>
 
         <Section title={translateUi('Danger zone')} danger>
-          <DangerRow title={translateUi('Forget progress')} detail="Every card back to new. Its review history stays in Ratio." action={<Button variant="secondary" size="sm" icon={Eraser} onClick={danger(onForget)}><UiText source={'Forget…'} /></Button>} />
-          <DangerRow title={translateUi('Delete deck')} detail="The deck, its cards and their history go." action={<Button variant="danger" size="sm" icon={Trash2} onClick={danger(onDelete)}><UiText source={'Delete…'} /></Button>} />
+          <DangerRow title={translateUi('Forget progress')} detail={translateUi('Every card back to new. Its review history stays in Ratio.')} action={<Button variant="secondary" size="sm" icon={Eraser} onClick={danger(onForget)}><UiText source={'Forget…'} /></Button>} />
+          <DangerRow title={translateUi('Delete deck')} detail={translateUi('The deck, its cards and their history go.')} action={<Button variant="danger" size="sm" icon={Trash2} onClick={danger(onDelete)}><UiText source={'Delete…'} /></Button>} />
         </Section>
       </div>
     </Drawer>

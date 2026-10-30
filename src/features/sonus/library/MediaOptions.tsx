@@ -51,7 +51,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
               <MenuItem
                 icon={CloudDownload}
                 label={downloading !== undefined ? translateUi('Downloading… {0}%', [Math.round(downloading * 100)]) : translateUi('Save for offline')}
-                detail={downloading !== undefined ? 'Tap to cancel' : 'Listen without a connection'}
+                detail={downloading !== undefined ? translateUi('Tap to cancel') : translateUi('Listen without a connection')}
                 onClick={() => {
                   close();
                   if (downloading !== undefined) cancelDownload(media.id);
@@ -63,13 +63,13 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
               <MenuItem
                 icon={Paperclip}
                 label={translateUi('Attach a downloaded file')}
-                detail="For hosts that block app downloads"
+                detail={translateUi('For hosts that block app downloads')}
                 onClick={async () => {
                   close();
                   const file = await pickFile(AUDIO_ACCEPT);
                   if (!file) return;
                   await attachDownload(media.id, file, file.type || 'audio/mpeg');
-                  toast(`“${media.title}” is saved for offline listening.`, { tone: 'success' });
+                  toast({ source: '“{0}” is saved for offline listening.', values: [String(media.title)] }, { tone: 'success' });
                 }}
               />
             )}
@@ -77,7 +77,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
               <MenuItem
                 icon={CloudOff}
                 label={translateUi('Remove download')}
-                detail="Keeps streaming from the web"
+                detail={translateUi('Keeps streaming from the web')}
                 onClick={() => {
                   close();
                   void removeDownload(media.id);
@@ -88,7 +88,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
               <MenuItem
                 icon={Sparkles}
                 label={transcribing !== undefined ? translateUi('Transcribing…') : hasTranscript ? translateUi('Transcribe again') : translateUi('Make a transcript')}
-                detail="Whisper, with word timings"
+                detail={translateUi('Whisper, with word timings')}
                 onClick={() => {
                   close();
                   void startTranscription(media);
@@ -99,7 +99,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
               <MenuItem
                 icon={BookOpenText}
                 label={translateUi('Open in Codex')}
-                detail="Read the transcript like a book"
+                detail={translateUi('Read the transcript like a book')}
                 onClick={async () => {
                   close();
                   const id = await transcriptText(media);
@@ -109,8 +109,8 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
             )}
             <MenuItem
               icon={ListMusic}
-              label="Playlists…"
-              detail={media.playlists?.length ? media.playlists.join(', ') : 'Your own lists'}
+              label={translateUi('Playlists…')}
+              detail={media.playlists?.length ? media.playlists.join(', ') : translateUi('Your own lists')}
               onClick={() => {
                 close();
                 setListing(true);

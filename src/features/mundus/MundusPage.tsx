@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { ImmersionPage } from '@/features/culture/ImmersionPage';
 import { CultureShelf } from '@/features/culture/CultureShelf';
@@ -56,6 +57,7 @@ const TABS: Array<{ id: Tab; label: string; short: string; to: string }> = [
  * the full lists. Everything opens inside Lingua.
  */
 export default function MundusPage() {
+  const translateUi = useUi();
   const sub = useParams()['*'];
   const tab: Tab = sub === 'try' || sub === 'culture' || sub === 'immerse' ? sub : 'guide';
   const { language } = useApp();
@@ -71,7 +73,7 @@ export default function MundusPage() {
 
   return (
     <>
-      <PageHeader title="Mundus" eyebrow={`Your guide to ${guide?.langName ?? 'the language'}`} />
+      <PageHeader title={translateUi('Mundus')} englishTitle={'Mundus'} eyebrow={translateUi('Your guide to {0}', [translateUi(guide?.langName ?? 'the language')])} englishEyebrow={interpolate('Your guide to {0}', [guide?.langName ?? 'the language'])} />
       <Tabs tab={tab} />
       {tab === 'immerse' ? <ImmersionPage key={language.id} /> : tab === 'culture' ? <CultureShelf key={language.id} lang={language.id} /> : guide === undefined ? (
         <div className="h-96" />
@@ -93,13 +95,14 @@ export default function MundusPage() {
 
 /** Mundus's own tabs, under Mentis's: a segmented control (Mentis's tabs have the digit shortcuts). */
 function Tabs({ tab }: { tab: Tab }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const { layout } = useLayout();
   return (
     <div className="-mt-1 mb-5">
       <Segmented<Tab>
         block={layout !== 'wide'}
-        label="Mundus"
+        label={translateUi('Mundus')}
         value={tab}
         onChange={(next) => navigate(TABS.find((t) => t.id === next)!.to)}
         options={TABS.map((t) => ({ value: t.id, label: layout === 'wide' ? t.label : t.short }))}

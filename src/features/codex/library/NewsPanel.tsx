@@ -169,7 +169,7 @@ function Latest({ lang, reading, onRead }: { lang: string; reading: string | nul
       )}
       {items === null && (
         <Card className="flex items-center gap-3">
-          <p className="flex-1 text-[14px] text-ink-soft">{error}</p>
+          <p className="flex-1 text-[14px] text-ink-soft"><UiText source={error ?? ''} /></p>
           <Button variant="secondary" size="sm" icon={RefreshCw} onClick={() => setRound((r) => r + 1)}><UiText source={'Try again'} /></Button>
         </Card>
       )}
@@ -181,7 +181,7 @@ function Latest({ lang, reading, onRead }: { lang: string; reading: string | nul
                 type="button"
                 disabled={reading !== null}
                 onClick={() => {
-                  toast(`Reading “${item.title.slice(0, 60)}”…`);
+                  toast({ source: 'Reading “{0}”…', values: [String(item.title.slice(0, 60))] });
                   onRead(item.link);
                 }}
                 className={cx(

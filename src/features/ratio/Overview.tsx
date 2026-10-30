@@ -330,7 +330,7 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
               }
             >
               <dl className="grid grid-cols-3 gap-3">
-                <Stat value={data.typing.averageWpm ?? '—'} label={translateUi('Words / min')} hint="Average over the letters practised" />
+                <Stat value={data.typing.averageWpm ?? '—'} label={translateUi('Words / min')} hint={translateUi('Average over the letters practised')} />
                 <Stat value={data.typing.accuracy === null ? '—' : pct(data.typing.accuracy)} label={translateUi('Accuracy')} />
                 <Stat value={data.typing.unlocked} label={translateUi('Letters')} />
               </dl>
@@ -343,9 +343,7 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
             title={translateUi('Writing')}
             icon={Feather}
             action={
-              <Link to="/mentis/diarium" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
-                Diarium <ArrowRight size={14} aria-hidden />
-              </Link>
+              <Link to="/mentis/diarium" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'Diarium {0}'} values={[<ArrowRight size={14} aria-hidden />]} /></Link>
             }
           >
             <dl className="mb-5 grid grid-cols-3 gap-3">

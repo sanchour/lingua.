@@ -422,7 +422,7 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
     }
     const added = await saveSongLine(song, i, tr);
     const replays = Boolean(song.youtubeId || song.spotifyId) && song.lines[i].startMs !== undefined;
-    toast(added ? (replays ? 'Line saved to “From Cantus”. Its card plays the line again.' : 'Line saved to “From Cantus”.') : 'That line is already a card.', { tone: added ? 'success' : 'default' });
+    toast(added ? replays ? 'Line saved to “From Cantus”. Its card plays the line again.' : 'Line saved to “From Cantus”.' : 'That line is already a card.', { tone: added ? 'success' : 'default' });
   };
 
   useHotkeys({ ' ': () => clock?.toggle() }, Boolean(clock) && !collapsed);
@@ -639,7 +639,7 @@ function SourceMenu({ song, kinds, source, setSource, onLink, onReject }: { song
             <MenuItem
               icon={Ban}
               label={translateUi('Not this one')}
-              detail="Find another recording"
+              detail={translateUi('Find another recording')}
               onClick={() => {
                 close();
                 onReject();
@@ -649,7 +649,7 @@ function SourceMenu({ song, kinds, source, setSource, onLink, onReject }: { song
           <MenuItem
             icon={Link2}
             label={translateUi('Paste a link')}
-            detail="YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion, Bandcamp"
+            detail={translateUi('YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion, Bandcamp')}
             onClick={() => {
               close();
               onLink();
@@ -1278,7 +1278,7 @@ function LinkDialog({ song, open, onClose, onAdded }: { song: Song; open: boolea
         className="mt-3 h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[16px]"
         aria-label={translateUi('Link to the song')}
       />
-      {(problem || (value && !link)) && <p className="mt-2 text-[13px] text-accent-text">{problem ?? 'That isn’t a link Lingua can play: a song or video on YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp.'}</p>}
+      {(problem || (value && !link)) && <p className="mt-2 text-[13px] text-accent-text">{problem ?? translateUi('That isn’t a link Lingua can play: a song or video on YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp.')}</p>}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
         <a href={`https://www.youtube.com/results?search_query=${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline"><UiText source={'Find it on YouTube {0}'} values={[<ExternalLink size={12} aria-hidden />]} /></a>
         <a href={`https://soundcloud.com/search/sounds?q=${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline"><UiText source={'On SoundCloud {0}'} values={[<ExternalLink size={12} aria-hidden />]} /></a>

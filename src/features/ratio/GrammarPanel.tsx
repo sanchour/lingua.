@@ -29,15 +29,13 @@ export function GrammarPanel({ lang }: { lang: string }) {
       title={translateUi('Grammar')}
       icon={BookA}
       action={
-        <Link to="/cursus/grammatica" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
-          Grammatica <ArrowRight size={14} aria-hidden />
-        </Link>
+        <Link to="/cursus/grammatica" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'Grammatica {0}'} values={[<ArrowRight size={14} aria-hidden />]} /></Link>
       }
     >
       <dl className="mb-5 grid grid-cols-3 gap-3">
         <Stat value={`${stats.learned} / ${stats.total}`} label={translateUi('Learned')} />
         <Stat value={stats.mastered} label={translateUi('Mastered')} />
-        <Stat value={stats.level ?? '—'} label={translateUi('Level')} hint={stats.level ? 'every topic up to it learned' : 'learn every A1 topic first'} />
+        <Stat value={stats.level ?? '—'} label={translateUi('Level')} hint={stats.level ? translateUi('every topic up to it learned') : translateUi('learn every A1 topic first')} />
       </dl>
       <div className="grid gap-6 lg:grid-cols-2">
         <div>

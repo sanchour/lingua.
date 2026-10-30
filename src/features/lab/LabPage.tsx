@@ -71,8 +71,8 @@ export default function LabPage() {
     <>
       <BackLink to="/settings/developer"><UiText source={'Developer'} /></BackLink>
       <PageHeader
-        title={translateUi('Device lab')}
-        eyebrow="Developer"
+        title={translateUi('Device lab')} englishTitle={'Device lab'}
+        eyebrow={translateUi('Developer')} englishEyebrow={'Developer'}
         actions={
           <Button variant="secondary" icon={ClipboardCopy} onClick={() => void copyReport()}><UiText source={'Copy report'} /></Button>
         }

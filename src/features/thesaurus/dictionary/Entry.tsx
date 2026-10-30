@@ -50,7 +50,7 @@ export function InstallCard({ lang, update }: { lang: string; update?: boolean }
   const name = getLanguage(lang)?.name ?? lang;
   const install = () =>
     installDictionary(lang)
-      .then((n) => toast(`The ${name} dictionary is ready: ${n.toLocaleString()} words, offline.`, { tone: 'success' }))
+      .then((n) => toast({ source: 'The {0} dictionary is ready: {1} words, offline.', values: [String(name), String(n.toLocaleString())] }, { tone: 'success' }))
       .catch((e: unknown) => toast(e instanceof Error ? e.message : 'The dictionary couldn’t be downloaded.', { tone: 'error' }));
   return (
     <Card className="flex items-center gap-5 p-5">
@@ -282,8 +282,8 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
           </Side>
         )}
         {falseCognateOf(lang, row.word) && (
-          <Side title="Not the cousin it looks like">
-            <p className="text-[14.5px] leading-relaxed text-ink-soft">It looks like the English “{falseCognateOf(lang, row.word)!.looks}”. {falseCognateOf(lang, row.word)!.note}</p>
+          <Side title={translateUi('Not the cousin it looks like')}>
+            <p className="text-[14.5px] leading-relaxed text-ink-soft"><UiText source={'It looks like the English “{0}”. {1}'} values={[falseCognateOf(lang, row.word)!.looks, falseCognateOf(lang, row.word)!.note]} /></p>
           </Side>
         )}
         {learnerErrorOf(lang, row.word) && (

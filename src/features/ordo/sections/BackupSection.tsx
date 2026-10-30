@@ -45,7 +45,7 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
         setReady(file);
       } else {
         downloadFile(file);
-        toast(`Backup saved (${formatBytes(file.size)}).`, { tone: 'success' });
+        toast({ source: 'Backup saved ({0}).', values: [String(formatBytes(file.size))] }, { tone: 'success' });
       }
     } catch {
       toast('The backup could not be created.', { tone: 'error' });
@@ -85,7 +85,7 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
       const summary = await restoreBackup(incoming, mode);
       setIncoming(null);
       toast(
-        mode === 'merge' ? `Merged: ${summary.added} added, ${summary.updated} updated.` : `Restored ${summary.added} items from the backup.`,
+        mode === 'merge' ? { source: 'Merged: {0} added, {1} updated.', values: [String(summary.added), String(summary.updated)] } : { source: 'Restored {0} items from the backup.', values: [String(summary.added)] },
         { tone: 'success' },
       );
     } catch {
@@ -153,7 +153,7 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
             const { file, count } = await finishedBooksCsv();
             if (!count) return toast('No finished books yet. Mark a book as finished in Codex first.');
             downloadFile(file);
-            toast(`Saved ${count} ${count === 1 ? 'book' : 'books'} for Goodreads.`, { tone: 'success' });
+            toast({ source: 'Saved {0} {1} for Goodreads.', values: [String(count), count === 1 ? { source: 'book' } : { source: 'books' }] }, { tone: 'success' });
           }}
         ><UiText source={'Export finished books'} /></Button>
       </div>

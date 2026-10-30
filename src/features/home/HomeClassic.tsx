@@ -122,6 +122,7 @@ export const label = 'text-[12px] font-bold tracking-[0.12em] text-ink-faint upp
  * milestone. Its parts (Next up, First steps, the week) are shared with the Today layout.
  */
 export function HomeClassic() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const target = getLanguage(language.id);
   const facts = useHomeFacts(language.id);
@@ -131,7 +132,7 @@ export function HomeClassic() {
 
   return (
     <>
-      <PageHeader title={greeting(new Date().getHours())} eyebrow={`${target?.endonym ?? language.id} · ${language.level}`} />
+      <PageHeader title={translateUi(greeting(new Date().getHours()))} eyebrow={`${target?.endonym ?? language.id} · ${language.level}`} />
       <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
         <div className="grid min-w-0 grid-cols-1 gap-5">
           <motion.div {...enter(0)}>
@@ -348,7 +349,7 @@ function TodayPanel({ lang, level, goal, enjoys }: { lang: string; level: Parame
                   <span lang={s.key === 'review' || s.key === 'write' || s.key.startsWith('find') ? undefined : lang} className="block truncate text-[15px] font-semibold">
                     {s.title}
                   </span>
-                  <span className="block truncate text-[13px] text-ink-soft">{s.detail}</span>
+                  <span className="block truncate text-[13px] text-ink-soft"><UiText source={s.detail} /></span>
                 </span>
                 <ChevronRight size={18} className="shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
@@ -463,15 +464,13 @@ function NumbersCard({ lang }: { lang: string }) {
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center justify-between">
         <p className={label}><UiText source={'At a glance'} /></p>
-        <Link to="/ratio" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
-          Ratio <ArrowRight size={14} aria-hidden />
-        </Link>
+        <Link to="/ratio" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline"><UiText source={'Ratio {0}'} values={[<ArrowRight size={14} aria-hidden />]} /></Link>
       </div>
       <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
         {stats.map((s) => (
           <div key={s.label}>
             <dd className="font-serif text-[26px] leading-none font-semibold tabular-nums">{s.value}</dd>
-            <dt className="mt-1 text-[12.5px] font-semibold text-ink-soft">{s.label}</dt>
+            <dt className="mt-1 text-[12.5px] font-semibold text-ink-soft"><UiText source={s.label} /></dt>
           </div>
         ))}
       </dl>

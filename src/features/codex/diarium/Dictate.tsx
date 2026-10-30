@@ -53,7 +53,7 @@ export function DictateButton({ lang, onSpoken }: { lang: string; onSpoken: (tex
       const size = DEVICE_MODELS[settings.audio.deviceModel].size;
       const useDevice = async () => {
         await patchSetting('audio', { transcriber: 'device' });
-        toast(`Whisper now runs on this device. It downloads once (${size}) the first time you speak; Settings › Listening can change it.`, { tone: 'success' });
+        toast({ source: 'Whisper now runs on this device. It downloads once ({0}) the first time you speak; Settings › Listening can change it.', values: [String(size)] }, { tone: 'success' });
       };
       return void toast(blocker, { action: { label: 'Use Whisper on this device', onClick: () => void useDevice() } });
     }
@@ -75,7 +75,7 @@ export function DictateButton({ lang, onSpoken }: { lang: string; onSpoken: (tex
       aria-label={recording ? translateUi('Stop, and write out what you said') : translateUi('Speak your entry')}
       title={recording ? undefined : translateUi('Speak, and Whisper writes it out here')}
     >
-      {writing ?? (recording ? <span className="tabular-nums"><UiText source={'Stop · {0}'} values={[clock(rec.elapsed)]} /></span> : 'Speak')}
+      {writing ?? (recording ? <span className="tabular-nums"><UiText source={'Stop · {0}'} values={[clock(rec.elapsed)]} /></span> : translateUi('Speak'))}
     </Button>
   );
 }

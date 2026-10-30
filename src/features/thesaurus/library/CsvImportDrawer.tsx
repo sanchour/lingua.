@@ -49,7 +49,7 @@ export function CsvImportDrawer({ lang, source, folders, onClose }: { lang: stri
     try {
       const { deckId, added } = await importCsvDeck(lang, name.trim() || 'Imported deck', folder === NO_FOLDER ? null : folder, notes);
       onClose();
-      toast(`${name} imported · ${added.toLocaleString()} cards`, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`/thesaurus/deck/${deckId}`) } });
+      toast({ source: '{0} imported · {1} cards', values: [String(name), String(added.toLocaleString())] }, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`/thesaurus/deck/${deckId}`) } });
     } catch (error) {
       toast(error instanceof Error ? error.message : 'The file couldn’t be imported.', { tone: 'error' });
     } finally {

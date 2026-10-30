@@ -21,10 +21,10 @@ export default function RatioPage() {
   const tab: Tab = picked === 'tabula' || picked === 'iter' ? 'tabula' : 'overview';
   return (
     <>
-      <PageHeader title="Ratio" />
+      <PageHeader title={translateUi('Ratio')} englishTitle={'Ratio'} />
       <div className="-mt-2 mb-7">
         <Segmented<Tab>
-          label="Ratio"
+          label={translateUi('Ratio')}
           value={tab}
           onChange={(next) => setParams(next === 'overview' ? {} : { tab: next }, { replace: true })}
           options={[

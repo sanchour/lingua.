@@ -16,9 +16,7 @@ export function ColloquiumHomeCard({ level }: { lang: string; level: Level }) {
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center justify-between gap-3">
         <p className={label}><UiText source={'Talk today'} /></p>
-        <Link to="/mentis/sermo" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
-          Sermo <ArrowRight size={14} aria-hidden />
-        </Link>
+        <Link to="/mentis/sermo" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline"><UiText source={'Sermo {0}'} values={[<ArrowRight size={14} aria-hidden />]} /></Link>
       </div>
       <Link to={`/mentis/sermo?scene=${scene.id}`} className="group -m-2 flex items-start gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-accent-soft text-accent-text" aria-hidden>

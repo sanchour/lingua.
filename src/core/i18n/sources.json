@@ -166,7 +166,8 @@
   "You": [
     "src/app/onboarding/GoalStep.tsx",
     "src/features/grammatica/GrammaticaPage.tsx",
-    "src/features/thesaurus/dictionary/YourWord.tsx"
+    "src/features/thesaurus/dictionary/YourWord.tsx",
+    "src/features/cursus/sounds/RecordCompare.tsx"
   ],
   "Time a day": [
     "src/app/onboarding/GoalStep.tsx"
@@ -253,7 +254,8 @@
     "src/features/sonus/radio/RadioTab.tsx",
     "src/features/thesaurus/deck/TidyDialog.tsx",
     "src/features/thesaurus/study/SentencesRound.tsx",
-    "src/features/thesaurus/study/StudyBar.tsx"
+    "src/features/thesaurus/study/StudyBar.tsx",
+    "src/features/home/DailyWordCard.tsx"
   ],
   "Languages in {0}": [
     "src/app/onboarding/LanguageStep.tsx"
@@ -298,7 +300,8 @@
     "src/app/onboarding/LevelStep.tsx"
   ],
   "Esc": [
-    "src/app/onboarding/Onboarding.tsx"
+    "src/app/onboarding/Onboarding.tsx",
+    "src/features/search/GlobalSearchModal.tsx"
   ],
   "Leave the replay {0}": [
     "src/app/onboarding/Onboarding.tsx"
@@ -315,7 +318,10 @@
     "src/features/thesaurus/deck/DeckPage.tsx",
     "src/features/thesaurus/library/FromListDialog.tsx",
     "src/features/thesaurus/library/dialogs.tsx",
-    "src/features/visio/library/VideoOptions.tsx"
+    "src/features/visio/library/VideoOptions.tsx",
+    "src/features/colloquium/SoloSpeakingView.tsx",
+    "src/features/sonus/library/PlaylistDialog.tsx",
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
   ],
   "Step {0} of {1}": [
     "src/app/onboarding/Onboarding.tsx"
@@ -590,7 +596,8 @@
     "src/features/cursus/course/SpeakLesson.tsx",
     "src/features/grammatica/GrammaticaPage.tsx",
     "src/features/translate/BackTranslationView.tsx",
-    "src/features/translate/TranslatePracticePage.tsx"
+    "src/features/translate/TranslatePracticePage.tsx",
+    "src/features/sonus/WordsAloud.tsx"
   ],
   "Every round. You know this song.": [
     "src/features/cantus/SongGames.tsx"
@@ -615,7 +622,8 @@
     "src/features/cantus/SongGames.tsx"
   ],
   "Play again": [
-    "src/features/cantus/SongGames.tsx"
+    "src/features/cantus/SongGames.tsx",
+    "src/features/generate/MadeViews.tsx"
   ],
   "Back to the song": [
     "src/features/cantus/SongGames.tsx"
@@ -632,7 +640,10 @@
     "src/features/cantus/SongGames.tsx",
     "src/features/codex/reader/CheckYourself.tsx",
     "src/features/mundus/MundusPage.tsx",
-    "src/features/thesaurus/study/SentencesRound.tsx"
+    "src/features/thesaurus/study/SentencesRound.tsx",
+    "src/features/cursus/sounds/Intonation.tsx",
+    "src/features/cursus/sounds/MinimalPairs.tsx",
+    "src/features/cursus/sounds/StressDrill.tsx"
   ],
   "Which word fits the line?": [
     "src/features/cantus/SongGames.tsx"
@@ -662,7 +673,8 @@
     "src/features/sonus/CommutePage.tsx",
     "src/features/thesaurus/deck/DeckSettings.tsx",
     "src/features/thesaurus/deck/NoteEditor.tsx",
-    "src/features/visio/library/VideoOptions.tsx"
+    "src/features/visio/library/VideoOptions.tsx",
+    "src/features/sonus/library/PlaylistDialog.tsx"
   ],
   "Fold the player away": [
     "src/features/cantus/SongPage.tsx"
@@ -696,7 +708,9 @@
     "src/features/cantus/SongPage.tsx"
   ],
   "Not this one": [
-    "src/features/cantus/SongPage.tsx"
+    "src/features/cantus/SongPage.tsx",
+    "src/features/cursus/sounds/Intonation.tsx",
+    "src/features/cursus/sounds/MinimalPairs.tsx"
   ],
   "Paste a link": [
     "src/features/cantus/SongPage.tsx"
@@ -720,7 +734,9 @@
     "src/features/sonus/player/Transport.tsx",
     "src/features/sonus/radio/RadioTab.tsx",
     "src/features/sonus/radio/StationPage.tsx",
-    "src/features/visio/player/VideoStage.tsx"
+    "src/features/visio/player/VideoStage.tsx",
+    "src/features/colloquium/SoloSpeakingView.tsx",
+    "src/features/sonus/WordsAloud.tsx"
   ],
   "Play": [
     "src/features/cantus/SongPage.tsx",
@@ -730,7 +746,8 @@
     "src/features/sonus/player/Transport.tsx",
     "src/features/sonus/radio/RadioTab.tsx",
     "src/features/sonus/radio/StationPage.tsx",
-    "src/features/visio/player/VideoStage.tsx"
+    "src/features/visio/player/VideoStage.tsx",
+    "src/features/sonus/WordsAloud.tsx"
   ],
   "The next line": [
     "src/features/cantus/SongPage.tsx"
@@ -917,7 +934,8 @@
     "src/features/ratio/tabula/Tabula.tsx",
     "src/features/sonus/library/AddMenu.tsx",
     "src/features/sonus/library/BooksTab.tsx",
-    "src/features/visio/library/AddVideoMenu.tsx"
+    "src/features/visio/library/AddVideoMenu.tsx",
+    "src/features/sonus/library/PlaylistDialog.tsx"
   ],
   "Paste the song’s link from YouTube (or YouTube Music), SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp. YouTube and SoundCloud play the whole song for everyone, and the lyrics follow them.": [
     "src/features/cantus/SongPage.tsx"
@@ -975,7 +993,8 @@
     "src/features/codex/diarium/EntryPage.tsx",
     "src/features/codex/reader/PhraseBubble.tsx",
     "src/features/explora/ExploreAll.tsx",
-    "src/features/sonus/CommutePage.tsx"
+    "src/features/sonus/CommutePage.tsx",
+    "src/features/colloquium/ConversationReviewView.tsx"
   ],
   "Save line": [
     "src/features/cantus/player/LyricSheet.tsx",
@@ -1158,7 +1177,8 @@
   "Clear": [
     "src/features/cantus/room/search.tsx",
     "src/features/mundus/TipsView.tsx",
-    "src/features/translate/TranslatePracticePage.tsx"
+    "src/features/translate/TranslatePracticePage.tsx",
+    "src/features/colloquium/ConversationReviewView.tsx"
   ],
   "Forget {0}": [
     "src/features/cantus/room/search.tsx",
@@ -1245,10 +1265,12 @@
     "src/features/codex/BookDetailsPage.tsx"
   ],
   "part": [
-    "src/features/codex/BookDetailsPage.tsx"
+    "src/features/codex/BookDetailsPage.tsx",
+    "src/features/sonus/BookPage.tsx"
   ],
   "parts": [
-    "src/features/codex/BookDetailsPage.tsx"
+    "src/features/codex/BookDetailsPage.tsx",
+    "src/features/sonus/BookPage.tsx"
   ],
   "The original article": [
     "src/features/codex/BookDetailsPage.tsx"
@@ -1339,10 +1361,7 @@
     "src/features/codex/BookDetailsPage.tsx"
   ],
   "{0} words": [
-    "src/features/codex/BookDetailsPage.tsx",
-    "src/features/codex/NewTextPage.tsx",
-    "src/features/lab/LabTests.tsx",
-    "src/features/translate/TranslatePracticePage.tsx"
+    "src/features/thesaurus/dictionary/WordMemory.tsx"
   ],
   "An empty line starts a new paragraph. “# ” makes a heading, “> ” a quotation; lines like ![picture](…) are the chapter’s pictures.": [
     "src/features/codex/BookDetailsPage.tsx"
@@ -1546,13 +1565,15 @@
     "src/features/codex/diarium/Entries.tsx",
     "src/features/codex/diarium/EntryPage.tsx",
     "src/features/cursus/course/WriteLesson.tsx",
-    "src/features/production/OwnWords.tsx"
+    "src/features/production/OwnWords.tsx",
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
   ],
   "words": [
     "src/features/codex/diarium/Entries.tsx",
     "src/features/codex/diarium/EntryPage.tsx",
     "src/features/cursus/course/WriteLesson.tsx",
-    "src/features/production/OwnWords.tsx"
+    "src/features/production/OwnWords.tsx",
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
   ],
   "Grade {0}": [
     "src/features/codex/diarium/Entries.tsx"
@@ -1874,11 +1895,15 @@
   ],
   "book": [
     "src/features/codex/goodreads/GoodreadsTab.tsx",
-    "src/features/ratio/Overview.tsx"
+    "src/features/ratio/Overview.tsx",
+    "src/features/codex/goodreads/GoodreadsImport.tsx",
+    "src/features/ordo/sections/BackupSection.tsx"
   ],
   "books": [
     "src/features/codex/goodreads/GoodreadsTab.tsx",
-    "src/features/ratio/Overview.tsx"
+    "src/features/ratio/Overview.tsx",
+    "src/features/codex/goodreads/GoodreadsImport.tsx",
+    "src/features/ordo/sections/BackupSection.tsx"
   ],
   "Clear filters": [
     "src/features/codex/goodreads/GoodreadsTab.tsx"
@@ -2153,7 +2178,8 @@
   ],
   "In {0}": [
     "src/features/codex/reader/AddToDeck.tsx",
-    "src/features/thesaurus/dictionary/Entry.tsx"
+    "src/features/thesaurus/dictionary/Entry.tsx",
+    "src/features/grammatica/TopicPage.tsx"
   ],
   "Move to another deck": [
     "src/features/codex/reader/AddToDeck.tsx"
@@ -2411,7 +2437,8 @@
     "src/features/codex/reader/ReaderPage.tsx"
   ],
   "Finish": [
-    "src/features/codex/reader/ReaderPage.tsx"
+    "src/features/codex/reader/ReaderPage.tsx",
+    "src/features/cursus/sounds/StressDrill.tsx"
   ],
   "Check understanding": [
     "src/features/codex/reader/ReadingPractice.tsx"
@@ -2733,7 +2760,8 @@
   ],
   "Copy": [
     "src/features/colloquium/ColloquiumPage.tsx",
-    "src/features/ordo/sections/MusicSection.tsx"
+    "src/features/ordo/sections/MusicSection.tsx",
+    "src/features/colloquium/SoloSpeakingView.tsx"
   ],
   "Open it in": [
     "src/features/colloquium/ColloquiumPage.tsx"
@@ -2769,10 +2797,12 @@
     "src/features/culture/CultureShelf.tsx"
   ],
   "note": [
-    "src/features/culture/CultureShelf.tsx"
+    "src/features/culture/CultureShelf.tsx",
+    "src/features/lab/designNotes/copy.ts"
   ],
   "notes": [
-    "src/features/culture/CultureShelf.tsx"
+    "src/features/culture/CultureShelf.tsx",
+    "src/features/lab/designNotes/copy.ts"
   ],
   "Culture notes": [
     "src/features/culture/CultureShelf.tsx"
@@ -3343,7 +3373,8 @@
     "src/features/explora/ExploreAll.tsx"
   ],
   "Any level": [
-    "src/features/explora/ExploreAll.tsx"
+    "src/features/explora/ExploreAll.tsx",
+    "src/features/sonus/library/BooksTab.tsx"
   ],
   "Series, films, books and podcasts picked by hand come with the twenty main languages. Here, Sonus et Visio › Streaming lists what streams in the language on your services.": [
     "src/features/explora/ExploreAll.tsx"
@@ -3440,7 +3471,8 @@
     "src/features/generate/MakePage.tsx"
   ],
   "Settings › AI": [
-    "src/features/generate/MakePage.tsx"
+    "src/features/generate/MakePage.tsx",
+    "src/features/thesaurus/dictionary/Difference.tsx"
   ],
   "Add your AI key first:{0}{1}": [
     "src/features/generate/MakePage.tsx"
@@ -3476,7 +3508,8 @@
     "src/features/generate/MakePage.tsx"
   ],
   "{0} of {1} right": [
-    "src/features/generate/MakePage.tsx"
+    "src/features/generate/MakePage.tsx",
+    "src/features/generate/MadeViews.tsx"
   ],
   "{0} Report": [
     "src/features/generated/GeneratedLabel.tsx"
@@ -4099,11 +4132,17 @@
   ],
   "card": [
     "src/features/home/HomeToday.tsx",
-    "src/features/thesaurus/deck/TidyDialog.tsx"
+    "src/features/thesaurus/deck/TidyDialog.tsx",
+    "src/features/codex/diarium/Review.tsx",
+    "src/features/thesaurus/ThesaurusPage.tsx",
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
   ],
   "cards": [
     "src/features/home/HomeToday.tsx",
-    "src/features/thesaurus/deck/TidyDialog.tsx"
+    "src/features/thesaurus/deck/TidyDialog.tsx",
+    "src/features/codex/diarium/Review.tsx",
+    "src/features/thesaurus/ThesaurusPage.tsx",
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
   ],
   "{0} {1} reviewed": [
     "src/features/home/HomeToday.tsx"
@@ -4130,7 +4169,8 @@
     "src/features/home/HomeToday.tsx"
   ],
   "Write": [
-    "src/features/codex/diarium/EntryPage.tsx"
+    "src/features/codex/diarium/EntryPage.tsx",
+    "src/features/codex/NewTextPage.tsx"
   ],
   "Live": [
     "src/features/home/HomeToday.tsx",
@@ -4141,7 +4181,8 @@
     "src/features/home/HomeToday.tsx"
   ],
   "News": [
-    "src/features/home/HomeToday.tsx"
+    "src/features/home/HomeToday.tsx",
+    "src/features/codex/NewTextPage.tsx"
   ],
   "Free": [
     "src/features/lab/PretendCard.tsx",
@@ -5118,7 +5159,8 @@
     "src/features/ordo/sections/BackupSection.tsx"
   ],
   "Merge": [
-    "src/features/ordo/sections/BackupSection.tsx"
+    "src/features/ordo/sections/BackupSection.tsx",
+    "src/features/thesaurus/library/dialogs.tsx"
   ],
   "Made {0}.": [
     "src/features/ordo/sections/BackupSection.tsx"
@@ -5128,7 +5170,8 @@
   ],
   "Flashcards": [
     "src/features/ordo/sections/CardsSection.tsx",
-    "src/features/ratio/Overview.tsx"
+    "src/features/ratio/Overview.tsx",
+    "src/features/ordo/sections/StorageSection.tsx"
   ],
   "Make your cards your own. The study screen’s Aa button changes this too.": [
     "src/features/ordo/sections/CardsSection.tsx"
@@ -6204,7 +6247,8 @@
   ],
   "Play {0}": [
     "src/features/sonus/BookPage.tsx",
-    "src/features/sonus/FeedPage.tsx"
+    "src/features/sonus/FeedPage.tsx",
+    "src/features/cursus/sounds/RecordCompare.tsx"
   ],
   "Read along: {0}": [
     "src/features/sonus/BookPage.tsx"
@@ -6265,7 +6309,10 @@
     "src/features/sonus/CommutePage.tsx"
   ],
   "Again": [
-    "src/features/sonus/CommutePage.tsx"
+    "src/features/sonus/CommutePage.tsx",
+    "src/features/cursus/sounds/Intonation.tsx",
+    "src/features/cursus/sounds/MinimalPairs.tsx",
+    "src/features/cursus/sounds/StressDrill.tsx"
   ],
   "Repeat each sentence: {0}": [
     "src/features/sonus/CommutePage.tsx",
@@ -6630,7 +6677,8 @@
     "src/features/sonus/player/Bookmarks.tsx"
   ],
   "{0} chapters": [
-    "src/features/sonus/player/Chapters.tsx"
+    "src/features/sonus/player/Chapters.tsx",
+    "src/features/ordo/sections/StorageSection.tsx"
   ],
   "{0} Chapters": [
     "src/features/sonus/player/Chapters.tsx"
@@ -6899,7 +6947,8 @@
   ],
   "Stop": [
     "src/features/speech/SpeakButton.tsx",
-    "src/features/generate/MakePage.tsx"
+    "src/features/generate/MakePage.tsx",
+    "src/features/cursus/sounds/RecordCompare.tsx"
   ],
   "{0} (recorded by {1}, Wikimedia Commons)": [
     "src/features/speech/SpeakButton.tsx"
@@ -7127,7 +7176,8 @@
   ],
   "Add card": [
     "src/features/thesaurus/deck/DeckPage.tsx",
-    "src/features/thesaurus/deck/NoteEditor.tsx"
+    "src/features/thesaurus/deck/NoteEditor.tsx",
+    "src/features/colloquium/ConversationReviewView.tsx"
   ],
   "Deck options": [
     "src/features/thesaurus/deck/DeckPage.tsx",
@@ -7350,7 +7400,8 @@
     "src/features/thesaurus/deck/NoteEditor.tsx"
   ],
   "Word": [
-    "src/features/thesaurus/deck/NoteEditor.tsx"
+    "src/features/thesaurus/deck/NoteEditor.tsx",
+    "src/features/cursus/sounds/RecordCompare.tsx"
   ],
   "Example sentence": [
     "src/features/thesaurus/deck/NoteEditor.tsx"
@@ -8029,7 +8080,8 @@
     "src/features/thesaurus/study/SentencesRound.tsx"
   ],
   "Check": [
-    "src/features/thesaurus/study/SentencesRound.tsx"
+    "src/features/thesaurus/study/SentencesRound.tsx",
+    "src/features/generate/MadeViews.tsx"
   ],
   "Right: “{0}”.": [
     "src/features/thesaurus/study/SentencesRound.tsx"
@@ -9008,7 +9060,8 @@
   ],
   "Lingua+": [
     "src/features/lab/PretendCard.tsx",
-    "src/features/sonus/SonusPage.tsx"
+    "src/features/sonus/SonusPage.tsx",
+    "src/features/ordo/sections/PlanSection.tsx"
   ],
   "Max": [
     "src/features/lab/PretendCard.tsx"
@@ -9209,7 +9262,8 @@
   ],
   "Thesaurus": [
     "src/features/generate/MakePage.tsx",
-    "src/features/thesaurus/deck/DeckPage.tsx"
+    "src/features/thesaurus/deck/DeckPage.tsx",
+    "src/features/thesaurus/ThesaurusPage.tsx"
   ],
   "What kind of text": [
     "src/features/generate/MakePage.tsx"
@@ -9233,10 +9287,12 @@
     "src/features/generate/MakePage.tsx"
   ],
   "Choose a text…": [
-    "src/features/generate/MakePage.tsx"
+    "src/features/generate/MakePage.tsx",
+    "src/features/thesaurus/library/FromListDialog.tsx"
   ],
   "Your library is empty": [
-    "src/features/generate/MakePage.tsx"
+    "src/features/generate/MakePage.tsx",
+    "src/features/thesaurus/library/FromListDialog.tsx"
   ],
   "Grammar point": [
     "src/features/generate/MakePage.tsx"
@@ -9272,22 +9328,29 @@
     "src/features/ordo/sections/BackupSection.tsx"
   ],
   "Playlists": [
-    "src/features/sonus/SonusPage.tsx"
+    "src/features/sonus/SonusPage.tsx",
+    "src/features/sonus/library/PlaylistDialog.tsx"
   ],
   "Nothing in this playlist yet": [
     "src/features/sonus/SonusPage.tsx"
   ],
   "Sonus": [
-    "src/features/sonus/SonusPage.tsx"
+    "src/features/sonus/SonusPage.tsx",
+    "src/features/sonus/FeedPage.tsx",
+    "src/features/sonus/MiniPlayer.tsx",
+    "src/features/sonus/WordsAloud.tsx",
+    "src/features/sonus/player/PlayerPage.tsx"
   ],
   "Your words, read aloud": [
-    "src/features/sonus/SonusPage.tsx"
+    "src/features/sonus/SonusPage.tsx",
+    "src/features/sonus/WordsAloud.tsx"
   ],
   "{0}{1}for the commute.": [
     "src/features/sonus/SonusPage.tsx"
   ],
   "Sonus{0}": [
-    "src/features/sonus/SonusPage.tsx"
+    "src/features/sonus/SonusPage.tsx",
+    "src/features/cantus/room/CantusRoom.tsx"
   ],
   "Hear this sentence once more (key: A)": [
     "src/features/sonus/player/Transport.tsx"
@@ -9311,7 +9374,8 @@
     "src/features/thesaurus/deck/DeckPage.tsx"
   ],
   "{0}Ludus{1}": [
-    "src/features/thesaurus/deck/DeckPage.tsx"
+    "src/features/thesaurus/deck/DeckPage.tsx",
+    "src/features/thesaurus/library/TodayCard.tsx"
   ],
   "Dictionary search tools": [
     "src/features/thesaurus/dictionary/DictionarySearch.tsx"
@@ -9342,5 +9406,2266 @@
   ],
   "Each time you watch it to the end, the English line goes from shown to blurred, to after the line, to hidden.": [
     "src/features/visio/player/SubtitleSettings.tsx"
+  ],
+  "opening…": [
+    "src/app/StartingUp.tsx"
+  ],
+  "Skip to main content": [
+    "src/app/shells/AppShell.tsx"
+  ],
+  "Lingua": [
+    "src/app/shells/Wordmark.tsx",
+    "src/app/shells/touch/TopBar.tsx",
+    "src/features/ordo/OrdoPage.tsx"
+  ],
+  "Lingua{0}": [
+    "src/app/shells/desktop/Sidebar.tsx",
+    "src/features/home/HomeToday.tsx",
+    "src/features/ordo/sections/PlanSection.tsx",
+    "src/features/plans/PlanCards.tsx",
+    "src/features/plans/PlanPitch.tsx"
+  ],
+  "Import an EPUB, PDF or comic, paste an article, or pick a free classic in Explora.": [
+    "src/features/bibliotheca/BibliothecaPage.tsx"
+  ],
+  "Follow a podcast, open a free LibriVox audiobook, save a radio station, or import your own audio files.": [
+    "src/features/bibliotheca/BibliothecaPage.tsx"
+  ],
+  "Add a video file with subtitles, or load subtitles for a series or film you watch on your streaming services.": [
+    "src/features/bibliotheca/BibliothecaPage.tsx"
+  ],
+  "Start with a ready-made frequency or theme deck, import an Anki deck, or mark words while reading and listening.": [
+    "src/features/bibliotheca/BibliothecaPage.tsx"
+  ],
+  "Find another recording": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion, Bandcamp": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "That isn’t a link Lingua can play: a song or video on YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp.": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "Live radio": [
+    "src/features/cantus/room/CantusRoom.tsx"
+  ],
+  "Codex": [
+    "src/features/codex/BookDetailsPage.tsx",
+    "src/features/codex/CodexPage.tsx",
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "Write or paste": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "Book": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "Import a book": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "Comic": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "Import a comic": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "News & links": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "Opening the file…": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "Speak": [
+    "src/features/codex/diarium/Dictate.tsx"
+  ],
+  "A title": [
+    "src/features/codex/diarium/Entries.tsx"
+  ],
+  "Diarium": [
+    "src/features/codex/diarium/EntryPage.tsx"
+  ],
+  "A word…": [
+    "src/features/codex/diarium/WritingHelp.tsx"
+  ],
+  "Free entry": [
+    "src/features/codex/diarium/WritingPortfolio.tsx"
+  ],
+  "No topic": [
+    "src/features/codex/diarium/WritingPortfolio.tsx"
+  ],
+  "free": [
+    "src/features/codex/diarium/WritingPortfolio.tsx"
+  ],
+  "All {0}": [
+    "src/features/codex/goodreads/GoodreadsTab.tsx"
+  ],
+  "Your Goodreads books": [
+    "src/features/codex/goodreads/GoodreadsTab.tsx"
+  ],
+  "No topic yet": [
+    "src/features/codex/library/GradedTab.tsx"
+  ],
+  "kind not assigned": [
+    "src/features/codex/library/GradedTab.tsx"
+  ],
+  "No translation came back. Check the connection.": [
+    "src/features/codex/reader/PhraseBubble.tsx"
+  ],
+  "No translation found": [
+    "src/features/codex/reader/TapGloss.tsx"
+  ],
+  "Talk about anything spontaneously without a predefined script.": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "The AI actively guides, teaches, and explains mistakes.": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Total immersion in the language with minimal assistance.": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "A real-world scenario with a clear goal and character roles.": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "All together when you finish, so the talk keeps flowing.": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Briefly, after each of your answers.": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "No corrections, just talking.": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "The AI wraps the scene up and tells you how you did.": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Talk about what you read, watched and wrote": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "“How did it go?”": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Paste your conversation with an external AI or solo recording to analyze fluency, get essential corrections, and extract flashcards.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Load sample dialogue": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Paste your dialogue transcript here...\nExample:\nYou: Hola, ¿cómo estás?\nAI: ¡Hola! Muy bien, ¿y tú?": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Recognizes lines starting with “You:”, “AI:”, or raw paragraphs.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Analyze conversation {0}": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Conversation analysis results": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Fluency score": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Saved to Diarium": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Save to Diarium (F0583)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Copy corrected": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Review views": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Sentence Review (F0581)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Fluency Metrics (F0562)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Vocabulary ({0})": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Conversation Replay (F0578)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Turn {0}": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "High confidence correction": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Stylistic nuance": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Corrected:": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Listen to corrected sentence": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Essential Grammar Errors (F0557)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Natural phrasing & stylistic notes (F0558)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "More idiomatic:": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Formality: {0}": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Speaking rate (F0602)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Words per minute": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Speaking time (F0566)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "{0} words total": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Avg Turn Length (F0567)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Max: {0} words": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Complexity (F0565)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "{0} sub-clauses": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Filler-word tracking (F0563)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Unconscious vocal fillers and crutch words detected in speech.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "No repetitive filler words detected. Smooth delivery!": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Repeated-word tracking (F0564)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Consecutive word repetitions and stutters.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "No repeated stutter tokens spotted.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Hesitations & pause distribution (F0568, F0603)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Moments where speech paused for thought or search.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Minimal hesitation; speech flowed unimpeded.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Multiple pauses detected; practice speaking with continuous breath support.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Self-corrections & retrieval (F0569, F0570)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Moments where wording was repaired on the fly.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "No self-repairs or placeholder words found.": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Summary of new expressions (F0582)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Corrected form": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Idiomatic expression": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Listen to word": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Context: “{0}”": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "In deck": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Make flashcard (F0576)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Replay conversation (F0578)": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "{0} turns": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Listen to {0}'s turn": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Sermo {0}": [
+    "src/features/colloquium/HomeCard.tsx"
+  ],
+  "Solo speaking challenges": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Solo speaking practice": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Timed monologues, storytelling, picture description, and rapid prompts to build spoken automaticity.": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "All challenges": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Start practice {0}": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Preparation time": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Preparation · Think about your points": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "seconds": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Listen to reference sentence": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Helpful hints to cover": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "I’m ready — start speaking now {0}": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Speaking time": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Recording out loud": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  " / {0}s target": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "{0} Real-time transcription (F0584)": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "{0} words spoken": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Speak clearly into your microphone... your words appear here in real time.": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Finish speaking": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Review speaking performance": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Speaking complete · Summary": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Target: {0}s": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Words spoken": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "{0} wpm": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Target reached": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Full duration": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Brief answer": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Listen to your recording (F0579)": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Play back": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Spoken transcript": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "No words recorded. You can type or paste what you said here to review it.": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Try another challenge": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Analyze in “How did it go?” {0}": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Wiktionary recording": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Cursus": [
+    "src/features/cursus/CursusPage.tsx"
+  ],
+  "Listening…": [
+    "src/features/cursus/course/SpeakLesson.tsx"
+  ],
+  "Press the microphone (M) and say it": [
+    "src/features/cursus/course/SpeakLesson.tsx"
+  ],
+  "Drills": [
+    "src/features/cursus/sounds/Drills.tsx"
+  ],
+  "Drill": [
+    "src/features/cursus/sounds/Drills.tsx"
+  ],
+  "Say these": [
+    "src/features/cursus/sounds/Drills.tsx",
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "Five at random from all the drills": [
+    "src/features/cursus/sounds/Drills.tsx"
+  ],
+  "Test me": [
+    "src/features/cursus/sounds/Drills.tsx"
+  ],
+  "Statement or question?": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "{0} to go · {1} of {2} right": [
+    "src/features/cursus/sounds/Intonation.tsx",
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Right answer": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "Done: {0} of {1} right.{2}{3}": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "Which word carries the stress?": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "In an answer, the word that gives the new information is said with the most weight. Read the question, then choose that word in the answer.": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "Yes: ": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "Not quite: ": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "{0}“{1}” is what the question asks for, so it carries the stress.{2}": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "Melody and stress": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "Which did you hear?": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Two words that differ in one sound. Hear one, then say which it was. A miss says what to listen for.": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Show all pairs": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Only pairs with {0}.{1}{2}": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Missed {0} time{1}: practise pairs with it": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Practise them all": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Sounds you mix up:{0}{1}{2}": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "This was said": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Yes. ": [
+    "src/features/cursus/sounds/MinimalPairs.tsx",
+    "src/features/cursus/sounds/StressDrill.tsx"
+  ],
+  "Not quite. ": [
+    "src/features/cursus/sounds/MinimalPairs.tsx",
+    "src/features/cursus/sounds/StressDrill.tsx"
+  ],
+  "{0}Listen for: {1}.": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Say both words and see their shapes": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Say both": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "Done: {0} of {1} right.": [
+    "src/features/cursus/sounds/MinimalPairs.tsx",
+    "src/features/cursus/sounds/StressDrill.tsx"
+  ],
+  "No pair uses that sound yet.": [
+    "src/features/cursus/sounds/MinimalPairs.tsx"
+  ],
+  "A sketch of the mouth from the side, showing where the tongue is": [
+    "src/features/cursus/sounds/MouthDiagram.tsx"
+  ],
+  "voice on": [
+    "src/features/cursus/sounds/MouthDiagram.tsx"
+  ],
+  "voice off": [
+    "src/features/cursus/sounds/MouthDiagram.tsx"
+  ],
+  "Your reading of {0}": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "Delete the reading of {0}": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "Your pronunciation diary": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "No reading yet.": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "Your last reading was {0} days ago: time for another.": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "Your last reading was {0}.": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "Read this passage aloud, then again in a week, and in a month. It is always the same one, so you can hear how you change. {0}": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "Stop and keep it": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "Read it aloud": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "Your readings": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "reading": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "readings": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "{0} {1}, {2} on this device. They are never sent anywhere.": [
+    "src/features/cursus/sounds/PronunciationDiary.tsx"
+  ],
+  "{0}: which frequencies are loud, over time": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Not enough of your voice was heard to see which way it goes at the end. Say it a little louder.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "A question rises at the end": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "A statement falls at the end": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  ", as it should.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "{0}: your voice {1}{2} (Measured from your recording; a guide, not a mark.)": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Slow": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "{0}: loudness above, pitch below": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Say it, and see it": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Choose a word, say it (or shadow it: say it together with the speaker, with headphones on), and see how loud and how high your voice goes beside a real speaker’s. The shapes are a mirror, not a mark: what counts is being understood. Your recording stays on this device and is not kept.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Say “{0}”": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "The real speaker plays and you say it with them. Use headphones.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Shadow it": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "The device understood you.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "The device heard “{0}”.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "The device heard nothing.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Your recording becomes the one to compare with, to hear your own progress.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Use mine as the model": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  " the device didn’t hear {0};": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  " it heard {0} that isn’t there;": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Where it differed from “{0}”:{1}{2} look those sounds up above and try again slowly. (A guess from what the device wrote down, not a measurement.)": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "You took {0}× as long as the speaker: try a little quicker.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "You were {0}× quicker than the speaker: try slowing down so each sound is clear.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Your length is close to the speaker’s.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "A real speaker": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "There is no recording of this word to compare with. Your own still shows its shape.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Looking for a recording…": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Vowel chart": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Vowel {0}": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Bold: voiced (the throat hums). Plain: unvoiced.": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "About this sound": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "{0} vowel{1}{2}{3}": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Tone": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "A sketch to think with, not a scan: the real mouth varies from person to person.": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Practise pairs with this sound": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "first": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "second": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Same place and manner, other voicing:{0}{1}. Say one, then the other with a hand on your throat: only the {2} hums.": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Sounds are written for the six core languages.": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "The sounds of {0}, and the rules that decide which one a letter makes. Choose a sound to read about it and hear words with it. What matters first is being understood, not losing your accent.": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Tones": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Vowels": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Left to right: front to back. Top to bottom: close to open. A thick ring: lips rounded. Dashed: through the nose.": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Consonants": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Stress, spelling and speech": [
+    "src/features/cursus/sounds/SoundsTab.tsx"
+  ],
+  "Which syllable is stressed?": [
+    "src/features/cursus/sounds/StressDrill.tsx"
+  ],
+  "Tap the syllable that is said louder and longer. Hear the word if you like.": [
+    "src/features/cursus/sounds/StressDrill.tsx"
+  ],
+  "Syllables of {0}": [
+    "src/features/cursus/sounds/StressDrill.tsx"
+  ],
+  "{0}{1} is stressed on “{2}”.": [
+    "src/features/cursus/sounds/StressDrill.tsx"
+  ],
+  "It turns up more often for a while, until it’s as quick as the rest.": [
+    "src/features/cursus/typing/TypingPractice.tsx"
+  ],
+  "Tap a word, then what goes with it": [
+    "src/features/exercise/ExerciseSession.tsx"
+  ],
+  "Rate your answer above": [
+    "src/features/exercise/ExerciseSession.tsx"
+  ],
+  "Tap between letters to cut. Your line: {0}": [
+    "src/features/exercise/SplitView.tsx"
+  ],
+  " This level is an estimate.": [
+    "src/features/explora/ExploreAll.tsx"
+  ],
+  "What do you do?": [
+    "src/features/generate/MadeViews.tsx"
+  ],
+  "The end.": [
+    "src/features/generate/MadeViews.tsx"
+  ],
+  "Go back one step": [
+    "src/features/generate/MadeViews.tsx"
+  ],
+  "Lesson {0}": [
+    "src/features/generate/MadeViews.tsx"
+  ],
+  "A deck of this lesson": [
+    "src/features/generate/MadeViews.tsx"
+  ],
+  "record yourself in Cursus › Sounds": [
+    "src/features/generate/MadeViews.tsx"
+  ],
+  "Say them aloud, then{0}{1}{2}and see them beside a real speaker’s.": [
+    "src/features/generate/MadeViews.tsx"
+  ],
+  "Tap one side, then its match": [
+    "src/features/grammatica/GrammarLesson.tsx",
+    "src/features/grammatica/letters/LettersLesson.tsx"
+  ],
+  "Tap an answer": [
+    "src/features/grammatica/GrammarLesson.tsx",
+    "src/features/thesaurus/study/Ludus.tsx"
+  ],
+  "Tense Timeline": [
+    "src/features/grammatica/GrammarVisuals.tsx"
+  ],
+  "Grammatica": [
+    "src/features/grammatica/GrammaticaPage.tsx",
+    "src/features/grammatica/TopicPage.tsx"
+  ],
+  " and ": [
+    "src/features/grammatica/GrammaticaPage.tsx",
+    "src/features/grammatica/letters/LettersPage.tsx"
+  ],
+  "Base form": [
+    "src/features/grammatica/SentenceExplainer.tsx"
+  ],
+  "Determined by context": [
+    "src/features/grammatica/SentenceExplainer.tsx"
+  ],
+  "grammar": [
+    "src/features/grammatica/TopicMap.tsx"
+  ],
+  "Target language": [
+    "src/features/grammatica/TopicPage.tsx"
+  ],
+  "Grammatica {0}": [
+    "src/features/grammatica/letters/LettersPage.tsx",
+    "src/features/ratio/GrammarPanel.tsx"
+  ],
+  "{0} Grammatica": [
+    "src/features/grammatica/links.tsx"
+  ],
+  "Word of the day": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Daily notification enabled": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Turn on daily word notification": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Daily notifications": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Hear pronunciation": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Add to deck": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Dictionary {0}": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Quick 2-min review": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Quick 2-Minute Review": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "2-Minute Sprint": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Word to review": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Continue in full study {0}": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Ratio {0}": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Element": [
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Mentis": [
+    "src/features/mentis/MentisPage.tsx"
+  ],
+  "Mundus": [
+    "src/features/mundus/MundusPage.tsx"
+  ],
+  "Accessibility": [
+    "src/features/ordo/sections/AppearanceSection.tsx"
+  ],
+  "High contrast": [
+    "src/features/ordo/sections/AppearanceSection.tsx"
+  ],
+  "Increases contrast across all surfaces and text to WCAG 2.1 AAA (7:1 text-to-background ratio) for maximum legibility.": [
+    "src/features/ordo/sections/AppearanceSection.tsx"
+  ],
+  "Accessible indicators": [
+    "src/features/ordo/sections/AppearanceSection.tsx"
+  ],
+  "Shows distinct shapes, glyphs, and patterns beside colors so state is never conveyed by color alone.": [
+    "src/features/ordo/sections/AppearanceSection.tsx"
+  ],
+  "Export & integrations ({0})": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Export your words, notes, highlights, transcripts, statistics, and study calendar in open formats (CSV, Markdown with [[wikilinks]], HTML/PDF, and iCalendar .ics).": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Vocabulary (.csv)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Journal (.md)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Journal (.txt)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Grammar notes (.md)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Reading highlights (.md)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Reading journal (.md)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Conversations (.md)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Phrasebook (.md)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Phrasebook (.csv)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Statistics (.csv)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Progress report (.html)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Study calendar (.ics)": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Lingua{0} {1}": [
+    "src/features/ordo/sections/PlanSection.tsx",
+    "src/features/plans/PlanCards.tsx"
+  ],
+  " · fallback": [
+    "src/features/ordo/sections/ReadingSection.tsx"
+  ],
+  "Letter spacing": [
+    "src/features/ordo/sections/ReadingSection.tsx"
+  ],
+  "Word spacing": [
+    "src/features/ordo/sections/ReadingSection.tsx"
+  ],
+  "Storage by kind": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Dictionaries": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "offline words": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Books & texts": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "in {0} decks": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Media & audio": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "{0} songs": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Clear cached media ({0})": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "{0}Privacy & destinations: what travels where": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Lingua is offline-first. Your vocabulary, reviews, diary entries, and highlights never leave this computer unless you pair devices or export a backup.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "• AI requests:": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Travel directly from your browser to Groq or Gemini using your own API key in headers. Never stored or used to train models.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "• Translation:": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Sent on demand to your chosen provider (MyMemory / Lingva) only when you look up a word; local pack dictionaries work 100% offline.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "• Speech & audio:": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Speech synthesis and recognition run on this device or through your Groq key. Recordings are never kept on external servers.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "• Analytics & tracking:": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Zero telemetry, zero third-party analytics, and zero tracking cookies.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Max is making it for you…": [
+    "src/features/practice/PracticePage.tsx"
+  ],
+  "This set can’t be made yet.": [
+    "src/features/practice/PracticePage.tsx"
+  ],
+  "Getting it ready…": [
+    "src/features/practice/PracticePage.tsx"
+  ],
+  "every topic up to it learned": [
+    "src/features/ratio/GrammarPanel.tsx"
+  ],
+  "learn every A1 topic first": [
+    "src/features/ratio/GrammarPanel.tsx"
+  ],
+  "Average over the letters practised": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Diarium {0}": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Ratio": [
+    "src/features/ratio/RatioPage.tsx"
+  ],
+  "Search across Lingua": [
+    "src/features/search/GlobalSearchModal.tsx"
+  ],
+  "Search words, flashcards, decks, saved texts, notes, and grammar…": [
+    "src/features/search/GlobalSearchModal.tsx"
+  ],
+  "Type a word, phrase, book title, flashcard meaning, or grammar topic to jump straight there.": [
+    "src/features/search/GlobalSearchModal.tsx"
+  ],
+  "Nothing matches “{0}”.": [
+    "src/features/search/GlobalSearchModal.tsx"
+  ],
+  "a text in Codex": [
+    "src/features/sonus/BookPage.tsx"
+  ],
+  "Live · {0}": [
+    "src/features/sonus/MiniPlayer.tsx"
+  ],
+  "You have no words with a meaning yet. Mark words while you read, or make a deck, and they will be read to you here.": [
+    "src/features/sonus/WordsAloud.tsx"
+  ],
+  "Previous word": [
+    "src/features/sonus/WordsAloud.tsx"
+  ],
+  "Next word": [
+    "src/features/sonus/WordsAloud.tsx"
+  ],
+  "There is no voice for this language on this device. Add one in Settings › Voices.": [
+    "src/features/sonus/WordsAloud.tsx"
+  ],
+  "Tap to cancel": [
+    "src/features/sonus/library/MediaOptions.tsx"
+  ],
+  "Listen without a connection": [
+    "src/features/sonus/library/MediaOptions.tsx"
+  ],
+  "For hosts that block app downloads": [
+    "src/features/sonus/library/MediaOptions.tsx"
+  ],
+  "Keeps streaming from the web": [
+    "src/features/sonus/library/MediaOptions.tsx"
+  ],
+  "Whisper, with word timings": [
+    "src/features/sonus/library/MediaOptions.tsx"
+  ],
+  "Read the transcript like a book": [
+    "src/features/sonus/library/MediaOptions.tsx"
+  ],
+  "Playlists…": [
+    "src/features/sonus/library/MediaOptions.tsx"
+  ],
+  "Your own lists": [
+    "src/features/sonus/library/MediaOptions.tsx"
+  ],
+  "“{0}” is in:": [
+    "src/features/sonus/library/PlaylistDialog.tsx"
+  ],
+  "No playlists yet. Name the first one.": [
+    "src/features/sonus/library/PlaylistDialog.tsx"
+  ],
+  "A new playlist": [
+    "src/features/sonus/library/PlaylistDialog.tsx"
+  ],
+  "{0} Sonus": [
+    "src/features/sonus/player/PlayerPage.tsx"
+  ],
+  "Read it like a book": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "Move everything 0.5 s earlier": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "Move everything 0.5 s later": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "Whisper on Groq": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "Label the speakers": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "Max: a guess from the words": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "SRT, VTT or plain text": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "No stations here yet.": [
+    "src/features/sonus/radio/RadioTab.tsx"
+  ],
+  "Ludus": [
+    "src/features/thesaurus/deck/DeckSettings.tsx",
+    "src/features/thesaurus/library/DeckTree.tsx",
+    "src/features/thesaurus/library/TodayCard.tsx",
+    "src/features/thesaurus/study/SentencesRound.tsx",
+    "src/features/thesaurus/study/StudyPage.tsx"
+  ],
+  "Every card back to new. Its review history stays in Ratio.": [
+    "src/features/thesaurus/deck/DeckSettings.tsx"
+  ],
+  "The deck, its cards and their history go.": [
+    "src/features/thesaurus/deck/DeckSettings.tsx"
+  ],
+  "Custom entry": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Import personal dictionary": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "entry": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx",
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "entries": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx",
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "{0} custom {1}": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "New custom dictionary entry": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Part of speech": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Definition (separate multiple senses with ;)": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Example translation (optional)": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Save entry": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Compare {0} sources": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Edit custom entry": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Add custom sense": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Report or fix entry": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Dictionary source comparison": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Personal dictionary sense for “{0}”": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Your definition(s), separated by ;": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Translation (optional)": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Save to personal dictionary": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Report or fix an issue with “{0}”": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "What is wrong?": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "What looks wrong?": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Replacement definition (applied immediately, optional)": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Save report & fix": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "{0} or {1}?": [
+    "src/features/thesaurus/dictionary/Difference.tsx"
+  ],
+  "Needs Lingua+ Max. {0}": [
+    "src/features/thesaurus/dictionary/Difference.tsx"
+  ],
+  "Needs your AI key: {0}": [
+    "src/features/thesaurus/dictionary/Difference.tsx"
+  ],
+  "Not the cousin it looks like": [
+    "src/features/thesaurus/dictionary/Entry.tsx"
+  ],
+  "It looks like the English “{0}”. {1}": [
+    "src/features/thesaurus/dictionary/Entry.tsx"
+  ],
+  "Open the deck": [
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
+  ],
+  "As a new ready-made deck": [
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
+  ],
+  "{0}Ludus": [
+    "src/features/thesaurus/library/DeckTree.tsx",
+    "src/features/thesaurus/library/TodayCard.tsx"
+  ],
+  "Decks": [
+    "src/features/thesaurus/library/DeckTree.tsx"
+  ],
+  "Choose a conversation…": [
+    "src/features/thesaurus/library/FromListDialog.tsx"
+  ],
+  "No conversations yet": [
+    "src/features/thesaurus/library/FromListDialog.tsx"
+  ],
+  "Into": [
+    "src/features/thesaurus/library/dialogs.tsx"
+  ],
+  "Tap a word, then its meaning": [
+    "src/features/thesaurus/study/Ludus.tsx"
+  ],
+  "Aligned link": [
+    "src/features/translate/AlignmentView.tsx"
+  ],
+  "sentence": [
+    "src/features/translate/TranslatePracticePage.tsx"
+  ],
+  "Visio": [
+    "src/features/visio/VisioPage.tsx",
+    "src/features/visio/player/WatchPage.tsx"
+  ],
+  "Whisper listens and writes every line": [
+    "src/features/visio/library/VideoOptions.tsx"
+  ],
+  "As an .srt file": [
+    "src/features/visio/library/VideoOptions.tsx"
+  ],
+  "Watch here with your subtitles": [
+    "src/features/visio/library/VideoOptions.tsx"
+  ],
+  "Frees {0}": [
+    "src/features/visio/library/VideoOptions.tsx"
+  ],
+  "Frees the space of the video": [
+    "src/features/visio/library/VideoOptions.tsx"
+  ],
+  "When the text comes after the voice": [
+    "src/features/visio/player/TrackPanel.tsx"
+  ],
+  "When the text comes before the voice": [
+    "src/features/visio/player/TrackPanel.tsx"
+  ],
+  "Words and meaning": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Idioms": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Proverbs": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Regional speech": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Politeness": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Humour": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Food": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Traditions": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "History": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Body language": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "The {0} dictionary was updated.": [
+    "src/app/Root.tsx"
+  ],
+  "{0} dictionary ready. Translations now work offline.": [
+    "src/app/Root.tsx"
+  ],
+  "The {0} dictionary couldn’t be installed.": [
+    "src/app/Root.tsx"
+  ],
+  "Milestone: {0}": [
+    "src/app/Root.tsx"
+  ],
+  "Lingua was updated to the latest version.": [
+    "src/app/UpdatePrompt.tsx"
+  ],
+  "Lingua is ready to work offline.": [
+    "src/app/UpdatePrompt.tsx"
+  ],
+  "A new version of Lingua is ready. It installs itself when you leave the app.": [
+    "src/app/UpdatePrompt.tsx"
+  ],
+  "The replay is over. Nothing was saved, and your light is as it was.": [
+    "src/app/onboarding/Onboarding.tsx"
+  ],
+  "Now studying {0}.": [
+    "src/app/onboarding/Onboarding.tsx",
+    "src/features/ordo/sections/LanguageSection.tsx"
+  ],
+  "Welcome to Lingua{0}. Happy reading!": [
+    "src/app/onboarding/Onboarding.tsx"
+  ],
+  ", {0}": [
+    "src/app/onboarding/Onboarding.tsx"
+  ],
+  "Could not save your choices. Please try again.": [
+    "src/app/onboarding/Onboarding.tsx"
+  ],
+  "Looking for another recording…": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "The lyrics library didn’t answer.": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "lyrics.ovh doesn’t have this song’s lyrics.": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "Spotify is connected. Your liked songs are in Sonus › Music.": [
+    "src/features/cantus/SpotifyCallback.tsx"
+  ],
+  "Line copied.": [
+    "src/features/cantus/player/LyricSheet.tsx"
+  ],
+  "Copying isn’t allowed here.": [
+    "src/features/cantus/player/LyricSheet.tsx"
+  ],
+  "That song couldn’t be opened. Try again in a moment.": [
+    "src/features/cantus/room/open.ts"
+  ],
+  "The preview couldn’t play. Try again in a moment.": [
+    "src/features/cantus/room/open.ts"
+  ],
+  "A chapter needs some text. To take it out, use Remove.": [
+    "src/features/codex/BookDetailsPage.tsx"
+  ],
+  "Chapter removed.": [
+    "src/features/codex/BookDetailsPage.tsx"
+  ],
+  "Added {0} {1} from “{2}”.": [
+    "src/features/codex/BookDetailsPage.tsx"
+  ],
+  "chapter": [
+    "src/features/codex/BookDetailsPage.tsx"
+  ],
+  "chapters": [
+    "src/features/codex/BookDetailsPage.tsx"
+  ],
+  "Lingua opens comics as CBZ (or CBR made as zip) files, PDFs, or the pages’ pictures.": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "Lingua reads DRM-free EPUB books, PDFs with text, and plain text files.": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "Nothing was heard. Try again, a little closer to the microphone.": [
+    "src/features/codex/diarium/Dictate.tsx"
+  ],
+  "Whisper now runs on this device. It downloads once ({0}) the first time you speak; Settings › Listening can change it.": [
+    "src/features/codex/diarium/Dictate.tsx"
+  ],
+  "Entry deleted.": [
+    "src/features/codex/diarium/Entries.tsx",
+    "src/features/codex/diarium/EntryPage.tsx"
+  ],
+  "The corrected text is now your entry. The changes stay visible here.": [
+    "src/features/codex/diarium/EntryPage.tsx"
+  ],
+  "Kept in your portfolio.": [
+    "src/features/codex/diarium/EntryPage.tsx"
+  ],
+  "Could not save the portfolio choice.": [
+    "src/features/codex/diarium/EntryPage.tsx"
+  ],
+  "Removed from the portfolio. Your entry is still here.": [
+    "src/features/codex/diarium/EntryPage.tsx"
+  ],
+  "Could not change the portfolio.": [
+    "src/features/codex/diarium/EntryPage.tsx"
+  ],
+  "Added “{0}” to Journal.": [
+    "src/features/codex/diarium/Review.tsx"
+  ],
+  "“{0}” is already in Journal.": [
+    "src/features/codex/diarium/Review.tsx"
+  ],
+  "Added {0} {1} to Journal.": [
+    "src/features/codex/diarium/Review.tsx"
+  ],
+  "Could not start the task. Please try again.": [
+    "src/features/codex/diarium/WritingTasks.tsx"
+  ],
+  "Added {0} {1} to your Goodreads shelves.": [
+    "src/features/codex/goodreads/GoodreadsImport.tsx"
+  ],
+  "Removed from your Goodreads shelves here.": [
+    "src/features/codex/goodreads/GoodreadsTab.tsx"
+  ],
+  "Removed from your library.": [
+    "src/features/codex/library/BookCard.tsx"
+  ],
+  "Text labels saved.": [
+    "src/features/codex/library/GradedTab.tsx"
+  ],
+  "Could not save the text labels.": [
+    "src/features/codex/library/GradedTab.tsx"
+  ],
+  "Reading “{0}”…": [
+    "src/features/codex/library/NewsPanel.tsx"
+  ],
+  "Added {0} books to your shelves.": [
+    "src/features/codex/library/useImporter.ts"
+  ],
+  "Added to your library.": [
+    "src/features/codex/library/useImporter.ts"
+  ],
+  "“{0}” is already in {1}.": [
+    "src/features/codex/reader/AddToDeck.tsx"
+  ],
+  "Moved “{0}” to {1}.": [
+    "src/features/codex/reader/AddToDeck.tsx"
+  ],
+  "Added “{0}” to {1}.": [
+    "src/features/codex/reader/AddToDeck.tsx",
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Highlight saved. Open Study tools for its margin note or card.": [
+    "src/features/codex/reader/PhraseBubble.tsx"
+  ],
+  "Copied.": [
+    "src/features/codex/reader/PhraseBubble.tsx"
+  ],
+  "Today’s reading goal is reached: {0} minutes. Read on as long as you like.": [
+    "src/features/codex/reader/ReaderPage.tsx"
+  ],
+  "Highlight removed.": [
+    "src/features/codex/reader/ReadingTools.tsx"
+  ],
+  "The prompt couldn’t be copied. Select it and copy it yourself.": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Please paste or write a conversation first": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Corrected transcript copied": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Failed to copy": [
+    "src/features/colloquium/ConversationReviewView.tsx",
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Saved “{0}” to flashcards": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Could not save card": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Saved conversation transcript and notes to Diarium": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Failed to save to Diarium": [
+    "src/features/colloquium/ConversationReviewView.tsx"
+  ],
+  "Transcript copied": [
+    "src/features/colloquium/SoloSpeakingView.tsx"
+  ],
+  "Item removed.": [
+    "src/features/culture/ImmersionPage.tsx"
+  ],
+  "Removed from this playlist; the video stays in Visio.": [
+    "src/features/culture/ImmersionPage.tsx"
+  ],
+  "“{0}” is on your Codex wishlist.": [
+    "src/features/explora/ExploreAll.tsx",
+    "src/features/mundus/PicksView.tsx"
+  ],
+  "Apple’s podcast directory doesn’t have it under that name. Try Spotify or Apple Podcasts.": [
+    "src/features/explora/ExploreAll.tsx",
+    "src/features/mundus/PicksView.tsx"
+  ],
+  "Added to your library in Codex": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "This device has one voice for this language, so both speakers sound the same.": [
+    "src/features/generate/MakePage.tsx"
+  ],
+  "Thank you. This won’t be offered again.": [
+    "src/features/generated/GeneratedLabel.tsx"
+  ],
+  "Create a deck in Thesaurus first.": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Notifications are not supported in this browser.": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Daily word notifications enabled.": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Notification permission was denied.": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Every design note was deleted.": [
+    "src/features/lab/DesignNotesCard.tsx"
+  ],
+  "Report copied. Paste it into the chat.": [
+    "src/features/lab/LabPage.tsx"
+  ],
+  "Home’s first steps are back.": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "This window can’t be resized from the page. Open one at {0} × {1} instead?": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "A plain toast: something happened.": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "Saved. Everything went well.": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "That didn’t work. Please try again.": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "A toast with an action.": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "Undone.": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "This one stays until it is closed.": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "No notes to copy yet.": [
+    "src/features/lab/designNotes/copy.ts"
+  ],
+  "{0} {1} copied as Markdown. Paste them into Claude.": [
+    "src/features/lab/designNotes/copy.ts"
+  ],
+  "The clipboard said no, so the notes are shown to select and copy.": [
+    "src/features/lab/designNotes/copy.ts"
+  ],
+  "Following “{0}” in Sonus.": [
+    "src/features/mundus/PicksView.tsx"
+  ],
+  "Mundus didn’t find anything to change in that. Try “something shorter” or “I’d rather listen”.": [
+    "src/features/mundus/ReplyBar.tsx"
+  ],
+  "Nothing left to deal with these filters. Try another time or place.": [
+    "src/features/mundus/TipsView.tsx"
+  ],
+  "Backup saved ({0}).": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "The backup could not be created.": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "Backup shared.": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "Merged: {0} added, {1} updated.": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "Restored {0} items from the backup.": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "Restoring failed. Your data was left unchanged.": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "No finished books yet. Mark a book as finished in Codex first.": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "Saved {0} {1} for Goodreads.": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "Export failed.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "No saved words for this language yet.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Exported {0} words to CSV.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "No journal entries for this language yet.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Exported {0} journal {1}.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "No grammar progress or notes yet.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Exported {0} grammar topics to Markdown.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "No texts in Codex for this language yet.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Exported reading highlights & margin notes.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Exported bilingual reading journal.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "No conversation transcripts yet.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Exported {0} conversation {1}.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "transcript": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "transcripts": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "No multi-word phrases saved yet.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Exported {0} phrases.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "No study statistics recorded yet.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Exported {0} days of learning statistics.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Saved printable progress report (.html).": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "Saved study schedule (.ics) for your calendar app.": [
+    "src/features/ordo/sections/ExportDataPanel.tsx"
+  ],
+  "{0} removed, with everything learnt in it.": [
+    "src/features/ordo/sections/LanguageSection.tsx"
+  ],
+  "The dictionary couldn’t be installed. Check your connection.": [
+    "src/features/ordo/sections/LanguageSection.tsx"
+  ],
+  "Copying isn’t allowed here; select the address and copy it.": [
+    "src/features/ordo/sections/MusicSection.tsx"
+  ],
+  "Spotify is disconnected.": [
+    "src/features/ordo/sections/MusicSection.tsx"
+  ],
+  "{0} is yours. Thank you.": [
+    "src/features/ordo/sections/PlanSection.tsx"
+  ],
+  "Licence copied. On another device, paste it under Restore with a licence key.": [
+    "src/features/ordo/sections/PlanSection.tsx"
+  ],
+  "Copying didn’t work here.": [
+    "src/features/ordo/sections/PlanSection.tsx"
+  ],
+  "{0} is restored on this device.": [
+    "src/features/ordo/sections/PlanSection.tsx"
+  ],
+  "{0} starts fresh: {1} words and {2} cards cleared.": [
+    "src/features/ordo/sections/ResetSection.tsx"
+  ],
+  "Something went wrong; nothing was changed.": [
+    "src/features/ordo/sections/ResetSection.tsx"
+  ],
+  "Cleared {0} cached media items.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Synced with {0}.": [
+    "src/features/ordo/sections/SyncSection.tsx"
+  ],
+  "your other device": [
+    "src/features/ordo/sections/SyncSection.tsx"
+  ],
+  "{0} devices": [
+    "src/features/ordo/sections/SyncSection.tsx"
+  ],
+  "{0} isn’t open right now.": [
+    "src/features/ordo/sections/SyncSection.tsx"
+  ],
+  "{0} now reads {1}.": [
+    "src/features/ordo/sections/VoicePanel.tsx"
+  ],
+  "{0} is on this device and now reads it.": [
+    "src/features/ordo/sections/VoicePanel.tsx"
+  ],
+  "{0} now reads it.": [
+    "src/features/ordo/sections/VoicePanel.tsx"
+  ],
+  "{0} is on. Test mode: nothing was charged.": [
+    "src/features/plans/PlanCards.tsx"
+  ],
+  "Finish paying on the page that opened. Lingua picks up your licence when you come back.": [
+    "src/features/plans/PlanCards.tsx"
+  ],
+  "Buying is off in the replay.": [
+    "src/features/plans/PlanPitch.tsx"
+  ],
+  "Plans are in test mode: Lingua+ Max is on, so everything stays open. Settings › Lab can act as another plan.": [
+    "src/features/plans/usePlan.ts"
+  ],
+  "Copied. Paste it to a friend who speaks {0}, or in a language exchange.": [
+    "src/features/production/useOwnWriting.ts"
+  ],
+  "Couldn’t copy. Select the text and copy it yourself.": [
+    "src/features/production/useOwnWriting.ts"
+  ],
+  "Kept in Diarium, in Mentis.": [
+    "src/features/production/useOwnWriting.ts"
+  ],
+  "Logged {0} minutes of {1}.": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Imported: {0} added, {1} updated.": [
+    "src/features/ratio/tabula/Tabula.tsx"
+  ],
+  "{0} is already in your table.": [
+    "src/features/ratio/tabula/Tabula.tsx"
+  ],
+  "Matched {0} of {1} {2}.{3}": [
+    "src/features/sonus/BookPage.tsx"
+  ],
+  " {0} {1} no transcript yet.": [
+    "src/features/sonus/BookPage.tsx"
+  ],
+  "has": [
+    "src/features/sonus/BookPage.tsx"
+  ],
+  "have": [
+    "src/features/sonus/BookPage.tsx"
+  ],
+  "The text wasn’t found in these parts.": [
+    "src/features/sonus/BookPage.tsx"
+  ],
+  "Saved. Parts get the book’s text once they’re transcribed.": [
+    "src/features/sonus/BookPage.tsx"
+  ],
+  "This browser can’t keep the screen on.": [
+    "src/features/sonus/CommutePage.tsx"
+  ],
+  "Up to date.": [
+    "src/features/sonus/FeedPage.tsx"
+  ],
+  "Back in Lingua. Sonus+ closed; the song keeps its place.": [
+    "src/features/sonus/SonusPage.tsx"
+  ],
+  "{0} audio this device can play.": [
+    "src/features/sonus/library/AddBookDrawer.tsx",
+    "src/features/sonus/library/AddMenu.tsx"
+  ],
+  "“{0}” isn’t": [
+    "src/features/sonus/library/AddBookDrawer.tsx",
+    "src/features/sonus/library/AddMenu.tsx"
+  ],
+  "{0} files aren’t": [
+    "src/features/sonus/library/AddBookDrawer.tsx",
+    "src/features/sonus/library/AddMenu.tsx"
+  ],
+  "{0} files added.": [
+    "src/features/sonus/library/AddMenu.tsx"
+  ],
+  "{0} is on your shelf.": [
+    "src/features/sonus/library/BooksTab.tsx"
+  ],
+  "Following “{0}”.": [
+    "src/features/sonus/library/Discover.tsx"
+  ],
+  "“{0}” is saved for offline listening.": [
+    "src/features/sonus/library/MediaOptions.tsx",
+    "src/services/sonus/jobs.ts"
+  ],
+  "Removed from Sonus.": [
+    "src/features/sonus/library/MediaOptions.tsx"
+  ],
+  "Transcript added: {0} sentences.": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "Transcript moved {0} by {1} s.": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "later": [
+    "src/features/sonus/player/TranscriptTools.tsx",
+    "src/features/visio/player/TrackPanel.tsx"
+  ],
+  "earlier": [
+    "src/features/sonus/player/TranscriptTools.tsx",
+    "src/features/visio/player/TrackPanel.tsx"
+  ],
+  "Speakers labelled: a guess from the words, not from the voices.": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "{0} is ready · {1} cards": [
+    "src/features/thesaurus/StarterPage.tsx"
+  ],
+  "{0} {1} moved": [
+    "src/features/thesaurus/ThesaurusPage.tsx"
+  ],
+  "Exported “{0}” (.apkg).": [
+    "src/features/thesaurus/deck/DeckPage.tsx"
+  ],
+  "Could not export Anki deck.": [
+    "src/features/thesaurus/deck/DeckPage.tsx"
+  ],
+  "Exported “{0}” (.csv).": [
+    "src/features/thesaurus/deck/DeckPage.tsx"
+  ],
+  "Exported “{0}” (.md).": [
+    "src/features/thesaurus/deck/DeckPage.tsx"
+  ],
+  "The dictionary has no entry for this word. Is it installed (Thesaurus › Dictionary)?": [
+    "src/features/thesaurus/deck/NoteEditor.tsx"
+  ],
+  "Filled in from the dictionary. Edit what you like.": [
+    "src/features/thesaurus/deck/NoteEditor.tsx"
+  ],
+  "Added “{0}”": [
+    "src/features/thesaurus/deck/NoteEditor.tsx"
+  ],
+  "Deleted “{0}”": [
+    "src/features/thesaurus/deck/NoteEditor.tsx"
+  ],
+  "Saved “{0}” to your personal dictionary.": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "No valid dictionary entries found in that file.": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Imported {0} entries from {1}.": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Updated your personal dictionary entry for “{0}”.": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "Saved your report and applied any local correction.": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "The dictionary was removed from this device.": [
+    "src/features/thesaurus/dictionary/DictionaryView.tsx"
+  ],
+  "The {0} dictionary is ready: {1} words, offline.": [
+    "src/features/thesaurus/dictionary/Entry.tsx"
+  ],
+  "The recording couldn’t be played.": [
+    "src/features/thesaurus/dictionary/Entry.tsx"
+  ],
+  "Added {0} to {1}{2}": [
+    "src/features/thesaurus/dictionary/WordMemory.tsx"
+  ],
+  " · {0} already had a card": [
+    "src/features/thesaurus/dictionary/WordMemory.tsx"
+  ],
+  "{0} marked as known": [
+    "src/features/thesaurus/dictionary/WordMemory.tsx"
+  ],
+  "{0} ignored": [
+    "src/features/thesaurus/dictionary/WordMemory.tsx"
+  ],
+  "{0} back in the inbox": [
+    "src/features/thesaurus/dictionary/WordMemory.tsx"
+  ],
+  "{0} is ready · {1} {2}": [
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
+  ],
+  "Added {0} {1} to {2}{3}": [
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
+  ],
+  "Every word of {0} is already in {1}": [
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
+  ],
+  "{0} imported · {1} cards": [
+    "src/features/thesaurus/library/CsvImportDrawer.tsx"
+  ],
+  "{0} cards spread over {1}": [
+    "src/features/thesaurus/library/TodayCard.tsx"
+  ],
+  "a day": [
+    "src/features/thesaurus/library/TodayCard.tsx"
+  ],
+  "a week": [
+    "src/features/thesaurus/library/TodayCard.tsx"
+  ],
+  "{0} days": [
+    "src/features/thesaurus/library/TodayCard.tsx"
+  ],
+  "Anki deck imported · {0} cards{1}": [
+    "src/features/thesaurus/library/useDeckImport.ts"
+  ],
+  ", {0} sounds and pictures": [
+    "src/features/thesaurus/library/useDeckImport.ts"
+  ],
+  "“{0}” keeps slipping. Try your own sentence or a way to remember it, or put it aside for now.": [
+    "src/features/thesaurus/study/Recall.tsx"
+  ],
+  "{0} added: not a video this device can play, or subtitles without a matching video.": [
+    "src/features/visio/library/AddVideoMenu.tsx"
+  ],
+  "“{0}” wasn’t": [
+    "src/features/visio/library/AddVideoMenu.tsx"
+  ],
+  "{0} weren’t": [
+    "src/features/visio/library/AddVideoMenu.tsx"
+  ],
+  "{0} added{1}.": [
+    "src/features/visio/library/AddVideoMenu.tsx"
+  ],
+  ", with {0}": [
+    "src/features/visio/library/AddVideoMenu.tsx"
+  ],
+  "{0} couldn’t be read as subtitles.": [
+    "src/features/visio/library/AddVideoMenu.tsx"
+  ],
+  "{0} added.": [
+    "src/features/visio/library/AddVideoMenu.tsx"
+  ],
+  "The video is on this device now.": [
+    "src/features/visio/library/VideoOptions.tsx"
+  ],
+  "The video file is gone; its subtitles and cards stay.": [
+    "src/features/visio/library/VideoOptions.tsx"
+  ],
+  "Removed from Visio.": [
+    "src/features/visio/library/VideoOptions.tsx"
+  ],
+  "Subtitles added: {0} lines.": [
+    "src/features/visio/player/TrackPanel.tsx"
+  ],
+  "Subtitles moved {0} by {1} s.": [
+    "src/features/visio/player/TrackPanel.tsx"
+  ],
+  "Subtitles for “{0}” are ready.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "“{0}” now reads along with the book.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "The transcript for “{0}” is ready, but the book’s text wasn’t found in it.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "The transcript for “{0}” is ready.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "English subtitles are ready: {0} lines.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "Subtitles for “{0}” are ready: {1} lines.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "YouTube didn’t share captions for this video. Try the Lingua extension on YouTube, a subtitle file, or Gemini with Max.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "Captions added: {0} lines.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "{0} word": [
+    "src/features/thesaurus/dictionary/WordMemory.tsx"
+  ],
+  "Your library across every tool in {0}": [
+    "src/features/bibliotheca/BibliothecaPage.tsx"
+  ],
+  "Talk in {0}": [
+    "src/features/colloquium/ColloquiumPage.tsx"
+  ],
+  "Learn {0} step by step": [
+    "src/features/cursus/CursusPage.tsx"
+  ],
+  "Discover content for your {0} tools · {1}": [
+    "src/features/explora/ExploraPage.tsx"
+  ],
+  "Grammar in {0}": [
+    "src/features/grammatica/GrammaticaPage.tsx"
+  ],
+  "The alphabet · {0}": [
+    "src/features/grammatica/letters/LettersPage.tsx"
+  ],
+  "Think, talk and write in {0}": [
+    "src/features/mentis/MentisPage.tsx"
+  ],
+  "Your guide to {0}": [
+    "src/features/mundus/MundusPage.tsx"
+  ],
+  "{0}, in every kind of exercise": [
+    "src/features/practice/PracticePage.tsx"
+  ],
+  "Listen in {0}": [
+    "src/features/sonus/SonusPage.tsx"
+  ],
+  "Listen to {0}": [
+    "src/features/sonus/WordsAloud.tsx"
+  ],
+  "Cursus › Translate": [
+    "src/features/translate/TranslatePracticePage.tsx"
+  ],
+  "Watch in {0}": [
+    "src/features/visio/VisioPage.tsx"
+  ],
+  "Every day": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "Your guide": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "Spanish": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "French": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "German": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "Russian": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "Chinese": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "Arabic": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "Dutch": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "That EPUB couldn’t be opened.": [
+    "src/features/bibliotheca/BibliothecaPage.tsx",
+    "src/features/codex/CodexPage.tsx",
+    "src/features/codex/goodreads/GoodreadsTab.tsx"
+  ],
+  "The translation didn’t work.": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "Line saved to “From Cantus”. Its card plays the line again.": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "Line saved to “From Cantus”.": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "That line is already a card.": [
+    "src/features/cantus/SongPage.tsx"
+  ],
+  "Spotify couldn’t connect.": [
+    "src/features/cantus/SpotifyCallback.tsx",
+    "src/features/ordo/sections/MusicSection.tsx"
+  ],
+  "The chapter couldn’t be saved.": [
+    "src/features/codex/BookDetailsPage.tsx"
+  ],
+  "That file couldn’t be read.": [
+    "src/features/codex/BookDetailsPage.tsx",
+    "src/features/codex/goodreads/GoodreadsImport.tsx",
+    "src/features/ratio/tabula/Tabula.tsx",
+    "src/features/sonus/player/TranscriptTools.tsx",
+    "src/features/thesaurus/library/useDeckImport.ts",
+    "src/features/visio/player/TrackPanel.tsx"
+  ],
+  "The text couldn’t be added.": [
+    "src/features/codex/NewTextPage.tsx"
+  ],
+  "It couldn’t be written out this time.": [
+    "src/features/codex/diarium/Dictate.tsx"
+  ],
+  "The microphone didn’t start.": [
+    "src/features/codex/diarium/Dictate.tsx",
+    "src/features/cursus/sounds/PronunciationDiary.tsx",
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "The check didn’t work. Try again.": [
+    "src/features/codex/diarium/EntryPage.tsx"
+  ],
+  "They’re all in Journal already.": [
+    "src/features/codex/diarium/Review.tsx"
+  ],
+  "That couldn’t be added.": [
+    "src/features/codex/discover/DiscoverTab.tsx",
+    "src/features/visio/library/AddVideoMenu.tsx"
+  ],
+  "Your Goodreads shelves are up to date.": [
+    "src/features/codex/goodreads/GoodreadsImport.tsx"
+  ],
+  "That edition couldn’t be added.": [
+    "src/features/codex/goodreads/GoodreadsTab.tsx"
+  ],
+  "The source could not be reached.": [
+    "src/features/codex/library/GradedTab.tsx"
+  ],
+  "The edition could not be added.": [
+    "src/features/codex/library/GradedTab.tsx"
+  ],
+  "The news couldn’t be loaded.": [
+    "src/features/codex/library/NewsPanel.tsx"
+  ],
+  "Those books are already on your shelves.": [
+    "src/features/codex/library/useImporter.ts"
+  ],
+  "That file couldn’t be imported.": [
+    "src/features/codex/library/useImporter.ts"
+  ],
+  "Could not save the highlight.": [
+    "src/features/codex/reader/PhraseBubble.tsx"
+  ],
+  "Saved to “From my reading”.": [
+    "src/features/codex/reader/PhraseBubble.tsx"
+  ],
+  "That phrase is already in your deck.": [
+    "src/features/codex/reader/PhraseBubble.tsx"
+  ],
+  "Could not make questions.": [
+    "src/features/codex/reader/ReadingPractice.tsx"
+  ],
+  "Questions discarded. You can use the offline self-check instead.": [
+    "src/features/codex/reader/ReadingPractice.tsx"
+  ],
+  "Could not save the note.": [
+    "src/features/codex/reader/ReadingTools.tsx"
+  ],
+  "The recording index could not be read. Try again when connected.": [
+    "src/features/culture/CultureShelf.tsx"
+  ],
+  "Could not save this change.": [
+    "src/features/culture/ImmersionPage.tsx"
+  ],
+  "Could not explain this reference.": [
+    "src/features/culture/ReferenceHelp.tsx"
+  ],
+  "That didn’t work. Try again in a moment.": [
+    "src/features/explora/ExploreAll.tsx",
+    "src/features/mundus/PicksView.tsx"
+  ],
+  "It’s already in Codex.": [
+    "src/features/explora/ExploreAll.tsx",
+    "src/features/mundus/PicksView.tsx"
+  ],
+  "That did not work.": [
+    "src/features/generate/MakePage.tsx",
+    "src/features/sonus/player/TranscriptTools.tsx",
+    "src/features/thesaurus/deck/CardMemory.tsx"
+  ],
+  "The translation cache is empty.": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "The AI cache is empty.": [
+    "src/features/lab/LabTools.tsx"
+  ],
+  "The AI didn’t answer. Try the buttons instead.": [
+    "src/features/mundus/ReplyBar.tsx"
+  ],
+  "Done for today.": [
+    "src/features/mundus/TipsView.tsx"
+  ],
+  "Challenge done. Lovely.": [
+    "src/features/mundus/TipsView.tsx"
+  ],
+  "That file could not be read.": [
+    "src/features/ordo/sections/BackupSection.tsx"
+  ],
+  "The language couldn’t be removed.": [
+    "src/features/ordo/sections/LanguageSection.tsx"
+  ],
+  "The purchase couldn’t be confirmed yet.": [
+    "src/features/ordo/sections/PlanSection.tsx"
+  ],
+  "That licence couldn’t be read.": [
+    "src/features/ordo/sections/PlanSection.tsx"
+  ],
+  "The camera isn’t available here. Type the code instead.": [
+    "src/features/ordo/sections/QrScanner.tsx"
+  ],
+  "Storage is now protected.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "The browser declined for now. Installing Lingua to your home screen or desktop usually grants it.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Your other device isn’t open right now. Open Lingua on it and try again.": [
+    "src/features/ordo/sections/SyncSection.tsx"
+  ],
+  "Couldn’t speak that.": [
+    "src/features/ordo/sections/VoicePanel.tsx",
+    "src/features/speech/SpeakButton.tsx"
+  ],
+  "It could not be made.": [
+    "src/features/practice/PracticePage.tsx"
+  ],
+  "The check didn’t work this time.": [
+    "src/features/production/useOwnWriting.ts"
+  ],
+  "The feed couldn’t be refreshed.": [
+    "src/features/sonus/FeedPage.tsx"
+  ],
+  "The files couldn’t be added.": [
+    "src/features/sonus/library/AddBookDrawer.tsx"
+  ],
+  "That link couldn’t be added.": [
+    "src/features/sonus/library/AddMenu.tsx",
+    "src/features/visio/library/AddVideoMenu.tsx"
+  ],
+  "That course couldn’t be added.": [
+    "src/features/sonus/library/BooksTab.tsx"
+  ],
+  "That book couldn’t be opened.": [
+    "src/features/sonus/library/BooksTab.tsx"
+  ],
+  "That podcast couldn’t be followed.": [
+    "src/features/sonus/library/Discover.tsx"
+  ],
+  "That deck couldn’t be added.": [
+    "src/features/thesaurus/StarterPage.tsx"
+  ],
+  "The search did not work.": [
+    "src/features/thesaurus/deck/PictureField.tsx"
+  ],
+  "The picture could not be downloaded.": [
+    "src/features/thesaurus/deck/PictureField.tsx"
+  ],
+  "Could not import personal dictionary.": [
+    "src/features/thesaurus/dictionary/DictionaryToolsPanel.tsx"
+  ],
+  "The dictionary couldn’t be downloaded.": [
+    "src/features/thesaurus/dictionary/Entry.tsx"
+  ],
+  "That didn’t work.": [
+    "src/features/thesaurus/dictionary/WordMemory.tsx"
+  ],
+  "Those words couldn’t be added.": [
+    "src/features/thesaurus/library/AddStarterMenu.tsx"
+  ],
+  "The file couldn’t be imported.": [
+    "src/features/thesaurus/library/CsvImportDrawer.tsx"
+  ],
+  "The Anki deck couldn’t be imported.": [
+    "src/features/thesaurus/library/useDeckImport.ts"
+  ],
+  "Nothing was heard. Try again a little louder.": [
+    "src/features/thesaurus/study/exercises.tsx"
+  ],
+  "Speech recognition stopped unexpectedly.": [
+    "src/features/thesaurus/study/exercises.tsx"
+  ],
+  "Line saved to “From Visio”. Its card replays the clip.": [
+    "src/features/visio/player/WatchPage.tsx"
+  ],
+  "This line is already saved.": [
+    "src/features/visio/player/WatchPage.tsx"
+  ],
+  "English line shown.": [
+    "src/features/visio/player/WatchPage.tsx"
+  ],
+  "English line blurred.": [
+    "src/features/visio/player/WatchPage.tsx"
+  ],
+  "English line comes after the line.": [
+    "src/features/visio/player/WatchPage.tsx"
+  ],
+  "English line hidden.": [
+    "src/features/visio/player/WatchPage.tsx"
+  ],
+  "Auto-pause off.": [
+    "src/features/visio/player/WatchPage.tsx"
+  ],
+  "Pausing after each line.": [
+    "src/features/visio/player/WatchPage.tsx"
+  ],
+  "Those subtitles couldn’t be read.": [
+    "src/features/visio/services/TitleSheet.tsx"
+  ],
+  "This podcast’s host doesn’t let apps download. It still streams; or save the file yourself and attach it from the ⋯ menu.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "The download failed.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "The transcript couldn’t be made.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "The subtitles couldn’t be translated.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "Gemini couldn’t make the subtitles.": [
+    "src/services/sonus/jobs.ts"
+  ],
+  "Describe your surroundings": [
+    "src/design/i18n/UiText.tsx"
+  ],
+  "Narrate your day": [
+    "src/design/i18n/UiText.tsx"
   ]
 }

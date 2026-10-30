@@ -178,7 +178,7 @@ export function SpeakLesson({ unit, content, lang, onClose, onActive, onFinish }
                     {listening ? <Square size={26} className="animate-pulse" aria-hidden /> : <Mic size={30} aria-hidden />}
                   </motion.button>
                   <p className="min-h-5 text-[13.5px] text-ink-soft" aria-live="polite">
-                    {listening ? live || 'Listening…' : note || 'Press the microphone (M) and say it'}
+                    {listening ? live || translateUi('Listening…') : note || translateUi('Press the microphone (M) and say it')}
                   </p>
                 </div>
               )}

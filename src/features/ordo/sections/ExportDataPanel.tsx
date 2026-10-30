@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 // Export & integrations hub in Settings › Your data (6-24): vocabulary CSV, Anki decks, Markdown
 // notes with [[wikilinks]], reading highlights & bilingual reading journal, conversation transcripts,
 // personal phrasebook, learning statistics CSV, printable progress report HTML, and .ics study calendar.
@@ -46,7 +47,7 @@ export function ExportDataPanel({ language }: { language: LanguageProfile }) {
       const words = await db.words.where('[lang+state]').between([lang, 0], [lang, 2]).toArray();
       if (!words.length) return void toast('No saved words for this language yet.');
       saveFile(`lingua-vocabulary-${lang}.csv`, wordsToCsv(words), 'text/csv;charset=utf-8');
-      toast(`Exported ${words.length.toLocaleString()} words to CSV.`, { tone: 'success' });
+      toast({ source: 'Exported {0} words to CSV.', values: [String(words.length.toLocaleString())] }, { tone: 'success' });
     });
 
   const exportJournalMd = (format: 'md' | 'txt') =>
@@ -58,7 +59,7 @@ export function ExportDataPanel({ language }: { language: LanguageProfile }) {
       } else {
         saveFile(`lingua-journal-${lang}.txt`, entriesToText(entries), 'text/plain;charset=utf-8');
       }
-      toast(`Exported ${entries.length} journal ${entries.length === 1 ? 'entry' : 'entries'}.`, { tone: 'success' });
+      toast({ source: 'Exported {0} journal {1}.', values: [String(entries.length), entries.length === 1 ? { source: 'entry' } : { source: 'entries' }] }, { tone: 'success' });
     });
 
   const exportGrammarMd = () =>
@@ -72,7 +73,7 @@ export function ExportDataPanel({ language }: { language: LanguageProfile }) {
       }));
       if (!items.length) return void toast('No grammar progress or notes yet.');
       saveFile(`lingua-grammar-notes-${lang}.md`, grammarNotesToMarkdown(items, lang), 'text/markdown;charset=utf-8');
-      toast(`Exported ${items.length} grammar topics to Markdown.`, { tone: 'success' });
+      toast({ source: 'Exported {0} grammar topics to Markdown.', values: [String(items.length)] }, { tone: 'success' });
     });
 
   const exportHighlightsAndReadingJournal = (mode: 'highlights' | 'journal') =>
@@ -96,7 +97,7 @@ export function ExportDataPanel({ language }: { language: LanguageProfile }) {
       const chats = await db.chats.where('lang').equals(lang).toArray();
       if (!chats.length) return void toast('No conversation transcripts yet.');
       saveFile(`lingua-conversations-${lang}.md`, conversationsToMarkdown(chats), 'text/markdown;charset=utf-8');
-      toast(`Exported ${chats.length} conversation ${chats.length === 1 ? 'transcript' : 'transcripts'}.`, { tone: 'success' });
+      toast({ source: 'Exported {0} conversation {1}.', values: [String(chats.length), chats.length === 1 ? { source: 'transcript' } : { source: 'transcripts' }] }, { tone: 'success' });
     });
 
   const exportPhrasebook = (format: 'md' | 'csv') =>
@@ -117,7 +118,7 @@ export function ExportDataPanel({ language }: { language: LanguageProfile }) {
       } else {
         saveFile(`lingua-phrasebook-${lang}.csv`, phrasebookToCsv(phrases), 'text/csv;charset=utf-8');
       }
-      toast(`Exported ${phrases.length} phrases.`, { tone: 'success' });
+      toast({ source: 'Exported {0} phrases.', values: [String(phrases.length)] }, { tone: 'success' });
     });
 
   const exportStatsCsv = () =>
@@ -125,7 +126,7 @@ export function ExportDataPanel({ language }: { language: LanguageProfile }) {
       const stats = await db.dailyStats.where('lang').equals(lang).toArray();
       if (!stats.length) return void toast('No study statistics recorded yet.');
       saveFile(`lingua-stats-${lang}.csv`, statsToCsv(stats), 'text/csv;charset=utf-8');
-      toast(`Exported ${stats.length} days of learning statistics.`, { tone: 'success' });
+      toast({ source: 'Exported {0} days of learning statistics.', values: [String(stats.length)] }, { tone: 'success' });
     });
 
   const exportProgressReport = () =>
@@ -170,48 +171,22 @@ export function ExportDataPanel({ language }: { language: LanguageProfile }) {
   return (
     <div className="mt-4 space-y-3 rounded-2xl border border-line/70 bg-sunken/35 p-4">
       <div>
-        <p className="font-semibold">Export &amp; integrations ({langName})</p>
-        <p data-hint="" className="text-[13px] text-ink-soft">
-          Export your words, notes, highlights, transcripts, statistics, and study calendar in open formats (CSV, Markdown with [[wikilinks]], HTML/PDF, and iCalendar .ics).
-        </p>
+        <p className="font-semibold"><UiText source={'Export & integrations ({0})'} values={[langName]} /></p>
+        <p data-hint="" className="text-[13px] text-ink-soft"><UiText source={'Export your words, notes, highlights, transcripts, statistics, and study calendar in open formats (CSV, Markdown with [[wikilinks]], HTML/PDF, and iCalendar .ics).'} /></p>
       </div>
       <div className="flex flex-wrap gap-2">
-        <Button variant="secondary" size="sm" icon={FileSpreadsheet} loading={busy === 'words-csv'} onClick={exportWordsCsv}>
-          Vocabulary (.csv)
-        </Button>
-        <Button variant="secondary" size="sm" icon={FileCode2} loading={busy === 'journal-md'} onClick={() => exportJournalMd('md')}>
-          Journal (.md)
-        </Button>
-        <Button variant="secondary" size="sm" icon={FileText} loading={busy === 'journal-txt'} onClick={() => exportJournalMd('txt')}>
-          Journal (.txt)
-        </Button>
-        <Button variant="secondary" size="sm" icon={NotebookPen} loading={busy === 'grammar-md'} onClick={exportGrammarMd}>
-          Grammar notes (.md)
-        </Button>
-        <Button variant="secondary" size="sm" icon={BookMarked} loading={busy === 'reading-highlights'} onClick={() => exportHighlightsAndReadingJournal('highlights')}>
-          Reading highlights (.md)
-        </Button>
-        <Button variant="secondary" size="sm" icon={BookMarked} loading={busy === 'reading-journal'} onClick={() => exportHighlightsAndReadingJournal('journal')}>
-          Reading journal (.md)
-        </Button>
-        <Button variant="secondary" size="sm" icon={MessageSquare} loading={busy === 'conversations'} onClick={exportConversations}>
-          Conversations (.md)
-        </Button>
-        <Button variant="secondary" size="sm" icon={Download} loading={busy === 'phrases-md'} onClick={() => exportPhrasebook('md')}>
-          Phrasebook (.md)
-        </Button>
-        <Button variant="secondary" size="sm" icon={FileSpreadsheet} loading={busy === 'phrases-csv'} onClick={() => exportPhrasebook('csv')}>
-          Phrasebook (.csv)
-        </Button>
-        <Button variant="secondary" size="sm" icon={FileSpreadsheet} loading={busy === 'stats-csv'} onClick={exportStatsCsv}>
-          Statistics (.csv)
-        </Button>
-        <Button variant="secondary" size="sm" icon={Printer} loading={busy === 'report-html'} onClick={exportProgressReport}>
-          Progress report (.html)
-        </Button>
-        <Button variant="secondary" size="sm" icon={Calendar} loading={busy === 'calendar-ics'} onClick={exportCalendarIcs}>
-          Study calendar (.ics)
-        </Button>
+        <Button variant="secondary" size="sm" icon={FileSpreadsheet} loading={busy === 'words-csv'} onClick={exportWordsCsv}><UiText source={'Vocabulary (.csv)'} /></Button>
+        <Button variant="secondary" size="sm" icon={FileCode2} loading={busy === 'journal-md'} onClick={() => exportJournalMd('md')}><UiText source={'Journal (.md)'} /></Button>
+        <Button variant="secondary" size="sm" icon={FileText} loading={busy === 'journal-txt'} onClick={() => exportJournalMd('txt')}><UiText source={'Journal (.txt)'} /></Button>
+        <Button variant="secondary" size="sm" icon={NotebookPen} loading={busy === 'grammar-md'} onClick={exportGrammarMd}><UiText source={'Grammar notes (.md)'} /></Button>
+        <Button variant="secondary" size="sm" icon={BookMarked} loading={busy === 'reading-highlights'} onClick={() => exportHighlightsAndReadingJournal('highlights')}><UiText source={'Reading highlights (.md)'} /></Button>
+        <Button variant="secondary" size="sm" icon={BookMarked} loading={busy === 'reading-journal'} onClick={() => exportHighlightsAndReadingJournal('journal')}><UiText source={'Reading journal (.md)'} /></Button>
+        <Button variant="secondary" size="sm" icon={MessageSquare} loading={busy === 'conversations'} onClick={exportConversations}><UiText source={'Conversations (.md)'} /></Button>
+        <Button variant="secondary" size="sm" icon={Download} loading={busy === 'phrases-md'} onClick={() => exportPhrasebook('md')}><UiText source={'Phrasebook (.md)'} /></Button>
+        <Button variant="secondary" size="sm" icon={FileSpreadsheet} loading={busy === 'phrases-csv'} onClick={() => exportPhrasebook('csv')}><UiText source={'Phrasebook (.csv)'} /></Button>
+        <Button variant="secondary" size="sm" icon={FileSpreadsheet} loading={busy === 'stats-csv'} onClick={exportStatsCsv}><UiText source={'Statistics (.csv)'} /></Button>
+        <Button variant="secondary" size="sm" icon={Printer} loading={busy === 'report-html'} onClick={exportProgressReport}><UiText source={'Progress report (.html)'} /></Button>
+        <Button variant="secondary" size="sm" icon={Calendar} loading={busy === 'calendar-ics'} onClick={exportCalendarIcs}><UiText source={'Study calendar (.ics)'} /></Button>
       </div>
     </div>
   );

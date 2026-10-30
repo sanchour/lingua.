@@ -132,6 +132,7 @@ export interface MergeRequest {
 
 /** Folding one deck into another: its cards go into the chosen deck and it is put away. */
 export function MergeDialog({ request, onClose }: { request: MergeRequest | null; onClose: () => void }) {
+  const translateUi = useUi();
   const [target, setTarget] = useState('');
   useEffect(() => setTarget(request?.decks[0]?.id ?? ''), [request]);
   const none = !request?.decks.length;
@@ -150,13 +151,13 @@ export function MergeDialog({ request, onClose }: { request: MergeRequest | null
               onClose();
             }}
           >
-            {request?.confirm ?? 'Merge'}
+            {request?.confirm ?? translateUi('Merge')}
           </Button>
         </>
       }
     >
       <div className="pt-2">
-        {none ? <p className="text-[14px] text-ink-soft"><UiText source={'There is no other deck in this language.'} /></p> : <Select label={request?.label ?? 'Into'} value={target} onChange={setTarget} options={(request?.decks ?? []).map((d) => ({ value: d.id, label: d.name }))} />}
+        {none ? <p className="text-[14px] text-ink-soft"><UiText source={'There is no other deck in this language.'} /></p> : <Select label={request?.label ?? translateUi('Into')} value={target} onChange={setTarget} options={(request?.decks ?? []).map((d) => ({ value: d.id, label: d.name }))} />}
       </div>
     </Dialog>
   );

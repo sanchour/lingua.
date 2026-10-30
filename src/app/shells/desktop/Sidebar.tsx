@@ -49,10 +49,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           animate={{ opacity: collapsed ? 0 : 1 }}
           transition={{ duration: 0.12 }}
           hidden={collapsed}
-        >
-          Lingua
-          <PlanBadge plan={plan} />
-        </motion.span>
+        ><UiText source={'Lingua{0}'} values={[<PlanBadge plan={plan} />]} /></motion.span>
         <IconButton
           icon={collapsed ? PanelLeftOpen : PanelLeftClose}
           label={collapsed ? translateUi('Expand sidebar') : translateUi('Collapse sidebar')}

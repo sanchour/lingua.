@@ -265,9 +265,7 @@ function CardStudy() {
           <div className="mt-6 flex justify-center gap-2">
             <button type="button" onClick={back} className={buttonClasses('secondary', 'md')}><UiText source={'Back'} /></button>
             {loaded.kind === 'recall' && (
-              <Link to={`/thesaurus/study/${param}?mode=ludus`} replace className={buttonClasses('primary', 'md')}>
-                Ludus
-              </Link>
+              <Link to={`/thesaurus/study/${param}?mode=ludus`} replace className={buttonClasses('primary', 'md')}><UiText source={'Ludus'} /></Link>
             )}
           </div>
         </div>

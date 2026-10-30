@@ -95,7 +95,7 @@ function TapBubble({ el, engine, onClose, onOpen }: TapGlossProps) {
       <button type="button" onClick={() => onOpen(el)} className="flex w-full items-center gap-2 rounded-xl px-2.5 pt-1.5 pb-2 text-left">
         <span className="min-w-0 flex-1">
           <span className={cx('block text-[16px] leading-snug font-semibold', gloss === null && 'animate-pulse opacity-60')}>
-            {gloss === null ? translateUi('Translating…') : gloss || 'No translation found'}
+            {gloss === null ? translateUi('Translating…') : gloss || translateUi('No translation found')}
           </span>
         </span>
         <ChevronRight size={18} className="shrink-0 opacity-55" aria-label={translateUi('More')} />

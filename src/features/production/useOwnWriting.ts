@@ -51,7 +51,7 @@ export function useOwnWriting(lang: string, prompt: string) {
   const ask = async () => {
     try {
       await navigator.clipboard.writeText(speakerRequest(name, language.level === 'A0' ? 'A1' : language.level, prompt, text));
-      toast(`Copied. Paste it to a friend who speaks ${name}, or in a language exchange.`, { tone: 'success' });
+      toast({ source: 'Copied. Paste it to a friend who speaks {0}, or in a language exchange.', values: [String(name)] }, { tone: 'success' });
     } catch {
       toast('Couldn’t copy. Select the text and copy it yourself.', { tone: 'error' });
     }

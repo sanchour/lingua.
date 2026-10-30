@@ -57,7 +57,7 @@ export function Discover({ lang, feeds }: { lang: string; feeds: Feed[] }) {
     setFollowing(hit.feedUrl);
     try {
       const id = await subscribe(lang, hit.feedUrl);
-      toast(`Following “${hit.title}”.`, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`${sonusBase()}/podcast/${id}`) } });
+      toast({ source: 'Following “{0}”.', values: [String(hit.title)] }, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`${sonusBase()}/podcast/${id}`) } });
     } catch (e) {
       toast(e instanceof Error ? e.message : 'That podcast couldn’t be followed.', { tone: 'error' });
     } finally {

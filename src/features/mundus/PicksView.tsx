@@ -113,7 +113,7 @@ export const PickCard = memo(function PickCard({
         onClick={() =>
           void run(async () => {
             const added = await addBookToCodex(lang, pick);
-            toast(added ? `“${pick.title}” is on your Codex wishlist.` : 'It’s already in Codex.', { tone: added ? 'success' : 'default', action: { label: 'Codex', onClick: () => navigate('/codex') } });
+            toast(added ? { source: '“{0}” is on your Codex wishlist.', values: [String(pick.title)] } : 'It’s already in Codex.', { tone: added ? 'success' : 'default', action: { label: 'Codex', onClick: () => navigate('/codex') } });
           })
         }
       ><UiText source={'Add to Codex'} /></Button>
@@ -126,7 +126,7 @@ export const PickCard = memo(function PickCard({
         onClick={() =>
           void run(async () => {
             const feedId = await followPodcast(lang, pick);
-            if (feedId) toast(`Following “${pick.title}” in Sonus.`, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`${sonusBase()}/podcast/${feedId}`) } });
+            if (feedId) toast({ source: 'Following “{0}” in Sonus.', values: [String(pick.title)] }, { tone: 'success', action: { label: 'Open', onClick: () => navigate(`${sonusBase()}/podcast/${feedId}`) } });
             else toast('Apple’s podcast directory doesn’t have it under that name. Try Spotify or Apple Podcasts.', { duration: 6000 });
           })
         }

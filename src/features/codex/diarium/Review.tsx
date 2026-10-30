@@ -31,7 +31,7 @@ async function saveCorrection(lang: string, c: JournalCorrection) {
     tags: ['journal', c.category],
     source: 'manual',
   });
-  toast(added ? `Added “${c.suggestion}” to Journal.` : `“${c.suggestion}” is already in Journal.`, { tone: added ? 'success' : 'default' });
+  toast(added ? { source: 'Added “{0}” to Journal.', values: [String(c.suggestion)] } : { source: '“{0}” is already in Journal.', values: [String(c.suggestion)] }, { tone: added ? 'success' : 'default' });
 }
 
 /** The entry with its changes marked: struck in terracotta, added in sage. Tap a change for why. */
@@ -192,7 +192,7 @@ export function CorrectionList({ review, lang }: { review: JournalReview; lang: 
       )
         n++;
     }
-    toast(n ? `Added ${n} ${n === 1 ? 'card' : 'cards'} to Journal.` : 'They’re all in Journal already.', { tone: n ? 'success' : 'default' });
+    toast(n ? { source: 'Added {0} {1} to Journal.', values: [String(n), n === 1 ? { source: 'card' } : { source: 'cards' }] } : 'They’re all in Journal already.', { tone: n ? 'success' : 'default' });
   };
   return (
     <div>

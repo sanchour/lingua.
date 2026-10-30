@@ -225,11 +225,12 @@ function PartRow({ part, n, course, progress, onPlay }: { part: Media; n: number
 }
 
 function ReadingAlong({ book }: { book: Book }) {
+  const translateUi = useUi();
   const text = useLiveQuery(() => (book.readAlongTextId ? db.texts.get(book.readAlongTextId) : undefined), [book.readAlongTextId]);
   return (
     <p className="mt-5 flex flex-wrap items-center gap-2 text-[14px] text-ink-soft">
       <BookOpenText size={16} className="text-sage-text" aria-hidden />
-      <span className="min-w-0"><UiText source={'Read along: {0}'} values={[<span className="font-semibold text-ink">{text?.title ?? 'a text in Codex'}</span>]} /></span>
+      <span className="min-w-0"><UiText source={'Read along: {0}'} values={[<span className="font-semibold text-ink">{text?.title ?? translateUi('a text in Codex')}</span>]} /></span>
       <button type="button" onClick={() => void stopReadAlong(book.id)} className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-[13px] font-semibold text-ink-soft hover:bg-surface hover:text-ink"><UiText source={'{0} Stop'} values={[<X size={14} aria-hidden />]} /></button>
     </p>
   );
@@ -272,7 +273,7 @@ function ReadAlongDrawer({ book, open, onClose }: { book: Book; open: boolean; o
     try {
       const n = await readAlongBook(book.id, textId);
       const total = book.parts.length;
-      if (n.timed) toast(`Matched ${n.timed} of ${total} ${total === 1 ? 'part' : 'parts'}.${n['no-transcript'] ? ` ${n['no-transcript']} ${n['no-transcript'] === 1 ? 'has' : 'have'} no transcript yet.` : ''}`, { tone: 'success' });
+      if (n.timed) toast({ source: 'Matched {0} of {1} {2}.{3}', values: [String(n.timed), String(total), total === 1 ? { source: 'part' } : { source: 'parts' }, n['no-transcript'] ? { source: ' {0} {1} no transcript yet.', values: [String(n['no-transcript']), n['no-transcript'] === 1 ? { source: 'has' } : { source: 'have' }] } : String('')] }, { tone: 'success' });
       else if (n['not-found']) toast('The text wasn’t found in these parts.', { tone: 'error' });
       else toast('Saved. Parts get the book’s text once they’re transcribed.', { tone: 'success' });
       onClose();

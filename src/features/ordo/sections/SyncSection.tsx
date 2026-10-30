@@ -23,7 +23,7 @@ export function SyncSection({ sync }: { sync: Settings['sync'] }) {
     setBusy(true);
     const reached = await syncAll();
     setBusy(false);
-    toast(reached ? `Synced with ${reached === 1 ? 'your other device' : `${reached} devices`}.` : 'Your other device isn’t open right now. Open Lingua on it and try again.', { tone: reached ? 'success' : 'default' });
+    toast(reached ? { source: 'Synced with {0}.', values: [reached === 1 ? { source: 'your other device' } : { source: '{0} devices', values: [String(reached)] }] } : 'Your other device isn’t open right now. Open Lingua on it and try again.', { tone: reached ? 'success' : 'default' });
   };
 
   return (
@@ -98,7 +98,7 @@ function DeviceRow({ device, state }: { device: PairedDevice; state?: { status: 
         type="button"
         aria-label={translateUi('Sync with {0}', [device.name])}
         disabled={state?.status === 'syncing'}
-        onClick={() => void syncWith(device).then((r) => !r && toast(`${device.name} isn’t open right now.`))}
+        onClick={() => void syncWith(device).then((r) => !r && toast({ source: '{0} isn’t open right now.', values: [String(device.name)] }))}
         className="grid size-10 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink disabled:opacity-50"
       >
         {state?.status === 'syncing' ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <RefreshCw size={18} aria-hidden />}

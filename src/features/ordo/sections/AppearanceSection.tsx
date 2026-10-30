@@ -1,5 +1,5 @@
-import { useSettings } from '@/data/settings';
 import { UiText, useUi } from '@/design/i18n/UiText';
+import { useSettings } from '@/data/settings';
 import { History, LayoutDashboard, Monitor, Moon, Sparkles, SlidersHorizontal, Sun, Waves, Wind } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
 import { flavourOf } from '@/design/flavours';
@@ -139,7 +139,7 @@ export function AppearanceSection({
           <p className="text-[15px] font-semibold"><UiText source={'Language touches'} /></p>
           <p data-hint="" className="mt-1 text-[13px] text-ink-soft">
             {touch
-              ? translateUi('A little of {0} in the design: {1}. Your theme and reading font stay as they are.', [getLanguage(lang)?.name ?? lang, touch.touch])
+              ? translateUi('A little of {0} in the design: {1}. Your theme and reading font stay as they are.', [getLanguage(lang)?.endonym ?? lang, translateUi(touch.touch)])
               : translateUi('A little of the language in the design, for French, Spanish, German, Russian, Mandarin and Arabic. Your theme and reading font stay as they are.')}
           </p>
         </div>
@@ -156,16 +156,16 @@ export function AppearanceSection({
       </div>
 
       <div className="mt-6 space-y-4">
-        <p className="text-[15px] font-semibold">Accessibility</p>
+        <p className="text-[15px] font-semibold"><UiText source={'Accessibility'} /></p>
         <ToggleRow
-          title="High contrast"
-          description="Increases contrast across all surfaces and text to WCAG 2.1 AAA (7:1 text-to-background ratio) for maximum legibility."
+          title={translateUi('High contrast')}
+          description={translateUi('Increases contrast across all surfaces and text to WCAG 2.1 AAA (7:1 text-to-background ratio) for maximum legibility.')}
           checked={Boolean(highContrast)}
           onChange={(on) => void patchSetting('ui', { highContrast: on })}
         />
         <ToggleRow
-          title="Accessible indicators"
-          description="Shows distinct shapes, glyphs, and patterns beside colors so state is never conveyed by color alone."
+          title={translateUi('Accessible indicators')}
+          description={translateUi('Shows distinct shapes, glyphs, and patterns beside colors so state is never conveyed by color alone.')}
           checked={Boolean(colorBlindMode)}
           onChange={(on) => void patchSetting('ui', { colorBlindMode: on })}
         />

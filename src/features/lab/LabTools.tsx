@@ -151,7 +151,7 @@ export function LayoutCard() {
     window.resizeTo(w, h);
     window.setTimeout(() => {
       if (window.outerWidth !== before || window.outerWidth === w) return;
-      toast(`This window can’t be resized from the page. Open one at ${w} × ${h} instead?`, {
+      toast({ source: 'This window can’t be resized from the page. Open one at {0} × {1} instead?', values: [String(w), String(h)] }, {
         action: { label: 'Open', onClick: () => void window.open(location.href, `lingua-${w}`, `popup,width=${w},height=${h}`) },
       });
     }, 250);

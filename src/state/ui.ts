@@ -1,11 +1,13 @@
+import type { UiMessage } from '@/core/i18n/types';
 import { create } from 'zustand';
 import type { Feature } from '@/data/plan';
 
+export type ToastMessage = string | UiMessage;
 export type ToastTone = 'default' | 'success' | 'error';
 
 export interface ToastItem {
   id: number;
-  message: string;
+  message: ToastMessage;
   tone: ToastTone;
   action?: { label: string; onClick: () => void };
   /** ms; 0 keeps the toast until dismissed. */
@@ -66,7 +68,7 @@ export const useUI = create<UIState>((set) => ({
 }));
 
 export function toast(
-  message: string,
+  message: ToastMessage,
   options: { tone?: ToastTone; action?: ToastItem['action']; duration?: number } = {},
 ): number {
   return useUI.getState().pushToast({

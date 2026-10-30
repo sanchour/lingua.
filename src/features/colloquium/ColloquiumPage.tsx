@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router';
@@ -109,7 +110,7 @@ export default function ColloquiumPage() {
 
   return (
     <div ref={top} className="scroll-mt-24">
-      <PageHeader title={translateUi('Sermo')} eyebrow={`Talk in ${name}`} />
+      <PageHeader title={translateUi('Sermo')} englishTitle={'Sermo'} eyebrow={translateUi('Talk in {0}', [translateUi(name)])} englishEyebrow={interpolate('Talk in {0}', [name])} />
 
       <div className="mb-6 flex items-center justify-between">
         <Segmented<SermoTab>
@@ -206,7 +207,7 @@ export default function ColloquiumPage() {
           </div>
 
           <div className="mt-7 grid gap-x-10 gap-y-6 md:grid-cols-2">
-            <Option title={translateUi('Conversation mode')} detail={choices.conversationMode === 'free' ? 'Talk about anything spontaneously without a predefined script.' : choices.conversationMode === 'tutor' ? 'The AI actively guides, teaches, and explains mistakes.' : choices.conversationMode === 'immersion' ? 'Total immersion in the language with minimal assistance.' : 'A real-world scenario with a clear goal and character roles.'}>
+            <Option title={translateUi('Conversation mode')} detail={choices.conversationMode === 'free' ? translateUi('Talk about anything spontaneously without a predefined script.') : choices.conversationMode === 'tutor' ? translateUi('The AI actively guides, teaches, and explains mistakes.') : choices.conversationMode === 'immersion' ? translateUi('Total immersion in the language with minimal assistance.') : translateUi('A real-world scenario with a clear goal and character roles.')}>
               <Segmented<ConversationMode>
                 label={translateUi('Conversation mode')}
                 value={choices.conversationMode ?? 'scenario'}
@@ -219,7 +220,7 @@ export default function ColloquiumPage() {
                 ]}
               />
             </Option>
-            <Option title={translateUi('Correct my mistakes')} detail={choices.correct === 'end' ? 'All together when you finish, so the talk keeps flowing.' : choices.correct === 'live' ? 'Briefly, after each of your answers.' : 'No corrections, just talking.'}>
+            <Option title={translateUi('Correct my mistakes')} detail={choices.correct === 'end' ? translateUi('All together when you finish, so the talk keeps flowing.') : choices.correct === 'live' ? translateUi('Briefly, after each of your answers.') : translateUi('No corrections, just talking.')}>
               <Segmented<SermoChoices['correct']>
                 label={translateUi('Correct my mistakes')}
                 value={choices.correct}
@@ -231,7 +232,7 @@ export default function ColloquiumPage() {
                 ]}
               />
             </Option>
-            <Option title={translateUi('How long')} detail="The AI wraps the scene up and tells you how you did.">
+            <Option title={translateUi('How long')} detail={translateUi('The AI wraps the scene up and tells you how you did.')}>
               <Segmented<'5' | '10' | '20'>
                 label={translateUi('How long')}
                 value={String(choices.minutes) as '5' | '10' | '20'}
@@ -382,7 +383,7 @@ function ScenePicker({ lang, level, picked, onScene, onAbout }: { lang: string; 
       </div>
 
       {!query && week.length > 0 && (
-        <Group title={translateUi('From your week')} detail="Talk about what you read, watched and wrote">
+        <Group title={translateUi('From your week')} detail={translateUi('Talk about what you read, watched and wrote')}>
           {week.map((w) => (
             <SceneCard key={w.title} title={w.title} detail={w.detail} icon={w.icon} tone={GROUP_TONE.week} onClick={() => onAbout(w.title)} />
           ))}

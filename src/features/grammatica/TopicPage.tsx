@@ -71,7 +71,7 @@ export default function TopicPage() {
   return (
     <div className="mx-auto max-w-6xl">
       <div className="flex items-center justify-between">
-        <BackLink to="/cursus/grammatica">Grammatica</BackLink>
+        <BackLink to="/cursus/grammatica"><UiText source={'Grammatica'} /></BackLink>
         <button
           type="button"
           onClick={() => void toggleGrammarBookmark(lang, topic.id)}
@@ -141,7 +141,7 @@ export default function TopicPage() {
                   options={[
                     { value: 'en', label: translateUi('English') },
                     { value: 'both', label: translateUi('Side by side') },
-                    { value: 'target', label: `In ${info?.name ?? 'language'}` },
+                    { value: 'target', label: translateUi('In {0}', [info?.name ?? 'language']) },
                   ]}
                 />
               </div>
@@ -150,7 +150,7 @@ export default function TopicPage() {
             {ruleMode === 'both' && topic.targetLangRule ? (
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="space-y-3 rounded-2xl border border-line/60 bg-surface/50 p-4 text-[15.5px] leading-relaxed text-ink">
-                  <p className="text-[12px] font-bold tracking-wider uppercase text-ink-faint">{info?.name ?? 'Target language'}</p>
+                  <p className="text-[12px] font-bold tracking-wider uppercase text-ink-faint">{info?.name ?? translateUi('Target language')}</p>
                   {topic.targetLangRule.map((p) => (
                     <p key={p}>
                       <Rich text={p} lang={lang} />

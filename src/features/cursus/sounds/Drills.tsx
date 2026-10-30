@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Drills (6-10): things to say aloud, by what they train (clusters, hard syllables, letter combinations, tongue twisters, and the
 // language's own hard spots). A voice says each; "Say these" sends them to Say it, and see it below. "Test me" draws five at random.
 import { useState } from 'react';
@@ -6,16 +7,15 @@ import { SpeakButton } from '@/features/speech/SpeakButton';
 import { cx } from '@/lib/cx';
 
 export function Drills({ lang, onSay }: { lang: string; onSay: (words: string[]) => void }) {
+  const translateUi = useUi();
   const groups = drillsOf(lang);
   const [id, setId] = useState(groups[0]?.id);
   const group = groups.find((g) => g.id === id) ?? groups[0];
   if (!group) return null;
   return (
     <section aria-labelledby="drills-h" className="rounded-3xl border border-line bg-raised p-5">
-      <h2 id="drills-h" className="font-serif text-2xl font-semibold">
-        Drills
-      </h2>
-      <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label="Drill">
+      <h2 id="drills-h" className="font-serif text-2xl font-semibold"><UiText source={'Drills'} /></h2>
+      <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label={translateUi('Drill')}>
         {groups.map((g) => (
           <button key={g.id} type="button" role="radio" aria-checked={g.id === group.id} onClick={() => setId(g.id)} className={cx('rounded-full border px-3 py-1 text-[13.5px]', g.id === group.id ? 'border-accent bg-accent-soft font-semibold' : 'border-line hover:bg-surface')}>
             {g.title}
@@ -35,12 +35,8 @@ export function Drills({ lang, onSay }: { lang: string; onSay: (words: string[])
         ))}
       </ul>
       <div className="mt-3 flex flex-wrap gap-2">
-        <button type="button" onClick={() => onSay(group.items.map((i) => i.text))} className="h-10 rounded-xl bg-inverse px-4 text-[14px] font-semibold text-on-inverse">
-          Say these
-        </button>
-        <button type="button" onClick={() => onSay(randomTest(lang, 5))} title="Five at random from all the drills" className="h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
-          Test me
-        </button>
+        <button type="button" onClick={() => onSay(group.items.map((i) => i.text))} className="h-10 rounded-xl bg-inverse px-4 text-[14px] font-semibold text-on-inverse"><UiText source={'Say these'} /></button>
+        <button type="button" onClick={() => onSay(randomTest(lang, 5))} title={translateUi('Five at random from all the drills')} className="h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"><UiText source={'Test me'} /></button>
       </div>
     </section>
   );

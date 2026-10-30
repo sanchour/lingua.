@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Record and compare (6-10): say a word, and see it beside the model: the loudness over time and the pitch of the voice. Honest by design:
 // it shows the shapes, and whether the device understood the word; it gives no score. Recordings stay on this device and are not kept.
 import { useEffect, useRef, useState } from 'react';
@@ -31,6 +32,7 @@ async function shapeOf(blob: Blob): Promise<Shape> {
 
 /** Loudness at each frequency over time: dark is quiet, bright is loud; the bottom is low sounds (vowels), the top is high ones (s, sh, f). */
 function SpectrogramView({ spec, label }: { spec: Spectrogram; label: string }) {
+  const translateUi = useUi();
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = ref.current;
@@ -52,21 +54,20 @@ function SpectrogramView({ spec, label }: { spec: Spectrogram; label: string }) 
     });
     g.putImageData(img, 0, 0);
   }, [spec]);
-  return <canvas ref={ref} role="img" aria-label={`${label}: which frequencies are loud, over time`} className="mt-2 h-24 w-full rounded-xl bg-black" />;
+  return <canvas ref={ref} role="img" aria-label={translateUi('{0}: which frequencies are loud, over time', [label])} className="mt-2 h-24 w-full rounded-xl bg-black" />;
 }
 
 function EndNote({ shape, want }: { shape: Shape; want: 'rise' | 'fall' }) {
   const got = endDirection(shape.pitch);
-  if (!got) return <p className="mt-2 text-[13.5px] text-ink-soft">Not enough of your voice was heard to see which way it goes at the end. Say it a little louder.</p>;
+  if (!got) return <p className="mt-2 text-[13.5px] text-ink-soft"><UiText source={'Not enough of your voice was heard to see which way it goes at the end. Say it a little louder.'} /></p>;
   const word = { rise: 'rose', fall: 'fell', level: 'stayed level' }[got];
   return (
-    <p className="mt-2 text-[13.5px] text-ink-soft">
-      {want === 'rise' ? 'A question rises at the end' : 'A statement falls at the end'}: your voice {word}{got === want ? ', as it should.' : '. Try again, and let it ' + (want === 'rise' ? 'go up' : 'come down') + ' on the last word.'} (Measured from your recording; a guide, not a mark.)
-    </p>
+    <p className="mt-2 text-[13.5px] text-ink-soft"><UiText source={'{0}: your voice {1}{2} (Measured from your recording; a guide, not a mark.)'} values={[want === 'rise' ? 'A question rises at the end' : 'A statement falls at the end', word, got === want ? ', as it should.' : '. Try again, and let it ' + (want === 'rise' ? 'go up' : 'come down') + ' on the last word.']} /></p>
   );
 }
 
 function Shapes({ label, shape, tone }: { label: string; shape: Shape; tone: 'model' | 'yours' }) {
+  const translateUi = useUi();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [slow, setSlow] = useState(false);
   useEffect(() => {
@@ -83,13 +84,11 @@ function Shapes({ label, shape, tone }: { label: string; shape: Shape; tone: 'mo
     <div>
       <p className="mb-1 flex flex-wrap items-center gap-2 text-[12.5px] font-semibold text-ink-faint">
         {label}
-        <audio ref={audioRef} src={shape.url} controls className="h-7" aria-label={`Play ${label}`} />
-        <button type="button" aria-pressed={slow} onClick={() => setSlow((x) => !x)} className={cx('rounded-full border px-2.5 py-0.5 text-[12px]', slow ? 'border-accent bg-accent-soft' : 'border-line hover:bg-surface')}>
-          Slow
-        </button>
+        <audio ref={audioRef} src={shape.url} controls className="h-7" aria-label={translateUi('Play {0}', [label])} />
+        <button type="button" aria-pressed={slow} onClick={() => setSlow((x) => !x)} className={cx('rounded-full border px-2.5 py-0.5 text-[12px]', slow ? 'border-accent bg-accent-soft' : 'border-line hover:bg-surface')}><UiText source={'Slow'} /></button>
         <span className="font-normal">{shape.seconds.toFixed(2)} s</span>
       </p>
-      <svg viewBox="0 0 320 120" className="w-full rounded-xl bg-surface" role="img" aria-label={`${label}: loudness above, pitch below`}>
+      <svg viewBox="0 0 320 120" className="w-full rounded-xl bg-surface" role="img" aria-label={translateUi('{0}: loudness above, pitch below', [label])}>
         {shape.peaks.map((p, i) => (
           <rect key={i} x={(i / shape.peaks.length) * 320 + 1} y={30 - p * 28} width={320 / shape.peaks.length - 2} height={Math.max(1, p * 56)} fill={color} opacity="0.55" rx="1" />
         ))}
@@ -108,6 +107,7 @@ const understoodNow = (heard: string, word: string, lang: string) => speechMatch
 export type EndExpect = Record<string, 'rise' | 'fall'>;
 
 export function RecordCompare({ lang, words, expect }: { lang: string; words: string[]; expect?: EndExpect }) {
+  const translateUi = useUi();
   const [word, setWord] = useState(words[0] ?? '');
   const [model, setModel] = useState<Shape | null | 'none'>(null);
   const [yours, setYours] = useState<Shape | null>(null);
@@ -168,13 +168,9 @@ export function RecordCompare({ lang, words, expect }: { lang: string; words: st
 
   return (
     <section aria-labelledby="rc-h" className="rounded-3xl border border-line bg-raised p-5">
-      <h2 id="rc-h" className="font-serif text-2xl font-semibold">
-        Say it, and see it
-      </h2>
-      <p className="mt-1 max-w-2xl text-[14px] text-ink-soft">
-        Choose a word, say it (or shadow it: say it together with the speaker, with headphones on), and see how loud and how high your voice goes beside a real speaker’s. The shapes are a mirror, not a mark: what counts is being understood. Your recording stays on this device and is not kept.
-      </p>
-      <div className="mt-3 flex flex-wrap items-center gap-2" role="radiogroup" aria-label="Word">
+      <h2 id="rc-h" className="font-serif text-2xl font-semibold"><UiText source={'Say it, and see it'} /></h2>
+      <p className="mt-1 max-w-2xl text-[14px] text-ink-soft"><UiText source={'Choose a word, say it (or shadow it: say it together with the speaker, with headphones on), and see how loud and how high your voice goes beside a real speaker’s. The shapes are a mirror, not a mark: what counts is being understood. Your recording stays on this device and is not kept.'} /></p>
+      <div className="mt-3 flex flex-wrap items-center gap-2" role="radiogroup" aria-label={translateUi('Word')}>
         {words.map((w) => (
           <button key={w} type="button" role="radio" aria-checked={w === word} onClick={() => setWord(w)} lang={lang} className={cx('rounded-full border px-3 py-1 font-serif text-[16px]', w === word ? 'border-accent bg-accent-soft' : 'border-line hover:bg-surface')}>
             {w}
@@ -184,40 +180,33 @@ export function RecordCompare({ lang, words, expect }: { lang: string; words: st
       <div className="mt-4 flex items-center gap-3">
         <button type="button" onClick={() => void (recording ? finish() : go())} className={cx('flex h-11 items-center gap-2 rounded-xl px-4 text-[14px] font-semibold', recording ? 'bg-accent-fill text-on-accent' : 'bg-inverse text-on-inverse')}>
           {recording ? <Square size={15} className="fill-current" aria-hidden /> : <Mic size={16} aria-hidden />}
-          {recording ? 'Stop' : `Say “${word}”`}
+          {recording ? translateUi('Stop') : translateUi('Say “{0}”', [word])}
         </button>
         {model && model !== 'none' && !recording && (
-          <button type="button" onClick={() => void shadow()} title="The real speaker plays and you say it with them. Use headphones." className="flex h-11 items-center gap-2 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
-            Shadow it
-          </button>
+          <button type="button" onClick={() => void shadow()} title={translateUi('The real speaker plays and you say it with them. Use headphones.')} className="flex h-11 items-center gap-2 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"><UiText source={'Shadow it'} /></button>
         )}
         {heard !== null && (
           <p className={cx('text-[14px]', understood ? 'text-sage-text' : 'text-ink-soft')} role="status">
-            {understood ? 'The device understood you.' : heard ? `The device heard “${heard}”.` : 'The device heard nothing.'}
+            {understood ? translateUi('The device understood you.') : heard ? translateUi('The device heard “{0}”.', [heard]) : translateUi('The device heard nothing.')}
           </p>
         )}
         {yours && !recording && (
-          <button type="button" onClick={() => setModel(yours)} title="Your recording becomes the one to compare with, to hear your own progress." className="flex h-11 items-center rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
-            Use mine as the model
-          </button>
+          <button type="button" onClick={() => setModel(yours)} title={translateUi('Your recording becomes the one to compare with, to hear your own progress.')} className="flex h-11 items-center rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"><UiText source={'Use mine as the model'} /></button>
         )}
       </div>
       {hints && (hints.missing.length > 0 || hints.extra.length > 0) && (
-        <p className="mt-2 text-[13.5px] text-ink-soft">
-          Where it differed from “{word}”:{hints.missing.length > 0 && <> the device didn’t hear {hints.missing.map((c) => `“${c}”`).join(', ')};</>}
-          {hints.extra.length > 0 && <> it heard {hints.extra.map((c) => `“${c}”`).join(', ')} that isn’t there;</>} look those sounds up above and try again slowly. (A guess from what the device wrote down, not a measurement.)
-        </p>
+        <p className="mt-2 text-[13.5px] text-ink-soft"><UiText source={'Where it differed from “{0}”:{1}{2} look those sounds up above and try again slowly. (A guess from what the device wrote down, not a measurement.)'} values={[word, hints.missing.length > 0 && <><UiText source={' the device didn’t hear {0};'} values={[hints.missing.map((c) => `“${c}”`).join(', ')]} /></>, hints.extra.length > 0 && <><UiText source={' it heard {0} that isn’t there;'} values={[hints.extra.map((c) => `“${c}”`).join(', ')]} /></>]} /></p>
       )}
       {yours && expect?.[word] && <EndNote shape={yours} want={expect[word]} />}
       {model && model !== 'none' && yours && (
         <p className="mt-2 text-[13.5px] text-ink-soft">
-          {yours.seconds > model.seconds * 1.25 ? `You took ${(yours.seconds / model.seconds).toFixed(1)}× as long as the speaker: try a little quicker.` : yours.seconds < model.seconds * 0.8 ? `You were ${(model.seconds / yours.seconds).toFixed(1)}× quicker than the speaker: try slowing down so each sound is clear.` : 'Your length is close to the speaker’s.'}
+          {yours.seconds > model.seconds * 1.25 ? translateUi('You took {0}× as long as the speaker: try a little quicker.', [(yours.seconds / model.seconds).toFixed(1)]) : yours.seconds < model.seconds * 0.8 ? translateUi('You were {0}× quicker than the speaker: try slowing down so each sound is clear.', [(model.seconds / yours.seconds).toFixed(1)]) : translateUi('Your length is close to the speaker’s.')}
         </p>
       )}
       {error && <p className="mt-2 text-[13px] text-accent-text">{error}</p>}
       <div className="mt-4 space-y-4">
-        {model && model !== 'none' ? <Shapes label="A real speaker" shape={model} tone="model" /> : <p className="self-center text-[13px] text-ink-faint">{model === 'none' ? 'There is no recording of this word to compare with. Your own still shows its shape.' : 'Looking for a recording…'}</p>}
-        {yours && <Shapes label="You" shape={yours} tone="yours" />}
+        {model && model !== 'none' ? <Shapes label={translateUi('A real speaker')} shape={model} tone="model" /> : <p className="self-center text-[13px] text-ink-faint">{model === 'none' ? translateUi('There is no recording of this word to compare with. Your own still shows its shape.') : translateUi('Looking for a recording…')}</p>}
+        {yours && <Shapes label={translateUi('You')} shape={yours} tone="yours" />}
       </div>
     </section>
   );

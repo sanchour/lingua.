@@ -45,7 +45,7 @@ export default function NewTextPage() {
 
   return (
     <>
-      <BackLink to="/codex">Codex</BackLink>
+      <BackLink to="/codex"><UiText source={'Codex'} /></BackLink>
       <header className="mb-7">
         <p className="mb-1.5 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase"><UiText source={'New on the shelf'} /></p>
         <h1 className="font-serif text-[34px] leading-tight font-semibold tracking-tight sm:text-[40px]"><UiText source={'Add to your library'} /></h1>
@@ -59,10 +59,10 @@ export default function NewTextPage() {
           block={compact}
           // On a phone the five ways fit as words alone.
           options={[
-            { value: 'write', label: compact ? 'Write' : 'Write or paste', icon: compact ? undefined : ClipboardPaste },
-            { value: 'book', label: compact ? 'Book' : 'Import a book', icon: compact ? undefined : BookUp },
-            { value: 'comic', label: compact ? 'Comic' : 'Import a comic', icon: compact ? undefined : PanelsTopLeft },
-            { value: 'news', label: compact ? 'News' : 'News & links', icon: compact ? undefined : Newspaper },
+            { value: 'write', label: compact ? translateUi('Write') : translateUi('Write or paste'), icon: compact ? undefined : ClipboardPaste },
+            { value: 'book', label: compact ? translateUi('Book') : translateUi('Import a book'), icon: compact ? undefined : BookUp },
+            { value: 'comic', label: compact ? translateUi('Comic') : translateUi('Import a comic'), icon: compact ? undefined : PanelsTopLeft },
+            { value: 'news', label: compact ? translateUi('News') : translateUi('News & links'), icon: compact ? undefined : Newspaper },
             { value: 'goodreads', label: translateUi('Goodreads'), icon: compact ? undefined : Library },
           ]}
         />
@@ -251,7 +251,7 @@ function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; l
                 <div className="h-1.5 overflow-hidden rounded-full bg-sunken" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(busy.progress * 100)}>
                   <div className="h-full w-full rounded-full bg-sage transition-transform duration-300" style={{ transform: `translateX(-${100 - Math.round(busy.progress * 100)}%)` }} />
                 </div>
-                <p className="mt-2 text-[13px] text-ink-faint tabular-nums">{busy.note ?? (busy.progress > 0 ? `${Math.round(busy.progress * 100)}%` : 'Opening the file…')}</p>
+                <p className="mt-2 text-[13px] text-ink-faint tabular-nums">{busy.note ?? (busy.progress > 0 ? `${Math.round(busy.progress * 100)}%` : translateUi('Opening the file…'))}</p>
               </div>
             ) : (
               <>

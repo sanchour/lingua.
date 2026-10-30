@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -33,6 +34,7 @@ export function getDailyWordKey(lang: string, dateStr: string, count: number): n
  * and Document Picture-in-Picture floating review window (Slice 2.6).
  */
 export function DailyWordCard({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const todayStr = new Date().toISOString().slice(0, 10);
   const [quickReviewOpen, setQuickReviewOpen] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(120);
@@ -105,7 +107,7 @@ export function DailyWordCard({ lang }: { lang: string }) {
       tags: ['word-of-the-day'],
       source: 'manual',
     });
-    toast(`Added “${dailyWord.word}” to ${activeDeck.name}.`, { tone: 'success' });
+    toast({ source: 'Added “{0}” to {1}.', values: [String(dailyWord.word), String(activeDeck.name)] }, { tone: 'success' });
   };
 
   const requestDailyNotifications = async () => {
@@ -171,14 +173,14 @@ export function DailyWordCard({ lang }: { lang: string }) {
               <span className="grid size-6 place-items-center rounded-lg bg-sage-soft text-sage-text">
                 <Sparkles size={14} aria-hidden />
               </span>
-              <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Word of the day</p>
+              <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Word of the day'} /></p>
             </div>
             <button
               type="button"
               onClick={() => void requestDailyNotifications()}
-              title={notifGranted ? 'Daily notification enabled' : 'Turn on daily word notification'}
+              title={notifGranted ? translateUi('Daily notification enabled') : translateUi('Turn on daily word notification')}
               className="grid size-8 place-items-center rounded-full text-ink-faint hover:bg-surface hover:text-ink"
-              aria-label="Daily notifications"
+              aria-label={translateUi('Daily notifications')}
             >
               <Bell size={15} className={notifGranted ? 'text-sage-text fill-sage-text' : ''} aria-hidden />
             </button>
@@ -194,7 +196,7 @@ export function DailyWordCard({ lang }: { lang: string }) {
                 <button
                   type="button"
                   onClick={handleHear}
-                  aria-label="Hear pronunciation"
+                  aria-label={translateUi('Hear pronunciation')}
                   className="grid size-7 place-items-center rounded-full text-ink-faint hover:bg-surface hover:text-ink"
                 >
                   <Volume2 size={15} aria-hidden />
@@ -217,21 +219,15 @@ export function DailyWordCard({ lang }: { lang: string }) {
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-line/70 pt-3">
           <div className="flex gap-1.5">
-            <Button variant="ghost" size="sm" onClick={() => void handleAddToDeck()}>
-              Add to deck
-            </Button>
+            <Button variant="ghost" size="sm" onClick={() => void handleAddToDeck()}><UiText source={'Add to deck'} /></Button>
             {dailyWord && (
               <Link
                 to={`/thesaurus?tab=dictionary&word=${encodeURIComponent(dailyWord.word)}`}
                 className="inline-flex h-8 items-center gap-1 rounded-xl px-2.5 text-[12.5px] font-semibold text-ink-soft hover:bg-surface hover:text-ink"
-              >
-                Dictionary <ExternalLink size={12} aria-hidden />
-              </Link>
+              ><UiText source={'Dictionary {0}'} values={[<ExternalLink size={12} aria-hidden />]} /></Link>
             )}
           </div>
-          <Button variant="secondary" size="sm" icon={Clock} onClick={() => void openFloatingReview()}>
-            Quick 2-min review
-          </Button>
+          <Button variant="secondary" size="sm" icon={Clock} onClick={() => void openFloatingReview()}><UiText source={'Quick 2-min review'} /></Button>
         </div>
       </Card>
 
@@ -239,13 +235,13 @@ export function DailyWordCard({ lang }: { lang: string }) {
       <Dialog
         open={quickReviewOpen}
         onClose={() => setQuickReviewOpen(false)}
-        title="Quick 2-Minute Review"
+        title={translateUi('Quick 2-Minute Review')}
       >
         <div className="space-y-4">
           <div className="flex items-center justify-between rounded-2xl bg-surface p-3">
             <div className="flex items-center gap-2 text-ink-soft">
               <Clock size={16} aria-hidden />
-              <span className="text-[13px] font-semibold">2-Minute Sprint</span>
+              <span className="text-[13px] font-semibold"><UiText source={'2-Minute Sprint'} /></span>
             </div>
             <span className="font-mono text-lg font-bold tabular-nums text-accent-text">
               {Math.floor(timerSeconds / 60)}:{String(timerSeconds % 60).padStart(2, '0')}
@@ -253,7 +249,7 @@ export function DailyWordCard({ lang }: { lang: string }) {
           </div>
 
           <div className="rounded-2xl border border-line p-4 text-center">
-            <p className="text-[12px] font-bold text-ink-faint uppercase">Word to review</p>
+            <p className="text-[12px] font-bold text-ink-faint uppercase"><UiText source={'Word to review'} /></p>
             <h4 lang={lang} className="mt-1 font-serif text-[32px] font-semibold">
               {dailyWord?.word ?? 'palabra'}
             </h4>
@@ -261,16 +257,12 @@ export function DailyWordCard({ lang }: { lang: string }) {
           </div>
 
           <div className="flex justify-between gap-3">
-            <Button variant="ghost" onClick={() => setQuickReviewOpen(false)}>
-              Close
-            </Button>
+            <Button variant="ghost" onClick={() => setQuickReviewOpen(false)}><UiText source={'Close'} /></Button>
             <Link
               to="/thesaurus/study/all?mode=recall"
               onClick={() => setQuickReviewOpen(false)}
               className="inline-flex h-9 items-center gap-1.5 rounded-full bg-accent px-4 text-[13px] font-semibold text-on-accent"
-            >
-              Continue in full study <ExternalLink size={14} aria-hidden />
-            </Link>
+            ><UiText source={'Continue in full study {0}'} values={[<ExternalLink size={14} aria-hidden />]} /></Link>
           </div>
         </div>
       </Dialog>

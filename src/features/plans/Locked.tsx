@@ -44,12 +44,13 @@ const WHAT: Record<Feature, string> = {
 
 /** In place of a locked room or tab: what it is, and the way to it. Calm, one button. */
 export function LockedCard({ feature, title }: { feature: Feature; title?: string }) {
+  const translateUi = useUi();
   const openPlans = useUI((s) => s.openPlans);
   const max = FEATURE_PLAN[feature] === 'max';
   return (
     <Card className="flex flex-col items-center px-6 py-12 text-center">
       <span className="mb-4">{max ? <MaxMark className="text-[13px]" /> : <span className="font-serif text-[40px] leading-none text-accent-text">+</span>}</span>
-      <h2 className="font-serif text-2xl font-semibold">{title ?? `${FEATURE_NAME[feature]} comes with ${max ? 'Lingua+ Max' : 'Lingua+'}`}</h2>
+      <h2 className="font-serif text-2xl font-semibold">{title ?? translateUi('{0} comes with {1}', [FEATURE_NAME[feature], max ? 'Lingua+ Max' : 'Lingua+'])}</h2>
       <p className="mt-2 max-w-md text-[15px] leading-relaxed text-ink-soft">{WHAT[feature]}</p>
       <button type="button" onClick={() => openPlans(feature)} className={cx(buttonClasses('primary', 'md'), 'mt-6')}><UiText source={'See the plans {0}'} values={[<ArrowRight size={16} aria-hidden />]} /></button>
     </Card>

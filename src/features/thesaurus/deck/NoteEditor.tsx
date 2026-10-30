@@ -129,7 +129,7 @@ export function NoteEditor({ lang, target, onClose }: { lang: string; target: Ed
         onClose();
       } else {
         await addNote((target as { deckId: string }).deckId, fields);
-        toast(`Added “${fields.term}”`, { tone: 'success', duration: 1600 });
+        toast({ source: 'Added “{0}”', values: [String(fields.term)] }, { tone: 'success', duration: 1600 });
         setTerm('');
         setMeaning('');
         setExample('');
@@ -216,7 +216,7 @@ export function NoteEditor({ lang, target, onClose }: { lang: string; target: Ed
             onClick={async () => {
               await deleteNote(editing.note.id);
               onClose();
-              toast(`Deleted “${editing.note.term}”`);
+              toast({ source: 'Deleted “{0}”', values: [String(editing.note.term)] });
             }}
           ><UiText source={'Delete card'} /></Button>
         </div>

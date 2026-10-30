@@ -57,7 +57,7 @@ export default function FeedPage() {
 
   return (
     <>
-      <BackLink to="/cantus/podcasts">Sonus</BackLink>
+      <BackLink to="/cantus/podcasts"><UiText source={'Sonus'} /></BackLink>
 
       <header className="flex flex-col gap-5 sm:flex-row sm:items-end">
         <Artwork title={feed.title} coverUrl={feed.imageUrl} className="w-36 sm:w-44" rounded="rounded-3xl" />

@@ -296,7 +296,7 @@ export function LettersLesson({ script, title, drills, random, practice, onFinis
         rightNote={rightNote}
         wrong={wrong}
         checkLabel={d?.kind === 'meet' ? 'Got it' : 'Check'}
-        hint={d?.kind === 'pairs' ? 'Tap one side, then its match' : undefined}
+        hint={d?.kind === 'pairs' ? translateUi('Tap one side, then its match') : undefined}
         aside={
           d?.kind === 'trace' ? (
             <p className="text-sm text-ink-soft"><UiText source={'Draw over the grey letter.'} /></p>

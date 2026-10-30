@@ -49,7 +49,7 @@ export function AddBookDrawer({ lang, kind: initialKind = 'audiobook', open, onC
     setBusy(true);
     try {
       const { bookId, ids, skipped } = await importBook(lang, files, { title, author, kind });
-      if (skipped.length) toast(`${skipped.length === 1 ? `“${skipped[0]}” isn’t` : `${skipped.length} files aren’t`} audio this device can play.`, { tone: 'error' });
+      if (skipped.length) toast({ source: '{0} audio this device can play.', values: [skipped.length === 1 ? { source: '“{0}” isn’t', values: [String(skipped[0])] } : { source: '{0} files aren’t', values: [String(skipped.length)] }] }, { tone: 'error' });
       if (!ids.length) return;
       close();
       navigate(`${sonusBase()}/book/${bookId}`);

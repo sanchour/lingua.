@@ -109,7 +109,7 @@ export function AlignmentView({ selectedLang }: AlignmentViewProps) {
           <div className="flex items-center justify-center gap-2 py-1 text-xs text-sand-400">
             <div className="h-px bg-sand-200 flex-1 dark:bg-sand-800" />
             <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-sand-100 dark:bg-sand-800">
-              {activeLink ? (activeLink.label ?? 'Aligned link') : translateUi('↕ syntax alignment')}
+              {activeLink ? (activeLink.label ?? translateUi('Aligned link')) : translateUi('↕ syntax alignment')}
             </span>
             <div className="h-px bg-sand-200 flex-1 dark:bg-sand-800" />
           </div>

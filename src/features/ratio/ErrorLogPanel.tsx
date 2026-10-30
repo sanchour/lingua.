@@ -50,7 +50,7 @@ export function ErrorLogPanel({ lang }: { lang: string }) {
             onClick={() => (setFilter(f), setShown(PAGE))}
             className={cx('rounded-full border px-3 py-1 text-[13px] font-semibold', filter === f ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}
           >
-            {label}
+            <UiText source={label} />
           </button>
         ))}
       </div>

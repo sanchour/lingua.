@@ -69,7 +69,7 @@ export default function ParallelReading() {
   const other = mode === 'parallel' ? saved?.text ?? '' : body ? translated ? body.translation : body.text : '';
   return <>
     <BackLink to={`/codex/read/${text.id}`}><UiText source={'Back to reading'} /></BackLink>
-    <PageHeader title={translateUi('Read side by side')} />
+    <PageHeader title={translateUi('Read side by side')} englishTitle={'Read side by side'} />
     <p className="mb-5 text-sm text-ink-soft"><UiText source={'{0} · chapter {1}. {2} characters; long chapters show only the first 4,000. Columns are independent texts, not sentence-aligned translations.'} values={[text.title, index + 1, source.length.toLocaleString()]} /></p>
     <div className="mb-5 flex gap-2" role="group" aria-label={translateUi('Side-by-side reading mode')}>
       <Button variant={mode === 'parallel' ? 'primary' : 'secondary'} onClick={() => setMode('parallel')} aria-pressed={mode === 'parallel'}><UiText source={'My parallel text'} /></Button>

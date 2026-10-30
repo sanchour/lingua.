@@ -215,10 +215,7 @@ function DeckRow({ deck, counts, last, depth, folders, actions, path }: RowProps
         {/* Hover (or tab into the row) for the two ways to study it. */}
         <span className="absolute inset-y-0 right-0 z-[1] flex items-center gap-1 opacity-0 transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100">
           <Link to={`/thesaurus/study/${deck.id}?mode=recall`} className={buttonClasses('primary', 'sm')}><UiText source={'{0}Study'} values={[<Layers size={15} aria-hidden />]} /></Link>
-          <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'sm')}>
-            <Puzzle size={15} aria-hidden />
-            Ludus
-          </Link>
+          <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'sm')}><UiText source={'{0}Ludus'} values={[<Puzzle size={15} aria-hidden />]} /></Link>
         </span>
       </span>
       <DeckMenu deck={deck} folders={folders} actions={actions} />
@@ -228,6 +225,7 @@ function DeckRow({ deck, counts, last, depth, folders, actions, path }: RowProps
 
 /** My decks as cards: decks outside folders first, then each folder's under its name. */
 export function DeckCards({ decks, folders, counts, lastStudied, actions, order }: TreeProps) {
+  const translateUi = useUi();
   const sections: Array<{ folder: Folder | null; title: string; decks: Deck[] }> = [];
   const free = loose(decks, folders).sort(order.decks);
   if (free.length) sections.push({ folder: null, title: '', decks: free });
@@ -247,7 +245,7 @@ export function DeckCards({ decks, folders, counts, lastStudied, actions, order 
   return (
     <div className="space-y-7">
       {sections.map((s) => (
-        <section key={s.folder?.id ?? 'loose'} aria-label={s.title || 'Decks'}>
+        <section key={s.folder?.id ?? 'loose'} aria-label={s.title || translateUi('Decks')}>
           {s.folder && (
             <div className="group mb-2.5 flex items-center gap-2 pl-1">
               <FolderIcon size={15} className="text-ink-faint" aria-hidden />
@@ -267,6 +265,7 @@ export function DeckCards({ decks, folders, counts, lastStudied, actions, order 
 }
 
 function DeckCard({ deck, counts, last, folders, actions }: Omit<RowProps, 'depth' | 'path'>) {
+  const translateUi = useUi();
   const ludusGate = useGate('ludus');
   return (
     <div className="group relative flex min-w-0 flex-col rounded-2xl border border-line/70 bg-surface p-4 transition-[border-color,box-shadow,translate] duration-200 focus-within:border-line-strong hover:-translate-y-0.5 hover:border-line-strong hover:shadow-elev-2">
@@ -284,7 +283,7 @@ function DeckCard({ deck, counts, last, folders, actions }: Omit<RowProps, 'dept
       <div className="mt-4 flex items-center justify-between gap-2">
         <Counts counts={counts} />
         <span className="relative z-[1] flex gap-1">
-          <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} aria-label="Ludus" title="Ludus" className={cx(buttonClasses('ghost', 'sm'), 'w-8 px-0 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100')}>
+          <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} aria-label={translateUi('Ludus')} title={translateUi('Ludus')} className={cx(buttonClasses('ghost', 'sm'), 'w-8 px-0 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100')}>
             <Puzzle size={15} aria-hidden />
           </Link>
           <Link to={`/thesaurus/study/${deck.id}?mode=recall`} className={buttonClasses('secondary', 'sm')}><UiText source={'Study'} /></Link>

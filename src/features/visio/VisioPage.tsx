@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { lazy, Suspense, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
@@ -96,13 +97,13 @@ export default function VisioPage() {
   return (
     <>
       <PageHeader
-        title="Visio"
-        eyebrow={`Watch in ${getLanguage(lang)?.name ?? lang}`}
+        title={translateUi('Visio')} englishTitle={'Visio'}
+        eyebrow={translateUi('Watch in {0}', [translateUi(getLanguage(lang)?.name ?? lang)])} englishEyebrow={interpolate('Watch in {0}', [getLanguage(lang)?.name ?? lang])}
         actions={<AddVideoMenu lang={lang} />}
       />
 
       <RoomTabs
-        label="Visio"
+        label={translateUi('Visio')}
         tabs={streamingOpen ? TABS : TABS.map((t) => (t.id === 'services' ? { ...t, badge: <PlusChip feature="streaming" /> } : t))}
         active={tab}
         keys={!searching}

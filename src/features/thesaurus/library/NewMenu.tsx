@@ -37,8 +37,8 @@ export function NewMenu({ busy, onChoose }: { busy: boolean; onChoose: (action: 
               <Icon size={18} aria-hidden />
             </span>
             <span className="min-w-0">
-              <span className="block text-[15px] font-semibold">{title}</span>
-              <span className="block text-[12.5px] text-ink-soft">{detail}</span>
+              <span className="block text-[15px] font-semibold"><UiText source={title} /></span>
+              <span className="block text-[12.5px] text-ink-soft"><UiText source={detail} /></span>
             </span>
           </button>
         </li>

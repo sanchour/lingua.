@@ -36,7 +36,7 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
         <button
           {...props}
           type="button"
-          aria-label={translateUi('Studying {0}. Switch language', [target?.name ?? language.id])}
+          aria-label={translateUi('Studying {0}. Switch language', [translateUi(target?.name ?? language.id)])}
           title={compact ? `${target?.endonym ?? language.id} · ${language.level}` : undefined}
           className={cx(
             'no-callout group flex items-center gap-2 rounded-xl border border-line/80 bg-raised text-left transition-[border-color,transform] duration-150 hover:border-line-strong active:scale-[0.98]',

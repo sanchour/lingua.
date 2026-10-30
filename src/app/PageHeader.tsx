@@ -6,8 +6,10 @@ import { useUI } from '@/state/ui';
 
 interface PageHeaderProps {
   title: string;
+  englishTitle?: string;
   /** Small caps line above the title. */
   eyebrow?: string;
+  englishEyebrow?: string;
   actions?: ReactNode;
 }
 
@@ -21,7 +23,7 @@ export function PageHeader(props: PageHeaderProps) {
   return <LargeTitle {...props} />;
 }
 
-function LargeTitle({ title, eyebrow, actions }: PageHeaderProps) {
+function LargeTitle({ title, englishTitle, eyebrow, englishEyebrow, actions }: PageHeaderProps) {
   const { layout } = useLayout();
   const setPageTitle = useUI((s) => s.setPageTitle);
   const setHidden = useUI((s) => s.setPageTitleHidden);
@@ -44,9 +46,10 @@ function LargeTitle({ title, eyebrow, actions }: PageHeaderProps) {
   return (
     <header className={wide ? 'mb-5 flex items-end gap-4' : 'mt-1 mb-6 flex items-end gap-3'}>
       <div className="min-w-0 flex-1">
-        {eyebrow && <p className="mb-1 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{eyebrow}</p>}
+        {eyebrow && <p title={englishEyebrow} className="mb-1 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{eyebrow}</p>}
         <h1
           ref={titleRef}
+          title={englishTitle}
           className={
             wide
               ? 'font-display text-[42px] leading-[1.1] font-semibold tracking-tight'

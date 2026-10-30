@@ -60,7 +60,7 @@ import { posterUrl } from '@/services/mundus/tmdb';
 import { useUI } from '@/state/ui';
 import { studyMinutes, useHomeFacts } from './facts';
 import type { HomeFacts } from './facts';
-import { enter, homeGreeting, label, TONE, useNextSteps } from './HomeClassic';
+import { enter, greeting, homeGreeting, label, TONE, useNextSteps } from './HomeClassic';
 import { DailyWordCard } from './DailyWordCard';
 
 const DATE = new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -92,6 +92,7 @@ function streakOf(week: HomeFacts['week']): number {
  * - Bottom shelf: Discover your next content > (links to Explora)
  */
 export function HomeToday() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const plan = usePlan();
   const openPlans = useUI((s) => s.openPlans);
@@ -104,7 +105,7 @@ export function HomeToday() {
   return (
     <>
       <PageHeader
-        title={homeGreeting(new Date().getHours(), name, target?.name)}
+        title={settings.ui.interfaceLanguage ? `${translateUi(greeting(new Date().getHours()))}${name ? `, ${name}` : ''}` : homeGreeting(new Date().getHours(), name, target?.name)}
         eyebrow={`${DATE.format(new Date())} · ${target?.endonym ?? language.id} · ${language.level}${language.goal ? ` → ${language.goal}` : ''}`}
         actions={
           plan === 'free' ? (
@@ -112,9 +113,7 @@ export function HomeToday() {
               type="button"
               onClick={() => openPlans()}
               className="inline-flex h-9 items-center gap-1 rounded-full border border-accent/40 px-4 text-[13.5px] font-semibold transition-colors hover:border-accent hover:bg-accent-soft"
-            >
-              Lingua<span className="text-accent-text">+</span>
-            </button>
+            ><UiText source={'Lingua{0}'} values={[<span className="text-accent-text">+</span>]} /></button>
           ) : undefined
         }
       />

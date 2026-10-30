@@ -163,7 +163,7 @@ export function NoteCard({
         <div className="min-w-0 flex-1">
           <p className="truncate text-[12.5px] font-semibold">
             {area && <span className="mr-1 rounded bg-accent-soft px-1 text-[11px] text-accent-text"><UiText source={'Area in'} /></span>}
-            {name || 'Element'}
+            {name || translateUi('Element')}
           </p>
           <p className="truncate text-[11.5px] text-ink-faint">
             {el ? `${facts?.size} · ` : translateUi('Not on this page now · ')}

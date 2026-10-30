@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Global search modal (`Ctrl+K` / `⌘K` palette, 6-22):
 // Searches across personal vocabulary, decks, flashcards/notes, saved Codex texts & chapters,
 // Diarium journal entries, and Grammatica topics.
@@ -34,6 +35,7 @@ const KIND_LABELS: Record<GlobalSearchKind, string> = {
 };
 
 export function GlobalSearchModal() {
+  const translateUi = useUi();
   const open = useUI((s) => s.globalSearchOpen);
   const setOpen = useUI((s) => s.setGlobalSearchOpen);
   const { language } = useApp();
@@ -100,7 +102,7 @@ export function GlobalSearchModal() {
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} title="Search across Lingua">
+    <Dialog open={open} onClose={() => setOpen(false)} title={translateUi('Search across Lingua')}>
       <div>
         <label className="flex h-12 items-center gap-2.5 rounded-2xl border border-line bg-bg px-3.5 focus-within:border-accent">
           <Search size={18} aria-hidden className="shrink-0 text-ink-faint" />
@@ -120,19 +122,17 @@ export function GlobalSearchModal() {
               }
             }}
             data-autofocus
-            placeholder="Search words, flashcards, decks, saved texts, notes, and grammar…"
+            placeholder={translateUi('Search words, flashcards, decks, saved texts, notes, and grammar…')}
             className="min-w-0 flex-1 bg-transparent text-[15.5px] outline-none placeholder:text-ink-faint"
           />
-          <Kbd>Esc</Kbd>
+          <Kbd><UiText source={'Esc'} /></Kbd>
         </label>
 
         <div className="mt-3 max-h-[55dvh] overflow-y-auto">
           {!query.trim() ? (
-            <p className="py-6 text-center text-[13.5px] text-ink-soft">
-              Type a word, phrase, book title, flashcard meaning, or grammar topic to jump straight there.
-            </p>
+            <p className="py-6 text-center text-[13.5px] text-ink-soft"><UiText source={'Type a word, phrase, book title, flashcard meaning, or grammar topic to jump straight there.'} /></p>
           ) : hits.length === 0 ? (
-            <p className="py-6 text-center text-[14px] text-ink-soft">Nothing matches “{query.trim()}”.</p>
+            <p className="py-6 text-center text-[14px] text-ink-soft"><UiText source={'Nothing matches “{0}”.'} values={[query.trim()]} /></p>
           ) : (
             <ul role="listbox" className="space-y-1">
               {hits.map((hit, idx) => {

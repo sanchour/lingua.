@@ -24,9 +24,9 @@ export async function addVideoFiles(lang: string, onOpen: (id: string) => void):
   const files = await pickFiles(`${VIDEO_ACCEPT},${SUBTITLE_ACCEPT}`);
   if (!files.length) return;
   const { ids, skipped, subtitles } = await importVideoFiles(lang, files);
-  if (skipped.length) toast(`${skipped.length === 1 ? `“${skipped[0]}” wasn’t` : `${plural(skipped.length, 'file')} weren’t`} added: not a video this device can play, or subtitles without a matching video.`, { tone: 'error', duration: 8000 });
+  if (skipped.length) toast({ source: '{0} added: not a video this device can play, or subtitles without a matching video.', values: [skipped.length === 1 ? { source: '“{0}” wasn’t', values: [String(skipped[0])] } : { source: '{0} weren’t', values: [String(plural(skipped.length, 'file'))] }] }, { tone: 'error', duration: 8000 });
   if (ids.length === 1) onOpen(ids[0]);
-  else if (ids.length) toast(`${plural(ids.length, 'video')} added${subtitles ? `, with ${plural(subtitles, 'subtitle file')}` : ''}.`, { tone: 'success' });
+  else if (ids.length) toast({ source: '{0} added{1}.', values: [String(plural(ids.length, 'video')), subtitles ? { source: ', with {0}', values: [String(plural(subtitles, 'subtitle file'))] } : String('')] }, { tone: 'success' });
 }
 
 /** "Add" in the Visio header: video files, a link, or subtitles on their own. */
@@ -59,9 +59,9 @@ export function AddVideoMenu({ lang, label = 'Add' }: { lang: string; label?: st
         const files = await pickFiles(SUBTITLE_ACCEPT);
         if (!files.length) return;
         const { ids, skipped } = await importSubtitlesOnly(lang, files);
-        if (skipped.length) toast(`${plural(skipped.length, 'file')} couldn’t be read as subtitles.`, { tone: 'error' });
+        if (skipped.length) toast({ source: '{0} couldn’t be read as subtitles.', values: [String(plural(skipped.length, 'file'))] }, { tone: 'error' });
         if (ids.length === 1) open(ids[0]);
-        else if (ids.length) toast(`${plural(ids.length, 'item')} added.`, { tone: 'success' });
+        else if (ids.length) toast({ source: '{0} added.', values: [String(plural(ids.length, 'item'))] }, { tone: 'success' });
       });
   };
 

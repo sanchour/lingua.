@@ -43,8 +43,9 @@ function useRecorded(lang: string, text: string, speaker: Speaker | null): strin
 }
 
 /** A speaker button that says `text` in a natural voice or a real person's recording; nothing at all when there's neither. */
-export function SpeakButton({ lang, text, size = 18, className, label = 'Listen' }: { lang: string; text: string; size?: number; className?: string; label?: string }) {
+export function SpeakButton({ lang, text, size = 18, className, label }: { lang: string; text: string; size?: number; className?: string; label?: string }) {
   const translateUi = useUi();
+  label = label ?? translateUi('Listen');
   const { speaker, flag } = useSpeaker(lang);
   const recorded = useRecorded(lang, text, speaker);
   const [state, setState] = useState<'idle' | 'loading' | 'playing'>('idle');

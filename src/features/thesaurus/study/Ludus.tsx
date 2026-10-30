@@ -368,7 +368,7 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
         onCheck={() => check()}
         onNext={next}
         praise={praise}
-        hint={ex?.kind === 'match' ? 'Tap a word, then its meaning' : lightning && ex && 'options' in ex ? 'Tap an answer' : undefined}
+        hint={ex?.kind === 'match' ? translateUi('Tap a word, then its meaning') : lightning && ex && 'options' in ex ? translateUi('Tap an answer') : undefined}
         rightNote={
           ex?.kind === 'transform' ? (
             <p className="text-sm text-ink-soft">{note ?? ex.spec.feedback?.why}</p>

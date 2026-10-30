@@ -41,7 +41,7 @@ export function TenseTimeline({ timeline, lang }: { timeline: GrammarTimelineDat
           viewBox="0 0 600 80"
           className="h-20 w-full overflow-visible"
           role="img"
-          aria-label={timeline.title ?? 'Tense Timeline'}
+          aria-label={timeline.title ?? translateUi('Tense Timeline')}
         >
           <defs>
             <marker

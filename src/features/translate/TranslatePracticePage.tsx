@@ -181,8 +181,8 @@ export default function TranslatePracticePage() {
     <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
       {/* Header */}
       <PageHeader
-        title={translateUi('Translating & Comparing')}
-        eyebrow="Cursus › Translate"
+        title={translateUi('Translating & Comparing')} englishTitle={'Translating & Comparing'}
+        eyebrow={translateUi('Cursus › Translate')} englishEyebrow={'Cursus › Translate'}
       />
       <p className="text-xs text-sand-500 font-serif -mt-3"><UiText source={'Translate sentences, dialogues and idioms with literal contrasts and requirement checks'} /></p>
 
@@ -284,7 +284,7 @@ export default function TranslatePracticePage() {
                   <div className="flex items-center justify-between text-xs text-sand-500 border-b border-sand-100 pb-3 dark:border-sand-800/60">
                     <div className="flex items-center gap-2">
                       <Badge tone="neutral">
-                        <span className="uppercase font-mono text-[10px]">{currentTask.category ?? 'sentence'}</span>
+                        <span className="uppercase font-mono text-[10px]">{currentTask.category ?? translateUi('sentence')}</span>
                       </Badge>
                       {currentTask.level && (
                         <span className="font-semibold text-sand-600 dark:text-sand-300"><UiText source={'Level {0}'} values={[currentTask.level]} /></span>

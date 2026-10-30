@@ -108,14 +108,14 @@ export function FromListDialog({ open, lang, onClose, onMade }: { open: boolean;
             label={translateUi('Conversation')}
             value={chatId}
             onChange={setChatId}
-            options={[{ value: '', label: chats?.length ? 'Choose a conversation…' : 'No conversations yet', disabled: true }, ...(chats ?? []).map((c) => ({ value: c.id, label: c.title }))]}
+            options={[{ value: '', label: chats?.length ? translateUi('Choose a conversation…') : translateUi('No conversations yet'), disabled: true }, ...(chats ?? []).map((c) => ({ value: c.id, label: c.title }))]}
           />
         ) : source === 'library' ? (
           <Select
             label={translateUi('Text')}
             value={textId}
             onChange={setTextId}
-            options={[{ value: '', label: library?.length ? 'Choose a text…' : 'Your library is empty', disabled: true }, ...(library ?? []).map((t) => ({ value: t.id, label: t.title }))]}
+            options={[{ value: '', label: library?.length ? translateUi('Choose a text…') : translateUi('Your library is empty'), disabled: true }, ...(library ?? []).map((t) => ({ value: t.id, label: t.title }))]}
           />
         ) : (
         <textarea

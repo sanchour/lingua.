@@ -46,7 +46,7 @@ export function useBuy(onBought?: () => void) {
     try {
       const done = await buy(product);
       const name = product === 'plus' ? 'Lingua+' : 'Lingua+ Max';
-      if (done === 'pretend') toast(`${name} is on. Test mode: nothing was charged.`, { tone: 'success' });
+      if (done === 'pretend') toast({ source: '{0} is on. Test mode: nothing was charged.', values: [String(name)] }, { tone: 'success' });
       else toast('Finish paying on the page that opened. Lingua picks up your licence when you come back.', { duration: 9000 });
       onBought?.();
     } finally {
@@ -73,7 +73,7 @@ export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps
             <p className="h-10 text-center text-[13.5px] leading-10 font-semibold text-ink-faint">{current === 'free' ? translateUi('Your plan') : translateUi('Always included')}</p>
           )}
         </Column>
-        <Column title={<>Lingua<span className="text-accent-text">+</span></>} price={PRICES.plus} note="Once, with every update" lifted={lifted === 'plus'} badge={lifted === 'plus' ? 'Best value' : undefined} items={PLAN_LISTS.plus}>
+        <Column title={<><UiText source={'Lingua{0}'} values={[<span className="text-accent-text">+</span>]} /></>} price={PRICES.plus} note="Once, with every update" lifted={lifted === 'plus'} badge={lifted === 'plus' ? 'Best value' : undefined} items={PLAN_LISTS.plus}>
           {current === 'free' ? (
             <Button block loading={busy === 'plus'} onClick={() => void get('plus')}><UiText source={'Get Lingua+'} /></Button>
           ) : (
@@ -82,9 +82,7 @@ export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps
         </Column>
         <Column
           title={
-            <span className="inline-flex items-center gap-2">
-              Lingua<span className="-ml-2 text-accent-text">+</span> <MaxMark />
-            </span>
+            <span className="inline-flex items-center gap-2"><UiText source={'Lingua{0} {1}'} values={[<span className="-ml-2 text-accent-text">+</span>, <MaxMark />]} /></span>
           }
           price={yearly ? PRICES.maxYear : PRICES.maxMonth}
           note={yearly ? 'A year (about €4.17 a month)' : 'A month, cancel any time'}

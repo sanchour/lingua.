@@ -444,7 +444,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
         <button type="button" aria-label={translateUi('Back to Sonus et Visio')} onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus?show=watch'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronLeft size={24} aria-hidden />
         </button>
-        <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{media.collection ?? 'Visio'}</p>
+        <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{media.collection ?? translateUi('Visio')}</p>
         <span className="size-11" />
       </header>
       <div className="sticky top-[calc(env(safe-area-inset-top)+44px)] z-10">{stage}</div>

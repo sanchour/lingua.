@@ -79,7 +79,7 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
                   {PREVIEW_SCRIPTS.map((s) => (
                     <Badge key={s} tone={f.scripts.includes(s) ? 'sage' : 'neutral'}>
                       {SCRIPT_NAMES[s]}
-                      {!f.scripts.includes(s) && ' · fallback'}
+                      {!f.scripts.includes(s) && translateUi(' · fallback')}
                     </Badge>
                   ))}
                 </span>
@@ -96,8 +96,8 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
       </div>
 
       <div className="mt-4 grid gap-x-8 sm:grid-cols-2">
-        <Slider label="Letter spacing" value={letterSpacing} min={0} max={0.2} step={0.01} onChange={setLetterSpacing} format={(v) => `${(v * 100).toFixed(0)}%`} />
-        <Slider label="Word spacing" value={wordSpacing} min={0} max={0.4} step={0.02} onChange={setWordSpacing} format={(v) => `${(v * 100).toFixed(0)}%`} />
+        <Slider label={translateUi('Letter spacing')} value={letterSpacing} min={0} max={0.2} step={0.01} onChange={setLetterSpacing} format={(v) => `${(v * 100).toFixed(0)}%`} />
+        <Slider label={translateUi('Word spacing')} value={wordSpacing} min={0} max={0.4} step={0.02} onChange={setWordSpacing} format={(v) => `${(v * 100).toFixed(0)}%`} />
       </div>
 
       <div className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2">

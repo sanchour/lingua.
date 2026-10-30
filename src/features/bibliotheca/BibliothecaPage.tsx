@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -189,8 +190,8 @@ export default function BibliothecaPage() {
   return (
     <>
       <PageHeader
-        title={translateUi('Bibliotheca')}
-        eyebrow={`Your library across every tool in ${langName}`}
+        title={translateUi('Bibliotheca')} englishTitle={'Bibliotheca'}
+        eyebrow={translateUi('Your library across every tool in {0}', [translateUi(langName)])} englishEyebrow={interpolate('Your library across every tool in {0}', [langName])}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Link to="/explora" className={buttonClasses('secondary', 'md')}><UiText source={'{0} Explora'} values={[<Compass size={17} aria-hidden />]} /></Link>
@@ -285,7 +286,7 @@ export default function BibliothecaPage() {
               <EmptyToolShelf
                 icon={BookOpen}
                 title={translateUi('No books or texts on your shelf yet')}
-                detail="Import an EPUB, PDF or comic, paste an article, or pick a free classic in Explora."
+                detail={translateUi('Import an EPUB, PDF or comic, paste an article, or pick a free classic in Explora.')}
                 to="/codex/new"
                 actionLabel="Add to Codex"
               />
@@ -379,7 +380,7 @@ export default function BibliothecaPage() {
               <EmptyToolShelf
                 icon={Headphones}
                 title={translateUi('Nothing in your Sonus library yet')}
-                detail="Follow a podcast, open a free LibriVox audiobook, save a radio station, or import your own audio files."
+                detail={translateUi('Follow a podcast, open a free LibriVox audiobook, save a radio station, or import your own audio files.')}
                 to="/sonus"
                 actionLabel="Open Sonus"
               />
@@ -406,7 +407,7 @@ export default function BibliothecaPage() {
               <EmptyToolShelf
                 icon={Clapperboard}
                 title={translateUi('No videos or subtitle tracks yet')}
-                detail="Add a video file with subtitles, or load subtitles for a series or film you watch on your streaming services."
+                detail={translateUi('Add a video file with subtitles, or load subtitles for a series or film you watch on your streaming services.')}
                 to="/visio"
                 actionLabel="Open Visio"
               />
@@ -455,7 +456,7 @@ export default function BibliothecaPage() {
               <EmptyToolShelf
                 icon={Layers}
                 title={translateUi('No vocabulary decks yet')}
-                detail="Start with a ready-made frequency or theme deck, import an Anki deck, or mark words while reading and listening."
+                detail={translateUi('Start with a ready-made frequency or theme deck, import an Anki deck, or mark words while reading and listening.')}
                 to="/thesaurus?tab=discover"
                 actionLabel="Browse decks"
               />

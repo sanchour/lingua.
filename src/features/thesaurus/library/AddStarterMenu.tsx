@@ -41,7 +41,7 @@ export function AddStarterMenu({ lang, spec, skipKnown = true, trigger }: AddSta
     try {
       if (!to) {
         const result = await addStarterDeck(lang, spec, { skipKnown });
-        toast(`${name} is ready · ${result.added.toLocaleString()} ${result.added === 1 ? 'card' : 'cards'}`, {
+        toast({ source: '{0} is ready · {1} {2}', values: [String(name), String(result.added.toLocaleString()), result.added === 1 ? { source: 'card' } : { source: 'cards' }] }, {
           tone: 'success',
           action: { label: 'Study', onClick: () => navigate(`/thesaurus/study/${result.deckId}?mode=recall`) },
         });
@@ -49,7 +49,7 @@ export function AddStarterMenu({ lang, spec, skipKnown = true, trigger }: AddSta
       }
       const result = await addStarterToDeck(lang, spec, to.id, { skipKnown });
       const there = result.skippedInDeck ? ` · ${result.skippedInDeck.toLocaleString()} already there` : '';
-      toast(result.added ? `Added ${result.added.toLocaleString()} ${result.added === 1 ? 'word' : 'words'} to ${to.name}${there}` : `Every word of ${name} is already in ${to.name}`, {
+      toast(result.added ? { source: 'Added {0} {1} to {2}{3}', values: [String(result.added.toLocaleString()), result.added === 1 ? { source: 'word' } : { source: 'words' }, String(to.name), String(there)] } : { source: 'Every word of {0} is already in {1}', values: [String(name), String(to.name)] }, {
         tone: result.added ? 'success' : 'default',
         action: { label: 'Open', onClick: () => navigate(`/thesaurus/deck/${to.id}`) },
       });
@@ -85,7 +85,7 @@ export function AddStarterMenu({ lang, spec, skipKnown = true, trigger }: AddSta
     >
       {(close) => (
         <div className="space-y-0.5">
-          <MenuItem icon={own ? Check : Plus} label={own ? translateUi('In My decks') : translateUi('Add to My decks')} detail={own ? 'Open the deck' : 'As a new ready-made deck'} onClick={() => void run(close)} />
+          <MenuItem icon={own ? Check : Plus} label={own ? translateUi('In My decks') : translateUi('Add to My decks')} detail={own ? translateUi('Open the deck') : translateUi('As a new ready-made deck')} onClick={() => void run(close)} />
           {targets.length > 0 && (
             <>
               <p className="px-3 pt-2.5 pb-1 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Add to a deck you have'} /></p>

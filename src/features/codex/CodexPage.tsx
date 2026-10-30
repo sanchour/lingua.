@@ -166,12 +166,12 @@ export default function CodexPage() {
   return (
     <>
       <PageHeader
-        title="Codex"
+        title={translateUi('Codex')} englishTitle={'Codex'}
         actions={
           <Link to="/codex/new" className={buttonClasses('primary', 'md')}><UiText source={'{0} Add'} values={[<Plus size={17} aria-hidden />]} /></Link>
         }
       />
-      <RoomTabs label="Codex" tabs={TABS} active={tab} />
+      <RoomTabs label={translateUi('Codex')} tabs={TABS} active={tab} />
 
       {tab === 'graded' && <GradedTab key={lang} lang={lang} texts={texts ?? []} />}
       {tab === 'discover' && <DiscoverTab lang={lang} />}

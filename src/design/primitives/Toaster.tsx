@@ -1,3 +1,4 @@
+import { UiText, UiMessageText } from '@/design/i18n/UiText';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'motion/react';
@@ -50,7 +51,7 @@ function Toast({ toast }: { toast: ToastItem }) {
       transition={spring.snappy}
     >
       {Icon && <Icon size={18} className="shrink-0" aria-hidden />}
-      <span className="min-w-0 flex-1">{toast.message}</span>
+      <span className="min-w-0 flex-1"><UiMessageText message={toast.message} /></span>
       {toast.action && (
         <button
           type="button"
@@ -60,7 +61,7 @@ function Toast({ toast }: { toast: ToastItem }) {
             dismiss(toast.id);
           }}
         >
-          {toast.action.label}
+          <UiText source={toast.action.label} />
         </button>
       )}
     </motion.div>

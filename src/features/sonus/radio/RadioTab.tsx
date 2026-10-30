@@ -256,7 +256,7 @@ function StationGrid({ title, stations, loading, empty, onClose, back, ...tile }
           ))}
         </div>
       )}
-      {loading && !list.length ? <LoaderCircle size={20} className="mx-auto my-10 animate-spin text-ink-faint" aria-label={translateUi('Loading')} /> : list.length ? <Tiles stations={list} {...tile} /> : <p className="py-6 text-[15px] text-ink-soft">{empty ?? 'No stations here yet.'}</p>}
+      {loading && !list.length ? <LoaderCircle size={20} className="mx-auto my-10 animate-spin text-ink-faint" aria-label={translateUi('Loading')} /> : list.length ? <Tiles stations={list} {...tile} /> : <p className="py-6 text-[15px] text-ink-soft">{empty ?? translateUi('No stations here yet.')}</p>}
     </section>
   );
 }

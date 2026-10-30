@@ -32,7 +32,7 @@ function useCheckoutReturn() {
     const claim = () =>
       claimCheckout(session).then(
         (kind) => {
-          toast(`${NAME[kind]} is yours. Thank you.`, { tone: 'success' });
+          toast({ source: '{0} is yours. Thank you.', values: [String(NAME[kind])] }, { tone: 'success' });
           const next = new URLSearchParams(params);
           next.delete('checkout');
           setParams(next, { replace: true });
@@ -76,18 +76,14 @@ export function PlanSection({ meta }: { meta: Settings['meta'] }) {
   };
 
   return (
-    <SettingsSection id="plus" icon={Gem} title="Lingua+" description={translateUi('Your plan, and the way to change it. Everything free stays free.')}>
+    <SettingsSection id="plus" icon={Gem} title={translateUi('Lingua+')} description={translateUi('Your plan, and the way to change it. Everything free stays free.')}>
       <div className="flex flex-col items-start gap-4 rounded-2xl bg-accent-soft/50 p-5 sm:flex-row sm:items-center">
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-2.5 font-serif text-[22px] leading-tight font-semibold">
             {plan === 'max' ? (
-              <>
-                Lingua<span className="-ml-2.5 text-accent-text">+</span> <MaxMark />
-              </>
+              <><UiText source={'Lingua{0} {1}'} values={[<span className="-ml-2.5 text-accent-text">+</span>, <MaxMark />]} /></>
             ) : plan === 'plus' ? (
-              <span>
-                Lingua<span className="text-accent-text">+</span>
-              </span>
+              <span><UiText source={'Lingua{0}'} values={[<span className="text-accent-text">+</span>]} /></span>
             ) : (
               translateUi('Free')
             )}
@@ -126,7 +122,7 @@ function Restore() {
     try {
       const kind = await restoreLicence(text.trim());
       setText('');
-      toast(`${NAME[kind]} is restored on this device.`, { tone: 'success' });
+      toast({ source: '{0} is restored on this device.', values: [String(NAME[kind])] }, { tone: 'success' });
     } catch (error) {
       toast(error instanceof LicenceError ? error.message : 'That licence couldn’t be read.', { tone: 'error' });
     } finally {

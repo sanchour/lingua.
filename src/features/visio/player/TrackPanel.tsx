@@ -32,7 +32,7 @@ async function addFile(media: Media, role: TrackRole) {
   try {
     const { cues, source } = await readSubtitleFile(file, lang);
     await saveTrack(media.id, lang, role, cues, source);
-    toast(`Subtitles added: ${cues.length} lines.`, { tone: 'success' });
+    toast({ source: 'Subtitles added: {0} lines.', values: [String(cues.length)] }, { tone: 'success' });
   } catch (e) {
     toast(e instanceof Error ? e.message : 'That file couldn’t be read.', { tone: 'error' });
   }
@@ -120,7 +120,7 @@ function TrackMenu({ media, role }: { media: Media; role: TrackRole }) {
   const translateUi = useUi();
   const shift = async (ms: number) => {
     await shiftTrack(media.id, role, ms);
-    toast(`Subtitles moved ${ms > 0 ? 'later' : 'earlier'} by ${Math.abs(ms) / 1000} s.`);
+    toast({ source: 'Subtitles moved {0} by {1} s.', values: [ms > 0 ? { source: 'later' } : { source: 'earlier' }, String(Math.abs(ms) / 1000)] });
   };
   return (
     <Popover
@@ -135,8 +135,8 @@ function TrackMenu({ media, role }: { media: Media; role: TrackRole }) {
     >
       {(close) => (
         <div className="space-y-0.5">
-          <MenuItem icon={Clock} label={translateUi('Earlier by 0.5 s')} detail="When the text comes after the voice" onClick={() => void shift(-500)} />
-          <MenuItem icon={Clock} label={translateUi('Later by 0.5 s')} detail="When the text comes before the voice" onClick={() => void shift(500)} />
+          <MenuItem icon={Clock} label={translateUi('Earlier by 0.5 s')} detail={translateUi('When the text comes after the voice')} onClick={() => void shift(-500)} />
+          <MenuItem icon={Clock} label={translateUi('Later by 0.5 s')} detail={translateUi('When the text comes before the voice')} onClick={() => void shift(500)} />
           <MenuItem icon={FileText} label={translateUi('Replace with a file')} onClick={() => (close(), void addFile(media, role))} />
           <MenuItem
             icon={Trash2}

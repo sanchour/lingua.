@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
@@ -43,7 +44,7 @@ export function Panel({ title, icon: Icon, children, className, action }: { titl
     <section className={cx('rounded-3xl border border-line/70 bg-surface p-5 sm:p-6', className)} aria-label={title}>
       <header className="mb-4 flex items-center gap-2">
         {Icon && <Icon size={17} className="text-sage-text" aria-hidden />}
-        <h2 className="flex-1 text-[13px] font-bold tracking-wide text-ink-soft uppercase">{title}</h2>
+        <h2 className="flex-1 text-[13px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={title} /></h2>
         {action}
       </header>
       {children}
@@ -56,8 +57,8 @@ export function Stat({ value, label, hint }: { value: ReactNode; label: string; 
   return (
     <div className="min-w-0">
       <dd className="truncate font-serif text-[26px] leading-tight font-semibold tabular-nums">{value}</dd>
-      <dt className="mt-0.5 text-[12px] font-bold tracking-wide text-ink-faint uppercase">{label}</dt>
-      {hint && <p className="mt-0.5 text-[12.5px] text-ink-soft">{hint}</p>}
+      <dt className="mt-0.5 text-[12px] font-bold tracking-wide text-ink-faint uppercase"><UiText source={label} /></dt>
+      {hint && <p className="mt-0.5 text-[12.5px] text-ink-soft"><UiText source={hint} /></p>}
     </div>
   );
 }
@@ -68,7 +69,7 @@ export function Legend({ items }: { items: Array<{ label: string; color: string 
       {items.map((i) => (
         <li key={i.label} className="flex items-center gap-1.5">
           <span className="size-2.5 rounded-full" style={{ background: i.color }} />
-          {i.label}
+          <UiText source={i.label} />
         </li>
       ))}
     </ul>

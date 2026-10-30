@@ -244,7 +244,7 @@ function TitleField({ entry, onDone }: { entry: JournalEntry; onDone: (title?: s
     <input
       autoFocus
       value={title}
-      placeholder={entry.prompt ?? 'A title'}
+      placeholder={entry.prompt ?? translateUi('A title')}
       aria-label={translateUi('Title')}
       onClick={(e) => e.preventDefault()}
       onChange={(e) => setTitle(e.target.value)}

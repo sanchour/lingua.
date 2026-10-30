@@ -1,3 +1,5 @@
+import { interpolate } from '@/core/i18n/messages';
+import { useUi } from '@/design/i18n/UiText';
 import { Navigate, useParams } from 'react-router';
 import { Feather, Earth, MessagesSquare } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -26,6 +28,7 @@ const MUNDUS_TABS = new Set(['', 'try', 'culture', 'immerse']);
  * and Diarium for writing, with today's prompt beside every tab so the three lead into each other.
  */
 export default function MentisPage() {
+  const translateUi = useUi();
   const { language } = useApp();
   const sermoOpen = useCan('sermo');
   const sub = (useParams()['*'] ?? '').replace(/\/+$/, '');
@@ -36,8 +39,8 @@ export default function MentisPage() {
 
   return (
     <>
-      <PageHeader title="Mentis" eyebrow={`Think, talk and write in ${name}`} actions={tab === 'diarium' ? <NewEntryButton /> : undefined} />
-      <RoomTabs label="Mentis" tabs={tabs} active={tab} />
+      <PageHeader title={translateUi('Mentis')} englishTitle={'Mentis'} eyebrow={translateUi('Think, talk and write in {0}', [translateUi(name)])} englishEyebrow={interpolate('Think, talk and write in {0}', [name])} actions={tab === 'diarium' ? <NewEntryButton /> : undefined} />
+      <RoomTabs label={translateUi('Mentis')} tabs={tabs} active={tab} />
       <div className={(sub === 'culture' || sub === 'immerse') ? '' : 'grid gap-10 lg:grid-cols-[minmax(0,1fr)_288px]'}>
         <div className="min-w-0">
           <InRoom.Provider value>

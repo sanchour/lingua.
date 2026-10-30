@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
@@ -66,6 +67,7 @@ export function SoloSpeakingView({
   grammarTopic,
   onSendToReview,
 }: SoloSpeakingViewProps) {
+  const translateUi = useUi();
   const [category, setCategory] = useState<SoloCategory | 'all'>('all');
   const [activeChallenge, setActiveChallenge] = useState<SoloChallenge | null>(null);
   const [phase, setPhase] = useState<ChallengePhase>('choose');
@@ -248,13 +250,11 @@ export function SoloSpeakingView({
     <div className="max-w-5xl">
       {/* Stage 1: Choose a challenge */}
       {phase === 'choose' && (
-        <section aria-label="Solo speaking challenges">
+        <section aria-label={translateUi('Solo speaking challenges')}>
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-serif text-[26px] font-semibold">Solo speaking practice</h2>
-              <p className="mt-1 text-[14px] text-ink-soft">
-                Timed monologues, storytelling, picture description, and rapid prompts to build spoken automaticity.
-              </p>
+              <h2 className="font-serif text-[26px] font-semibold"><UiText source={'Solo speaking practice'} /></h2>
+              <p className="mt-1 text-[14px] text-ink-soft"><UiText source={'Timed monologues, storytelling, picture description, and rapid prompts to build spoken automaticity.'} /></p>
             </div>
           </div>
 
@@ -269,9 +269,7 @@ export function SoloSpeakingView({
                   ? 'bg-inverse text-on-inverse'
                   : 'bg-surface text-ink-soft hover:bg-sunken hover:text-ink',
               )}
-            >
-              All challenges
-            </button>
+            ><UiText source={'All challenges'} /></button>
             {(Object.keys(CATEGORY_LABELS) as SoloCategory[]).map((cat) => (
               <button
                 key={cat}
@@ -333,9 +331,7 @@ export function SoloSpeakingView({
                     size="sm"
                     variant="primary"
                     onClick={() => handleSelectChallenge(c)}
-                  >
-                    Start practice <ArrowRight size={14} className="ml-1" aria-hidden />
-                  </Button>
+                  ><UiText source={'Start practice {0}'} values={[<ArrowRight size={14} className="ml-1" aria-hidden />]} /></Button>
                 </div>
               </Card>
             ))}
@@ -345,20 +341,16 @@ export function SoloSpeakingView({
 
       {/* Stage 2: Prep countdown */}
       {phase === 'prep' && activeChallenge && (
-        <section aria-label="Preparation time" className="mx-auto max-w-2xl py-8">
+        <section aria-label={translateUi('Preparation time')} className="mx-auto max-w-2xl py-8">
           <Card className="p-8 text-center">
-            <span className="inline-block rounded-full bg-accent-soft px-3 py-1 text-[12px] font-bold uppercase tracking-wider text-accent-text">
-              Preparation · Think about your points
-            </span>
+            <span className="inline-block rounded-full bg-accent-soft px-3 py-1 text-[12px] font-bold uppercase tracking-wider text-accent-text"><UiText source={'Preparation · Think about your points'} /></span>
 
             <div className="my-6 grid place-items-center">
               <div className="relative grid size-32 place-items-center rounded-full border-4 border-accent/30 bg-accent-soft/20 text-accent-text">
                 <span className="font-serif text-[42px] font-bold tabular-nums">
                   {prepTimeLeft}
                 </span>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-ink-faint -mt-2">
-                  seconds
-                </span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-ink-faint -mt-2"><UiText source={'seconds'} /></span>
               </div>
             </div>
 
@@ -374,16 +366,12 @@ export function SoloSpeakingView({
                   size="sm"
                   icon={Volume2}
                   onClick={() => playReferenceAudio(activeChallenge.audioPhrase!)}
-                >
-                  Listen to reference sentence
-                </Button>
+                ><UiText source={'Listen to reference sentence'} /></Button>
               </div>
             )}
 
             <div className="mt-6 rounded-2xl bg-sunken p-4 text-left">
-              <h4 className="text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-                Helpful hints to cover
-              </h4>
+              <h4 className="text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Helpful hints to cover'} /></h4>
               <ul className="mt-2 list-disc list-inside space-y-1 text-[13.5px] text-ink-soft">
                 {activeChallenge.hints.map((hint, idx) => (
                   <li key={idx}>{hint}</li>
@@ -392,12 +380,8 @@ export function SoloSpeakingView({
             </div>
 
             <div className="mt-8 flex items-center justify-center gap-3">
-              <Button variant="ghost" onClick={handleReset} icon={ArrowLeft}>
-                Cancel
-              </Button>
-              <Button size="lg" variant="primary" onClick={startSpeaking}>
-                I’m ready — start speaking now <Mic size={16} className="ml-1" aria-hidden />
-              </Button>
+              <Button variant="ghost" onClick={handleReset} icon={ArrowLeft}><UiText source={'Cancel'} /></Button>
+              <Button size="lg" variant="primary" onClick={startSpeaking}><UiText source={'I’m ready — start speaking now {0}'} values={[<Mic size={16} className="ml-1" aria-hidden />]} /></Button>
             </div>
           </Card>
         </section>
@@ -405,7 +389,7 @@ export function SoloSpeakingView({
 
       {/* Stage 3: Speaking active timer & recording */}
       {phase === 'speak' && activeChallenge && (
-        <section aria-label="Speaking time" className="mx-auto max-w-2xl py-8">
+        <section aria-label={translateUi('Speaking time')} className="mx-auto max-w-2xl py-8">
           <Card className="p-8">
             <div className="flex items-center justify-between border-b border-line pb-4">
               <div className="flex items-center gap-2">
@@ -413,15 +397,13 @@ export function SoloSpeakingView({
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
                   <span className="relative inline-flex size-3 rounded-full bg-red-600" />
                 </span>
-                <span className="text-[13px] font-bold uppercase tracking-wider text-red-600">
-                  Recording out loud
-                </span>
+                <span className="text-[13px] font-bold uppercase tracking-wider text-red-600"><UiText source={'Recording out loud'} /></span>
               </div>
               <div className="text-right">
                 <span className="font-mono text-[22px] font-bold tabular-nums">
                   {Math.floor(speakTime / 60)}:{(speakTime % 60).toString().padStart(2, '0')}
                 </span>
-                <span className="text-[12px] text-ink-faint"> / {targetTime}s target</span>
+                <span className="text-[12px] text-ink-faint"><UiText source={' / {0}s target'} values={[targetTime]} /></span>
               </div>
             </div>
 
@@ -443,24 +425,20 @@ export function SoloSpeakingView({
             {/* Real-time speech transcription display (F0584) */}
             <div className="mt-6 rounded-2xl border border-line bg-surface/50 p-4">
               <div className="mb-2 flex items-center justify-between text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-                <span className="flex items-center gap-1.5">
-                  <Sparkles size={13} className="text-accent-text" /> Real-time transcription (F0584)
-                </span>
-                <span>{wordCount} words spoken</span>
+                <span className="flex items-center gap-1.5"><UiText source={'{0} Real-time transcription (F0584)'} values={[<Sparkles size={13} className="text-accent-text" />]} /></span>
+                <span><UiText source={'{0} words spoken'} values={[wordCount]} /></span>
               </div>
               <textarea
                 value={transcript}
                 onChange={(e) => setTranscript(e.target.value)}
-                placeholder="Speak clearly into your microphone... your words appear here in real time."
+                placeholder={translateUi('Speak clearly into your microphone... your words appear here in real time.')}
                 rows={4}
                 className="w-full resize-none bg-transparent font-serif text-[16px] leading-relaxed text-ink outline-none placeholder:text-ink-faint"
               />
             </div>
 
             <div className="mt-8 flex items-center justify-center gap-3">
-              <Button size="lg" variant="primary" icon={Square} onClick={finishSpeaking}>
-                Finish speaking
-              </Button>
+              <Button size="lg" variant="primary" icon={Square} onClick={finishSpeaking}><UiText source={'Finish speaking'} /></Button>
             </div>
           </Card>
         </section>
@@ -468,47 +446,39 @@ export function SoloSpeakingView({
 
       {/* Stage 4: Post-speaking review and audio playback (F0579) */}
       {phase === 'review' && activeChallenge && (
-        <section aria-label="Review speaking performance" className="mx-auto max-w-2xl py-8">
+        <section aria-label={translateUi('Review speaking performance')} className="mx-auto max-w-2xl py-8">
           <Card className="p-8">
-            <span className="inline-block rounded-full bg-sage-soft px-3 py-1 text-[12px] font-bold uppercase tracking-wider text-sage-text">
-              Speaking complete · Summary
-            </span>
+            <span className="inline-block rounded-full bg-sage-soft px-3 py-1 text-[12px] font-bold uppercase tracking-wider text-sage-text"><UiText source={'Speaking complete · Summary'} /></span>
 
             <h2 className="mt-3 font-serif text-[26px] font-semibold">{activeChallenge.title}</h2>
 
             {/* Performance Stats Cards */}
             <div className="mt-6 grid grid-cols-3 gap-3">
               <div className="rounded-2xl bg-sunken p-3.5 text-center">
-                <span className="block text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-                  Speaking time
-                </span>
+                <span className="block text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Speaking time'} /></span>
                 <span className="mt-1 block font-mono text-[22px] font-bold tabular-nums">
                   {speakTime}s
                 </span>
-                <span className="text-[11.5px] text-ink-soft">Target: {targetTime}s</span>
+                <span className="text-[11.5px] text-ink-soft"><UiText source={'Target: {0}s'} values={[targetTime]} /></span>
               </div>
 
               <div className="rounded-2xl bg-sunken p-3.5 text-center">
-                <span className="block text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-                  Words spoken
-                </span>
+                <span className="block text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Words spoken'} /></span>
                 <span className="mt-1 block font-mono text-[22px] font-bold tabular-nums">
                   {wordCount}
                 </span>
                 <span className="text-[11.5px] text-ink-soft">
-                  {wordCount > 0 ? `${Math.round((wordCount / (speakTime || 1)) * 60)} wpm` : '—'}
+                  {wordCount > 0 ? translateUi('{0} wpm', [Math.round((wordCount / (speakTime || 1)) * 60)]) : '—'}
                 </span>
               </div>
 
               <div className="rounded-2xl bg-sunken p-3.5 text-center">
-                <span className="block text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-                  Target reached
-                </span>
+                <span className="block text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Target reached'} /></span>
                 <span className="mt-1 block font-mono text-[22px] font-bold tabular-nums">
                   {timeProgress}%
                 </span>
                 <span className="text-[11.5px] text-ink-soft">
-                  {timeProgress >= 100 ? 'Full duration' : 'Brief answer'}
+                  {timeProgress >= 100 ? translateUi('Full duration') : translateUi('Brief answer')}
                 </span>
               </div>
             </div>
@@ -516,9 +486,7 @@ export function SoloSpeakingView({
             {/* Audio Recording Playback (F0579) */}
             {audioUrl && (
               <div className="mt-6 rounded-2xl border border-line bg-raised p-4">
-                <h4 className="text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-                  Listen to your recording (F0579)
-                </h4>
+                <h4 className="text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Listen to your recording (F0579)'} /></h4>
                 <div className="mt-3 flex items-center gap-3">
                   <Button
                     size="sm"
@@ -526,7 +494,7 @@ export function SoloSpeakingView({
                     icon={isPlayingAudio ? Pause : Play}
                     onClick={toggleAudioPlayback}
                   >
-                    {isPlayingAudio ? 'Pause' : 'Play back'}
+                    {isPlayingAudio ? translateUi('Pause') : translateUi('Play back')}
                   </Button>
                   <audio
                     ref={audioRef}
@@ -542,25 +510,21 @@ export function SoloSpeakingView({
             {/* Spoken Transcript */}
             <div className="mt-6 rounded-2xl border border-line bg-surface/50 p-4">
               <div className="mb-2 flex items-center justify-between text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-                <span>Spoken transcript</span>
-                <Button size="sm" variant="ghost" icon={Copy} onClick={copyTranscript}>
-                  Copy
-                </Button>
+                <span><UiText source={'Spoken transcript'} /></span>
+                <Button size="sm" variant="ghost" icon={Copy} onClick={copyTranscript}><UiText source={'Copy'} /></Button>
               </div>
               <textarea
                 value={transcript}
                 onChange={(e) => setTranscript(e.target.value)}
                 rows={5}
-                placeholder="No words recorded. You can type or paste what you said here to review it."
+                placeholder={translateUi('No words recorded. You can type or paste what you said here to review it.')}
                 className="w-full resize-none bg-transparent font-serif text-[16px] leading-relaxed text-ink outline-none"
               />
             </div>
 
             {/* Actions */}
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6">
-              <Button variant="ghost" icon={RotateCcw} onClick={handleReset}>
-                Try another challenge
-              </Button>
+              <Button variant="ghost" icon={RotateCcw} onClick={handleReset}><UiText source={'Try another challenge'} /></Button>
 
               <div className="flex items-center gap-2">
                 {onSendToReview && (
@@ -569,9 +533,7 @@ export function SoloSpeakingView({
                     size="lg"
                     onClick={() => onSendToReview(transcript)}
                     disabled={!transcript.trim()}
-                  >
-                    Analyze in “How did it go?” <ArrowRight size={16} className="ml-1" aria-hidden />
-                  </Button>
+                  ><UiText source={'Analyze in “How did it go?” {0}'} values={[<ArrowRight size={16} className="ml-1" aria-hidden />]} /></Button>
                 )}
               </div>
             </div>

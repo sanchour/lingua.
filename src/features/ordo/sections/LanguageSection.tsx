@@ -38,7 +38,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
     setBusy(true);
     try {
       await removeLanguage(l.id);
-      toast(`${getLanguage(l.id)?.name ?? l.id} removed, with everything learnt in it.`);
+      toast({ source: '{0} removed, with everything learnt in it.', values: [String(getLanguage(l.id)?.name ?? l.id)] });
       setRemoving(null);
     } catch (e) {
       toast(e instanceof Error ? e.message : 'The language couldn’t be removed.', { tone: 'error' });
@@ -121,7 +121,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
                   size="sm"
                   onClick={async () => {
                     await switchLanguage(l.id);
-                    toast(`Now studying ${info?.name ?? l.id}.`);
+                    toast({ source: 'Now studying {0}.', values: [{ source: info?.name ?? l.id }] });
                   }}
                 ><UiText source={'Switch'} /></Button>
               )}

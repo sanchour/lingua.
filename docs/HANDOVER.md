@@ -201,4 +201,6 @@ adventure path like Duolingo's and HelloChinese's (ROADMAP "Cursus as an adventu
 
 **Latest Codex stop instruction (2026-10-29):** stop after Reading. R3/R4 are on `codex/lingua` (alpha.84/alpha.85); do not continue the older 6-24 → 6-25 → 6-22 queue automatically. The user cancelled 6-19 after its claim push (alpha.86), so its claim was released without implementation. Codex holds no unfinished step claim. Reading checks passed (typecheck, 1,333 tests and build); the plan row records browser coverage and unverified AI/other-language cases.
 
-**Current Codex instruction, 2026-10-30:** finish 6-19 on codex/lingua, then stop. Culture and immersion are pushed; interface localization is in progress. This supersedes the earlier cancellation and queue.
+**Current Codex instruction, 2026-10-30:** finish 6-19 on codex/lingua, then stop. Culture, immersion and interface localization are implemented on the branch. This supersedes the earlier cancellation and queue.
+
+- [x] **Codex 6-19 completion, 2026-10-30:** C3/C4 finish offline interface languages, translated settings search and literal-safe notifications. Typecheck, 1,458 tests and build pass; Spanish Settings/Culture/Every day checked at all three desktop sizes, light/dark. The plan row records external-service, linguistic and other-language browser gaps. Stop here; no further step claimed. Branch only, not deployed to Pages.

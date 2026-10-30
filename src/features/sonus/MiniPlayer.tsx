@@ -62,7 +62,7 @@ export function MiniPlayer() {
                 </span>
                 <span className="block truncate text-[12px] text-ink-faint">
                   {sleeping && <Moon size={11} className="mr-1 inline-block -translate-y-px fill-current text-accent-text" aria-label={translateUi('Sleep timer on')} />}
-                  {status === 'error' ? translateUi('Couldn’t play') : live ? (nowPlaying ?? `Live · ${media.artist ?? 'Radio'}`) : (media.collection ?? media.artist ?? 'Sonus')}
+                  {status === 'error' ? translateUi('Couldn’t play') : live ? (nowPlaying ?? translateUi('Live · {0}', [media.artist ?? 'Radio'])) : (media.collection ?? media.artist ?? translateUi('Sonus'))}
                 </span>
               </span>
             </Link>

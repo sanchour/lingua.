@@ -62,9 +62,7 @@ export function GrammarHomeCard({ lang, level }: { lang: string; level: string }
   return (
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="inline-flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
-          <BookA size={14} aria-hidden /> Grammatica
-        </p>
+        <p className="inline-flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase"><UiText source={'{0} Grammatica'} values={[<BookA size={14} aria-hidden />]} /></p>
         <Link to="/cursus/grammatica" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline"><UiText source={'{0} of {1} learned {2}'} values={[learned, topicsOf(grammar).length, <ArrowRight size={14} aria-hidden />]} /></Link>
       </div>
       {due > 0 ? (

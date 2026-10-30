@@ -347,7 +347,7 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
       return (
         <Button icon={BookPlus} loading={busy} onClick={() => void run(async () => {
           const added = await addBookToCodex(lang, pick);
-          toast(added ? `“${pick.title}” is on your Codex wishlist.` : 'It’s already in Codex.', { tone: added ? 'success' : 'default', action: { label: 'Codex', onClick: () => navigate('/codex') } });
+          toast(added ? { source: '“{0}” is on your Codex wishlist.', values: [String(pick.title)] } : 'It’s already in Codex.', { tone: added ? 'success' : 'default', action: { label: 'Codex', onClick: () => navigate('/codex') } });
         })}><UiText source={'Add to Codex'} /></Button>
       );
     }
@@ -405,7 +405,7 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
         <LevelBadge level={item.level} estimated={item.estimated} size="lg" />
         <p className="min-w-0 flex-1 text-[13px] leading-snug text-ink-soft">
           {LEVEL_WHY[item.level]}
-          {item.estimated && ' This level is an estimate.'}
+          {item.estimated && translateUi(' This level is an estimate.')}
           {' '}
           {LEVELS.indexOf(item.level) <= Math.max(0, LEVELS.indexOf(level as PickLevel)) ? translateUi('You can enjoy it now.') : LEVELS.indexOf(item.level) === Math.max(0, LEVELS.indexOf(level as PickLevel)) + 1 ? translateUi('A stretch: worth a try.') : translateUi('Come back to it later.')}
         </p>

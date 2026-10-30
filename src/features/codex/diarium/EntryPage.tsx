@@ -187,7 +187,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
 
   return (
     <div className={hasAi ? 'pb-36' : 'pb-16'} style={fontStyle}>
-      <BackLink to="/mentis/diarium">Diarium</BackLink>
+      <BackLink to="/mentis/diarium"><UiText source={'Diarium'} /></BackLink>
       <header className="mb-7 flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>

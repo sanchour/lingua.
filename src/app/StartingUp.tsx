@@ -1,4 +1,4 @@
-import { UiText } from '@/design/i18n/UiText';
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { db } from '@/data/db';
 
@@ -36,6 +36,7 @@ function probeDatabase(): Promise<Probe> {
  * start never looks like a blank page.
  */
 export function StartingUp({ waitingFor }: { waitingFor: string }) {
+  const translateUi = useUi();
   const [slow, setSlow] = useState(false);
   const [probe, setProbe] = useState<Probe | null>(null);
   const [dexie, setDexie] = useState<string | null>(null);
@@ -90,7 +91,7 @@ export function StartingUp({ waitingFor }: { waitingFor: string }) {
           </div>
           <div>
             <dt className="inline text-ink-faint"><UiText source={'Lingua’s connection: '} /></dt>
-            <dd className="inline">{dexie ?? 'opening…'}</dd>
+            <dd className="inline">{dexie ?? translateUi('opening…')}</dd>
           </div>
         </dl>
         <button type="button" onClick={() => location.reload()} className="mt-5 inline-flex h-11 items-center rounded-xl bg-inverse px-5 text-sm font-semibold text-on-inverse"><UiText source={'Reload'} /></button>

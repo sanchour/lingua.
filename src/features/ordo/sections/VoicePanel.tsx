@@ -82,7 +82,7 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
     if (!locale) return;
     await setSetting('voice', { ...voice, chosen: { ...voice.chosen, [locale]: { id: v.id, name: v.name } } });
     resetSpeakers();
-    toast(`${v.name} now reads ${name}.`);
+    toast({ source: '{0} now reads {1}.', values: [String(v.name), String(name)] });
   };
 
   const findDeviceVoices = async () => {
@@ -93,7 +93,7 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
     if (!locale) return;
     await setSetting('voice', { ...voice, device: { ...voice.device, [locale]: v.voiceURI } });
     resetSpeakers();
-    toast(`${v.name} now reads ${name}.`);
+    toast({ source: '{0} now reads {1}.', values: [String(v.name), String(name)] });
   };
 
   const tryOnDevice = (v: SpeechSynthesisVoice) => {
@@ -261,7 +261,7 @@ function PiperVoices({ lang, locale, voice, sample, current }: { lang: string; l
     try {
       await downloadPiperVoice(v.id, (pct) => setProgress((p) => ({ ...p, [v.id]: pct })));
       await use(v.id);
-      toast(`${v.name} is on this device and now reads it.`, { tone: 'success' });
+      toast({ source: '{0} is on this device and now reads it.', values: [String(v.name)] }, { tone: 'success' });
     } catch (e) {
       fail(e);
     } finally {
@@ -319,7 +319,7 @@ function PiperVoices({ lang, locale, voice, sample, current }: { lang: string; l
                   </button>
                   <button
                     type="button"
-                    onClick={() => void use(v.id).then(() => toast(`${v.name} now reads it.`))}
+                    onClick={() => void use(v.id).then(() => toast({ source: '{0} now reads it.', values: [String(v.name)] }))}
                     className={cx('inline-flex h-9 items-center gap-1 rounded-full px-3 text-[13px] font-semibold', current === v.id ? 'bg-accent-soft text-accent-text' : 'border border-line hover:bg-sunken')}
                   >
                     {current === v.id ? (

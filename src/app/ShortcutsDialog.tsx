@@ -103,7 +103,7 @@ export function ShortcutList({ style }: { style?: KeyboardStyle }) {
 function Group({ title, rows, isMac }: { title: string; rows: Array<[string[], string]>; isMac: boolean }) {
   return (
     <div>
-      <h3 className="mb-2.5 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">{title}</h3>
+      <h3 className="mb-2.5 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={title} /></h3>
       <dl className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2 text-ink">
         {rows.map(([keys, label]) => (
           <div key={label} className="contents">
@@ -112,7 +112,7 @@ function Group({ title, rows, isMac }: { title: string; rows: Array<[string[], s
                 <Kbd key={k}>{formatKeySymbol(k, isMac)}</Kbd>
               ))}
             </dt>
-            <dd className="text-sm">{label}</dd>
+            <dd className="text-sm"><UiText source={label} /></dd>
           </div>
         ))}
       </dl>

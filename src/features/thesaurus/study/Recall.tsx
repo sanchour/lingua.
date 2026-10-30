@@ -105,7 +105,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
     } else {
       const { card: next, undo, leech } = await answerCard(card, grade, { lang, mode: 'classic', durationMs: ms, hinted: hints > 0, guessed });
       if (leech && note) {
-        toast(`“${note.term}” keeps slipping. Try your own sentence or a way to remember it, or put it aside for now.`, {
+        toast({ source: '“{0}” keeps slipping. Try your own sentence or a way to remember it, or put it aside for now.', values: [String(note.term)] }, {
           action: { label: 'Put aside', onClick: () => void setSuspended(note.id, true) },
           duration: 9000,
         });

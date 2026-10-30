@@ -60,19 +60,19 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
               <MenuItem
                 icon={Sparkles}
                 label={transcribing !== undefined ? translateUi('Making subtitles…') : tracks?.target ? translateUi('Make subtitles again') : translateUi('Make subtitles')}
-                detail="Whisper listens and writes every line"
+                detail={translateUi('Whisper listens and writes every line')}
                 onClick={() => {
                   close();
                   void startTranscription(media);
                 }}
               />
             )}
-            {tracks?.target && <MenuItem icon={Download} label={translateUi('Export subtitles')} detail="As an .srt file" onClick={() => (close(), exportTrack('target'))} />}
+            {tracks?.target && <MenuItem icon={Download} label={translateUi('Export subtitles')} detail={translateUi('As an .srt file')} onClick={() => (close(), exportTrack('target'))} />}
             {tracks?.native && <MenuItem icon={Captions} label={translateUi('Export English subtitles')} onClick={() => (close(), exportTrack('native'))} />}
             <MenuItem
               icon={FileVideo}
               label={media.blobId ? translateUi('Replace the video file') : translateUi('Attach the video file')}
-              detail={media.blobId ? undefined : 'Watch here with your subtitles'}
+              detail={media.blobId ? undefined : translateUi('Watch here with your subtitles')}
               onClick={async () => {
                 close();
                 const file = await pickFile(VIDEO_ACCEPT);
@@ -85,7 +85,7 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
               <MenuItem
                 icon={HardDriveDownload}
                 label={translateUi('Keep subtitles only')}
-                detail={media.sizeBytes ? `Frees ${formatBytes(media.sizeBytes)}` : 'Frees the space of the video'}
+                detail={media.sizeBytes ? translateUi('Frees {0}', [formatBytes(media.sizeBytes)]) : translateUi('Frees the space of the video')}
                 onClick={() => {
                   close();
                   setDialog('slim');

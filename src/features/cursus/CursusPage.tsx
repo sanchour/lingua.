@@ -1,3 +1,5 @@
+import { interpolate } from '@/core/i18n/messages';
+import { useUi } from '@/design/i18n/UiText';
 import { useEffect } from 'react';
 import { Navigate, useParams } from 'react-router';
 import { AudioLines, BookA, Keyboard, Languages, Route } from 'lucide-react';
@@ -41,6 +43,7 @@ export function cursusTabs(lang: string, plan: PlanKind = 'max'): Array<RoomTab<
  * the alphabet and typing. It opens on the tab used last.
  */
 export default function CursusPage() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = language.id;
   const asked = useParams().tab;
@@ -61,8 +64,8 @@ export default function CursusPage() {
 
   return (
     <>
-      <PageHeader title="Cursus" eyebrow={`Learn ${name} step by step`} />
-      <RoomTabs label="Cursus" tabs={tabs} active={tab} />
+      <PageHeader title={translateUi('Cursus')} englishTitle={'Cursus'} eyebrow={translateUi('Learn {0} step by step', [translateUi(name)])} englishEyebrow={interpolate('Learn {0} step by step', [name])} />
+      <RoomTabs label={translateUi('Cursus')} tabs={tabs} active={tab} />
       <InRoom.Provider value>
         {tab === 'course' && (
           <RequirePlan feature="course">

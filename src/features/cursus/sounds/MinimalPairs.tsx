@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Minimal pairs, heard (6-10): one word of a pair is said, the learner says which. A miss says what to listen for and comes back once.
 // Answers go to the learner's record as listening, against the sound that was missed.
 import { useMemo, useState } from 'react';
@@ -36,6 +37,7 @@ export function useWeakSounds(lang: string): Array<{ sound: string; misses: numb
 export const pairsWith = (lang: string, focus: string[] | null): MinimalPair[] => pairsOf(lang).filter((p) => !focus || p.sounds.some((s) => focus.includes(s)));
 
 export function MinimalPairs({ lang, focus = null, onSay, onFocus }: { lang: string; focus?: string[] | null; onSay?: (words: string[]) => void; onFocus?: (sounds: string[] | null) => void }) {
+  const translateUi = useUi();
   const pairs = useMemo(() => pairsWith(lang, focus), [lang, focus]);
   const weak = useWeakSounds(lang);
   const [queue, setQueue] = useState<Round[]>(() => roundsOf(pairs));
@@ -73,36 +75,23 @@ export function MinimalPairs({ lang, focus = null, onSay, onFocus }: { lang: str
 
   return (
     <section aria-labelledby="pairs-h" className="rounded-3xl border border-line bg-raised p-5">
-      <h2 id="pairs-h" className="font-serif text-2xl font-semibold">
-        Which did you hear?
-      </h2>
-      <p className="mt-1 text-[14px] text-ink-soft">Two words that differ in one sound. Hear one, then say which it was. A miss says what to listen for.</p>
+      <h2 id="pairs-h" className="font-serif text-2xl font-semibold"><UiText source={'Which did you hear?'} /></h2>
+      <p className="mt-1 text-[14px] text-ink-soft"><UiText source={'Two words that differ in one sound. Hear one, then say which it was. A miss says what to listen for.'} /></p>
       {focus && (
-        <p className="mt-2 text-[13.5px]">
-          Only pairs with {focus.map((f) => `“${f}”`).join(', ')}.{' '}
-          <button type="button" onClick={() => onFocus?.(null)} className="underline underline-offset-4">
-            Show all pairs
-          </button>
-        </p>
+        <p className="mt-2 text-[13.5px]"><UiText source={'Only pairs with {0}.{1}{2}'} values={[focus.map((f) => `“${f}”`).join(', '), ' ', <button type="button" onClick={() => onFocus?.(null)} className="underline underline-offset-4"><UiText source={'Show all pairs'} /></button>]} /></p>
       )}
       {weak.length > 0 && (
-        <p className="mt-2 text-[13.5px] text-ink-soft">
-          Sounds you mix up:{' '}
-          {weak.map((w) => (
-            <button key={w.sound} type="button" onClick={() => onFocus?.([w.sound])} title={`Missed ${w.misses} time${w.misses === 1 ? '' : 's'}: practise pairs with it`} className="mr-1.5 rounded-full border border-line px-2.5 py-0.5 font-serif text-[15px] hover:bg-surface">
+        <p className="mt-2 text-[13.5px] text-ink-soft"><UiText source={'Sounds you mix up:{0}{1}{2}'} values={[' ', weak.map((w) => (
+            <button key={w.sound} type="button" onClick={() => onFocus?.([w.sound])} title={translateUi('Missed {0} time{1}: practise pairs with it', [w.misses, w.misses === 1 ? '' : 's'])} className="mr-1.5 rounded-full border border-line px-2.5 py-0.5 font-serif text-[15px] hover:bg-surface">
               {w.sound} <span className="font-sans text-[11px] text-ink-faint">×{w.misses}</span>
             </button>
-          ))}
-          <button type="button" onClick={() => onFocus?.(weak.map((w) => w.sound))} className="underline underline-offset-4">
-            Practise them all
-          </button>
-        </p>
+          )), <button type="button" onClick={() => onFocus?.(weak.map((w) => w.sound))} className="underline underline-offset-4"><UiText source={'Practise them all'} /></button>]} /></p>
       )}
       {round ? (
         <div className="mt-4">
           <div className="flex items-center gap-3">
             <SpeakButton lang={lang} text={[round.pair.a, round.pair.b][round.said].split(' ')[0]} size={30} label="Hear the word" className="size-16 rounded-full bg-sunken text-ink" />
-            <span className="text-[13px] text-ink-faint">{queue.length} to go · {score.right} of {score.total} right</span>
+            <span className="text-[13px] text-ink-faint"><UiText source={'{0} to go · {1} of {2} right'} values={[queue.length, score.right, score.total]} /></span>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {([0, 1] as const).map((i) => {
@@ -127,32 +116,26 @@ export function MinimalPairs({ lang, focus = null, onSay, onFocus }: { lang: str
                     {word}
                   </span>
                   <span className="block text-[13px] text-ink-faint">{done ? round.pair.gloss[i] : ' '}</span>
-                  {done && isSaid && <Check size={16} className="mt-1 text-sage-text" aria-label="This was said" />}
-                  {done && !isSaid && picked === i && <X size={16} className="mt-1 text-accent-text" aria-label="Not this one" />}
+                  {done && isSaid && <Check size={16} className="mt-1 text-sage-text" aria-label={translateUi('This was said')} />}
+                  {done && !isSaid && picked === i && <X size={16} className="mt-1 text-accent-text" aria-label={translateUi('Not this one')} />}
                 </button>
               );
             })}
           </div>
           {picked !== null && (
             <div className="mt-3 flex items-center gap-3" role="status">
-              <p className="flex-1 text-[14px] text-ink-soft">{picked === round.said ? 'Yes. ' : 'Not quite. '}Listen for: {round.pair.contrast}.</p>
+              <p className="flex-1 text-[14px] text-ink-soft"><UiText source={'{0}Listen for: {1}.'} values={[picked === round.said ? 'Yes. ' : 'Not quite. ', round.pair.contrast]} /></p>
               {onSay && (
-                <button type="button" onClick={() => onSay([round.pair.a, round.pair.b])} title="Say both words and see their shapes" className="h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
-                  Say both
-                </button>
+                <button type="button" onClick={() => onSay([round.pair.a, round.pair.b])} title={translateUi('Say both words and see their shapes')} className="h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"><UiText source={'Say both'} /></button>
               )}
-              <button type="button" onClick={next} className="h-10 rounded-xl bg-inverse px-4 text-[14px] font-semibold text-on-inverse">
-                Next
-              </button>
+              <button type="button" onClick={next} className="h-10 rounded-xl bg-inverse px-4 text-[14px] font-semibold text-on-inverse"><UiText source={'Next'} /></button>
             </div>
           )}
         </div>
       ) : (
         <div className="mt-4">
-          <p className="text-[15px]">{pairs.length ? `Done: ${score.right} of ${score.total} right.` : 'No pair uses that sound yet.'}</p>
-          <button type="button" onClick={() => (setScore({ right: 0, total: 0 }), setQueue(roundsOf(pairs)), setPicked(null))} className="mt-2 h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
-            Again
-          </button>
+          <p className="text-[15px]">{pairs.length ? translateUi('Done: {0} of {1} right.', [score.right, score.total]) : translateUi('No pair uses that sound yet.')}</p>
+          <button type="button" onClick={() => (setScore({ right: 0, total: 0 }), setQueue(roundsOf(pairs)), setPicked(null))} className="mt-2 h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"><UiText source={'Again'} /></button>
         </div>
       )}
     </section>

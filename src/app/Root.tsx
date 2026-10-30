@@ -94,14 +94,14 @@ export function Root() {
       // until the new one is stored, and a failed update simply tries again next time.
       if (installed) {
         installPack(activeLang)
-          .then(() => toast(`The ${name} dictionary was updated.`, { tone: 'success' }))
+          .then(() => toast({ source: 'The {0} dictionary was updated.', values: [{ source: name }] }, { tone: 'success' }))
           .catch(() => undefined);
         return;
       }
       installPack(activeLang)
-        .then(() => toast(`${name} dictionary ready. Translations now work offline.`, { tone: 'success' }))
+        .then(() => toast({ source: '{0} dictionary ready. Translations now work offline.', values: [{ source: name }] }, { tone: 'success' }))
         .catch(() =>
-          toast(`The ${name} dictionary couldn’t be installed.`, {
+          toast({ source: 'The {0} dictionary couldn’t be installed.', values: [{ source: name }] }, {
             tone: 'error',
             action: { label: 'Retry', onClick: () => void installPack(activeLang) },
           }),
@@ -114,7 +114,7 @@ export function Root() {
   useEffect(() => {
     if (!onboarded) return;
     const off = onMilestone((events) => {
-      for (const e of events.slice(0, 2)) toast(`Milestone: ${e.title}`, { tone: 'success', action: { label: 'Ratio', onClick: () => navigate('/ratio?tab=tabula') } });
+      for (const e of events.slice(0, 2)) toast({ source: 'Milestone: {0}', values: [String(e.title)] }, { tone: 'success', action: { label: 'Ratio', onClick: () => navigate('/ratio?tab=tabula') } });
     });
     void checkAllMilestones().catch(() => {});
     return off;

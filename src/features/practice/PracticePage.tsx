@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 import { UiText, useUi } from '@/design/i18n/UiText';
 // Practice (6-4b): sets of exercises made from your own words and from Grammatica, in every kind the engine has: matching games,
 // correct the mistake, rewrite, what comes next, drag the words, change a form. Each runs in one session screen.
@@ -413,7 +414,7 @@ export default function PracticePage() {
   if (chosen && !running)
     return (
       <div className="p-10 text-ink-soft">
-        <p>{error ?? (sets.find((s) => s.id === chosen)?.makeLater && !sets.find((s) => s.id === chosen)?.local ? 'Max is making it for you…' : ctx ? 'This set can’t be made yet.' : 'Getting it ready…')}</p>
+        <p>{error ?? (sets.find((s) => s.id === chosen)?.makeLater && !sets.find((s) => s.id === chosen)?.local ? translateUi('Max is making it for you…') : ctx ? translateUi('This set can’t be made yet.') : translateUi('Getting it ready…'))}</p>
         {error && (
           <Link to="/thesaurus/practice" className="mt-3 inline-block font-semibold text-ink underline decoration-line-strong underline-offset-4"><UiText source={'Back to Practice'} /></Link>
         )}
@@ -424,18 +425,18 @@ export default function PracticePage() {
   const name = getLanguage(lang)?.name ?? lang;
   const section = (group: PracticeSet['group'], title: string) => (
     <section className="mt-8" aria-label={title}>
-      <h2 className="mb-3 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">{title}</h2>
+      <h2 className="mb-3 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={title} /></h2>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {sets
           .filter((s) => s.group === group)
           .map((s) => (
             <Card key={s.id} className="flex flex-col p-5">
-              <p className="font-serif text-lg font-semibold">{s.title}</p>
-              <p className="mt-1 flex-1 text-[14px] leading-snug text-ink-soft">{s.detail}</p>
+              <p className="font-serif text-lg font-semibold"><UiText source={s.title} /></p>
+              <p className="mt-1 flex-1 text-[14px] leading-snug text-ink-soft"><UiText source={s.detail} /></p>
               {ready.get(s.id) ? (
                 <Link to={`/thesaurus/practice/${s.id}`} className={buttonClasses('primary', 'sm') + ' mt-4 self-start'}><UiText source={'Start'} /></Link>
               ) : (
-                <p className="mt-4 text-[12.5px] text-ink-faint"><UiText source={'Needs {0}.'} values={[s.needs]} /></p>
+                <p className="mt-4 text-[12.5px] text-ink-faint"><UiText source={'Needs {0}.'} values={[translateUi(s.needs)]} /></p>
               )}
             </Card>
           ))}
@@ -445,7 +446,7 @@ export default function PracticePage() {
 
   return (
     <>
-      <PageHeader title={translateUi('Practice')} eyebrow={`${name}, in every kind of exercise`} />
+      <PageHeader title={translateUi('Practice')} englishTitle={'Practice'} eyebrow={translateUi('{0}, in every kind of exercise', [translateUi(name)])} englishEyebrow={interpolate('{0}, in every kind of exercise', [name])} />
       <p className="max-w-2xl text-[15px] leading-relaxed text-ink-soft"><UiText source={'Sets made from your own words and from Grammatica. Missed ones come back once with another example; in the options (top right) you can ask to be asked how sure you are, or to see the answers only at the end.{0}{1}'} values={[' ', <Link to="/thesaurus" className="font-semibold text-ink underline decoration-line-strong underline-offset-4"><UiText source={'Back to Thesaurus'} /></Link>]} /></p>
       {!ctx ? <p className="mt-8 text-ink-soft"><UiText source={'Looking at your words…'} /></p> : (
         <>

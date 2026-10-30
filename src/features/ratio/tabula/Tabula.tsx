@@ -107,7 +107,7 @@ export function Tabula() {
     if (!file) return;
     try {
       const { added, updated } = await importCapabilities(parseNotionLanguages(await file.text()));
-      toast(`Imported: ${added} added, ${updated} updated.`, { tone: 'success' });
+      toast({ source: 'Imported: {0} added, {1} updated.', values: [String(added), String(updated)] }, { tone: 'success' });
     } catch (error) {
       toast(error instanceof Error ? error.message : 'That file couldn’t be read.', { tone: 'error' });
     }
@@ -122,7 +122,7 @@ export function Tabula() {
     const name = newName.trim();
     if (!name) return;
     const id = codeForLanguage(name);
-    if (byId.has(id)) toast(`${LANGUAGE_NAMES[id] ?? name} is already in your table.`);
+    if (byId.has(id)) toast({ source: '{0} is already in your table.', values: [String(LANGUAGE_NAMES[id] ?? name)] });
     else await addCapability(LANGUAGE_NAMES[id] ?? name, id);
     setNewName('');
     close();

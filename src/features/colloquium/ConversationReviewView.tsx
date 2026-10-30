@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import {
   ArrowRight,
@@ -58,6 +59,7 @@ export function ConversationReviewView({
   level: _level,
   initialTranscript = '',
 }: ConversationReviewViewProps) {
+  const translateUi = useUi();
   const [transcriptInput, setTranscriptInput] = useState(initialTranscript);
   const [review, setReview] = useState<ConversationReview | null>(() =>
     initialTranscript.trim() ? reviewConversation(initialTranscript, lang) : null,
@@ -127,7 +129,7 @@ export function ConversationReviewView({
       });
 
       setSavedCards((prev) => new Set([...prev, vocab.term]));
-      toast(`Saved “${vocab.term}” to flashcards`, { tone: 'success' });
+      toast({ source: 'Saved “{0}” to flashcards', values: [String(vocab.term)] }, { tone: 'success' });
     } catch {
       toast('Could not save card', { tone: 'error' });
     }
@@ -186,15 +188,11 @@ export function ConversationReviewView({
       <Card className="p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-serif text-[24px] font-semibold">“How did it go?”</h2>
-            <p className="mt-1 text-[14px] text-ink-soft">
-              Paste your conversation with an external AI or solo recording to analyze fluency, get essential corrections, and extract flashcards.
-            </p>
+            <h2 className="font-serif text-[24px] font-semibold"><UiText source={'“How did it go?”'} /></h2>
+            <p className="mt-1 text-[14px] text-ink-soft"><UiText source={'Paste your conversation with an external AI or solo recording to analyze fluency, get essential corrections, and extract flashcards.'} /></p>
           </div>
           <div className="flex items-center gap-2">
-            <Button size="sm" variant="secondary" onClick={loadSample}>
-              Load sample dialogue
-            </Button>
+            <Button size="sm" variant="secondary" onClick={loadSample}><UiText source={'Load sample dialogue'} /></Button>
             {review && (
               <Button
                 size="sm"
@@ -204,9 +202,7 @@ export function ConversationReviewView({
                   setReview(null);
                   setTranscriptInput('');
                 }}
-              >
-                Clear
-              </Button>
+              ><UiText source={'Clear'} /></Button>
             )}
           </div>
         </div>
@@ -215,25 +211,21 @@ export function ConversationReviewView({
           <textarea
             value={transcriptInput}
             onChange={(e) => setTranscriptInput(e.target.value)}
-            placeholder="Paste your dialogue transcript here...&#10;Example:&#10;You: Hola, ¿cómo estás?&#10;AI: ¡Hola! Muy bien, ¿y tú?"
+            placeholder={translateUi('Paste your dialogue transcript here...\nExample:\nYou: Hola, ¿cómo estás?\nAI: ¡Hola! Muy bien, ¿y tú?')}
             rows={5}
             className="w-full resize-y rounded-2xl border border-line bg-surface/50 p-4 font-mono text-[14px] leading-relaxed text-ink outline-none transition-colors focus:border-accent/60 focus:bg-surface"
           />
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <span className="text-[12.5px] text-ink-faint">
-            Recognizes lines starting with “You:”, “AI:”, or raw paragraphs.
-          </span>
-          <Button size="lg" variant="primary" onClick={handleAnalyze}>
-            Analyze conversation <ArrowRight size={16} className="ml-1" aria-hidden />
-          </Button>
+          <span className="text-[12.5px] text-ink-faint"><UiText source={'Recognizes lines starting with “You:”, “AI:”, or raw paragraphs.'} /></span>
+          <Button size="lg" variant="primary" onClick={handleAnalyze}><UiText source={'Analyze conversation {0}'} values={[<ArrowRight size={16} className="ml-1" aria-hidden />]} /></Button>
         </div>
       </Card>
 
       {/* Review Dashboard */}
       {review && (
-        <section aria-label="Conversation analysis results" className="mt-8">
+        <section aria-label={translateUi('Conversation analysis results')} className="mt-8">
           {/* Top Metric Highlights & Journal Button */}
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -243,9 +235,7 @@ export function ConversationReviewView({
                 </span>
               </div>
               <div>
-                <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-                  Fluency score
-                </span>
+                <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Fluency score'} /></span>
                 <p className="text-[14.5px] font-medium text-ink">
                   {review.metrics.overallSummary}
                 </p>
@@ -259,25 +249,23 @@ export function ConversationReviewView({
                 onClick={handleSaveToJournal}
                 disabled={savedToJournal}
               >
-                {savedToJournal ? 'Saved to Diarium' : 'Save to Diarium (F0583)'}
+                {savedToJournal ? translateUi('Saved to Diarium') : translateUi('Save to Diarium (F0583)')}
               </Button>
-              <Button variant="ghost" icon={Copy} onClick={copyCorrected}>
-                Copy corrected
-              </Button>
+              <Button variant="ghost" icon={Copy} onClick={copyCorrected}><UiText source={'Copy corrected'} /></Button>
             </div>
           </div>
 
           {/* Sub-tabs Navigation */}
           <div className="mb-6">
             <Segmented<ReviewViewTab>
-              label="Review views"
+              label={translateUi('Review views')}
               value={activeTab}
               onChange={setActiveTab}
               options={[
-                { value: 'sentences', label: 'Sentence Review (F0581)' },
-                { value: 'fluency', label: 'Fluency Metrics (F0562)' },
-                { value: 'vocab', label: `Vocabulary (${review.vocabulary.length})` },
-                { value: 'replay', label: 'Conversation Replay (F0578)' },
+                { value: 'sentences', label: translateUi('Sentence Review (F0581)') },
+                { value: 'fluency', label: translateUi('Fluency Metrics (F0562)') },
+                { value: 'vocab', label: translateUi('Vocabulary ({0})', [review.vocabulary.length]) },
+                { value: 'replay', label: translateUi('Conversation Replay (F0578)') },
               ]}
             />
           </div>
@@ -335,6 +323,7 @@ function SentenceCard({
   isSaved: boolean;
   onSpeak: (t: string) => void;
 }) {
+  const translateUi = useUi();
   const hasChanges = sent.corrected !== sent.original;
 
   return (
@@ -342,9 +331,7 @@ function SentenceCard({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-[11.5px] font-bold uppercase tracking-wider text-ink-faint">
-              Turn {sent.turnIndex + 1}
-            </span>
+            <span className="text-[11.5px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Turn {0}'} values={[sent.turnIndex + 1]} /></span>
             {sent.confidence && (
               <span
                 className={cx(
@@ -354,7 +341,7 @@ function SentenceCard({
                     : 'bg-accent-soft text-accent-text',
                 )}
               >
-                {sent.confidence === 'high' ? 'High confidence correction' : 'Stylistic nuance'}
+                {sent.confidence === 'high' ? translateUi('High confidence correction') : translateUi('Stylistic nuance')}
               </span>
             )}
           </div>
@@ -367,13 +354,13 @@ function SentenceCard({
           {/* Corrected version (F0556) */}
           {hasChanges && (
             <div className="mt-3 flex items-start gap-2 rounded-xl bg-sage-soft/30 p-3 text-[15px] font-serif text-sage-text">
-              <span className="font-bold shrink-0">Corrected:</span>
+              <span className="font-bold shrink-0"><UiText source={'Corrected:'} /></span>
               <span className="flex-1 font-semibold">{sent.corrected}</span>
               <button
                 type="button"
                 onClick={() => onSpeak(sent.corrected)}
                 className="text-sage-text/80 hover:text-sage-text"
-                aria-label="Listen to corrected sentence"
+                aria-label={translateUi('Listen to corrected sentence')}
               >
                 <Volume2 size={16} aria-hidden />
               </button>
@@ -383,9 +370,7 @@ function SentenceCard({
           {/* Essential Grammar Errors (F0557, F0574) */}
           {sent.essentialErrors.length > 0 && (
             <div className="mt-3 space-y-1">
-              <span className="block text-[11.5px] font-bold uppercase tracking-wider text-red-600">
-                Essential Grammar Errors (F0557)
-              </span>
+              <span className="block text-[11.5px] font-bold uppercase tracking-wider text-red-600"><UiText source={'Essential Grammar Errors (F0557)'} /></span>
               <ul className="list-disc list-inside space-y-0.5 text-[13px] text-ink-soft">
                 {sent.essentialErrors.map((err, idx) => (
                   <li key={idx}>{err}</li>
@@ -397,9 +382,7 @@ function SentenceCard({
           {/* Stylistic Alternatives (F0558, F0574) */}
           {sent.stylisticSuggestions.length > 0 && (
             <div className="mt-2 space-y-1">
-              <span className="block text-[11.5px] font-bold uppercase tracking-wider text-ink-faint">
-                Natural phrasing & stylistic notes (F0558)
-              </span>
+              <span className="block text-[11.5px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Natural phrasing & stylistic notes (F0558)'} /></span>
               <ul className="list-disc list-inside space-y-0.5 text-[13px] text-ink-soft">
                 {sent.stylisticSuggestions.map((sug, idx) => (
                   <li key={idx}>{sug}</li>
@@ -411,7 +394,7 @@ function SentenceCard({
           {/* Idiomatic Alternatives (F0560) */}
           {sent.idiomaticAlternatives.length > 0 && (
             <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[13px] text-accent-text">
-              <span className="font-bold">More idiomatic:</span>
+              <span className="font-bold"><UiText source={'More idiomatic:'} /></span>
               {sent.idiomaticAlternatives.map((alt, idx) => (
                 <span key={idx} className="rounded bg-accent-soft px-2 py-0.5 font-serif font-medium">
                   {alt}
@@ -422,9 +405,7 @@ function SentenceCard({
 
           {/* Formality and Register Feedback (F0571, F0572) */}
           {sent.formalityNote && (
-            <div className="mt-2 text-[12.5px] italic text-ink-soft">
-              Formality: {sent.formalityNote}
-            </div>
+            <div className="mt-2 text-[12.5px] italic text-ink-soft"><UiText source={'Formality: {0}'} values={[sent.formalityNote]} /></div>
           )}
         </div>
 
@@ -444,7 +425,7 @@ function SentenceCard({
             }
             disabled={isSaved}
           >
-            {isSaved ? 'Saved' : 'Add card'}
+            {isSaved ? translateUi('Saved') : translateUi('Add card')}
           </Button>
         )}
       </div>
@@ -454,50 +435,41 @@ function SentenceCard({
 
 /** Detailed fluency metrics view. */
 function FluencyTab({ metrics }: { metrics: ConversationReview['metrics'] }) {
+  const translateUi = useUi();
   return (
     <div className="space-y-6">
       {/* 4-Stat Overview Grid */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="p-4 text-center">
-          <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-            Speaking rate (F0602)
-          </span>
+          <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Speaking rate (F0602)'} /></span>
           <span className="mt-1 block font-mono text-[28px] font-bold tabular-nums">
             {metrics.speechRateWpm}
           </span>
-          <span className="text-[12px] text-ink-soft">Words per minute</span>
+          <span className="text-[12px] text-ink-soft"><UiText source={'Words per minute'} /></span>
         </Card>
 
         <Card className="p-4 text-center">
-          <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-            Speaking time (F0566)
-          </span>
+          <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Speaking time (F0566)'} /></span>
           <span className="mt-1 block font-mono text-[28px] font-bold tabular-nums">
             {metrics.speechDurationEstimateSeconds}s
           </span>
-          <span className="text-[12px] text-ink-soft">{metrics.learnerWords} words total</span>
+          <span className="text-[12px] text-ink-soft"><UiText source={'{0} words total'} values={[metrics.learnerWords]} /></span>
         </Card>
 
         <Card className="p-4 text-center">
-          <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-            Avg Turn Length (F0567)
-          </span>
+          <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Avg Turn Length (F0567)'} /></span>
           <span className="mt-1 block font-mono text-[28px] font-bold tabular-nums">
             {metrics.averageTurnLengthWords}
           </span>
-          <span className="text-[12px] text-ink-soft">Max: {metrics.longestTurnWords} words</span>
+          <span className="text-[12px] text-ink-soft"><UiText source={'Max: {0} words'} values={[metrics.longestTurnWords]} /></span>
         </Card>
 
         <Card className="p-4 text-center">
-          <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint">
-            Complexity (F0565)
-          </span>
+          <span className="text-[12px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Complexity (F0565)'} /></span>
           <span className="mt-1 block font-mono text-[28px] font-bold tabular-nums">
             {metrics.complexityScore}
           </span>
-          <span className="text-[12px] text-ink-soft">
-            {metrics.subordinateClauseCount} sub-clauses
-          </span>
+          <span className="text-[12px] text-ink-soft"><UiText source={'{0} sub-clauses'} values={[metrics.subordinateClauseCount]} /></span>
         </Card>
       </div>
 
@@ -505,10 +477,8 @@ function FluencyTab({ metrics }: { metrics: ConversationReview['metrics'] }) {
       <div className="grid gap-4 md:grid-cols-2">
         {/* Filler Words Tracking (F0563) */}
         <Card className="p-5">
-          <h3 className="font-serif text-[18px] font-semibold">Filler-word tracking (F0563)</h3>
-          <p className="mt-1 text-[13px] text-ink-soft">
-            Unconscious vocal fillers and crutch words detected in speech.
-          </p>
+          <h3 className="font-serif text-[18px] font-semibold"><UiText source={'Filler-word tracking (F0563)'} /></h3>
+          <p className="mt-1 text-[13px] text-ink-soft"><UiText source={'Unconscious vocal fillers and crutch words detected in speech.'} /></p>
 
           {metrics.fillerWords.length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
@@ -525,18 +495,14 @@ function FluencyTab({ metrics }: { metrics: ConversationReview['metrics'] }) {
               ))}
             </div>
           ) : (
-            <p className="mt-4 text-[13.5px] italic text-ink-soft">
-              No repetitive filler words detected. Smooth delivery!
-            </p>
+            <p className="mt-4 text-[13.5px] italic text-ink-soft"><UiText source={'No repetitive filler words detected. Smooth delivery!'} /></p>
           )}
         </Card>
 
         {/* Repeated Words Tracking (F0564) */}
         <Card className="p-5">
-          <h3 className="font-serif text-[18px] font-semibold">Repeated-word tracking (F0564)</h3>
-          <p className="mt-1 text-[13px] text-ink-soft">
-            Consecutive word repetitions and stutters.
-          </p>
+          <h3 className="font-serif text-[18px] font-semibold"><UiText source={'Repeated-word tracking (F0564)'} /></h3>
+          <p className="mt-1 text-[13px] text-ink-soft"><UiText source={'Consecutive word repetitions and stutters.'} /></p>
 
           {metrics.repeatedWords.length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
@@ -550,20 +516,14 @@ function FluencyTab({ metrics }: { metrics: ConversationReview['metrics'] }) {
               ))}
             </div>
           ) : (
-            <p className="mt-4 text-[13.5px] italic text-ink-soft">
-              No repeated stutter tokens spotted.
-            </p>
+            <p className="mt-4 text-[13.5px] italic text-ink-soft"><UiText source={'No repeated stutter tokens spotted.'} /></p>
           )}
         </Card>
 
         {/* Hesitations & Pauses (F0568, F0603) */}
         <Card className="p-5">
-          <h3 className="font-serif text-[18px] font-semibold">
-            Hesitations & pause distribution (F0568, F0603)
-          </h3>
-          <p className="mt-1 text-[13px] text-ink-soft">
-            Moments where speech paused for thought or search.
-          </p>
+          <h3 className="font-serif text-[18px] font-semibold"><UiText source={'Hesitations & pause distribution (F0568, F0603)'} /></h3>
+          <p className="mt-1 text-[13px] text-ink-soft"><UiText source={'Moments where speech paused for thought or search.'} /></p>
 
           <div className="mt-3 flex items-center gap-3">
             <span className="font-mono text-[24px] font-bold tabular-nums">
@@ -571,20 +531,16 @@ function FluencyTab({ metrics }: { metrics: ConversationReview['metrics'] }) {
             </span>
             <span className="text-[13px] text-ink-soft">
               {metrics.hesitationsAndPauses <= 2
-                ? 'Minimal hesitation; speech flowed unimpeded.'
-                : 'Multiple pauses detected; practice speaking with continuous breath support.'}
+                ? translateUi('Minimal hesitation; speech flowed unimpeded.')
+                : translateUi('Multiple pauses detected; practice speaking with continuous breath support.')}
             </span>
           </div>
         </Card>
 
         {/* Self-Corrections & Word Retrieval (F0569, F0570) */}
         <Card className="p-5">
-          <h3 className="font-serif text-[18px] font-semibold">
-            Self-corrections & retrieval (F0569, F0570)
-          </h3>
-          <p className="mt-1 text-[13px] text-ink-soft">
-            Moments where wording was repaired on the fly.
-          </p>
+          <h3 className="font-serif text-[18px] font-semibold"><UiText source={'Self-corrections & retrieval (F0569, F0570)'} /></h3>
+          <p className="mt-1 text-[13px] text-ink-soft"><UiText source={'Moments where wording was repaired on the fly.'} /></p>
 
           <ul className="mt-3 space-y-1.5 text-[13px] text-ink">
             {metrics.selfCorrections.map((sc, i) => (
@@ -600,7 +556,7 @@ function FluencyTab({ metrics }: { metrics: ConversationReview['metrics'] }) {
               </li>
             ))}
             {metrics.selfCorrections.length === 0 && metrics.retrievalDifficulties.length === 0 && (
-              <li className="italic text-ink-soft">No self-repairs or placeholder words found.</li>
+              <li className="italic text-ink-soft"><UiText source={'No self-repairs or placeholder words found.'} /></li>
             )}
           </ul>
         </Card>
@@ -623,12 +579,11 @@ function VocabTab({
   savedCards: Set<string>;
   onSpeak: (t: string) => void;
 }) {
+  const translateUi = useUi();
   return (
     <div className="space-y-6">
       <Card className="p-5">
-        <h3 className="font-serif text-[18px] font-semibold">
-          Summary of new expressions (F0582)
-        </h3>
+        <h3 className="font-serif text-[18px] font-semibold"><UiText source={'Summary of new expressions (F0582)'} /></h3>
         <p className="mt-1 text-[14px] leading-relaxed text-ink-soft">{summary}</p>
       </Card>
 
@@ -638,13 +593,13 @@ function VocabTab({
             <div>
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-ink-faint">
-                  {v.category === 'correction' ? 'Corrected form' : 'Idiomatic expression'}
+                  {v.category === 'correction' ? translateUi('Corrected form') : translateUi('Idiomatic expression')}
                 </span>
                 <button
                   type="button"
                   onClick={() => onSpeak(v.term)}
                   className="text-ink-soft hover:text-ink"
-                  aria-label="Listen to word"
+                  aria-label={translateUi('Listen to word')}
                 >
                   <Volume2 size={15} aria-hidden />
                 </button>
@@ -653,9 +608,7 @@ function VocabTab({
               <h4 className="mt-1 font-serif text-[18px] font-bold text-ink">{v.term}</h4>
               <p className="mt-1 text-[13.5px] text-ink-soft">{v.meaning}</p>
               {v.context && (
-                <p className="mt-2 rounded-lg bg-sunken p-2 font-serif text-[12.5px] italic text-ink-faint">
-                  Context: “{v.context}”
-                </p>
+                <p className="mt-2 rounded-lg bg-sunken p-2 font-serif text-[12.5px] italic text-ink-faint"><UiText source={'Context: “{0}”'} values={[v.context]} /></p>
               )}
             </div>
 
@@ -667,7 +620,7 @@ function VocabTab({
                 onClick={() => onSaveCard(v)}
                 disabled={savedCards.has(v.term)}
               >
-                {savedCards.has(v.term) ? 'In deck' : 'Make flashcard (F0576)'}
+                {savedCards.has(v.term) ? translateUi('In deck') : translateUi('Make flashcard (F0576)')}
               </Button>
             </div>
           </Card>
@@ -685,13 +638,12 @@ function ReplayTab({
   turns: SpeakerTurn[];
   onSpeak: (t: string) => void;
 }) {
+  const translateUi = useUi();
   return (
     <Card className="p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="font-serif text-[20px] font-semibold">
-          Replay conversation (F0578)
-        </h3>
-        <span className="text-[12.5px] text-ink-faint">{turns.length} turns</span>
+        <h3 className="font-serif text-[20px] font-semibold"><UiText source={'Replay conversation (F0578)'} /></h3>
+        <span className="text-[12.5px] text-ink-faint"><UiText source={'{0} turns'} values={[turns.length]} /></span>
       </div>
 
       <div className="space-y-4">
@@ -715,7 +667,7 @@ function ReplayTab({
                   type="button"
                   onClick={() => onSpeak(turn.text)}
                   className="text-ink-soft hover:text-ink transition-colors"
-                  aria-label={`Listen to ${turn.speakerLabel}'s turn`}
+                  aria-label={translateUi('Listen to {0}\'s turn', [turn.speakerLabel])}
                 >
                   <Volume2 size={15} aria-hidden />
                 </button>

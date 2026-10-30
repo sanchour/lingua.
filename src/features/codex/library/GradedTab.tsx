@@ -30,7 +30,7 @@ export function GradedTab({ lang, texts }: { lang: string; texts: Text[] }) {
     <div className="grid grid-cols-2 gap-5">{shown.map((text) => <Card key={text.id} className="p-5">
       <p className="text-xs font-semibold text-sage-text"><UiText source={'Measured {0} · {1} words · {2}'} values={[(hasWordData ? text.stats?.level : undefined) ?? '— unmeasured', text.wordCount.toLocaleString(), text.stats ? `${Math.round(text.stats.knownShare * 100)}% familiar` : 'familiarity unmeasured']} /></p>
       <Link to={`/codex/read/${text.id}`} lang={lang} className="mt-2 block font-serif text-xl font-semibold text-accent-text">{text.title}</Link>
-      <p className="mt-2 text-sm text-ink-soft">{text.readingTopic || 'No topic yet'} · {text.readingGenre || 'kind not assigned'}</p>
+      <p className="mt-2 text-sm text-ink-soft">{text.readingTopic || translateUi('No topic yet')} · {text.readingGenre || translateUi('kind not assigned')}</p>
       <TextLabels text={text} />
     </Card>)}</div>
     {!shown.length && <p className="rounded-xl bg-surface p-5 text-ink-soft"><UiText source={'No texts match. Adjust the filters, add a text, or find an open edition below.'} /></p>}
@@ -90,7 +90,7 @@ function OpenSources({ lang, texts }: { lang: string; texts: Text[] }) {
       <label className="text-sm font-semibold"><UiText source={'Source search{0}'} values={[<input className="mt-2 h-11 w-full rounded-xl border border-line bg-raised px-3 font-normal" value={query} onChange={(e) => setQuery(e.target.value)} />]} /></label>
       <Button type="submit" loading={busy} disabled={!query.trim()}><UiText source={'Search source'} /></Button>
     </fieldset></form>
-    {error && <p role="alert" className="rounded-xl bg-surface p-4 text-sm text-ink-soft">{error}</p>}
+    {error && <p role="alert" className="rounded-xl bg-surface p-4 text-sm text-ink-soft"><UiText source={error ?? ''} /></p>}
     {searched && !busy && !error && !items.length && <p className="text-sm text-ink-faint"><UiText source={'No editions found for this search.'} /></p>}
     <div className="grid grid-cols-2 gap-4">{items.map((item) => <Card key={item.url} className="p-4">
       <h3 lang={lang} className="font-serif text-lg font-semibold">{item.title}</h3><p className="mt-2 text-sm text-ink-soft">{item.snippet}</p>

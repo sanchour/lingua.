@@ -48,7 +48,7 @@ export default function ReadingPractice() {
   };
   return <>
     <BackLink to={`/codex/read/${text.id}`}><UiText source={'Back to reading'} /></BackLink>
-    <PageHeader title={translateUi('Check understanding')} />
+    <PageHeader title={translateUi('Check understanding')} englishTitle={'Check understanding'} />
     <p className="mb-5 text-sm text-ink-soft"><UiText source={'{0} · chapter {1}. The passage stays beside your answers.'} values={[text.title, (Number(chapterIndex) || 0) + 1]} /></p>
     <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-8">
       <section aria-label={translateUi('Source passage')} className="sticky top-6 max-h-[78dvh] overflow-y-auto rounded-2xl border border-line bg-raised p-6">
@@ -74,7 +74,7 @@ export default function ReadingPractice() {
           <ReadingRun key={run} specs={specs} source={source} guides={!generated} onDone={() => setSpecs(null)} />
           {generated && <Button variant="ghost" size="sm" onClick={() => { setSpecs(null); setError('Questions discarded. You can use the offline self-check instead.'); }}><UiText source={'Discard incorrect questions'} /></Button>}
         </>}
-        {error && <p role="alert" className="text-sm text-accent-text">{error}</p>}
+        {error && <p role="alert" className="text-sm text-accent-text"><UiText source={error ?? ''} /></p>}
       </section>
     </div>
   </>;

@@ -271,7 +271,7 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
         onNext={next}
         praise={praise}
         checkLabel={judging ? 'Checking…' : free && spec.check.rule === 'self' ? 'Show the answer' : 'Check'}
-        hint={isMatch(spec) ? 'Tap a word, then what goes with it' : rating ? 'Rate your answer above' : undefined}
+        hint={isMatch(spec) ? translateUi('Tap a word, then what goes with it') : rating ? translateUi('Rate your answer above') : undefined}
         rightNote={message || why ? <p className="text-sm text-ink-soft">{message ?? why}</p> : null}
         wrong={
           <div>

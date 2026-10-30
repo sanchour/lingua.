@@ -127,7 +127,7 @@ export default function Onboarding({ canCancel = false, replay }: { canCancel?: 
       });
       void requestPersistence();
       navigate('/', { replace: true });
-      toast(canCancel ? `Now studying ${getLanguage(target)?.name ?? target}.` : `Welcome to Lingua${nameNow.trim() ? `, ${nameNow.trim()}` : ''}. Happy reading!`, { tone: 'success' });
+      toast(canCancel ? { source: 'Now studying {0}.', values: [{ source: getLanguage(target)?.name ?? target }] } : { source: 'Welcome to Lingua{0}. Happy reading!', values: [nameNow.trim() ? { source: ', {0}', values: [String(nameNow.trim())] } : String('')] }, { tone: 'success' });
     } catch {
       setBusy(false);
       toast('Could not save your choices. Please try again.', { tone: 'error' });

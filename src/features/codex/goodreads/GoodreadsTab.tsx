@@ -124,7 +124,7 @@ export function GoodreadsTab({ lang }: { lang: string }) {
                   label={translateUi('Shelf')}
                   value={filter.shelf}
                   onChange={(shelf) => set({ shelf })}
-                  options={[{ value: 'all', label: `All ${count}` }, ...SHELVES.filter((s) => inUse.has(s.id)).map((s) => ({ value: s.id, label: s.title }))]}
+                  options={[{ value: 'all', label: translateUi('All {0}', [count]) }, ...SHELVES.filter((s) => inUse.has(s.id)).map((s) => ({ value: s.id, label: s.title }))]}
                 />
               </motion.div>
             )}
@@ -170,7 +170,7 @@ export function GoodreadsTab({ lang }: { lang: string }) {
       ) : (
         <div className="space-y-10">
           {groups.map((g) => (
-            <section key={g.id} aria-label={g.title || 'Your Goodreads books'}>
+            <section key={g.id} aria-label={g.title || translateUi('Your Goodreads books')}>
               {g.title && (
                 <header className="mb-4 flex items-baseline gap-2.5 border-b border-line pb-2">
                   <h2 className="font-serif text-xl font-semibold">{g.title}</h2>

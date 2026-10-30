@@ -85,7 +85,7 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
         </button>
       </div>
       <p className={cx('mt-2 text-[16.5px] leading-snug font-semibold', result === undefined && 'animate-pulse opacity-60')}>
-        {result === undefined ? translateUi('Translating…') : (result?.text ?? 'No translation came back. Check the connection.')}
+        {result === undefined ? translateUi('Translating…') : (result?.text ?? translateUi('No translation came back. Check the connection.'))}
       </p>
       {phrase.range && phrase.context.textId && <div className="mt-3 flex items-center gap-2">
         <label className="text-xs"><UiText source={'Highlight colour{0}'} values={[<select value={colour} onChange={(e) => setColour(e.target.value as MarkColour)} className="ml-2 rounded-md bg-bg p-1 text-ink"><option value="amber">{translateUi('Amber')}</option><option value="sage">{translateUi('Sage')}</option><option value="blue">{translateUi('Blue')}</option></select>]} /></label>

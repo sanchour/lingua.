@@ -72,7 +72,7 @@ export function TopBar() {
             <span className="pl-1">
               <LogoMark size={25} />
             </span>
-            <span className="font-serif text-[19px] font-semibold tracking-tight">Lingua</span>
+            <span className="font-serif text-[19px] font-semibold tracking-tight"><UiText source={'Lingua'} /></span>
             <LanguageChip compact placement="bottom-start" />
           </div>
         )}

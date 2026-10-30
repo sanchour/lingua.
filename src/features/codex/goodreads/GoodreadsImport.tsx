@@ -15,7 +15,7 @@ export function useGoodreadsImport(lang: string, onDone?: () => void) {
     setBusy(true);
     try {
       const added = await importGoodreads(lang, file);
-      toast(added ? `Added ${added} ${added === 1 ? 'book' : 'books'} to your Goodreads shelves.` : 'Your Goodreads shelves are up to date.', { tone: 'success' });
+      toast(added ? { source: 'Added {0} {1} to your Goodreads shelves.', values: [String(added), added === 1 ? { source: 'book' } : { source: 'books' }] } : 'Your Goodreads shelves are up to date.', { tone: 'success' });
       onDone?.();
     } catch (error) {
       toast(error instanceof Error ? error.message : 'That file couldn’t be read.', { tone: 'error' });

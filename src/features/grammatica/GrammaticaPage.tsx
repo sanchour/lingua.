@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
@@ -70,7 +71,7 @@ export default function GrammaticaPage() {
 
   return (
     <>
-      <PageHeader title="Grammatica" eyebrow={`Grammar in ${info?.name ?? lang}`} />
+      <PageHeader title={translateUi('Grammatica')} englishTitle={'Grammatica'} eyebrow={translateUi('Grammar in {0}', [translateUi(info?.name ?? lang)])} englishEyebrow={interpolate('Grammar in {0}', [info?.name ?? lang])} />
       {grammar === undefined ? (
         <div className="h-64" />
       ) : grammar === null ? (
@@ -476,10 +477,11 @@ function TopicRow({ topic, state, next }: { topic: Topic; state?: TopicState; ne
 }
 
 function Sources({ name, sources }: { name: string; sources: Array<{ name: string; url?: string }> }) {
+  const translateUi = useUi();
   return (
     <p className="mt-10 text-[12.5px] leading-relaxed text-ink-faint"><UiText source={'Every sentence comes from Lingua’s {0} dictionary (Wiktionary, CC BY-SA). Rules checked against{1}{2}.'} values={[name, ' ', sources.map((s, i) => (
         <span key={s.name}>
-          {i > 0 && (i === sources.length - 1 ? ' and ' : ', ')}
+          {i > 0 && (i === sources.length - 1 ? translateUi(' and ') : ', ')}
           {s.url ? (
             <a href={s.url} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-2 hover:text-ink-soft">
               {s.name}

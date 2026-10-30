@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
@@ -31,7 +32,7 @@ export default function LettersPage() {
   if (script === null)
     return (
       <>
-        <PageHeader title={translateUi('Alphabet')} eyebrow={info?.name ?? lang} />
+        <PageHeader title={translateUi('Alphabet')} englishTitle={'Alphabet'} eyebrow={info?.name ?? lang} />
         <Card>
           <EmptyState icon={Languages} title={translateUi('{0} uses the Latin alphabet', [info?.name ?? lang])}><UiText source={'Its letters are the ones you know; Grammatica’s topics and the reader are the place to start.'} /></EmptyState>
         </Card>
@@ -41,7 +42,7 @@ export default function LettersPage() {
   const sets = [...new Set(script.groups.map((g) => g.set ?? ''))];
   return (
     <>
-      <PageHeader title={script.name} eyebrow={`The alphabet · ${info?.name ?? lang}`} />
+      <PageHeader title={script.name} eyebrow={translateUi('The alphabet · {0}', [translateUi(info?.name ?? lang)])} englishEyebrow={interpolate('The alphabet · {0}', [info?.name ?? lang])} />
       <p className="mb-6 max-w-2xl text-[15.5px] leading-relaxed text-ink-soft">{script.summary}</p>
 
       {next && (
@@ -68,9 +69,7 @@ export default function LettersPage() {
           <RotateCcw size={17} aria-hidden />
           {due ? translateUi('Review {0} {1}', [due, due === 1 ? 'letter' : 'letters']) : translateUi('No letters due')}
         </Link>
-        <Link to="/cursus/grammatica" className={cx(buttonClasses('ghost', 'md'), 'flex-1 sm:ml-auto sm:flex-none')}>
-          Grammatica <ArrowRight size={16} aria-hidden />
-        </Link>
+        <Link to="/cursus/grammatica" className={cx(buttonClasses('ghost', 'md'), 'flex-1 sm:ml-auto sm:flex-none')}><UiText source={'Grammatica {0}'} values={[<ArrowRight size={16} aria-hidden />]} /></Link>
       </div>
 
       {sets.map((set) => (
@@ -123,7 +122,7 @@ export default function LettersPage() {
         ))}
         <p><UiText source={'Words come from Lingua’s {0} dictionary (Wiktionary, CC BY-SA). Letters and sounds checked against{1}{2}.'} values={[info?.name ?? lang, ' ', script.sources.map((s, i) => (
             <span key={s.name}>
-              {i > 0 && (i === script.sources.length - 1 ? ' and ' : ', ')}
+              {i > 0 && (i === script.sources.length - 1 ? translateUi(' and ') : ', ')}
               {s.url ? (
                 <a href={s.url} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-2 hover:text-ink-soft">
                   {s.name}

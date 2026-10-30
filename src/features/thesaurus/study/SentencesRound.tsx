@@ -120,7 +120,7 @@ export function SentencesRound({ deckId }: { deckId: string | null }) {
       <header className="mx-auto flex max-w-4xl items-center gap-3 px-4 pt-4 sm:px-8 sm:pt-6">
         <IconButton icon={X} label={translateUi('Close')} onClick={back} />
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-sage-text uppercase">Ludus</p>
+          <p className="text-[11px] font-bold tracking-[0.14em] text-sage-text uppercase"><UiText source={'Ludus'} /></p>
           <h1 className="font-serif text-[20px] leading-tight font-semibold"><UiText source={'Sentences'} /></h1>
         </div>
         <Segmented<GapLevel>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Melody and stress (6-10): hear the same words as a statement and as a question and say which; pick the word of an answer that carries
 // the stress. "Say these" sends the pairs to Say it, which checks which way your own voice goes at the end. The voice is the device's, which
 // may not make the melody as clearly as a person does; if you cannot hear it, the Say it shapes below show it on your own voice.
@@ -12,6 +13,7 @@ import { cx } from '@/lib/cx';
 type Expect = Record<string, 'rise' | 'fall'>;
 
 function StatementOrQuestion({ lang, items, rule, onSay }: { lang: string; items: IntonationItem[]; rule: string; onSay: () => void }) {
+  const translateUi = useUi();
   const [queue, setQueue] = useState(() => shuffle(items, Math.random));
   const [picked, setPicked] = useState<IntonationItem['kind'] | null>(null);
   const [score, setScore] = useState({ right: 0, total: 0 });
@@ -23,15 +25,13 @@ function StatementOrQuestion({ lang, items, rule, onSay }: { lang: string; items
   };
   return (
     <div>
-      <h3 className="text-[15px] font-bold">Statement or question?</h3>
+      <h3 className="text-[15px] font-bold"><UiText source={'Statement or question?'} /></h3>
       <p className="mt-1 max-w-2xl text-[14px] text-ink-soft">{rule}</p>
       {round ? (
         <div className="mt-3">
           <div className="flex items-center gap-3">
             <SpeakButton lang={lang} text={round.text} size={26} label="Hear the sentence" className="size-14 rounded-full bg-sunken text-ink" />
-            <span className="text-[13px] text-ink-faint">
-              {queue.length} to go · {score.right} of {score.total} right
-            </span>
+            <span className="text-[13px] text-ink-faint"><UiText source={'{0} to go · {1} of {2} right'} values={[queue.length, score.right, score.total]} /></span>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             {(['statement', 'question'] as const).map((k) => (
@@ -43,8 +43,8 @@ function StatementOrQuestion({ lang, items, rule, onSay }: { lang: string; items
                 className={cx('flex h-11 items-center gap-1.5 rounded-xl border px-4 text-[14px] font-semibold capitalize', !picked && 'border-line hover:bg-surface', picked && k === round.kind && 'border-sage bg-sage-soft', picked === k && k !== round.kind && 'border-accent bg-accent-soft')}
               >
                 {k}
-                {picked && k === round.kind && <Check size={15} aria-label="Right answer" />}
-                {picked === k && k !== round.kind && <X size={15} aria-label="Not this one" />}
+                {picked && k === round.kind && <Check size={15} aria-label={translateUi('Right answer')} />}
+                {picked === k && k !== round.kind && <X size={15} aria-label={translateUi('Not this one')} />}
               </button>
             ))}
             {picked && (
@@ -52,24 +52,15 @@ function StatementOrQuestion({ lang, items, rule, onSay }: { lang: string; items
                 <span lang={lang} className="font-serif text-[18px]">
                   {round.text}
                 </span>
-                <button type="button" onClick={() => (setPicked(null), setQueue((q) => q.slice(1)))} className="h-10 rounded-xl bg-inverse px-4 text-[14px] font-semibold text-on-inverse">
-                  Next
-                </button>
+                <button type="button" onClick={() => (setPicked(null), setQueue((q) => q.slice(1)))} className="h-10 rounded-xl bg-inverse px-4 text-[14px] font-semibold text-on-inverse"><UiText source={'Next'} /></button>
               </>
             )}
           </div>
         </div>
       ) : (
-        <p className="mt-3 text-[15px]">
-          Done: {score.right} of {score.total} right.{' '}
-          <button type="button" onClick={() => (setScore({ right: 0, total: 0 }), setQueue(shuffle(items, Math.random)))} className="underline underline-offset-4">
-            Again
-          </button>
-        </p>
+        <p className="mt-3 text-[15px]"><UiText source={'Done: {0} of {1} right.{2}{3}'} values={[score.right, score.total, ' ', <button type="button" onClick={() => (setScore({ right: 0, total: 0 }), setQueue(shuffle(items, Math.random)))} className="underline underline-offset-4"><UiText source={'Again'} /></button>]} /></p>
       )}
-      <button type="button" onClick={onSay} className="mt-3 h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
-        Say these
-      </button>
+      <button type="button" onClick={onSay} className="mt-3 h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"><UiText source={'Say these'} /></button>
     </div>
   );
 }
@@ -82,8 +73,8 @@ function WhichWord({ lang }: { lang: string }) {
   if (!item) return null;
   return (
     <div>
-      <h3 className="text-[15px] font-bold">Which word carries the stress?</h3>
-      <p className="mt-1 max-w-2xl text-[14px] text-ink-soft">In an answer, the word that gives the new information is said with the most weight. Read the question, then choose that word in the answer.</p>
+      <h3 className="text-[15px] font-bold"><UiText source={'Which word carries the stress?'} /></h3>
+      <p className="mt-1 max-w-2xl text-[14px] text-ink-soft"><UiText source={'In an answer, the word that gives the new information is said with the most weight. Read the question, then choose that word in the answer.'} /></p>
       <p lang={lang} className="mt-3 font-serif text-[19px] font-semibold">
         {item.question}
       </p>
@@ -102,12 +93,7 @@ function WhichWord({ lang }: { lang: string }) {
         ))}
       </div>
       {picked && (
-        <p className="mt-2 flex items-center gap-3 text-[14px] text-ink-soft" role="status">
-          {isStressed(picked, item) ? 'Yes: ' : 'Not quite: '}“{item.stressed}” is what the question asks for, so it carries the stress.
-          <button type="button" onClick={() => (setPicked(null), setI((n) => n + 1))} className="h-9 rounded-xl bg-inverse px-3 text-[13.5px] font-semibold text-on-inverse">
-            Next
-          </button>
-        </p>
+        <p className="mt-2 flex items-center gap-3 text-[14px] text-ink-soft" role="status"><UiText source={'{0}“{1}” is what the question asks for, so it carries the stress.{2}'} values={[isStressed(picked, item) ? 'Yes: ' : 'Not quite: ', item.stressed, <button type="button" onClick={() => (setPicked(null), setI((n) => n + 1))} className="h-9 rounded-xl bg-inverse px-3 text-[13.5px] font-semibold text-on-inverse"><UiText source={'Next'} /></button>]} /></p>
       )}
     </div>
   );
@@ -119,9 +105,7 @@ export function Intonation({ lang, onSay }: { lang: string; onSay: (words: strin
   const say = () => onSay(into.items.map((i) => i.text), into.measurable ? Object.fromEntries(into.items.map((i) => [i.text, i.kind === 'question' ? 'rise' : 'fall'])) : undefined);
   return (
     <section aria-labelledby="into-h" className="space-y-6 rounded-3xl border border-line bg-raised p-5">
-      <h2 id="into-h" className="font-serif text-2xl font-semibold">
-        Melody and stress
-      </h2>
+      <h2 id="into-h" className="font-serif text-2xl font-semibold"><UiText source={'Melody and stress'} /></h2>
       <StatementOrQuestion lang={lang} items={into.items} rule={into.rule} onSay={say} />
       <WhichWord lang={lang} />
     </section>

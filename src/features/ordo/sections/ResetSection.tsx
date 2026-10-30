@@ -34,7 +34,7 @@ export function ResetSection({ language }: { language: LanguageProfile }) {
         return;
       }
       const counts = await resetLanguageProgress(language.id);
-      toast(`${name} starts fresh: ${counts.words.toLocaleString()} words and ${counts.cards.toLocaleString()} cards cleared.`, { tone: 'success' });
+      toast({ source: '{0} starts fresh: {1} words and {2} cards cleared.', values: [String(name), String(counts.words.toLocaleString()), String(counts.cards.toLocaleString())] }, { tone: 'success' });
       setOpen(null);
       setTyped('');
     } catch {

@@ -1,4 +1,4 @@
-import { useUi } from '@/design/i18n/UiText';
+import { UiText, useUi } from '@/design/i18n/UiText';
 import type { ReactNode } from 'react';
 import { ArrowDownUp, Check } from 'lucide-react';
 import { cx } from '@/lib/cx';
@@ -21,7 +21,7 @@ interface SortMenuProps<T extends string, G extends string> extends Choices<T> {
 function ChoiceList<T extends string>({ title, value, options, onChange, close }: Choices<T> & { title: string; close: () => void }) {
   return (
     <>
-      <p className="px-3 pt-1.5 pb-1 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">{title}</p>
+      <p className="px-3 pt-1.5 pb-1 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={title} /></p>
       <div role="radiogroup" aria-label={title}>
         {options.map((o) => (
           <button
@@ -38,7 +38,7 @@ function ChoiceList<T extends string>({ title, value, options, onChange, close }
               o.value === value ? 'text-ink' : 'text-ink-soft',
             )}
           >
-            <span className="min-w-0 flex-1">{o.label}</span>
+            <span className="min-w-0 flex-1"><UiText source={o.label} /></span>
             {o.value === value && <Check size={16} className="shrink-0 text-accent-text" aria-hidden />}
           </button>
         ))}

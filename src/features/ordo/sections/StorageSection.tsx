@@ -33,7 +33,7 @@ export function StorageSection() {
   const clearBlobsCache = async () => {
     const count = await db.blobs.count();
     await db.blobs.clear();
-    toast(`Cleared ${count} cached media items.`, { tone: 'success' });
+    toast({ source: 'Cleared {0} cached media items.', values: [String(count)] }, { tone: 'success' });
     refresh();
   };
 
@@ -68,9 +68,7 @@ export function StorageSection() {
                   onClick={async () => {
                     const granted = await requestPersistence();
                     toast(
-                      granted
-                        ? 'Storage is now protected.'
-                        : 'The browser declined for now. Installing Lingua to your home screen or desktop usually grants it.',
+                      granted ? 'Storage is now protected.' : 'The browser declined for now. Installing Lingua to your home screen or desktop usually grants it.',
                       { tone: granted ? 'success' : 'default' },
                     );
                     refresh();
@@ -82,63 +80,56 @@ export function StorageSection() {
 
           {/* Storage breakdown by kind (6-25, F1546) */}
           <div className="mt-6">
-            <p className="text-[14px] font-semibold text-ink">Storage by kind</p>
+            <p className="text-[14px] font-semibold text-ink"><UiText source={'Storage by kind'} /></p>
             <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
               <Card className="p-3">
-                <p className="text-[11px] font-bold text-ink-faint uppercase">Dictionaries</p>
+                <p className="text-[11px] font-bold text-ink-faint uppercase"><UiText source={'Dictionaries'} /></p>
                 <p className="mt-1 font-serif text-lg font-semibold tabular-nums">{counts?.dictWords.toLocaleString() ?? '…'}</p>
-                <p className="text-[11.5px] text-ink-soft">offline words</p>
+                <p className="text-[11.5px] text-ink-soft"><UiText source={'offline words'} /></p>
               </Card>
               <Card className="p-3">
-                <p className="text-[11px] font-bold text-ink-faint uppercase">Books & texts</p>
+                <p className="text-[11px] font-bold text-ink-faint uppercase"><UiText source={'Books & texts'} /></p>
                 <p className="mt-1 font-serif text-lg font-semibold tabular-nums">{counts?.texts.toLocaleString() ?? '…'}</p>
-                <p className="text-[11.5px] text-ink-soft">{counts?.chapters ?? 0} chapters</p>
+                <p className="text-[11.5px] text-ink-soft"><UiText source={'{0} chapters'} values={[counts?.chapters ?? 0]} /></p>
               </Card>
               <Card className="p-3">
-                <p className="text-[11px] font-bold text-ink-faint uppercase">Flashcards</p>
+                <p className="text-[11px] font-bold text-ink-faint uppercase"><UiText source={'Flashcards'} /></p>
                 <p className="mt-1 font-serif text-lg font-semibold tabular-nums">{counts?.notes.toLocaleString() ?? '…'}</p>
-                <p className="text-[11.5px] text-ink-soft">in {counts?.decks ?? 0} decks</p>
+                <p className="text-[11.5px] text-ink-soft"><UiText source={'in {0} decks'} values={[counts?.decks ?? 0]} /></p>
               </Card>
               <Card className="p-3">
-                <p className="text-[11px] font-bold text-ink-faint uppercase">Media & audio</p>
+                <p className="text-[11px] font-bold text-ink-faint uppercase"><UiText source={'Media & audio'} /></p>
                 <p className="mt-1 font-serif text-lg font-semibold tabular-nums">{counts?.blobs.toLocaleString() ?? '…'}</p>
-                <p className="text-[11.5px] text-ink-soft">{counts?.songs ?? 0} songs</p>
+                <p className="text-[11.5px] text-ink-soft"><UiText source={'{0} songs'} values={[counts?.songs ?? 0]} /></p>
               </Card>
             </div>
             {counts && counts.blobs > 0 && (
               <div className="mt-3 flex justify-end">
-                <Button variant="ghost" size="sm" icon={Trash2} onClick={() => void clearBlobsCache()}>
-                  Clear cached media ({counts.blobs})
-                </Button>
+                <Button variant="ghost" size="sm" icon={Trash2} onClick={() => void clearBlobsCache()}><UiText source={'Clear cached media ({0})'} values={[counts.blobs]} /></Button>
               </div>
             )}
           </div>
 
           {/* Privacy & Destination Disclosures (6-25, F1544) */}
           <div className="mt-6 rounded-2xl border border-line bg-surface p-4.5">
-            <div className="flex items-center gap-2 text-[14px] font-bold text-ink">
-              <Lock size={15} className="text-sage-text" aria-hidden />
-              Privacy & destinations: what travels where
-            </div>
-            <p className="mt-1 text-[12.5px] leading-relaxed text-ink-soft">
-              Lingua is offline-first. Your vocabulary, reviews, diary entries, and highlights never leave this computer unless you pair devices or export a backup.
-            </p>
+            <div className="flex items-center gap-2 text-[14px] font-bold text-ink"><UiText source={'{0}Privacy & destinations: what travels where'} values={[<Lock size={15} className="text-sage-text" aria-hidden />]} /></div>
+            <p className="mt-1 text-[12.5px] leading-relaxed text-ink-soft"><UiText source={'Lingua is offline-first. Your vocabulary, reviews, diary entries, and highlights never leave this computer unless you pair devices or export a backup.'} /></p>
             <ul className="mt-3 space-y-2 text-[12.5px] leading-snug text-ink-soft">
               <li className="flex items-start gap-2">
-                <span className="font-semibold text-ink">• AI requests:</span>
-                <span>Travel directly from your browser to Groq or Gemini using your own API key in headers. Never stored or used to train models.</span>
+                <span className="font-semibold text-ink"><UiText source={'• AI requests:'} /></span>
+                <span><UiText source={'Travel directly from your browser to Groq or Gemini using your own API key in headers. Never stored or used to train models.'} /></span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="font-semibold text-ink">• Translation:</span>
-                <span>Sent on demand to your chosen provider (MyMemory / Lingva) only when you look up a word; local pack dictionaries work 100% offline.</span>
+                <span className="font-semibold text-ink"><UiText source={'• Translation:'} /></span>
+                <span><UiText source={'Sent on demand to your chosen provider (MyMemory / Lingva) only when you look up a word; local pack dictionaries work 100% offline.'} /></span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="font-semibold text-ink">• Speech & audio:</span>
-                <span>Speech synthesis and recognition run on this device or through your Groq key. Recordings are never kept on external servers.</span>
+                <span className="font-semibold text-ink"><UiText source={'• Speech & audio:'} /></span>
+                <span><UiText source={'Speech synthesis and recognition run on this device or through your Groq key. Recordings are never kept on external servers.'} /></span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="font-semibold text-ink">• Analytics & tracking:</span>
-                <span>Zero telemetry, zero third-party analytics, and zero tracking cookies.</span>
+                <span className="font-semibold text-ink"><UiText source={'• Analytics & tracking:'} /></span>
+                <span><UiText source={'Zero telemetry, zero third-party analytics, and zero tracking cookies.'} /></span>
               </li>
             </ul>
           </div>

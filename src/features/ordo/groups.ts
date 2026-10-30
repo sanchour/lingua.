@@ -57,6 +57,7 @@ export interface SettingEntry {
 
 /** Every setting, in page order. */
 export const SETTINGS_INDEX: SettingEntry[] = [
+  { label: 'Lingua in the language', section: 'appearance', also: 'interface translation immersion English hover offline' },
   { label: 'Theme', section: 'appearance', also: 'paper nocturne dark mode light night colour color system appearance' },
   { label: 'High contrast', section: 'appearance', also: 'accessibility contrast wcag aaa legibility visibility stark 7:1' },
   { label: 'Accessible indicators', section: 'appearance', also: 'color blind shapes patterns glyphs symbols never alone' },
@@ -161,18 +162,18 @@ const SECTION_TITLES: Record<SectionId, string> = {
 export const sectionTitle = (id: SectionId) => SECTION_TITLES[id];
 
 /** Settings matching every word of the query, best first: label starts, then label words, then other words. */
-export function searchSettings(query: string, hidden: ReadonlySet<SectionId> = new Set()): SettingEntry[] {
+export function searchSettings(query: string, hidden: ReadonlySet<SectionId> = new Set(), localize: (text: string) => string = (text) => text): SettingEntry[] {
   const words = searchKey(query).split(/\s+/).filter(Boolean);
   if (!words.length) return [];
   const scored: Array<[SettingEntry, number]> = [];
   for (const entry of SETTINGS_INDEX) {
     if (hidden.has(entry.section)) continue;
-    const label = searchKey(entry.label);
-    const rest = searchKey(`${SECTION_TITLES[entry.section]} ${entry.also ?? ''}`);
+    const labels = [entry.label, localize(entry.label)].map(searchKey);
+    const rest = searchKey(`${SECTION_TITLES[entry.section]} ${localize(SECTION_TITLES[entry.section])} ${entry.also ?? ''}`);
     let score = 0;
     for (const w of words) {
-      if (label.startsWith(w)) score += 3;
-      else if (new RegExp(`(?:^|[^\\p{L}])${escape(w)}`, 'u').test(label)) score += 2;
+      if (labels.some((label) => label.startsWith(w))) score += 3;
+      else if (labels.some((label) => new RegExp(`(?:^|[^\\p{L}])${escape(w)}`, 'u').test(label))) score += 2;
       else if (rest.includes(w)) score += 1;
       else {
         score = 0;

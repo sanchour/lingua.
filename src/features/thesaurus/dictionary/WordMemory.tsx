@@ -1,3 +1,4 @@
+import type { ToastMessage } from '@/state/ui';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -106,7 +107,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
   const chosen = shown.filter((r) => picked.has(r.key));
   const formsOf = (rs: RememberedRow[]) => rs.flatMap((r) => [...new Set([r.key, ...r.forms])]);
   const asWord = (r: RememberedRow): InboxWord => ({ key: r.key, forms: [...new Set([r.key, ...r.forms])], term: r.surface, lemma: r.lemma, gloss: r.gloss, sentence: r.sightings.find((x) => x.sentence)?.sentence });
-  const done = (message: string) => {
+  const done = (message: ToastMessage) => {
     setPicked(new Set());
     toast(message, { tone: 'success' });
   };
@@ -120,7 +121,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
       setBusy(false);
     }
   };
-  const count = (n: number) => `${n} ${n === 1 ? 'word' : 'words'}`;
+  const count = (n: number) => ({ source: n === 1 ? '{0} word' : '{0} words', values: [String(n)] });
   const toggle = (key: string) => setPicked((p) => (p.has(key) ? new Set([...p].filter((k) => k !== key)) : new Set([...p, key])));
 
   return (
@@ -192,7 +193,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
                       if (deck)
                         void run(async () => {
                           const { added, skipped } = await addInboxToDeck(lang, deck.id, chosen.map(asWord));
-                          done(`Added ${count(added)} to ${deck.name}${skipped ? ` · ${skipped} already had a card` : ''}`);
+                          done({ source: 'Added {0} to {1}{2}', values: [count(added), String(deck.name), skipped ? { source: ' · {0} already had a card', values: [String(skipped)] } : String('')] });
                         });
                     }}
                     className="h-9 rounded-full border border-line bg-raised px-3 text-[13px] font-semibold text-ink-soft outline-none focus:border-ink"
@@ -213,7 +214,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
                     onClick={() =>
                       void run(async () => {
                         await markInboxKnown(lang, formsOf(chosen));
-                        done(`${count(chosen.length)} marked as known`);
+                        done({ source: '{0} marked as known', values: [count(chosen.length)] });
                       })
                     }
                   ><UiText source={'Mark known'} /></Button>
@@ -226,7 +227,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
                 onClick={() =>
                   void run(async () => {
                     await setInboxState(lang, formsOf(chosen), strength === 'inbox' ? 'ignored' : 'new');
-                    done(strength === 'inbox' ? `${count(chosen.length)} ignored` : `${count(chosen.length)} back in the inbox`);
+                    done(strength === 'inbox' ? { source: '{0} ignored', values: [count(chosen.length)] } : { source: '{0} back in the inbox', values: [count(chosen.length)] });
                   })
                 }
               >

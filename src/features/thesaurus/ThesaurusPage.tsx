@@ -122,7 +122,7 @@ export default function ThesaurusPage() {
       decks: (allDecks ?? []).filter((d) => d.id !== deck.id && !d.deletedAt),
       onConfirm: async (into) => {
         const moved = await mergeDecks(into, [deck.id]);
-        toast(`${moved} ${moved === 1 ? 'card' : 'cards'} moved`, { tone: 'success' });
+        toast({ source: '{0} {1} moved', values: [String(moved), moved === 1 ? { source: 'card' } : { source: 'cards' }] }, { tone: 'success' });
       },
     });
 
@@ -193,7 +193,7 @@ export default function ThesaurusPage() {
 
   return (
     <>
-      <PageHeader title="Thesaurus" />
+      <PageHeader title={translateUi('Thesaurus')} englishTitle={'Thesaurus'} />
       <RoomTabs label={translateUi('Thesaurus sections')} tabs={tabs} active={tab} keys={!searching} end={tools} />
 
       {imports.apkgProgress !== null && (

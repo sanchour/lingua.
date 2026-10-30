@@ -362,11 +362,11 @@ export function SentenceExplainer({ lang }: { lang: string }) {
                 </div>
                 <div>
                   <span className="text-ink-faint"><UiText source={'Inflection: '} /></span>
-                  <span className="font-semibold text-accent-text">{selectedWord.ending ?? 'Base form'}</span>
+                  <span className="font-semibold text-accent-text">{selectedWord.ending ?? translateUi('Base form')}</span>
                 </div>
                 <div>
                   <span className="text-ink-faint"><UiText source={'Syntactic Role: '} /></span>
-                  <span className="font-semibold text-ink">{selectedWord.role ?? 'Determined by context'}</span>
+                  <span className="font-semibold text-ink">{selectedWord.role ?? translateUi('Determined by context')}</span>
                 </div>
               </div>
             </div>

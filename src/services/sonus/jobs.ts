@@ -44,7 +44,7 @@ export async function startDownload(media: Media): Promise<boolean> {
   try {
     const blob = await downloadBlob(media.remoteUrl, (f) => setJob('downloads', media.id, f), controller.signal);
     await attachDownload(media.id, blob, blob.type || media.mime || 'audio/mpeg');
-    toast(`“${media.title}” is saved for offline listening.`, { tone: 'success' });
+    toast({ source: '“{0}” is saved for offline listening.', values: [String(media.title)] }, { tone: 'success' });
     return true;
   } catch (error) {
     if (error instanceof NetError && error.kind === 'aborted') return false;
@@ -92,13 +92,7 @@ export async function startTranscription(media: Media): Promise<boolean> {
     const textId = (await db.media.get(media.id))?.readAlongTextId;
     const timed = textId ? await readAlongPart(media, textId) : null;
     toast(
-      video
-        ? `Subtitles for “${media.title}” are ready.`
-        : timed === 'timed'
-          ? `“${media.title}” now reads along with the book.`
-          : timed
-            ? `The transcript for “${media.title}” is ready, but the book’s text wasn’t found in it.`
-            : `The transcript for “${media.title}” is ready.`,
+      video ? { source: 'Subtitles for “{0}” are ready.', values: [String(media.title)] } : timed === 'timed' ? { source: '“{0}” now reads along with the book.', values: [String(media.title)] } : timed ? { source: 'The transcript for “{0}” is ready, but the book’s text wasn’t found in it.', values: [String(media.title)] } : { source: 'The transcript for “{0}” is ready.', values: [String(media.title)] },
       { tone: 'success' },
     );
     return true;
@@ -117,7 +111,7 @@ export async function startTranslation(media: Media, cues: Cue[]): Promise<boole
   setJob('translating', media.id, 0);
   try {
     const count = await makeNativeTrack(media, cues, (f) => setJob('translating', media.id, f));
-    toast(`English subtitles are ready: ${count} lines.`, { tone: 'success' });
+    toast({ source: 'English subtitles are ready: {0} lines.', values: [String(count)] }, { tone: 'success' });
     return true;
   } catch (error) {
     toast(error instanceof Error ? error.message : 'The subtitles couldn’t be translated.', { tone: 'error', duration: 8000 });
@@ -137,7 +131,7 @@ export async function startGeminiTranscript(media: Media): Promise<boolean> {
     const model = settings.llm.provider === 'gemini' && settings.llm.model ? settings.llm.model : DEFAULT_GEMINI_MODEL;
     const cues = await transcribeWithGemini({ youtubeId: media.youtubeId, lang: media.lang, key: aiKeys(settings).gemini?.trim() ?? '', model });
     await saveTrack(media.id, media.lang, 'target', subtitleSized(cues), 'gemini');
-    toast(`Subtitles for “${media.title}” are ready: ${cues.length} lines.`, { tone: 'success' });
+    toast({ source: 'Subtitles for “{0}” are ready: {1} lines.', values: [String(media.title), String(cues.length)] }, { tone: 'success' });
     return true;
   } catch (error) {
     toast(error instanceof TranscriptError || error instanceof Error ? error.message : 'Gemini couldn’t make the subtitles.', { tone: 'error', duration: 8000 });
@@ -160,7 +154,7 @@ export async function startYouTubeCaptions(media: Media): Promise<boolean> {
       return false;
     }
     await saveTrack(media.id, media.lang, 'target', subtitleSized(cues), 'youtube');
-    toast(`Captions added: ${cues.length} lines.`, { tone: 'success' });
+    toast({ source: 'Captions added: {0} lines.', values: [String(cues.length)] }, { tone: 'success' });
     return true;
   } finally {
     setJob('transcribing', media.id, null);

@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 // A sketch of the mouth from the side (6-10): where the tongue is and what the lips, the soft palate and the voice are doing for a sound.
 // Stylised and labelled so: it is a picture to think with, not a scan. Drawn from the sound's own fields (core/sounds/articulation).
 import { PLACE_POINT, vowelPoint } from '@/core/sounds/articulation';
@@ -9,6 +10,7 @@ function tonguePath(tip: { x: number; y: number }, high: { x: number; y: number 
 }
 
 export function MouthDiagram({ sound }: { sound: Sound }) {
+  const translateUi = useUi();
   if (sound.kind === 'tone') return null;
   const consonant = sound.kind === 'consonant';
   const nasal = consonant ? sound.manner === 'nasal' : Boolean(sound.nasal);
@@ -20,7 +22,7 @@ export function MouthDiagram({ sound }: { sound: Sound }) {
   const tip = lingual ? { x: Math.min(point.x, 96), y: point.y + 6 } : { x: 58, y: 116 };
   const high = consonant ? (lingual ? { x: Math.max(point.x, 100), y: point.y + 4 } : { x: sound.place === 'pharyngeal' ? 140 : 104, y: sound.place === 'pharyngeal' ? 104 : 108 }) : point;
   return (
-    <svg viewBox="0 0 200 160" role="img" aria-label="A sketch of the mouth from the side, showing where the tongue is" className="w-full max-w-[17rem]">
+    <svg viewBox="0 0 200 160" role="img" aria-label={translateUi('A sketch of the mouth from the side, showing where the tongue is')} className="w-full max-w-[17rem]">
       {/* The head: forehead, nose, upper lip, teeth and ridge, the hard palate and the soft palate, the throat. */}
       <path d="M20 70 C14 70, 12 60, 18 54 L18 30 C60 6, 150 6, 168 40 L168 150" fill="none" stroke="var(--line-strong)" strokeWidth="1.6" />
       <path d="M48 66 L50 78 M58 60 C70 46, 112 36, 128 42 C142 46, 152 52, 156 66" fill="none" stroke="var(--ink-soft)" strokeWidth="1.8" strokeLinecap="round" />
@@ -36,7 +38,7 @@ export function MouthDiagram({ sound }: { sound: Sound }) {
         {voiced ? <path d="M-6 0 q2 -6 4 0 t4 0 t4 0" /> : <path d="M-6 0 h12" strokeDasharray="2 3" />}
       </g>
       <text x="170" y="144" fontSize="8" fill="var(--ink-faint)" textAnchor="end">
-        {voiced ? 'voice on' : 'voice off'}
+        {voiced ? translateUi('voice on') : translateUi('voice off')}
       </text>
       <text x="22" y="150" fontSize="8" fill="var(--ink-faint)">
         lips

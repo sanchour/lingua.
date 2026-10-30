@@ -33,7 +33,7 @@ async function addFile(media: Media) {
     const { cues, source } = await readTranscriptFile(file, media.lang, media.durationMs);
     await saveTranscript(media.id, media.lang, cues, source);
     setCues(media.id, cues);
-    toast(`Transcript added: ${cues.length} sentences.`, { tone: 'success' });
+    toast({ source: 'Transcript added: {0} sentences.', values: [String(cues.length)] }, { tone: 'success' });
   } catch (e) {
     toast(e instanceof Error ? e.message : 'That file couldn’t be read.', { tone: 'error' });
   }
@@ -126,7 +126,7 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
   const transcribing = useJobs((s) => s.transcribing[media.id] !== undefined);
   const shift = async (ms: number) => {
     await shiftTranscript(media.id, ms);
-    toast(`Transcript moved ${ms > 0 ? 'later' : 'earlier'} by ${Math.abs(ms) / 1000} s.`);
+    toast({ source: 'Transcript moved {0} by {1} s.', values: [ms > 0 ? { source: 'later' } : { source: 'earlier' }, String(Math.abs(ms) / 1000)] });
   };
 
   return (
@@ -152,20 +152,20 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
             <MenuItem
               icon={BookOpenText}
               label={translateUi('Open in Codex')}
-              detail="Read it like a book"
+              detail={translateUi('Read it like a book')}
               onClick={async () => {
                 close();
                 const id = await transcriptText(media);
                 if (id) navigate(`/codex/read/${id}`);
               }}
             />
-            <MenuItem icon={Clock} label={translateUi('Text runs late')} detail="Move everything 0.5 s earlier" onClick={() => void shift(-500)} />
-            <MenuItem icon={Clock} label={translateUi('Text runs early')} detail="Move everything 0.5 s later" onClick={() => void shift(500)} />
+            <MenuItem icon={Clock} label={translateUi('Text runs late')} detail={translateUi('Move everything 0.5 s earlier')} onClick={() => void shift(-500)} />
+            <MenuItem icon={Clock} label={translateUi('Text runs early')} detail={translateUi('Move everything 0.5 s later')} onClick={() => void shift(500)} />
             {media.kind !== 'spotify' && (
               <MenuItem
                 icon={Sparkles}
                 label={translateUi('Transcribe again')}
-                detail="Whisper on Groq"
+                detail={translateUi('Whisper on Groq')}
                 onClick={() => {
                   close();
                   void startTranscription(media);
@@ -174,8 +174,8 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
             )}
             <MenuItem
               icon={Users}
-              label="Label the speakers"
-              detail="Max: a guess from the words"
+              label={translateUi('Label the speakers')}
+              detail={translateUi('Max: a guess from the words')}
               onClick={async () => {
                 close();
                 try {
@@ -191,7 +191,7 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
             <MenuItem
               icon={FileText}
               label={translateUi('Replace with a file')}
-              detail="SRT, VTT or plain text"
+              detail={translateUi('SRT, VTT or plain text')}
               onClick={() => {
                 close();
                 void addFile(media);

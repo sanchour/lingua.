@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // How the later kinds Max makes are shown (6-6b): an interactive story you play, a course you can turn into decks, a drill you answer,
 // and sounds to practise. Each is a small screen of its own; the page around them (label, Report) is MakePage's.
 import { useState } from 'react';
@@ -10,6 +11,7 @@ import { SpeakButton } from '@/features/speech/SpeakButton';
 import { cx } from '@/lib/cx';
 
 export function Adventure({ body, lang }: { body: AdventureBody; lang: string }) {
+  const translateUi = useUi();
   const [at, setAt] = useState(body.start);
   const [trail, setTrail] = useState<string[]>([]);
   const scene = body.scenes[at];
@@ -25,7 +27,7 @@ export function Adventure({ body, lang }: { body: AdventureBody; lang: string })
         </p>
       </div>
       {scene.choices.length ? (
-        <div className="mt-4 grid gap-2 sm:grid-cols-2" role="group" aria-label="What do you do?">
+        <div className="mt-4 grid gap-2 sm:grid-cols-2" role="group" aria-label={translateUi('What do you do?')}>
           {scene.choices.map((c) => (
             <button key={c.label} type="button" lang={lang} onClick={() => (setTrail((t) => [...t, at]), setAt(c.to))} className="rounded-xl border border-line px-3.5 py-3 text-left text-[15px] hover:bg-surface">
               {c.label}
@@ -34,16 +36,12 @@ export function Adventure({ body, lang }: { body: AdventureBody; lang: string })
         </div>
       ) : (
         <div className="mt-5 flex items-center gap-3" role="status">
-          <p className="font-serif text-lg font-semibold">The end.</p>
-          <Button variant="secondary" size="sm" icon={RotateCcw} onClick={() => (setAt(body.start), setTrail([]))}>
-            Play again
-          </Button>
+          <p className="font-serif text-lg font-semibold"><UiText source={'The end.'} /></p>
+          <Button variant="secondary" size="sm" icon={RotateCcw} onClick={() => (setAt(body.start), setTrail([]))}><UiText source={'Play again'} /></Button>
         </div>
       )}
       {trail.length > 0 && scene.choices.length > 0 && (
-        <button type="button" onClick={() => (setAt(trail[trail.length - 1]), setTrail((t) => t.slice(0, -1)))} className="mt-3 text-[13px] text-ink-faint underline underline-offset-4 hover:text-ink">
-          Go back one step
-        </button>
+        <button type="button" onClick={() => (setAt(trail[trail.length - 1]), setTrail((t) => t.slice(0, -1)))} className="mt-3 text-[13px] text-ink-faint underline underline-offset-4 hover:text-ink"><UiText source={'Go back one step'} /></button>
       )}
     </>
   );
@@ -56,7 +54,7 @@ export function Course({ body, lang, onDeck }: { body: CourseBody; lang: string;
       <ol className="mt-4 space-y-5">
         {body.lessons.map((l, i) => (
           <li key={l.title} className="rounded-2xl border border-line/70 p-4">
-            <p className="text-[12px] font-bold tracking-wide text-ink-faint uppercase">Lesson {i + 1}</p>
+            <p className="text-[12px] font-bold tracking-wide text-ink-faint uppercase"><UiText source={'Lesson {0}'} values={[i + 1]} /></p>
             <h3 className="font-serif text-xl font-semibold">{l.title}</h3>
             <p className="mt-1 text-[14px] text-ink-soft">{l.goal}</p>
             <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
@@ -73,9 +71,7 @@ export function Course({ body, lang, onDeck }: { body: CourseBody; lang: string;
               <SpeakButton lang={lang} text={l.sentence} size={15} />
               {l.sentence}
             </p>
-            <Button className="mt-3" size="sm" variant="secondary" icon={Layers} onClick={() => onDeck(`${body.title}: ${l.title}`, l.words.map((w, k) => ({ ...w, example: k === 0 ? l.sentence : undefined })))}>
-              A deck of this lesson
-            </Button>
+            <Button className="mt-3" size="sm" variant="secondary" icon={Layers} onClick={() => onDeck(`${body.title}: ${l.title}`, l.words.map((w, k) => ({ ...w, example: k === 0 ? l.sentence : undefined })))}><UiText source={'A deck of this lesson'} /></Button>
           </li>
         ))}
       </ol>
@@ -111,11 +107,9 @@ export function Drill({ body, lang }: { body: DrillBody; lang: string }) {
         })}
       </ol>
       <div className="mt-5 flex items-center gap-3">
-        <Button onClick={() => setShown(true)}>Check</Button>
+        <Button onClick={() => setShown(true)}><UiText source={'Check'} /></Button>
         {shown && (
-          <p className="font-serif text-lg font-semibold" role="status">
-            {right} of {body.items.length} right
-          </p>
+          <p className="font-serif text-lg font-semibold" role="status"><UiText source={'{0} of {1} right'} values={[right, body.items.length]} /></p>
         )}
       </div>
     </>
@@ -137,13 +131,7 @@ export function PronunciationList({ body, lang }: { body: PronunciationBody; lan
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-[13.5px] text-ink-soft">
-        Say them aloud, then{' '}
-        <Link to="/cursus/sounds" className="font-semibold text-ink underline decoration-line-strong underline-offset-4">
-          record yourself in Cursus › Sounds
-        </Link>{' '}
-        and see them beside a real speaker’s.
-      </p>
+      <p className="mt-4 text-[13.5px] text-ink-soft"><UiText source={'Say them aloud, then{0}{1}{2}and see them beside a real speaker’s.'} values={[' ', <Link to="/cursus/sounds" className="font-semibold text-ink underline decoration-line-strong underline-offset-4"><UiText source={'record yourself in Cursus › Sounds'} /></Link>, ' ']} /></p>
     </>
   );
 }

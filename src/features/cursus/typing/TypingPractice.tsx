@@ -168,7 +168,7 @@ export function TypingPractice({ lang, data, saved }: { lang: string; data: Typi
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="flex items-center gap-1.5 text-[14px] font-semibold"><UiText source={'{0} A new letter joins: {1}'} values={[<Sparkles size={15} className="text-accent-text" aria-hidden />, unlocked]} /></p>
-                  <p className="mt-0.5 text-[13px] text-ink-soft">{howToType(layout, unlocked) ?? 'It turns up more often for a while, until it’s as quick as the rest.'}</p>
+                  <p className="mt-0.5 text-[13px] text-ink-soft">{howToType(layout, unlocked) ?? translateUi('It turns up more often for a while, until it’s as quick as the rest.')}</p>
                 </div>
                 <button type="button" onClick={() => setUnlocked(null)} className="text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'Got it'} /></button>
               </Card>

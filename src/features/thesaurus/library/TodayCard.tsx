@@ -67,7 +67,7 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
                     {s.glyph}
                   </span>
                   <span className="font-bold tabular-nums">{totals[s.key].toLocaleString()}</span>
-                  <span className="text-ink-soft">{s.label}</span>
+                  <span className="text-ink-soft"><UiText source={s.label} /></span>
                 </li>
               ))
             )}
@@ -80,20 +80,13 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
             <Link to="/thesaurus/study/all?mode=recall" className={cx(buttonClasses('primary', rail ? 'lg' : 'md'), rail && 'flex-1')}><UiText source={'{0}Study'} values={[<Layers size={18} aria-hidden />]} /></Link>
           )}
           {ludusGate ? (
-            <button type="button" onClick={ludusGate} className={ludusClass}>
-              <Puzzle size={17} aria-hidden />
-              Ludus
-              <PlusChip feature="ludus" />
-            </button>
+            <button type="button" onClick={ludusGate} className={ludusClass}><UiText source={'{0}Ludus{1}'} values={[<Puzzle size={17} aria-hidden />, <PlusChip feature="ludus" />]} /></button>
           ) : (
             <Popover
-              label="Ludus"
+              label={translateUi('Ludus')}
               placement="bottom-end"
               trigger={(props) => (
-                <button type="button" {...props} className={ludusClass}>
-                  <Puzzle size={17} aria-hidden />
-                  Ludus
-                </button>
+                <button type="button" {...props} className={ludusClass}><UiText source={'{0}Ludus'} values={[<Puzzle size={17} aria-hidden />]} /></button>
               )}
             >
               {(close) => (
@@ -103,7 +96,7 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
                       <play.icon size={17} aria-hidden className="mt-0.5 shrink-0 text-ink-soft" />
                       <span>
                         <span className="block text-[14px] font-semibold">{play.title}</span>
-                        <span className="block text-[12.5px] leading-snug text-ink-soft">{play.detail}</span>
+                        <span className="block text-[12.5px] leading-snug text-ink-soft"><UiText source={play.detail} /></span>
                       </span>
                     </Link>
                   ))}
@@ -136,7 +129,7 @@ function CatchUpOffer({ lang }: { lang: string }) {
     setBusy(true);
     try {
       const moved = await catchUp(lang, days);
-      toast(`${moved.toLocaleString()} cards spread over ${days === 1 ? 'a day' : days === 7 ? 'a week' : `${days} days`}`, { tone: 'success' });
+      toast({ source: '{0} cards spread over {1}', values: [String(moved.toLocaleString()), days === 1 ? { source: 'a day' } : days === 7 ? { source: 'a week' } : { source: '{0} days', values: [String(days)] }] }, { tone: 'success' });
     } finally {
       setBusy(false);
     }

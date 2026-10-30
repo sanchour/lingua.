@@ -125,9 +125,7 @@ function Wordmark() {
       <span className="grid size-8 place-items-center rounded-[10px] bg-[linear-gradient(135deg,#e8a0bf,#b4587e)] text-[#1a1215]" aria-hidden>
         ♪
       </span>
-      <span>
-        Sonus<span className="text-[var(--room-rose)]">+</span>
-      </span>
+      <span><UiText source={'Sonus{0}'} values={[<span className="text-[var(--room-rose)]">+</span>]} /></span>
     </span>
   );
 }
@@ -225,7 +223,7 @@ function SonusBar({ wide }: { wide: boolean }) {
             <span lang={media.lang} className="block truncate text-[14.5px] font-bold">
               {media.title}
             </span>
-            <span className="block truncate text-[12.5px] text-[var(--room-soft)]">{media.collection ?? media.artist ?? (radio ? 'Live radio' : '')}</span>
+            <span className="block truncate text-[12.5px] text-[var(--room-soft)]">{media.collection ?? media.artist ?? (radio ? translateUi('Live radio') : '')}</span>
           </span>
         </button>
         <button type="button" onClick={() => toggleSonus()} aria-label={playing ? translateUi('Pause') : translateUi('Play')} className="grid size-11 shrink-0 place-items-center rounded-full bg-[var(--room-pill)] text-[var(--room-pill-ink)] transition-transform active:scale-90">

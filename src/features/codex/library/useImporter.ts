@@ -27,7 +27,7 @@ export function useImporter(lang: string) {
       setBusy(kind);
       if (kind === 'goodreads') {
         const added = await importGoodreads(lang, chosen);
-        toast(added ? `Added ${added} books to your shelves.` : 'Those books are already on your shelves.', { tone: 'success' });
+        toast(added ? { source: 'Added {0} books to your shelves.', values: [String(added)] } : 'Those books are already on your shelves.', { tone: 'success' });
         return;
       }
       const id = kind === 'epub' ? await importEpubFile(lang, chosen) : await importTxtFile(lang, chosen);

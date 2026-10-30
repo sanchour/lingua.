@@ -65,7 +65,7 @@ export function useDeckImport(lang: string) {
     try {
       const result = await importApkg(lang, file, setApkgProgress);
       const first = result.deckIds[0];
-      toast(`Anki deck imported · ${result.cards.toLocaleString()} cards${result.media ? `, ${result.media} sounds and pictures` : ''}`, {
+      toast({ source: 'Anki deck imported · {0} cards{1}', values: [String(result.cards.toLocaleString()), result.media ? { source: ', {0} sounds and pictures', values: [String(result.media)] } : String('')] }, {
         tone: 'success',
         action: result.deckIds.length === 1 ? { label: 'Open', onClick: () => navigate(`/thesaurus/deck/${first}`) } : undefined,
       });

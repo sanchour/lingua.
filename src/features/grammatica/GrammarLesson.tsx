@@ -408,7 +408,7 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
         praise={praise}
         rightNote={rightNote}
         wrong={wrong}
-        hint={d?.kind === 'pairs' ? 'Tap one side, then its match' : lightning && d && 'options' in d ? 'Tap an answer' : undefined}
+        hint={d?.kind === 'pairs' ? translateUi('Tap one side, then its match') : lightning && d && 'options' in d ? translateUi('Tap an answer') : undefined}
         aside={
           d?.kind === 'build' ? (
             <button type="button" onClick={skipTyping} className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4"><UiText source={'{0}Can’t type this now'} values={[<Keyboard size={15} aria-hidden />]} /></button>

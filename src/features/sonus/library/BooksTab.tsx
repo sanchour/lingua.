@@ -136,7 +136,7 @@ function CourseCatalogue({ lang, name, courses, onAddOwn }: { lang: string; name
     try {
       if (c.feed) navigate(`/sonus/podcast/${await subscribe(lang, c.feed)}`);
       else if (c.archive) navigate(`/sonus/book/${await openArchiveCourse(lang, c.archive, c.name)}`);
-      toast(`${c.name} is on your shelf.`, { tone: 'success' });
+      toast({ source: '{0} is on your shelf.', values: [String(c.name)] }, { tone: 'success' });
     } catch (e) {
       toast(e instanceof Error ? e.message : 'That course couldn’t be added.', { tone: 'error' });
     } finally {
@@ -152,7 +152,7 @@ function CourseCatalogue({ lang, name, courses, onAddOwn }: { lang: string; name
         <div className="flex flex-wrap gap-2" role="group" aria-label={translateUi('Level')}>
           {levels.length > 1 && [null, ...levels].map((l) => (
             <button key={l ?? 'any'} type="button" aria-pressed={level === l} onClick={() => setLevel(l)} className={chip(level === l)}>
-              {l ?? 'Any level'}
+              {l ?? translateUi('Any level')}
             </button>
           ))}
         </div>

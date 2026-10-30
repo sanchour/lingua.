@@ -53,3 +53,10 @@ describe('Ordo groups', () => {
     expect(groupOf('reset')?.id).toBe('data');
   });
 });
+
+it('finds translated labels and keeps English search available', () => {
+  const localize = (label: string) => label === 'Theme' ? 'Tema' : label === 'Lingua in the language' ? 'Lingua en tu idioma' : label;
+  expect(searchSettings('tema', new Set(), localize)[0].label).toBe('Theme');
+  expect(searchSettings('theme', new Set(), localize)[0].label).toBe('Theme');
+  expect(searchSettings('idioma', new Set(), localize)[0].label).toBe('Lingua in the language');
+});

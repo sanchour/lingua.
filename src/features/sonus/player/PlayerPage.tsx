@@ -147,7 +147,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
     </Link>
   ) : (
     <Link to={media.feedId ? `${sonusBase()}/podcast/${media.feedId}` : '/cantus/podcasts'} className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
-      <ChevronLeft size={16} aria-hidden /> {media.feedId ? media.collection : 'Sonus'}
+      <ChevronLeft size={16} aria-hidden /> {media.feedId ? media.collection : translateUi('Sonus')}
     </Link>
   );
 
@@ -232,7 +232,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
             {bookTitle}
           </Link>
         ) : (
-          <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{media.collection ?? 'Sonus'}</p>
+          <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{media.collection ?? translateUi('Sonus')}</p>
         )}
         <MediaOptions media={media} hasTranscript={Boolean(cues?.length)} className="grid size-11 place-items-center rounded-xl text-ink-soft" />
       </header>
@@ -257,9 +257,7 @@ function SpotifyPlayer({ media, transcript }: { media: Media; transcript: Transc
   const clock = useMemo(createSpotifyClock, [media.id]);
   return (
     <>
-      <Link to={sonusHome()} className="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-ink-soft hover:text-ink">
-        <ChevronLeft size={16} aria-hidden /> Sonus
-      </Link>
+      <Link to={sonusHome()} className="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-ink-soft hover:text-ink"><UiText source={'{0} Sonus'} values={[<ChevronLeft size={16} aria-hidden />]} /></Link>
       <div className="mx-auto max-w-3xl">
         <div className="mb-5 flex items-start gap-2">
           <div className="min-w-0 flex-1">

@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
@@ -181,8 +182,8 @@ export default function SonusPage() {
   return (
     <>
       <PageHeader
-        title={translateUi('Sonus')}
-        eyebrow={`Listen in ${getLanguage(lang)?.name ?? lang}`}
+        title={translateUi('Sonus')} englishTitle={'Sonus'}
+        eyebrow={translateUi('Listen in {0}', [translateUi(getLanguage(lang)?.name ?? lang)])} englishEyebrow={interpolate('Listen in {0}', [getLanguage(lang)?.name ?? lang])}
         actions={<AddMenu lang={lang} onDiscover={findPodcasts} label="Add" />}
       />
 

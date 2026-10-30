@@ -67,7 +67,7 @@ export default function OrdoPage() {
   if (!groupId && settings.ui.settingsMode === 'simple') {
     return (
       <>
-        <PageHeader title={translateUi('Settings')} actions={<ModeSwitch />} />
+        <PageHeader title={translateUi('Settings')} englishTitle={'Settings'} actions={<ModeSwitch />} />
         <SimpleSettings />
       </>
     );
@@ -85,14 +85,14 @@ function Overview({ hidden }: { hidden: ReadonlySet<SectionId> }) {
   const summaries = useSummaries(hidden);
   return (
     <>
-      <PageHeader title={translateUi('Settings')} />
+      <PageHeader title={translateUi('Settings')} englishTitle={'Settings'} />
       <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Search settings')} className="mb-6" />
       {query.trim() ? (
         <SearchResults query={query} hidden={hidden} />
       ) : (
         <div className="space-y-6">
           <GroupList title={translateUi('Your learning')} groups={GROUPS.filter((g) => LEARNING_GROUPS.includes(g.id))} summaries={summaries} />
-          <GroupList title="Lingua" groups={GROUPS.filter((g) => !LEARNING_GROUPS.includes(g.id) && !DEVELOPER_GROUPS.includes(g.id))} summaries={summaries} />
+          <GroupList title={translateUi('Lingua')} groups={GROUPS.filter((g) => !LEARNING_GROUPS.includes(g.id) && !DEVELOPER_GROUPS.includes(g.id))} summaries={summaries} />
           <GroupList title={translateUi('Developer')} groups={GROUPS.filter((g) => DEVELOPER_GROUPS.includes(g.id))} summaries={summaries} />
         </div>
       )}
@@ -130,7 +130,7 @@ function GroupPage({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySe
   const translateUi = useUi();
   return (
     <>
-      <PageHeader eyebrow="Settings" title={translateUi(group.title)} />
+      <PageHeader eyebrow={translateUi('Settings')} englishEyebrow={'Settings'} title={translateUi(group.title)} />
       <GroupSections group={group} hidden={hidden} />
     </>
   );
@@ -147,7 +147,7 @@ function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet
 
   return (
     <>
-      <PageHeader title={translateUi('Settings')} actions={<ModeSwitch />} />
+      <PageHeader title={translateUi('Settings')} englishTitle={'Settings'} actions={<ModeSwitch />} />
       <div className="grid grid-cols-[236px_minmax(0,1fr)] gap-10">
         <nav aria-label={translateUi('Settings')} className="sticky top-12 self-start">
           <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder={translateUi('Search settings')} className="mb-4" />
@@ -294,7 +294,7 @@ function SectionView({ id }: { id: SectionId }) {
 function SearchResults({ query, hidden, onPick }: { query: string; hidden: ReadonlySet<SectionId>; onPick?: () => void }) {
   const translateUi = useUi();
   const navigate = useNavigate();
-  const results = useMemo(() => searchSettings(query, hidden), [query, hidden]);
+  const results = useMemo(() => searchSettings(query, hidden, translateUi), [query, hidden, translateUi]);
   const open = (entry: SettingEntry) => {
     const group = groupOf(entry.section)!;
     onPick?.();
@@ -309,7 +309,7 @@ function SearchResults({ query, hidden, onPick }: { query: string; hidden: Reado
       {results.map((entry, i) => {
         const group = groupOf(entry.section)!;
         return (
-          <li key={`${entry.section}:$<UiText source={entry.label} />`}>
+          <li key={`${entry.section}:${entry.label}`}>
             <button type="button" onClick={() => open(entry)} className="flex w-full items-center gap-3.5 pl-4 text-left transition-colors hover:bg-sunken/60 active:bg-sunken">
               <Tile group={group} />
               <span className={cx('flex min-h-[60px] min-w-0 flex-1 items-center gap-2 py-2.5 pr-3.5', i > 0 && 'border-t border-line/70')}>

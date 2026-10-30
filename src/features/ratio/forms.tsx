@@ -31,7 +31,7 @@ export function Chips<T extends string>({ value, options, onChange }: { value: T
           onClick={() => onChange(o.id)}
           className={cx('h-9 rounded-full border px-3.5 text-[13px] font-semibold transition-colors', value === o.id ? 'border-ink bg-inverse text-on-inverse' : 'border-line text-ink-soft hover:text-ink')}
         >
-          {o.label}
+          <UiText source={o.label} />
         </button>
       ))}
     </div>
@@ -41,7 +41,7 @@ export function Chips<T extends string>({ value, options, onChange }: { value: T
 function Field({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>
-      <span className={label}>{title}</span>
+      <span className={label}><UiText source={title} /></span>
       {children}
     </div>
   );
@@ -74,7 +74,7 @@ export function LogTimeDrawer({ open, onClose, languages, lang }: { open: boolea
   }, [open, lang]);
   const save = async () => {
     await logStudy({ lang: target, activity, minutes, at: fromLocalInput(date), note: note.trim() || undefined });
-    toast(`Logged ${minutes} minutes of ${langName(target)}.`, { tone: 'success' });
+    toast({ source: 'Logged {0} minutes of {1}.', values: [String(minutes), String(langName(target))] }, { tone: 'success' });
     onClose();
   };
   return (

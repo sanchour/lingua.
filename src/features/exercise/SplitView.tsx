@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 // Mark the breaks (6-9): a line (or a word) written without its spaces, to be cut where the words (or the syllables) begin, after
 // hearing it. Tap between two letters to put a break there or take it away. This is where connected speech is hardest to hear.
 import { useEffect, useState } from 'react';
@@ -44,7 +45,7 @@ export function SplitView({ raw, lang, value, onChange, phase, prompt }: { raw: 
           </span>
         ))}
       </p>
-      <p className="mt-3 text-[13px] text-ink-faint">Tap between letters to cut. Your line: <span lang={lang} className="font-serif text-[15px] text-ink">{value || raw}</span></p>
+      <p className="mt-3 text-[13px] text-ink-faint"><UiText source={'Tap between letters to cut. Your line: {0}'} values={[<span lang={lang} className="font-serif text-[15px] text-ink">{value || raw}</span>]} /></p>
     </div>
   );
 }

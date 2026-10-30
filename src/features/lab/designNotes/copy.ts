@@ -14,7 +14,7 @@ export async function copyNotes(notes: DesignNote[]): Promise<string | null> {
   const markdown = toMarkdown(notes, { version: __APP_VERSION__, at: Date.now() });
   try {
     await navigator.clipboard.writeText(markdown);
-    toast(`${notes.length} ${notes.length === 1 ? 'note' : 'notes'} copied as Markdown. Paste them into Claude.`, { tone: 'success' });
+    toast({ source: '{0} {1} copied as Markdown. Paste them into Claude.', values: [String(notes.length), notes.length === 1 ? { source: 'note' } : { source: 'notes' }] }, { tone: 'success' });
     return null;
   } catch {
     toast('The clipboard said no, so the notes are shown to select and copy.');

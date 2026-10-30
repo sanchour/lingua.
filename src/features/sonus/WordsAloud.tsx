@@ -1,3 +1,5 @@
+import { interpolate } from '@/core/i18n/messages';
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Your words, read aloud (6-9): the words you are learning, said one after another with their meaning and a sentence, in the
 // device's voice, for the commute or the washing-up. It works from the cards you have, so it changes as they do.
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -18,6 +20,7 @@ const pause = (ms: number, stopped: () => boolean) => new Promise<void>((resolve
 });
 
 export default function WordsAloud() {
+  const translateUi = useUi();
   const { language } = useApp();
   const lang = language.id;
   const { speaker, flag } = useSpeaker(lang);
@@ -69,15 +72,13 @@ export default function WordsAloud() {
   const noVoice = !speaker || speaker.kind === 'none';
   return (
     <>
-      <BackLink to="/sonus">Sonus</BackLink>
-      <PageHeader title="Your words, read aloud" eyebrow={`Listen to ${getLanguage(lang)?.name ?? lang}`} />
+      <BackLink to="/sonus"><UiText source={'Sonus'} /></BackLink>
+      <PageHeader title={translateUi('Your words, read aloud')} englishTitle={'Your words, read aloud'} eyebrow={translateUi('Listen to {0}', [translateUi(getLanguage(lang)?.name ?? lang)])} englishEyebrow={interpolate('Listen to {0}', [getLanguage(lang)?.name ?? lang])} />
       {!notes ? null : !notes.length ? (
-        <p className="max-w-xl text-[15px] text-ink-soft">You have no words with a meaning yet. Mark words while you read, or make a deck, and they will be read to you here.</p>
+        <p className="max-w-xl text-[15px] text-ink-soft"><UiText source={'You have no words with a meaning yet. Mark words while you read, or make a deck, and they will be read to you here.'} /></p>
       ) : (
         <div className="mx-auto max-w-xl py-6 text-center">
-          <p className="text-[13px] text-ink-faint">
-            {at + 1} of {notes.length}
-          </p>
+          <p className="text-[13px] text-ink-faint"><UiText source={'{0} of {1}'} values={[at + 1, notes.length]} /></p>
           <p lang={lang} className="mt-4 font-serif text-5xl">
             {note?.term}
           </p>
@@ -88,17 +89,17 @@ export default function WordsAloud() {
             </p>
           )}
           <div className="mt-8 flex items-center justify-center gap-3">
-            <button type="button" aria-label="Previous word" onClick={() => (playing ? void play(Math.max(0, at - 1)) : setAt(Math.max(0, at - 1)))} className="grid size-12 place-items-center rounded-full text-ink-soft hover:bg-surface">
+            <button type="button" aria-label={translateUi('Previous word')} onClick={() => (playing ? void play(Math.max(0, at - 1)) : setAt(Math.max(0, at - 1)))} className="grid size-12 place-items-center rounded-full text-ink-soft hover:bg-surface">
               <SkipBack size={22} aria-hidden />
             </button>
-            <button type="button" aria-label={playing ? 'Pause' : 'Play'} disabled={noVoice} onClick={() => (playing ? stop() : void play(at))} className="grid size-16 place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-2 disabled:opacity-40">
+            <button type="button" aria-label={playing ? translateUi('Pause') : translateUi('Play')} disabled={noVoice} onClick={() => (playing ? stop() : void play(at))} className="grid size-16 place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-2 disabled:opacity-40">
               {playing ? <Pause size={26} className="fill-current" aria-hidden /> : <Play size={26} className="translate-x-0.5 fill-current" aria-hidden />}
             </button>
-            <button type="button" aria-label="Next word" onClick={() => (playing ? void play(Math.min(notes.length - 1, at + 1)) : setAt(Math.min(notes.length - 1, at + 1)))} className="grid size-12 place-items-center rounded-full text-ink-soft hover:bg-surface">
+            <button type="button" aria-label={translateUi('Next word')} onClick={() => (playing ? void play(Math.min(notes.length - 1, at + 1)) : setAt(Math.min(notes.length - 1, at + 1)))} className="grid size-12 place-items-center rounded-full text-ink-soft hover:bg-surface">
               <SkipForward size={22} aria-hidden />
             </button>
           </div>
-          {noVoice && <p className="mt-4 text-[13px] text-accent-text">There is no voice for this language on this device. Add one in Settings › Voices.</p>}
+          {noVoice && <p className="mt-4 text-[13px] text-accent-text"><UiText source={'There is no voice for this language on this device. Add one in Settings › Voices.'} /></p>}
         </div>
       )}
     </>

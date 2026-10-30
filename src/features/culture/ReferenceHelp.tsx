@@ -55,7 +55,7 @@ function ReferenceForm({ lang, initialText, block }: { lang: string; initialText
     <CultureWordNotes lang={lang} word={text} />
     {block && <p className="text-sm text-ink-soft"><UiText source={'Needs Max and a key in Settings › AI. Culture notes work without Max.'} /></p>}
     <Button disabled={Boolean(block) || !text.trim()} loading={busy} onClick={() => void ask()}><UiText source={'Ask Max to explain'} /></Button>
-    {error && <p role="alert" className="text-sm text-accent-text">{error}</p>}
+    {error && <p role="alert" className="text-sm text-accent-text"><UiText source={error ?? ''} /></p>}
     {answer && <ReferenceResult answer={answer} lang={lang} />}
   </div>;
 }

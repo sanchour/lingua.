@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -26,11 +27,11 @@ export function SettingsSection({
         {alone ? (
           <header className="mb-4">
             <h2 id={`${id}-title`} className="sr-only">
-              {title}
+              <UiText source={title} />
             </h2>
             {description && (
               <p data-hint="" className="text-sm leading-snug text-ink-soft">
-                {description}
+                <UiText source={description} />
               </p>
             )}
           </header>
@@ -41,7 +42,7 @@ export function SettingsSection({
             </span>
             <div className="min-w-0 pt-0.5">
               <h2 id={`${id}-title`} className="font-serif text-xl leading-tight font-semibold">
-                {title}
+                <UiText source={title} />
               </h2>
               {description && (
                 <p data-hint="" className="mt-1 text-sm leading-snug text-ink-soft">
