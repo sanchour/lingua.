@@ -7,6 +7,7 @@ import { MARK_LABEL, marksOf } from '@/core/script/marks';
 import type { MarkItem, MarkKind } from '@/core/script/marks';
 import { shuffle } from '@/core/srs/ludus';
 import { Card, Segmented } from '@/design/primitives';
+import { StrokeOrder } from './StrokeOrder';
 import { cx } from '@/lib/cx';
 
 /** Whether a language has anything on the Marks tab. */
@@ -17,6 +18,7 @@ export function MarksTab() {
   const lang = language.id;
   return (
     <div className="space-y-8">
+      {lang === 'zh' && <Hanzi />}
       <Converter lang={lang} />
       {marksOf(lang).length > 0 && <Drill lang={lang} />}
     </div>
@@ -105,5 +107,18 @@ function Questions({ lang, items }: { lang: string; items: MarkItem[] }) {
         </div>
       )}
     </div>
+  );
+}
+
+function Hanzi() {
+  const [char, setChar] = useState('好');
+  return (
+    <Card>
+      <h2 className="font-serif text-[22px] font-semibold">Stroke order</h2>
+      <p className="mt-1 mb-4 max-w-2xl text-[14px] text-ink-soft">Type a character to see it drawn stroke by stroke and what it is built from; tap a part to open it. Covers the 1,000 most used characters.</p>
+      <input aria-label="Character" lang="zh" value={char} maxLength={2} onChange={(e) => setChar([...e.target.value].slice(-1).join(''))} className="mb-4 w-24 rounded-2xl border border-line bg-surface p-2 text-center font-serif text-[32px]" />
+      {char && <StrokeOrder char={char} onOpen={setChar} />}
+      <p className="mt-4 text-[12.5px] text-ink-faint">Stroke shapes from Make Me a Hanzi (Arphic Public License); parts and meanings from its dictionary (LGPL).</p>
+    </Card>
   );
 }

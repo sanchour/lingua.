@@ -1664,8 +1664,8 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1291` Alphabet trainer
 - [x] `F1292` Letter recognition
 - [x] `F1293` Handwriting practice
-- [ ] `F1294` Stroke-order animations · **6-23** · partly there
-- [ ] `F1295` Character decomposition · **6-23**
+- [x] `F1294` Stroke-order animations · **6-23** · partly there
+- [x] `F1295` Character decomposition · **6-23**
 - [x] `F1296` Character recognition quizzes
 - [x] `F1297` Keyboard training
 - [x] `F1298` Transliteration · **6-23** · partly there

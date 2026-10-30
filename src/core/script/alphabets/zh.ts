@@ -135,10 +135,11 @@ const script: Script = {
       url: 'https://en.wikipedia.org/wiki/Standard_Chinese_phonology',
     },
     { name: 'Lin, The Sounds of Chinese' },
+    { name: 'Make Me a Hanzi (stroke order)', url: 'https://github.com/skishore/makemeahanzi' },
   ],
   notes: [
     'Tone changes (a third tone before another becomes a second; 不 and 一 change too) are not drilled yet.',
-    'Writing practice checks a character’s shape, not its stroke order: that needs stroke data (Make Me a Hanzi) Lingua doesn’t have yet.',
+    'Writing practice checks a character’s shape, not its stroke order (the order is shown and animated in each character’s sheet and in Marks).',
   ],
 };
 
