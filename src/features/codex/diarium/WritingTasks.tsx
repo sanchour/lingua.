@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { WRITING_TASKS, writingTaskPrompt } from '@/core/journal/tasks';
@@ -6,6 +7,7 @@ import { Button, Card, Select } from '@/design/primitives';
 import { toast } from '@/state/ui';
 
 export function WritingTasks({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const [id, setId] = useState(WRITING_TASKS[0].id);
   const [details, setDetails] = useState('');
   const [starting, setStarting] = useState(false);
@@ -24,15 +26,12 @@ export function WritingTasks({ lang }: { lang: string }) {
   };
   return (
     <Card className="space-y-4 p-5">
-      <h2 className="font-serif text-xl font-semibold">Writing tasks</h2>
-      <Select label="Choose a task" value={id} onChange={setId} options={WRITING_TASKS.map((t) => ({ value: t.id, label: t.title }))} />
+      <h2 className="font-serif text-xl font-semibold"><UiText source={'Writing tasks'} /></h2>
+      <Select label={translateUi('Choose a task')} value={id} onChange={setId} options={WRITING_TASKS.map((t) => ({ value: t.id, label: t.title }))} />
       <p className="text-sm leading-relaxed text-ink-soft">{task.brief}</p>
-      <p className="text-[13px] text-ink-faint">Aim for {task.minWords}–{task.maxWords} words. A guide, not a limit.</p>
-      <label className="block text-[13px] font-semibold text-ink-soft">
-        Your material (optional)
-        <textarea value={details} onChange={(e) => setDetails(e.target.value)} rows={3} placeholder="Words, notes, an article or a paragraph to work from…" className="mt-2 w-full resize-y rounded-xl border border-line bg-raised p-3 font-normal text-ink" />
-      </label>
-      <Button onClick={() => void start()} loading={starting}>Start this task</Button>
+      <p className="text-[13px] text-ink-faint"><UiText source={'Aim for {0}–{1} words. A guide, not a limit.'} values={[task.minWords, task.maxWords]} /></p>
+      <label className="block text-[13px] font-semibold text-ink-soft"><UiText source={'Your material (optional){0}'} values={[<textarea value={details} onChange={(e) => setDetails(e.target.value)} rows={3} placeholder={translateUi('Words, notes, an article or a paragraph to work from…')} className="mt-2 w-full resize-y rounded-xl border border-line bg-raised p-3 font-normal text-ink" />]} /></label>
+      <Button onClick={() => void start()} loading={starting}><UiText source={'Start this task'} /></Button>
     </Card>
   );
 }

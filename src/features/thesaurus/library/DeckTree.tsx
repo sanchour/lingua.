@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -97,19 +98,19 @@ export function DeckTree({ decks, folders, counts, lastStudied, actions, order }
 }
 
 function ColumnHeads() {
+  const translateUi = useUi();
   return (
     <div className={cx(ROW, 'pr-3.25 pb-2 pl-4 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase')} aria-hidden>
-      <span className="pl-12">Deck</span>
-      <span className="text-center" title="New · learning · to review">
-        Today
-      </span>
-      <span className="hidden lg:block">Last studied</span>
+      <span className="pl-12"><UiText source={'Deck'} /></span>
+      <span className="text-center" title={translateUi('New · learning · to review')}><UiText source={'Today'} /></span>
+      <span className="hidden lg:block"><UiText source={'Last studied'} /></span>
       <span />
     </div>
   );
 }
 
 function FolderGroup({ folder, depth, decks, folders, counts, lastStudied, actions, order }: TreeProps & { folder: Folder; depth: number }) {
+  const translateUi = useUi();
   const [open, setOpen] = useState(true);
   const children = folders.filter((f) => f.parentId === folder.id).sort(order.folders);
   const own = decks.filter((d) => d.folderId === folder.id).sort(order.decks);
@@ -135,7 +136,7 @@ function FolderGroup({ folder, depth, decks, folders, counts, lastStudied, actio
           <span className="min-w-0">
             <span className="block truncate text-[15px] font-semibold">{folder.name}</span>
             <span className="block truncate text-[12.5px] text-ink-faint">
-              {empty ? 'Empty' : `${inside.length} ${inside.length === 1 ? 'deck' : 'decks'} · ${cardCount(total)}`}
+              {empty ? translateUi('Empty') : `${inside.length} ${inside.length === 1 ? 'deck' : 'decks'} · ${cardCount(total)}`}
             </span>
           </span>
         </button>
@@ -213,10 +214,7 @@ function DeckRow({ deck, counts, last, depth, folders, actions, path }: RowProps
         <span className="text-[13px] text-ink-soft transition-opacity duration-150 group-focus-within:opacity-0 group-hover:opacity-0">{studiedAgo(last)}</span>
         {/* Hover (or tab into the row) for the two ways to study it. */}
         <span className="absolute inset-y-0 right-0 z-[1] flex items-center gap-1 opacity-0 transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100">
-          <Link to={`/thesaurus/study/${deck.id}?mode=recall`} className={buttonClasses('primary', 'sm')}>
-            <Layers size={15} aria-hidden />
-            Study
-          </Link>
+          <Link to={`/thesaurus/study/${deck.id}?mode=recall`} className={buttonClasses('primary', 'sm')}><UiText source={'{0}Study'} values={[<Layers size={15} aria-hidden />]} /></Link>
           <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'sm')}>
             <Puzzle size={15} aria-hidden />
             Ludus
@@ -289,9 +287,7 @@ function DeckCard({ deck, counts, last, folders, actions }: Omit<RowProps, 'dept
           <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} aria-label="Ludus" title="Ludus" className={cx(buttonClasses('ghost', 'sm'), 'w-8 px-0 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100')}>
             <Puzzle size={15} aria-hidden />
           </Link>
-          <Link to={`/thesaurus/study/${deck.id}?mode=recall`} className={buttonClasses('secondary', 'sm')}>
-            Study
-          </Link>
+          <Link to={`/thesaurus/study/${deck.id}?mode=recall`} className={buttonClasses('secondary', 'sm')}><UiText source={'Study'} /></Link>
         </span>
       </div>
     </div>
@@ -300,22 +296,24 @@ function DeckCard({ deck, counts, last, folders, actions }: Omit<RowProps, 'dept
 
 /** What the learner marked a deck as: pinned, important, put away. */
 function DeckMarks({ deck }: { deck: Deck }) {
+  const translateUi = useUi();
   return (
     <>
-      {deck.pinned ? <Pin size={12} aria-label="Pinned" className="ml-1.5 inline text-ink-faint" /> : null}
-      {deck.archived ? <span className="ml-1.5 rounded-full bg-sunken px-1.5 py-px align-middle text-[10.5px] font-semibold text-ink-faint">Archived</span> : null}
+      {deck.pinned ? <Pin size={12} aria-label={translateUi('Pinned')} className="ml-1.5 inline text-ink-faint" /> : null}
+      {deck.archived ? <span className="ml-1.5 rounded-full bg-sunken px-1.5 py-px align-middle text-[10.5px] font-semibold text-ink-faint"><UiText source={'Archived'} /></span> : null}
     </>
   );
 }
 
 function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; actions: TreeActions }) {
+  const translateUi = useUi();
   return (
-    <Popover label="Deck options" placement="bottom-end" className="w-60" trigger={(props) => <OptionsButton {...props} label={`${deck.name} options`} />}>
+    <Popover label={translateUi('Deck options')} placement="bottom-end" className="w-60" trigger={(props) => <OptionsButton {...props} label={translateUi('{0} options', [deck.name])} />}>
       {(close) => (
         <div className="space-y-0.5">
           <MenuItem
             icon={Pencil}
-            label="Rename"
+            label={translateUi('Rename')}
             onClick={() => {
               close();
               actions.ask({ title: 'Rename deck', label: 'Name', initial: deck.name, confirm: 'Rename', onConfirm: (name) => updateDeck(deck.id, { name }) });
@@ -323,7 +321,7 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
           />
           <MenuItem
             icon={folders.length ? FolderInput : FolderPlus}
-            label="Move to folder…"
+            label={translateUi('Move to folder…')}
             onClick={() => {
               close();
               actions.move({ title: `Move “${deck.name}”`, folders, current: deck.folderId, onConfirm: (folderId) => updateDeck(deck.id, { folderId }) });
@@ -331,13 +329,13 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
           />
           {actions.byHand && (
             <>
-              <MenuItem icon={ArrowUp} label="Move up" onClick={() => (close(), void shiftDeck(deck.id, -1))} />
-              <MenuItem icon={ArrowDown} label="Move down" onClick={() => (close(), void shiftDeck(deck.id, 1))} />
+              <MenuItem icon={ArrowUp} label={translateUi('Move up')} onClick={() => (close(), void shiftDeck(deck.id, -1))} />
+              <MenuItem icon={ArrowDown} label={translateUi('Move down')} onClick={() => (close(), void shiftDeck(deck.id, 1))} />
             </>
           )}
           <MenuItem
             icon={deck.pinned ? PinOff : Pin}
-            label={deck.pinned ? 'Unpin' : 'Pin to the top'}
+            label={deck.pinned ? translateUi('Unpin') : translateUi('Pin to the top')}
             onClick={() => {
               close();
               void setDeckFlag(deck.id, 'pinned', !deck.pinned);
@@ -345,7 +343,7 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
           />
           <MenuItem
             icon={Copy}
-            label="Duplicate"
+            label={translateUi('Duplicate')}
             onClick={() => {
               close();
               void duplicateDeck(deck.id);
@@ -353,7 +351,7 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
           />
           <MenuItem
             icon={Combine}
-            label="Merge into…"
+            label={translateUi('Merge into…')}
             onClick={() => {
               close();
               actions.merge(deck);
@@ -361,7 +359,7 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
           />
           <MenuItem
             icon={deck.archived ? ArchiveRestore : Archive}
-            label={deck.archived ? 'Bring back' : 'Archive'}
+            label={deck.archived ? translateUi('Bring back') : translateUi('Archive')}
             onClick={() => {
               close();
               void setDeckFlag(deck.id, 'archived', !deck.archived);
@@ -369,7 +367,7 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
           />
           <MenuItem
             icon={Trash2}
-            label="Delete deck"
+            label={translateUi('Delete deck')}
             danger
             onClick={() => {
               close();
@@ -391,14 +389,15 @@ function DeckMenu({ deck, folders, actions }: { deck: Deck; folders: Folder[]; a
 }
 
 function FolderMenu({ folder, folders, actions }: { folder: Folder; folders: Folder[]; actions: TreeActions }) {
+  const translateUi = useUi();
   return (
-    <Popover label="Folder options" placement="bottom-end" className="w-60" trigger={(props) => <OptionsButton {...props} label={`${folder.name} options`} />}>
+    <Popover label={translateUi('Folder options')} placement="bottom-end" className="w-60" trigger={(props) => <OptionsButton {...props} label={translateUi('{0} options', [folder.name])} />}>
       {(close) => (
         <div className="space-y-0.5">
-          <MenuItem icon={Plus} label="New deck here" onClick={() => (close(), actions.newDeck(folder.id))} />
+          <MenuItem icon={Plus} label={translateUi('New deck here')} onClick={() => (close(), actions.newDeck(folder.id))} />
           <MenuItem
             icon={Pencil}
-            label="Rename"
+            label={translateUi('Rename')}
             onClick={() => {
               close();
               actions.ask({ title: 'Rename folder', label: 'Name', initial: folder.name, confirm: 'Rename', onConfirm: (name) => updateFolder(folder.id, { name }) });
@@ -406,7 +405,7 @@ function FolderMenu({ folder, folders, actions }: { folder: Folder; folders: Fol
           />
           <MenuItem
             icon={FolderInput}
-            label="Move into…"
+            label={translateUi('Move into…')}
             onClick={() => {
               close();
               actions.move({ title: `Move “${folder.name}”`, folders, current: folder.parentId, exclude: folder.id, onConfirm: (parentId) => updateFolder(folder.id, { parentId }) });
@@ -414,7 +413,7 @@ function FolderMenu({ folder, folders, actions }: { folder: Folder; folders: Fol
           />
           <MenuItem
             icon={Trash2}
-            label="Delete folder"
+            label={translateUi('Delete folder')}
             danger
             onClick={() => {
               close();

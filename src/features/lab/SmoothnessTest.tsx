@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { motion, MotionConfig } from 'motion/react';
 import { Gauge } from 'lucide-react';
@@ -12,6 +13,7 @@ const CARDS = Array.from({ length: 24 }, (_, i) => i);
 
 /** Runs a 5-second animation workload typical of Lingua (springs, transforms, opacity) and measures it. */
 export function SmoothnessTest({ perfHud }: { perfHud: boolean }) {
+  const translateUi = useUi();
   const [running, setRunning] = useState(false);
   const [stats, setStats] = useState<FrameStats | null>(null);
   const record = useLabReport((s) => s.record);
@@ -30,7 +32,7 @@ export function SmoothnessTest({ perfHud }: { perfHud: boolean }) {
   const pass = stats && stats.fps >= Math.min(58, stats.refreshHz * 0.95);
 
   return (
-    <LabCard icon={Gauge} title="Smoothness" description="A 5-second animation benchmark. Goal: 60 fps or the screen’s full rate.">
+    <LabCard icon={Gauge} title={translateUi('Smoothness')} description={translateUi('A 5-second animation benchmark. Goal: 60 fps or the screen’s full rate.')}>
       {/* The benchmark is started on purpose, so it animates even with Reduced Motion on. */}
       <MotionConfig reducedMotion="never">
         <div className="relative h-36 overflow-hidden rounded-2xl border border-line bg-bg">
@@ -48,9 +50,9 @@ export function SmoothnessTest({ perfHud }: { perfHud: boolean }) {
       </MotionConfig>
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <Button onClick={() => void run()} loading={running}>
-          {running ? 'Measuring…' : 'Run benchmark'}
+          {running ? translateUi('Measuring…') : translateUi('Run benchmark')}
         </Button>
-        {stats && <Badge tone={pass ? 'sage' : 'accent'}>{pass ? 'Smooth' : 'Below target'}</Badge>}
+        {stats && <Badge tone={pass ? 'sage' : 'accent'}>{pass ? translateUi('Smooth') : translateUi('Below target')}</Badge>}
       </div>
       {stats && (
         <div className="mt-4">
@@ -66,7 +68,7 @@ export function SmoothnessTest({ perfHud }: { perfHud: boolean }) {
         </div>
       )}
       <div className="mt-3 border-t border-line">
-        <ToggleRow title="FPS monitor" description="Keep a live readout on screen while using the app." checked={perfHud} onChange={(on) => void patchSetting('ui', { perfHud: on })} />
+        <ToggleRow title={translateUi('FPS monitor')} description={translateUi('Keep a live readout on screen while using the app.')} checked={perfHud} onChange={(on) => void patchSetting('ui', { perfHud: on })} />
       </div>
     </LabCard>
   );

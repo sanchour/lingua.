@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router';
@@ -98,7 +99,7 @@ function Lesson({ unitId, lesson }: { unitId: UnitId; lesson: LessonId }) {
           title: 'Unit done',
           note: (
             <>
-              <p>You can now:</p>
+              <p><UiText source={'You can now:'} /></p>
               <ul className="mt-1 space-y-0.5">
                 {unit.canDo.map((c) => (
                   <li key={c}>✓ {c}</li>

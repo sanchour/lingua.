@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { AlertTriangle, ArrowRight, Check, Flame, Layers, Sparkles } from 'lucide-react';
@@ -33,6 +34,7 @@ export function TopicMap({
   weakSpots = [],
   nextId,
 }: TopicMapProps) {
+  const translateUi = useUi();
   const [selectedTopicId, setSelectedTopicId] = useState<string | null>(nextId ?? null);
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [levelFilter, setLevelFilter] = useState<'all' | GrammarLevel>('all');
@@ -159,9 +161,7 @@ export function TopicMap({
                 ? 'bg-ink text-bg'
                 : 'bg-sunken text-ink-soft hover:bg-sunken/80',
             )}
-          >
-            All levels
-          </button>
+          ><UiText source={'All levels'} /></button>
           {LEVELS.map((lvl) => (
             <button
               key={lvl}
@@ -190,10 +190,7 @@ export function TopicMap({
                 ? 'border-amber-500/40 bg-amber-500/15 text-amber-600 dark:text-amber-400'
                 : 'border-line text-ink-soft hover:bg-sunken',
             )}
-          >
-            <Flame size={15} aria-hidden />
-            Error heatmap
-          </button>
+          ><UiText source={'{0}Error heatmap'} values={[<Flame size={15} aria-hidden />]} /></button>
         </div>
       </div>
 
@@ -204,7 +201,7 @@ export function TopicMap({
           style={{ width: `${width}px`, height: `${height}px`, minWidth: '100%' }}
           className="select-none"
           role="img"
-          aria-label="Grammar topic map"
+          aria-label={translateUi('Grammar topic map')}
         >
           <defs>
             {/* Standard Edge Arrow */}
@@ -254,9 +251,7 @@ export function TopicMap({
                   y={35}
                   textAnchor="middle"
                   className="fill-ink-faint text-[13px] font-bold tracking-widest uppercase"
-                >
-                  Level {lvl}
-                </text>
+                >{translateUi('Level {0}', [lvl])}</text>
               </g>
             );
           })}
@@ -410,21 +405,13 @@ export function TopicMap({
                   {selectedTopic.category ?? 'grammar'}
                 </span>
                 {learnedIds.has(selectedTopic.id) && (
-                  <span className="flex items-center gap-1 text-[11.5px] font-semibold text-sage-text">
-                    <Check size={13} strokeWidth={2.6} />
-                    Learned
-                  </span>
+                  <span className="flex items-center gap-1 text-[11.5px] font-semibold text-sage-text"><UiText source={'{0}Learned'} values={[<Check size={13} strokeWidth={2.6} />]} /></span>
                 )}
                 {nextId === selectedTopic.id && (
-                  <span className="flex items-center gap-1 text-[11.5px] font-semibold text-accent-text">
-                    <Sparkles size={13} />
-                    Next recommended
-                  </span>
+                  <span className="flex items-center gap-1 text-[11.5px] font-semibold text-accent-text"><UiText source={'{0}Next recommended'} values={[<Sparkles size={13} />]} /></span>
                 )}
                 {selectedState && selectedState.step > 1 && !learnedIds.has(selectedTopic.id) && (
-                  <span className="text-[12px] font-medium text-ink-soft">
-                    Step {selectedState.step - 1} of 5
-                  </span>
+                  <span className="text-[12px] font-medium text-ink-soft"><UiText source={'Step {0} of 5'} values={[selectedState.step - 1]} /></span>
                 )}
               </div>
 
@@ -438,7 +425,7 @@ export function TopicMap({
               to={`/cursus/grammatica/${selectedTopic.id}`}
               className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-[14px] font-semibold text-bg transition-opacity hover:opacity-90"
             >
-              <span>Go to lesson</span>
+              <span><UiText source={'Go to lesson'} /></span>
               <ArrowRight size={16} />
             </Link>
           </div>
@@ -446,9 +433,7 @@ export function TopicMap({
           {/* Prerequisites and Dependents Links */}
           <div className="mt-5 grid gap-4 border-t border-line/60 pt-4 sm:grid-cols-2">
             <div>
-              <span className="text-[11.5px] font-bold uppercase tracking-wider text-ink-faint">
-                Prerequisites (Before this)
-              </span>
+              <span className="text-[11.5px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Prerequisites (Before this)'} /></span>
               {selectedPrereqs.length > 0 ? (
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {selectedPrereqs.map((p) => {
@@ -472,14 +457,12 @@ export function TopicMap({
                   })}
                 </div>
               ) : (
-                <p className="mt-1 text-[13px] text-ink-faint">No prerequisites · Foundation topic</p>
+                <p className="mt-1 text-[13px] text-ink-faint"><UiText source={'No prerequisites · Foundation topic'} /></p>
               )}
             </div>
 
             <div>
-              <span className="text-[11.5px] font-bold uppercase tracking-wider text-ink-faint">
-                Unlocks (Dependents)
-              </span>
+              <span className="text-[11.5px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Unlocks (Dependents)'} /></span>
               {selectedDependents.length > 0 ? (
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {selectedDependents.map((d) => (
@@ -495,7 +478,7 @@ export function TopicMap({
                   ))}
                 </div>
               ) : (
-                <p className="mt-1 text-[13px] text-ink-faint">Terminal topic or advanced rule</p>
+                <p className="mt-1 text-[13px] text-ink-faint"><UiText source={'Terminal topic or advanced rule'} /></p>
               )}
             </div>
           </div>
@@ -504,9 +487,7 @@ export function TopicMap({
           {(errorMap.get(selectedTopic.id) ?? 0) > 0 && (
             <div className="mt-4 flex items-center gap-2 rounded-xl bg-amber-500/10 p-3 text-[13.5px] text-amber-700 dark:text-amber-400">
               <AlertTriangle size={16} className="shrink-0" />
-              <span>
-                <strong>{errorMap.get(selectedTopic.id)} mistakes</strong> recorded on this topic in exercises. A review is recommended.
-              </span>
+              <span><UiText source={'{0} recorded on this topic in exercises. A review is recommended.'} values={[<strong><UiText source={'{0} mistakes'} values={[errorMap.get(selectedTopic.id)]} /></strong>]} /></span>
             </div>
           )}
         </div>

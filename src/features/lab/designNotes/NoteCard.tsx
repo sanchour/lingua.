@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import { Check, ChevronDown, Eye, Minimize2, Maximize2, Plus, Trash2, X } from 'lucide-react';
 import { Button } from '@/design/primitives';
@@ -74,6 +75,7 @@ export function NoteCard({
   onDone: (id: string, done: boolean) => void;
   onDelete: (id: string) => void;
 }) {
+  const translateUi = useUi();
   const note = editor.kind === 'edit' ? editor.note : null;
   const [chain, setChain] = useState({ trail: editor.trail, level: editor.level });
   const el = chain.trail[chain.level] ?? null;
@@ -147,7 +149,7 @@ export function NoteCard({
     <div
       {...{ [MARK]: '' }}
       role="dialog"
-      aria-label="Design note"
+      aria-label={translateUi('Design note')}
       className="fixed z-[121] flex w-[360px] flex-col overflow-hidden rounded-2xl border border-line bg-raised shadow-elev-3"
       style={{ left: place.left, top: place.top, maxHeight: Math.min(560, window.innerHeight - 24) }}
       onKeyDown={(e) => {
@@ -160,29 +162,29 @@ export function NoteCard({
       <div className="flex items-start gap-2 border-b border-line px-3 pt-3 pb-2">
         <div className="min-w-0 flex-1">
           <p className="truncate text-[12.5px] font-semibold">
-            {area && <span className="mr-1 rounded bg-accent-soft px-1 text-[11px] text-accent-text">Area in</span>}
+            {area && <span className="mr-1 rounded bg-accent-soft px-1 text-[11px] text-accent-text"><UiText source={'Area in'} /></span>}
             {name || 'Element'}
           </p>
           <p className="truncate text-[11.5px] text-ink-faint">
-            {el ? `${facts?.size} · ` : 'Not on this page now · '}
+            {el ? `${facts?.size} · ` : translateUi('Not on this page now · ')}
             {room} · {path}
           </p>
         </div>
         <div className="flex shrink-0 gap-0.5">
-          <button type="button" onClick={() => move('up')} disabled={!el} title="The element around this one (↑ while picking)" className="grid size-7 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink disabled:opacity-40">
+          <button type="button" onClick={() => move('up')} disabled={!el} title={translateUi('The element around this one (↑ while picking)')} className="grid size-7 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink disabled:opacity-40">
             <Maximize2 size={14} aria-hidden />
-            <span className="sr-only">Bigger</span>
+            <span className="sr-only"><UiText source={'Bigger'} /></span>
           </button>
-          <button type="button" onClick={() => move('down')} disabled={!el} title="An element inside this one (↓ while picking)" className="grid size-7 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink disabled:opacity-40">
+          <button type="button" onClick={() => move('down')} disabled={!el} title={translateUi('An element inside this one (↓ while picking)')} className="grid size-7 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink disabled:opacity-40">
             <Minimize2 size={14} aria-hidden />
-            <span className="sr-only">Smaller</span>
+            <span className="sr-only"><UiText source={'Smaller'} /></span>
           </button>
         </div>
       </div>
 
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-3 py-3">
         <div>
-          <p className={label}>Kind</p>
+          <p className={label}><UiText source={'Kind'} /></p>
           <div className="mt-1.5 flex flex-wrap gap-1">
             {KINDS.map((k) => {
               const on = kinds.includes(k);
@@ -196,7 +198,7 @@ export function NoteCard({
         </div>
 
         <div>
-          <p className={label}>Priority</p>
+          <p className={label}><UiText source={'Priority'} /></p>
           <div className="mt-1.5 flex gap-1">
             {PRIORITIES.map((p) => {
               const on = priority === p;
@@ -214,29 +216,25 @@ export function NoteCard({
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={3}
-          placeholder="What should change here?"
-          aria-label="Note"
+          placeholder={translateUi('What should change here?')}
+          aria-label={translateUi('Note')}
           className="w-full resize-y rounded-xl border border-line-strong bg-bg px-3 py-2 text-[14px] leading-snug outline-none placeholder:text-ink-faint focus:border-accent"
         />
 
         {original !== null && (
           <div>
             <div className="flex items-center justify-between">
-              <p className={label}>Words</p>
+              <p className={label}><UiText source={'Words'} /></p>
               {words === null ? (
-                <button type="button" onClick={() => setWords(original)} className="text-[12px] font-semibold text-accent-text hover:underline">
-                  Edit the words
-                </button>
+                <button type="button" onClick={() => setWords(original)} className="text-[12px] font-semibold text-accent-text hover:underline"><UiText source={'Edit the words'} /></button>
               ) : (
-                <button type="button" onClick={() => setWords(null)} className="text-[12px] font-semibold text-ink-faint hover:text-ink">
-                  Keep them
-                </button>
+                <button type="button" onClick={() => setWords(null)} className="text-[12px] font-semibold text-ink-faint hover:text-ink"><UiText source={'Keep them'} /></button>
               )}
             </div>
             {words !== null && (
               <>
-                <p className="mt-1 line-clamp-2 text-[12px] text-ink-faint">Now: “{original}”</p>
-                <textarea value={words} onChange={(e) => setWords(e.target.value)} rows={2} aria-label="New words" className="mt-1 w-full resize-y rounded-xl border border-line-strong bg-bg px-3 py-2 text-[13.5px] leading-snug outline-none focus:border-accent" />
+                <p className="mt-1 line-clamp-2 text-[12px] text-ink-faint"><UiText source={'Now: “{0}”'} values={[original]} /></p>
+                <textarea value={words} onChange={(e) => setWords(e.target.value)} rows={2} aria-label={translateUi('New words')} className="mt-1 w-full resize-y rounded-xl border border-line-strong bg-bg px-3 py-2 text-[13.5px] leading-snug outline-none focus:border-accent" />
               </>
             )}
           </div>
@@ -244,11 +242,9 @@ export function NoteCard({
 
         <div>
           <div className="flex items-center justify-between gap-2">
-            <p className={label}>Tweaks</p>
+            <p className={label}><UiText source={'Tweaks'} /></p>
             {tweaks.length > 0 && el && (
-              <button type="button" aria-pressed={previewing} onClick={() => setPreviewing((on) => !on)} className={cx('inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-semibold', previewing ? 'bg-accent-fill text-on-accent' : 'text-accent-text hover:bg-accent-soft')}>
-                <Eye size={13} aria-hidden /> Preview
-              </button>
+              <button type="button" aria-pressed={previewing} onClick={() => setPreviewing((on) => !on)} className={cx('inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-semibold', previewing ? 'bg-accent-fill text-on-accent' : 'text-accent-text hover:bg-accent-soft')}><UiText source={'{0} Preview'} values={[<Eye size={13} aria-hidden />]} /></button>
             )}
           </div>
           {tweaks.length > 0 && (
@@ -259,18 +255,16 @@ export function NoteCard({
                     {t.prop}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate text-[11px] text-ink-faint" title={t.now}>
-                      now {t.now || '—'}
-                    </p>
+                    <p className="truncate text-[11px] text-ink-faint" title={t.now}><UiText source={'now {0}'} values={[t.now || '—']} /></p>
                     <input
                       value={t.want}
                       onChange={(e) => setTweaks((list) => list.map((x, j) => (j === i ? { ...x, want: e.target.value } : x)))}
-                      placeholder="wanted, e.g. 17 or --ink"
-                      aria-label={`Wanted ${t.prop}`}
+                      placeholder={translateUi('wanted, e.g. 17 or --ink')}
+                      aria-label={translateUi('Wanted {0}', [t.prop])}
                       className="w-full rounded-lg border border-line-strong bg-bg px-2 py-1 font-mono text-[12px] outline-none focus:border-accent"
                     />
                   </div>
-                  <button type="button" onClick={() => setTweaks((list) => list.filter((_, j) => j !== i))} aria-label={`Remove ${t.prop}`} className="grid size-6 place-items-center rounded-md text-ink-faint hover:bg-surface hover:text-ink">
+                  <button type="button" onClick={() => setTweaks((list) => list.filter((_, j) => j !== i))} aria-label={translateUi('Remove {0}', [t.prop])} className="grid size-6 place-items-center rounded-md text-ink-faint hover:bg-surface hover:text-ink">
                     <X size={13} aria-hidden />
                   </button>
                 </li>
@@ -279,8 +273,8 @@ export function NoteCard({
           )}
           <label className="mt-1.5 inline-flex items-center gap-1 rounded-lg border border-dashed border-line-strong px-2 py-1 text-[12px] font-semibold text-ink-soft focus-within:border-accent hover:text-ink">
             <Plus size={13} aria-hidden />
-            <select value="" onChange={(e) => addTweak(e.target.value)} aria-label="Add a tweak" className="bg-transparent outline-none">
-              <option value="">Add a tweak</option>
+            <select value="" onChange={(e) => addTweak(e.target.value)} aria-label={translateUi('Add a tweak')} className="bg-transparent outline-none">
+              <option value="">{translateUi('Add a tweak')}</option>
               {TWEAKS.filter((t) => !tweaks.some((x) => x.prop === t.name)).map((t) => (
                 <option key={t.name} value={t.name}>
                   {t.name}
@@ -292,9 +286,7 @@ export function NoteCard({
 
         {facts && (
           <details className="group rounded-xl bg-surface/70 px-3 py-2 text-[12px]">
-            <summary className="flex cursor-pointer list-none items-center gap-1 font-semibold text-ink-soft">
-              <ChevronDown size={13} className="transition-transform group-open:rotate-180" aria-hidden /> What it is
-            </summary>
+            <summary className="flex cursor-pointer list-none items-center gap-1 font-semibold text-ink-soft"><UiText source={'{0} What it is'} values={[<ChevronDown size={13} className="transition-transform group-open:rotate-180" aria-hidden />]} /></summary>
             <dl className="mt-2 grid grid-cols-[72px_1fr] gap-x-2 gap-y-1">
               {(
                 [
@@ -325,23 +317,17 @@ export function NoteCard({
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5 border-t border-line px-3 py-2.5">
-        <Button size="sm" onClick={save} disabled={!canSave}>
-          Save
-        </Button>
-        <Button size="sm" variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
+        <Button size="sm" onClick={save} disabled={!canSave}><UiText source={'Save'} /></Button>
+        <Button size="sm" variant="ghost" onClick={onCancel}><UiText source={'Cancel'} /></Button>
         {note && (
           <>
             <Button size="sm" variant="ghost" icon={Check} onClick={() => onDone(note.id, !note.done)}>
-              {note.done ? 'Open again' : 'Done'}
+              {note.done ? translateUi('Open again') : translateUi('Done')}
             </Button>
-            <Button size="sm" variant="ghost" icon={Trash2} onClick={() => onDelete(note.id)}>
-              Delete
-            </Button>
+            <Button size="sm" variant="ghost" icon={Trash2} onClick={() => onDelete(note.id)}><UiText source={'Delete'} /></Button>
           </>
         )}
-        {!note && <span className="ml-auto text-[11px] text-ink-faint">Ctrl Enter saves</span>}
+        {!note && <span className="ml-auto text-[11px] text-ink-faint"><UiText source={'Ctrl Enter saves'} /></span>}
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState, useEffect } from 'react';
 import {
   AlertTriangle,
@@ -31,6 +32,7 @@ const DIMENSION_TABS: Array<{ id: 'all' | ContrastDimension; label: string }> = 
 ];
 
 export function ContrastTableView() {
+  const translateUi = useUi();
   const [selectedPairKey, setSelectedPairKey] = useState<string>('en-es');
   const [activeDimension, setActiveDimension] = useState<'all' | ContrastDimension>('all');
 
@@ -63,9 +65,7 @@ export function ContrastTableView() {
       <div className="flex flex-wrap items-center justify-between gap-3 bg-sand-50/70 p-3 rounded-xl border border-sand-200/60 dark:bg-sand-900/30 dark:border-sand-800/60">
         <div className="flex items-center gap-2">
           <Globe2 className="w-4 h-4 text-terracotta-600 dark:text-terracotta-400" />
-          <span className="text-xs font-semibold text-sand-700 dark:text-sand-300">
-            Language Pair:
-          </span>
+          <span className="text-xs font-semibold text-sand-700 dark:text-sand-300"><UiText source={'Language Pair:'} /></span>
         </div>
 
         <div className="flex items-center gap-1.5 flex-wrap">
@@ -93,7 +93,7 @@ export function ContrastTableView() {
       <Card className="p-5 space-y-2 bg-sand-50/60 border-sand-200/80 dark:bg-sand-900/30 dark:border-sand-800/60">
         <div className="flex items-center gap-2 text-xs font-semibold text-sand-700 dark:text-sand-300">
           <Compass className="w-4 h-4 text-terracotta-600" />
-          <span>Contrastive Overview: {currentPair.title}</span>
+          <span><UiText source={'Contrastive Overview: {0}'} values={[currentPair.title]} /></span>
         </div>
         <p className="text-xs text-sand-600 dark:text-sand-400 leading-relaxed font-serif">
           {currentPair.overview}
@@ -125,9 +125,7 @@ export function ContrastTableView() {
         ))}
 
         {filteredItems.length === 0 && (
-          <Card className="p-8 text-center text-sand-500">
-            No contrast entries in this category for {currentPair.title}. Select "All Dimensions" to see available points.
-          </Card>
+          <Card className="p-8 text-center text-sand-500"><UiText source={'No contrast entries in this category for {0}. Select "All Dimensions" to see available points.'} values={[currentPair.title]} /></Card>
         )}
       </div>
 
@@ -136,26 +134,22 @@ export function ContrastTableView() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-semibold text-sand-800 dark:text-sand-200">
             <FileEdit className="w-4 h-4 text-terracotta-600" />
-            <span>Your Personal Contrast Notes on {currentPair.title}</span>
+            <span><UiText source={'Your Personal Contrast Notes on {0}'} values={[currentPair.title]} /></span>
           </div>
           {saveStatus === 'saved' && (
             <Badge tone="sage">
-              <span className="flex items-center gap-1 text-[10px]">
-                <Check className="w-3 h-3" /> Saved to notebook
-              </span>
+              <span className="flex items-center gap-1 text-[10px]"><UiText source={'{0} Saved to notebook'} values={[<Check className="w-3 h-3" />]} /></span>
             </Badge>
           )}
         </div>
 
-        <p className="text-xs text-sand-500 font-serif">
-          Keep your own comparative rules, mnemonic associations, and notes on tricky traps between these two languages.
-        </p>
+        <p className="text-xs text-sand-500 font-serif"><UiText source={'Keep your own comparative rules, mnemonic associations, and notes on tricky traps between these two languages.'} /></p>
 
         <textarea
           rows={3}
           value={noteContent}
           onChange={(e) => setNoteContent(e.target.value)}
-          placeholder={`Write personal notes on ${currentPair.title}...`}
+          placeholder={translateUi('Write personal notes on {0}...', [currentPair.title])}
           className="w-full p-3 font-serif text-sm rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-terracotta-500/30 focus:border-terracotta-500 dark:border-sand-700 dark:bg-sand-950 dark:text-sand-100"
         />
 
@@ -165,9 +159,7 @@ export function ContrastTableView() {
             size="sm"
             onClick={handleSaveNote}
             disabled={saveStatus === 'saving'}
-          >
-            Save Note
-          </Button>
+          ><UiText source={'Save Note'} /></Button>
         </div>
       </Card>
     </div>
@@ -210,9 +202,7 @@ function ContrastCard({ item }: { item: ContrastItem }) {
                 "{item.lang1.example}"
               </div>
               {item.lang1.literal && (
-                <div className="text-[11px] italic text-sand-400 mt-0.5">
-                  Lit: {item.lang1.literal}
-                </div>
+                <div className="text-[11px] italic text-sand-400 mt-0.5"><UiText source={'Lit: {0}'} values={[item.lang1.literal]} /></div>
               )}
             </div>
           )}
@@ -232,9 +222,7 @@ function ContrastCard({ item }: { item: ContrastItem }) {
                 "{item.lang2.example}"
               </div>
               {item.lang2.literal && (
-                <div className="text-[11px] italic text-sand-400 mt-0.5">
-                  Lit: {item.lang2.literal}
-                </div>
+                <div className="text-[11px] italic text-sand-400 mt-0.5"><UiText source={'Lit: {0}'} values={[item.lang2.literal]} /></div>
               )}
             </div>
           )}
@@ -254,17 +242,17 @@ function ContrastCard({ item }: { item: ContrastItem }) {
         <div className="space-y-3 pt-2">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-rose-800 dark:text-rose-300">
             <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-            <span>High-Risk False Friends:</span>
+            <span><UiText source={'High-Risk False Friends:'} /></span>
           </div>
 
           <div className="overflow-x-auto rounded-xl border border-sand-200 dark:border-sand-800">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-sand-100/70 text-sand-700 font-mono text-[11px] uppercase dark:bg-sand-900/60 dark:text-sand-300">
-                  <th className="p-2.5 border-b border-sand-200 dark:border-sand-800">Foreign Word</th>
-                  <th className="p-2.5 border-b border-sand-200 dark:border-sand-800">Looks Like</th>
-                  <th className="p-2.5 border-b border-sand-200 dark:border-sand-800">Actually Means</th>
-                  <th className="p-2.5 border-b border-sand-200 dark:border-sand-800">To Say What You Meant</th>
+                  <th className="p-2.5 border-b border-sand-200 dark:border-sand-800"><UiText source={'Foreign Word'} /></th>
+                  <th className="p-2.5 border-b border-sand-200 dark:border-sand-800"><UiText source={'Looks Like'} /></th>
+                  <th className="p-2.5 border-b border-sand-200 dark:border-sand-800"><UiText source={'Actually Means'} /></th>
+                  <th className="p-2.5 border-b border-sand-200 dark:border-sand-800"><UiText source={'To Say What You Meant'} /></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-sand-200/60 dark:divide-sand-800/60 font-serif">

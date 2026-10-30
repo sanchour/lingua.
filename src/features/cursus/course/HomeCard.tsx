@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { Link } from 'react-router';
 import { ArrowRight, Route } from 'lucide-react';
 import { LESSONS, OUTLINE } from '@/core/course/outline';
@@ -20,21 +21,15 @@ export function CourseHomeCard({ lang }: { lang: string }) {
   return (
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="inline-flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
-          <Route size={14} aria-hidden /> Course
-        </p>
-        <Link to="/cursus/course" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
-          {doneUnits} of {OUTLINE.length} units <ArrowRight size={14} aria-hidden />
-        </Link>
+        <p className="inline-flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase"><UiText source={'{0} Course'} values={[<Route size={14} aria-hidden />]} /></p>
+        <Link to="/cursus/course" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline"><UiText source={'{0} of {1} units {2}'} values={[doneUnits, OUTLINE.length, <ArrowRight size={14} aria-hidden />]} /></Link>
       </div>
       <Link to={lessonPath(next.unit, next.lesson)} className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
         <span className="grid size-12 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-text">
           <Icon size={21} aria-hidden />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[12.5px] font-semibold text-ink-faint">
-            Unit {OUTLINE.indexOf(unit) + 1} · {LESSONS[next.lesson].title} · {next.done} of {next.of} done
-          </span>
+          <span className="block text-[12.5px] font-semibold text-ink-faint"><UiText source={'Unit {0} · {1} · {2} of {3} done'} values={[OUTLINE.indexOf(unit) + 1, LESSONS[next.lesson].title, next.done, next.of]} /></span>
           <span className="block font-serif text-[17px] leading-snug font-semibold">{unit.title}</span>
           <span className="mt-0.5 line-clamp-2 block text-[13.5px] leading-snug text-ink-soft">{LESSONS[next.lesson].aim}.</span>
         </span>

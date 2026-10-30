@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import type { DragEvent } from 'react';
 import { Archive, ArchiveRestore, BookCheck, Download, Share } from 'lucide-react';
@@ -23,6 +24,7 @@ const COUNT_LABELS: Array<[string, string]> = [
 ];
 
 export function BackupSection({ meta }: { meta: Settings['meta'] }) {
+  const translateUi = useUi();
   const { layout } = useLayout();
   const [includeMedia, setIncludeMedia] = useState(true);
   const [includeKeys, setIncludeKeys] = useState(false);
@@ -102,8 +104,8 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
     <SettingsSection
       id="backup"
       icon={Archive}
-      title="Backup & move devices"
-      description="Make a backup on one device and restore it on the other to carry your words, decks and progress across."
+      title={translateUi('Backup & move devices')}
+      description={translateUi('Make a backup on one device and restore it on the other to carry your words, decks and progress across.')}
     >
       <div
         onDragOver={(e) => {
@@ -117,37 +119,29 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
         <div className="flex flex-wrap gap-2">
           {ready ? (
             <>
-              <Button icon={Share} onClick={() => void share(ready)}>
-                Share backup
-              </Button>
-              <Button variant="secondary" icon={Download} onClick={() => downloadFile(ready)}>
-                Save file
-              </Button>
+              <Button icon={Share} onClick={() => void share(ready)}><UiText source={'Share backup'} /></Button>
+              <Button variant="secondary" icon={Download} onClick={() => downloadFile(ready)}><UiText source={'Save file'} /></Button>
             </>
           ) : (
-            <Button icon={Archive} onClick={() => void create()} loading={busy === 'export'}>
-              Create backup
-            </Button>
+            <Button icon={Archive} onClick={() => void create()} loading={busy === 'export'}><UiText source={'Create backup'} /></Button>
           )}
-          <Button variant="secondary" icon={ArchiveRestore} loading={busy === 'read'} onClick={() => void pickFile('.zip,application/zip').then(open)}>
-            Restore from file
-          </Button>
+          <Button variant="secondary" icon={ArchiveRestore} loading={busy === 'read'} onClick={() => void pickFile('.zip,application/zip').then(open)}><UiText source={'Restore from file'} /></Button>
         </div>
         <p className="mt-3 text-[13px] text-ink-soft">
-          {meta.lastBackupAt ? `Last backup: ${formatDateTime(meta.lastBackupAt)}.` : 'No backup yet.'}
+          {meta.lastBackupAt ? translateUi('Last backup: {0}.', [formatDateTime(meta.lastBackupAt)]) : translateUi('No backup yet.')}
           {layout === 'wide' && ' You can also drop a backup file here.'}
         </p>
       </div>
 
       <div className="mt-2 divide-y divide-line">
-        <ToggleRow title="Include audio, video and images" description="Bigger file; turn off to move only words and progress." checked={includeMedia} onChange={setIncludeMedia} />
-        <ToggleRow title="Include API keys" description="Off by default so keys never leave this device by accident." checked={includeKeys} onChange={setIncludeKeys} />
+        <ToggleRow title={translateUi('Include audio, video and images')} description={translateUi('Bigger file; turn off to move only words and progress.')} checked={includeMedia} onChange={setIncludeMedia} />
+        <ToggleRow title={translateUi('Include API keys')} description={translateUi('Off by default so keys never leave this device by accident.')} checked={includeKeys} onChange={setIncludeKeys} />
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl bg-sunken/50 p-4">
         <div className="min-w-[14rem] flex-1">
-          <p className="font-semibold">Books for Goodreads</p>
-          <p data-hint="" className="text-[13px] text-ink-soft">The books you finished in Lingua as a CSV. On Goodreads: My Books → Import and export.</p>
+          <p className="font-semibold"><UiText source={'Books for Goodreads'} /></p>
+          <p data-hint="" className="text-[13px] text-ink-soft"><UiText source={'The books you finished in Lingua as a CSV. On Goodreads: My Books → Import and export.'} /></p>
         </div>
         <Button
           variant="secondary"
@@ -158,32 +152,24 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
             downloadFile(file);
             toast(`Saved ${count} ${count === 1 ? 'book' : 'books'} for Goodreads.`, { tone: 'success' });
           }}
-        >
-          Export finished books
-        </Button>
+        ><UiText source={'Export finished books'} /></Button>
       </div>
 
       <Dialog
         open={incoming !== null}
         onClose={() => busy !== 'restore' && setIncoming(null)}
-        title="Restore this backup?"
+        title={translateUi('Restore this backup?')}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setIncoming(null)} disabled={busy === 'restore'}>
-              Cancel
-            </Button>
-            <Button variant="danger" onClick={() => void restore('replace')} disabled={busy === 'restore'}>
-              Replace
-            </Button>
-            <Button onClick={() => void restore('merge')} loading={busy === 'restore'} data-autofocus>
-              Merge
-            </Button>
+            <Button variant="ghost" onClick={() => setIncoming(null)} disabled={busy === 'restore'}><UiText source={'Cancel'} /></Button>
+            <Button variant="danger" onClick={() => void restore('replace')} disabled={busy === 'restore'}><UiText source={'Replace'} /></Button>
+            <Button onClick={() => void restore('merge')} loading={busy === 'restore'} data-autofocus><UiText source={'Merge'} /></Button>
           </>
         }
       >
         {incoming && (
           <>
-            <p>Made {formatDateTime(incoming.manifest.exportedAt)}.</p>
+            <p><UiText source={'Made {0}.'} values={[formatDateTime(incoming.manifest.exportedAt)]} /></p>
             <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-ink">
               {COUNT_LABELS.map(([key, label]) => (
                 <li key={key}>
@@ -191,10 +177,7 @@ export function BackupSection({ meta }: { meta: Settings['meta'] }) {
                 </li>
               ))}
             </ul>
-            <p className="mt-3">
-              <strong className="text-ink">Merge</strong> keeps the newest version of everything from both devices.{' '}
-              <strong className="text-ink">Replace</strong> discards what is on this device first.
-            </p>
+            <p className="mt-3"><UiText source={'{0} keeps the newest version of everything from both devices.{1}{2} discards what is on this device first.'} values={[<strong className="text-ink"><UiText source={'Merge'} /></strong>, ' ', <strong className="text-ink"><UiText source={'Replace'} /></strong>]} /></p>
           </>
         )}
       </Dialog>

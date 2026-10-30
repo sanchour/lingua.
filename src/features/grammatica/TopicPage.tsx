@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router';
 import { Bookmark, Check, FileText, Globe, X } from 'lucide-react';
@@ -22,6 +23,7 @@ import { TenseTimeline, WordOrderVisualizer, GrammarDecisionTree, SentenceStruct
  * tables, comparisons, prerequisites, and personal notebook notes.
  */
 export default function TopicPage() {
+  const translateUi = useUi();
   const { topicId = '' } = useParams();
   const { language } = useApp();
   const lang = language.id;
@@ -80,10 +82,10 @@ export default function TopicPage() {
               : 'border-line bg-surface text-ink-soft hover:border-line-strong hover:text-ink',
           )}
           aria-pressed={isBookmarked}
-          title={isBookmarked ? 'Remove bookmark' : 'Bookmark this topic'}
+          title={isBookmarked ? translateUi('Remove bookmark') : translateUi('Bookmark this topic')}
         >
           <Bookmark size={15} fill={isBookmarked ? 'currentColor' : 'none'} aria-hidden />
-          <span>{isBookmarked ? 'Bookmarked' : 'Bookmark'}</span>
+          <span>{isBookmarked ? translateUi('Bookmarked') : translateUi('Bookmark')}</span>
         </button>
       </div>
 
@@ -93,7 +95,7 @@ export default function TopicPage() {
       {/* Prerequisites: Before this */}
       {prereqs.length > 0 && (
         <div className="mt-5 rounded-2xl border border-line/70 bg-surface/70 p-4">
-          <p className="text-[12px] font-bold tracking-wide uppercase text-ink-faint">Before this: Recommended foundations</p>
+          <p className="text-[12px] font-bold tracking-wide uppercase text-ink-faint"><UiText source={'Before this: Recommended foundations'} /></p>
           <div className="mt-2.5 flex flex-wrap gap-2">
             {prereqs.map((p) => {
               const done = learned.has(p.id);
@@ -118,7 +120,7 @@ export default function TopicPage() {
 
       <div className="mt-8 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="min-w-0 max-w-3xl space-y-8">
-          <Section title="See it first">
+          <Section title={translateUi('See it first')}>
             <Card className="divide-y divide-line/60 p-0">
               {opening.map((ex) => (
                 <div key={ex.s} className="px-4 py-4 sm:px-5">
@@ -129,16 +131,16 @@ export default function TopicPage() {
           </Section>
 
           {/* The rule with in-language or side-by-side reading */}
-          <Section title="The rule">
+          <Section title={translateUi('The rule')}>
             {topic.targetLangRule && topic.targetLangRule.length > 0 && (
               <div className="mb-4">
                 <Segmented<'en' | 'target' | 'both'>
-                  label="Explanation language"
+                  label={translateUi('Explanation language')}
                   value={ruleMode}
                   onChange={setRuleMode}
                   options={[
-                    { value: 'en', label: 'English' },
-                    { value: 'both', label: 'Side by side' },
+                    { value: 'en', label: translateUi('English') },
+                    { value: 'both', label: translateUi('Side by side') },
                     { value: 'target', label: `In ${info?.name ?? 'language'}` },
                   ]}
                 />
@@ -156,7 +158,7 @@ export default function TopicPage() {
                   ))}
                 </div>
                 <div className="space-y-3 rounded-2xl border border-line/60 bg-surface/50 p-4 text-[15.5px] leading-relaxed text-ink-soft">
-                  <p className="text-[12px] font-bold tracking-wider uppercase text-ink-faint">English</p>
+                  <p className="text-[12px] font-bold tracking-wider uppercase text-ink-faint"><UiText source={'English'} /></p>
                   {topic.rule.map((p) => (
                     <p key={p}>
                       <Rich text={p} lang={lang} />
@@ -185,7 +187,7 @@ export default function TopicPage() {
 
           {/* Exceptions */}
           {topic.exceptions && topic.exceptions.length > 0 && (
-            <Section title="Exceptions to the rule">
+            <Section title={translateUi('Exceptions to the rule')}>
               <Card className="border-amber-500/30 bg-amber-500/5 p-4">
                 <ul className="space-y-2 text-[15px] leading-relaxed text-ink-soft">
                   {topic.exceptions.map((exc, i) => (
@@ -201,18 +203,18 @@ export default function TopicPage() {
 
           {/* Formal and informal pairs */}
           {topic.formalityPairs && topic.formalityPairs.length > 0 && (
-            <Section title="Formal and informal pairs">
+            <Section title={translateUi('Formal and informal pairs')}>
               <div className="space-y-3">
                 {topic.formalityPairs.map((pair, i) => (
                   <Card key={i} className="p-4">
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div className="rounded-xl border border-line bg-surface p-3.5">
-                        <span className="text-[11.5px] font-bold tracking-wider uppercase text-ink-faint">Formal</span>
+                        <span className="text-[11.5px] font-bold tracking-wider uppercase text-ink-faint"><UiText source={'Formal'} /></span>
                         <p className="mt-1 font-serif text-[16.5px] font-medium text-ink">{pair.formal.s}</p>
                         <p className="mt-0.5 text-[13.5px] text-ink-soft">{pair.formal.en}</p>
                       </div>
                       <div className="rounded-xl border border-line bg-surface p-3.5">
-                        <span className="text-[11.5px] font-bold tracking-wider uppercase text-ink-faint">Informal</span>
+                        <span className="text-[11.5px] font-bold tracking-wider uppercase text-ink-faint"><UiText source={'Informal'} /></span>
                         <p className="mt-1 font-serif text-[16.5px] font-medium text-ink">{pair.informal.s}</p>
                         <p className="mt-0.5 text-[13.5px] text-ink-soft">{pair.informal.en}</p>
                       </div>
@@ -226,7 +228,7 @@ export default function TopicPage() {
 
           {/* Right & wrong: common slips */}
           {topic.rightWrongPairs && topic.rightWrongPairs.length > 0 && (
-            <Section title="Right & wrong: common slips">
+            <Section title={translateUi('Right & wrong: common slips')}>
               <div className="space-y-3">
                 {topic.rightWrongPairs.map((rw, i) => (
                   <Card key={i} className="p-4">
@@ -249,7 +251,7 @@ export default function TopicPage() {
 
           {/* Regional variation notes */}
           {topic.regionalNotes && topic.regionalNotes.length > 0 && (
-            <Section title="Regional variation">
+            <Section title={translateUi('Regional variation')}>
               <div className="space-y-3">
                 {topic.regionalNotes.map((reg, i) => (
                   <Card key={i} className="p-4">
@@ -271,31 +273,31 @@ export default function TopicPage() {
 
           {/* Visual representations: timeline, word order, decision tree, sentence diagram, morphology */}
           {topic.timeline && (
-            <Section title="Timeline">
+            <Section title={translateUi('Timeline')}>
               <TenseTimeline timeline={topic.timeline} lang={lang} />
             </Section>
           )}
 
           {topic.wordOrder && (
-            <Section title="Word order">
+            <Section title={translateUi('Word order')}>
               <WordOrderVisualizer wordOrder={topic.wordOrder} lang={lang} />
             </Section>
           )}
 
           {topic.decisionTree && (
-            <Section title="Decision guide">
+            <Section title={translateUi('Decision guide')}>
               <GrammarDecisionTree node={topic.decisionTree} lang={lang} />
             </Section>
           )}
 
           {topic.sentenceDiagram && (
-            <Section title="Sentence structure">
+            <Section title={translateUi('Sentence structure')}>
               <SentenceStructureDiagram diagram={topic.sentenceDiagram} lang={lang} />
             </Section>
           )}
 
           {topic.morphology && topic.morphology.length > 0 && (
-            <Section title="Word structure & endings">
+            <Section title={translateUi('Word structure & endings')}>
               <MorphologyBreakdownView breakdowns={topic.morphology} lang={lang} />
             </Section>
           )}
@@ -307,7 +309,7 @@ export default function TopicPage() {
           )}
 
           {topic.tables && topic.tables.length > 0 && (
-            <Section title={topic.tables.length > 1 ? 'Tables' : 'Table'}>
+            <Section title={topic.tables.length > 1 ? translateUi('Tables') : translateUi('Table')}>
               <div className="grid gap-5">
                 {topic.tables.map((t, i) => (
                   <TableView key={i} table={t} lang={lang} />
@@ -324,7 +326,7 @@ export default function TopicPage() {
 
           {/* Cross-references */}
           {topic.crossReferences && topic.crossReferences.length > 0 && (
-            <Section title="Cross-references">
+            <Section title={translateUi('Cross-references')}>
               <div className="grid gap-2.5">
                 {topic.crossReferences.map((xref, i) => {
                   const refTopic = grammar ? findTopic(grammar, xref.topicId) : undefined;
@@ -342,7 +344,7 @@ export default function TopicPage() {
           )}
 
           {more.length > 0 && (
-            <Section title="More sentences">
+            <Section title={translateUi('More sentences')}>
               <Card className="divide-y divide-line/60 p-0">
                 {more.map((ex) => (
                   <div key={ex.s} className="px-4 py-3.5 sm:px-5">
@@ -354,22 +356,22 @@ export default function TopicPage() {
           )}
 
           {/* Personal note on topic (notebook) */}
-          <Section title="Your notes">
+          <Section title={translateUi('Your notes')}>
             <Card className="p-4">
               <div className="mb-2 flex items-center gap-2">
                 <FileText size={16} className="text-ink-faint" aria-hidden />
-                <span className="text-[13px] font-medium text-ink-faint">Notebook entry for this rule</span>
+                <span className="text-[13px] font-medium text-ink-faint"><UiText source={'Notebook entry for this rule'} /></span>
               </div>
               <textarea
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
                 onBlur={() => void saveGrammarNote(lang, topic.id, noteText)}
-                placeholder="A reminder, personal mnemonic, or example in your own words…"
+                placeholder={translateUi('A reminder, personal mnemonic, or example in your own words…')}
                 rows={3}
                 className="w-full resize-y rounded-xl border border-line bg-raised px-3 py-2 text-[14.5px] leading-snug outline-none placeholder:text-ink-faint focus:border-ink"
               />
               <div className="mt-2 flex items-center justify-between text-[12px] text-ink-faint">
-                <span>Saved automatically on leaving the box.</span>
+                <span><UiText source={'Saved automatically on leaving the box.'} /></span>
                 {noteText.trim() && (
                   <button
                     type="button"
@@ -378,16 +380,14 @@ export default function TopicPage() {
                       void saveGrammarNote(lang, topic.id, '');
                     }}
                     className="hover:text-ink"
-                  >
-                    Clear note
-                  </button>
+                  ><UiText source={'Clear note'} /></button>
                 )}
               </div>
             </Card>
           </Section>
 
           {related.length > 0 && (
-            <Section title="Related">
+            <Section title={translateUi('Related')}>
               <div className="flex flex-wrap gap-2">
                 {related.map((t) => (
                   <Link key={t.id} to={`/cursus/grammatica/${t.id}`} className="rounded-full border border-line px-3.5 py-1.5 text-[14px] font-semibold transition-colors hover:border-line-strong hover:bg-surface">

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { ImmersionPage } from '@/features/culture/ImmersionPage';
 import { CultureShelf } from '@/features/culture/CultureShelf';
 import { useMemo, useState } from 'react';
@@ -109,6 +110,7 @@ function Tabs({ tab }: { tab: Tab }) {
 
 /** Your guide: the note and next steps; on a wide window, the week and things to try in a side panel. */
 function GuideTab({ guide, level, lookups, onOpen }: { guide: Guide; level: Parameters<typeof stageIndex>[0]; lookups: Map<string, PickLookup>; onOpen: (pick: Pick, group: PickGroup) => void }) {
+  const translateUi = useUi();
   const inRoom = useInRoom();
   return (
     // In Mentis the room's rail takes the right; the week and things to try follow below.
@@ -116,9 +118,7 @@ function GuideTab({ guide, level, lookups, onOpen }: { guide: Guide; level: Para
       <div className="min-w-0 space-y-8">
         <Hero guide={guide} level={level} />
         <section aria-labelledby="next-title">
-          <h2 id="next-title" className="mb-4 font-serif text-[24px] leading-tight font-semibold">
-            Next for you
-          </h2>
+          <h2 id="next-title" className="mb-4 font-serif text-[24px] leading-tight font-semibold"><UiText source={'Next for you'} /></h2>
           <div className="grid gap-3 md:grid-cols-3">
             {guide.steps.map((step, i) => (
               <motion.div key={step.key} {...rise(i)} className="min-w-0">
@@ -129,7 +129,7 @@ function GuideTab({ guide, level, lookups, onOpen }: { guide: Guide; level: Para
         </section>
         <Path guide={guide} level={level} lookups={lookups} onOpen={onOpen} />
       </div>
-      <aside className="space-y-10 xl:sticky xl:top-24 xl:self-start" aria-label="Your week and things to try">
+      <aside className="space-y-10 xl:sticky xl:top-24 xl:self-start" aria-label={translateUi('Your week and things to try')}>
         <WeekPanel guide={guide} />
         <TryNow lang={guide.lang} level={level} />
       </aside>
@@ -142,9 +142,7 @@ function WeekPanel({ guide }: { guide: Guide }) {
   const most = Math.max(1, ...LANES.map((l) => guide.week[l]));
   return (
     <section aria-labelledby="week-title" className="hidden rounded-3xl border border-line/60 bg-surface p-5 xl:block">
-      <h2 id="week-title" className={label}>
-        The last seven days
-      </h2>
+      <h2 id="week-title" className={label}><UiText source={'The last seven days'} /></h2>
       <ul className="mt-4 space-y-3">
         {LANES.map((l) => {
           const Icon = LANE_ICON[l];
@@ -155,11 +153,9 @@ function WeekPanel({ guide }: { guide: Guide }) {
               <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-sunken">
                 <span className="block h-full rounded-full" style={{ width: `${(guide.week[l] / most) * 100}%`, background: LANE_HUE[l] }} />
               </span>
-              <span className="w-12 text-right text-ink-soft tabular-nums">{guide.week[l]} min</span>
+              <span className="w-12 text-right text-ink-soft tabular-nums"><UiText source={'{0} min'} values={[guide.week[l]]} /></span>
               {l === guide.steer.lane && (
-                <span className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white" style={{ background: MUNDUS }}>
-                  Next
-                </span>
+                <span className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white" style={{ background: MUNDUS }}><UiText source={'Next'} /></span>
               )}
             </li>
           );
@@ -172,30 +168,29 @@ function WeekPanel({ guide }: { guide: Guide }) {
 // ── The note and the compass ────────────────────────────────────────────────
 
 function Hero({ guide, level }: { guide: Guide; level: Parameters<typeof stageIndex>[0] }) {
+  const translateUi = useUi();
   const counts = useVocabularyCounts(guide.lang);
   const stage = STAGES[stageIndex(level)];
   return (
     <motion.section
       {...rise(0)}
-      aria-label="Your week"
+      aria-label={translateUi('Your week')}
       className="relative overflow-hidden rounded-[28px] border border-line/60 p-5 sm:p-6"
       style={{ background: `radial-gradient(120% 90% at 0% 0%, color-mix(in oklab, ${MUNDUS} 22%, transparent), transparent 60%), radial-gradient(90% 80% at 100% 100%, color-mix(in oklab, #d49b54 16%, transparent), transparent 65%), var(--color-surface)` }}
     >
       <Contours />
       <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-10">
         <div className="min-w-0 flex-1 self-stretch">
-          <p className={label} style={{ color: MUNDUS }}>
-            Mundus says
-          </p>
+          <p className={label} style={{ color: MUNDUS }}><UiText source={'Mundus says'} /></p>
           <p aria-live="polite" className="mt-2 font-serif text-[21px] leading-snug font-semibold text-ink sm:text-[25px]">
             {guide.note}
           </p>
           <ReplyBar replies={guide.replies} />
           <div className="mt-4 flex flex-wrap gap-2">
             <Chip>
-              {stage.name} · {level === 'A0' ? 'beginner' : level}
+              {stage.name} · {level === 'A0' ? translateUi('beginner') : level}
             </Chip>
-            {counts && counts.known > 0 && <Chip>{counts.known.toLocaleString('en')} words known</Chip>}
+            {counts && counts.known > 0 && <Chip><UiText source={'{0} words known'} values={[counts.known.toLocaleString('en')]} /></Chip>}
           </div>
         </div>
         <div className="text-ink">
@@ -224,6 +219,7 @@ function Contours() {
 // ── Next steps ─────────────────────────────────────────────────────────────
 
 function StepCard({ step, n, lang, done, lookup, onOpen }: { step: Step; n: number; lang: string; done: boolean; lookup?: PickLookup; onOpen: (pick: Pick, group: PickGroup) => void }) {
+  const translateUi = useUi();
   const lane: Lane | null = step.type === 'pick' || step.type === 'room' ? step.lane : null;
   const hue = lane ? LANE_HUE[lane] : step.type === 'tip' ? '#6b8e78' : MUNDUS;
   const Icon = lane ? LANE_ICON[lane] : step.type === 'tip' ? TIP_ICONS[step.tip.icon] : Sparkles;
@@ -235,20 +231,18 @@ function StepCard({ step, n, lang, done, lookup, onOpen }: { step: Step; n: numb
   const action =
     step.type === 'pick' ? (
       <button type="button" onClick={() => onOpen(step.pick, step.group)} className={cx(button, 'bg-inverse text-on-inverse')}>
-        {step.group === 'series' || step.group === 'films' ? 'Where to watch' : 'Open'} <ArrowRight size={15} aria-hidden />
+        {step.group === 'series' || step.group === 'films' ? translateUi('Where to watch') : translateUi('Open')} <ArrowRight size={15} aria-hidden />
       </button>
     ) : step.type === 'tip' ? (
       <span className="flex flex-wrap items-center gap-2">
         <button type="button" aria-pressed={done} onClick={() => void toggleChallenge(lang, step.tip.id)} className={cx(button, done ? 'bg-sage text-on-accent' : 'bg-inverse text-on-inverse')}>
-          <Check size={15} strokeWidth={2.6} aria-hidden /> {done ? 'Done today' : 'I did it'}
+          <Check size={15} strokeWidth={2.6} aria-hidden /> {done ? translateUi('Done today') : translateUi('I did it')}
         </button>
-        <Link to="/mentis/try" className="hit text-[13px] font-semibold text-ink-soft hover:text-ink">
-          How
-        </Link>
+        <Link to="/mentis/try" className="hit text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'How'} /></Link>
       </span>
     ) : (
       <Link to={step.to} className={cx(button, 'bg-inverse text-on-inverse')}>
-        {step.type === 'room' ? step.action : 'Open the topic'} <ArrowRight size={15} aria-hidden />
+        {step.type === 'room' ? step.action : translateUi('Open the topic')} <ArrowRight size={15} aria-hidden />
       </Link>
     );
 
@@ -261,7 +255,7 @@ function StepCard({ step, n, lang, done, lookup, onOpen }: { step: Step; n: numb
         <span className="text-[12px] font-bold tracking-[0.14em] uppercase" style={{ color: `color-mix(in oklab, ${hue} 85%, var(--color-ink))` }}>
           {kind}
         </span>
-        {step.minutes && <span className="ml-auto rounded-full bg-surface/80 px-2 py-0.5 text-[11.5px] font-bold text-ink-soft">{step.minutes} min</span>}
+        {step.minutes && <span className="ml-auto rounded-full bg-surface/80 px-2 py-0.5 text-[11.5px] font-bold text-ink-soft"><UiText source={'{0} min'} values={[step.minutes]} /></span>}
         <span className={cx('font-serif text-[15px] font-semibold text-ink-faint tabular-nums', !step.minutes && 'ml-auto')} aria-hidden>
           {n}
         </span>
@@ -296,9 +290,7 @@ function Path({ guide, level, lookups, onOpen }: { guide: Guide; level: Paramete
   const ahead = useMemo(() => nextLevelPicks(guide.picks, level, 4), [guide.picks, level]);
   return (
     <section aria-labelledby="path-title">
-      <h2 id="path-title" className="mb-4 font-serif text-[24px] leading-tight font-semibold">
-        Your path
-      </h2>
+      <h2 id="path-title" className="mb-4 font-serif text-[24px] leading-tight font-semibold"><UiText source={'Your path'} /></h2>
       <ol className="relative grid grid-cols-4 gap-1">
         <span className="absolute top-[11px] right-[12.5%] left-[12.5%] h-0.5 rounded-full bg-line" aria-hidden />
         <span className="absolute top-[11px] left-[12.5%] h-0.5 rounded-full" style={{ width: `${(here / 3) * 75}%`, background: MUNDUS }} aria-hidden />
@@ -316,19 +308,17 @@ function Path({ guide, level, lookups, onOpen }: { guide: Guide; level: Paramete
         ))}
       </ol>
       <p className="mt-5 text-[14.5px] leading-relaxed text-ink-soft">
-        <span className="font-semibold text-ink">Now:</span> {STAGES[here].line}
+        <span className="font-semibold text-ink"><UiText source={'Now:'} /></span> {STAGES[here].line}
         {next && (
           <>
             {' '}
-            <span className="font-semibold text-ink">At {next.from}:</span> {next.line.charAt(0).toLowerCase() + next.line.slice(1)}
+            <span className="font-semibold text-ink"><UiText source={'At {0}:'} values={[next.from]} /></span> {next.line.charAt(0).toLowerCase() + next.line.slice(1)}
           </>
         )}
       </p>
       {ahead.length > 0 && (
         <>
-          <p className={cx(label, 'mt-6 mb-3 flex items-center gap-1.5')}>
-            <Lock size={12} aria-hidden /> Further along, at {ahead[0].pick.level}: a taste
-          </p>
+          <p className={cx(label, 'mt-6 mb-3 flex items-center gap-1.5')}><UiText source={'{0} Further along, at {1}: a taste'} values={[<Lock size={12} aria-hidden />, ahead[0].pick.level]} /></p>
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {ahead.map(({ pick, group }) => {
               const poster = posterUrl(lookups.get(pickKey(pick))?.title.posterPath, 'w185');
@@ -364,6 +354,7 @@ function Path({ guide, level, lookups, onOpen }: { guide: Guide; level: Paramete
 // ── Things to try ──────────────────────────────────────────────────────────
 
 function TryNow({ lang, level }: { lang: string; level: Parameters<typeof stageIndex>[0] }) {
+  const translateUi = useUi();
   const done = useChallenges(lang);
   const today = localDateKey();
   const { now, later } = useMemo(() => tipsByReach(tipsFor(lang), level), [lang, level]);
@@ -374,12 +365,8 @@ function TryNow({ lang, level }: { lang: string; level: Parameters<typeof stageI
   return (
     <section aria-labelledby="try-title">
       <div className="mb-4 flex items-baseline gap-3">
-        <h2 id="try-title" className="min-w-0 flex-1 font-serif text-[24px] leading-tight font-semibold">
-          Things to try
-        </h2>
-        <Link to="/mentis/try" className="hit inline-flex shrink-0 items-center gap-0.5 text-[13px] font-semibold text-ink-soft hover:text-ink">
-          All of them <ChevronRight size={14} aria-hidden />
-        </Link>
+        <h2 id="try-title" className="min-w-0 flex-1 font-serif text-[24px] leading-tight font-semibold"><UiText source={'Things to try'} /></h2>
+        <Link to="/mentis/try" className="hit inline-flex shrink-0 items-center gap-0.5 text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'All of them {0}'} values={[<ChevronRight size={14} aria-hidden />]} /></Link>
       </div>
       <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
         {shown.map((t) => (
@@ -387,14 +374,15 @@ function TryNow({ lang, level }: { lang: string; level: Parameters<typeof stageI
         ))}
       </ul>
       <p className="mt-3 text-[13px] text-ink-faint">
-        {ever.size ? `${ever.size} done so far. ` : ''}
-        {later.length ? `${later.length} more open up as you go.` : 'Every one is open to you now.'}
+        {ever.size ? translateUi('{0} done so far. ', [ever.size]) : ''}
+        {later.length ? translateUi('{0} more open up as you go.', [later.length]) : translateUi('Every one is open to you now.')}
       </p>
     </section>
   );
 }
 
 function TryCard({ tip, lang, done }: { tip: Tip; lang: string; done: boolean }) {
+  const translateUi = useUi();
   const Icon = TIP_ICONS[tip.icon];
   return (
     <li className="flex items-start gap-3.5 rounded-3xl border border-line/60 bg-surface p-4">
@@ -408,7 +396,7 @@ function TryCard({ tip, lang, done }: { tip: Tip; lang: string; done: boolean })
       <button
         type="button"
         aria-pressed={done}
-        aria-label={done ? `Done today: ${tip.title}` : `I did it: ${tip.title}`}
+        aria-label={done ? translateUi('Done today: {0}', [tip.title]) : translateUi('I did it: {0}', [tip.title])}
         onClick={() => void toggleChallenge(lang, tip.id)}
         className={cx('no-callout grid size-10 shrink-0 place-items-center rounded-full border transition-colors', done ? 'border-transparent bg-sage text-on-accent' : 'border-line text-ink-faint hover:border-line-strong hover:text-ink')}
       >

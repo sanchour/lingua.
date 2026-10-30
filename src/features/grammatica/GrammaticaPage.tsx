@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, BookA, Bookmark, Check, Compass, RotateCcw, Search, X, Zap } from 'lucide-react';
@@ -29,6 +30,7 @@ type ViewMode = 'path' | 'map' | 'explainer' | 'category' | 'pos' | 'all';
  * and bookmarks.
  */
 export default function GrammaticaPage() {
+  const translateUi = useUi();
   const { language } = useApp();
   const lang = language.id;
   const info = getLanguage(lang);
@@ -75,9 +77,7 @@ export default function GrammaticaPage() {
         <>
           <LettersCard lang={lang} />
           <Card>
-            <EmptyState icon={BookA} title={`No grammar for ${info?.name ?? lang} yet`}>
-              Grammatica has topics for the main languages first. Your words, decks and the reader work as always.
-            </EmptyState>
+            <EmptyState icon={BookA} title={translateUi('No grammar for {0} yet', [info?.name ?? lang])}><UiText source={'Grammatica has topics for the main languages first. Your words, decks and the reader work as always.'} /></EmptyState>
           </Card>
         </>
       ) : (
@@ -90,14 +90,14 @@ export default function GrammaticaPage() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search topics in plain words ('when do I use the subjunctive?', 'past tense', 'articles')…"
+                placeholder={translateUi('Search topics in plain words (\'when do I use the subjunctive?\', \'past tense\', \'articles\')…')}
                 className="w-full rounded-2xl border border-line bg-surface py-2.5 pr-10 pl-10 text-[15px] leading-snug outline-none placeholder:text-ink-faint focus:border-ink"
               />
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery('')}
-                  aria-label="Clear search"
+                  aria-label={translateUi('Clear search')}
                   className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-1 text-ink-faint hover:text-ink"
                 >
                   <X size={16} />
@@ -111,16 +111,16 @@ export default function GrammaticaPage() {
               <>
                 <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                   <Segmented<ViewMode>
-                    label="View"
+                    label={translateUi('View')}
                     value={tab}
                     onChange={setTab}
                     options={[
-                      { value: 'path', label: 'Your path' },
-                      { value: 'map', label: 'Topic map' },
-                      { value: 'explainer', label: 'Sentence explainer' },
-                      { value: 'category', label: 'By category' },
-                      { value: 'pos', label: 'By part of speech' },
-                      { value: 'all', label: 'All topics' },
+                      { value: 'path', label: translateUi('Your path') },
+                      { value: 'map', label: translateUi('Topic map') },
+                      { value: 'explainer', label: translateUi('Sentence explainer') },
+                      { value: 'category', label: translateUi('By category') },
+                      { value: 'pos', label: translateUi('By part of speech') },
+                      { value: 'all', label: translateUi('All topics') },
                     ]}
                   />
                 </div>
@@ -132,13 +132,13 @@ export default function GrammaticaPage() {
                     ) : (
                       ready && (
                         <Card className="p-6">
-                          <p className="font-serif text-[20px] font-semibold">Every topic is learned.</p>
-                          <p className="mt-1 text-[14.5px] text-ink-soft">Reviews keep them fresh; a Lightning round is a good way to use them.</p>
+                          <p className="font-serif text-[20px] font-semibold"><UiText source={'Every topic is learned.'} /></p>
+                          <p className="mt-1 text-[14.5px] text-ink-soft"><UiText source={'Reviews keep them fresh; a Lightning round is a good way to use them.'} /></p>
                         </Card>
                       )
                     )}
                     <Ladder rungs={rungs} learnerLevel={grammarLevel(language.level)} picked={level} onPick={setPicked} />
-                    <ol className="mt-4 grid gap-2" aria-label={`${level} topics`}>
+                    <ol className="mt-4 grid gap-2" aria-label={translateUi('{0} topics', [level])}>
                       {path.map((stop) => (
                         <li key={stop.topic.id}>
                           <PathRow topic={stop.topic} status={stop.status} state={states.get(stop.topic.id)} />
@@ -175,7 +175,7 @@ export default function GrammaticaPage() {
               <Card className="p-4">
                 <div className="flex items-center gap-2">
                   <Bookmark size={16} className="text-accent-text" fill="currentColor" aria-hidden />
-                  <p className={eyebrow}>Bookmarks ({bookmarkedTopics.length})</p>
+                  <p className={eyebrow}><UiText source={'Bookmarks ({0})'} values={[bookmarkedTopics.length]} /></p>
                 </div>
                 <ul className="mt-2 grid gap-1">
                   {bookmarkedTopics.map((t) => (
@@ -192,15 +192,13 @@ export default function GrammaticaPage() {
             <Due due={dueCount} />
             {weak.length > 0 && (
               <Card className="p-4">
-                <p className={eyebrow}>Where it slips</p>
+                <p className={eyebrow}><UiText source={'Where it slips'} /></p>
                 <ul className="mt-2 grid gap-1">
                   {weak.map((w) => (
                     <li key={w.topic.id}>
                       <Link to={`/cursus/grammatica/${w.topic.id}`} className="flex items-center gap-2 rounded-xl px-2 py-1.5 text-[14.5px] transition-colors hover:bg-sunken">
                         <span className="min-w-0 flex-1 truncate font-semibold">{w.topic.title}</span>
-                        <span className="shrink-0 text-[12.5px] text-ink-faint">
-                          missed {w.lapses}×{w.due ? ` · ${w.due} due` : ''}
-                        </span>
+                        <span className="shrink-0 text-[12.5px] text-ink-faint"><UiText source={'missed {0}×{1}'} values={[w.lapses, w.due ? ` · ${w.due} due` : '']} /></span>
                       </Link>
                     </li>
                   ))}
@@ -217,20 +215,19 @@ export default function GrammaticaPage() {
 }
 
 function SearchResults({ query, results, states }: { query: string; results: ReturnType<typeof searchTopics>; states: Map<string, TopicState> }) {
+
   if (results.length === 0) {
     return (
       <Card className="p-6 text-center">
-        <p className="font-serif text-[18px] font-semibold">No topics match &quot;{query}&quot;</p>
-        <p className="mt-1 text-[14px] text-ink-soft">Try searching by grammatical name (e.g. &quot;subjunctive&quot;), tense (&quot;past&quot;), or function (&quot;wishes&quot;, &quot;negation&quot;).</p>
+        <p className="font-serif text-[18px] font-semibold"><UiText source={'No topics match "{0}"'} values={[query]} /></p>
+        <p className="mt-1 text-[14px] text-ink-soft"><UiText source={'Try searching by grammatical name (e.g. "subjunctive"), tense ("past"), or function ("wishes", "negation").'} /></p>
       </Card>
     );
   }
 
   return (
     <div className="space-y-4">
-      <p className="text-[14px] text-ink-faint">
-        Found {results.length} matching {results.length === 1 ? 'topic' : 'topics'} for &quot;{query}&quot;:
-      </p>
+      <p className="text-[14px] text-ink-faint"><UiText source={'Found {0} matching {1} for "{2}":'} values={[results.length, results.length === 1 ? 'topic' : 'topics', query]} /></p>
       <ul className="grid gap-2.5">
         {results.map(({ topic, matchReasons }) => (
           <li key={topic.id}>
@@ -281,7 +278,7 @@ function TopicsByCategory({ topics, states, nextId }: { topics: Topic[]; states:
           <section key={cat}>
             <div className="mb-3 flex items-baseline justify-between gap-3">
               <h2 className="font-serif text-[20px] font-semibold">{cat}</h2>
-              <p className={eyebrow}>{list.length} topics</p>
+              <p className={eyebrow}><UiText source={'{0} topics'} values={[list.length]} /></p>
             </div>
             <ul className="grid gap-2.5 xl:grid-cols-2">
               {list.map((t) => (
@@ -319,7 +316,7 @@ function TopicsByPos({ topics, states, nextId }: { topics: Topic[]; states: Map<
           <section key={pos}>
             <div className="mb-3 flex items-baseline justify-between gap-3">
               <h2 className="font-serif text-[20px] font-semibold">{POS_LABELS[pos]}</h2>
-              <p className={eyebrow}>{list.length} topics</p>
+              <p className={eyebrow}><UiText source={'{0} topics'} values={[list.length]} /></p>
             </div>
             <ul className="grid gap-2.5 xl:grid-cols-2">
               {list.map((t) => (
@@ -337,6 +334,7 @@ function TopicsByPos({ topics, states, nextId }: { topics: Topic[]; states: Map<
 
 /** The next topic, large: why it is next, its five steps, and Start. */
 function NextStep({ topic, state, why }: { topic: Topic; state?: TopicState; why: string }) {
+  const translateUi = useUi();
   const step = state?.step ?? 1;
   return (
     <div className="rounded-3xl border border-line/70 bg-surface p-5 sm:p-7">
@@ -344,14 +342,14 @@ function NextStep({ topic, state, why }: { topic: Topic; state?: TopicState; why
         <TopicRing state={state} size={72} />
         <div className="min-w-0 flex-1">
           <p className={cx(eyebrow, 'text-sage-text')}>
-            {state?.started ? 'Carry on' : 'Your next step'} · {topic.level}
+            {state?.started ? translateUi('Carry on') : translateUi('Your next step')} · {topic.level}
           </p>
           <h2 className="mt-1 font-serif text-[clamp(1.5rem,2.4vw,1.9rem)] leading-tight font-semibold">{topic.title}</h2>
           <p className="mt-1.5 text-[15.5px] leading-snug text-ink-soft">{topic.summary}</p>
           {why && <p className="mt-3 text-[14.5px] leading-snug text-ink-faint">{why}</p>}
         </div>
       </div>
-      <ol className="mt-5 grid grid-cols-5 gap-2" aria-label="The five steps">
+      <ol className="mt-5 grid grid-cols-5 gap-2" aria-label={translateUi('The five steps')}>
         {STEPS.map((s) => (
           <li key={s.n} title={s.hint}>
             <div className={cx('h-1.5 rounded-full', s.n < step ? 'bg-sage' : s.n === step ? 'bg-sage/40' : 'bg-sunken')} />
@@ -361,12 +359,10 @@ function NextStep({ topic, state, why }: { topic: Topic; state?: TopicState; why
       </ol>
       <div className="mt-5 flex flex-wrap items-center gap-2.5">
         <Link to={`/cursus/grammatica/${topic.id}/lesson`} className={buttonClasses('primary', 'lg')}>
-          {state?.started ? `Continue: step ${Math.min(step, 5)}` : 'Start'}
+          {state?.started ? translateUi('Continue: step {0}', [Math.min(step, 5)]) : translateUi('Start')}
           <ArrowRight size={18} aria-hidden />
         </Link>
-        <Link to={`/cursus/grammatica/${topic.id}`} className={buttonClasses('ghost', 'lg')}>
-          Read the topic first
-        </Link>
+        <Link to={`/cursus/grammatica/${topic.id}`} className={buttonClasses('ghost', 'lg')}><UiText source={'Read the topic first'} /></Link>
       </div>
     </div>
   );
@@ -374,8 +370,9 @@ function NextStep({ topic, state, why }: { topic: Topic; state?: TopicState; why
 
 /** The levels the grammar has, with how many topics are learned; a level can be picked to see its path. */
 function Ladder({ rungs, learnerLevel, picked, onPick }: { rungs: ReturnType<typeof ladder>; learnerLevel: GrammarLevel; picked: GrammarLevel; onPick: (l: GrammarLevel) => void }) {
+  const translateUi = useUi();
   return (
-    <div className="mt-6 grid gap-2.5" style={{ gridTemplateColumns: `repeat(${Math.max(1, rungs.length)}, minmax(0, 1fr))` }} role="group" aria-label="Levels">
+    <div className="mt-6 grid gap-2.5" style={{ gridTemplateColumns: `repeat(${Math.max(1, rungs.length)}, minmax(0, 1fr))` }} role="group" aria-label={translateUi('Levels')}>
       {rungs.map((r) => (
         <button
           key={r.level}
@@ -386,14 +383,12 @@ function Ladder({ rungs, learnerLevel, picked, onPick }: { rungs: ReturnType<typ
         >
           <span className="flex items-baseline justify-between gap-2">
             <span className="font-serif text-[18px] font-semibold">{r.level}</span>
-            {r.level === learnerLevel && <span className="text-[11.5px] font-bold tracking-wide text-accent-text uppercase">You</span>}
+            {r.level === learnerLevel && <span className="text-[11.5px] font-bold tracking-wide text-accent-text uppercase"><UiText source={'You'} /></span>}
           </span>
           <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-sunken">
             <span className="block h-full rounded-full bg-sage" style={{ width: `${(r.learned / r.total) * 100}%` }} />
           </span>
-          <span className="mt-1.5 block text-[12.5px] text-ink-faint tabular-nums">
-            {r.learned} of {r.total}
-          </span>
+          <span className="mt-1.5 block text-[12.5px] text-ink-faint tabular-nums"><UiText source={'{0} of {1}'} values={[r.learned, r.total]} /></span>
         </button>
       ))}
     </div>
@@ -416,7 +411,7 @@ function PathRow({ topic, status, state }: { topic: Topic; status: PathStatus; s
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2">
           <span className="min-w-0 truncate text-[15.5px] font-semibold">{topic.title}</span>
-          {state && state.due > 0 && <Badge tone="accent">{state.due} due</Badge>}
+          {state && state.due > 0 && <Badge tone="accent"><UiText source={'{0} due'} values={[state.due]} /></Badge>}
         </span>
         <span className="mt-0.5 line-clamp-1 block text-[13.5px] text-ink-soft">{topic.summary}</span>
       </span>
@@ -471,7 +466,7 @@ function TopicRow({ topic, state, next }: { topic: Topic; state?: TopicState; ne
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2">
           <span className="min-w-0 text-[15.5px] leading-snug font-semibold">{topic.title}</span>
-          {state && state.due > 0 && <Badge tone="accent">{state.due} due</Badge>}
+          {state && state.due > 0 && <Badge tone="accent"><UiText source={'{0} due'} values={[state.due]} /></Badge>}
         </span>
         <span className="mt-0.5 line-clamp-2 block text-[13.5px] leading-snug text-ink-soft">{topic.summary}</span>
       </span>
@@ -482,9 +477,7 @@ function TopicRow({ topic, state, next }: { topic: Topic; state?: TopicState; ne
 
 function Sources({ name, sources }: { name: string; sources: Array<{ name: string; url?: string }> }) {
   return (
-    <p className="mt-10 text-[12.5px] leading-relaxed text-ink-faint">
-      Every sentence comes from Lingua’s {name} dictionary (Wiktionary, CC BY-SA). Rules checked against{' '}
-      {sources.map((s, i) => (
+    <p className="mt-10 text-[12.5px] leading-relaxed text-ink-faint"><UiText source={'Every sentence comes from Lingua’s {0} dictionary (Wiktionary, CC BY-SA). Rules checked against{1}{2}.'} values={[name, ' ', sources.map((s, i) => (
         <span key={s.name}>
           {i > 0 && (i === sources.length - 1 ? ' and ' : ', ')}
           {s.url ? (
@@ -495,27 +488,23 @@ function Sources({ name, sources }: { name: string; sources: Array<{ name: strin
             s.name
           )}
         </span>
-      ))}
-      .
-    </p>
+      ))]} /></p>
   );
 }
 
 /** Review what's due across topics, or a Lightning round over the topics begun. */
 function Due({ due }: { due: number }) {
+  const translateUi = useUi();
   return (
     <Card className="p-4">
-      <p className={eyebrow}>Reviews</p>
-      <p className="mt-1 font-serif text-[20px] leading-snug font-semibold">{due ? `${due} due` : 'Nothing due'}</p>
+      <p className={eyebrow}><UiText source={'Reviews'} /></p>
+      <p className="mt-1 font-serif text-[20px] leading-snug font-semibold">{due ? translateUi('{0} due', [due]) : translateUi('Nothing due')}</p>
       <div className="mt-3 grid gap-2">
         <Link to="/cursus/grammatica/review" className={cx(buttonClasses(due ? 'primary' : 'secondary', 'md'), !due && 'pointer-events-none opacity-60')} aria-disabled={!due}>
           <RotateCcw size={17} aria-hidden />
-          {due ? `Review ${due} due` : 'Nothing to review'}
+          {due ? translateUi('Review {0} due', [due]) : translateUi('Nothing to review')}
         </Link>
-        <Link to="/cursus/grammatica/review?mode=lightning" className={buttonClasses('secondary', 'md')}>
-          <Zap size={17} aria-hidden />
-          Lightning round
-        </Link>
+        <Link to="/cursus/grammatica/review?mode=lightning" className={buttonClasses('secondary', 'md')}><UiText source={'{0}Lightning round'} values={[<Zap size={17} aria-hidden />]} /></Link>
       </div>
     </Card>
   );
@@ -523,16 +512,15 @@ function Due({ due }: { due: number }) {
 
 /** A quick check that marks the topics already known, so the path starts where the learner is. */
 function Placement({ placed }: { placed: boolean }) {
+  const translateUi = useUi();
   return (
     <Card className={cx('p-4', !placed && 'border-dashed border-line-strong/70')}>
       <div className="flex items-start gap-3">
         <Compass size={22} className="mt-0.5 shrink-0 text-accent-text" aria-hidden />
         <div className="min-w-0 flex-1">
-          <p className="font-serif text-[17px] leading-snug font-semibold">{placed ? 'Check what I know' : 'Know some already?'}</p>
-          <p className="mt-0.5 text-[13.5px] leading-snug text-ink-soft">A two-minute check, two quick questions per topic. What you get right is marked learned, so you start where you are.</p>
-          <Link to="/cursus/grammatica/placement" className={cx(buttonClasses(placed ? 'ghost' : 'secondary', 'sm'), 'mt-2.5')}>
-            Start the check
-          </Link>
+          <p className="font-serif text-[17px] leading-snug font-semibold">{placed ? translateUi('Check what I know') : translateUi('Know some already?')}</p>
+          <p className="mt-0.5 text-[13.5px] leading-snug text-ink-soft"><UiText source={'A two-minute check, two quick questions per topic. What you get right is marked learned, so you start where you are.'} /></p>
+          <Link to="/cursus/grammatica/placement" className={cx(buttonClasses(placed ? 'ghost' : 'secondary', 'sm'), 'mt-2.5')}><UiText source={'Start the check'} /></Link>
         </div>
       </div>
     </Card>

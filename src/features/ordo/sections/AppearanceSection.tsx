@@ -1,3 +1,5 @@
+import { useSettings } from '@/data/settings';
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { History, LayoutDashboard, Monitor, Moon, Sparkles, SlidersHorizontal, Sun, Waves, Wind } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
 import { flavourOf } from '@/design/flavours';
@@ -19,10 +21,11 @@ const MOTION_NOTES: Record<MotionPref, string> = {
 
 /** A row of theme swatches: the page colour with its accent, and the name below. */
 export function PaletteRow({ title, palettes, value, onChange }: { title: string; palettes: Palette[]; value: string; onChange: (id: string) => void }) {
+  const translateUi = useUi();
   return (
     <div className="mt-4">
       <p className="mb-2 text-[13px] font-semibold text-ink-soft">{title}</p>
-      <div role="radiogroup" aria-label={`${title} themes`} className="grid grid-cols-6 gap-1 sm:flex sm:flex-wrap sm:gap-3">
+      <div role="radiogroup" aria-label={translateUi('{0} themes', [title])} className="grid grid-cols-6 gap-1 sm:flex sm:flex-wrap sm:gap-3">
         {palettes.map((p) => {
           const selected = p.id === value;
           return (
@@ -50,80 +53,83 @@ export function PaletteRow({ title, palettes, value, onChange }: { title: string
 }
 
 export function AppearanceSection({ theme, motion, palette, homeLayout, flavour, hints, lang }: { theme: ThemePref; motion: MotionPref; palette: Settings['palette']; homeLayout: Settings['ui']['homeLayout']; flavour: boolean; hints: boolean; lang: string }) {
+  const translateUi = useUi();
   const touch = flavourOf(lang);
+  const settings = useSettings();
   return (
-    <SettingsSection id="appearance" icon={SlidersHorizontal} title="Preferences" description="How Lingua looks and moves.">
+    <SettingsSection id="appearance" icon={SlidersHorizontal} title={translateUi('Preferences')} description={translateUi('How Lingua looks and moves.')}>
+      <div className="mb-6"><ToggleRow title={translateUi('Lingua in the language')} description={translateUi('Interface translations work offline. Hover over translated text for English.')} checked={settings?.ui.interfaceLanguage === true} onChange={(on) => void patchSetting('ui', { interfaceLanguage: on })} /></div>
       <div>
-        <p className="mb-2 text-[15px] font-semibold">Theme</p>
+        <p className="mb-2 text-[15px] font-semibold"><UiText source={'Theme'} /></p>
         <Segmented<ThemePref>
-          label="Theme"
+          label={translateUi('Theme')}
           value={theme}
           onChange={(value) => void setSetting('theme', value)}
           block
           options={[
-            { value: 'paper', label: 'Paper', icon: Sun },
-            { value: 'nocturne', label: 'Nocturne', icon: Moon },
-            { value: 'system', label: 'Device', icon: Monitor },
+            { value: 'paper', label: translateUi('Paper'), icon: Sun },
+            { value: 'nocturne', label: translateUi('Nocturne'), icon: Moon },
+            { value: 'system', label: translateUi('Device'), icon: Monitor },
           ]}
         />
-        <p data-hint="" className="mt-2 text-[13px] text-ink-soft">Paper for daylight, Nocturne for the evening. On iPhone, the status bar colour updates the next time you open Lingua.</p>
-        <PaletteRow title="Paper" palettes={PAPER_PALETTES} value={palette.paper} onChange={(id) => void patchSetting('palette', { paper: id as Settings['palette']['paper'] })} />
-        <PaletteRow title="Nocturne" palettes={NOCTURNE_PALETTES} value={palette.nocturne} onChange={(id) => void patchSetting('palette', { nocturne: id as Settings['palette']['nocturne'] })} />
+        <p data-hint="" className="mt-2 text-[13px] text-ink-soft"><UiText source={'Paper for daylight, Nocturne for the evening. On iPhone, the status bar colour updates the next time you open Lingua.'} /></p>
+        <PaletteRow title={translateUi('Paper')} palettes={PAPER_PALETTES} value={palette.paper} onChange={(id) => void patchSetting('palette', { paper: id as Settings['palette']['paper'] })} />
+        <PaletteRow title={translateUi('Nocturne')} palettes={NOCTURNE_PALETTES} value={palette.nocturne} onChange={(id) => void patchSetting('palette', { nocturne: id as Settings['palette']['nocturne'] })} />
       </div>
 
       <div className="mt-6">
-        <p className="mb-2 text-[15px] font-semibold">Motion</p>
+        <p className="mb-2 text-[15px] font-semibold"><UiText source={'Motion'} /></p>
         <Segmented<MotionPref>
-          label="Motion"
+          label={translateUi('Motion')}
           value={motion}
           onChange={(value) => void patchSetting('ui', { motion: value })}
           block
           options={[
-            { value: 'system', label: 'System', icon: Waves },
-            { value: 'reduced', label: 'Reduced', icon: Wind },
-            { value: 'full', label: 'Full', icon: Sparkles },
+            { value: 'system', label: translateUi('System'), icon: Waves },
+            { value: 'reduced', label: translateUi('Reduced'), icon: Wind },
+            { value: 'full', label: translateUi('Full'), icon: Sparkles },
           ]}
         />
         <div data-hint="" className="relative mt-2 min-h-[2.6em] text-[13px] text-ink-soft">
           <AnimatePresence mode="wait" initial={false}>
             <m.p key={motion} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
-              {MOTION_NOTES[motion]}
+              <UiText source={MOTION_NOTES[motion]} />
             </m.p>
           </AnimatePresence>
         </div>
       </div>
 
       <div className="mt-6">
-        <p className="mb-2 text-[15px] font-semibold">Home layout</p>
+        <p className="mb-2 text-[15px] font-semibold"><UiText source={'Home layout'} /></p>
         <Segmented<Settings['ui']['homeLayout']>
-          label="Home layout"
+          label={translateUi('Home layout')}
           value={homeLayout}
           onChange={(value) => void patchSetting('ui', { homeLayout: value })}
           block
           options={[
-            { value: 'today', label: 'Today', icon: LayoutDashboard },
-            { value: 'classic', label: 'Classic', icon: History },
+            { value: 'today', label: translateUi('Today'), icon: LayoutDashboard },
+            { value: 'classic', label: translateUi('Classic'), icon: History },
           ]}
         />
-        <p data-hint="" className="mt-2 text-[13px] text-ink-soft">Today puts the day's goal and what's next up first, beside the week and your numbers, with Cursus and Mundus below. Classic is Home as it was before Lingua 5.</p>
+        <p data-hint="" className="mt-2 text-[13px] text-ink-soft"><UiText source={'Today puts the day\'s goal and what\'s next up first, beside the week and your numbers, with Cursus and Mundus below. Classic is Home as it was before Lingua 5.'} /></p>
       </div>
 
       <div className="mt-6 flex items-start gap-4">
         <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-semibold">Language touches</p>
+          <p className="text-[15px] font-semibold"><UiText source={'Language touches'} /></p>
           <p data-hint="" className="mt-1 text-[13px] text-ink-soft">
             {touch
-              ? `A little of ${getLanguage(lang)?.name ?? lang} in the design: ${touch.touch}. Your theme and reading font stay as they are.`
-              : 'A little of the language in the design, for French, Spanish, German, Russian, Mandarin and Arabic. Your theme and reading font stay as they are.'}
+              ? translateUi('A little of {0} in the design: {1}. Your theme and reading font stay as they are.', [getLanguage(lang)?.name ?? lang, touch.touch])
+              : translateUi('A little of the language in the design, for French, Spanish, German, Russian, Mandarin and Arabic. Your theme and reading font stay as they are.')}
           </p>
         </div>
-        <Switch label="Language touches" checked={flavour} onChange={(on) => void patchSetting('ui', { flavour: on })} />
+        <Switch label={translateUi('Language touches')} checked={flavour} onChange={(on) => void patchSetting('ui', { flavour: on })} />
       </div>
 
       <div className="mt-6">
         <ToggleRow
-          title="Tips and explanations"
-          description="The small lines under a setting or a card that say what it is and what it does. Off keeps the pages quieter."
+          title={translateUi('Tips and explanations')}
+          description={translateUi('The small lines under a setting or a card that say what it is and what it does. Off keeps the pages quieter.')}
           checked={hints}
           onChange={(on) => void patchSetting('ui', { hints: on })}
         />

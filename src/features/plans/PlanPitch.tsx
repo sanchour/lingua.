@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { motion } from 'motion/react';
@@ -68,6 +69,7 @@ function Yours({ children }: { children: ReactNode }) {
  * that words stay on the device.
  */
 export function PlanPitch({ current, onFree, replay = false }: { current: PlanKind; onFree: () => void; replay?: boolean }) {
+  const translateUi = useUi();
   const [period, setPeriod] = useState<'month' | 'year'>('month');
   const { busy, get: buyNow } = useBuy();
   // The Device lab's replay of the first start (7-0d) buys nothing.
@@ -77,9 +79,9 @@ export function PlanPitch({ current, onFree, replay = false }: { current: PlanKi
   return (
     <div>
       <div className="mb-4 text-center">
-        <p className="text-[12px] font-bold tracking-[0.14em] text-accent-text uppercase">One last page</p>
-        <h1 className="mt-1 font-serif text-[34px] leading-tight font-semibold tracking-tight">Unlock all of Lingua</h1>
-        <p className="mt-1 text-[15px] text-ink-soft">Free stays free, for good. Go further with Lingua+, once, or bring AI along with Max.</p>
+        <p className="text-[12px] font-bold tracking-[0.14em] text-accent-text uppercase"><UiText source={'One last page'} /></p>
+        <h1 className="mt-1 font-serif text-[34px] leading-tight font-semibold tracking-tight"><UiText source={'Unlock all of Lingua'} /></h1>
+        <p className="mt-1 text-[15px] text-ink-soft"><UiText source={'Free stays free, for good. Go further with Lingua+, once, or bring AI along with Max.'} /></p>
       </div>
 
       <div className="grid grid-cols-2 gap-5">
@@ -88,22 +90,20 @@ export function PlanPitch({ current, onFree, replay = false }: { current: PlanKi
             <h2 className="font-serif text-[28px] leading-none font-semibold">
               Lingua<span className="text-accent-text">+</span>
             </h2>
-            <span className="rounded-full bg-accent-fill px-3 py-1 text-[11.5px] font-bold tracking-wide text-on-accent">Pay once, keep it</span>
+            <span className="rounded-full bg-accent-fill px-3 py-1 text-[11.5px] font-bold tracking-wide text-on-accent"><UiText source={'Pay once, keep it'} /></span>
           </div>
           <p className="mt-3 flex items-baseline gap-2">
             <span className="font-serif text-[42px] leading-none font-semibold tabular-nums">{PRICES.plus}</span>
-            <span className="text-[13.5px] text-ink-soft">once, every update included</span>
+            <span className="text-[13.5px] text-ink-soft"><UiText source={'once, every update included'} /></span>
           </p>
           <div className="mt-4 flex-1">
             <Perks perks={PLUS} />
           </div>
           <div className="mt-4">
             {current === 'free' ? (
-              <Button size="lg" block loading={busy === 'plus'} onClick={() => void get('plus')} iconRight={ArrowRight}>
-                Get Lingua+ for {PRICES.plus}
-              </Button>
+              <Button size="lg" block loading={busy === 'plus'} onClick={() => void get('plus')} iconRight={ArrowRight}><UiText source={'Get Lingua+ for {0}'} values={[PRICES.plus]} /></Button>
             ) : (
-              <Yours>{current === 'plus' ? 'Lingua+ is yours' : 'Included in your Max'}</Yours>
+              <Yours>{current === 'plus' ? translateUi('Lingua+ is yours') : translateUi('Included in your Max')}</Yours>
             )}
           </div>
         </motion.section>
@@ -116,59 +116,47 @@ export function PlanPitch({ current, onFree, replay = false }: { current: PlanKi
               <span>
                 Lingua<span className="text-accent-text">+</span>
               </span>
-              <span className="plan-max-word font-sans text-[16px] font-bold tracking-[0.32em]">MAX</span>
+              <span className="plan-max-word font-sans text-[16px] font-bold tracking-[0.32em]"><UiText source={'MAX'} /></span>
             </h2>
             <Segmented<'month' | 'year'>
-              label="Billing"
+              label={translateUi('Billing')}
               value={period}
               onChange={setPeriod}
               options={[
-                { value: 'month', label: 'Monthly' },
-                { value: 'year', label: 'Yearly' },
+                { value: 'month', label: translateUi('Monthly') },
+                { value: 'year', label: translateUi('Yearly') },
               ]}
             />
           </div>
           <p className="relative mt-3 flex items-baseline gap-2">
             <span className="font-serif text-[42px] leading-none font-semibold tabular-nums">{period === 'month' ? PRICES.maxMonth : PRICES.maxYear}</span>
-            <span className="text-[13.5px] text-ink-soft">{period === 'month' ? 'a month, cancel any time' : `a year: about ${PER_MONTH} a month, save ${SAVING}%`}</span>
+            <span className="text-[13.5px] text-ink-soft">{period === 'month' ? translateUi('a month, cancel any time') : translateUi('a year: about {0} a month, save {1}%', [PER_MONTH, SAVING])}</span>
           </p>
           <div className="relative mt-4 flex-1">
             <Perks perks={MAX} />
           </div>
           <div className="relative mt-4">
             {current === 'max' ? (
-              <Yours>Max is yours</Yours>
+              <Yours><UiText source={'Max is yours'} /></Yours>
             ) : (
-              <Button size="lg" block loading={busy === 'maxMonth' || busy === 'maxYear'} onClick={() => void get(period === 'month' ? 'maxMonth' : 'maxYear')} iconRight={ArrowRight}>
-                Get Max{current === 'free' ? ', with everything in Lingua+' : ''}
-              </Button>
+              <Button size="lg" block loading={busy === 'maxMonth' || busy === 'maxYear'} onClick={() => void get(period === 'month' ? 'maxMonth' : 'maxYear')} iconRight={ArrowRight}><UiText source={'Get Max{0}'} values={[current === 'free' ? ', with everything in Lingua+' : '']} /></Button>
             )}
           </div>
         </motion.section>
       </div>
 
       <motion.div {...rise(2)} className="mt-3 flex items-center gap-4 rounded-2xl border border-line bg-surface px-5 py-3">
-        <p className="min-w-0 flex-1 text-[13.5px] text-ink-soft">
-          <span className="font-semibold text-ink">Free, for good:</span> every book and article, your decks, the radio and audiobooks, alphabets, Mundus and Diarium.
-        </p>
-        <Button variant="ghost" onClick={onFree} iconRight={ArrowRight}>
-          Continue free
-        </Button>
+        <p className="min-w-0 flex-1 text-[13.5px] text-ink-soft"><UiText source={'{0} every book and article, your decks, the radio and audiobooks, alphabets, Mundus and Diarium.'} values={[<span className="font-semibold text-ink"><UiText source={'Free, for good:'} /></span>]} /></p>
+        <Button variant="ghost" onClick={onFree} iconRight={ArrowRight}><UiText source={'Continue free'} /></Button>
       </motion.div>
 
       <ul className="mt-2.5 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-[12px] text-ink-faint">
         <li className="flex items-center gap-1.5">
-          <ShieldCheck size={14} aria-hidden /> {TEST_MODE ? 'Test mode: nothing is charged' : 'Secure payment with Stripe'}
+          <ShieldCheck size={14} aria-hidden /> {TEST_MODE ? translateUi('Test mode: nothing is charged') : translateUi('Secure payment with Stripe')}
         </li>
-        <li className="flex items-center gap-1.5">
-          <Forever size={14} aria-hidden /> Lingua+ stays yours, Max or not
-        </li>
-        <li className="flex items-center gap-1.5">
-          <RotateCcw size={14} aria-hidden /> Cancel Max any time
-        </li>
-        <li className="flex items-center gap-1.5">
-          <HardDrive size={14} aria-hidden /> Your words stay on your device
-        </li>
+        <li className="flex items-center gap-1.5"><UiText source={'{0} Lingua+ stays yours, Max or not'} values={[<Forever size={14} aria-hidden />]} /></li>
+        <li className="flex items-center gap-1.5"><UiText source={'{0} Cancel Max any time'} values={[<RotateCcw size={14} aria-hidden />]} /></li>
+        <li className="flex items-center gap-1.5"><UiText source={'{0} Your words stay on your device'} values={[<HardDrive size={14} aria-hidden />]} /></li>
       </ul>
     </div>
   );

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Mic, Square } from 'lucide-react';
@@ -21,6 +22,7 @@ const clock = (ms: number) => {
  * correct. Nothing is kept of the recording.
  */
 export function DictateButton({ lang, onSpoken }: { lang: string; onSpoken: (text: string, ms: number) => void }) {
+  const translateUi = useUi();
   const { settings } = useApp();
   const navigate = useNavigate();
   const rec = useRecorder();
@@ -70,10 +72,10 @@ export function DictateButton({ lang, onSpoken }: { lang: string; onSpoken: (tex
       icon={recording ? Square : Mic}
       loading={writing !== null || rec.status === 'starting'}
       onClick={() => void toggle()}
-      aria-label={recording ? 'Stop, and write out what you said' : 'Speak your entry'}
-      title={recording ? undefined : 'Speak, and Whisper writes it out here'}
+      aria-label={recording ? translateUi('Stop, and write out what you said') : translateUi('Speak your entry')}
+      title={recording ? undefined : translateUi('Speak, and Whisper writes it out here')}
     >
-      {writing ?? (recording ? <span className="tabular-nums">Stop · {clock(rec.elapsed)}</span> : 'Speak')}
+      {writing ?? (recording ? <span className="tabular-nums"><UiText source={'Stop · {0}'} values={[clock(rec.elapsed)]} /></span> : 'Speak')}
     </Button>
   );
 }

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { localDateKey } from '@/lib/format';
 import { useWidth } from './useWidth';
@@ -13,6 +14,7 @@ const LEVELS = ['var(--sunken)', 'color-mix(in oklab, var(--sage) 30%, var(--sun
  * `thresholds` are the values where levels 1–4 start (e.g. minutes: 1, 10, 20, 40).
  */
 export function Heatmap({ values, thresholds = [1, 10, 20, 40], format }: { values: Map<string, number>; thresholds?: number[]; format: (v: number) => string }) {
+  const translateUi = useUi();
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<{ date: string; value: number; x: number; y: number } | null>(null);
   const cell = width < 520 ? 12 : 13;
@@ -48,7 +50,7 @@ export function Heatmap({ values, thresholds = [1, 10, 20, 40], format }: { valu
   return (
     <div ref={ref} className="relative">
       {width > 0 && (
-        <svg width={weeks * (cell + GAP)} height={7 * (cell + GAP) + 18} role="img" aria-label="Activity calendar" onPointerLeave={() => setHover(null)}>
+        <svg width={weeks * (cell + GAP)} height={7 * (cell + GAP) + 18} role="img" aria-label={translateUi('Activity calendar')} onPointerLeave={() => setHover(null)}>
           {months.map((m, i) =>
             m ? (
               <text key={i} x={i * (cell + GAP)} y={10} className="fill-ink-faint text-[10px] font-semibold">
@@ -87,16 +89,12 @@ export function Heatmap({ values, thresholds = [1, 10, 20, 40], format }: { valu
           style={{ left: Math.min(Math.max(0, hover.x - 60), Math.max(0, width - 160)), top: hover.y - 8, transform: 'translateY(-100%)' }}
         >
           <p className="font-bold">{new Date(`${hover.date}T12:00:00`).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}</p>
-          <p>{hover.value ? format(hover.value) : 'Nothing logged'}</p>
+          <p>{hover.value ? format(hover.value) : translateUi('Nothing logged')}</p>
         </div>
       )}
-      <div className="mt-2 flex items-center justify-end gap-1.5 text-[11px] font-semibold text-ink-faint">
-        Less
-        {LEVELS.map((c) => (
+      <div className="mt-2 flex items-center justify-end gap-1.5 text-[11px] font-semibold text-ink-faint"><UiText source={'Less{0}More'} values={[LEVELS.map((c) => (
           <span key={c} className="size-2.5 rounded-[3px]" style={{ background: c }} />
-        ))}
-        More
-      </div>
+        ))]} /></div>
     </div>
   );
 }

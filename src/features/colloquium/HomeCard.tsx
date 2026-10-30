@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { Link } from 'react-router';
 import { ArrowRight, MessagesSquare } from 'lucide-react';
 import { sceneOfTheDay } from '@/core/colloquium/prompts';
@@ -14,7 +15,7 @@ export function ColloquiumHomeCard({ level }: { lang: string; level: Level }) {
   return (
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <p className={label}>Talk today</p>
+        <p className={label}><UiText source={'Talk today'} /></p>
         <Link to="/mentis/sermo" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
           Sermo <ArrowRight size={14} aria-hidden />
         </Link>
@@ -25,7 +26,7 @@ export function ColloquiumHomeCard({ level }: { lang: string; level: Level }) {
         </span>
         <span className="min-w-0 flex-1">
           <span className="block font-serif text-[17px] leading-snug font-semibold">{scene.title}</span>
-          <span className="mt-1 block text-[13.5px] leading-snug text-ink-soft">{scene.detail}. Ten minutes with an AI, by voice or text, with your mistakes corrected.</span>
+          <span className="mt-1 block text-[13.5px] leading-snug text-ink-soft"><UiText source={'{0}. Ten minutes with an AI, by voice or text, with your mistakes corrected.'} values={[scene.detail]} /></span>
         </span>
       </Link>
     </Card>

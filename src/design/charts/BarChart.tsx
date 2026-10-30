@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useId, useState } from 'react';
 import { compact, niceMax, useWidth } from './useWidth';
 
@@ -21,6 +22,7 @@ interface BarChartProps {
 
 /** Stacked bars with rounded tops and a readout on hover or tap. */
 export function BarChart({ bars, colors, names, height = 150, format = compact, labelEvery = 1 }: BarChartProps) {
+  const translateUi = useUi();
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
   const clip = useId();
@@ -36,7 +38,7 @@ export function BarChart({ bars, colors, names, height = 150, format = compact, 
   return (
     <div ref={ref} className="relative select-none" style={{ height }} onPointerLeave={() => setHover(null)}>
       {width > 0 && (
-        <svg width={width} height={height} className="block overflow-visible" role="img" aria-label={`${names.join(', ')} per period`}>
+        <svg width={width} height={height} className="block overflow-visible" role="img" aria-label={translateUi('{0} per period', [names.join(', ')])}>
           {[0, top / 2, top].map((t) => (
             <g key={t}>
               <line x1={left} x2={width} y1={chartH - y(t)} y2={chartH - y(t)} stroke="var(--line)" strokeDasharray={t ? '3 4' : undefined} />

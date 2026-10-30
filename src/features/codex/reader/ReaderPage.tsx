@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -50,6 +51,7 @@ const CHROME_IDLE_MS = 2600;
 type Entry = 'first' | 'last' | number;
 
 export default function ReaderPage() {
+  const translateUi = useUi();
   const { textId } = useParams();
   const navigate = useNavigate();
   const { settings, language } = useApp();
@@ -502,10 +504,8 @@ export default function ReaderPage() {
     return (
       <div className="grid min-h-dvh place-items-center p-6 text-center">
         <div>
-          <p className="font-serif text-xl">This book isn’t in your library.</p>
-          <button type="button" className={`${buttonClasses('secondary', 'md')} mt-4`} onClick={() => navigate('/codex')}>
-            Back to Codex
-          </button>
+          <p className="font-serif text-xl"><UiText source={'This book isn’t in your library.'} /></p>
+          <button type="button" className={`${buttonClasses('secondary', 'md')} mt-4`} onClick={() => navigate('/codex')}><UiText source={'Back to Codex'} /></button>
         </div>
       </div>
     );
@@ -542,7 +542,7 @@ export default function ReaderPage() {
         }}
       />
 
-      {aids.glosses && <style>{`.reader-flow .w[data-gloss] { display: inline-block; vertical-align: top; text-indent: 0; } .reader-flow .w[data-gloss]::after { content: attr(data-gloss); display: block; max-width: 12em; overflow: hidden; text-overflow: ellipsis; font: 11px/1.5 sans-serif; color: var(--ink-soft); white-space: nowrap; }`}</style>}
+      {aids.glosses && <style>{translateUi('.reader-flow .w[data-gloss] { display: inline-block; vertical-align: top; text-indent: 0; } .reader-flow .w[data-gloss]::after { content: attr(data-gloss); display: block; max-width: 12em; overflow: hidden; text-overflow: ellipsis; font: 11px/1.5 sans-serif; color: var(--ink-soft); white-space: nowrap; }', [])}</style>}
       {aids.ruler && <div aria-hidden className="pointer-events-none fixed inset-x-0 z-20 h-8 border-y border-accent/40 bg-accent/10" style={{ top: `${aids.rulerY}%` }} />}
       {comic ? (
         <ComicView
@@ -610,7 +610,7 @@ export default function ReaderPage() {
             style={{ bottom: wide ? 24 : 'calc(env(safe-area-inset-bottom) + 14px)' }}
           >
             {ready && `${pager.page + 1} / ${pager.pageCount}`}
-            {ready && text.chapterCount > 1 && <span className="opacity-70"> · ch. {(chapterIndex ?? 0) + 1} of {text.chapterCount}</span>}
+            {ready && text.chapterCount > 1 && <span className="opacity-70"><UiText source={' · ch. {0} of {1}'} values={[(chapterIndex ?? 0) + 1, text.chapterCount]} /></span>}
           </p>
         </>
       ) : (
@@ -628,11 +628,9 @@ export default function ReaderPage() {
           </div>
           {ready && (
             <div className="mx-auto mt-14 flex max-w-md justify-between gap-3">
-              <Button variant="ghost" icon={ChevronLeft} disabled={chapterIndex === 0} onClick={() => goChapter((chapterIndex ?? 0) - 1, 'first')}>
-                Previous
-              </Button>
+              <Button variant="ghost" icon={ChevronLeft} disabled={chapterIndex === 0} onClick={() => goChapter((chapterIndex ?? 0) - 1, 'first')}><UiText source={'Previous'} /></Button>
               <Button variant="secondary" iconRight={ChevronRight} onClick={() => goChapter((chapterIndex ?? 0) + 1, 'first')}>
-                {(chapterIndex ?? 0) + 1 < text.chapterCount ? 'Next chapter' : 'Finish'}
+                {(chapterIndex ?? 0) + 1 < text.chapterCount ? translateUi('Next chapter') : translateUi('Finish')}
               </Button>
             </div>
           )}
@@ -690,11 +688,12 @@ export default function ReaderPage() {
 }
 
 function PageArrow({ side, onClick }: { side: 'left' | 'right'; onClick: () => void }) {
+  const translateUi = useUi();
   const Icon = side === 'left' ? ChevronLeft : ChevronRight;
   return (
     <button
       type="button"
-      aria-label={side === 'left' ? 'Previous page' : 'Next page'}
+      aria-label={side === 'left' ? translateUi('Previous page') : translateUi('Next page')}
       onClick={onClick}
       className={cx(
         'group absolute top-1/2 grid h-40 w-14 -translate-y-1/2 place-items-center text-ink-faint transition-colors hover:text-ink',

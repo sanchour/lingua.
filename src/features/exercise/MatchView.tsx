@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 // The matching games (6-4b): tap one side, then what goes with it. A wrong pair shakes and counts as a mistake; done when all match.
 // Sound games speak on a tap, picture games show the picture instead of a label.
 import { useMemo, useRef, useState } from 'react';
@@ -12,6 +13,7 @@ import { speak } from '@/services/speech/voice';
 type Side = { side: 'left' | 'right'; index: number };
 
 export function MatchView({ body, lang, onDone, random }: { body: MatchBody; lang: string; onDone: (mistakes: number) => void; random: () => number }) {
+  const translateUi = useUi();
   const rightOrder = useMemo(() => shuffle(body.pairs.map((_, i) => i), random), [body, random]);
   const [picked, setPicked] = useState<Side | null>(null);
   const [matched, setMatched] = useState<ReadonlySet<number>>(new Set());
@@ -64,14 +66,14 @@ export function MatchView({ body, lang, onDone, random }: { body: MatchBody; lan
 
   return (
     <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-      <div className="space-y-3" aria-label="In the language">
+      <div className="space-y-3" aria-label={translateUi('In the language')}>
         {body.pairs.map((p, i) => (
           <div key={i} lang={lang} className="contents">
             {tile({ side: 'left', index: i }, p.left, true)}
           </div>
         ))}
       </div>
-      <div className="space-y-3" aria-label="What goes with them">
+      <div className="space-y-3" aria-label={translateUi('What goes with them')}>
         {rightOrder.map((i) => {
           const p = body.pairs[i];
           return tile(

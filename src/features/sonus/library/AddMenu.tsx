@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { BookHeadphones, FileAudio, LibraryBig, Plus, Rss, Search } from 'lucide-react';
@@ -33,6 +34,7 @@ const OPTIONS: Array<{ id: Choice; icon: LucideIcon; title: string; detail: stri
 
 /** "Add" in the Sonus header: files, a podcast by address, a Spotify link, or the directory. */
 export function AddMenu({ lang, onDiscover, label = 'Add' }: { lang: string; onDiscover: () => void; label?: string }) {
+  const translateUi = useUi();
   const { layout } = useLayout();
   const navigate = useNavigate();
   const [sheet, setSheet] = useState(false);
@@ -85,7 +87,7 @@ export function AddMenu({ lang, onDiscover, label = 'Add' }: { lang: string; onD
     <>
       {layout === 'wide' ? (
         <Popover
-          label="Add something to listen to"
+          label={translateUi('Add something to listen to')}
           placement="bottom-end"
           className="w-80"
           trigger={(props) => (
@@ -101,7 +103,7 @@ export function AddMenu({ lang, onDiscover, label = 'Add' }: { lang: string; onD
           <Button icon={Plus} loading={busy} onClick={() => setSheet(true)}>
             {label}
           </Button>
-          <Drawer open={sheet} onClose={() => setSheet(false)} title="Add something to listen to">
+          <Drawer open={sheet} onClose={() => setSheet(false)} title={translateUi('Add something to listen to')}>
             {list(() => setSheet(false))}
           </Drawer>
         </>
@@ -113,6 +115,7 @@ export function AddMenu({ lang, onDiscover, label = 'Add' }: { lang: string; onD
 }
 
 function LinkDrawer({ lang, kind, onClose }: { lang: string; kind: 'feed' | 'spotify' | null; onClose: () => void }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const [value, setValue] = useState('');
   const [busy, setBusy] = useState(false);
@@ -144,20 +147,20 @@ function LinkDrawer({ lang, kind, onClose }: { lang: string; kind: 'feed' | 'spo
     <Drawer
       open={kind !== null}
       onClose={onClose}
-      title={spotify ? 'Add a Spotify link' : 'Follow a podcast'}
+      title={spotify ? translateUi('Add a Spotify link') : translateUi('Follow a podcast')}
       description={
         spotify
-          ? 'Spotify plays in its own player here. Its audio can’t be downloaded or transcribed, but a transcript file you add will follow along.'
-          : 'Paste the show’s RSS address. Episodes stream, can be saved offline, and can be transcribed.'
+          ? translateUi('Spotify plays in its own player here. Its audio can’t be downloaded or transcribed, but a transcript file you add will follow along.')
+          : translateUi('Paste the show’s RSS address. Episodes stream, can be saved offline, and can be transcribed.')
       }
       footer={
         <Button block size="lg" onClick={() => void save()} loading={busy} disabled={!value.trim()}>
-          {spotify ? 'Add' : 'Follow'}
+          {spotify ? translateUi('Add') : translateUi('Follow')}
         </Button>
       }
     >
       <label className="block">
-        <span className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase">{spotify ? 'Link' : 'RSS address'}</span>
+        <span className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase">{spotify ? translateUi('Link') : translateUi('RSS address')}</span>
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -166,7 +169,7 @@ function LinkDrawer({ lang, kind, onClose }: { lang: string; kind: 'feed' | 'spo
           autoCapitalize="off"
           autoCorrect="off"
           spellCheck={false}
-          placeholder={spotify ? 'https://open.spotify.com/episode/…' : 'https://…/feed.xml'}
+          placeholder={spotify ? translateUi('https://open.spotify.com/episode/…') : translateUi('https://…/feed.xml')}
           data-autofocus
           className="h-11 w-full rounded-xl border border-line bg-bg px-3.5 text-[15px]"
         />

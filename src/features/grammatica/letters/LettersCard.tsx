@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { Link } from 'react-router';
 import { ArrowRight, Languages } from 'lucide-react';
 import { nextGroup, useScriptProgress } from '@/data/script';
@@ -11,6 +12,7 @@ import { GroupRing, Sample, useScript } from './parts';
  * quiet link once the alphabet is learned), on Home for beginners who haven't finished it.
  */
 export function LettersCard({ lang, home, level }: { lang: string; home?: boolean; level?: string }) {
+  const translateUi = useUi();
   const script = useScript(lang);
   const progress = useScriptProgress(lang);
   if (!script || !progress) return null;
@@ -26,8 +28,8 @@ export function LettersCard({ lang, home, level }: { lang: string; home?: boolea
         className="mb-2 flex items-center gap-3 rounded-2xl border border-line/60 bg-surface px-4 py-3 text-[14.5px] font-semibold transition-colors hover:border-line-strong"
       >
         <GroupRing learned size={30} />
-        <span className="flex-1">{script.name}: every letter learned</span>
-        <span className="text-[13px] text-ink-soft">Practise</span>
+        <span className="flex-1"><UiText source={'{0}: every letter learned'} values={[script.name]} /></span>
+        <span className="text-[13px] text-ink-soft"><UiText source={'Practise'} /></span>
         <ArrowRight size={16} className="text-ink-faint" aria-hidden />
       </Link>
     );
@@ -36,12 +38,8 @@ export function LettersCard({ lang, home, level }: { lang: string; home?: boolea
   const body = (
     <>
       <div className="mb-3 flex items-center justify-between gap-3">
-        <p className={cx(eyebrow, 'inline-flex items-center gap-1.5 text-sage-text')}>
-          <Languages size={14} aria-hidden /> The alphabet · {script.name}
-        </p>
-        <Link to="/cursus/alphabets" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
-          {learned} of {script.groups.length} groups <ArrowRight size={14} aria-hidden />
-        </Link>
+        <p className={cx(eyebrow, 'inline-flex items-center gap-1.5 text-sage-text')}><UiText source={'{0} The alphabet · {1}'} values={[<Languages size={14} aria-hidden />, script.name]} /></p>
+        <Link to="/cursus/alphabets" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline"><UiText source={'{0} of {1} groups {2}'} values={[learned, script.groups.length, <ArrowRight size={14} aria-hidden />]} /></Link>
       </div>
       <Link to={`/cursus/alphabets/${next.id}/lesson`} className="group -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
         <span lang={lang} dir={script.rtl ? 'rtl' : undefined} className="grid min-w-14 shrink-0 place-items-center rounded-2xl bg-sage-soft px-2.5 py-1.5 text-[26px] leading-tight text-sage-text">
@@ -49,7 +47,7 @@ export function LettersCard({ lang, home, level }: { lang: string; home?: boolea
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-[12.5px] font-semibold text-ink-faint">
-            {progress.get(next.id)?.lessons ? 'Carry on' : learned ? 'Next up' : 'Start here'}
+            {progress.get(next.id)?.lessons ? translateUi('Carry on') : learned ? translateUi('Next up') : translateUi('Start here')}
             {next.set ? ` · ${next.set}` : ''}
           </span>
           <span className="block font-serif text-[17px] leading-snug font-semibold">{next.title}</span>

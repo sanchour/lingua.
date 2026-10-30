@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useNavigate } from 'react-router';
 import { ChevronLeft, ChevronRight, Circle, CircleCheck } from 'lucide-react';
 import { setLessonDone } from '@/data/books';
@@ -13,6 +14,7 @@ const step = 'grid h-full w-9 place-items-center text-ink-soft transition-colors
 
 /** Under a book part's title: the parts on either side, its chapters, and "Lesson done" for a course. */
 export function BookBar({ media, book, live, className }: { media: Media; book: Book | null | undefined; live: boolean; className?: string }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const at = book ? book.parts.findIndex((p) => p.id === media.id) : -1;
   const course = book?.kind === 'course';
@@ -32,13 +34,13 @@ export function BookBar({ media, book, live, className }: { media: Media; book: 
     <div className={cx('flex flex-wrap items-center gap-2', className)}>
       {book && at >= 0 && book.parts.length > 1 && (
         <div className="flex h-9 items-center overflow-hidden rounded-full border border-line bg-raised">
-          <button type="button" aria-label={`Previous ${unit}`} title={`Previous ${unit}`} disabled={at === 0} onClick={() => go(-1)} className={step}>
+          <button type="button" aria-label={translateUi('Previous {0}', [unit])} title={translateUi('Previous {0}', [unit])} disabled={at === 0} onClick={() => go(-1)} className={step}>
             <ChevronLeft size={17} aria-hidden />
           </button>
           <span className="text-[13px] font-bold" aria-hidden>
-            {course ? 'Lesson' : 'Part'}
+            {course ? translateUi('Lesson') : translateUi('Part')}
           </span>
-          <button type="button" aria-label={`Next ${unit}`} title={`Next ${unit}`} disabled={at === book.parts.length - 1} onClick={() => go(1)} className={step}>
+          <button type="button" aria-label={translateUi('Next {0}', [unit])} title={translateUi('Next {0}', [unit])} disabled={at === book.parts.length - 1} onClick={() => go(1)} className={step}>
             <ChevronRight size={17} aria-hidden />
           </button>
         </div>
@@ -50,10 +52,7 @@ export function BookBar({ media, book, live, className }: { media: Media; book: 
           aria-pressed={done}
           onClick={() => void setLessonDone(media.id, !done)}
           className={cx(pill, done ? 'border-sage/40 bg-sage-soft text-sage-text' : 'border-line bg-raised hover:border-line-strong')}
-        >
-          {done ? <CircleCheck size={15} aria-hidden /> : <Circle size={15} aria-hidden />}
-          Lesson done
-        </button>
+        ><UiText source={'{0}Lesson done'} values={[done ? <CircleCheck size={15} aria-hidden /> : <Circle size={15} aria-hidden />]} /></button>
       )}
     </div>
   );

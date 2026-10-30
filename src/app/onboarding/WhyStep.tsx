@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Brain, Briefcase, Check, Clapperboard, GraduationCap, Heart, Plane } from 'lucide-react';
@@ -25,6 +26,7 @@ interface WhyStepProps {
 
 /** Why, why are you here, huh? (5.1-2b): six tiles, any number, and a line that answers each pick. */
 export function WhyStep({ language, reasons, onReasons }: WhyStepProps) {
+  const translateUi = useUi();
   const [last, setLast] = useState<LearningReason | null>(null);
   const toggle = (id: LearningReason) => {
     const on = !reasons.includes(id);
@@ -35,9 +37,9 @@ export function WhyStep({ language, reasons, onReasons }: WhyStepProps) {
 
   return (
     <div>
-      <StepTitle title={`Why do you want to learn ${language}?`} body="Be honest, we won’t tell. Pick as many as you like." />
+      <StepTitle title={translateUi('Why do you want to learn {0}?', [language])} body="Be honest, we won’t tell. Pick as many as you like." />
 
-      <div role="group" aria-label="Why you're learning" className="grid grid-cols-3 gap-3">
+      <div role="group" aria-label={translateUi('Why you\'re learning')} className="grid grid-cols-3 gap-3">
         {REASONS.map((r) => {
           const on = reasons.includes(r.id);
           return (

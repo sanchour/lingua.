@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router';
@@ -21,6 +22,7 @@ const activeIndex = (pathname: string) =>
  * makes the glass solid (index.css).
  */
 export function TabBar() {
+  const translateUi = useUi();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const barRef = useRef<HTMLDivElement>(null);
@@ -101,7 +103,7 @@ export function TabBar() {
 
   return (
     <nav
-      aria-label="Sections"
+      aria-label={translateUi('Sections')}
       className="no-callout fixed inset-x-0 z-40 flex justify-center px-3"
       style={{ bottom: 'max(10px, calc(env(safe-area-inset-bottom) - 10px))' }}
     >

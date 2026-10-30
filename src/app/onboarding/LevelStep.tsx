@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { getLanguage } from '@/core/lang/languages';
 import { getLevel } from '@/core/lang/levels';
 import type { Level } from '@/core/lang/levels';
@@ -40,6 +41,7 @@ interface LevelStepProps {
  * line chosen shows its new words as the reader would, so skipping the common words shows on it.
  */
 export function LevelStep({ lang, level, seedKnown, onLevel, onSeedKnown }: LevelStepProps) {
+  const translateUi = useUi();
   const lines = SENTENCES[lang] ?? [];
   const chosen = lines.findIndex((s) => s.level === level);
   const top = getLevel(level).seedKnownTopN;
@@ -47,9 +49,9 @@ export function LevelStep({ lang, level, seedKnown, onLevel, onSeedKnown }: Leve
 
   return (
     <div>
-      <StepTitle title="So, how far along are you?" body={`Click the last line you understand without help. Real ${name}, easiest first. No peeking at a dictionary.`} />
+      <StepTitle title={translateUi('So, how far along are you?')} body={`Click the last line you understand without help. Real ${name}, easiest first. No peeking at a dictionary.`} />
 
-      <div role="radiogroup" aria-label="Your level" className="rounded-3xl border border-line bg-raised px-4 py-3 shadow-elev-1">
+      <div role="radiogroup" aria-label={translateUi('Your level')} className="rounded-3xl border border-line bg-raised px-4 py-3 shadow-elev-1">
         {[null, ...lines].map((s, i) => {
           // Row 0 is "starting from zero"; the others are the sentences, A1 up.
           const code: Level = s ? s.level : 'A0';
@@ -91,7 +93,7 @@ export function LevelStep({ lang, level, seedKnown, onLevel, onSeedKnown }: Leve
                       : s.text}
                   </span>
                 ) : (
-                  <span className={cx('block font-serif text-[19px] leading-snug', on ? 'text-ink' : 'text-ink-soft')}>Nothing yet: I’m starting from zero</span>
+                  <span className={cx('block font-serif text-[19px] leading-snug', on ? 'text-ink' : 'text-ink-soft')}><UiText source={'Nothing yet: I’m starting from zero'} /></span>
                 )}
                 {s && on && s.en && <span className="mt-0.5 block text-[13px] text-ink-faint">{s.en}</span>}
               </span>
@@ -108,12 +110,12 @@ export function LevelStep({ lang, level, seedKnown, onLevel, onSeedKnown }: Leve
             <span className="text-ink-soft"> · {CAN[level]}</span>
           </p>
           {top > 0 && (
-            <div className="flex shrink-0 items-center gap-3" title="You can unmark any word while reading.">
+            <div className="flex shrink-0 items-center gap-3" title={translateUi('You can unmark any word while reading.')}>
               <span className="text-right">
-                <span className="block text-[14px] font-semibold">Skip the {top.toLocaleString()} most common words</span>
-                <span className="block text-[12px] text-ink-faint">Only new words stay marked</span>
+                <span className="block text-[14px] font-semibold"><UiText source={'Skip the {0} most common words'} values={[top.toLocaleString()]} /></span>
+                <span className="block text-[12px] text-ink-faint"><UiText source={'Only new words stay marked'} /></span>
               </span>
-              <Switch checked={seedKnown} onChange={onSeedKnown} label={`Mark the ${top.toLocaleString()} most common words as known`} />
+              <Switch checked={seedKnown} onChange={onSeedKnown} label={translateUi('Mark the {0} most common words as known', [top.toLocaleString()])} />
             </div>
           )}
         </div>

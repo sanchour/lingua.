@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useId, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
@@ -48,6 +49,7 @@ function Scrim({ onClose }: { onClose: () => void }) {
 }
 
 function Header({ id, title, description, onClose }: { id: string; title: string; description?: string; onClose: () => void }) {
+  const translateUi = useUi();
   return (
     <header className="flex items-start gap-3 px-6 pt-4 pb-3">
       <div className="min-w-0 flex-1">
@@ -60,7 +62,7 @@ function Header({ id, title, description, onClose }: { id: string; title: string
           </p>
         )}
       </div>
-      <IconButton icon={X} label="Close" size="sm" variant="soft" onClick={onClose} showTooltip={false} className="-mr-1" />
+      <IconButton icon={X} label={translateUi('Close')} size="sm" variant="soft" onClick={onClose} showTooltip={false} className="-mr-1" />
     </header>
   );
 }

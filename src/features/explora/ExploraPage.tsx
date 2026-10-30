@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -28,6 +29,7 @@ const TABS: Array<RoomTab<Tab>> = [
  * films, radio stations and vocabulary decks for your active language and add them to the right tool.
  */
 export default function ExploraPage() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = language.id;
   const langName = getLanguage(lang)?.name ?? lang;
@@ -41,17 +43,15 @@ export default function ExploraPage() {
   return (
     <>
       <PageHeader
-        title="Explora"
+        title={translateUi('Explora')}
         eyebrow={`Discover content for your ${langName} tools · ${language.level}`}
         actions={
-          <Link to="/bibliotheca" className={buttonClasses('secondary', 'md')}>
-            <Library size={17} aria-hidden /> Bibliotheca
-          </Link>
+          <Link to="/bibliotheca" className={buttonClasses('secondary', 'md')}><UiText source={'{0} Bibliotheca'} values={[<Library size={17} aria-hidden />]} /></Link>
         }
       />
 
       <RoomTabs
-        label="Explora sections"
+        label={translateUi('Explora sections')}
         tabs={TABS}
         active={tab}
         end={
@@ -59,7 +59,7 @@ export default function ExploraPage() {
             <SearchInput
               value={deckQuery}
               onChange={setDeckQuery}
-              placeholder="Search ready-made decks"
+              placeholder={translateUi('Search ready-made decks')}
               onClose={() => setDeckQuery('')}
               className="h-10! w-64"
             />

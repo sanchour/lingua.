@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Check, LoaderCircle, Plus, SearchX } from 'lucide-react';
@@ -15,6 +16,7 @@ const cache = new Map<string, PodcastHit[]>();
 
 /** Search Apple's podcast directory, with starting points for the language being studied. */
 export function Discover({ lang, feeds }: { lang: string; feeds: Feed[] }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const suggestions = suggestedSearches(lang);
   const [query, setQuery] = useState('');
@@ -65,7 +67,7 @@ export function Discover({ lang, feeds }: { lang: string; feeds: Feed[] }) {
 
   return (
     <div>
-      <SearchInput value={query} onChange={setQuery} placeholder="Search podcasts" />
+      <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Search podcasts')} />
       <div className="mt-3 flex flex-wrap gap-1.5">
         {suggestions.map((s) => (
           <button
@@ -87,16 +89,13 @@ export function Discover({ lang, feeds }: { lang: string; feeds: Feed[] }) {
 
       <div className="mt-6">
         {error ? (
-          <p className="py-10 text-center text-sm text-ink-soft">The podcast directory couldn’t be reached. Check your connection.</p>
+          <p className="py-10 text-center text-sm text-ink-soft"><UiText source={'The podcast directory couldn’t be reached. Check your connection.'} /></p>
         ) : !hits ? (
           <div className="grid place-items-center py-14 text-ink-faint">
-            <LoaderCircle className="animate-spin" size={22} aria-label="Searching" />
+            <LoaderCircle className="animate-spin" size={22} aria-label={translateUi('Searching')} />
           </div>
         ) : hits.length === 0 ? (
-          <div className="flex flex-col items-center py-12 text-center text-ink-soft">
-            <SearchX size={26} className="mb-2 text-ink-faint" aria-hidden />
-            Nothing found for “{term}”.
-          </div>
+          <div className="flex flex-col items-center py-12 text-center text-ink-soft"><UiText source={'{0}Nothing found for “{1}”.'} values={[<SearchX size={26} className="mb-2 text-ink-faint" aria-hidden />, term]} /></div>
         ) : (
           // Explicit columns: a long one-line author would otherwise widen the column past the screen.
           <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -116,7 +115,7 @@ export function Discover({ lang, feeds }: { lang: string; feeds: Feed[] }) {
                     type="button"
                     onClick={() => void follow(hit)}
                     disabled={following === hit.feedUrl}
-                    aria-label={isFollowed ? `Open ${hit.title}` : `Follow ${hit.title}`}
+                    aria-label={isFollowed ? translateUi('Open {0}', [hit.title]) : translateUi('Follow {0}', [hit.title])}
                     className={cx(
                       'grid size-10 shrink-0 place-items-center rounded-full transition-[transform,background-color] duration-150 active:scale-90',
                       isFollowed ? 'bg-sage-soft text-sage-text' : 'bg-raised text-ink shadow-elev-1 hover:bg-sunken',

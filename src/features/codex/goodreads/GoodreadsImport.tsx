@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { Library } from 'lucide-react';
 import { Button, Card } from '@/design/primitives';
@@ -29,15 +30,13 @@ export function GoodreadsImport({ lang, onDone }: { lang: string; onDone?: () =>
   const { busy, choose } = useGoodreadsImport(lang, onDone);
   return (
     <Card className="max-w-2xl p-6">
-      <p className="font-serif text-xl font-semibold">Bring your Goodreads shelves</p>
+      <p className="font-serif text-xl font-semibold"><UiText source={'Bring your Goodreads shelves'} /></p>
       <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-[14.5px] leading-relaxed text-ink-soft">
-        <li>On goodreads.com, open My Books → Import and export.</li>
-        <li>Choose “Export Library” and download the CSV file.</li>
-        <li>Choose it below. Your shelves, ratings and dates come along; add an EPUB to any book to read it here.</li>
+        <li><UiText source={'On goodreads.com, open My Books → Import and export.'} /></li>
+        <li><UiText source={'Choose “Export Library” and download the CSV file.'} /></li>
+        <li><UiText source={'Choose it below. Your shelves, ratings and dates come along; add an EPUB to any book to read it here.'} /></li>
       </ol>
-      <Button className="mt-5" icon={Library} loading={busy} onClick={() => void choose()}>
-        Choose the Goodreads CSV
-      </Button>
+      <Button className="mt-5" icon={Library} loading={busy} onClick={() => void choose()}><UiText source={'Choose the Goodreads CSV'} /></Button>
     </Card>
   );
 }

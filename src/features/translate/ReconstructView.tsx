@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState, useEffect } from 'react';
 import { ArrowRight, CheckCircle2, RotateCcw, Shuffle, Sparkles, Undo2, XCircle } from 'lucide-react';
 import { Card, Button, Badge } from '@/design/primitives';
@@ -10,6 +11,7 @@ interface ReconstructViewProps {
 }
 
 export function ReconstructView({ selectedLang }: ReconstructViewProps) {
+  const translateUi = useUi();
   const availableTasks = TRANSLATION_PAIRS.filter((p) => p.toLang === selectedLang);
   const [taskIndex, setTaskIndex] = useState(0);
 
@@ -36,9 +38,7 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
 
   if (!currentTask) {
     return (
-      <Card className="p-8 text-center text-sand-500">
-        No sentences available for reconstruction in this language.
-      </Card>
+      <Card className="p-8 text-center text-sand-500"><UiText source={'No sentences available for reconstruction in this language.'} /></Card>
     );
   }
 
@@ -87,9 +87,7 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
       <div className="flex flex-wrap items-center justify-between gap-3 bg-sand-50/70 p-3 rounded-xl border border-sand-200/60 dark:bg-sand-900/30 dark:border-sand-800/60">
         <div className="flex items-center gap-2">
           <Shuffle className="w-4 h-4 text-terracotta-600 dark:text-terracotta-400" />
-          <span className="text-xs font-semibold text-sand-700 dark:text-sand-300">
-            Translate, Then Reconstruct the Original
-          </span>
+          <span className="text-xs font-semibold text-sand-700 dark:text-sand-300"><UiText source={'Translate, Then Reconstruct the Original'} /></span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -100,9 +98,7 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
                 ? 'bg-terracotta-500 text-white font-bold'
                 : 'bg-sand-200 text-sand-600 dark:bg-sand-800 dark:text-sand-400',
             )}
-          >
-            1. Translate
-          </span>
+          ><UiText source={'1. Translate'} /></span>
           <span className="text-sand-400">→</span>
           <span
             className={cx(
@@ -111,9 +107,7 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
                 ? 'bg-terracotta-500 text-white font-bold'
                 : 'bg-sand-200 text-sand-600 dark:bg-sand-800 dark:text-sand-400',
             )}
-          >
-            2. Rebuild Original
-          </span>
+          ><UiText source={'2. Rebuild Original'} /></span>
         </div>
       </div>
 
@@ -121,23 +115,19 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
         {phase === 1 ? (
           <div className="space-y-5">
             <div className="space-y-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-sand-400">
-                Phase 1: Translate into {selectedLang.toUpperCase()}
-              </span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-sand-400"><UiText source={'Phase 1: Translate into {0}'} values={[selectedLang.toUpperCase()]} /></span>
               <p className="font-serif text-2xl text-sand-900 dark:text-sand-100 p-4 bg-sand-50/50 rounded-xl dark:bg-sand-900/30">
                 "{currentTask.source}"
               </p>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-sand-600 dark:text-sand-400">
-                Your translation into {selectedLang.toUpperCase()}:
-              </label>
+              <label className="block text-xs font-semibold text-sand-600 dark:text-sand-400"><UiText source={'Your translation into {0}:'} values={[selectedLang.toUpperCase()]} /></label>
               <textarea
                 rows={2}
                 value={translationInput}
                 onChange={(e) => setTranslationInput(e.target.value)}
-                placeholder={`Type in ${selectedLang.toUpperCase()}...`}
+                placeholder={translateUi('Type in {0}...', [selectedLang.toUpperCase()])}
                 className="w-full p-3 font-serif text-lg rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-terracotta-500/30 focus:border-terracotta-500 dark:border-sand-700 dark:bg-sand-950 dark:text-sand-100"
               />
             </div>
@@ -147,33 +137,24 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
                 variant="primary"
                 onClick={handleTranslateSubmit}
                 disabled={!translationInput.trim()}
-              >
-                Proceed to Rebuild Original
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
+              ><UiText source={'Proceed to Rebuild Original{0}'} values={[<ArrowRight className="w-4 h-4 ml-1" />]} /></Button>
             </div>
           </div>
         ) : (
           <div className="space-y-6">
             <div className="space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-sand-400">
-                  Phase 2: Reconstruct Original from Memory & Translation
-                </span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-sand-400"><UiText source={'Phase 2: Reconstruct Original from Memory & Translation'} /></span>
                 <Badge tone="neutral">
-                  <span className="text-[10px] font-mono">English hidden</span>
+                  <span className="text-[10px] font-mono"><UiText source={'English hidden'} /></span>
                 </Badge>
               </div>
-              <p className="text-xs text-sand-500">
-                Using your translation below, tap the scrambled word tiles in exact order to rebuild the original English prompt.
-              </p>
+              <p className="text-xs text-sand-500"><UiText source={'Using your translation below, tap the scrambled word tiles in exact order to rebuild the original English prompt.'} /></p>
             </div>
 
             {/* Translation memory anchor */}
             <div className="p-4 rounded-xl bg-terracotta-50/50 border border-terracotta-200/60 dark:bg-terracotta-950/20 dark:border-terracotta-900/40 space-y-1">
-              <span className="text-xs font-semibold text-terracotta-800 dark:text-terracotta-300">
-                Your Translation ({selectedLang.toUpperCase()}):
-              </span>
+              <span className="text-xs font-semibold text-terracotta-800 dark:text-terracotta-300"><UiText source={'Your Translation ({0}):'} values={[selectedLang.toUpperCase()]} /></span>
               <p className="font-serif text-xl text-sand-900 dark:text-sand-100">
                 "{translationInput}"
               </p>
@@ -182,30 +163,24 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
             {/* Assembled sentence drop area */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs font-semibold text-sand-600 dark:text-sand-400">
-                <span>Reconstructed English Sentence:</span>
+                <span><UiText source={'Reconstructed English Sentence:'} /></span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleUndo}
                     disabled={assembledTiles.length === 0}
                     className="text-xs text-sand-500 hover:text-sand-800 disabled:opacity-40 inline-flex items-center gap-1"
-                  >
-                    <Undo2 className="w-3.5 h-3.5" /> Undo
-                  </button>
+                  ><UiText source={'{0} Undo'} values={[<Undo2 className="w-3.5 h-3.5" />]} /></button>
                   <button
                     onClick={handleResetTiles}
                     disabled={assembledTiles.length === 0}
                     className="text-xs text-sand-500 hover:text-sand-800 disabled:opacity-40 inline-flex items-center gap-1"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" /> Reset
-                  </button>
+                  ><UiText source={'{0} Reset'} values={[<RotateCcw className="w-3.5 h-3.5" />]} /></button>
                 </div>
               </div>
 
               <div className="min-h-[64px] p-4 rounded-xl border border-dashed border-sand-300 bg-sand-50/50 dark:border-sand-700 dark:bg-sand-900/20 flex flex-wrap gap-2 items-center">
                 {assembledTiles.length === 0 ? (
-                  <span className="text-xs text-sand-400 italic">
-                    Tap words below to assemble the original English sentence in order...
-                  </span>
+                  <span className="text-xs text-sand-400 italic"><UiText source={'Tap words below to assemble the original English sentence in order...'} /></span>
                 ) : (
                   assembledTiles.map((word, i) => (
                     <span
@@ -221,9 +196,7 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
 
             {/* Available scrambled word tiles */}
             <div className="space-y-2">
-              <span className="text-xs font-semibold text-sand-500 uppercase font-mono block">
-                Available Word Tiles:
-              </span>
+              <span className="text-xs font-semibold text-sand-500 uppercase font-mono block"><UiText source={'Available Word Tiles:'} /></span>
               <div className="flex flex-wrap gap-2">
                 {availableTiles.map((word, idx) => (
                   <button
@@ -255,14 +228,14 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
                 <div className="flex-1 text-sm font-medium">
                   {reconstructResult === 'success' ? (
                     <div>
-                      <span>Perfect reconstruction! Both directions aligned successfully.</span>
+                      <span><UiText source={'Perfect reconstruction! Both directions aligned successfully.'} /></span>
                       <div className="font-serif text-base font-semibold mt-1">
                         "{currentTask.source}" ↔ "{currentTask.expected}"
                       </div>
                     </div>
                   ) : (
                     <div>
-                      <span>Not quite in original word order. Try adjusting the tiles.</span>
+                      <span><UiText source={'Not quite in original word order. Try adjusting the tiles.'} /></span>
                     </div>
                   )}
                 </div>
@@ -271,24 +244,16 @@ export function ReconstructView({ selectedLang }: ReconstructViewProps) {
 
             {/* Footer Buttons */}
             <div className="flex justify-between items-center pt-2">
-              <Button variant="secondary" onClick={() => setPhase(1)}>
-                Back to Translation
-              </Button>
+              <Button variant="secondary" onClick={() => setPhase(1)}><UiText source={'Back to Translation'} /></Button>
 
               {reconstructResult === 'success' ? (
-                <Button variant="primary" onClick={handleNextTask}>
-                  Next Sentence
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
+                <Button variant="primary" onClick={handleNextTask}><UiText source={'Next Sentence{0}'} values={[<ArrowRight className="w-4 h-4 ml-1" />]} /></Button>
               ) : (
                 <Button
                   variant="primary"
                   onClick={handleVerifyReconstruction}
                   disabled={availableTiles.length > 0}
-                >
-                  Verify Reconstructed Sentence
-                  <Sparkles className="w-4 h-4 ml-1" />
-                </Button>
+                ><UiText source={'Verify Reconstructed Sentence{0}'} values={[<Sparkles className="w-4 h-4 ml-1" />]} /></Button>
               )}
             </div>
           </div>

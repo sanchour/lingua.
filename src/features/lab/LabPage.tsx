@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { Activity, ClipboardCopy, Cpu, LayoutGrid, PenLine, Puzzle, Workflow } from 'lucide-react';
@@ -38,6 +39,7 @@ const TABS: Array<{ id: Tab; name: string; icon: LucideIcon; what: string }> = [
  * look and the plan pretended, which are the real settings.
  */
 export default function LabPage() {
+  const translateUi = useUi();
   const { settings, language } = useApp();
   const results = useLabReport((s) => s.results);
   const notes = useDesignNotes((s) => s.notes);
@@ -67,14 +69,12 @@ export default function LabPage() {
 
   return (
     <>
-      <BackLink to="/settings/developer">Developer</BackLink>
+      <BackLink to="/settings/developer"><UiText source={'Developer'} /></BackLink>
       <PageHeader
-        title="Device lab"
+        title={translateUi('Device lab')}
         eyebrow="Developer"
         actions={
-          <Button variant="secondary" icon={ClipboardCopy} onClick={() => void copyReport()}>
-            Copy report
-          </Button>
+          <Button variant="secondary" icon={ClipboardCopy} onClick={() => void copyReport()}><UiText source={'Copy report'} /></Button>
         }
       />
       <dl className="mb-6 flex flex-wrap gap-x-6 gap-y-1 rounded-2xl border border-line bg-sunken/50 px-4 py-2.5 font-mono text-[12px]">
@@ -86,7 +86,7 @@ export default function LabPage() {
         ))}
       </dl>
       <div className="grid grid-cols-[220px_minmax(0,1fr)] items-start gap-8">
-        <nav aria-label="Lab" className="sticky top-6 space-y-0.5">
+        <nav aria-label={translateUi('Lab')} className="sticky top-6 space-y-0.5">
           {TABS.map((t) => {
             const Icon = t.icon;
             const on = t.id === tab;
@@ -151,7 +151,7 @@ export default function LabPage() {
           rows={10}
           onFocus={(e) => e.currentTarget.select()}
           className="mt-4 w-full rounded-xl border border-line bg-raised p-3 font-mono text-xs"
-          aria-label="Device report"
+          aria-label={translateUi('Device report')}
         />
       )}
     </>

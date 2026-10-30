@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -47,6 +48,7 @@ function useWakeLock(on: boolean) {
  * and a few big controls that are easy to hit without looking. Works with the screen locked too.
  */
 export default function CommutePage() {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const media = usePlayer((s) => s.media);
   const status = usePlayer((s) => s.status);
@@ -77,14 +79,14 @@ export default function CommutePage() {
   const close = () => (window.history.length > 1 ? navigate(-1) : navigate(sonusHome()));
   const header = (
     <header className="relative flex items-center gap-2 px-3 pt-2">
-      <button type="button" aria-label="Leave commute mode" onClick={close} className="grid size-12 place-items-center rounded-2xl text-ink-soft">
+      <button type="button" aria-label={translateUi('Leave commute mode')} onClick={close} className="grid size-12 place-items-center rounded-2xl text-ink-soft">
         <ChevronDown size={26} aria-hidden />
       </button>
-      <p className="min-w-0 flex-1 truncate text-center text-[13px] font-bold tracking-[0.12em] text-ink-faint uppercase">Commute</p>
+      <p className="min-w-0 flex-1 truncate text-center text-[13px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Commute'} /></p>
       <button
         type="button"
-        aria-label={dark ? 'Switch to Paper (light)' : 'Switch to Nocturne (dark)'}
-        title={dark ? 'Paper' : 'Nocturne'}
+        aria-label={dark ? translateUi('Switch to Paper (light)') : translateUi('Switch to Nocturne (dark)')}
+        title={dark ? translateUi('Paper') : translateUi('Nocturne')}
         onClick={flipTheme}
         className="grid size-12 place-items-center rounded-2xl text-ink-soft transition-colors hover:bg-sunken"
       >
@@ -93,8 +95,8 @@ export default function CommutePage() {
       <button
         type="button"
         aria-pressed={awake}
-        aria-label="Keep the screen on"
-        title="Keep the screen on"
+        aria-label={translateUi('Keep the screen on')}
+        title={translateUi('Keep the screen on')}
         onClick={() => {
           if (!('wakeLock' in navigator)) return toast('This browser can’t keep the screen on.');
           setAwake((v) => !v);
@@ -111,11 +113,9 @@ export default function CommutePage() {
     return (
       <div className="grid min-h-dvh place-items-center bg-bg p-6 text-center">
         <div>
-          <p className="font-serif text-2xl font-semibold">Nothing is playing</p>
-          <p className="mt-2 text-ink-soft">Start an episode in Sonus, then come back for the big controls.</p>
-          <Link to={sonusHome()} className="hit mt-5 inline-block font-semibold text-accent-text">
-            Go to Sonus
-          </Link>
+          <p className="font-serif text-2xl font-semibold"><UiText source={'Nothing is playing'} /></p>
+          <p className="mt-2 text-ink-soft"><UiText source={'Start an episode in Sonus, then come back for the big controls.'} /></p>
+          <Link to={sonusHome()} className="hit mt-5 inline-block font-semibold text-accent-text"><UiText source={'Go to Sonus'} /></Link>
         </div>
       </div>
     );
@@ -161,36 +161,36 @@ export default function CommutePage() {
 
       <div className="glass relative mx-auto w-[calc(100%-2.5rem)] max-w-xl rounded-[36px] p-4">
         <div className="grid grid-cols-3 items-center gap-3">
-          <BigButton label={hasCues ? 'Previous sentence' : `Back ${back} seconds`} onClick={() => (hasCues ? previousSentence() : skip(-back))}>
+          <BigButton label={hasCues ? translateUi('Previous sentence') : translateUi('Back {0} seconds', [back])} onClick={() => (hasCues ? previousSentence() : skip(-back))}>
             {hasCues ? <Undo2 size={30} aria-hidden /> : <RotateCcw size={30} aria-hidden />}
           </BigButton>
           <button
             type="button"
-            aria-label={playing ? 'Pause' : 'Play'}
+            aria-label={playing ? translateUi('Pause') : translateUi('Play')}
             onClick={toggle}
             className="mx-auto grid size-[104px] place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-3 ring-1 ring-white/30 transition-transform duration-200 hover:scale-105 active:scale-90"
           >
             {playing ? <Pause size={42} className="fill-current" aria-hidden /> : <Play size={42} className="translate-x-1 fill-current" aria-hidden />}
           </button>
-          <BigButton label={hasCues ? 'Next sentence' : `Forward ${fwd} seconds`} onClick={() => (hasCues ? nextSentence() : skip(fwd))}>
+          <BigButton label={hasCues ? translateUi('Next sentence') : translateUi('Forward {0} seconds', [fwd])} onClick={() => (hasCues ? nextSentence() : skip(fwd))}>
             {hasCues ? <Undo2 size={30} className="-scale-x-100" aria-hidden /> : <RotateCw size={30} aria-hidden />}
           </BigButton>
         </div>
         <div className="mt-4 grid grid-cols-3 gap-3">
-          <BigButton label="Hear this sentence again" onClick={replaySentence} disabled={!hasCues} small>
-            <span className="text-[15px] font-bold">Again</span>
+          <BigButton label={translateUi('Hear this sentence again')} onClick={replaySentence} disabled={!hasCues} small>
+            <span className="text-[15px] font-bold"><UiText source={'Again'} /></span>
           </BigButton>
           <BigButton
-            label={`Repeat each sentence: ${repeat === 1 ? 'off' : `${repeat} times`}`}
+            label={translateUi('Repeat each sentence: {0}', [repeat === 1 ? 'off' : `${repeat} times`])}
             onClick={() => toggleRepeat()}
             disabled={!hasCues}
             active={repeat > 1}
             small
           >
             <Repeat size={18} aria-hidden />
-            <span className="text-[15px] font-bold">{repeat > 1 ? `${repeat}×` : 'Repeat'}</span>
+            <span className="text-[15px] font-bold">{repeat > 1 ? `${repeat}×` : translateUi('Repeat')}</span>
           </BigButton>
-          <BigButton label={`Speed ${rateLabel(rate)}, tap for ${rateLabel(nextRate)}`} onClick={() => setRate(nextRate)} small>
+          <BigButton label={translateUi('Speed {0}, tap for {1}', [rateLabel(rate), rateLabel(nextRate)])} onClick={() => setRate(nextRate)} small>
             <span className="text-[15px] font-bold tabular-nums">{rateLabel(rate)}</span>
           </BigButton>
         </div>
@@ -201,6 +201,7 @@ export default function CommutePage() {
 
 /** Commute mode for a station: what's on (or what's said) in large type, your stations one after another. */
 function RadioCommute({ header }: { header: ReactNode }) {
+  const translateUi = useUi();
   const media = usePlayer((s) => s.media)!;
   const status = usePlayer((s) => s.status);
   const nowPlaying = usePlayer((s) => s.nowPlaying);
@@ -223,7 +224,7 @@ function RadioCommute({ header }: { header: ReactNode }) {
       <main className="relative mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-7 py-6 text-center">
         <Artwork title={media.title} coverUrl={media.coverUrl} className="w-[min(36vw,160px)] shadow-elev-2" rounded="rounded-3xl" />
         <p className="mt-5 font-serif text-[clamp(24px,6.4vw,36px)] leading-tight font-semibold">{media.title}</p>
-        <p className="mt-1 text-[15px] text-ink-soft">{status === 'loading' ? 'Tuning in…' : (nowPlaying ?? media.artist)}</p>
+        <p className="mt-1 text-[15px] text-ink-soft">{status === 'loading' ? translateUi('Tuning in…') : (nowPlaying ?? media.artist)}</p>
         <AnimatePresence mode="wait" initial={false}>
           {live && line && (
             <motion.p key={line} lang={media.lang} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={fade} className="mt-8 font-serif text-[clamp(22px,5.6vw,32px)] leading-snug font-semibold">
@@ -234,29 +235,29 @@ function RadioCommute({ header }: { header: ReactNode }) {
       </main>
       <div className="glass relative mx-auto w-[calc(100%-2.5rem)] max-w-xl rounded-[36px] p-4">
         <div className="grid grid-cols-3 items-center gap-3">
-          <BigButton label="Your previous station" onClick={() => step(-1)} disabled={stations.length < 2}>
+          <BigButton label={translateUi('Your previous station')} onClick={() => step(-1)} disabled={stations.length < 2}>
             <SkipBack size={30} aria-hidden />
           </BigButton>
           <button
             type="button"
-            aria-label={playing ? 'Pause' : 'Play'}
+            aria-label={playing ? translateUi('Pause') : translateUi('Play')}
             onClick={toggle}
             className="mx-auto grid size-[104px] place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-3 ring-1 ring-white/30 transition-transform duration-200 hover:scale-105 active:scale-90"
           >
             {status === 'loading' ? <LoaderCircle size={40} className="animate-spin" aria-hidden /> : playing ? <Pause size={42} className="fill-current" aria-hidden /> : <Play size={42} className="translate-x-1 fill-current" aria-hidden />}
           </button>
-          <BigButton label="Your next station" onClick={() => step(1)} disabled={stations.length < 2}>
+          <BigButton label={translateUi('Your next station')} onClick={() => step(1)} disabled={stations.length < 2}>
             <SkipForward size={30} aria-hidden />
           </BigButton>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <BigButton label={saved?.favorite ? 'In your stations' : 'Add to your stations'} onClick={() => saved && void toggleFavorite(saved, media.lang)} disabled={!saved} active={Boolean(saved?.favorite)} small>
+          <BigButton label={saved?.favorite ? translateUi('In your stations') : translateUi('Add to your stations')} onClick={() => saved && void toggleFavorite(saved, media.lang)} disabled={!saved} active={Boolean(saved?.favorite)} small>
             <Heart size={18} className={saved?.favorite ? 'fill-current' : undefined} aria-hidden />
-            <span className="text-[15px] font-bold">{saved?.favorite ? 'Saved' : 'Save'}</span>
+            <span className="text-[15px] font-bold">{saved?.favorite ? translateUi('Saved') : translateUi('Save')}</span>
           </BigButton>
-          <BigButton label={live ? 'Stop writing out what’s said' : 'Write out what’s said'} onClick={() => setLiveTranscript(!live)} active={live} small>
+          <BigButton label={live ? translateUi('Stop writing out what’s said') : translateUi('Write out what’s said')} onClick={() => setLiveTranscript(!live)} active={live} small>
             <Type size={18} aria-hidden />
-            <span className="text-[15px] font-bold">Live text</span>
+            <span className="text-[15px] font-bold"><UiText source={'Live text'} /></span>
           </BigButton>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -305,6 +306,7 @@ export const TONE: Record<Step['tone'], string> = {
 };
 
 function TodayPanel({ lang, level, goal, enjoys }: { lang: string; level: Parameters<typeof curatedPrompt>[1]; goal: number; enjoys: Enjoyment[] }) {
+  const translateUi = useUi();
   const today = useToday(lang);
   const steps = useNextSteps(lang, level, enjoys);
   const minutes = studyMinutes(today);
@@ -323,16 +325,16 @@ function TodayPanel({ lang, level, goal, enjoys }: { lang: string; level: Parame
       <div className="flex items-center gap-5 sm:gap-7">
         <GoalRing value={minutes} goal={goal} size={112} />
         <div className="min-w-0">
-          <p className={label}>Today</p>
+          <p className={label}><UiText source={'Today'} /></p>
           <p className="mt-1 font-serif text-[22px] leading-snug font-semibold sm:text-2xl">
-            {minutes === 0 ? 'A fresh page.' : left === 0 ? 'Goal reached. Lovely.' : `${left} ${left === 1 ? 'minute' : 'minutes'} to your goal`}
+            {minutes === 0 ? translateUi('A fresh page.') : left === 0 ? translateUi('Goal reached. Lovely.') : translateUi('{0} {1} to your goal', [left, left === 1 ? 'minute' : 'minutes'])}
           </p>
-          <p className="mt-1 text-[14px] text-ink-soft">{parts.length ? parts.join(' · ') : `Read, listen, watch or write for ${goal} minutes.`}</p>
+          <p className="mt-1 text-[14px] text-ink-soft">{parts.length ? parts.join(' · ') : translateUi('Read, listen, watch or write for {0} minutes.', [goal])}</p>
         </div>
       </div>
 
       <div className="mt-6 border-t border-line pt-4">
-        <p className={cx(label, 'mb-1')}>Next up</p>
+        <p className={cx(label, 'mb-1')}><UiText source={'Next up'} /></p>
         <ul className="-mx-2">
           {(steps ?? []).map((s) => (
             <li key={s.key}>
@@ -369,19 +371,18 @@ export const FIRST: Array<{ key: keyof HomeFacts['firstSteps']; title: string; t
 ];
 
 export function FirstSteps({ steps }: { steps: HomeFacts['firstSteps'] }) {
+  const translateUi = useUi();
   const done = FIRST.filter((f) => steps[f.key]).length;
   return (
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center gap-3">
         <div className="min-w-0 flex-1">
-          <p className={label}>First steps</p>
-          <p className="mt-0.5 text-[14px] text-ink-soft">
-            {done} of {FIRST.length} done: one turn around every room.
-          </p>
+          <p className={label}><UiText source={'First steps'} /></p>
+          <p className="mt-0.5 text-[14px] text-ink-soft"><UiText source={'{0} of {1} done: one turn around every room.'} values={[done, FIRST.length]} /></p>
         </div>
         <button
           type="button"
-          aria-label="Hide first steps"
+          aria-label={translateUi('Hide first steps')}
           onClick={() => void patchSetting('ui', { firstStepsHidden: true })}
           className="grid size-9 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-surface hover:text-ink"
         >
@@ -412,6 +413,7 @@ export function FirstSteps({ steps }: { steps: HomeFacts['firstSteps'] }) {
 const WEEKDAY = new Intl.DateTimeFormat('en', { weekday: 'narrow' });
 
 export function WeekCard({ facts, goal }: { facts?: HomeFacts; goal: number }) {
+  const translateUi = useUi();
   const week = facts?.week ?? [];
   let streak = 0;
   for (let i = week.length - 1; i >= 0; i--) {
@@ -422,16 +424,14 @@ export function WeekCard({ facts, goal }: { facts?: HomeFacts; goal: number }) {
   return (
     <Card className="p-5 sm:p-6">
       <div className="flex items-baseline justify-between gap-3">
-        <p className={label}>This week</p>
+        <p className={label}><UiText source={'This week'} /></p>
         {streak > 0 ? (
-          <p className="flex items-center gap-1 text-[13px] font-semibold text-accent-text">
-            <Flame size={14} aria-hidden /> {streak} {streak === 1 ? 'day' : 'days'} in a row
-          </p>
+          <p className="flex items-center gap-1 text-[13px] font-semibold text-accent-text"><UiText source={'{0} {1} {2} in a row'} values={[<Flame size={14} aria-hidden />, streak, streak === 1 ? 'day' : 'days']} /></p>
         ) : (
-          <p className="text-[13px] font-semibold text-ink-faint">{goal} min a day</p>
+          <p className="text-[13px] font-semibold text-ink-faint"><UiText source={'{0} min a day'} values={[goal]} /></p>
         )}
       </div>
-      <div className="mt-4 flex h-24 items-end justify-between gap-2" role="img" aria-label={`Minutes studied over the last seven days: ${week.map((d) => Math.round(d.minutes)).join(', ')}`}>
+      <div className="mt-4 flex h-24 items-end justify-between gap-2" role="img" aria-label={translateUi('Minutes studied over the last seven days: {0}', [week.map((d) => Math.round(d.minutes)).join(', ')])}>
         {week.map((d, i) => {
           const today = i === week.length - 1;
           const h = d.minutes ? Math.max(8, (d.minutes / max) * 100) : 0;
@@ -462,7 +462,7 @@ function NumbersCard({ lang }: { lang: string }) {
   return (
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center justify-between">
-        <p className={label}>At a glance</p>
+        <p className={label}><UiText source={'At a glance'} /></p>
         <Link to="/ratio" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
           Ratio <ArrowRight size={14} aria-hidden />
         </Link>
@@ -482,6 +482,7 @@ function NumbersCard({ lang }: { lang: string }) {
 const DATE = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'long' });
 
 function MilestoneCard({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const journey = useJourney();
   const latest = journey?.find((e) => e.lang === lang || e.lang === '*');
   if (!journey) return null;
@@ -490,8 +491,8 @@ function MilestoneCard({ lang }: { lang: string }) {
       <Card className="flex items-center gap-4 p-5 transition-colors hover:bg-surface sm:p-6">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-sage-soft text-sage-text">{latest ? <Trophy size={20} aria-hidden /> : <Sprout size={20} aria-hidden />}</span>
         <span className="min-w-0 flex-1">
-          <span className={label}>{latest ? `Milestone · ${DATE.format(latest.at)}` : 'Your journey'}</span>
-          <span className="mt-0.5 block truncate font-serif text-[17px] font-semibold">{latest ? latest.title : 'Milestones gather here as you go'}</span>
+          <span className={label}>{latest ? translateUi('Milestone · {0}', [DATE.format(latest.at)]) : translateUi('Your journey')}</span>
+          <span className="mt-0.5 block truncate font-serif text-[17px] font-semibold">{latest ? latest.title : translateUi('Milestones gather here as you go')}</span>
         </span>
         <ChevronRight size={18} className="shrink-0 text-ink-faint" aria-hidden />
       </Card>

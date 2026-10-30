@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
@@ -36,10 +37,8 @@ export default function StarterPage() {
   if (!spec) {
     return (
       <div className="py-20 text-center">
-        <p className="font-serif text-xl">That ready-made deck doesn’t exist.</p>
-        <Link to="/thesaurus?tab=discover" className="hit mt-4 inline-block font-semibold text-accent-text">
-          Back to Discover
-        </Link>
+        <p className="font-serif text-xl"><UiText source={'That ready-made deck doesn’t exist.'} /></p>
+        <Link to="/thesaurus?tab=discover" className="hit mt-4 inline-block font-semibold text-accent-text"><UiText source={'Back to Discover'} /></Link>
       </div>
     );
   }
@@ -47,6 +46,7 @@ export default function StarterPage() {
 }
 
 function Booklet({ spec }: { spec: StarterSpec }) {
+  const translateUi = useUi();
   const { language } = useApp();
   const lang = language.id;
   const navigate = useNavigate();
@@ -100,7 +100,7 @@ function Booklet({ spec }: { spec: StarterSpec }) {
 
   return (
     <div className="pb-32">
-      <BackLink to="/thesaurus?tab=discover">Discover</BackLink>
+      <BackLink to="/thesaurus?tab=discover"><UiText source={'Discover'} /></BackLink>
 
       <header className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
         <motion.span
@@ -113,8 +113,8 @@ function Booklet({ spec }: { spec: StarterSpec }) {
           {Icon ? <Icon size={40} strokeWidth={1.6} aria-hidden /> : <span className="font-serif text-[30px] font-semibold tabular-nums">{to >= 1000 ? `${to / 1000}k` : to}</span>}
         </motion.span>
         <div className="min-w-0 flex-1">
-          <p className="mb-1 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{frequency ? `Ready-made · ${stage?.name ?? 'Most common words'}` : 'Ready-made · Theme'}</p>
-          <h1 className="font-serif text-[34px] leading-tight font-semibold tracking-tight sm:text-[40px]">{frequency ? `Top ${to.toLocaleString('en')}` : theme?.name}</h1>
+          <p className="mb-1 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">{frequency ? translateUi('Ready-made · {0}', [stage?.name ?? 'Most common words']) : translateUi('Ready-made · Theme')}</p>
+          <h1 className="font-serif text-[34px] leading-tight font-semibold tracking-tight sm:text-[40px]">{frequency ? translateUi('Top {0}', [to.toLocaleString('en')]) : theme?.name}</h1>
           {blurb && <p className="mt-1.5 max-w-xl text-[15px] leading-relaxed text-ink-soft">{blurb}</p>}
         </div>
       </header>
@@ -122,20 +122,13 @@ function Booklet({ spec }: { spec: StarterSpec }) {
       {items && (
         <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-line/70 bg-surface p-4 sm:flex-row sm:items-center sm:p-5">
           <div className="min-w-0 flex-1">
-            <p className="text-[14px] font-semibold">
-              {usable.length.toLocaleString()} words
-              {known > 0 && <span className="text-sage-text"> · {known.toLocaleString()} you know</span>}
-              {inDeck > 0 && <span className="text-accent-text"> · {inDeck.toLocaleString()} already in your decks</span>}
-            </p>
+            <p className="text-[14px] font-semibold"><UiText source={'{0} words{1}{2}'} values={[usable.length.toLocaleString(), known > 0 && <span className="text-sage-text"><UiText source={' · {0} you know'} values={[known.toLocaleString()]} /></span>, inDeck > 0 && <span className="text-accent-text"><UiText source={' · {0} already in your decks'} values={[inDeck.toLocaleString()]} /></span>]} /></p>
             <div className="mt-2 h-2 max-w-sm overflow-hidden rounded-full bg-sunken">
               <motion.div className="h-full origin-left rounded-full bg-sage" initial={{ scaleX: 0 }} animate={{ scaleX: knownShare }} transition={{ ...spring.gentle, delay: 0.15 }} />
             </div>
           </div>
           {!deck && known > 0 && (
-            <label className="flex cursor-pointer items-center gap-3 text-[14px] font-semibold">
-              Leave out words I know
-              <Switch checked={skipKnown} onChange={setSkipKnown} label="Leave out words I know" />
-            </label>
+            <label className="flex cursor-pointer items-center gap-3 text-[14px] font-semibold"><UiText source={'Leave out words I know{0}'} values={[<Switch checked={skipKnown} onChange={setSkipKnown} label={translateUi('Leave out words I know')} />]} /></label>
           )}
         </div>
       )}
@@ -172,12 +165,12 @@ function Booklet({ spec }: { spec: StarterSpec }) {
                     </p>
                   </div>
                   {item.known && !item.inDeck ? (
-                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-sage-soft text-sage-text" title="You know this word">
-                      <Check size={14} strokeWidth={3} aria-label="Known" />
+                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-sage-soft text-sage-text" title={translateUi('You know this word')}>
+                      <Check size={14} strokeWidth={3} aria-label={translateUi('Known')} />
                     </span>
                   ) : item.inDeck ? (
-                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-text" title="Already in your decks">
-                      <Layers size={13} aria-label="In your decks" />
+                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-text" title={translateUi('Already in your decks')}>
+                      <Layers size={13} aria-label={translateUi('In your decks')} />
                     </span>
                   ) : null}
                 </motion.li>
@@ -187,9 +180,7 @@ function Booklet({ spec }: { spec: StarterSpec }) {
         )}
         {usable.length > shown && (
           <div className="mt-6 flex justify-center">
-            <Button variant="secondary" onClick={() => setShown((n) => n + PAGE)}>
-              Show {Math.min(PAGE, usable.length - shown).toLocaleString()} more words
-            </Button>
+            <Button variant="secondary" onClick={() => setShown((n) => n + PAGE)}><UiText source={'Show {0} more words'} values={[Math.min(PAGE, usable.length - shown).toLocaleString()]} /></Button>
           </div>
         )}
       </div>
@@ -198,19 +189,15 @@ function Booklet({ spec }: { spec: StarterSpec }) {
         <div className="pointer-events-auto flex w-full max-w-2xl items-center gap-2 rounded-3xl border border-line/80 bg-raised/95 p-2 shadow-elev-3 backdrop-blur-xl">
           {deck ? (
             <>
-              <p className="min-w-0 flex-1 truncate pl-3 text-[14px] font-semibold text-sage-text">In your Thesaurus</p>
+              <p className="min-w-0 flex-1 truncate pl-3 text-[14px] font-semibold text-sage-text"><UiText source={'In your Thesaurus'} /></p>
               <AddStarterMenu lang={lang} spec={spec} skipKnown={skipKnown} trigger="button" />
-              <Button variant="secondary" size="lg" onClick={() => navigate(`/thesaurus/deck/${deck.id}`)}>
-                Open deck
-              </Button>
-              <Button size="lg" icon={Layers} onClick={() => navigate(`/thesaurus/study/${deck.id}?mode=recall`)}>
-                Study
-              </Button>
+              <Button variant="secondary" size="lg" onClick={() => navigate(`/thesaurus/deck/${deck.id}`)}><UiText source={'Open deck'} /></Button>
+              <Button size="lg" icon={Layers} onClick={() => navigate(`/thesaurus/study/${deck.id}?mode=recall`)}><UiText source={'Study'} /></Button>
             </>
           ) : (
             <>
               <Button block size="lg" iconRight={ArrowRight} disabled={!items || toAdd <= 0} loading={busy} onClick={() => void add()} className={cx('min-w-0 flex-1', toAdd <= 0 && 'opacity-60')}>
-                {!items ? 'Opening the booklet…' : toAdd > 0 ? `Add ${toAdd.toLocaleString()} ${toAdd === 1 ? 'card' : 'cards'} to My decks` : 'You know every word here'}
+                {!items ? translateUi('Opening the booklet…') : toAdd > 0 ? translateUi('Add {0} {1} to My decks', [toAdd.toLocaleString(), toAdd === 1 ? 'card' : 'cards']) : translateUi('You know every word here')}
               </Button>
               {/* Or into a deck you already have, skipping the words it holds (5.1-3b). */}
               {items && usable.length > 0 && <AddStarterMenu lang={lang} spec={spec} skipKnown={skipKnown} trigger="button" />}

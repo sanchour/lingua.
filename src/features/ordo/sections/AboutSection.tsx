@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { Info } from 'lucide-react';
 import { APP_VERSION } from '../groups';
 import { SettingsSection } from '../SettingsSection';
@@ -12,11 +13,10 @@ const CREDITS: Array<[string, string]> = [
 
 
 export function AboutSection() {
+  const translateUi = useUi();
   return (
-    <SettingsSection id="about" icon={Info} title="About Lingua">
-      <p className="text-sm text-ink-soft">
-        Lingua {APP_VERSION}. Local-first: your data stays on your devices.
-      </p>
+    <SettingsSection id="about" icon={Info} title={translateUi('About Lingua')}>
+      <p className="text-sm text-ink-soft"><UiText source={'Lingua {0}. Local-first: your data stays on your devices.'} values={[APP_VERSION]} /></p>
       <dl className="mt-4 space-y-2 text-sm">
         {CREDITS.map(([term, detail]) => (
           <div key={term}>

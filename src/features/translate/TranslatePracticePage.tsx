@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   ArrowRight,
@@ -40,6 +41,7 @@ const CORE_LANGUAGES = [
 type TranslateTab = 'practice' | 'align' | 'back' | 'reconstruct' | 'compare' | 'custom';
 
 export default function TranslatePracticePage() {
+  const translateUi = useUi();
   const { language } = useApp();
 
   // Active language
@@ -179,34 +181,32 @@ export default function TranslatePracticePage() {
     <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
       {/* Header */}
       <PageHeader
-        title="Translating & Comparing"
+        title={translateUi('Translating & Comparing')}
         eyebrow="Cursus › Translate"
       />
-      <p className="text-xs text-sand-500 font-serif -mt-3">
-        Translate sentences, dialogues and idioms with literal contrasts and requirement checks
-      </p>
+      <p className="text-xs text-sand-500 font-serif -mt-3"><UiText source={'Translate sentences, dialogues and idioms with literal contrasts and requirement checks'} /></p>
 
       {/* Main Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-sand-300/40 pb-3 dark:border-sand-800/40">
         <div className="flex items-center gap-2">
           <Segmented
-            label="Translation mode"
+            label={translateUi('Translation mode')}
             value={activeTab}
             onChange={(v) => setActiveTab(v as TranslateTab)}
             options={[
-              { value: 'practice', label: 'Practice Sets' },
-              { value: 'align', label: 'Word Alignment' },
-              { value: 'back', label: 'Back-Translation' },
-              { value: 'reconstruct', label: 'Rebuild Original' },
-              { value: 'compare', label: 'Compare Languages' },
-              { value: 'custom', label: 'Translate Your Own' },
+              { value: 'practice', label: translateUi('Practice Sets') },
+              { value: 'align', label: translateUi('Word Alignment') },
+              { value: 'back', label: translateUi('Back-Translation') },
+              { value: 'reconstruct', label: translateUi('Rebuild Original') },
+              { value: 'compare', label: translateUi('Compare Languages') },
+              { value: 'custom', label: translateUi('Translate Your Own') },
             ]}
           />
         </div>
 
         {/* Core Language Switcher */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-xs text-sand-500 font-serif mr-1">Target Language:</span>
+          <span className="text-xs text-sand-500 font-serif mr-1"><UiText source={'Target Language:'} /></span>
           {CORE_LANGUAGES.map((lang) => (
             <button
               key={lang.id}
@@ -233,7 +233,7 @@ export default function TranslatePracticePage() {
           {/* Controls bar: Category filter, challenge timer */}
           <div className="flex flex-wrap items-center justify-between gap-3 bg-sand-50/70 p-3 rounded-xl border border-sand-200/60 dark:bg-sand-900/30 dark:border-sand-800/60">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-xs font-semibold text-sand-600 dark:text-sand-400 mr-1">Kind:</span>
+              <span className="text-xs font-semibold text-sand-600 dark:text-sand-400 mr-1"><UiText source={'Kind:'} /></span>
               {(['all', 'sentence', 'idiom', 'slang', 'formal', 'dialogue', 'paragraph'] as const).map((cat) => (
                 <button
                   key={cat}
@@ -248,7 +248,7 @@ export default function TranslatePracticePage() {
                       : 'text-sand-600 hover:bg-sand-200/50 dark:text-sand-400 dark:hover:bg-sand-800/50',
                   )}
                 >
-                  {cat === 'all' ? 'All Kinds' : cat}
+                  {cat === 'all' ? translateUi('All Kinds') : cat}
                 </button>
               ))}
             </div>
@@ -263,14 +263,14 @@ export default function TranslatePracticePage() {
                     ? 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-700'
                     : 'text-sand-600 border-sand-300/80 hover:bg-sand-100 dark:text-sand-400 dark:border-sand-700',
                 )}
-                title="Translation challenge with a timer"
+                title={translateUi('Translation challenge with a timer')}
               >
                 <Timer className="w-3.5 h-3.5" />
-                <span>{timerEnabled ? `Timer: ${timerSeconds}s` : 'Timed Round'}</span>
+                <span>{timerEnabled ? translateUi('Timer: {0}s', [timerSeconds]) : translateUi('Timed Round')}</span>
               </button>
 
               <span className="text-xs text-sand-500 font-serif">
-                {tasks.length > 0 ? `${taskIndex + 1} of ${tasks.length}` : '0 tasks'}
+                {tasks.length > 0 ? translateUi('{0} of {1}', [taskIndex + 1, tasks.length]) : translateUi('0 tasks')}
               </span>
             </div>
           </div>
@@ -287,27 +287,21 @@ export default function TranslatePracticePage() {
                         <span className="uppercase font-mono text-[10px]">{currentTask.category ?? 'sentence'}</span>
                       </Badge>
                       {currentTask.level && (
-                        <span className="font-semibold text-sand-600 dark:text-sand-300">
-                          Level {currentTask.level}
-                        </span>
+                        <span className="font-semibold text-sand-600 dark:text-sand-300"><UiText source={'Level {0}'} values={[currentTask.level]} /></span>
                       )}
                       {currentTask.register && (
-                        <span className="italic text-sand-500">
-                          ({currentTask.register} register)
-                        </span>
+                        <span className="italic text-sand-500"><UiText source={'({0} register)'} values={[currentTask.register]} /></span>
                       )}
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <span className="font-serif">English → {CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label}</span>
+                      <span className="font-serif"><UiText source={'English → {0}'} values={[CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label]} /></span>
                     </div>
                   </div>
 
                   {/* Source prompt */}
                   <div className="space-y-3">
-                    <span className="text-xs font-semibold tracking-wider text-sand-400 uppercase">
-                      Translate this {currentTask.category ?? 'sentence'}:
-                    </span>
+                    <span className="text-xs font-semibold tracking-wider text-sand-400 uppercase"><UiText source={'Translate this {0}:'} values={[currentTask.category ?? 'sentence']} /></span>
 
                     {currentTask.dialogue ? (
                       <div className="space-y-2 bg-sand-50/60 p-4 rounded-xl border border-sand-200/50 dark:bg-sand-900/40 dark:border-sand-800/40 font-serif text-lg leading-relaxed">
@@ -329,20 +323,15 @@ export default function TranslatePracticePage() {
                   {currentTask.requiredWord && (
                     <div className="flex items-center gap-2 p-2.5 rounded-lg bg-amber-50/70 border border-amber-200/60 text-xs text-amber-900 dark:bg-amber-950/30 dark:border-amber-800/40 dark:text-amber-200">
                       <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-                      <span>
-                        <strong>Required word:</strong> Your translation must include{' '}
-                        <code className="px-1.5 py-0.5 rounded bg-amber-100 font-mono dark:bg-amber-900/50">
+                      <span><UiText source={'{0} Your translation must include{1}{2}'} values={[<strong><UiText source={'Required word:'} /></strong>, ' ', <code className="px-1.5 py-0.5 rounded bg-amber-100 font-mono dark:bg-amber-900/50">
                           {currentTask.requiredWord}
-                        </code>
-                      </span>
+                        </code>]} /></span>
                     </div>
                   )}
 
                   {/* Input form */}
                   <div className="space-y-3">
-                    <label className="block text-xs font-semibold text-sand-600 dark:text-sand-400">
-                      Your Translation:
-                    </label>
+                    <label className="block text-xs font-semibold text-sand-600 dark:text-sand-400"><UiText source={'Your Translation:'} /></label>
                     <textarea
                       rows={currentTask.category === 'paragraph' ? 4 : 2}
                       value={userTranslation}
@@ -354,7 +343,7 @@ export default function TranslatePracticePage() {
                         }
                       }}
                       disabled={!!judgement}
-                      placeholder={`Type in ${CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label}...`}
+                      placeholder={translateUi('Type in {0}...', [CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label])}
                       className="w-full p-3 font-serif text-lg rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-terracotta-500/30 focus:border-terracotta-500 dark:border-sand-700 dark:bg-sand-950 dark:text-sand-100 transition-all disabled:opacity-80"
                     />
 
@@ -371,8 +360,8 @@ export default function TranslatePracticePage() {
                           >
                             <Lightbulb className="w-3.5 h-3.5 mr-1 text-amber-500" />
                             {hintsRevealed === 0
-                              ? 'Show Hint'
-                              : `Hint (${hintsRevealed}/${currentTask.hints.length})`}
+                              ? translateUi('Show Hint')
+                              : translateUi('Hint ({0}/{1})', [hintsRevealed, currentTask.hints.length])}
                           </Button>
                         )}
 
@@ -384,7 +373,7 @@ export default function TranslatePracticePage() {
                             className="text-xs text-sand-600 hover:text-sand-900 dark:text-sand-400"
                           >
                             <Eye className="w-3.5 h-3.5 mr-1 text-blue-500" />
-                            {showLiteral ? 'Hide Literal' : 'Show Literal Translation'}
+                            {showLiteral ? translateUi('Hide Literal') : translateUi('Show Literal Translation')}
                           </Button>
                         )}
                       </div>
@@ -394,15 +383,9 @@ export default function TranslatePracticePage() {
                           variant="primary"
                           onClick={handleSubmit}
                           disabled={!userTranslation.trim()}
-                        >
-                          Check Answer
-                          <ArrowRight className="w-4 h-4 ml-1" />
-                        </Button>
+                        ><UiText source={'Check Answer{0}'} values={[<ArrowRight className="w-4 h-4 ml-1" />]} /></Button>
                       ) : (
-                        <Button variant="primary" onClick={handleNextTask}>
-                          Next Task
-                          <ArrowRight className="w-4 h-4 ml-1" />
-                        </Button>
+                        <Button variant="primary" onClick={handleNextTask}><UiText source={'Next Task{0}'} values={[<ArrowRight className="w-4 h-4 ml-1" />]} /></Button>
                       )}
                     </div>
                   </div>
@@ -410,9 +393,7 @@ export default function TranslatePracticePage() {
                   {/* Revealed Hints */}
                   {hintsRevealed > 0 && currentTask.hints && (
                     <div className="space-y-1.5 p-3 rounded-lg bg-amber-50/50 border border-amber-200/50 dark:bg-amber-950/20 dark:border-amber-800/30">
-                      <span className="text-xs font-semibold text-amber-800 dark:text-amber-300 block">
-                        Hints:
-                      </span>
+                      <span className="text-xs font-semibold text-amber-800 dark:text-amber-300 block"><UiText source={'Hints:'} /></span>
                       {currentTask.hints.slice(0, hintsRevealed).map((h, i) => (
                         <div key={i} className="text-xs text-amber-900/90 dark:text-amber-200 flex items-start gap-1.5">
                           <span className="text-amber-500 font-bold">•</span>
@@ -425,7 +406,7 @@ export default function TranslatePracticePage() {
                   {/* Literal translation toggle display */}
                   {showLiteral && currentTask.literal && (
                     <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-200/50 text-xs text-blue-900 dark:bg-blue-950/20 dark:border-blue-800/30 dark:text-blue-200">
-                      <span className="font-semibold block mb-0.5">Word-by-word literal sense:</span>
+                      <span className="font-semibold block mb-0.5"><UiText source={'Word-by-word literal sense:'} /></span>
                       <p className="font-serif italic text-sm text-blue-950 dark:text-blue-100">
                         "{currentTask.literal}"
                       </p>
@@ -455,22 +436,19 @@ export default function TranslatePracticePage() {
                         <div className="space-y-1 flex-1">
                           <div className="font-semibold text-sm">
                             {judgement.verdict === 'exact' && !missingReq
-                              ? 'Excellent translation!'
+                              ? translateUi('Excellent translation!')
                               : judgement.verdict === 'close' && !missingReq
-                              ? 'Very close!'
+                              ? translateUi('Very close!')
                               : missingReq
-                              ? 'Missing requirement'
-                              : 'Not quite'}
+                              ? translateUi('Missing requirement')
+                              : translateUi('Not quite')}
                           </div>
                           {missingReq && (
                             <div className="text-xs text-rose-800 dark:text-rose-300 font-medium">
                               {missingReq}
                             </div>
                           )}
-                          <div className="text-xs opacity-90">
-                            {timerEnabled && `Completed in ${timerSeconds} seconds. `}
-                            Natural translation:
-                          </div>
+                          <div className="text-xs opacity-90"><UiText source={'{0}Natural translation:'} values={[timerEnabled && `Completed in ${timerSeconds} seconds. `]} /></div>
                           <div className="font-serif text-lg font-medium text-sand-950 dark:text-sand-100">
                             {currentTask.expected}
                           </div>
@@ -480,18 +458,14 @@ export default function TranslatePracticePage() {
                         <div className="flex items-center gap-1.5 shrink-0 self-center">
                           <button
                             onClick={() => handleSelfOverride('exact')}
-                            title="Mark as correct"
+                            title={translateUi('Mark as correct')}
                             className="px-2 py-1 text-xs rounded bg-white/80 border border-sand-300 hover:bg-white text-sand-700 dark:bg-sand-900 dark:border-sand-700 dark:text-sand-300"
-                          >
-                            I was right
-                          </button>
+                          ><UiText source={'I was right'} /></button>
                           <button
                             onClick={() => handleSelfOverride('wrong')}
-                            title="Mark as wrong"
+                            title={translateUi('Mark as wrong')}
                             className="px-2 py-1 text-xs rounded bg-white/80 border border-sand-300 hover:bg-white text-sand-700 dark:bg-sand-900 dark:border-sand-700 dark:text-sand-300"
-                          >
-                            Mark wrong
-                          </button>
+                          ><UiText source={'Mark wrong'} /></button>
                         </div>
                       </div>
 
@@ -501,32 +475,28 @@ export default function TranslatePracticePage() {
                           <div className="flex items-center justify-between text-xs font-semibold text-sand-600 dark:text-sand-400">
                             <span className="flex items-center gap-1.5">
                               <BookOpen className="w-3.5 h-3.5 text-terracotta-600 dark:text-terracotta-400" />
-                              <span>Reference Translations Comparison:</span>
+                              <span><UiText source={'Reference Translations Comparison:'} /></span>
                             </span>
-                            <span className="text-[11px] font-mono text-sand-400">
-                              {currentTask.accepted.length} accepted references
-                            </span>
+                            <span className="text-[11px] font-mono text-sand-400"><UiText source={'{0} accepted references'} values={[currentTask.accepted.length]} /></span>
                           </div>
 
                           <div className="space-y-2">
                             <div className="p-2.5 rounded-lg bg-white/90 border border-sand-200 text-xs dark:bg-sand-950/60 dark:border-sand-800">
-                              <div className="text-[10px] font-mono text-sand-400 uppercase tracking-wider mb-0.5">Learner Translation:</div>
+                              <div className="text-[10px] font-mono text-sand-400 uppercase tracking-wider mb-0.5"><UiText source={'Learner Translation:'} /></div>
                               <div className="font-serif text-base font-medium text-sand-900 dark:text-sand-100">{userTranslation}</div>
                             </div>
 
                             {currentTask.accepted.map((alt, i) => (
                               <div key={i} className="p-2.5 rounded-lg bg-white/70 border border-sand-200/80 text-xs dark:bg-sand-950/40 dark:border-sand-800/70 flex items-start gap-2">
-                                <span className="font-mono text-terracotta-600 dark:text-terracotta-400 text-[10px] font-bold mt-0.5 shrink-0">
-                                  Ref {i + 1}:
-                                </span>
+                                <span className="font-mono text-terracotta-600 dark:text-terracotta-400 text-[10px] font-bold mt-0.5 shrink-0"><UiText source={'Ref {0}:'} values={[i + 1]} /></span>
                                 <div className="space-y-0.5 flex-1">
                                   <div className="font-serif text-base text-sand-800 dark:text-sand-200">{alt}</div>
                                   <div className="text-[11px] text-sand-500 italic">
                                     {i === 0
-                                      ? 'Primary canonical translation'
+                                      ? translateUi('Primary canonical translation')
                                       : i === 1
-                                      ? 'Colloquial / alternate phrasing'
-                                      : 'Stylistic / regional variation'}
+                                      ? translateUi('Colloquial / alternate phrasing')
+                                      : translateUi('Stylistic / regional variation')}
                                   </div>
                                 </div>
                               </div>
@@ -540,11 +510,11 @@ export default function TranslatePracticePage() {
                         <div className="p-3.5 rounded-xl bg-terracotta-50/40 border border-terracotta-200/60 dark:bg-terracotta-950/20 dark:border-terracotta-900/40 space-y-2">
                           <div className="flex items-center gap-1.5 text-xs font-semibold text-terracotta-800 dark:text-terracotta-300">
                             <BookOpen className="w-3.5 h-3.5" />
-                            <span>Linguistic Insight:</span>
+                            <span><UiText source={'Linguistic Insight:'} /></span>
                           </div>
                           {currentTask.whyDirectFails && (
                             <div className="text-xs text-terracotta-950 dark:text-terracotta-200 leading-relaxed">
-                              <strong>Why direct fails:</strong> {currentTask.whyDirectFails}
+                              <strong><UiText source={'Why direct fails:'} /></strong> {currentTask.whyDirectFails}
                             </div>
                           )}
                           {currentTask.notes && (
@@ -562,26 +532,18 @@ export default function TranslatePracticePage() {
               {/* Sidebar Guide (4 cols) */}
               <div className="lg:col-span-4 space-y-4">
                 <Card className="p-4 space-y-3 bg-sand-50/60 border-sand-200/70 dark:bg-sand-900/30 dark:border-sand-800/60">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-sand-600 dark:text-sand-300">
-                    Translation Principles
-                  </h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-sand-600 dark:text-sand-300"><UiText source={'Translation Principles'} /></h3>
                   <div className="text-xs text-sand-600 dark:text-sand-400 space-y-2 leading-relaxed">
-                    <p>
-                      <strong>Natural vs. Literal:</strong> Word-for-word calques often sound stiff or meaningless. Natural translation captures the idiom and register of the native speaker.
-                    </p>
-                    <p>
-                      <strong>Subjunctive & V2 Rules:</strong> Watch for syntactic shifts (such as German verb-second placement or Romance subjunctive clauses) triggered by matrix verbs.
-                    </p>
-                    <p>
-                      <strong>Registers:</strong> Pay attention to formal address (usted, vous, Sie, Lei, Вы, 您) vs informal speech.
-                    </p>
+                    <p><UiText source={'{0} Word-for-word calques often sound stiff or meaningless. Natural translation captures the idiom and register of the native speaker.'} values={[<strong><UiText source={'Natural vs. Literal:'} /></strong>]} /></p>
+                    <p><UiText source={'{0} Watch for syntactic shifts (such as German verb-second placement or Romance subjunctive clauses) triggered by matrix verbs.'} values={[<strong><UiText source={'Subjunctive & V2 Rules:'} /></strong>]} /></p>
+                    <p><UiText source={'{0} Pay attention to formal address (usted, vous, Sie, Lei, Вы, 您) vs informal speech.'} values={[<strong><UiText source={'Registers:'} /></strong>]} /></p>
                   </div>
                 </Card>
 
                 {/* Progress in current set */}
                 <Card className="p-4 space-y-2 border-sand-200/70 dark:border-sand-800/60">
                   <div className="flex justify-between text-xs text-sand-600 dark:text-sand-400">
-                    <span>Task Progress</span>
+                    <span><UiText source={'Task Progress'} /></span>
                     <span className="font-semibold">{taskIndex + 1} / {tasks.length}</span>
                   </div>
                   <div className="w-full bg-sand-200 h-1.5 rounded-full overflow-hidden dark:bg-sand-800">
@@ -594,9 +556,7 @@ export default function TranslatePracticePage() {
               </div>
             </div>
           ) : (
-            <Card className="p-8 text-center text-sand-500">
-              No tasks found for this filter. Try selecting "All Kinds".
-            </Card>
+            <Card className="p-8 text-center text-sand-500"><UiText source={'No tasks found for this filter. Try selecting "All Kinds".'} /></Card>
           )}
         </div>
       )}
@@ -621,22 +581,14 @@ export default function TranslatePracticePage() {
         /* Custom Translation / Translate Your Own Text (F0778, F0389) */
         <Card className="p-6 space-y-6 max-w-3xl mx-auto border-sand-300/70 dark:border-sand-800/70">
           <div className="space-y-1">
-            <h2 className="text-lg font-serif font-semibold text-sand-900 dark:text-sand-100">
-              Translate Your Own Passage
-            </h2>
-            <p className="text-xs text-sand-600 dark:text-sand-400 leading-relaxed">
-              Paste or type any paragraph, excerpt, or sentence to practice translating into{' '}
-              {CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label}.
-            </p>
+            <h2 className="text-lg font-serif font-semibold text-sand-900 dark:text-sand-100"><UiText source={'Translate Your Own Passage'} /></h2>
+            <p className="text-xs text-sand-600 dark:text-sand-400 leading-relaxed"><UiText source={'Paste or type any paragraph, excerpt, or sentence to practice translating into{0}{1}.'} values={[' ', CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label]} /></p>
           </div>
 
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs font-semibold text-sand-600 dark:text-sand-400">
-              <span>Source Text (English or other):</span>
-              <span className="font-mono text-[11px] text-sand-400">
-                {customSource.trim() ? customSource.trim().split(/\s+/).length : 0} words ·{' '}
-                {customSource.length} chars
-              </span>
+              <span><UiText source={'Source Text (English or other):'} /></span>
+              <span className="font-mono text-[11px] text-sand-400"><UiText source={'{0} words ·{1}{2} chars'} values={[customSource.trim() ? customSource.trim().split(/\s+/).length : 0, ' ', customSource.length]} /></span>
             </div>
             <textarea
               rows={4}
@@ -645,17 +597,15 @@ export default function TranslatePracticePage() {
                 setCustomSource(e.target.value);
                 setCustomSubmitted(false);
               }}
-              placeholder="Paste a paragraph, literary excerpt, or conversation here..."
+              placeholder={translateUi('Paste a paragraph, literary excerpt, or conversation here...')}
               className="w-full p-3 font-serif text-base rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-terracotta-500/30 focus:border-terracotta-500 dark:border-sand-700 dark:bg-sand-950 dark:text-sand-100"
             />
           </div>
 
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs font-semibold text-sand-600 dark:text-sand-400">
-              <span>Your Translation ({CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label}):</span>
-              <span className="font-mono text-[11px] text-sand-400">
-                {customTarget.trim() ? customTarget.trim().split(/\s+/).length : 0} words
-              </span>
+              <span><UiText source={'Your Translation ({0}):'} values={[CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label]} /></span>
+              <span className="font-mono text-[11px] text-sand-400"><UiText source={'{0} words'} values={[customTarget.trim() ? customTarget.trim().split(/\s+/).length : 0]} /></span>
             </div>
             <textarea
               rows={4}
@@ -664,7 +614,7 @@ export default function TranslatePracticePage() {
                 setCustomTarget(e.target.value);
                 setCustomSubmitted(false);
               }}
-              placeholder={`Translate into ${CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label}...`}
+              placeholder={translateUi('Translate into {0}...', [CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label])}
               className="w-full p-3 font-serif text-base rounded-xl border border-sand-300 bg-white focus:outline-none focus:ring-2 focus:ring-terracotta-500/30 focus:border-terracotta-500 dark:border-sand-700 dark:bg-sand-950 dark:text-sand-100"
             />
           </div>
@@ -678,30 +628,22 @@ export default function TranslatePracticePage() {
                 setCustomSubmitted(false);
               }}
               disabled={!customSource && !customTarget}
-            >
-              Clear
-            </Button>
+            ><UiText source={'Clear'} /></Button>
 
             <Button
               variant="primary"
               onClick={() => setCustomSubmitted(true)}
               disabled={!customSource.trim() || !customTarget.trim()}
-            >
-              Complete Passage Translation
-              <Check className="w-4 h-4 ml-1" />
-            </Button>
+            ><UiText source={'Complete Passage Translation{0}'} values={[<Check className="w-4 h-4 ml-1" />]} /></Button>
           </div>
 
           {customSubmitted && (
             <div className="p-4 rounded-xl bg-sage-50/70 border border-sage-200/80 space-y-3 dark:bg-sage-950/30 dark:border-sage-800">
               <div className="flex items-center gap-2 text-sage-800 dark:text-sage-200 font-semibold text-sm">
                 <CheckCircle2 className="w-4 h-4 text-sage-600" />
-                <span>Passage Translation Logged</span>
+                <span><UiText source={'Passage Translation Logged'} /></span>
               </div>
-              <p className="text-xs text-sage-900/80 dark:text-sage-300 leading-relaxed font-serif">
-                You translated a {customSource.trim().split(/\s+/).length}-word passage into{' '}
-                {CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label} ({customTarget.trim().split(/\s+/).length} words).
-              </p>
+              <p className="text-xs text-sage-900/80 dark:text-sage-300 leading-relaxed font-serif"><UiText source={'You translated a {0}-word passage into{1}{2} ({3} words).'} values={[customSource.trim().split(/\s+/).length, ' ', CORE_LANGUAGES.find((c) => c.id === selectedLang)?.label, customTarget.trim().split(/\s+/).length]} /></p>
             </div>
           )}
         </Card>

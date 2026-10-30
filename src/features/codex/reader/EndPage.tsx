@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { motion } from 'motion/react';
 import { useApp } from '@/app/context';
 import { Button } from '@/design/primitives';
@@ -35,6 +36,7 @@ const duration = (ms: number) => {
 
 /** After the last page of a book or a text: a quiet page with what this sitting came to. */
 export function EndPage({ lang, refId, title, author, stats, todayMs, goal, finished, checks: offered, source, onFinish, onKeepReading }: EndPageProps) {
+  const translateUi = useUi();
   // Settings › Reading › At the end of a text.
   const { endCheck, endOwnWords } = useApp().settings.reader;
   const checks = endCheck ? offered : [];
@@ -56,12 +58,10 @@ export function EndPage({ lang, refId, title, author, stats, todayMs, goal, fini
       transition={{ duration: 0.35 }}
       role="dialog"
       aria-modal="true"
-      aria-label="The end"
+      aria-label={translateUi('The end')}
     >
       <div className="mx-auto flex min-h-full max-w-2xl flex-col items-center justify-center px-6 py-16 text-center" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 48px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 48px)' }}>
-        <motion.p className="text-[12px] font-bold tracking-[0.22em] text-sage-text uppercase" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.1 }}>
-          The end
-        </motion.p>
+        <motion.p className="text-[12px] font-bold tracking-[0.22em] text-sage-text uppercase" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.1 }}><UiText source={'The end'} /></motion.p>
         <motion.h1
           lang={lang}
           className="mt-4 font-serif text-[34px] leading-tight font-semibold tracking-tight text-balance sm:text-[44px]"
@@ -91,10 +91,8 @@ export function EndPage({ lang, refId, title, author, stats, todayMs, goal, fini
         <motion.div className="mt-10 flex items-center gap-3 rounded-2xl bg-surface px-4 py-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.75 }}>
           <GoalRing value={todayMs / (goal * 60_000)} size={36} />
           <p className="text-left text-[14px] leading-snug">
-            <span className="font-semibold tabular-nums">
-              {todayMinutes} of {goal} minutes
-            </span>{' '}
-            <span className="text-ink-soft">{todayMinutes >= goal ? 'read today. Your goal is reached.' : 'read today.'}</span>
+            <span className="font-semibold tabular-nums"><UiText source={'{0} of {1} minutes'} values={[todayMinutes, goal]} /></span>{' '}
+            <span className="text-ink-soft">{todayMinutes >= goal ? translateUi('read today. Your goal is reached.') : translateUi('read today.')}</span>
           </p>
         </motion.div>
 
@@ -112,11 +110,9 @@ export function EndPage({ lang, refId, title, author, stats, todayMs, goal, fini
 
         <motion.div className="mt-10 flex w-full max-w-xs flex-col gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.85 }}>
           <Button size="lg" onClick={onFinish} block>
-            {finished ? 'Back to the shelves' : 'Mark as finished'}
+            {finished ? translateUi('Back to the shelves') : translateUi('Mark as finished')}
           </Button>
-          <Button variant="ghost" onClick={onKeepReading} block>
-            Keep reading
-          </Button>
+          <Button variant="ghost" onClick={onKeepReading} block><UiText source={'Keep reading'} /></Button>
         </motion.div>
       </div>
     </motion.div>

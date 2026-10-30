@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Plus, X } from 'lucide-react';
@@ -93,6 +94,7 @@ interface SpeakStepProps {
  * given in.
  */
 export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
+  const translateUi = useUi();
   const [query, setQuery] = useState('');
   /** The language being added, waiting for its level. */
   const [pending, setPending] = useState<string | null>(null);
@@ -114,10 +116,10 @@ export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
 
   return (
     <div>
-      <StepTitle center title="Which languages do you already speak?" body="Your mother tongue and any others. Bragging is allowed." />
+      <StepTitle center title={translateUi('Which languages do you already speak?')} body="Your mother tongue and any others. Bragging is allowed." />
 
       <div className="mb-3 flex items-baseline justify-center gap-3">
-        <h2 className="text-[12px] font-bold tracking-[0.08em] text-ink-faint uppercase">You speak</h2>
+        <h2 className="text-[12px] font-bold tracking-[0.08em] text-ink-faint uppercase"><UiText source={'You speak'} /></h2>
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span key={polyglot(spoken.length)} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={spring.snappy} className="font-serif text-[15px] font-semibold text-accent-text italic">
             {polyglot(spoken.length)}
@@ -143,7 +145,7 @@ export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
                 <button
                   type="button"
                   onClick={() => remove(s.code)}
-                  aria-label={`Remove ${name}`}
+                  aria-label={translateUi('Remove {0}', [name])}
                   className="absolute top-2.5 right-2.5 grid size-7 place-items-center rounded-lg text-ink-faint opacity-0 transition-opacity group-hover:opacity-100 hover:bg-surface hover:text-ink focus-visible:opacity-100"
                 >
                   <X size={15} aria-hidden />
@@ -160,7 +162,7 @@ export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
                 </div>
                 <div className="mt-3.5 flex items-end gap-3">
                   {/* The level as signal bars, A1 to C2; native fills them all. */}
-                  <div role="radiogroup" aria-label={`How well you speak ${name}`} className="flex items-end gap-1">
+                  <div role="radiogroup" aria-label={translateUi('How well you speak {0}', [name])} className="flex items-end gap-1">
                     {BARS.map((level, i) => (
                       <button
                         key={level}
@@ -177,7 +179,7 @@ export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
                     ))}
                   </div>
                   <p className="min-w-0 flex-1 truncate text-[12.5px] leading-tight">
-                    <span className="font-semibold">{native ? 'Native' : s.level}</span>
+                    <span className="font-semibold">{native ? translateUi('Native') : s.level}</span>
                     {!native && <span className="text-ink-soft"> · {LEVEL_NAME[s.level]}</span>}
                   </p>
                   <button
@@ -185,9 +187,7 @@ export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
                     aria-pressed={native}
                     onClick={() => setLevel(s.code, native ? 'C1' : 'native')}
                     className={cx('h-7 shrink-0 rounded-full border px-2.5 text-[12px] font-semibold transition-colors', native ? 'border-sage bg-sage text-on-accent' : 'border-line text-ink-soft hover:border-line-strong')}
-                  >
-                    Native
-                  </button>
+                  ><UiText source={'Native'} /></button>
                 </div>
               </motion.li>
             );
@@ -202,10 +202,8 @@ export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
             <motion.div key="level" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={spring.snappy}>
               <div className="flex items-center gap-3">
                 <Mark code={pending} width={28} />
-                <p className="min-w-0 flex-1 text-[15px]">
-                  How well do you speak <span className="font-semibold">{spokenName(pending)}</span>?
-                </p>
-                <button type="button" onClick={() => setPending(null)} aria-label="Cancel" className="grid size-8 place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink">
+                <p className="min-w-0 flex-1 text-[15px]"><UiText source={'How well do you speak {0}?'} values={[<span className="font-semibold">{spokenName(pending)}</span>]} /></p>
+                <button type="button" onClick={() => setPending(null)} aria-label={translateUi('Cancel')} className="grid size-8 place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink">
                   <X size={16} aria-hidden />
                 </button>
               </div>
@@ -217,8 +215,8 @@ export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
                     onClick={() => add(level)}
                     className="no-callout flex flex-col items-center rounded-xl border border-line bg-raised px-1 py-2 transition-[transform,border-color,background-color] duration-150 hover:-translate-y-0.5 hover:border-accent hover:bg-accent-soft active:scale-[0.97]"
                   >
-                    <span className="text-[14px] font-bold">{level === 'native' ? 'Native' : level}</span>
-                    <span className="mt-0.5 truncate text-[11px] text-ink-faint">{level === 'native' ? 'From birth' : LEVEL_NAME[level]}</span>
+                    <span className="text-[14px] font-bold">{level === 'native' ? translateUi('Native') : level}</span>
+                    <span className="mt-0.5 truncate text-[11px] text-ink-faint">{level === 'native' ? translateUi('From birth') : LEVEL_NAME[level]}</span>
                   </button>
                 ))}
               </div>
@@ -226,7 +224,7 @@ export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
           ) : (
             <motion.div key="add" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={spring.snappy}>
               <div className="relative">
-                <SearchInput value={query} onChange={setQuery} placeholder="Add a language: any language in the world" />
+                <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Add a language: any language in the world')} />
                 {found.length > 0 && (
                   <ul className="absolute inset-x-0 top-full z-10 mt-1.5 overflow-hidden rounded-2xl border border-line bg-raised py-1 shadow-elev-2">
                     {found.map((l) => (
@@ -258,7 +256,7 @@ export function SpeakStep({ spoken, target, onSpoken }: SpeakStepProps) {
           )}
         </AnimatePresence>
       </div>
-      <p className="mt-3 text-center text-[12.5px] text-ink-faint">These go into Tabula, in Ratio, where you can add how you learned them and your certificates later.</p>
+      <p className="mt-3 text-center text-[12.5px] text-ink-faint"><UiText source={'These go into Tabula, in Ratio, where you can add how you learned them and your certificates later.'} /></p>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { AnimatePresence, motion } from 'motion/react';
 import { BookDown } from 'lucide-react';
 import { getLanguage } from '@/core/lang/languages';
@@ -33,13 +34,13 @@ export function PackProgress() {
           >
             <div className="flex items-center gap-2.5 text-sm">
               <BookDown size={17} className="shrink-0 text-sage-text" aria-hidden />
-              <span className="min-w-0 flex-1 truncate font-semibold">{getLanguage(job.lang)?.endonym ?? job.lang} dictionary</span>
+              <span className="min-w-0 flex-1 truncate font-semibold"><UiText source={'{0} dictionary'} values={[getLanguage(job.lang)?.endonym ?? job.lang]} /></span>
               <span className="text-xs text-ink-faint tabular-nums">{Math.round(overall * 100)}%</span>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sunken">
               <div className="h-full origin-left rounded-full bg-sage transition-transform duration-200" style={{ transform: `scaleX(${Math.max(0.02, overall)})` }} />
             </div>
-            <p className="mt-1.5 text-[12px] text-ink-faint">{PHASE[job.phase]} · works offline once done</p>
+            <p className="mt-1.5 text-[12px] text-ink-faint"><UiText source={'{0} · works offline once done'} values={[PHASE[job.phase]]} /></p>
           </motion.div>
         )}
       </AnimatePresence>

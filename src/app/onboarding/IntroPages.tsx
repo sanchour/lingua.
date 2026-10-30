@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { LogoMark } from '@/app/shells/Wordmark';
@@ -69,13 +70,14 @@ const VIGNETTES = [
 
 /** What to call you (5.1-2b): one line, bookish and minimal. Enter moves on. */
 export function NamePage({ name, onName, onEnter }: { name: string; onName: (name: string) => void; onEnter: () => void }) {
+  const translateUi = useUi();
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => input.current?.focus(), []);
   return (
     <div className="flex flex-col items-center py-6 text-center">
       <LogoMark size={48} />
-      <h1 className="mt-6 font-serif text-[40px] leading-[1.15] font-semibold tracking-tight">First things first.</h1>
-      <p className="mt-2 text-[16.5px] text-ink-soft">What should we call you?</p>
+      <h1 className="mt-6 font-serif text-[40px] leading-[1.15] font-semibold tracking-tight"><UiText source={'First things first.'} /></h1>
+      <p className="mt-2 text-[16.5px] text-ink-soft"><UiText source={'What should we call you?'} /></p>
       <input
         ref={input}
         value={name}
@@ -83,11 +85,11 @@ export function NamePage({ name, onName, onEnter }: { name: string; onName: (nam
         onKeyDown={(e) => e.key === 'Enter' && onEnter()}
         maxLength={40}
         autoComplete="given-name"
-        aria-label="Your name"
-        placeholder="Your name"
+        aria-label={translateUi('Your name')}
+        placeholder={translateUi('Your name')}
         className="mt-10 w-full max-w-sm border-b-2 border-line-strong bg-transparent pb-2 text-center font-serif text-[32px] transition-colors outline-none placeholder:text-ink-faint/50 focus:border-accent"
       />
-      <p className="mt-3 text-[12.5px] text-ink-faint">It stays on this device. We just like to be polite.</p>
+      <p className="mt-3 text-[12.5px] text-ink-faint"><UiText source={'It stays on this device. We just like to be polite.'} /></p>
     </div>
   );
 }
@@ -105,9 +107,7 @@ export function WelcomePage({ name }: { name: string }) {
   const quip = QUIPS[[...name].reduce((sum, c) => sum + c.charCodeAt(0), 0) % QUIPS.length];
   return (
     <div className="flex flex-col items-center py-6 text-center">
-      <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.1 }} className="max-w-2xl font-serif text-[44px] leading-[1.12] font-semibold tracking-tight text-balance">
-        Welcome, {name.trim() || 'friend'}.
-      </motion.h1>
+      <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.1 }} className="max-w-2xl font-serif text-[44px] leading-[1.12] font-semibold tracking-tight text-balance"><UiText source={'Welcome, {0}.'} values={[name.trim() || 'friend']} /></motion.h1>
       <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.35 }} className="mt-3 max-w-md text-[16.5px] leading-relaxed text-ink-soft italic">
         {quip}
       </motion.p>
@@ -122,8 +122,8 @@ export function WelcomePage({ name }: { name: string }) {
 export function AboutPage() {
   return (
     <div className="py-6">
-      <h1 className="text-center font-serif text-[36px] leading-tight font-semibold tracking-tight">See what Lingua can do</h1>
-      <p className="mt-2 text-center text-[16px] text-ink-soft">Learn a language by living in it. Three things, done well.</p>
+      <h1 className="text-center font-serif text-[36px] leading-tight font-semibold tracking-tight"><UiText source={'See what Lingua can do'} /></h1>
+      <p className="mt-2 text-center text-[16px] text-ink-soft"><UiText source={'Learn a language by living in it. Three things, done well.'} /></p>
       <div className="mt-12 grid grid-cols-3 gap-10">
         {VIGNETTES.map((v, i) => (
           <motion.div key={v.title} className="flex flex-col items-center text-center" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.08 * i }}>

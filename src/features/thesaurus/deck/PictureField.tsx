@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // A card's picture (6-3b): from a file, pasted from the clipboard, or found on Wikimedia Commons with its licence kept. Always
 // the learner's choice. A picture found is kept with where it came from.
 import { useEffect, useRef, useState } from 'react';
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export function PictureField({ blobId, credit, picked, removed, term, onPick, onRemove }: Props) {
+  const translateUi = useUi();
   const stored = useBlobUrl(removed || picked ? undefined : blobId);
   const [made, setMade] = useState<string | null>(null);
   const [searching, setSearching] = useState(false);
@@ -92,28 +94,22 @@ export function PictureField({ blobId, credit, picked, removed, term, onPick, on
                 {shownCredit.url && (
                   <>
                     {' · '}
-                    <a href={shownCredit.url} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-2">
-                      source
-                    </a>
+                    <a href={shownCredit.url} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-2"><UiText source={'source'} /></a>
                   </>
                 )}
               </p>
             ) : (
-              <p>Your own picture.</p>
+              <p><UiText source={'Your own picture.'} /></p>
             )}
-            <button type="button" onClick={onRemove} className="mt-2 inline-flex items-center gap-1 font-semibold text-ink underline decoration-line-strong underline-offset-4">
-              <X size={13} aria-hidden /> Remove
-            </button>
+            <button type="button" onClick={onRemove} className="mt-2 inline-flex items-center gap-1 font-semibold text-ink underline decoration-line-strong underline-offset-4"><UiText source={'{0} Remove'} values={[<X size={13} aria-hidden />]} /></button>
           </div>
         </div>
       ) : (
-        <p className="text-[13px] text-ink-faint">No picture yet. Choose a file, paste one here (⌘V), or find one.</p>
+        <p className="text-[13px] text-ink-faint"><UiText source={'No picture yet. Choose a file, paste one here (⌘V), or find one.'} /></p>
       )}
       <div className="mt-3 flex flex-wrap gap-2">
         <input ref={file} type="file" accept="image/*" hidden onChange={(e) => e.target.files?.[0] && void take(e.target.files[0])} />
-        <Button type="button" variant="secondary" size="sm" icon={ImagePlus} onClick={() => file.current?.click()}>
-          Choose a file
-        </Button>
+        <Button type="button" variant="secondary" size="sm" icon={ImagePlus} onClick={() => file.current?.click()}><UiText source={'Choose a file'} /></Button>
         <Button
           type="button"
           variant="secondary"
@@ -123,9 +119,7 @@ export function PictureField({ blobId, credit, picked, removed, term, onPick, on
             setSearching((v) => !v);
             if (!query) setQuery(term);
           }}
-        >
-          Find a picture
-        </Button>
+        ><UiText source={'Find a picture'} /></Button>
       </div>
       {searching && (
         <div className="mt-3">
@@ -140,15 +134,13 @@ export function PictureField({ blobId, credit, picked, removed, term, onPick, on
                   void search();
                 }
               }}
-              placeholder="Search Wikimedia Commons"
-              aria-label="Search for a picture"
+              placeholder={translateUi('Search Wikimedia Commons')}
+              aria-label={translateUi('Search for a picture')}
               className="h-9 min-w-0 flex-1 rounded-lg border border-line bg-raised px-3 text-[14px] outline-none focus:border-ink"
             />
-            <Button type="button" size="sm" loading={busy} onClick={() => void search()}>
-              Search
-            </Button>
+            <Button type="button" size="sm" loading={busy} onClick={() => void search()}><UiText source={'Search'} /></Button>
           </div>
-          {results && !results.length && <p className="mt-2 text-[13px] text-ink-soft">No free pictures found. Try another word.</p>}
+          {results && !results.length && <p className="mt-2 text-[13px] text-ink-soft"><UiText source={'No free pictures found. Try another word.'} /></p>}
           {results && results.length > 0 && (
             <ul className="mt-3 grid grid-cols-3 gap-2">
               {results.map((p) => (
@@ -160,7 +152,7 @@ export function PictureField({ blobId, credit, picked, removed, term, onPick, on
               ))}
             </ul>
           )}
-          <p className="mt-2 text-[11.5px] text-ink-faint">Free pictures only; the licence and author are kept on the card.</p>
+          <p className="mt-2 text-[11.5px] text-ink-faint"><UiText source={'Free pictures only; the licence and author are kept on the card.'} /></p>
         </div>
       )}
     </div>

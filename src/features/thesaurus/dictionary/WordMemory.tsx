@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
@@ -73,6 +74,7 @@ export function useWordMemory(lang: string): RememberedRow[] | undefined {
 
 /** Your words: sorted by how well you know them, where they came from and theme; a word opens beside. */
 export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; rows: RememberedRow[]; selected?: string; onSelect: (row: RememberedRow) => void }) {
+  const translateUi = useUi();
   const [strength, setStrength] = useState<Strength>('all');
   const [kind, setKind] = useState<SightingKind | 'all'>('all');
   const [theme, setTheme] = useState<string>('all');
@@ -123,7 +125,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
 
   return (
     <div>
-      <div role="group" aria-label="How well you know them" className="flex flex-wrap gap-1.5">
+      <div role="group" aria-label={translateUi('How well you know them')} className="flex flex-wrap gap-1.5">
         {(
           [
             ['all', `All ${rows.length - counts.ignored}`],
@@ -142,9 +144,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
       </div>
       {(kinds.length > 1 || themes.length > 0) && (
         <div className="mt-3 flex flex-wrap gap-1.5">
-          <Chip active={kind === 'all' && theme === 'all'} onClick={() => (setKind('all'), setTheme('all'))}>
-            Everywhere
-          </Chip>
+          <Chip active={kind === 'all' && theme === 'all'} onClick={() => (setKind('all'), setTheme('all'))}><UiText source={'Everywhere'} /></Chip>
           {kinds.map((k) => {
             const Icon = KIND_ICONS[k];
             return (
@@ -162,11 +162,11 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
       )}
       {rows.length > 8 && (
         <div className="mt-3">
-          <SearchInput value={query} onChange={setQuery} placeholder="Find one of your words" />
+          <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Find one of your words')} />
         </div>
       )}
 
-      {strength === 'inbox' && counts.inbox === 0 && <p className="mt-3 text-[13.5px] text-ink-soft">Nothing waiting. Words you look up while reading wait here until you decide what to do with them.</p>}
+      {strength === 'inbox' && counts.inbox === 0 && <p className="mt-3 text-[13.5px] text-ink-soft"><UiText source={'Nothing waiting. Words you look up while reading wait here until you decide what to do with them.'} /></p>}
       {bulk && shown.length > 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <label className="flex items-center gap-2 text-[13px] font-semibold text-ink-soft">
@@ -176,14 +176,14 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
               onChange={() => setPicked(chosen.length === shown.length ? new Set() : new Set(shown.map((r) => r.key)))}
               className="size-4 accent-[var(--color-accent)]"
             />
-            {chosen.length ? `${chosen.length} selected` : 'Select all'}
+            {chosen.length ? translateUi('{0} selected', [chosen.length]) : translateUi('Select all')}
           </label>
           {chosen.length > 0 && (
             <>
               {strength === 'inbox' && (
                 <>
                   <select
-                    aria-label="Add the selected words to a deck"
+                    aria-label={translateUi('Add the selected words to a deck')}
                     value=""
                     disabled={busy || !decks?.some((d) => !d.deletedAt && !d.archived)}
                     onChange={(e) => {
@@ -196,7 +196,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
                     }}
                     className="h-9 rounded-full border border-line bg-raised px-3 text-[13px] font-semibold text-ink-soft outline-none focus:border-ink"
                   >
-                    <option value="">{decks?.some((d) => !d.deletedAt && !d.archived) ? 'Add to deck…' : 'Make a deck first'}</option>
+                    <option value="">{decks?.some((d) => !d.deletedAt && !d.archived) ? translateUi('Add to deck…') : translateUi('Make a deck first')}</option>
                     {decks
                       ?.filter((d) => !d.deletedAt && !d.archived)
                       .map((d) => (
@@ -215,9 +215,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
                         done(`${count(chosen.length)} marked as known`);
                       })
                     }
-                  >
-                    Mark known
-                  </Button>
+                  ><UiText source={'Mark known'} /></Button>
                 </>
               )}
               <Button
@@ -231,7 +229,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
                   })
                 }
               >
-                {strength === 'inbox' ? 'Ignore' : 'Back to the inbox'}
+                {strength === 'inbox' ? translateUi('Ignore') : translateUi('Back to the inbox')}
               </Button>
             </>
           )}
@@ -244,7 +242,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
             {bulk && (
               <input
                 type="checkbox"
-                aria-label={`Select ${r.surface}`}
+                aria-label={translateUi('Select {0}', [r.surface])}
                 checked={picked.has(r.key)}
                 onChange={() => toggle(r.key)}
                 className="mx-4 size-4 shrink-0 accent-[var(--color-accent)]"
@@ -274,7 +272,7 @@ export function MemoryList({ lang, rows, selected, onSelect }: { lang: string; r
             </button>
           </li>
         ))}
-        {shown.length === 0 && !(strength === 'inbox' && counts.inbox === 0) && <li className="px-4 py-8 text-center text-[14px] text-ink-soft">No words match.</li>}
+        {shown.length === 0 && !(strength === 'inbox' && counts.inbox === 0) && <li className="px-4 py-8 text-center text-[14px] text-ink-soft"><UiText source={'No words match.'} /></li>}
       </ul>
     </div>
   );
@@ -285,12 +283,9 @@ export function WordPlaces({ lang, sightings, forms }: { lang: string; sightings
   return (
     <div>
       {forms && forms.length > 1 && (
-        <p className="mb-3 text-[13px] text-ink-soft">
-          Met as{' '}
-          <span lang={lang} className="font-semibold text-ink">
+        <p className="mb-3 text-[13px] text-ink-soft"><UiText source={'Met as{0}{1}'} values={[' ', <span lang={lang} className="font-semibold text-ink">
             {forms.join(', ')}
-          </span>
-        </p>
+          </span>]} /></p>
       )}
       <ul className="space-y-2">
         {sightings.map((s) => {
@@ -307,9 +302,7 @@ export function WordPlaces({ lang, sightings, forms }: { lang: string; sightings
                   <Marked sentence={s.sentence} word={s.surface ?? s.norm} />
                 </p>
               ) : (
-                <p className="mt-1 flex items-center gap-1.5 text-[13px] text-ink-soft">
-                  <TextQuote size={13} aria-hidden /> No sentence kept
-                </p>
+                <p className="mt-1 flex items-center gap-1.5 text-[13px] text-ink-soft"><UiText source={'{0} No sentence kept'} values={[<TextQuote size={13} aria-hidden />]} /></p>
               )}
             </>
           );

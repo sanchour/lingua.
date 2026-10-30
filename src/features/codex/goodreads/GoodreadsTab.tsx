@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -54,6 +55,7 @@ const day = (time: number | undefined) => (time === undefined ? '—' : DAY.form
 
 /** Codex › Goodreads (5.1-3a): the imported shelves, sorted, grouped and filtered, with covers from Open Library. */
 export function GoodreadsTab({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const { settings } = useApp();
   const texts = useLibrary(lang);
   const books = useMemo(() => texts?.filter((t) => t.goodreads), [texts]);
@@ -108,7 +110,7 @@ export function GoodreadsTab({ lang }: { lang: string }) {
                   ref={searchRef}
                   value={filter.query}
                   onChange={(query) => set({ query })}
-                  placeholder="Search titles and authors"
+                  placeholder={translateUi('Search titles and authors')}
                   onClose={() => {
                     set({ query: '' });
                     setSearching(false);
@@ -119,7 +121,7 @@ export function GoodreadsTab({ lang }: { lang: string }) {
             ) : (
               <motion.div key="shelves" className="absolute inset-0 overflow-x-auto [scrollbar-width:none]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
                 <Segmented<ShelfName | 'all'>
-                  label="Shelf"
+                  label={translateUi('Shelf')}
                   value={filter.shelf}
                   onChange={(shelf) => set({ shelf })}
                   options={[{ value: 'all', label: `All ${count}` }, ...SHELVES.filter((s) => inUse.has(s.id)).map((s) => ({ value: s.id, label: s.title }))]}
@@ -128,7 +130,7 @@ export function GoodreadsTab({ lang }: { lang: string }) {
             )}
           </AnimatePresence>
         </div>
-        {!searching && <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />}
+        {!searching && <IconButton icon={Search} label={translateUi('Search')} shortcut="/" onClick={() => setSearching(true)} />}
         <FilterMenu filter={filter} own={own} narrowed={narrowed} onChange={set} />
         <SortMenu<GoodreadsSort, GoodreadsGroup>
           value={sort}
@@ -137,26 +139,24 @@ export function GoodreadsTab({ lang }: { lang: string }) {
           group={{ value: group, options: GROUPS, onChange: (goodreadsGroup) => void patchSetting('ui', { goodreadsGroup }) }}
         >
           <Segmented<'grid' | 'list'>
-            label="Show as"
+            label={translateUi('Show as')}
             block
             value={view}
             onChange={(libraryView) => void patchSetting('ui', { libraryView })}
             options={[
-              { value: 'grid', label: 'Covers', icon: LayoutGrid },
-              { value: 'list', label: 'List', icon: List },
+              { value: 'grid', label: translateUi('Covers'), icon: LayoutGrid },
+              { value: 'list', label: translateUi('List'), icon: List },
             ]}
           />
         </SortMenu>
-        <IconButton icon={reimport.busy ? LoaderCircle : Upload} label="Import a newer Goodreads export" onClick={() => void reimport.choose()} disabled={reimport.busy} />
+        <IconButton icon={reimport.busy ? LoaderCircle : Upload} label={translateUi('Import a newer Goodreads export')} onClick={() => void reimport.choose()} disabled={reimport.busy} />
       </div>
 
       {(narrowed || filter.query) && (
         <p className="-mt-3 mb-5 flex items-center gap-3 text-[13px] font-semibold text-ink-faint" aria-live="polite">
-          {shown} {shown === 1 ? 'book' : 'books'}
+          {shown} {shown === 1 ? translateUi('book') : translateUi('books')}
           {narrowed && (
-            <button type="button" className="text-accent-text hover:underline" onClick={() => set({ rating: 'any', own: null, withText: false })}>
-              Clear filters
-            </button>
+            <button type="button" className="text-accent-text hover:underline" onClick={() => set({ rating: 'any', own: null, withText: false })}><UiText source={'Clear filters'} /></button>
           )}
         </p>
       )}
@@ -164,8 +164,8 @@ export function GoodreadsTab({ lang }: { lang: string }) {
       {shown === 0 ? (
         <div className="flex flex-col items-center py-14 text-center text-ink-soft">
           <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-          <p className="font-semibold text-ink">No books on these shelves match</p>
-          <p className="mt-1 text-sm">Try another shelf, or clear the filters.</p>
+          <p className="font-semibold text-ink"><UiText source={'No books on these shelves match'} /></p>
+          <p className="mt-1 text-sm"><UiText source={'Try another shelf, or clear the filters.'} /></p>
         </div>
       ) : (
         <div className="space-y-10">
@@ -197,16 +197,17 @@ export function GoodreadsTab({ lang }: { lang: string }) {
 }
 
 function FilterMenu({ filter, own, narrowed, onChange }: { filter: GoodreadsFilter; own: string[]; narrowed: boolean; onChange: (patch: Partial<GoodreadsFilter>) => void }) {
+  const translateUi = useUi();
   return (
-    <Popover label="Filter" placement="bottom-end" className="w-72" trigger={(props) => <IconButton {...props} icon={SlidersHorizontal} label="Filter" active={narrowed} />}>
+    <Popover label={translateUi('Filter')} placement="bottom-end" className="w-72" trigger={(props) => <IconButton {...props} icon={SlidersHorizontal} label={translateUi('Filter')} active={narrowed} />}>
       <div className="space-y-4 p-1.5">
         <div>
-          <p className="mb-1.5 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">Your rating</p>
-          <Segmented<RatingFilter> label="Your rating" block value={filter.rating} onChange={(rating) => onChange({ rating })} options={RATINGS} />
+          <p className="mb-1.5 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Your rating'} /></p>
+          <Segmented<RatingFilter> label={translateUi('Your rating')} block value={filter.rating} onChange={(rating) => onChange({ rating })} options={RATINGS} />
         </div>
         {own.length > 0 && (
           <div>
-            <p className="mb-1.5 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">Your shelves</p>
+            <p className="mb-1.5 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Your shelves'} /></p>
             <div className="flex max-h-40 flex-wrap gap-1.5 overflow-y-auto">
               {own.map((s) => (
                 <button
@@ -227,10 +228,10 @@ function FilterMenu({ filter, own, narrowed, onChange }: { filter: GoodreadsFilt
         )}
         <label className="flex cursor-pointer items-center gap-3">
           <span className="min-w-0 flex-1">
-            <span className="block text-sm font-semibold">Only books to read here</span>
-            <span className="block text-[12.5px] text-ink-faint">With their EPUB or a free edition</span>
+            <span className="block text-sm font-semibold"><UiText source={'Only books to read here'} /></span>
+            <span className="block text-[12.5px] text-ink-faint"><UiText source={'With their EPUB or a free edition'} /></span>
           </span>
-          <Switch checked={filter.withText} onChange={(withText) => onChange({ withText })} label="Only books to read here" />
+          <Switch checked={filter.withText} onChange={(withText) => onChange({ withText })} label={translateUi('Only books to read here')} />
         </label>
       </div>
     </Popover>
@@ -238,8 +239,9 @@ function FilterMenu({ filter, own, narrowed, onChange }: { filter: GoodreadsFilt
 }
 
 function Stars({ value, size = 11 }: { value: number; size?: number }) {
+  const translateUi = useUi();
   return (
-    <span className="inline-flex items-center gap-px text-accent-text" role="img" aria-label={`Rated ${value} of 5`}>
+    <span className="inline-flex items-center gap-px text-accent-text" role="img" aria-label={translateUi('Rated {0} of 5', [value])}>
       {[1, 2, 3, 4, 5].map((n) => (
         <Star key={n} size={size} className={n <= value ? 'fill-current' : 'opacity-30'} aria-hidden />
       ))}
@@ -275,6 +277,7 @@ const COLUMNS = 'grid grid-cols-[minmax(0,1fr)_6rem_4rem_7rem_7rem] items-center
 
 /** The list view: a table of the shelf, its headings sorting it. */
 function BookTable({ books, sort, onOpen }: { books: Text[]; sort: GoodreadsSort; onOpen: (book: Text) => void }) {
+  const translateUi = useUi();
   const heading = (value: GoodreadsSort, label: string) => (
     <button type="button" onClick={() => void patchSetting('ui', { goodreadsSort: value })} aria-pressed={sort === value} className={cx('text-left transition-colors hover:text-ink', sort === value && 'text-ink')}>
       {label}
@@ -299,7 +302,7 @@ function BookTable({ books, sort, onOpen }: { books: Text[]; sort: GoodreadsSort
             <span className="min-w-0">
               <span className="block truncate text-[15px] font-semibold">{b.title}</span>
               <span className="flex items-center gap-1.5 truncate text-[13px] text-ink-soft">
-                {b.kind !== 'shelfItem' && <BookOpen size={13} className="shrink-0 text-sage-text" aria-label="Here to read" />}
+                {b.kind !== 'shelfItem' && <BookOpen size={13} className="shrink-0 text-sage-text" aria-label={translateUi('Here to read')} />}
                 {b.author}
               </span>
             </span>
@@ -325,6 +328,7 @@ function Fact({ label, children }: { label: string; children: ReactNode }) {
 
 /** A book's details, and the ways to read it here: its EPUB, or a free edition when it is old enough. */
 function BookDrawer({ book, onClose }: { book: Text | undefined; onClose: () => void }) {
+  const translateUi = useUi();
   // The last book shown stays while the drawer slides away.
   const last = useRef(book);
   if (book) last.current = book;
@@ -361,9 +365,7 @@ function BookDrawer({ book, onClose }: { book: Text | undefined; onClose: () => 
       footer={
         <div className="flex items-center gap-2">
           {bookId && (
-            <a href={`https://www.goodreads.com/book/show/${encodeURIComponent(bookId)}`} target="_blank" rel="noreferrer" className={buttonClasses('ghost', 'md')}>
-              <ExternalLink size={16} aria-hidden /> On Goodreads
-            </a>
+            <a href={`https://www.goodreads.com/book/show/${encodeURIComponent(bookId)}`} target="_blank" rel="noreferrer" className={buttonClasses('ghost', 'md')}><UiText source={'{0} On Goodreads'} values={[<ExternalLink size={16} aria-hidden />]} /></a>
           )}
           {shelfOnly && (
             <Button
@@ -375,9 +377,7 @@ function BookDrawer({ book, onClose }: { book: Text | undefined; onClose: () => 
                 await deleteText(b.id);
                 toast('Removed from your Goodreads shelves here.');
               }}
-            >
-              Remove
-            </Button>
+            ><UiText source={'Remove'} /></Button>
           )}
         </div>
       }
@@ -385,19 +385,19 @@ function BookDrawer({ book, onClose }: { book: Text | undefined; onClose: () => 
       <div className="flex gap-5">
         <BookCover text={b} size="lg" className="w-32 shrink-0" />
         <dl className="min-w-0 flex-1 space-y-3">
-          <Fact label="Shelf">{SHELVES.find((s) => s.id === shelfOf(b))!.title}</Fact>
+          <Fact label={translateUi('Shelf')}>{SHELVES.find((s) => s.id === shelfOf(b))!.title}</Fact>
           {rating ? (
-            <Fact label="Your rating">
+            <Fact label={translateUi('Your rating')}>
               <Stars value={rating} size={15} />
             </Fact>
           ) : null}
-          {year && <Fact label="First published">{year}</Fact>}
-          {read !== undefined && <Fact label="Read">{day(read)}</Fact>}
-          <Fact label="Added">{day(addedTime(b))}</Fact>
+          {year && <Fact label={translateUi('First published')}>{year}</Fact>}
+          {read !== undefined && <Fact label={translateUi('Read')}>{day(read)}</Fact>}
+          <Fact label={translateUi('Added')}>{day(addedTime(b))}</Fact>
         </dl>
       </div>
       {own.length > 0 && (
-        <div className="mt-5 flex flex-wrap gap-1.5" aria-label="Your shelves">
+        <div className="mt-5 flex flex-wrap gap-1.5" aria-label={translateUi('Your shelves')}>
           {own.map((s) => (
             <span key={s} className="rounded-full bg-sunken px-2.5 py-1 text-[12.5px] font-semibold text-ink-soft">
               {s}
@@ -408,20 +408,14 @@ function BookDrawer({ book, onClose }: { book: Text | undefined; onClose: () => 
 
       <div className="mt-6 space-y-2">
         {!shelfOnly ? (
-          <Link to={`/codex/read/${b.id}`} onClick={onClose} className={buttonClasses('primary', 'md', true)}>
-            <BookOpen size={17} aria-hidden /> Read
-          </Link>
+          <Link to={`/codex/read/${b.id}`} onClick={onClose} className={buttonClasses('primary', 'md', true)}><UiText source={'{0} Read'} values={[<BookOpen size={17} aria-hidden />]} /></Link>
         ) : (
           <>
-            <Button icon={Paperclip} block onClick={() => void attach()}>
-              Add the EPUB
-            </Button>
+            <Button icon={Paperclip} block onClick={() => void attach()}><UiText source={'Add the EPUB'} /></Button>
             {(year === undefined || inPublicDomain(year)) && !finding && (
-              <Button variant="secondary" icon={Feather} block onClick={() => setFinding(true)}>
-                Find a free edition
-              </Button>
+              <Button variant="secondary" icon={Feather} block onClick={() => setFinding(true)}><UiText source={'Find a free edition'} /></Button>
             )}
-            {year !== undefined && !inPublicDomain(year) && <p className="pt-1 text-center text-[12.5px] text-ink-faint">Published in {year}: not free to read yet, so no free edition.</p>}
+            {year !== undefined && !inPublicDomain(year) && <p className="pt-1 text-center text-[12.5px] text-ink-faint"><UiText source={'Published in {0}: not free to read yet, so no free edition.'} values={[year]} /></p>}
           </>
         )}
       </div>
@@ -435,6 +429,7 @@ function BookDrawer({ book, onClose }: { book: Text | undefined; onClose: () => 
  * surname, else by the surname (a title from Goodreads may be a translation's), else by title.
  */
 function FreeEditions({ book, onAdded }: { book: Text; onAdded: (id: string) => void }) {
+  const translateUi = useUi();
   const [found, setFound] = useState<{ books: FreeBook[]; works: SourceWork[]; failed: boolean } | null>(null);
   const [adding, setAdding] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
@@ -473,17 +468,15 @@ function FreeEditions({ book, onAdded }: { book: Text; onAdded: (id: string) => 
 
   if (!found) {
     return (
-      <p className="mt-6 flex items-center justify-center gap-2 text-sm text-ink-faint">
-        <LoaderCircle size={15} className="animate-spin" aria-hidden /> Looking on Project Gutenberg and Wikisource…
-      </p>
+      <p className="mt-6 flex items-center justify-center gap-2 text-sm text-ink-faint"><UiText source={'{0} Looking on Project Gutenberg and Wikisource…'} values={[<LoaderCircle size={15} className="animate-spin" aria-hidden />]} /></p>
     );
   }
   if (!found.books.length && !found.works.length) {
-    return <p className="mt-6 text-center text-sm text-ink-soft">{found.failed ? 'Project Gutenberg and Wikisource didn’t answer. Try again in a moment.' : 'No free edition found in this language.'}</p>;
+    return <p className="mt-6 text-center text-sm text-ink-soft">{found.failed ? translateUi('Project Gutenberg and Wikisource didn’t answer. Try again in a moment.') : translateUi('No free edition found in this language.')}</p>;
   }
   return (
     <div className="mt-6">
-      <p className="mb-2 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">Free editions · choose one to read</p>
+      <p className="mb-2 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Free editions · choose one to read'} /></p>
       <ul className="space-y-0.5">
         {found.books.map((f) => (
           <li key={`g${f.id}`}>
@@ -491,9 +484,9 @@ function FreeEditions({ book, onAdded }: { book: Text; onAdded: (id: string) => 
               <BookCover text={{ id: `g${f.id}`, title: f.title, author: f.author, lang: book.lang, coverUrl: f.cover }} size="sm" className="w-9 shrink-0" />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold">{f.title}</span>
-                <span className="block truncate text-[12.5px] text-ink-soft">{f.author ? `${f.author} · ` : ''}Project Gutenberg</span>
+                <span className="block truncate text-[12.5px] text-ink-soft"><UiText source={'{0}Project Gutenberg'} values={[f.author ? `${f.author} · ` : '']} /></span>
               </span>
-              {adding === `g${f.id}` && <LoaderCircle size={15} className="shrink-0 animate-spin text-ink-faint" aria-label="Adding" />}
+              {adding === `g${f.id}` && <LoaderCircle size={15} className="shrink-0 animate-spin text-ink-faint" aria-label={translateUi('Adding')} />}
             </button>
           </li>
         ))}
@@ -505,12 +498,12 @@ function FreeEditions({ book, onAdded }: { book: Text; onAdded: (id: string) => 
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold">{w.title}</span>
-                <span className="block truncate text-[12.5px] text-ink-soft">Wikisource</span>
+                <span className="block truncate text-[12.5px] text-ink-soft"><UiText source={'Wikisource'} /></span>
               </span>
               {adding === `w${w.url}` && (
                 <span className="flex shrink-0 items-center gap-1.5 text-[12px] font-semibold text-ink-faint tabular-nums">
                   {progress > 0 && `${Math.round(progress * 100)}%`}
-                  <LoaderCircle size={15} className="animate-spin" aria-label="Adding" />
+                  <LoaderCircle size={15} className="animate-spin" aria-label={translateUi('Adding')} />
                 </span>
               )}
             </button>

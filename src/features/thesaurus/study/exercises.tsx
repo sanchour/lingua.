@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -213,6 +214,7 @@ export const LETTERS: Record<string, string[]> = {
 };
 
 export function TypeExercise({ ex, lang, value, onChange, phase, onSubmit }: { ex: Of<'type'>; lang: string; value: string; onChange: (v: string) => void; phase: Phase; onSubmit: () => void }) {
+  const translateUi = useUi();
   const input = useRef<HTMLInputElement>(null);
   const { pointer } = useLayout();
   useEffect(() => {
@@ -237,7 +239,7 @@ export function TypeExercise({ ex, lang, value, onChange, phase, onSubmit }: { e
     <div className="space-y-8">
       <div className="text-center">
         <Prompt>{ex.item.meaning}</Prompt>
-        {article && <p className="mt-2 text-sm text-ink-faint">a noun · {article} …</p>}
+        {article && <p className="mt-2 text-sm text-ink-faint"><UiText source={'a noun · {0} …'} values={[article]} /></p>}
       </div>
       <form
         onSubmit={(e) => {
@@ -264,7 +266,7 @@ export function TypeExercise({ ex, lang, value, onChange, phase, onSubmit }: { e
         />
       </form>
       {phase === 'answer' && LETTERS[lang] && pointer === 'fine' && (
-        <div className="flex flex-wrap justify-center gap-1.5" aria-label="Special letters">
+        <div className="flex flex-wrap justify-center gap-1.5" aria-label={translateUi('Special letters')}>
           {LETTERS[lang].map((ch) => (
             <button
               key={ch}
@@ -373,6 +375,7 @@ export function ArticleExercise({ ex, lang, value, onChange, phase }: { ex: Of<'
 
 /** The word to say, a microphone, and what was heard. `onHeard` gets the recogniser's best guesses. */
 export function SpeakExercise({ ex, lang, heard, onHeard, phase, onSkip }: { ex: Of<'speak'>; lang: string; heard: string[]; onHeard: (alternatives: string[]) => void; phase: Phase; onSkip: () => void }) {
+  const translateUi = useUi();
   const [listening, setListening] = useState(false);
   const [live, setLive] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -410,7 +413,7 @@ export function SpeakExercise({ ex, lang, heard, onHeard, phase, onSkip }: { ex:
           type="button"
           onClick={start}
           disabled={phase !== 'answer'}
-          aria-label={listening ? 'Stop listening' : 'Speak now'}
+          aria-label={listening ? translateUi('Stop listening') : translateUi('Speak now')}
           animate={listening ? { scale: [1, 1.06, 1] } : { scale: 1 }}
           transition={listening ? { duration: 1.2, repeat: Infinity } : spring.snappy}
           className={cx(
@@ -425,9 +428,7 @@ export function SpeakExercise({ ex, lang, heard, onHeard, phase, onSkip }: { ex:
         </p>
         {error && <p className="text-sm text-accent-text">{error}</p>}
         {phase === 'answer' && (
-          <button type="button" onClick={onSkip} className="text-[13px] font-semibold text-ink-faint underline-offset-2 hover:text-ink hover:underline">
-            Can’t speak now
-          </button>
+          <button type="button" onClick={onSkip} className="text-[13px] font-semibold text-ink-faint underline-offset-2 hover:text-ink hover:underline"><UiText source={'Can’t speak now'} /></button>
         )}
       </div>
     </div>
@@ -525,7 +526,7 @@ export function SpellExercise({ ex, lang, value, onChange, phase }: { ex: Of<'sp
     <div className="space-y-7">
       <div className="text-center">
         <p className="font-serif text-[clamp(1.4rem,4.5vw,1.9rem)] leading-snug">{ex.item.meaning}</p>
-        <p className="mt-2 text-sm text-ink-faint">{ex.answer.length} letters</p>
+        <p className="mt-2 text-sm text-ink-faint"><UiText source={'{0} letters'} values={[ex.answer.length]} /></p>
       </div>
       <TileLine tiles={ex.tiles} value={value} onChange={onChange} phase={phase} lang={lang} joined />
     </div>
@@ -544,9 +545,9 @@ export function TrueFalseExercise({ ex, lang, value, onChange, phase }: { ex: Of
         <Prompt lang={lang}>
           <TermText item={ex.item} lang={lang} />
         </Prompt>
-        <p className="mt-4 text-[13px] font-bold tracking-[0.12em] text-ink-faint uppercase">means</p>
+        <p className="mt-4 text-[13px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'means'} /></p>
         <p className="mt-1 font-serif text-[clamp(1.4rem,4.5vw,1.9rem)] leading-snug">{ex.shown}</p>
-        {phase !== 'answer' && ex.answer === 1 && <p className="mt-2 text-[15px] text-ink-soft">It means “{ex.item.meaning}”.</p>}
+        {phase !== 'answer' && ex.answer === 1 && <p className="mt-2 text-[15px] text-ink-soft"><UiText source={'It means “{0}”.'} values={[ex.item.meaning]} /></p>}
       </div>
       <div role="radiogroup" className="grid grid-cols-2 gap-3">
         {ex.options.map((o, i) => {

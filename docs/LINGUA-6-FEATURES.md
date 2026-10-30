@@ -1077,7 +1077,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 
 *In Lingua: News in Codex; Diarium; Mundus › Things to try (think aloud, labels at home, …); Sermo's scenes; the study log.*
 
-- [ ] `F0821` Change the app interface to the target language · **6-19**
+- [x] `F0821` Change the app interface to the target language · **6-19** · opt-in is reachable; remaining dynamic copy is tracked in the plan
 - [x] `F0822` Read the news in the target language
 - [x] `F0823` Follow creators who use the target language
 - [x] `F0824` Keep a diary in the target language

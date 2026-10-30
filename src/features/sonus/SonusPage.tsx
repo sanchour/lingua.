@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
@@ -63,6 +64,7 @@ const enter = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opaci
  * podcasts to find) opens from the end of the tab strip. Watching has its own room in Visio.
  */
 export default function SonusPage() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = language.id;
   const { pointer } = useLayout();
@@ -127,21 +129,21 @@ export default function SonusPage() {
     <div className="mb-5 flex h-12 items-center gap-2">
       <div className="relative h-full min-w-0 flex-1">
         {searching ? (
-          <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search what you listen to" onClose={closeSearch} autoFocus />
+          <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder={translateUi('Search what you listen to')} onClose={closeSearch} autoFocus />
         ) : view ? (
           <span className="flex h-full items-center gap-2.5">
-            <button type="button" onClick={() => setView(null)} aria-label="Back to your library" className="grid size-10 place-items-center rounded-full bg-sunken text-ink-soft transition-colors hover:text-ink">
+            <button type="button" onClick={() => setView(null)} aria-label={translateUi('Back to your library')} className="grid size-10 place-items-center rounded-full bg-sunken text-ink-soft transition-colors hover:text-ink">
               <ChevronLeft size={20} aria-hidden />
             </button>
             <h2 className="font-serif text-[24px] font-semibold tracking-tight">{LIBRARY_VIEWS[view]}</h2>
           </span>
         ) : (
-          <h2 className="font-serif text-[24px] leading-[48px] font-semibold tracking-tight">Listen</h2>
+          <h2 className="font-serif text-[24px] leading-[48px] font-semibold tracking-tight"><UiText source={'Listen'} /></h2>
         )}
       </div>
       {listsMedia && Boolean(media?.length) && (
         <>
-          {!searching && <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />}
+          {!searching && <IconButton icon={Search} label={translateUi('Search')} shortcut="/" onClick={() => setSearching(true)} />}
           <SortMenu value={sort} options={SORTS} onChange={(mediaSort) => void patchSetting('ui', { mediaSort })} />
         </>
       )}
@@ -158,7 +160,7 @@ export default function SonusPage() {
     ) : (
       <div className="flex flex-col items-center py-14 text-center text-ink-soft">
         <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-        <p className="font-semibold text-ink">Nothing matches “{query.trim()}”</p>
+        <p className="font-semibold text-ink"><UiText source={'Nothing matches “{0}”'} values={[query.trim()]} /></p>
       </div>
     )
   ) : null;
@@ -180,7 +182,7 @@ export default function SonusPage() {
       )}
 
       {tab === 'library' && media && feeds && (
-        <motion.section key={view ?? 'home'} {...enter(1)} aria-label={view ? LIBRARY_VIEWS[view] : 'Your library'}>
+        <motion.section key={view ?? 'home'} {...enter(1)} aria-label={view ? LIBRARY_VIEWS[view] : translateUi('Your library')}>
           <LibraryHome
             lang={lang}
             media={media}
@@ -206,12 +208,13 @@ export default function SonusPage() {
 
 /** The way into Sonus+, dark like the room, at the end of the tab strip. */
 function SonusPlusLink() {
+  const translateUi = useUi();
   const gate = useGate('sonusPlus');
   return (
     <Link
       to="/cantus"
       onClick={gate ?? undefined}
-      aria-label="Open Sonus+: songs to sing and learn, and podcasts"
+      aria-label={translateUi('Open Sonus+: songs to sing and learn, and podcasts')}
       className="group relative inline-flex h-9 items-center gap-2 overflow-hidden rounded-full bg-[#120e10] pr-3.5 pl-1.5 text-[#f6eef0] shadow-elev-1 transition-transform active:scale-[0.98]"
     >
       <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_0%_0%,rgb(180_88_126/0.5),transparent_60%)]" aria-hidden />

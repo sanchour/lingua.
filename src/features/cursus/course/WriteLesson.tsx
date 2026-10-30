@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { BookHeart, Eye, MessageCircleQuestion, Sparkles } from 'lucide-react';
@@ -34,6 +35,7 @@ const eyebrow = 'text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercas
  * the language, and kept in Diarium.
  */
 export function WriteLesson({ unit, content, lang, onClose, onActive, onFinish }: Props) {
+  const translateUi = useUi();
   const tasks = useMemo(() => courseTasks(unit, content), [unit, content]);
   const [taskId, setTaskId] = useState(tasks[0].id);
   const task = tasks.find((t) => t.id === taskId) ?? tasks[0];
@@ -55,14 +57,14 @@ export function WriteLesson({ unit, content, lang, onClose, onActive, onFinish }
 
   return (
     <>
-      <StudyBar title={`${unit.short} · Write`} progress={w.review || model ? 0.9 : w.enough ? 0.5 : 0.15} onClose={onClose} />
+      <StudyBar title={translateUi('{0} · Write', [unit.short])} progress={w.review || model ? 0.9 : w.enough ? 0.5 : 0.15} onClose={onClose} />
       <main className="mx-auto max-w-5xl px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 76px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 48px)' }}>
         <motion.div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_300px]" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft}>
           <div>
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className={cx(eyebrow, 'text-sage-text')}>Write it yourself</p>
+              <p className={cx(eyebrow, 'text-sage-text')}><UiText source={'Write it yourself'} /></p>
               <Segmented
-                label="What to write"
+                label={translateUi('What to write')}
                 value={task.id}
                 onChange={(id) => {
                   setTaskId(id);
@@ -92,16 +94,14 @@ export function WriteLesson({ unit, content, lang, onClose, onActive, onFinish }
             />
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <span className="mr-auto text-[12.5px] font-semibold text-ink-faint tabular-nums">
-                {w.count} {lang === 'zh' ? 'characters' : w.count === 1 ? 'word' : 'words'}
+                {w.count} {lang === 'zh' ? translateUi('characters') : w.count === 1 ? translateUi('word') : translateUi('words')}
               </span>
               {w.canCheck && (
-                <Button variant="secondary" icon={Sparkles} loading={w.checking} disabled={!w.enough || Boolean(w.review)} onClick={() => void w.check()}>
-                  Check it
-                </Button>
+                <Button variant="secondary" icon={Sparkles} loading={w.checking} disabled={!w.enough || Boolean(w.review)} onClick={() => void w.check()}><UiText source={'Check it'} /></Button>
               )}
               {task.id === 'task' && (
                 <Button variant="ghost" icon={Eye} onClick={() => setModel((m) => !m)}>
-                  {model ? 'Hide the model answer' : 'Show a model answer'}
+                  {model ? translateUi('Hide the model answer') : translateUi('Show a model answer')}
                 </Button>
               )}
             </div>
@@ -116,7 +116,7 @@ export function WriteLesson({ unit, content, lang, onClose, onActive, onFinish }
             {model && task.id === 'task' && (
               <Card className="mt-6 p-5">
                 <div className="flex items-center gap-2">
-                  <p className={cx(eyebrow, 'flex-1')}>One way to write it</p>
+                  <p className={cx(eyebrow, 'flex-1')}><UiText source={'One way to write it'} /></p>
                   <SpeakButton lang={lang} text={content.model} size={17} />
                 </div>
                 <p lang={lang} dir={rtl ? 'rtl' : undefined} className="mt-2 font-serif text-[17px] leading-relaxed">
@@ -126,21 +126,17 @@ export function WriteLesson({ unit, content, lang, onClose, onActive, onFinish }
             )}
 
             <div className="mt-8 flex flex-wrap gap-2 border-t border-line pt-5">
-              <Button variant="ghost" icon={MessageCircleQuestion} disabled={!w.enough} onClick={() => void w.ask()}>
-                Ask a speaker
-              </Button>
+              <Button variant="ghost" icon={MessageCircleQuestion} disabled={!w.enough} onClick={() => void w.ask()}><UiText source={'Ask a speaker'} /></Button>
               <Button variant="ghost" icon={BookHeart} disabled={!w.enough || w.kept} onClick={() => void w.keep(task.quote ?? task.task)}>
-                {w.kept ? 'Kept in Diarium' : 'Keep it in Diarium'}
+                {w.kept ? translateUi('Kept in Diarium') : translateUi('Keep it in Diarium')}
               </Button>
-              <Button className="ml-auto" disabled={!w.enough} onClick={finish}>
-                Finish the lesson
-              </Button>
+              <Button className="ml-auto" disabled={!w.enough} onClick={finish}><UiText source={'Finish the lesson'} /></Button>
             </div>
           </div>
 
           <aside className="space-y-4 lg:sticky lg:top-20">
             <Card className="p-5">
-              <p className={eyebrow}>Use what you learned</p>
+              <p className={eyebrow}><UiText source={'Use what you learned'} /></p>
               <ul className="mt-2 space-y-2">
                 {content.phrases.slice(0, 5).map((p) => (
                   <li key={p.s}>
@@ -153,9 +149,7 @@ export function WriteLesson({ unit, content, lang, onClose, onActive, onFinish }
               </ul>
             </Card>
             {!w.canCheck && (
-              <p className="px-1 text-[12.5px] leading-relaxed text-ink-faint">
-                With an AI key (Settings › AI), Check it corrects your text and shows a more natural version. Without one, compare with the model answer, or ask a speaker.
-              </p>
+              <p className="px-1 text-[12.5px] leading-relaxed text-ink-faint"><UiText source={'With an AI key (Settings › AI), Check it corrects your text and shows a more natural version. Without one, compare with the model answer, or ask a speaker.'} /></p>
             )}
           </aside>
         </motion.div>

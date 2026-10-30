@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
@@ -43,10 +44,8 @@ export default function StationPage() {
     return (
       <div className="grid min-h-[60dvh] place-items-center text-center">
         <div>
-          <p className="font-serif text-xl">This station couldn’t be found.</p>
-          <Link to="/sonus?tab=radio" className="mt-4 inline-block font-semibold text-accent-text">
-            Back to Radio
-          </Link>
+          <p className="font-serif text-xl"><UiText source={'This station couldn’t be found.'} /></p>
+          <Link to="/sonus?tab=radio" className="mt-4 inline-block font-semibold text-accent-text"><UiText source={'Back to Radio'} /></Link>
         </div>
       </div>
     );
@@ -55,6 +54,7 @@ export default function StationPage() {
 }
 
 function Station({ station, lang, favorite }: { station: RadioStation; lang: string; favorite: boolean }) {
+  const translateUi = useUi();
   const { layout } = useLayout();
   const navigate = useNavigate();
   const mediaId = stationMediaId(station.id);
@@ -80,9 +80,7 @@ function Station({ station, lang, favorite }: { station: RadioStation; lang: str
   if (wide) {
     return (
       <div className="flex h-[calc(100dvh-3.5rem)] min-h-[460px] flex-col">
-        <Link to="/sonus?tab=radio" className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink">
-          <ChevronLeft size={16} aria-hidden /> Radio
-        </Link>
+        <Link to="/sonus?tab=radio" className="mb-6 inline-flex shrink-0 items-center gap-1 self-start text-sm font-semibold text-ink-soft hover:text-ink"><UiText source={'{0} Radio'} values={[<ChevronLeft size={16} aria-hidden />]} /></Link>
         <div className="grid min-h-0 flex-1 grid-cols-[minmax(260px,320px)_minmax(0,1fr)] gap-12">
           <aside className="flex min-h-0 flex-col">
             <div className="min-h-[96px] flex-1 [container-type:size]">
@@ -93,7 +91,7 @@ function Station({ station, lang, favorite }: { station: RadioStation; lang: str
               <div className="mt-6">{controls}</div>
             </div>
           </aside>
-          <section aria-label="Live text" className="flex min-h-0 min-w-0 flex-col">
+          <section aria-label={translateUi('Live text')} className="flex min-h-0 min-w-0 flex-col">
             <div ref={scrollRef} className="lyric-scroll -mr-4 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-4 pb-16">
               <LiveText media={media} isOn={isOn} scrollRef={scrollRef} />
             </div>
@@ -106,10 +104,10 @@ function Station({ station, lang, favorite }: { station: RadioStation; lang: str
   return (
     <div className="min-h-dvh bg-bg">
       <header className="no-callout sticky top-0 z-20 flex items-center gap-1 bg-bg/90 px-2 pt-safe backdrop-blur-xl">
-        <button type="button" aria-label="Close the station" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus?tab=radio'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
+        <button type="button" aria-label={translateUi('Close the station')} onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus?tab=radio'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronDown size={24} aria-hidden />
         </button>
-        <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">Radio</p>
+        <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft"><UiText source={'Radio'} /></p>
         <span className="size-11" aria-hidden />
       </header>
       <div className="px-5 pb-[calc(env(safe-area-inset-bottom)+200px)]">
@@ -125,6 +123,7 @@ function Station({ station, lang, favorite }: { station: RadioStation; lang: str
 }
 
 function Details({ station, lang, isOn, large = false }: { station: RadioStation; lang: string; isOn: boolean; large?: boolean }) {
+  const translateUi = useUi();
   const status = usePlayer((s) => (isOn ? s.status : 'idle'));
   const error = usePlayer((s) => s.error);
   const nowPlaying = usePlayer((s) => (isOn ? s.nowPlaying : undefined));
@@ -138,11 +137,11 @@ function Details({ station, lang, isOn, large = false }: { station: RadioStation
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60" />
               <span className="relative inline-flex size-2 rounded-full bg-accent" />
             </span>
-            <span className="text-accent-text">Live</span>
+            <span className="text-accent-text"><UiText source={'Live'} /></span>
           </>
         ) : (
           <span className="flex items-center gap-1.5 text-ink-faint">
-            <Radio size={13} aria-hidden /> {status === 'loading' ? 'Tuning in…' : status === 'paused' ? 'Paused' : status === 'error' ? 'Off air' : 'Radio'}
+            <Radio size={13} aria-hidden /> {status === 'loading' ? translateUi('Tuning in…') : status === 'paused' ? translateUi('Paused') : status === 'error' ? translateUi('Off air') : translateUi('Radio')}
           </span>
         )}
       </p>
@@ -172,24 +171,25 @@ function Details({ station, lang, isOn, large = false }: { station: RadioStation
 }
 
 function Controls({ station, lang, favorite, isOn, canStep, onStep }: { station: RadioStation; lang: string; favorite: boolean; isOn: boolean; canStep: boolean; onStep: (by: number) => void }) {
+  const translateUi = useUi();
   const status = usePlayer((s) => (isOn ? s.status : 'idle'));
   const playing = status === 'playing';
   const round = 'grid size-12 place-items-center rounded-full text-ink-soft transition-[transform,background-color,color] duration-150 hover:bg-surface hover:text-ink active:scale-90 disabled:opacity-35';
   return (
     <div>
       <div className="flex items-center justify-center gap-2">
-        <button type="button" aria-label="Your previous station" title="Your previous station" disabled={!canStep} onClick={() => onStep(-1)} className={round}>
+        <button type="button" aria-label={translateUi('Your previous station')} title={translateUi('Your previous station')} disabled={!canStep} onClick={() => onStep(-1)} className={round}>
           <SkipBack size={22} strokeWidth={1.9} aria-hidden />
         </button>
         <button
           type="button"
-          aria-label={playing ? 'Pause' : 'Play'}
+          aria-label={playing ? translateUi('Pause') : translateUi('Play')}
           onClick={() => (isOn ? toggle() : playStation(station, lang))}
           className="mx-2 grid size-16 place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-2 transition-transform duration-150 active:scale-90"
         >
           {status === 'loading' ? <LoaderCircle size={24} className="animate-spin" aria-hidden /> : playing ? <Pause size={24} className="fill-current" aria-hidden /> : <Play size={24} className="translate-x-0.5 fill-current" aria-hidden />}
         </button>
-        <button type="button" aria-label="Your next station" title="Your next station" disabled={!canStep} onClick={() => onStep(1)} className={round}>
+        <button type="button" aria-label={translateUi('Your next station')} title={translateUi('Your next station')} disabled={!canStep} onClick={() => onStep(1)} className={round}>
           <SkipForward size={22} strokeWidth={1.9} aria-hidden />
         </button>
       </div>
@@ -197,18 +197,18 @@ function Controls({ station, lang, favorite, isOn, canStep, onStep }: { station:
         <button
           type="button"
           aria-pressed={favorite}
-          aria-label={favorite ? 'Remove from your stations' : 'Add to your stations'}
-          title={favorite ? 'In your stations' : 'Add to your stations'}
+          aria-label={favorite ? translateUi('Remove from your stations') : translateUi('Add to your stations')}
+          title={favorite ? translateUi('In your stations') : translateUi('Add to your stations')}
           onClick={() => void toggleFavorite(station, lang)}
           className={cx(round, 'size-11', favorite && 'text-accent')}
         >
           <Heart size={19} className={favorite ? 'fill-current' : undefined} aria-hidden />
         </button>
-        <Link to="/sonus/commute" aria-label="Commute mode" title="Commute mode: big buttons, large text" className={cx(round, 'size-11', !isOn && 'pointer-events-none opacity-35')}>
+        <Link to="/sonus/commute" aria-label={translateUi('Commute mode')} title={translateUi('Commute mode: big buttons, large text')} className={cx(round, 'size-11', !isOn && 'pointer-events-none opacity-35')}>
           <Bike size={19} aria-hidden />
         </Link>
         {station.homepage && (
-          <a href={station.homepage} target="_blank" rel="noreferrer" aria-label="The station’s website" title="The station’s website" className={cx(round, 'size-11')}>
+          <a href={station.homepage} target="_blank" rel="noreferrer" aria-label={translateUi('The station’s website')} title={translateUi('The station’s website')} className={cx(round, 'size-11')}>
             <ExternalLink size={18} aria-hidden />
           </a>
         )}
@@ -226,6 +226,7 @@ const STATUS: Record<string, string> = {
 
 /** What's said on air, written out a little behind the sound; every word works as in Codex. */
 export function LiveText({ media, isOn, scrollRef, large = false }: { media: Media; isOn: boolean; scrollRef?: RefObject<HTMLElement | null>; large?: boolean }) {
+  const translateUi = useUi();
   const on = useLive((s) => s.on);
   const mine = useLive((s) => s.mediaId === media.id);
   const status = useLive((s) => s.status);
@@ -257,15 +258,13 @@ export function LiveText({ media, isOn, scrollRef, large = false }: { media: Med
     <div>
       <div className="mb-4 flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <h2 className="text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase">Live text</h2>
+          <h2 className="text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase"><UiText source={'Live text'} /></h2>
           {note && <p className={cx('mt-1 text-[13.5px] leading-snug', mine && (status === 'blocked' || status === 'error') ? 'text-accent-text' : 'text-ink-soft')}>{note}</p>}
           {failed && /Settings › AI/.test(failed) && (
-            <Link to="/settings/ai" className="mt-1.5 inline-block text-[13.5px] font-semibold text-ink underline underline-offset-2">
-              Add a key in Settings
-            </Link>
+            <Link to="/settings/ai" className="mt-1.5 inline-block text-[13.5px] font-semibold text-ink underline underline-offset-2"><UiText source={'Add a key in Settings'} /></Link>
           )}
         </div>
-        <Switch checked={on} onChange={setLiveTranscript} label="Write out what’s said" />
+        <Switch checked={on} onChange={setLiveTranscript} label={translateUi('Write out what’s said')} />
       </div>
       {cues?.length ? (
         <>
@@ -276,15 +275,11 @@ export function LiveText({ media, isOn, scrollRef, large = false }: { media: Med
         </>
       ) : (
         !on && (
-          <Card className="p-4 text-[14px] leading-relaxed text-ink-soft">
-            Turn on <span className="font-semibold text-ink">Live text</span> to have what’s said written out as it airs, with every word to tap, hover and save like in Codex. It uses Whisper: on Groq with your free key (Settings › AI), or on this device (Settings › Listening). The station is streamed a second time for it, and only stations whose servers allow it can be written out.
-          </Card>
+          <Card className="p-4 text-[14px] leading-relaxed text-ink-soft"><UiText source={'Turn on {0} to have what’s said written out as it airs, with every word to tap, hover and save like in Codex. It uses Whisper: on Groq with your free key (Settings › AI), or on this device (Settings › Listening). The station is streamed a second time for it, and only stations whose servers allow it can be written out.'} values={[<span className="font-semibold text-ink"><UiText source={'Live text'} /></span>]} /></Card>
         )
       )}
       {on && isOn && mine && !cues?.length && (status === 'listening' || status === 'writing' || status === 'connecting') && (
-        <div className="flex items-center gap-2 py-6 text-[14px] text-ink-faint">
-          <LoaderCircle size={16} className="animate-spin" aria-hidden /> The first lines are on their way…
-        </div>
+        <div className="flex items-center gap-2 py-6 text-[14px] text-ink-faint"><UiText source={'{0} The first lines are on their way…'} values={[<LoaderCircle size={16} className="animate-spin" aria-hidden />]} /></div>
       )}
     </div>
   );

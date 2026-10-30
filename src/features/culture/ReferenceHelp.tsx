@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useLocation } from 'react-router';
 import { useEffect, useState } from 'react';
 import { BookOpenText } from 'lucide-react';
@@ -16,10 +17,12 @@ export function selectedText() {
   return ((active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement) ? active.value.slice(active.selectionStart ?? 0, active.selectionEnd ?? 0) : window.getSelection()?.toString() ?? '').slice(0, 3000);
 }
 export function ReferenceButton({ compact = false }: { compact?: boolean }) {
+  const translateUi = useUi();
   const open = () => useUI.getState().openReference(selectedText());
-  return compact ? <IconButton icon={BookOpenText} label="Explain a reference" onClick={open} /> : <button type="button" onClick={open} className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-left text-sm text-ink-soft hover:bg-surface"><BookOpenText size={18} aria-hidden />Explain a reference</button>;
+  return compact ? <IconButton icon={BookOpenText} label={translateUi('Explain a reference')} onClick={open} /> : <button type="button" onClick={open} className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-left text-sm text-ink-soft hover:bg-surface"><UiText source={'{0}Explain a reference'} values={[<BookOpenText size={18} aria-hidden />]} /></button>;
 }
 export function ReferenceHelp() {
+  const translateUi = useUi();
   const value = useUI((s) => s.reference);
   const close = useUI((s) => s.closeReference);
   const { pathname } = useLocation();
@@ -32,7 +35,7 @@ export function ReferenceHelp() {
     window.addEventListener('keydown', key);
     return () => window.removeEventListener('keydown', key);
   }, []);
-  return <Drawer open={value !== null} onClose={close} title="Explain this reference">{value !== null && <ReferenceForm key={`${language.id}:${value}`} lang={language.id} initialText={value} block={aiBlock(settings, settings.llm.provider)} />}</Drawer>;
+  return <Drawer open={value !== null} onClose={close} title={translateUi('Explain this reference')}>{value !== null && <ReferenceForm key={`${language.id}:${value}`} lang={language.id} initialText={value} block={aiBlock(settings, settings.llm.provider)} />}</Drawer>;
 }
 function ReferenceForm({ lang, initialText, block }: { lang: string; initialText: string; block: string | null }) {
   const [text, setText] = useState(initialText);
@@ -47,15 +50,16 @@ function ReferenceForm({ lang, initialText, block }: { lang: string; initialText
     finally { setBusy(false); }
   };
   return <div className="space-y-4 py-4">
-    <p className="text-sm text-ink-soft">Select words in any room, then use Ctrl/⌘ Shift E. Review the selection here. Max receives only these two fields when you ask; cultural and historical interpretations can be uncertain.</p>
-    <fieldset disabled={busy} className="space-y-4"><label className="block text-sm">Reference<textarea value={text} maxLength={3000} rows={3} onChange={(e) => { setText(e.target.value); setAnswer(null); }} className="mt-2 w-full rounded-xl border border-line bg-raised p-3" /></label><label className="block text-sm">Context, if helpful<textarea value={context} maxLength={1500} rows={3} onChange={(e) => { setContext(e.target.value); setAnswer(null); }} className="mt-2 w-full rounded-xl border border-line bg-raised p-3" /></label></fieldset>
+    <p className="text-sm text-ink-soft"><UiText source={'Select words in any room, then use Ctrl/⌘ Shift E. Review the selection here. Max receives only these two fields when you ask; cultural and historical interpretations can be uncertain.'} /></p>
+    <fieldset disabled={busy} className="space-y-4"><label className="block text-sm"><UiText source={'Reference{0}'} values={[<textarea value={text} maxLength={3000} rows={3} onChange={(e) => { setText(e.target.value); setAnswer(null); }} className="mt-2 w-full rounded-xl border border-line bg-raised p-3" />]} /></label><label className="block text-sm"><UiText source={'Context, if helpful{0}'} values={[<textarea value={context} maxLength={1500} rows={3} onChange={(e) => { setContext(e.target.value); setAnswer(null); }} className="mt-2 w-full rounded-xl border border-line bg-raised p-3" />]} /></label></fieldset>
     <CultureWordNotes lang={lang} word={text} />
-    {block && <p className="text-sm text-ink-soft">Needs Max and a key in Settings › AI. Culture notes work without Max.</p>}
-    <Button disabled={Boolean(block) || !text.trim()} loading={busy} onClick={() => void ask()}>Ask Max to explain</Button>
+    {block && <p className="text-sm text-ink-soft"><UiText source={'Needs Max and a key in Settings › AI. Culture notes work without Max.'} /></p>}
+    <Button disabled={Boolean(block) || !text.trim()} loading={busy} onClick={() => void ask()}><UiText source={'Ask Max to explain'} /></Button>
     {error && <p role="alert" className="text-sm text-accent-text">{error}</p>}
     {answer && <ReferenceResult answer={answer} lang={lang} />}
   </div>;
 }
 export function ReferenceResult({ answer, lang }: { answer: ReferenceAnswer; lang: string }) {
-  return <section className="space-y-3 rounded-xl border border-line p-4" aria-label="Generated reference explanation"><p className="text-xs text-ink-faint">Generated by Max · {answer.model} · not independently verified</p><h3 className="font-semibold">{answer.meaning}</h3><p className="text-sm">{answer.explanation}</p><p className="text-sm text-ink-soft">Limits: {answer.uncertainty}</p><p lang={lang} className="font-serif text-lg">{answer.example}</p></section>;
+  const translateUi = useUi();
+  return <section className="space-y-3 rounded-xl border border-line p-4" aria-label={translateUi('Generated reference explanation')}><p className="text-xs text-ink-faint"><UiText source={'Generated by Max · {0} · not independently verified'} values={[answer.model]} /></p><h3 className="font-semibold">{answer.meaning}</h3><p className="text-sm">{answer.explanation}</p><p className="text-sm text-ink-soft"><UiText source={'Limits: {0}'} values={[answer.uncertainty]} /></p><p lang={lang} className="font-serif text-lg">{answer.example}</p></section>;
 }

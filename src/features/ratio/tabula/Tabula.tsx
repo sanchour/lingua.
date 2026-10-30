@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import { Reorder, useDragControls } from 'motion/react';
 import { Clock, FileUp, GripVertical, ImageDown, Plus, Target } from 'lucide-react';
@@ -47,6 +48,7 @@ function SkillBars({ capability }: { capability: Capability }) {
 }
 
 export function Tabula() {
+  const translateUi = useUi();
   const rows = useCapabilities();
   const studied = useLanguages();
   const { layout } = useLayout();
@@ -132,18 +134,16 @@ export function Tabula() {
     <div>
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <p className="w-full font-serif text-[19px] sm:w-auto sm:min-w-0 sm:flex-1">
-          {ordered.length} {ordered.length === 1 ? 'language' : 'languages'}
-          {advanced > 0 && <span className="text-ink-soft"> · {advanced} at C1+</span>}
-          <span className="text-ink-soft"> · {hours(yearHours * 60)} this year</span>
+          {ordered.length} {ordered.length === 1 ? translateUi('language') : translateUi('languages')}
+          {advanced > 0 && <span className="text-ink-soft"><UiText source={' · {0} at C1+'} values={[advanced]} /></span>}
+          <span className="text-ink-soft"><UiText source={' · {0} this year'} values={[hours(yearHours * 60)]} /></span>
         </p>
         <div className="flex flex-wrap gap-2">
           <Popover
-            label="Add a language"
+            label={translateUi('Add a language')}
             placement="bottom-end"
             trigger={(props) => (
-              <Button {...props} icon={Plus} variant="secondary">
-                Add
-              </Button>
+              <Button {...props} icon={Plus} variant="secondary"><UiText source={'Add'} /></Button>
             )}
           >
             {(close) => (
@@ -154,23 +154,15 @@ export function Tabula() {
                   void add(close);
                 }}
               >
-                <input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Dutch, Arabic" aria-label="Language" className="h-10 min-w-0 flex-1 rounded-xl border border-line bg-raised px-3 text-[14.5px] outline-none focus:border-ink" />
-                <Button type="submit">Add</Button>
+                <input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} placeholder={translateUi('e.g. Dutch, Arabic')} aria-label={translateUi('Language')} className="h-10 min-w-0 flex-1 rounded-xl border border-line bg-raised px-3 text-[14.5px] outline-none focus:border-ink" />
+                <Button type="submit"><UiText source={'Add'} /></Button>
               </form>
             )}
           </Popover>
-          <Button variant="ghost" icon={Target} onClick={() => setGoalDrawer({ lang: ordered[0]?.id ?? '', goal: null })} disabled={!ordered.length}>
-            Goal
-          </Button>
-          <Button variant="ghost" icon={Clock} onClick={() => setLogOpen(true)} disabled={!ordered.length}>
-            Log time
-          </Button>
-          <Button variant="ghost" icon={FileUp} onClick={() => void importNotion()}>
-            Notion CSV
-          </Button>
-          <Button variant="ghost" icon={ImageDown} onClick={() => void shareImage()} disabled={!ordered.length}>
-            Image
-          </Button>
+          <Button variant="ghost" icon={Target} onClick={() => setGoalDrawer({ lang: ordered[0]?.id ?? '', goal: null })} disabled={!ordered.length}><UiText source={'Goal'} /></Button>
+          <Button variant="ghost" icon={Clock} onClick={() => setLogOpen(true)} disabled={!ordered.length}><UiText source={'Log time'} /></Button>
+          <Button variant="ghost" icon={FileUp} onClick={() => void importNotion()}><UiText source={'Notion CSV'} /></Button>
+          <Button variant="ghost" icon={ImageDown} onClick={() => void shareImage()} disabled={!ordered.length}><UiText source={'Image'} /></Button>
         </div>
       </div>
 
@@ -182,7 +174,7 @@ export function Tabula() {
           <button key={g.id} type="button" onClick={() => setGoalDrawer({ lang: g.lang === '*' ? (ordered[0]?.id ?? '') : g.lang, goal: g })} className="mb-5 flex w-full items-center gap-4 rounded-2xl border border-line/70 bg-surface px-4 py-3 text-left">
             <Target size={18} className="shrink-0 text-ink-faint" aria-hidden />
             <span className="min-w-0 flex-1">
-              <span className="block text-[14.5px] font-semibold">Reading challenge · {p.label}</span>
+              <span className="block text-[14.5px] font-semibold"><UiText source={'Reading challenge · {0}'} values={[p.label]} /></span>
               <span className="block truncate text-[13px] text-ink-soft">{p.projection}</span>
             </span>
             <span className="h-1.5 w-28 shrink-0 overflow-hidden rounded-full bg-sunken">
@@ -195,12 +187,12 @@ export function Tabula() {
       {wide && (
         <div className={`grid ${COLUMNS} gap-3 border-b border-line px-3 pb-2 text-[11.5px] font-bold tracking-wide text-ink-faint uppercase`}>
           <span />
-          <span>Language</span>
-          <span>Level</span>
-          <span>Status</span>
-          <span>Method</span>
-          <span>Started</span>
-          <span>In Lingua</span>
+          <span><UiText source={'Language'} /></span>
+          <span><UiText source={'Level'} /></span>
+          <span><UiText source={'Status'} /></span>
+          <span><UiText source={'Method'} /></span>
+          <span><UiText source={'Started'} /></span>
+          <span><UiText source={'In Lingua'} /></span>
         </div>
       )}
       <Reorder.Group
@@ -214,8 +206,8 @@ export function Tabula() {
           <Row key={c.id} capability={c} wide={wide} live={live(c)} goal={goalFor(c)} onGoal={(goal) => setGoalDrawer({ lang: c.id, goal: goal ?? null })} onOpen={() => setOpen(c)} onDrop={() => void reorderCapabilities(order)} />
         ))}
       </Reorder.Group>
-      {!ordered.length && <p className="py-10 text-center text-ink-soft">Add the languages you speak, even ones Lingua doesn’t teach.</p>}
-      <p className="mt-5 text-[12.5px] text-ink-faint">Drag the handle to reorder. Tap a language for skills, certificates and notes. Notion: export your table as CSV (Dutch or English columns).</p>
+      {!ordered.length && <p className="py-10 text-center text-ink-soft"><UiText source={'Add the languages you speak, even ones Lingua doesn’t teach.'} /></p>}
+      <p className="mt-5 text-[12.5px] text-ink-faint"><UiText source={'Drag the handle to reorder. Tap a language for skills, certificates and notes. Notion: export your table as CSV (Dutch or English columns).'} /></p>
 
       <LogTimeDrawer open={logOpen} onClose={() => setLogOpen(false)} languages={studied ?? []} lang={ordered[0]?.id ?? ''} />
       <GoalDrawer open={goalDrawer !== null} onClose={() => setGoalDrawer(null)} languages={studied ?? []} lang={goalDrawer?.lang ?? ''} editing={goalDrawer?.goal} />
@@ -244,18 +236,19 @@ function GoalLine({ goal, onGoal }: { goal?: RowGoal; onGoal: (goal?: Goal) => v
           {goal.status !== 'open' && <span className={cx('shrink-0 font-bold', goal.status === 'behind' ? 'text-accent-text' : 'text-sage-text')}>{goal.status}</span>}
         </>
       ) : (
-        <span className="text-ink-faint hover:text-ink">+ Set a goal</span>
+        <span className="text-ink-faint hover:text-ink"><UiText source={'+ Set a goal'} /></span>
       )}
     </button>
   );
 }
 
 function Row({ capability: c, wide, live, goal, onGoal, onOpen, onDrop }: { capability: Capability; wide: boolean; live: string | null; goal?: RowGoal; onGoal: (goal?: Goal) => void; onOpen: () => void; onDrop: () => void }) {
+  const translateUi = useUi();
   const controls = useDragControls();
   const handle = (
     <button
       type="button"
-      aria-label={`Move ${c.name}`}
+      aria-label={translateUi('Move {0}', [c.name])}
       onPointerDown={(e) => controls.start(e)}
       className="grid size-7 cursor-grab touch-none place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink active:cursor-grabbing pointer-coarse:size-10"
     >

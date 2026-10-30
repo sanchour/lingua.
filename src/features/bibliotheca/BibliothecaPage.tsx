@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
@@ -54,6 +55,7 @@ const enter = (i: number) => ({
  * and quick ways to add content or discover new items in Explora.
  */
 export default function BibliothecaPage() {
+  const translateUi = useUi();
   const { language } = useApp();
   const lang = language.id;
   const langName = getLanguage(lang)?.name ?? lang;
@@ -187,29 +189,25 @@ export default function BibliothecaPage() {
   return (
     <>
       <PageHeader
-        title="Bibliotheca"
+        title={translateUi('Bibliotheca')}
         eyebrow={`Your library across every tool in ${langName}`}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Link to="/explora" className={buttonClasses('secondary', 'md')}>
-              <Compass size={17} aria-hidden /> Explora
-            </Link>
-            <Link to="/codex/new" className={buttonClasses('primary', 'md')}>
-              <Plus size={17} aria-hidden /> Add text
-            </Link>
+            <Link to="/explora" className={buttonClasses('secondary', 'md')}><UiText source={'{0} Explora'} values={[<Compass size={17} aria-hidden />]} /></Link>
+            <Link to="/codex/new" className={buttonClasses('primary', 'md')}><UiText source={'{0} Add text'} values={[<Plus size={17} aria-hidden />]} /></Link>
           </div>
         }
       />
 
       <div className="mb-7 flex flex-wrap items-center justify-between gap-3">
-        <Segmented<KindFilter> label="Library filter" value={filter} onChange={setFilter} options={FILTERS} />
+        <Segmented<KindFilter> label={translateUi('Library filter')} value={filter} onChange={setFilter} options={FILTERS} />
         <div className="flex items-center gap-2">
           {searching ? (
             <SearchInput
               ref={searchRef}
               value={query}
               onChange={setQuery}
-              placeholder="Search books, audio, videos and decks"
+              placeholder={translateUi('Search books, audio, videos and decks')}
               onClose={() => {
                 setQuery('');
                 setSearching(false);
@@ -218,7 +216,7 @@ export default function BibliothecaPage() {
               className="h-10! w-64 sm:w-72"
             />
           ) : (
-            <IconButton icon={Search} label="Search library" shortcut="/" onClick={() => setSearching(true)} />
+            <IconButton icon={Search} label={translateUi('Search library')} shortcut="/" onClick={() => setSearching(true)} />
           )}
         </div>
       </div>
@@ -226,22 +224,16 @@ export default function BibliothecaPage() {
       {q && totalCount === 0 && (
         <div className="flex flex-col items-center py-14 text-center text-ink-soft">
           <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-          <p className="font-semibold text-ink">Nothing in your library matches “{query.trim()}”</p>
-          <p className="mt-1 text-sm">
-            Try another search, or find something new in{' '}
-            <Link to="/explora" className="font-semibold text-accent-text hover:underline">
-              Explora
-            </Link>
-            .
-          </p>
+          <p className="font-semibold text-ink"><UiText source={'Nothing in your library matches “{0}”'} values={[query.trim()]} /></p>
+          <p className="mt-1 text-sm"><UiText source={'Try another search, or find something new in{0}{1}.'} values={[' ', <Link to="/explora" className="font-semibold text-accent-text hover:underline"><UiText source={'Explora'} /></Link>]} /></p>
         </div>
       )}
 
       {!q && filter === 'all' && continuing.length > 0 && (
-        <motion.section {...enter(0)} aria-label="Continue learning" className="mb-10">
+        <motion.section {...enter(0)} aria-label={translateUi('Continue learning')} className="mb-10">
           <div className="mb-3.5 flex items-baseline justify-between">
-            <h2 className="font-serif text-[22px] font-semibold tracking-tight">Continue learning</h2>
-            <span className="text-xs font-semibold text-ink-faint tabular-nums">{continuing.length} active</span>
+            <h2 className="font-serif text-[22px] font-semibold tracking-tight"><UiText source={'Continue learning'} /></h2>
+            <span className="text-xs font-semibold text-ink-faint tabular-nums"><UiText source={'{0} active'} values={[continuing.length]} /></span>
           </div>
           <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {continuing.map((item) => (
@@ -273,16 +265,14 @@ export default function BibliothecaPage() {
 
       <div className="space-y-12">
         {showRead && (
-          <motion.section {...enter(1)} aria-label="Reading in Codex">
+          <motion.section {...enter(1)} aria-label={translateUi('Reading in Codex')}>
             <ToolHeader
-              title="Reading"
+              title={translateUi('Reading')}
               room="Codex"
               to="/codex"
               count={filteredTexts.length}
               action={
-                <Link to="/codex/new" className={buttonClasses('secondary', 'sm')}>
-                  <Plus size={15} aria-hidden /> Add book or text
-                </Link>
+                <Link to="/codex/new" className={buttonClasses('secondary', 'sm')}><UiText source={'{0} Add book or text'} values={[<Plus size={15} aria-hidden />]} /></Link>
               }
             />
             {filteredTexts.length > 0 ? (
@@ -294,7 +284,7 @@ export default function BibliothecaPage() {
             ) : (
               <EmptyToolShelf
                 icon={BookOpen}
-                title="No books or texts on your shelf yet"
+                title={translateUi('No books or texts on your shelf yet')}
                 detail="Import an EPUB, PDF or comic, paste an article, or pick a free classic in Explora."
                 to="/codex/new"
                 actionLabel="Add to Codex"
@@ -304,9 +294,9 @@ export default function BibliothecaPage() {
         )}
 
         {showListen && (
-          <motion.section {...enter(2)} aria-label="Listening in Sonus">
+          <motion.section {...enter(2)} aria-label={translateUi('Listening in Sonus')}>
             <ToolHeader
-              title="Listening"
+              title={translateUi('Listening')}
               room="Sonus"
               to="/sonus"
               count={totalListenCount}
@@ -321,9 +311,7 @@ export default function BibliothecaPage() {
                     className="group flex flex-col overflow-hidden rounded-2xl border border-line/70 bg-surface p-3 transition-transform hover:-translate-y-0.5 hover:border-line-strong"
                   >
                     <Artwork title={b.title} coverBlobId={b.coverBlobId} coverUrl={b.coverUrl} className="aspect-square w-full" rounded="rounded-xl" />
-                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-accent-text uppercase">
-                      <Headphones size={12} aria-hidden /> Audiobook
-                    </span>
+                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-accent-text uppercase"><UiText source={'{0} Audiobook'} values={[<Headphones size={12} aria-hidden />]} /></span>
                     <span lang={lang} className="mt-0.5 line-clamp-2 font-serif text-[15px] leading-snug font-semibold">
                       {b.title}
                     </span>
@@ -337,13 +325,11 @@ export default function BibliothecaPage() {
                     className="group flex flex-col overflow-hidden rounded-2xl border border-line/70 bg-surface p-3 transition-transform hover:-translate-y-0.5 hover:border-line-strong"
                   >
                     <Artwork title={f.title} coverUrl={f.imageUrl} className="aspect-square w-full" rounded="rounded-xl" />
-                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-sage-text uppercase">
-                      <Podcast size={12} aria-hidden /> Podcast
-                    </span>
+                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-sage-text uppercase"><UiText source={'{0} Podcast'} values={[<Podcast size={12} aria-hidden />]} /></span>
                     <span lang={lang} className="mt-0.5 line-clamp-2 font-serif text-[15px] leading-snug font-semibold">
                       {f.title}
                     </span>
-                    <span className="mt-0.5 truncate text-[12px] text-ink-faint">{f.episodes.length} episodes</span>
+                    <span className="mt-0.5 truncate text-[12px] text-ink-faint"><UiText source={'{0} episodes'} values={[f.episodes.length]} /></span>
                   </Link>
                 ))}
                 {filteredAudio.slice(0, 6).map((m) => (
@@ -353,9 +339,7 @@ export default function BibliothecaPage() {
                     className="group flex flex-col overflow-hidden rounded-2xl border border-line/70 bg-surface p-3 transition-transform hover:-translate-y-0.5 hover:border-line-strong"
                   >
                     <Artwork title={m.title} coverBlobId={m.coverBlobId} coverUrl={m.coverUrl} className="aspect-square w-full" rounded="rounded-xl" />
-                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-ink-faint uppercase">
-                      <Headphones size={12} aria-hidden /> Audio
-                    </span>
+                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'{0} Audio'} values={[<Headphones size={12} aria-hidden />]} /></span>
                     <span lang={lang} className="mt-0.5 line-clamp-2 font-serif text-[15px] leading-snug font-semibold">
                       {m.title}
                     </span>
@@ -369,9 +353,7 @@ export default function BibliothecaPage() {
                     className="group flex flex-col overflow-hidden rounded-2xl border border-line/70 bg-surface p-3 transition-transform hover:-translate-y-0.5 hover:border-line-strong"
                   >
                     <SongArt url={s.artworkUrl} title={s.title} className="aspect-square w-full" rounded="rounded-xl" size={240} />
-                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-[var(--cantus-text)] uppercase">
-                      <Music2 size={12} aria-hidden /> Song
-                    </span>
+                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-[var(--cantus-text)] uppercase"><UiText source={'{0} Song'} values={[<Music2 size={12} aria-hidden />]} /></span>
                     <span lang={lang} className="mt-0.5 line-clamp-2 font-serif text-[15px] leading-snug font-semibold">
                       {s.title}
                     </span>
@@ -385,9 +367,7 @@ export default function BibliothecaPage() {
                     className="group flex flex-col overflow-hidden rounded-2xl border border-line/70 bg-surface p-3 transition-transform hover:-translate-y-0.5 hover:border-line-strong"
                   >
                     <Artwork title={s.name} coverUrl={s.favicon} className="aspect-square w-full" rounded="rounded-xl" />
-                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-accent-text uppercase">
-                      <Radio size={12} aria-hidden /> Radio
-                    </span>
+                    <span className="mt-2.5 flex items-center gap-1 text-[11px] font-bold tracking-[0.1em] text-accent-text uppercase"><UiText source={'{0} Radio'} values={[<Radio size={12} aria-hidden />]} /></span>
                     <span lang={lang} className="mt-0.5 line-clamp-2 font-serif text-[15px] leading-snug font-semibold">
                       {s.name}
                     </span>
@@ -398,7 +378,7 @@ export default function BibliothecaPage() {
             ) : (
               <EmptyToolShelf
                 icon={Headphones}
-                title="Nothing in your Sonus library yet"
+                title={translateUi('Nothing in your Sonus library yet')}
                 detail="Follow a podcast, open a free LibriVox audiobook, save a radio station, or import your own audio files."
                 to="/sonus"
                 actionLabel="Open Sonus"
@@ -408,9 +388,9 @@ export default function BibliothecaPage() {
         )}
 
         {showWatch && (
-          <motion.section {...enter(3)} aria-label="Watching in Visio">
+          <motion.section {...enter(3)} aria-label={translateUi('Watching in Visio')}>
             <ToolHeader
-              title="Watching"
+              title={translateUi('Watching')}
               room="Visio"
               to="/visio"
               count={filteredVideos.length}
@@ -425,7 +405,7 @@ export default function BibliothecaPage() {
             ) : (
               <EmptyToolShelf
                 icon={Clapperboard}
-                title="No videos or subtitle tracks yet"
+                title={translateUi('No videos or subtitle tracks yet')}
                 detail="Add a video file with subtitles, or load subtitles for a series or film you watch on your streaming services."
                 to="/visio"
                 actionLabel="Open Visio"
@@ -435,16 +415,14 @@ export default function BibliothecaPage() {
         )}
 
         {showCards && (
-          <motion.section {...enter(4)} aria-label="Vocabulary decks in Thesaurus">
+          <motion.section {...enter(4)} aria-label={translateUi('Vocabulary decks in Thesaurus')}>
             <ToolHeader
-              title="Vocabulary"
+              title={translateUi('Vocabulary')}
               room="Thesaurus"
               to="/thesaurus"
               count={filteredDecks.length}
               action={
-                <Link to="/thesaurus?tab=discover" className={buttonClasses('secondary', 'sm')}>
-                  <Plus size={15} aria-hidden /> Ready-made decks
-                </Link>
+                <Link to="/thesaurus?tab=discover" className={buttonClasses('secondary', 'sm')}><UiText source={'{0} Ready-made decks'} values={[<Plus size={15} aria-hidden />]} /></Link>
               }
             />
             {filteredDecks.length > 0 ? (
@@ -464,8 +442,8 @@ export default function BibliothecaPage() {
                       <span className="min-w-0 flex-1">
                         <span className="block truncate font-serif text-[17px] font-semibold">{d.name}</span>
                         <span className="mt-0.5 block text-[12.5px] text-ink-soft">
-                          {c ? `${c.total} ${c.total === 1 ? 'card' : 'cards'}` : 'Deck'}
-                          {dueCount > 0 ? ` · ${dueCount} to review` : ''}
+                          {c ? `${c.total} ${c.total === 1 ? 'card' : 'cards'}` : translateUi('Deck')}
+                          {dueCount > 0 ? translateUi(' · {0} to review', [dueCount]) : ''}
                         </span>
                       </span>
                       <ChevronRight size={18} className="shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5" aria-hidden />
@@ -476,7 +454,7 @@ export default function BibliothecaPage() {
             ) : (
               <EmptyToolShelf
                 icon={Layers}
-                title="No vocabulary decks yet"
+                title={translateUi('No vocabulary decks yet')}
                 detail="Start with a ready-made frequency or theme deck, import an Anki deck, or mark words while reading and listening."
                 to="/thesaurus?tab=discover"
                 actionLabel="Browse decks"
@@ -488,13 +466,11 @@ export default function BibliothecaPage() {
 
       <Card className="mt-12 flex flex-col items-start justify-between gap-4 border-dashed p-5 sm:flex-row sm:items-center sm:p-6">
         <div>
-          <p className="text-[12px] font-bold tracking-[0.12em] text-accent-text uppercase">Looking for something new?</p>
-          <p className="mt-1 font-serif text-xl font-semibold">Discover books, podcasts, series, films and word decks in Explora</p>
-          <p className="mt-1 text-[14px] text-ink-soft">Picked for {langName} and your level, ready to add to the right tool in one click.</p>
+          <p className="text-[12px] font-bold tracking-[0.12em] text-accent-text uppercase"><UiText source={'Looking for something new?'} /></p>
+          <p className="mt-1 font-serif text-xl font-semibold"><UiText source={'Discover books, podcasts, series, films and word decks in Explora'} /></p>
+          <p className="mt-1 text-[14px] text-ink-soft"><UiText source={'Picked for {0} and your level, ready to add to the right tool in one click.'} values={[langName]} /></p>
         </div>
-        <Link to="/explora" className={cx(buttonClasses('primary', 'md'), 'shrink-0')}>
-          Open Explora <ArrowRight size={16} aria-hidden />
-        </Link>
+        <Link to="/explora" className={cx(buttonClasses('primary', 'md'), 'shrink-0')}><UiText source={'Open Explora {0}'} values={[<ArrowRight size={16} aria-hidden />]} /></Link>
       </Card>
     </>
   );
@@ -506,7 +482,7 @@ function ToolHeader({ title, room, to, count, action }: { title: string; room: s
       <div className="flex items-baseline gap-2.5">
         <Link to={to} className="group inline-flex items-baseline gap-2 hover:text-accent-text">
           <h2 className="font-serif text-[22px] font-semibold tracking-tight">{title}</h2>
-          <span className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase group-hover:text-accent-text">in {room}</span>
+          <span className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase group-hover:text-accent-text"><UiText source={'in {0}'} values={[room]} /></span>
           <ChevronRight size={16} className="self-center text-ink-faint transition-transform group-hover:translate-x-0.5" aria-hidden />
         </Link>
         {count > 0 && <span className="text-sm font-bold text-ink-faint tabular-nums">{count}</span>}

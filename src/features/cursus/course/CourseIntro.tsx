@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { plain } from '@/core/grammar/types';
@@ -14,6 +15,7 @@ const eyebrow = 'text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercas
 
 /** Before the exercises: every word (or phrase) of the unit, to hear and read through once. */
 export function CourseIntro({ part, unit, content, lang, onStart }: { part: 'words' | 'phrases'; unit: UnitOutline; content: UnitContent; lang: string; onStart: () => void }) {
+  const translateUi = useUi();
   const { pointer } = useLayout();
   useHotkeys({ Enter: onStart }, true);
   const rtl = lang === 'ar';
@@ -29,9 +31,9 @@ export function CourseIntro({ part, unit, content, lang, onStart }: { part: 'wor
       animate={{ opacity: 1, y: 0 }}
       transition={spring.soft}
     >
-      <p className={cx(eyebrow, 'text-sage-text')}>{part === 'words' ? 'The words' : 'The phrases'}</p>
+      <p className={cx(eyebrow, 'text-sage-text')}>{part === 'words' ? translateUi('The words') : translateUi('The phrases')}</p>
       <h1 className="mt-1 font-serif text-[clamp(1.7rem,4vw,2.3rem)] leading-tight font-semibold">{unit.title}</h1>
-      <p className="mt-1 text-[16px] leading-snug text-ink-soft">{part === 'words' ? 'Listen to each word and say it after the voice. Then the exercises.' : 'These are the phrases the unit is about. Listen, read them aloud, then use them.'}</p>
+      <p className="mt-1 text-[16px] leading-snug text-ink-soft">{part === 'words' ? translateUi('Listen to each word and say it after the voice. Then the exercises.') : translateUi('These are the phrases the unit is about. Listen, read them aloud, then use them.')}</p>
 
       <Card className={cx('mt-7 grid p-0', part === 'words' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1')}>
         {rows.map((r, i) => (
@@ -57,11 +59,8 @@ export function CourseIntro({ part, unit, content, lang, onStart }: { part: 'wor
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-bg" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
         <div className="mx-auto flex max-w-5xl items-center justify-end gap-3 px-5 pt-4">
-          <p className="hidden min-w-0 flex-1 text-sm text-ink-soft sm:block">{rows.length} {part}. Each comes back in the exercises.</p>
-          <Button size="lg" className="min-w-40 flex-1 sm:flex-none" onClick={onStart}>
-            Start
-            {pointer === 'fine' ? <Kbd tone="inverse">Enter</Kbd> : <ArrowRight size={18} aria-hidden />}
-          </Button>
+          <p className="hidden min-w-0 flex-1 text-sm text-ink-soft sm:block"><UiText source={'{0} {1}. Each comes back in the exercises.'} values={[rows.length, part]} /></p>
+          <Button size="lg" className="min-w-40 flex-1 sm:flex-none" onClick={onStart}><UiText source={'Start{0}'} values={[pointer === 'fine' ? <Kbd tone="inverse"><UiText source={'Enter'} /></Kbd> : <ArrowRight size={18} aria-hidden />]} /></Button>
         </div>
       </div>
     </motion.main>

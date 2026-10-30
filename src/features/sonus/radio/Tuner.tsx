@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 // The radio's tuner (Lingua 5.2-2): a dial like an old radio's, the countries along it as marks
 // with their flags and station counts, a fine needle in the middle. Drag it, turn the wheel or use
 // the arrow keys: it snaps to each country, and the map and the list follow. Transforms only.
@@ -14,6 +15,7 @@ interface TunerProps {
 }
 
 export function Tuner({ countries, value, onTune }: TunerProps) {
+  const translateUi = useUi();
   const marks = useMemo(() => dialMarks(countries), [countries]);
   const boxRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
@@ -69,7 +71,7 @@ export function Tuner({ countries, value, onTune }: TunerProps) {
       ref={boxRef}
       role="slider"
       tabIndex={0}
-      aria-label="Tune to a country"
+      aria-label={translateUi('Tune to a country')}
       aria-valuemin={0}
       aria-valuemax={marks.length - 1}
       aria-valuenow={at}

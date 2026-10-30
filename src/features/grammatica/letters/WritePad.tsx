@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 // A square to draw a letter in, with a finger, a pen or the mouse (Lingua 3.0-8, part 5). Tracing
 // shows the letter faintly underneath; writing from memory shows it only after the check. The
 // letter is drawn by the same font into a small grid, and the ink is compared with it (ink.ts).
@@ -209,9 +210,7 @@ export const WritePad = forwardRef<WritePadHandle, Props>(function WritePad({ gl
         />
       </div>
       <div className="mt-2 flex justify-end">
-        <button type="button" onClick={clear} disabled={Boolean(result)} className="hit inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-ink-soft hover:text-ink disabled:opacity-40">
-          <Eraser size={15} aria-hidden /> Clear
-        </button>
+        <button type="button" onClick={clear} disabled={Boolean(result)} className="hit inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-ink-soft hover:text-ink disabled:opacity-40"><UiText source={'{0} Clear'} values={[<Eraser size={15} aria-hidden />]} /></button>
       </div>
     </div>
   );

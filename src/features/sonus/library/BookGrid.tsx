@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { Link } from 'react-router';
 import { BookHeadphones, GraduationCap } from 'lucide-react';
 import type { Book } from '@/data/books';
@@ -47,6 +48,7 @@ export function BookTile({ book, progress }: { book: Book; progress: Progress })
 
 /** The learner's books as a grid of covers, like the podcasts they follow, each with how far in they are. */
 export function BookGrid({ books, progress }: { books: Book[]; progress: Progress }) {
+  const translateUi = useUi();
   return (
     <div className="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
       {books.map((b) => {
@@ -68,7 +70,7 @@ export function BookGrid({ books, progress }: { books: Book[]; progress: Progres
             {b.author && <p className="truncate text-[12.5px] text-ink-soft">{b.author}</p>}
             <p className="mt-0.5 flex items-center gap-1 text-[11.5px] font-semibold text-ink-faint">
               <Icon size={12} className="shrink-0 text-sage-text" aria-hidden />
-              <span className="truncate">{bookWhere(b, progress) === b.author ? 'Audiobook' : bookWhere(b, progress)}</span>
+              <span className="truncate">{bookWhere(b, progress) === b.author ? translateUi('Audiobook') : bookWhere(b, progress)}</span>
             </p>
           </Link>
         );

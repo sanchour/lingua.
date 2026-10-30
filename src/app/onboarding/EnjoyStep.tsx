@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { motion } from 'motion/react';
 import { BookOpen, Clapperboard, Headphones, Layers, MessagesSquare, Music2, PenLine } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -38,11 +39,12 @@ interface EnjoyStepProps {
 
 /** What you enjoy most, in the order you pick it: Home puts those first. */
 export function EnjoyStep({ enjoys, onEnjoys }: EnjoyStepProps) {
+  const translateUi = useUi();
   const toggle = (id: Enjoyment) => onEnjoys(enjoys.includes(id) ? enjoys.filter((e) => e !== id) : [...enjoys, id]);
   return (
     <div>
-      <StepTitle title="What do you enjoy most?" body="Home suggests these first, in the order you pick them. Everything else stays a tap away." />
-      <div role="group" aria-label="What you enjoy" className="grid gap-2 sm:grid-cols-2">
+      <StepTitle title={translateUi('What do you enjoy most?')} body="Home suggests these first, in the order you pick them. Everything else stays a tap away." />
+      <div role="group" aria-label={translateUi('What you enjoy')} className="grid gap-2 sm:grid-cols-2">
         {ENJOYMENTS.map((e) => {
           const rank = enjoys.indexOf(e.id);
           const on = rank >= 0;
@@ -66,7 +68,7 @@ export function EnjoyStep({ enjoys, onEnjoys }: EnjoyStepProps) {
                     animate={{ scale: 1, opacity: 1 }}
                     transition={spring.snappy}
                     className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-raised text-[11px] font-bold text-accent-text shadow-elev-1 tabular-nums"
-                    aria-label={`Choice ${rank + 1}`}
+                    aria-label={translateUi('Choice {0}', [rank + 1])}
                   >
                     {rank + 1}
                   </motion.span>

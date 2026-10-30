@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -45,6 +46,7 @@ interface WeekItem {
  * the language for your level and words, to the AI you already use. Nothing is sent from Lingua; the chat happens there.
  */
 export default function ColloquiumPage() {
+  const translateUi = useUi();
   const { language } = useApp();
   const lang = language.id;
   const level = language.level;
@@ -100,7 +102,7 @@ export default function ColloquiumPage() {
   return (
     <div ref={top} className="scroll-mt-24">
       <PageHeader title="Sermo" eyebrow={`Talk in ${name}`} />
-      <ol className="-mt-1 mb-6 flex items-center gap-2 text-[13.5px] font-semibold" aria-label="Steps">
+      <ol className="-mt-1 mb-6 flex items-center gap-2 text-[13.5px] font-semibold" aria-label={translateUi('Steps')}>
         {steps.map((s, i) => (
           <li key={s.id} className="flex items-center gap-2">
             {i > 0 && <span className="h-px w-8 bg-line" aria-hidden />}
@@ -138,9 +140,9 @@ export default function ColloquiumPage() {
       )}
 
       {step === 'how' && (
-        <section aria-label="How you’ll talk" className="max-w-4xl">
+        <section aria-label={translateUi('How you’ll talk')} className="max-w-4xl">
           <Picked scene={scene} about={about} onChange={() => go('scene')} />
-          <h2 className={cx(label, 'mt-7 mb-3')}>Voice or text</h2>
+          <h2 className={cx(label, 'mt-7 mb-3')}><UiText source={'Voice or text'} /></h2>
           <div className="grid grid-cols-2 gap-3">
             {(
               [
@@ -167,27 +169,27 @@ export default function ColloquiumPage() {
           </div>
 
           <div className="mt-7 grid gap-x-10 gap-y-6 md:grid-cols-2">
-            <Option title="Correct my mistakes" detail={choices.correct === 'end' ? 'All together when you finish, so the talk keeps flowing.' : choices.correct === 'live' ? 'Briefly, after each of your answers.' : 'No corrections, just talking.'}>
+            <Option title={translateUi('Correct my mistakes')} detail={choices.correct === 'end' ? 'All together when you finish, so the talk keeps flowing.' : choices.correct === 'live' ? 'Briefly, after each of your answers.' : 'No corrections, just talking.'}>
               <Segmented<SermoChoices['correct']>
-                label="Correct my mistakes"
+                label={translateUi('Correct my mistakes')}
                 value={choices.correct}
                 onChange={(correct) => choose({ correct })}
                 options={[
-                  { value: 'live', label: 'As I go' },
-                  { value: 'end', label: 'At the end' },
-                  { value: 'off', label: 'Not at all' },
+                  { value: 'live', label: translateUi('As I go') },
+                  { value: 'end', label: translateUi('At the end') },
+                  { value: 'off', label: translateUi('Not at all') },
                 ]}
               />
             </Option>
-            <Option title="How long" detail="The AI wraps the scene up and tells you how you did.">
+            <Option title={translateUi('How long')} detail="The AI wraps the scene up and tells you how you did.">
               <Segmented<'5' | '10' | '20'>
-                label="How long"
+                label={translateUi('How long')}
                 value={String(choices.minutes) as '5' | '10' | '20'}
                 onChange={(m) => choose({ minutes: Number(m) as SermoChoices['minutes'] })}
                 options={[
-                  { value: '5', label: '5 min' },
-                  { value: '10', label: '10 min' },
-                  { value: '20', label: '20 min' },
+                  { value: '5', label: translateUi('5 min') },
+                  { value: '10', label: translateUi('10 min') },
+                  { value: '20', label: translateUi('20 min') },
                 ]}
               />
             </Option>
@@ -201,12 +203,8 @@ export default function ColloquiumPage() {
           </div>
 
           <div className="mt-8 flex items-center gap-2">
-            <Button variant="ghost" icon={ArrowLeft} onClick={() => go('scene')}>
-              Back
-            </Button>
-            <Button size="lg" onClick={() => go('prompt')}>
-              Write my prompt <ArrowRight size={17} aria-hidden />
-            </Button>
+            <Button variant="ghost" icon={ArrowLeft} onClick={() => go('scene')}><UiText source={'Back'} /></Button>
+            <Button size="lg" onClick={() => go('prompt')}><UiText source={'Write my prompt {0}'} values={[<ArrowRight size={17} aria-hidden />]} /></Button>
           </div>
         </section>
       )}
@@ -218,6 +216,7 @@ export default function ColloquiumPage() {
 
 /** The first screen: the learner's week, then every group's scenes as large cards. */
 function ScenePicker({ lang, level, picked, onScene, onAbout }: { lang: string; level: Level; picked?: string; onScene: (id: string) => void; onAbout: (title: string) => void }) {
+  const translateUi = useUi();
   const [query, setQuery] = useState('');
   const [all, setAll] = useState(false);
   const search = useRef<HTMLInputElement>(null);
@@ -255,26 +254,24 @@ function ScenePicker({ lang, level, picked, onScene, onAbout }: { lang: string; 
   };
 
   return (
-    <section aria-label="Your scene">
+    <section aria-label={translateUi('Your scene')}>
       <div className="sticky top-0 z-10 -mx-1 flex flex-wrap items-center gap-2 bg-bg/90 px-1 py-2 backdrop-blur">
-        <SearchInput ref={search} value={query} onChange={setQuery} placeholder="Search scenes   /" className="w-80" />
+        <SearchInput ref={search} value={query} onChange={setQuery} placeholder={translateUi('Search scenes   /')} className="w-80" />
         <Segmented<'mine' | 'all'>
-          label="Levels"
+          label={translateUi('Levels')}
           value={all ? 'all' : 'mine'}
           onChange={(v) => setAll(v === 'all')}
           options={[
             { value: 'mine', label: `For ${level === 'A0' ? 'A1' : level}` },
-            { value: 'all', label: 'All levels' },
+            { value: 'all', label: translateUi('All levels') },
           ]}
         />
         <span className="flex-1" />
-        <Button variant="secondary" icon={Dices} onClick={surprise}>
-          Surprise me
-        </Button>
+        <Button variant="secondary" icon={Dices} onClick={surprise}><UiText source={'Surprise me'} /></Button>
       </div>
 
       {!query && week.length > 0 && (
-        <Group title="From your week" detail="Talk about what you read, watched and wrote">
+        <Group title={translateUi('From your week')} detail="Talk about what you read, watched and wrote">
           {week.map((w) => (
             <SceneCard key={w.title} title={w.title} detail={w.detail} icon={w.icon} tone={GROUP_TONE.week} onClick={() => onAbout(w.title)} />
           ))}
@@ -292,7 +289,7 @@ function ScenePicker({ lang, level, picked, onScene, onAbout }: { lang: string; 
           </Group>
         );
       })}
-      {shown.length === 0 && <p className="mt-10 text-center text-[15px] text-ink-soft">No scene matches “{query}”.</p>}
+      {shown.length === 0 && <p className="mt-10 text-center text-[15px] text-ink-soft"><UiText source={'No scene matches “{0}”.'} values={[query]} /></p>}
     </section>
   );
 }
@@ -332,6 +329,7 @@ function SceneCard({ title, detail, icon: Icon, tone, level, active, onClick }: 
 
 /** The scene or topic picked, at the top of the second and third screens. */
 function Picked({ scene, about, onChange }: { scene: Scene; about: string; onChange: () => void }) {
+  const translateUi = useUi();
   const Icon = about ? NotebookPen : (SCENE_ICONS[scene.icon] ?? Keyboard);
   return (
     <Card className="flex items-center gap-4 p-4">
@@ -339,14 +337,12 @@ function Picked({ scene, about, onChange }: { scene: Scene; about: string; onCha
         <Icon size={26} strokeWidth={1.6} aria-hidden />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-serif text-[20px] leading-snug font-semibold">{about ? `Talk about ${about}` : scene.title}</span>
+        <span className="block font-serif text-[20px] leading-snug font-semibold">{about ? translateUi('Talk about {0}', [about]) : scene.title}</span>
         <span className="mt-0.5 block text-[13.5px] leading-snug text-ink-soft">
-          {about ? 'The AI asks what it is about and what you thought of it.' : `You: ${scene.you === 'yourself' ? 'yourself' : scene.you}. The AI: ${scene.ai}. Goals: ${scene.goals.join(' · ')}.`}
+          {about ? translateUi('The AI asks what it is about and what you thought of it.') : translateUi('You: {0}. The AI: {1}. Goals: {2}.', [scene.you === 'yourself' ? 'yourself' : scene.you, scene.ai, scene.goals.join(' · ')])}
         </span>
       </span>
-      <Button variant="ghost" size="sm" onClick={onChange}>
-        Change
-      </Button>
+      <Button variant="ghost" size="sm" onClick={onChange}><UiText source={'Change'} /></Button>
     </Card>
   );
 }
@@ -380,6 +376,7 @@ function Toggle({ on, onClick, text }: { on: boolean; onClick: () => void; text:
 
 /** The third screen: the prompt to read and copy, and each AI with its mark. */
 function PromptStep({ lang, name, prompt, voice, scene, about, onBack, onRestart }: { lang: string; name: string; prompt: string; voice: boolean; scene: Scene; about: string; onBack: () => void; onRestart: () => void }) {
+  const translateUi = useUi();
   const [copied, setCopied] = useState(false);
   const [last, setLast] = useState<Ai>();
 
@@ -404,14 +401,14 @@ function PromptStep({ lang, name, prompt, voice, scene, about, onBack, onRestart
   };
 
   return (
-    <section aria-label="Your prompt" className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+    <section aria-label={translateUi('Your prompt')} className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
       <div className="min-w-0">
         <Picked scene={scene} about={about} onChange={onRestart} />
         <Card className="mt-4 p-6">
           <div className="flex items-center gap-2">
-            <h2 className={cx(label, 'flex-1')}>Your prompt{promptInLanguage(lang) ? ` · in ${name}` : ''}</h2>
+            <h2 className={cx(label, 'flex-1')}><UiText source={'Your prompt{0}'} values={[promptInLanguage(lang) ? ` · in ${name}` : '']} /></h2>
             <Button variant="ghost" size="sm" icon={copied ? Check : Copy} onClick={() => void copy()}>
-              {copied ? 'Copied' : 'Copy'}
+              {copied ? translateUi('Copied') : translateUi('Copy')}
             </Button>
           </div>
           <p lang={promptInLanguage(lang) ? lang : 'en'} className="mt-3 font-serif text-[18px] leading-[1.65] select-text">
@@ -419,14 +416,12 @@ function PromptStep({ lang, name, prompt, voice, scene, about, onBack, onRestart
           </p>
         </Card>
         <div className="mt-6">
-          <Button variant="ghost" icon={ArrowLeft} onClick={onBack}>
-            Back
-          </Button>
+          <Button variant="ghost" icon={ArrowLeft} onClick={onBack}><UiText source={'Back'} /></Button>
         </div>
       </div>
 
-      <aside aria-label="Open it in" className="lg:sticky lg:top-6 lg:self-start">
-        <h2 className={cx(label, 'mb-3')}>Open it in</h2>
+      <aside aria-label={translateUi('Open it in')} className="lg:sticky lg:top-6 lg:self-start">
+        <h2 className={cx(label, 'mb-3')}><UiText source={'Open it in'} /></h2>
         <ul className="flex flex-col gap-2">
           {AIS.map((ai) => (
             <li key={ai.id}>
@@ -438,7 +433,7 @@ function PromptStep({ lang, name, prompt, voice, scene, about, onBack, onRestart
                 <img src={appIconUrl(ai.icon, 80)} alt="" width={40} height={40} className="size-10 rounded-[11px] shadow-elev-1" />
                 <span className="min-w-0 flex-1">
                   <span className="block text-[16px] font-semibold">{ai.name}</span>
-                  <span className="block text-[12.5px] text-ink-soft">{ai.fills ? 'Opens with the prompt filled in' : 'Opens; paste with Ctrl+V'}</span>
+                  <span className="block text-[12.5px] text-ink-soft">{ai.fills ? translateUi('Opens with the prompt filled in') : translateUi('Opens; paste with Ctrl+V')}</span>
                 </span>
                 <ExternalLink size={15} className="text-ink-faint" aria-hidden />
               </button>
@@ -448,7 +443,7 @@ function PromptStep({ lang, name, prompt, voice, scene, about, onBack, onRestart
         <p className="mt-3 text-[13px] leading-snug text-ink-soft">
           {last
             ? `${last.fills ? `${last.name} opened with your prompt. If it isn’t filled in, paste it with Ctrl+V` : `Paste the prompt in ${last.name} with Ctrl+V`}${voice ? `, send it, then use ${last.voice}` : ', and send it'}.`
-            : 'It opens where you’re signed in, and the prompt is copied too. Nothing is sent from Lingua.'}
+            : translateUi('It opens where you’re signed in, and the prompt is copied too. Nothing is sent from Lingua.')}
         </p>
       </aside>
     </section>

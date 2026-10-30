@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Cursus › Course as an adventure (the user, 2026-10-25: "like HelloChinese and Duolingo"): one
 // winding trail of round lessons, unit by unit, a line that fills as you go, a banner opening each
 // unit and a trophy closing it, the levels as landmarks, and the next lesson bouncing where you are.
@@ -54,6 +55,7 @@ interface Stop {
 const edge = (hue: string, amount = 28) => `color-mix(in oklab, ${hue} ${100 - amount}%, black)`;
 
 export function AdventurePath({ progress, lessonsOf, next }: { progress: Map<string, CourseProgressRow>; lessonsOf: (unit: UnitId) => LessonId[]; next: NextLesson | null }) {
+  const translateUi = useUi();
   const nextUnit = next ? OUTLINE.findIndex((u) => u.id === next.unit) : OUTLINE.length;
   const [open, setOpen] = useState<string | null>(null);
   const here = useRef<HTMLDivElement>(null);
@@ -91,7 +93,7 @@ export function AdventurePath({ progress, lessonsOf, next }: { progress: Map<str
         }));
         const firstOfLevel = OUTLINE.findIndex((u) => u.level === unit.level) === index;
         return (
-          <section key={unit.id} aria-label={`Unit ${index + 1}: ${unit.title}`}>
+          <section key={unit.id} aria-label={translateUi('Unit {0}: {1}', [index + 1, unit.title])}>
             {firstOfLevel && <Landmark level={unit.level} reached={index <= nextUnit} first={index === 0} />}
             <UnitBanner unit={unit} number={index + 1} done={lessons.filter((l) => row?.lessons[l]).length} of={lessons.length} complete={Boolean(row?.doneAt)} locked={index > nextUnit} />
             <Trail stops={stops} open={open} setOpen={setOpen} here={here} />
@@ -105,6 +107,7 @@ export function AdventurePath({ progress, lessonsOf, next }: { progress: Map<str
 
 /** A level reached along the way: A1 at the start, then A2 and B1, and the summit at the end. */
 function Landmark({ level, reached, first }: { level: CourseLevel | null; reached: boolean; first: boolean }) {
+  const translateUi = useUi();
   const Icon = level ? (first ? Flag : Mountain) : Trophy;
   return (
     <div className={cx('flex flex-col items-center text-center', first ? 'mb-6' : 'my-10')}>
@@ -115,15 +118,16 @@ function Landmark({ level, reached, first }: { level: CourseLevel | null; reache
       >
         <Icon size={26} />
       </span>
-      <p className="mt-3 font-serif text-xl font-semibold">{level ? `${level} · ${LEVEL_NAME[level]}` : 'The summit: B1 reached'}</p>
+      <p className="mt-3 font-serif text-xl font-semibold">{level ? `${level} · ${LEVEL_NAME[level]}` : translateUi('The summit: B1 reached')}</p>
       <p className="mt-0.5 text-[13px] text-ink-faint">
-        {level ? (first ? 'Your adventure starts here.' : reached ? 'You’ve reached this part of the trail.' : 'Further up the trail.') : reached ? 'Every unit done. Well walked.' : 'At the end of the trail.'}
+        {level ? (first ? translateUi('Your adventure starts here.') : reached ? translateUi('You’ve reached this part of the trail.') : translateUi('Further up the trail.')) : reached ? translateUi('Every unit done. Well walked.') : translateUi('At the end of the trail.')}
       </p>
     </div>
   );
 }
 
 function UnitBanner({ unit, number, done, of, complete, locked }: { unit: UnitOutline; number: number; done: number; of: number; complete: boolean; locked: boolean }) {
+
   const { hue, icon: Icon } = UNIT_LOOK[unit.id];
   const ink = locked ? undefined : '#fffaf2';
   return (
@@ -132,10 +136,7 @@ function UnitBanner({ unit, number, done, of, complete, locked }: { unit: UnitOu
       style={locked ? undefined : { background: edge(hue, 12), color: ink, boxShadow: `0 6px 0 ${edge(hue, 40)}` }}
     >
       <div className="min-w-0 flex-1">
-        <p className="text-[11.5px] font-bold tracking-[0.14em] uppercase opacity-85">
-          Unit {number} · {unit.level}
-          {complete ? ' · done' : locked ? '' : ` · ${done} of ${of}`}
-        </p>
+        <p className="text-[11.5px] font-bold tracking-[0.14em] uppercase opacity-85"><UiText source={'Unit {0} · {1}{2}'} values={[number, unit.level, complete ? ' · done' : locked ? '' : ` · ${done} of ${of}`]} /></p>
         <h2 className="mt-0.5 font-serif text-[21px] leading-tight font-semibold">{unit.title}</h2>
         <p className="mt-1 text-[13px] leading-snug opacity-85">{unit.canDo.join(' · ')}</p>
       </div>
@@ -183,6 +184,7 @@ function Trail({ stops, open, setOpen, here }: { stops: Stop[]; open: string | n
 }
 
 function StopNode({ stop, x, y, open, onToggle, here }: { stop: Stop; x: number; y: number; open: boolean; onToggle: () => void; here?: React.RefObject<HTMLDivElement | null> }) {
+  const translateUi = useUi();
   const reduce = useReducedMotion();
   const { hue } = UNIT_LOOK[stop.unit.id];
   const check = stop.lesson === 'check';
@@ -204,7 +206,7 @@ function StopNode({ stop, x, y, open, onToggle, here }: { stop: Stop; x: number;
           animate={reduce ? undefined : { y: [0, -6, 0] }}
           transition={reduce ? undefined : { duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
         >
-          {stop.at === 0 ? 'Start' : 'Continue'}
+          {stop.at === 0 ? translateUi('Start') : translateUi('Continue')}
         </motion.span>
       )}
       {stop.state === 'next' && <span className="pointer-events-none absolute -inset-2.5 rounded-full border-4" style={{ borderColor: `color-mix(in oklab, ${hue} 35%, transparent)` }} aria-hidden />}
@@ -230,6 +232,7 @@ function StopNode({ stop, x, y, open, onToggle, here }: { stop: Stop; x: number;
 
 /** What a click on a stop says: the lesson, and the way in (or why not yet, and the jump). */
 function StopCard({ stop }: { stop: Stop }) {
+  const translateUi = useUi();
   const { hue } = UNIT_LOOK[stop.unit.id];
   const lesson = LESSONS[stop.lesson];
   const locked = stop.state === 'locked';
@@ -245,13 +248,11 @@ function StopCard({ stop }: { stop: Stop }) {
       <p className="text-[11.5px] font-bold tracking-[0.12em] uppercase" style={{ color: locked ? 'var(--ink-faint)' : edge(hue, 20) }}>
         {stop.unit.short} · {lesson.title}
       </p>
-      <p className="mt-1 text-[14px] leading-snug font-semibold">{locked ? 'Further along the trail' : `${lesson.aim}.`}</p>
+      <p className="mt-1 text-[14px] leading-snug font-semibold">{locked ? translateUi('Further along the trail') : `${lesson.aim}.`}</p>
       {locked ? (
         <>
-          <p className="mt-1 text-[13px] text-ink-soft">Finish the units before this one, or show you know them already.</p>
-          <Link to={lessonPath(stop.unit.id, 'check')} className="mt-3 flex h-10 items-center justify-center gap-1.5 rounded-xl border-2 border-line text-[13.5px] font-bold hover:bg-sunken">
-            <Flag size={14} aria-hidden /> Jump here: take the unit check
-          </Link>
+          <p className="mt-1 text-[13px] text-ink-soft"><UiText source={'Finish the units before this one, or show you know them already.'} /></p>
+          <Link to={lessonPath(stop.unit.id, 'check')} className="mt-3 flex h-10 items-center justify-center gap-1.5 rounded-xl border-2 border-line text-[13.5px] font-bold hover:bg-sunken"><UiText source={'{0} Jump here: take the unit check'} values={[<Flag size={14} aria-hidden />]} /></Link>
         </>
       ) : (
         <Link
@@ -259,7 +260,7 @@ function StopCard({ stop }: { stop: Stop }) {
           className="mt-3 flex h-10 items-center justify-center rounded-xl text-[14px] font-extrabold tracking-[0.04em] uppercase transition-transform active:translate-y-[3px]"
           style={{ background: hue, color: '#fffaf2', boxShadow: `0 4px 0 ${edge(hue)}` }}
         >
-          {stop.state === 'done' ? 'Practise again' : stop.state === 'next' ? (stop.at === 0 ? 'Start' : 'Continue') : 'Start'}
+          {stop.state === 'done' ? translateUi('Practise again') : stop.state === 'next' ? (stop.at === 0 ? translateUi('Start') : translateUi('Continue')) : translateUi('Start')}
         </Link>
       )}
     </motion.div>

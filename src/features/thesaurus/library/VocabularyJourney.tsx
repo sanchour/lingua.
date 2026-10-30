@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Check, Flag } from 'lucide-react';
@@ -23,6 +24,7 @@ interface JourneyProps {
  * they become known, and a flag marks where you are now.
  */
 export function VocabularyJourney({ milestones, progress, added, onOpen }: JourneyProps) {
+  const translateUi = useUi();
   const scrollRef = useRef<HTMLDivElement>(null);
   const width = PAD * 2 + STEP * (milestones.length - 1);
   const points = milestones.map((_, i) => ({ x: PAD + i * STEP, y: i % 2 ? HEIGHT * 0.66 : HEIGHT * 0.3 }));
@@ -66,12 +68,9 @@ export function VocabularyJourney({ milestones, progress, added, onOpen }: Journ
         {progress === undefined ? (
           ' '
         ) : allDone ? (
-          <>You know the 10,000 most common words. The whole road is yours.</>
+          <><UiText source={'You know the 10,000 most common words. The whole road is yours.'} /></>
         ) : (
-          <>
-            You know about <span className="font-semibold text-ink">{knownWords.toLocaleString('en')}</span> of the {milestones.at(-1)!.toLocaleString('en')} most common words. Next stop:{' '}
-            <span className="font-semibold text-ink">{JOURNEY_STAGES[next]?.name}</span>, to {JOURNEY_STAGES[next]?.lets}.
-          </>
+          <><UiText source={'You know about {0} of the {1} most common words. Next stop:{2}{3}, to {4}.'} values={[<span className="font-semibold text-ink">{knownWords.toLocaleString('en')}</span>, milestones.at(-1)!.toLocaleString('en'), ' ', <span className="font-semibold text-ink">{JOURNEY_STAGES[next]?.name}</span>, JOURNEY_STAGES[next]?.lets]} /></>
         )}
       </p>
 
@@ -109,20 +108,18 @@ export function VocabularyJourney({ milestones, progress, added, onOpen }: Journ
                     className="pointer-events-none absolute -top-11 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-accent-fill px-2.5 py-1 text-[11px] font-bold whitespace-nowrap text-on-accent shadow-elev-2"
                     animate={{ y: [0, -3, 0] }}
                     transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-                  >
-                    <Flag size={11} aria-hidden /> You are here
-                  </motion.span>
+                  ><UiText source={'{0} You are here'} values={[<Flag size={11} aria-hidden />]} /></motion.span>
                 )}
                 <button
                   type="button"
                   onClick={() => onOpen(m)}
                   className="no-callout group flex flex-col items-center gap-1.5 transition-transform duration-150 active:scale-95"
-                  aria-label={`${stage?.name ?? `Top ${m}`}: top ${m.toLocaleString('en')} words, ${Math.round(value * 100)}% known${added(m) ? ', added' : ''}`}
+                  aria-label={translateUi('{0}: top {1} words, {2}% known{3}', [stage?.name ?? `Top ${m}`, m.toLocaleString('en'), Math.round(value * 100), added(m) ? ', added' : ''])}
                 >
                   <Stop label={m >= 1000 ? `${m / 1000}k` : String(m)} value={value} reached={reached} here={isHere} added={added(m)} />
                   <span className="text-center leading-tight">
                     <span className={cx('block text-[12.5px] font-semibold whitespace-nowrap', reached ? 'text-sage-text' : isHere ? 'text-ink' : 'text-ink-soft group-hover:text-ink')}>{stage?.name}</span>
-                    <span className="block text-[11px] font-semibold text-ink-faint tabular-nums">{Math.round(value * 100)}% known</span>
+                    <span className="block text-[11px] font-semibold text-ink-faint tabular-nums"><UiText source={'{0}% known'} values={[Math.round(value * 100)]} /></span>
                   </span>
                 </button>
               </div>
@@ -136,6 +133,7 @@ export function VocabularyJourney({ milestones, progress, added, onOpen }: Journ
 
 /** One stop: a round stamp with a ring for how much of the band is known. */
 function Stop({ label, value, reached, here, added }: { label: string; value: number; reached: boolean; here: boolean; added: boolean }) {
+  const translateUi = useUi();
   const r = 29;
   const c = 2 * Math.PI * r;
   return (
@@ -152,7 +150,7 @@ function Stop({ label, value, reached, here, added }: { label: string; value: nu
       </svg>
       <span className={cx('font-serif text-[18px] font-semibold tabular-nums', reached && 'text-sage-text')}>{label}</span>
       {added && (
-        <span className="absolute -right-0.5 -bottom-0.5 grid size-5 place-items-center rounded-full bg-sage text-bg" title="Added">
+        <span className="absolute -right-0.5 -bottom-0.5 grid size-5 place-items-center rounded-full bg-sage text-bg" title={translateUi('Added')}>
           <Check size={12} strokeWidth={3} aria-hidden />
         </span>
       )}

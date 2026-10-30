@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef } from 'react';
 import { Grid3x3, SquareDashed, X } from 'lucide-react';
 import { cx } from '@/lib/cx';
@@ -13,6 +14,7 @@ const MEASURE = 720;
  * from anywhere. Nothing here takes a click (the chip aside).
  */
 export default function DevOverlays() {
+  const translateUi = useUi();
   const { grid, outlines, setGrid, setOutlines } = useDevLab();
   const measure = useRef<HTMLDivElement>(null);
 
@@ -46,7 +48,7 @@ export default function DevOverlays() {
   const chip = 'inline-flex h-7 items-center gap-1 rounded-full px-2.5 text-[11.5px] font-semibold transition-colors';
   return (
     <>
-      {outlines && <style>{`body *:not([data-design-notes]):not([data-design-notes] *):not([data-dev-lab]):not([data-dev-lab] *){outline:1px solid rgb(214 69 69 / .4)!important;outline-offset:-1px}`}</style>}
+      {outlines && <style>{translateUi('body *:not([data-design-notes]):not([data-design-notes] *):not([data-dev-lab]):not([data-dev-lab] *){outline:1px solid rgb(214 69 69 / .4)!important;outline-offset:-1px}', [])}</style>}
       {grid && (
         <div aria-hidden className="pointer-events-none fixed inset-0 z-[117]">
           <div
@@ -57,19 +59,15 @@ export default function DevOverlays() {
             }}
           />
           <div ref={measure} className="absolute inset-y-0 left-0 border-x-2 border-dashed border-[rgb(70_110_214/0.55)] bg-[rgb(70_110_214/0.04)]" style={{ width: MEASURE }}>
-            <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded bg-[rgb(70_110_214)] px-1.5 py-px font-mono text-[10.5px] font-semibold text-white">720 px</span>
+            <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded bg-[rgb(70_110_214)] px-1.5 py-px font-mono text-[10.5px] font-semibold text-white"><UiText source={'720 px'} /></span>
           </div>
         </div>
       )}
       <div data-dev-lab="" className="fixed top-3 left-1/2 z-[123] flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-inverse p-0.5 pl-2.5 text-on-inverse shadow-elev-3">
-        <span className="mr-1 text-[11px] font-bold tracking-[0.08em] uppercase opacity-70">Lab</span>
-        <button type="button" aria-pressed={grid} onClick={() => setGrid(!grid)} className={cx(chip, grid ? 'bg-on-inverse/20' : 'opacity-60 hover:opacity-100')}>
-          <Grid3x3 size={13} aria-hidden /> Grid
-        </button>
-        <button type="button" aria-pressed={outlines} onClick={() => setOutlines(!outlines)} className={cx(chip, outlines ? 'bg-on-inverse/20' : 'opacity-60 hover:opacity-100')}>
-          <SquareDashed size={13} aria-hidden /> Outlines
-        </button>
-        <button type="button" onClick={() => (setGrid(false), setOutlines(false))} aria-label="Turn the overlays off" className="grid size-7 place-items-center rounded-full opacity-70 hover:bg-on-inverse/10 hover:opacity-100">
+        <span className="mr-1 text-[11px] font-bold tracking-[0.08em] uppercase opacity-70"><UiText source={'Lab'} /></span>
+        <button type="button" aria-pressed={grid} onClick={() => setGrid(!grid)} className={cx(chip, grid ? 'bg-on-inverse/20' : 'opacity-60 hover:opacity-100')}><UiText source={'{0} Grid'} values={[<Grid3x3 size={13} aria-hidden />]} /></button>
+        <button type="button" aria-pressed={outlines} onClick={() => setOutlines(!outlines)} className={cx(chip, outlines ? 'bg-on-inverse/20' : 'opacity-60 hover:opacity-100')}><UiText source={'{0} Outlines'} values={[<SquareDashed size={13} aria-hidden />]} /></button>
+        <button type="button" onClick={() => (setGrid(false), setOutlines(false))} aria-label={translateUi('Turn the overlays off')} className="grid size-7 place-items-center rounded-full opacity-70 hover:bg-on-inverse/10 hover:opacity-100">
           <X size={14} aria-hidden />
         </button>
       </div>

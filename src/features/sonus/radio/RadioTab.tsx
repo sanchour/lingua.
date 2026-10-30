@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowLeft, ChevronRight, EyeOff, Heart, LoaderCircle, Pause, Play, Radio, RefreshCw, X } from 'lucide-react';
@@ -26,6 +27,7 @@ const ROW = 8;
  * regional, everything), each with See all, or the country tuned to, or a search.
  */
 export default function RadioTab({ lang, flag }: { lang: string; flag?: string }) {
+  const translateUi = useUi();
   const [loaded, setLoaded] = useState<RadioStation[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -126,7 +128,7 @@ export default function RadioTab({ lang, flag }: { lang: string; flag?: string }
 
   let right: React.ReactNode;
   if (query.trim()) {
-    right = <StationGrid title={`Stations for “${query.trim()}”`} stations={visible(results)} loading={searching || !results} empty="No stations match that. Try a city, a style or part of a name." {...tile} />;
+    right = <StationGrid title={translateUi('Stations for “{0}”', [query.trim()])} stations={visible(results)} loading={searching || !results} empty="No stations match that. Try a city, a style or part of a name." {...tile} />;
   } else if (place) {
     right = <StationGrid title={place.label} stations={visible(place.stations)} onClose={() => setPlaceKey(null)} {...tile} />;
   } else if (chosenCountry) {
@@ -135,9 +137,9 @@ export default function RadioTab({ lang, flag }: { lang: string; flag?: string }
     const section = sections.find((s) => s.id === seeAll);
     right = <StationGrid title={SECTION_NAME[seeAll]} stations={section?.stations ?? []} onClose={() => setSeeAll(null)} back {...tile} />;
   } else if (!stations) {
-    right = error ? null : <LoaderCircle size={22} className="mx-auto my-16 animate-spin text-ink-faint" aria-label="Finding stations" />;
+    right = error ? null : <LoaderCircle size={22} className="mx-auto my-16 animate-spin text-ink-faint" aria-label={translateUi('Finding stations')} />;
   } else if (!stations.length) {
-    right = <p className="py-10 text-[15px] text-ink-soft">No stations in {name} yet.</p>;
+    right = <p className="py-10 text-[15px] text-ink-soft"><UiText source={'No stations in {0} yet.'} values={[name]} /></p>;
   } else {
     right = (
       <div className="space-y-9">
@@ -147,9 +149,7 @@ export default function RadioTab({ lang, flag }: { lang: string; flag?: string }
               <h2 className={label}>{SECTION_NAME[s.id]}</h2>
               <span className="text-[12px] text-ink-faint tabular-nums">{s.stations.length}</span>
               {s.stations.length > ROW && (
-                <button type="button" onClick={() => setSeeAll(s.id)} className="ml-auto inline-flex items-center gap-0.5 text-[13px] font-semibold text-accent-text hover:underline">
-                  See all <ChevronRight size={14} aria-hidden />
-                </button>
+                <button type="button" onClick={() => setSeeAll(s.id)} className="ml-auto inline-flex items-center gap-0.5 text-[13px] font-semibold text-accent-text hover:underline"><UiText source={'See all {0}'} values={[<ChevronRight size={14} aria-hidden />]} /></button>
               )}
             </div>
             <Tiles stations={s.stations.slice(0, ROW)} {...tile} />
@@ -161,7 +161,7 @@ export default function RadioTab({ lang, flag }: { lang: string; flag?: string }
 
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[minmax(300px,380px)_minmax(0,1fr)] xl:grid-cols-[minmax(340px,420px)_minmax(0,1fr)]">
-      <aside className="space-y-3 lg:sticky lg:top-6" aria-label="Map and tuner">
+      <aside className="space-y-3 lg:sticky lg:top-6" aria-label={translateUi('Map and tuner')}>
         {stations && countries.length > 0 ? (
           <RadioMap
             stations={stations}
@@ -179,24 +179,22 @@ export default function RadioTab({ lang, flag }: { lang: string; flag?: string }
             {error ? (
               <div>
                 <p className="text-[15px]">{error}</p>
-                <Button variant="secondary" icon={RefreshCw} className="mt-3" onClick={() => setAttempt((n) => n + 1)}>
-                  Try again
-                </Button>
+                <Button variant="secondary" icon={RefreshCw} className="mt-3" onClick={() => setAttempt((n) => n + 1)}><UiText source={'Try again'} /></Button>
               </div>
             ) : stations ? (
-              <p className="text-[15px]">No stations in {name} say where they are yet.</p>
+              <p className="text-[15px]"><UiText source={'No stations in {0} say where they are yet.'} values={[name]} /></p>
             ) : (
-              <LoaderCircle size={24} className="animate-spin text-ink-faint" aria-label="Finding stations" />
+              <LoaderCircle size={24} className="animate-spin text-ink-faint" aria-label={translateUi('Finding stations')} />
             )}
           </div>
         )}
         {countries.length > 1 && <Tuner countries={countries} value={country} onTune={chooseCountry} />}
-        <p className="px-1 text-[12px] leading-snug text-ink-faint">Stations from radio-browser.info, an open directory kept by listeners: only secure streams, and only stations in {name}.</p>
+        <p className="px-1 text-[12px] leading-snug text-ink-faint"><UiText source={'Stations from radio-browser.info, an open directory kept by listeners: only secure streams, and only stations in {0}.'} values={[name]} /></p>
       </aside>
 
       <div className="min-w-0 space-y-6">
         {live && <OnAir lang={lang} saved={saved?.find((s) => stationMediaId(s.id) === live.id)} favorite={(id) => favorites.has(id)} onFavorite={fav} />}
-        <SearchInput value={query} onChange={setQuery} placeholder="Search stations or styles (jazz, news…)" onClose={query ? () => setQuery('') : undefined} />
+        <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Search stations or styles (jazz, news…)')} onClose={query ? () => setQuery('') : undefined} />
         {right}
       </div>
     </div>
@@ -213,6 +211,7 @@ interface TileProps {
 
 /** A full grid: kind chips and a sort, every station (tiles off screen aren't drawn). */
 function StationGrid({ title, stations, loading, empty, onClose, back, ...tile }: TileProps & { title: string; stations: RadioStation[] | null; loading?: boolean; empty?: string; onClose?: () => void; back?: boolean }) {
+  const translateUi = useUi();
   const [kind, setKind] = useState<Kind | null>(null);
   const [sort, setSort] = useState<StationSort>('listened');
   const kinds = useMemo(() => {
@@ -225,25 +224,25 @@ function StationGrid({ title, stations, loading, empty, onClose, back, ...tile }
     <section aria-label={title}>
       <div className="mb-3 flex flex-wrap items-center gap-2">
         {back && onClose && (
-          <button type="button" onClick={onClose} aria-label="Back to all sections" className="grid size-9 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
+          <button type="button" onClick={onClose} aria-label={translateUi('Back to all sections')} className="grid size-9 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
             <ArrowLeft size={18} aria-hidden />
           </button>
         )}
         <h2 className="min-w-0 truncate font-serif text-[22px] leading-tight font-semibold">{title}</h2>
-        {stations && <span className="text-[13px] text-ink-faint tabular-nums">{list.length === 1 ? '1 station' : `${list.length} stations`}</span>}
+        {stations && <span className="text-[13px] text-ink-faint tabular-nums">{list.length === 1 ? translateUi('1 station') : translateUi('{0} stations', [list.length])}</span>}
         <div className="ml-auto flex items-center gap-2">
           <div className="w-40">
-            <Select<StationSort> label="Sort" hideLabel value={sort} onChange={setSort} options={[{ value: 'listened', label: 'Most listened' }, { value: 'name', label: 'Name' }, { value: 'quality', label: 'Sound quality' }]} />
+            <Select<StationSort> label={translateUi('Sort')} hideLabel value={sort} onChange={setSort} options={[{ value: 'listened', label: translateUi('Most listened') }, { value: 'name', label: translateUi('Name') }, { value: 'quality', label: translateUi('Sound quality') }]} />
           </div>
           {onClose && !back && (
-            <button type="button" aria-label="Close" onClick={onClose} className="grid size-9 place-items-center rounded-full text-ink-faint hover:bg-sunken hover:text-ink">
+            <button type="button" aria-label={translateUi('Close')} onClick={onClose} className="grid size-9 place-items-center rounded-full text-ink-faint hover:bg-sunken hover:text-ink">
               <X size={17} aria-hidden />
             </button>
           )}
         </div>
       </div>
       {kinds.length > 1 && (
-        <div className="mb-4 flex flex-wrap gap-2" role="group" aria-label="Kinds">
+        <div className="mb-4 flex flex-wrap gap-2" role="group" aria-label={translateUi('Kinds')}>
           {[null, ...kinds].map((k) => (
             <button
               key={k ?? 'all'}
@@ -252,12 +251,12 @@ function StationGrid({ title, stations, loading, empty, onClose, back, ...tile }
               onClick={() => setKind(k)}
               className={cx('h-8 rounded-full border px-3 text-[13px] font-semibold transition-colors', kind === k ? 'border-transparent bg-inverse text-on-inverse' : 'border-line bg-raised text-ink-soft hover:border-line-strong hover:text-ink')}
             >
-              {k ? KIND_NAME[k] : 'All'}
+              {k ? KIND_NAME[k] : translateUi('All')}
             </button>
           ))}
         </div>
       )}
-      {loading && !list.length ? <LoaderCircle size={20} className="mx-auto my-10 animate-spin text-ink-faint" aria-label="Loading" /> : list.length ? <Tiles stations={list} {...tile} /> : <p className="py-6 text-[15px] text-ink-soft">{empty ?? 'No stations here yet.'}</p>}
+      {loading && !list.length ? <LoaderCircle size={20} className="mx-auto my-10 animate-spin text-ink-faint" aria-label={translateUi('Loading')} /> : list.length ? <Tiles stations={list} {...tile} /> : <p className="py-6 text-[15px] text-ink-soft">{empty ?? 'No stations here yet.'}</p>}
     </section>
   );
 }
@@ -293,6 +292,7 @@ function Bars() {
 }
 
 function StationTile({ station, lang, langName, favorites, onFavorite, onHide }: TileProps & { station: RadioStation }) {
+  const translateUi = useUi();
   const id = stationMediaId(station.id);
   const state = usePlayer((s) => (s.media?.id === id ? s.status : null));
   const favorite = favorites.has(station.id);
@@ -322,8 +322,8 @@ function StationTile({ station, lang, langName, favorites, onFavorite, onHide }:
       <div className={cx('absolute top-1.5 right-1.5 flex gap-1 transition-opacity', favorite ? 'opacity-100' : 'opacity-0 group-focus-within:opacity-100 group-hover:opacity-100')}>
         <button
           type="button"
-          aria-label={`Not in ${langName}: hide ${station.name}`}
-          title={`Not in ${langName}`}
+          aria-label={translateUi('Not in {0}: hide {1}', [langName, station.name])}
+          title={translateUi('Not in {0}', [langName])}
           onClick={() => onHide(station)}
           className={cx('grid size-8 place-items-center rounded-full bg-raised/90 text-ink-faint shadow-elev-1 backdrop-blur hover:text-ink', favorite && 'hidden group-hover:grid')}
         >
@@ -332,7 +332,7 @@ function StationTile({ station, lang, langName, favorites, onFavorite, onHide }:
         <button
           type="button"
           aria-pressed={favorite}
-          aria-label={favorite ? `Remove ${station.name} from your stations` : `Add ${station.name} to your stations`}
+          aria-label={favorite ? translateUi('Remove {0} from your stations', [station.name]) : translateUi('Add {0} to your stations', [station.name])}
           onClick={() => onFavorite(station)}
           className={cx('grid size-8 place-items-center rounded-full bg-raised/90 shadow-elev-1 backdrop-blur', favorite ? 'text-accent' : 'text-ink-faint hover:text-ink')}
         >
@@ -346,6 +346,7 @@ function StationTile({ station, lang, langName, favorites, onFavorite, onHide }:
 
 /** The station on now: its name, what's playing when it says, play and pause, the heart. */
 function OnAir({ lang, saved, favorite, onFavorite }: { lang: string; saved?: RadioStation; favorite: (id: string) => boolean; onFavorite: (s: RadioStation) => void }) {
+  const translateUi = useUi();
   const media = usePlayer((s) => s.media);
   const status = usePlayer((s) => s.status);
   const error = usePlayer((s) => s.error);
@@ -354,12 +355,12 @@ function OnAir({ lang, saved, favorite, onFavorite }: { lang: string; saved?: Ra
   const playing = status === 'playing';
   return (
     <Card className="flex items-center gap-4 p-4 sm:p-5">
-      <Link to={`${sonusBase()}/station/${media.id.replace(/^radio:/, '')}`} aria-label={`Open ${media.title}`} className="shrink-0">
+      <Link to={`${sonusBase()}/station/${media.id.replace(/^radio:/, '')}`} aria-label={translateUi('Open {0}', [media.title])} className="shrink-0">
         <Artwork title={media.title} coverUrl={media.coverUrl} className="w-16 sm:w-20" rounded="rounded-2xl" />
       </Link>
       <Link to={`${sonusBase()}/station/${media.id.replace(/^radio:/, '')}`} className="min-w-0 flex-1">
         <p className="flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
-          <Radio size={13} aria-hidden /> {status === 'error' ? 'Off air' : playing ? 'Live now' : status === 'loading' ? 'Tuning in…' : 'Paused'}
+          <Radio size={13} aria-hidden /> {status === 'error' ? translateUi('Off air') : playing ? translateUi('Live now') : status === 'loading' ? translateUi('Tuning in…') : translateUi('Paused')}
         </p>
         <p className="mt-0.5 truncate font-serif text-xl leading-tight font-semibold">{media.title}</p>
         <p lang={nowPlaying ? lang : undefined} className={cx('truncate text-sm', status === 'error' ? 'text-accent-text' : 'text-ink-soft')}>
@@ -370,7 +371,7 @@ function OnAir({ lang, saved, favorite, onFavorite }: { lang: string; saved?: Ra
         <button
           type="button"
           aria-pressed={favorite(saved.id)}
-          aria-label={favorite(saved.id) ? `Remove ${saved.name} from your stations` : `Add ${saved.name} to your stations`}
+          aria-label={favorite(saved.id) ? translateUi('Remove {0} from your stations', [saved.name]) : translateUi('Add {0} to your stations', [saved.name])}
           onClick={() => onFavorite(saved)}
           className={cx('grid size-10 shrink-0 place-items-center rounded-full hover:bg-sunken', favorite(saved.id) ? 'text-accent' : 'text-ink-faint hover:text-ink')}
         >
@@ -379,13 +380,13 @@ function OnAir({ lang, saved, favorite, onFavorite }: { lang: string; saved?: Ra
       )}
       <button
         type="button"
-        aria-label={playing ? 'Pause' : 'Play'}
+        aria-label={playing ? translateUi('Pause') : translateUi('Play')}
         onClick={toggle}
         className="grid size-14 shrink-0 place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-2 transition-transform duration-150 active:scale-90"
       >
         {status === 'loading' ? <LoaderCircle size={22} className="animate-spin" aria-hidden /> : playing ? <Pause size={22} className="fill-current" aria-hidden /> : <Play size={22} className="translate-x-0.5 fill-current" aria-hidden />}
       </button>
-      <Link to={`${sonusBase()}/station/${media.id.replace(/^radio:/, '')}`} className="hidden sm:block" aria-label="Open the station">
+      <Link to={`${sonusBase()}/station/${media.id.replace(/^radio:/, '')}`} className="hidden sm:block" aria-label={translateUi('Open the station')}>
         <ChevronRight size={18} className="text-ink-faint" aria-hidden />
       </Link>
     </Card>

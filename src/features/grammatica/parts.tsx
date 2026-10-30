@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { Fragment, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Check, Crown, TriangleAlert } from 'lucide-react';
@@ -162,7 +163,7 @@ export function WatchOut({ children }: { children: ReactNode }) {
     <div className="flex gap-3 rounded-2xl border border-[color-mix(in_oklab,var(--learning-line)_45%,transparent)] bg-[color-mix(in_oklab,var(--learning-line)_12%,var(--bg))] p-4">
       <TriangleAlert size={19} className="mt-0.5 shrink-0 text-[var(--learning-line)]" aria-hidden />
       <p className="text-[15px] leading-snug">
-        <span className="font-semibold">Watch out: </span>
+        <span className="font-semibold"><UiText source={'Watch out: '} /></span>
         {children}
       </p>
     </div>

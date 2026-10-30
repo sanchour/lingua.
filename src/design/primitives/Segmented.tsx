@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useId, useRef } from 'react';
 import type { KeyboardEvent } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -24,6 +25,7 @@ interface SegmentedProps<T extends string> {
 }
 
 export function Segmented<T extends string>({ value, onChange, options, label, block = false }: SegmentedProps<T>) {
+  const translateUi = useUi();
   const id = useId();
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
 
@@ -39,7 +41,7 @@ export function Segmented<T extends string>({ value, onChange, options, label, b
   return (
     <div
       role="radiogroup"
-      aria-label={label}
+      aria-label={translateUi(label)}
       className={cx('no-callout gap-1 rounded-2xl border border-line bg-sunken/70 p-1', block ? 'flex w-full' : 'inline-flex')}
     >
       {options.map((o, i) => {
@@ -54,7 +56,7 @@ export function Segmented<T extends string>({ value, onChange, options, label, b
             type="button"
             role="radio"
             aria-checked={active}
-            aria-label={o.ariaLabel}
+            aria-label={o.ariaLabel ? translateUi(o.ariaLabel) : undefined}
             tabIndex={active ? 0 : -1}
             onClick={() => onChange(o.value)}
             onKeyDown={(e) => onKeyDown(e, i)}
@@ -73,10 +75,10 @@ export function Segmented<T extends string>({ value, onChange, options, label, b
               {o.short ? (
                 <>
                   <span className="truncate sm:hidden">{o.short}</span>
-                  <span className="hidden truncate sm:inline">{o.label}</span>
+                  <span className="hidden truncate sm:inline"><UiText source={o.label} /></span>
                 </>
               ) : (
-                <span className="truncate">{o.label}</span>
+                <span className="truncate"><UiText source={o.label} /></span>
               )}
             </span>
           </button>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // The error log (6-5b): every mistake the learner made, newest first, with what they wrote and what was right: from lessons and
 // Practice (the record) and from the corrections in their conversations. A way back to the grammar topic where there is one.
 import { useEffect, useState } from 'react';
@@ -22,6 +23,7 @@ const shortDay = (at: number) => new Date(at).toLocaleDateString(undefined, { da
 const inFilter = (e: ErrorEntry, f: Filter) => f === 'all' || (f === 'words' ? e.source === 'word' : f === 'grammar' ? e.source === 'grammar' : e.source === 'conversation');
 
 export function ErrorLogPanel({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const [filter, setFilter] = useState<Filter>('all');
   const [shown, setShown] = useState(PAGE);
   const [grammar, setGrammar] = useState<Grammar | null>();
@@ -37,9 +39,9 @@ export function ErrorLogPanel({ lang }: { lang: string }) {
   const list = log.filter((e) => inFilter(e, filter));
 
   return (
-    <Panel title="Error log" icon={ListX}>
-      <p className="mb-3 text-[13.5px] text-ink-soft">Every mistake from your lessons, Practice and conversations, newest first.</p>
-      <div role="group" aria-label="Kind of mistake" className="mb-2 flex flex-wrap gap-1.5">
+    <Panel title={translateUi('Error log')} icon={ListX}>
+      <p className="mb-3 text-[13.5px] text-ink-soft"><UiText source={'Every mistake from your lessons, Practice and conversations, newest first.'} /></p>
+      <div role="group" aria-label={translateUi('Kind of mistake')} className="mb-2 flex flex-wrap gap-1.5">
         {FILTERS.filter(([f]) => f === 'all' || log.some((e) => inFilter(e, f))).map(([f, label]) => (
           <button
             key={f}
@@ -66,7 +68,7 @@ export function ErrorLogPanel({ lang }: { lang: string }) {
                 </span>
               )}
               {e.category && <span className="text-[12.5px] text-ink-faint">{e.category.replace('-', ' ')}</span>}
-              {e.times > 1 && <span className={cx('rounded-full px-2 py-px text-[11.5px] font-semibold', e.times >= 3 ? 'bg-accent-soft text-accent-text' : 'bg-sunken text-ink-soft')}>{e.times >= 3 ? `keeps coming back · ${e.times}×` : `${e.times}×`}</span>}
+              {e.times > 1 && <span className={cx('rounded-full px-2 py-px text-[11.5px] font-semibold', e.times >= 3 ? 'bg-accent-soft text-accent-text' : 'bg-sunken text-ink-soft')}>{e.times >= 3 ? translateUi('keeps coming back · {0}×', [e.times]) : `${e.times}×`}</span>}
               <span className="ml-auto text-[12.5px] text-ink-faint tabular-nums">{shortDay(e.at)}</span>
             </p>
             {(e.given || e.expected) && (
@@ -81,9 +83,7 @@ export function ErrorLogPanel({ lang }: { lang: string }) {
         ))}
       </ul>
       {list.length > shown && (
-        <button type="button" onClick={() => setShown(shown + PAGE)} className="mt-2 text-[13px] font-semibold text-accent-text hover:underline">
-          Show more ({list.length - shown})
-        </button>
+        <button type="button" onClick={() => setShown(shown + PAGE)} className="mt-2 text-[13px] font-semibold text-accent-text hover:underline"><UiText source={'Show more ({0})'} values={[list.length - shown]} /></button>
       )}
     </Panel>
   );

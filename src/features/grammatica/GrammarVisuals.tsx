@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import type {
   GrammarTimelineData,
@@ -14,6 +15,7 @@ import { ChevronRight, HelpCircle, ArrowRight } from 'lucide-react';
 
 /** Fine-line Tense Timeline (F0217) drawn according to handbook guidelines. */
 export function TenseTimeline({ timeline, lang }: { timeline: GrammarTimelineData; lang: string }) {
+  const translateUi = useUi();
   const [selectedPoint, setSelectedPoint] = useState<GrammarTimelinePoint | null>(timeline.points[0] ?? null);
   const rtl = isRtl(lang);
 
@@ -69,12 +71,8 @@ export function TenseTimeline({ timeline, lang }: { timeline: GrammarTimelineDat
           />
 
           {/* "Past" and "Future" zone labels */}
-          <text x="30" y="20" className="fill-ink-faint text-[10px] uppercase tracking-wider font-semibold">
-            Past
-          </text>
-          <text x="530" y="20" className="fill-ink-faint text-[10px] uppercase tracking-wider font-semibold">
-            Future
-          </text>
+          <text x="30" y="20" className="fill-ink-faint text-[10px] uppercase tracking-wider font-semibold">{translateUi('Past')}</text>
+          <text x="530" y="20" className="fill-ink-faint text-[10px] uppercase tracking-wider font-semibold">{translateUi('Future')}</text>
 
           {/* "Now" vertical marker */}
           <line
@@ -89,9 +87,7 @@ export function TenseTimeline({ timeline, lang }: { timeline: GrammarTimelineDat
             className="text-accent"
           />
           <circle cx="350" cy="40" r="4.5" fill="var(--bg)" stroke="var(--accent)" strokeWidth="1.5" />
-          <text x="350" y="70" textAnchor="middle" className="fill-accent-text text-[11px] font-bold">
-            Now
-          </text>
+          <text x="350" y="70" textAnchor="middle" className="fill-accent-text text-[11px] font-bold">{translateUi('Now')}</text>
 
           {/* Interactive event points along the line */}
           {timeline.points.map((pt, i) => {
@@ -228,7 +224,7 @@ export function WordOrderVisualizer({ wordOrder, lang }: { wordOrder: WordOrderD
                     {slot.role}
                   </span>
                   {slot.optional && (
-                    <span className="rounded bg-sunken px-1 text-[10px] text-ink-faint">opt</span>
+                    <span className="rounded bg-sunken px-1 text-[10px] text-ink-faint"><UiText source={'opt'} /></span>
                   )}
                 </div>
                 {slot.example && (
@@ -264,6 +260,7 @@ export function WordOrderVisualizer({ wordOrder, lang }: { wordOrder: WordOrderD
 
 /** Grammar Decision Tree (F0216) helper to render branching choices. */
 export function GrammarDecisionTree({ node, lang }: { node: DecisionNode; lang: string }) {
+  const translateUi = useUi();
   const [history, setHistory] = useState<Array<{ question: string; answer: 'yes' | 'no' }>>([]);
   const [currentNode, setCurrentNode] = useState<DecisionNode>(node);
   const [resolvedBranch, setResolvedBranch] = useState<DecisionBranch | null>(null);
@@ -288,18 +285,13 @@ export function GrammarDecisionTree({ node, lang }: { node: DecisionNode; lang: 
   return (
     <div className="rounded-2xl border border-line/70 bg-card p-4 sm:p-5">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft">
-          <HelpCircle size={16} className="text-accent" aria-hidden />
-          Grammar Decision Guide
-        </h3>
+        <h3 className="flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft"><UiText source={'{0}Grammar Decision Guide'} values={[<HelpCircle size={16} className="text-accent" aria-hidden />]} /></h3>
         {history.length > 0 && (
           <button
             type="button"
             onClick={reset}
             className="text-[12px] font-semibold text-accent-text hover:underline"
-          >
-            Start over
-          </button>
+          ><UiText source={'Start over'} /></button>
         )}
       </div>
 
@@ -308,7 +300,7 @@ export function GrammarDecisionTree({ node, lang }: { node: DecisionNode; lang: 
         <div className="mb-3 flex flex-wrap items-center gap-1.5 text-[12px] text-ink-faint">
           {history.map((h, i) => (
             <span key={i} className="flex items-center gap-1">
-              <span>{h.answer === 'yes' ? 'Yes' : 'No'}</span>
+              <span>{h.answer === 'yes' ? translateUi('Yes') : translateUi('No')}</span>
               {i < history.length - 1 && <ChevronRight size={12} />}
             </span>
           ))}
@@ -324,23 +316,17 @@ export function GrammarDecisionTree({ node, lang }: { node: DecisionNode; lang: 
               type="button"
               onClick={() => choose('yes')}
               className="rounded-lg border border-accent/40 bg-accent-soft/40 px-4 py-2 text-[13.5px] font-semibold text-accent-text hover:bg-accent-soft transition-colors"
-            >
-              Yes
-            </button>
+            ><UiText source={'Yes'} /></button>
             <button
               type="button"
               onClick={() => choose('no')}
               className="rounded-lg border border-line/80 bg-card px-4 py-2 text-[13.5px] font-medium text-ink hover:bg-sunken transition-colors"
-            >
-              No
-            </button>
+            ><UiText source={'No'} /></button>
           </div>
         </div>
       ) : (
         <div className="rounded-xl border border-accent/40 bg-accent-soft/25 p-4 animate-in fade-in">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-accent-text">
-            Recommended rule
-          </span>
+          <span className="text-[11px] font-bold uppercase tracking-wider text-accent-text"><UiText source={'Recommended rule'} /></span>
           <p className="mt-1 text-[16px] font-semibold text-ink">{resolvedBranch.result}</p>
           {resolvedBranch.rule && (
             <p className="mt-1.5 text-[14px] leading-snug text-ink-soft">{resolvedBranch.rule}</p>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { ClipboardCopy, ExternalLink, Gem, KeyRound } from 'lucide-react';
@@ -59,6 +60,7 @@ function status(meta: Settings['meta'], plan: PlanKind): string {
 
 /** Settings › Lingua+ (5.1-2a): your plan, Max's renewal and its Stripe page, the licence to copy or restore, and the plans. */
 export function PlanSection({ meta }: { meta: Settings['meta'] }) {
+  const translateUi = useUi();
   const plan = planOf(meta);
   const state = migratePlan(meta);
   const licence = state.max?.licence ?? state.plus?.licence;
@@ -74,7 +76,7 @@ export function PlanSection({ meta }: { meta: Settings['meta'] }) {
   };
 
   return (
-    <SettingsSection id="plus" icon={Gem} title="Lingua+" description="Your plan, and the way to change it. Everything free stays free.">
+    <SettingsSection id="plus" icon={Gem} title="Lingua+" description={translateUi('Your plan, and the way to change it. Everything free stays free.')}>
       <div className="flex flex-col items-start gap-4 rounded-2xl bg-accent-soft/50 p-5 sm:flex-row sm:items-center">
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-2.5 font-serif text-[22px] leading-tight font-semibold">
@@ -87,26 +89,22 @@ export function PlanSection({ meta }: { meta: Settings['meta'] }) {
                 Lingua<span className="text-accent-text">+</span>
               </span>
             ) : (
-              'Free'
+              translateUi('Free')
             )}
           </p>
           <p className="mt-1 text-[13.5px] leading-snug text-ink-soft">{status(meta, plan)}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {licence && (
-            <Button variant="secondary" icon={ClipboardCopy} onClick={() => void copy()}>
-              Copy licence
-            </Button>
+            <Button variant="secondary" icon={ClipboardCopy} onClick={() => void copy()}><UiText source={'Copy licence'} /></Button>
           )}
           {state.max && STORE.portal && (
-            <a href={STORE.portal} target="_blank" rel="noopener noreferrer" className={buttonClasses('primary', 'md')}>
-              Manage subscription <ExternalLink size={15} aria-hidden />
-            </a>
+            <a href={STORE.portal} target="_blank" rel="noopener noreferrer" className={buttonClasses('primary', 'md')}><UiText source={'Manage subscription {0}'} values={[<ExternalLink size={15} aria-hidden />]} /></a>
           )}
         </div>
       </div>
       {plan === 'max' && !STORE.portal && (
-        <p className="mt-2 text-[12.5px] text-ink-faint">Manage subscription opens Stripe’s page (change, cancel, invoices) once purchases are open.</p>
+        <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'Manage subscription opens Stripe’s page (change, cancel, invoices) once purchases are open.'} /></p>
       )}
 
       <div className="mt-6">
@@ -120,6 +118,7 @@ export function PlanSection({ meta }: { meta: Settings['meta'] }) {
 
 /** A licence from the purchase email or another device. */
 function Restore() {
+  const translateUi = useUi();
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const restore = async () => {
@@ -136,9 +135,7 @@ function Restore() {
   };
   return (
     <div className="mt-8">
-      <label htmlFor="licence" className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
-        Restore with a licence key
-      </label>
+      <label htmlFor="licence" className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'Restore with a licence key'} /></label>
       <div className="flex gap-2">
         <input
           id="licence"
@@ -147,15 +144,13 @@ function Restore() {
           onKeyDown={(e) => e.key === 'Enter' && text.trim() && void restore()}
           autoComplete="off"
           spellCheck={false}
-          placeholder="Paste the licence from your purchase email or another device"
+          placeholder={translateUi('Paste the licence from your purchase email or another device')}
           className="h-11 min-w-0 flex-1 rounded-xl border border-line bg-raised px-3.5 font-mono text-[14px] transition-colors hover:border-line-strong"
         />
-        <Button variant="secondary" icon={KeyRound} onClick={() => void restore()} loading={busy} disabled={!text.trim()}>
-          Restore
-        </Button>
+        <Button variant="secondary" icon={KeyRound} onClick={() => void restore()} loading={busy} disabled={!text.trim()}><UiText source={'Restore'} /></Button>
       </div>
       <p className="mt-2 text-[12.5px] text-ink-faint">
-        {TEST_MODE ? 'Test mode: purchases aren’t open yet, so there are no licences to restore.' : 'The licence is checked on this device, offline too. For another of your devices, copy it there.'}
+        {TEST_MODE ? translateUi('Test mode: purchases aren’t open yet, so there are no licences to restore.') : translateUi('The licence is checked on this device, offline too. For another of your devices, copy it there.')}
       </p>
     </div>
   );

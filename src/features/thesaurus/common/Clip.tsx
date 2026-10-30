@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Clapperboard, Headphones, Play, Square } from 'lucide-react';
@@ -77,6 +78,7 @@ function useClipPlayback(clip: ClipSource, el: () => HTMLMediaElement | null, ra
 
 /** The card's clip: a small round button for audio, the picture itself for video lines. */
 export function ClipPlayer({ clip, large = false, rate = 1 }: { clip: ClipSource; large?: boolean; rate?: number }) {
+  const translateUi = useUi();
   const audio = useRef<HTMLAudioElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const { playing, play } = useClipPlayback(clip, () => (clip.kind === 'video' ? video.current : audio.current), rate);
@@ -98,7 +100,7 @@ export function ClipPlayer({ clip, large = false, rate = 1 }: { clip: ClipSource
         <audio ref={audio} src={clip.src} preload="metadata" />
         <button
           type="button"
-          aria-label={playing ? 'Stop the clip' : `Play the clip from ${clip.title}`}
+          aria-label={playing ? translateUi('Stop the clip') : translateUi('Play the clip from {0}', [clip.title])}
           onClick={(e) => {
             e.stopPropagation();
             play();
@@ -119,7 +121,7 @@ export function ClipPlayer({ clip, large = false, rate = 1 }: { clip: ClipSource
     <div className={cx('w-full', large ? 'mt-1' : '')} onClick={(e) => e.stopPropagation()}>
       <button
         type="button"
-        aria-label={playing ? 'Stop the clip' : `Play the clip from ${clip.title}`}
+        aria-label={playing ? translateUi('Stop the clip') : translateUi('Play the clip from {0}', [clip.title])}
         onClick={() => {
           setShown(true);
           play();
@@ -141,9 +143,7 @@ export function ClipPlayer({ clip, large = false, rate = 1 }: { clip: ClipSource
             play();
           }}
           className="no-callout inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold text-ink-soft transition-colors hover:bg-sunken hover:text-ink"
-        >
-          <Clapperboard size={15} aria-hidden /> Play the clip
-        </button>
+        ><UiText source={'{0} Play the clip'} values={[<Clapperboard size={15} aria-hidden />]} /></button>
       )}
     </div>
   );

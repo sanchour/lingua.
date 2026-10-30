@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { BookCheck, Download, Languages, Plus, Trash2 } from 'lucide-react';
 import { ENJOYMENTS } from '@/app/onboarding/EnjoyStep';
@@ -22,6 +23,7 @@ import { codexGoal } from '@/features/codex/reader/readingGoal';
 const GOALS = [5, 10, 15, 20, 30, 45, 60];
 
 export function LanguageSection({ active }: { active: LanguageProfile }) {
+  const translateUi = useUi();
   const languages = useLanguages() ?? [];
   const packs = useInstalledPacks() ?? [];
   const jobs = usePackJobs((s) => s.jobs);
@@ -46,28 +48,28 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
   };
 
   return (
-    <SettingsSection id="language" icon={Languages} title="Languages" description="Each language keeps its own words, decks and progress.">
+    <SettingsSection id="language" icon={Languages} title={translateUi('Languages')} description={translateUi('Each language keeps its own words, decks and progress.')}>
       <div className="grid gap-4 sm:grid-cols-3">
         <Select
-          label={`Level in ${target?.name ?? active.id}`}
+          label={translateUi('Level in {0}', [target?.name ?? active.id])}
           value={active.level}
           onChange={(level: Level) => void updateLanguage(active.id, { level })}
           options={LEVELS.map((l) => ({ value: l.id, label: `${l.id} · ${l.name}` }))}
         />
         <Select
-          label="Daily goal"
+          label={translateUi('Daily goal')}
           value={String(active.dailyGoal.readMinutes)}
           onChange={(v) => void updateLanguage(active.id, { dailyGoal: { ...active.dailyGoal, readMinutes: Number(v) } })}
           options={GOALS.map((m) => ({ value: String(m), label: `${m} minutes` }))}
         />
         <Select
-          label="Reading goal in Codex"
+          label={translateUi('Reading goal in Codex')}
           value={String(codexGoal(active))}
           onChange={(v) => void updateLanguage(active.id, { dailyGoal: { ...active.dailyGoal, codexMinutes: Number(v) } })}
           options={GOALS.map((m) => ({ value: String(m), label: `${m} minutes` }))}
         />
         <Select
-          label="I already speak"
+          label={translateUi('I already speak')}
           value={active.native}
           onChange={(native) => void updateLanguage(active.id, { native })}
           options={AVAILABLE_LANGUAGES.filter((l) => l.code !== active.id).map((l) => ({ value: l.code, label: `${l.name} · ${l.endonym}` }))}
@@ -87,7 +89,7 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
                   {info?.endonym ?? l.id}
                   {info?.tier === 3 && (
                     <span title={BETA_INCLUDES}>
-                      <Badge>Beta</Badge>
+                      <Badge><UiText source={'Beta'} /></Badge>
                     </span>
                   )}
                 </span>
@@ -95,13 +97,11 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
                   {l.level}
                   <span aria-hidden>·</span>
                   {job ? (
-                    'Installing dictionary…'
+                    translateUi('Installing dictionary…')
                   ) : pack ? (
-                    <>
-                      <BookCheck size={13} className="text-sage-text" aria-hidden /> Offline dictionary · {formatBytes(pack.sizeBytes)}
-                    </>
+                    <><UiText source={'{0} Offline dictionary · {1}'} values={[<BookCheck size={13} className="text-sage-text" aria-hidden />, formatBytes(pack.sizeBytes)]} /></>
                   ) : (
-                    'No offline dictionary yet'
+                    translateUi('No offline dictionary yet')
                   )}
                 </span>
               </span>
@@ -111,12 +111,10 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
                   size="sm"
                   icon={Download}
                   onClick={() => void installPack(l.id).catch(() => toast('The dictionary couldn’t be installed. Check your connection.', { tone: 'error' }))}
-                >
-                  Install
-                </Button>
+                ><UiText source={'Install'} /></Button>
               )}
               {l.isActive === 1 ? (
-                <Badge tone="accent">Studying</Badge>
+                <Badge tone="accent"><UiText source={'Studying'} /></Badge>
               ) : (
                 <Button
                   variant="secondary"
@@ -125,44 +123,36 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
                     await switchLanguage(l.id);
                     toast(`Now studying ${info?.name ?? l.id}.`);
                   }}
-                >
-                  Switch
-                </Button>
+                ><UiText source={'Switch'} /></Button>
               )}
-              {languages.length > 1 && <IconButton icon={Trash2} label={`Remove ${info?.name ?? l.id}`} onClick={() => setRemoving(l)} />}
+              {languages.length > 1 && <IconButton icon={Trash2} label={translateUi('Remove {0}', [info?.name ?? l.id])} onClick={() => setRemoving(l)} />}
             </li>
           );
         })}
       </ul>
       {languages.some((l) => getLanguage(l.id)?.tier === 3) && <p data-hint="" className="mt-2 px-1 text-[13px] leading-snug text-ink-soft">{BETA_INCLUDES}</p>}
-      <Button variant="ghost" icon={Plus} className="mt-3" onClick={() => void startAnotherLanguage()}>
-        Learn another language
-      </Button>
+      <Button variant="ghost" icon={Plus} className="mt-3" onClick={() => void startAnotherLanguage()}><UiText source={'Learn another language'} /></Button>
       <Dialog
         open={removing !== null}
         onClose={() => !busy && setRemoving(null)}
-        title={`Remove ${getLanguage(removing?.id ?? '')?.name ?? ''}?`}
+        title={translateUi('Remove {0}?', [getLanguage(removing?.id ?? '')?.name ?? ''])}
         actions={
           <>
-            <Button variant="secondary" disabled={busy} onClick={() => setRemoving(null)}>
-              Keep it
-            </Button>
+            <Button variant="secondary" disabled={busy} onClick={() => setRemoving(null)}><UiText source={'Keep it'} /></Button>
             <Button variant="danger" icon={Trash2} disabled={busy} onClick={() => removing && void remove(removing)}>
-              {busy ? 'Removing…' : 'Remove'}
+              {busy ? translateUi('Removing…') : translateUi('Remove')}
             </Button>
           </>
         }
       >
-        <p className="text-[15px] text-ink-soft">
-          Its texts, words, decks and cards, audio and audiobooks, songs, journal, progress and offline dictionary are deleted from this device, and the room they took is freed. Your other languages stay. This can’t be undone; add the language again any time to start afresh.
-        </p>
+        <p className="text-[15px] text-ink-soft"><UiText source={'Its texts, words, decks and cards, audio and audiobooks, songs, journal, progress and offline dictionary are deleted from this device, and the room they took is freed. Your other languages stay. This can’t be undone; add the language again any time to start afresh.'} /></p>
       </Dialog>
 
       {(target?.flags.length ?? 0) > 1 && (
         <div className="mt-6">
-          <p className="text-[14px] font-semibold">Flag for {target?.name}</p>
-          <p data-hint="" className="mt-0.5 mb-3 text-[13px] text-ink-soft">The flag shown beside {target?.name} throughout Lingua.</p>
-          <div role="radiogroup" aria-label={`Flag for ${target?.name}`} className="flex flex-wrap gap-2">
+          <p className="text-[14px] font-semibold"><UiText source={'Flag for {0}'} values={[target?.name]} /></p>
+          <p data-hint="" className="mt-0.5 mb-3 text-[13px] text-ink-soft"><UiText source={'The flag shown beside {0} throughout Lingua.'} values={[target?.name]} /></p>
+          <div role="radiogroup" aria-label={translateUi('Flag for {0}', [target?.name])} className="flex flex-wrap gap-2">
             {target?.flags.map((code) => {
               const chosen = flagFor(active.id, active.flag) === code;
               return (
@@ -189,9 +179,9 @@ export function LanguageSection({ active }: { active: LanguageProfile }) {
       <VoicePanel active={active} />
 
       <div className="mt-6">
-        <p className="text-[14px] font-semibold">What you enjoy most</p>
-        <p data-hint="" className="mt-0.5 mb-3 text-[13px] text-ink-soft">Home suggests these first, in the order you pick them.</p>
-        <div role="group" aria-label="What you enjoy most" className="flex flex-wrap gap-2">
+        <p className="text-[14px] font-semibold"><UiText source={'What you enjoy most'} /></p>
+        <p data-hint="" className="mt-0.5 mb-3 text-[13px] text-ink-soft"><UiText source={'Home suggests these first, in the order you pick them.'} /></p>
+        <div role="group" aria-label={translateUi('What you enjoy most')} className="flex flex-wrap gap-2">
           {ENJOYMENTS.map((e) => {
             const rank = learner.enjoys.indexOf(e.id);
             return (

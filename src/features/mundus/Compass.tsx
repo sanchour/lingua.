@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { BookOpen, Clapperboard, Headphones, Layers, MessagesSquare, PenLine } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -20,6 +21,7 @@ const at = (deg: number, r: number) => [C + r * Math.cos((deg * Math.PI) / 180),
  * where Mundus suggests going next. Only the needle moves (a transform), once, on arrival.
  */
 export function Compass({ week, lane, size = 220 }: { week: Week; lane: Lane; size?: number }) {
+  const translateUi = useUi();
   const total = LANES.reduce((n, l) => n + week[l], 0);
   const most = Math.max(1, ...LANES.map((l) => week[l]));
   const target = angleOf(LANES.indexOf(lane)) + 90;
@@ -59,9 +61,7 @@ export function Compass({ week, lane, size = 220 }: { week: Week; lane: Lane; si
       <text x={C} y={C - 3} textAnchor="middle" fontSize={20} fontWeight={700} fill="currentColor" className="font-serif tabular-nums">
         {Math.round(total)}
       </text>
-      <text x={C} y={C + 12} textAnchor="middle" fontSize={9} fontWeight={700} fill="currentColor" fillOpacity={0.55} letterSpacing="0.08em">
-        MIN
-      </text>
+      <text x={C} y={C + 12} textAnchor="middle" fontSize={9} fontWeight={700} fill="currentColor" fillOpacity={0.55} letterSpacing="0.08em">{translateUi('MIN')}</text>
     </svg>
   );
 }

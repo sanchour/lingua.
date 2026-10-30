@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Check, Loader2, MonitorSmartphone, QrCode, RefreshCw, ScanLine, Smartphone, Trash2 } from 'lucide-react';
 import { renderSVG } from 'uqr';
@@ -13,6 +14,7 @@ import { SettingsSection } from '../SettingsSection';
 
 /** Settings › Your data › Your devices: pair the desktop app and the phone once; they sync when both are open. */
 export function SyncSection({ sync }: { sync: Settings['sync'] }) {
+  const translateUi = useUi();
   const pairs = useSyncStore((s) => s.pairs);
   const [pairing, setPairing] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -28,8 +30,8 @@ export function SyncSection({ sync }: { sync: Settings['sync'] }) {
     <SettingsSection
       id="sync"
       icon={MonitorSmartphone}
-      title="Your devices"
-      description="Keep the desktop app and your phone in step: pair them once, and they sync whenever both are open. No account: your words, cards and progress go straight from one device to the other."
+      title={translateUi('Your devices')}
+      description={translateUi('Keep the desktop app and your phone in step: pair them once, and they sync whenever both are open. No account: your words, cards and progress go straight from one device to the other.')}
     >
       {sync.devices.length > 0 && (
         <ul className="mb-4 divide-y divide-line rounded-2xl border border-line bg-raised">
@@ -40,18 +42,14 @@ export function SyncSection({ sync }: { sync: Settings['sync'] }) {
       )}
       <div className="flex flex-wrap gap-2">
         {sync.devices.length > 0 && (
-          <Button icon={RefreshCw} loading={busy} onClick={() => void syncNow()}>
-            Sync now
-          </Button>
+          <Button icon={RefreshCw} loading={busy} onClick={() => void syncNow()}><UiText source={'Sync now'} /></Button>
         )}
-        <Button variant={sync.devices.length ? 'secondary' : 'primary'} icon={QrCode} onClick={() => setPairing(true)}>
-          Pair a device
-        </Button>
+        <Button variant={sync.devices.length ? 'secondary' : 'primary'} icon={QrCode} onClick={() => setPairing(true)}><UiText source={'Pair a device'} /></Button>
       </div>
       <div className="mt-4">
         <ToggleRow
-          title="Send API keys too"
-          description="Off by default: your Groq and Gemini keys stay on the device you typed them on."
+          title={translateUi('Send API keys too')}
+          description={translateUi('Off by default: your Groq and Gemini keys stay on the device you typed them on.')}
           checked={sync.includeApiKeys}
           onChange={(on: boolean) => void patchSetting('sync', { includeApiKeys: on })}
         />
@@ -77,6 +75,7 @@ function syncedAgo(at: number): string {
 }
 
 function DeviceRow({ device, state }: { device: PairedDevice; state?: { status: string; message?: string } }) {
+  const translateUi = useUi();
   const [asking, setAsking] = useState(false);
   const line =
     state?.status === 'syncing'
@@ -97,54 +96,51 @@ function DeviceRow({ device, state }: { device: PairedDevice; state?: { status: 
       </span>
       <button
         type="button"
-        aria-label={`Sync with ${device.name}`}
+        aria-label={translateUi('Sync with {0}', [device.name])}
         disabled={state?.status === 'syncing'}
         onClick={() => void syncWith(device).then((r) => !r && toast(`${device.name} isn’t open right now.`))}
         className="grid size-10 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink disabled:opacity-50"
       >
         {state?.status === 'syncing' ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <RefreshCw size={18} aria-hidden />}
       </button>
-      <button type="button" aria-label={`Forget ${device.name}`} onClick={() => setAsking(true)} className="grid size-10 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
+      <button type="button" aria-label={translateUi('Forget {0}', [device.name])} onClick={() => setAsking(true)} className="grid size-10 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
         <Trash2 size={18} aria-hidden />
       </button>
       <Dialog
         open={asking}
         onClose={() => setAsking(false)}
-        title={`Forget ${device.name}?`}
+        title={translateUi('Forget {0}?', [device.name])}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setAsking(false)}>
-              Keep it
-            </Button>
+            <Button variant="ghost" onClick={() => setAsking(false)}><UiText source={'Keep it'} /></Button>
             <Button
               onClick={() => {
                 void forgetDevice(device.secret);
                 setAsking(false);
               }}
-            >
-              Forget
-            </Button>
+            ><UiText source={'Forget'} /></Button>
           </>
         }
       >
-        <p className="text-ink-soft">They stop syncing. Nothing is deleted on either device; pair them again any time.</p>
+        <p className="text-ink-soft"><UiText source={'They stop syncing. Nothing is deleted on either device; pair them again any time.'} /></p>
       </Dialog>
     </li>
   );
 }
 
 function PairDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const translateUi = useUi();
   const [mode, setMode] = useState<'choose' | 'show' | 'join'>('choose');
   useEffect(() => {
     if (open) setMode('choose');
   }, [open]);
   return (
-    <Dialog open={open} onClose={onClose} title="Pair a device">
+    <Dialog open={open} onClose={onClose} title={translateUi('Pair a device')}>
       {mode === 'choose' && (
         <div className="space-y-2">
-          <p className="mb-3 text-[14px] text-ink-soft">Open Lingua on both devices. One shows a code; the other scans it or types it in.</p>
-          <ChoiceButton icon={QrCode} title="Show a code here" text="Then scan it with the other device." onClick={() => setMode('show')} />
-          <ChoiceButton icon={ScanLine} title="Scan or type a code" text="The other device is showing one." onClick={() => setMode('join')} />
+          <p className="mb-3 text-[14px] text-ink-soft"><UiText source={'Open Lingua on both devices. One shows a code; the other scans it or types it in.'} /></p>
+          <ChoiceButton icon={QrCode} title={translateUi('Show a code here')} text="Then scan it with the other device." onClick={() => setMode('show')} />
+          <ChoiceButton icon={ScanLine} title={translateUi('Scan or type a code')} text="The other device is showing one." onClick={() => setMode('join')} />
         </div>
       )}
       {mode === 'show' && <ShowCode onClose={onClose} />}
@@ -168,6 +164,7 @@ function ChoiceButton({ icon: Icon, title, text, onClick }: { icon: typeof QrCod
 }
 
 function ShowCode({ onClose }: { onClose: () => void }) {
+  const translateUi = useUi();
   const showing = useSyncStore((s) => s.showing);
   useEffect(() => {
     void showCode();
@@ -177,22 +174,21 @@ function ShowCode({ onClose }: { onClose: () => void }) {
   if (showing.status === 'done') return <Done partner={showing.partner} onClose={onClose} />;
   return (
     <div className="text-center">
-      <div className="mx-auto w-56 overflow-hidden rounded-2xl bg-white p-2 [&>svg]:h-auto [&>svg]:w-full" aria-label="Pairing QR code" role="img" dangerouslySetInnerHTML={{ __html: svg }} />
+      <div className="mx-auto w-56 overflow-hidden rounded-2xl bg-white p-2 [&>svg]:h-auto [&>svg]:w-full" aria-label={translateUi('Pairing QR code')} role="img" dangerouslySetInnerHTML={{ __html: svg }} />
       <p className="mt-4 font-mono text-[20px] font-semibold tracking-wider select-all">{groupCode(showing.secret)}</p>
       <p className={cx('mt-3 flex items-center justify-center gap-2 text-[14px]', showing.status === 'error' ? 'text-accent-text' : 'text-ink-soft')}>
         {showing.status !== 'error' && <Loader2 size={15} className="animate-spin" aria-hidden />}
-        {showing.status === 'starting' ? 'Getting ready…' : showing.status === 'syncing' ? 'Pairing and syncing…' : showing.status === 'error' ? showing.message : 'Waiting for the other device. Keep this open.'}
+        {showing.status === 'starting' ? translateUi('Getting ready…') : showing.status === 'syncing' ? translateUi('Pairing and syncing…') : showing.status === 'error' ? showing.message : translateUi('Waiting for the other device. Keep this open.')}
       </p>
       {showing.status === 'error' && (
-        <Button variant="secondary" className="mt-3" onClick={() => void showCode()}>
-          Try again
-        </Button>
+        <Button variant="secondary" className="mt-3" onClick={() => void showCode()}><UiText source={'Try again'} /></Button>
       )}
     </div>
   );
 }
 
 function JoinCode({ onClose }: { onClose: () => void }) {
+  const translateUi = useUi();
   const joining = useSyncStore((s) => s.joining);
   const [code, setCode] = useState('');
   const [scanning, setScanning] = useState(false);
@@ -212,7 +208,7 @@ function JoinCode({ onClose }: { onClose: () => void }) {
   return (
     <div>
       {scanning ? (
-        Scanner ? <Scanner accept={accept} onResult={found} /> : <p className="py-10 text-center text-ink-soft">Starting the camera…</p>
+        Scanner ? <Scanner accept={accept} onResult={found} /> : <p className="py-10 text-center text-ink-soft"><UiText source={'Starting the camera…'} /></p>
       ) : (
         <form
           onSubmit={(e) => {
@@ -220,9 +216,7 @@ function JoinCode({ onClose }: { onClose: () => void }) {
             void joinCode(code);
           }}
         >
-          <label htmlFor="pair-code" className="text-[14px] font-semibold">
-            The code on the other device
-          </label>
+          <label htmlFor="pair-code" className="text-[14px] font-semibold"><UiText source={'The code on the other device'} /></label>
           <input
             id="pair-code"
             value={code}
@@ -230,28 +224,22 @@ function JoinCode({ onClose }: { onClose: () => void }) {
             autoComplete="off"
             autoCapitalize="characters"
             spellCheck={false}
-            placeholder="ABCD-EFGH-JKMN-PQRS"
+            placeholder={translateUi('ABCD-EFGH-JKMN-PQRS')}
             className="mt-2 h-12 w-full rounded-xl border border-line bg-raised px-3.5 font-mono text-[17px] tracking-wider uppercase transition-colors hover:border-line-strong"
           />
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button type="submit" loading={working} disabled={!readCode(code)}>
-              Pair
-            </Button>
-            <Button type="button" variant="secondary" icon={ScanLine} onClick={() => setScanning(true)}>
-              Scan the code
-            </Button>
+            <Button type="submit" loading={working} disabled={!readCode(code)}><UiText source={'Pair'} /></Button>
+            <Button type="button" variant="secondary" icon={ScanLine} onClick={() => setScanning(true)}><UiText source={'Scan the code'} /></Button>
           </div>
         </form>
       )}
       {joining && (
         <p className={cx('mt-3 text-[14px]', joining.status === 'error' ? 'text-accent-text' : 'text-ink-soft')}>
-          {joining.status === 'connecting' ? 'Finding the other device…' : joining.status === 'syncing' ? 'Pairing and syncing…' : joining.message}
+          {joining.status === 'connecting' ? translateUi('Finding the other device…') : joining.status === 'syncing' ? translateUi('Pairing and syncing…') : joining.message}
         </p>
       )}
       {scanning && (
-        <Button variant="ghost" className="mt-3" onClick={() => setScanning(false)}>
-          Type it instead
-        </Button>
+        <Button variant="ghost" className="mt-3" onClick={() => setScanning(false)}><UiText source={'Type it instead'} /></Button>
       )}
     </div>
   );
@@ -263,11 +251,9 @@ function Done({ partner, onClose }: { partner?: string; onClose: () => void }) {
       <span className="mx-auto grid size-12 place-items-center rounded-full bg-sage-soft text-sage-text">
         <Check size={24} aria-hidden />
       </span>
-      <p className="mt-3 font-semibold">Paired with {partner ?? 'your device'}</p>
-      <p className="mt-1 text-[14px] text-ink-soft">The two are synced, and sync again whenever both are open.</p>
-      <Button className="mt-4" onClick={onClose}>
-        Done
-      </Button>
+      <p className="mt-3 font-semibold"><UiText source={'Paired with {0}'} values={[partner ?? 'your device']} /></p>
+      <p className="mt-1 text-[14px] text-ink-soft"><UiText source={'The two are synced, and sync again whenever both are open.'} /></p>
+      <Button className="mt-4" onClick={onClose}><UiText source={'Done'} /></Button>
     </div>
   );
 }

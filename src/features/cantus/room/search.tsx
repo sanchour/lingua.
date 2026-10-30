@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Search in Cantus: live as you type, from Apple, LRCLIB and your Spotify at once (see
 // services/cantus/search.ts). A top result, then songs, artists and albums; chips to keep one kind;
 // recent searches and styles to browse while the field is empty. Enter opens the top result.
@@ -45,6 +46,7 @@ function keepRecent(list: string[]): void {
 }
 
 export function SearchPage() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = language.id;
   const [params, setParams] = useSearchParams();
@@ -123,7 +125,7 @@ export function SearchPage() {
   const picks = discoverFor(lang);
   return (
     <>
-      <RoomTitle>Search</RoomTitle>
+      <RoomTitle><UiText source={'Search'} /></RoomTitle>
       <form
         role="search"
         className="mb-5"
@@ -132,18 +134,16 @@ export function SearchPage() {
           submit();
         }}
       >
-        <SearchInput value={query} onChange={setQuery} placeholder={`Songs, artists or albums in ${getLanguage(lang)?.name ?? lang}`} onClose={q ? () => setQuery('') : undefined} autoFocus={!q} />
+        <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Songs, artists or albums in {0}', [getLanguage(lang)?.name ?? lang])} onClose={q ? () => setQuery('') : undefined} autoFocus={!q} />
       </form>
 
       {!q ? (
         <>
           {recent.length > 0 && (
-            <section aria-label="Recent searches" className="room-section">
+            <section aria-label={translateUi('Recent searches')} className="room-section">
               <div className="room-head">
-                <h2>Recent searches</h2>
-                <button type="button" onClick={() => forget()} className="ml-auto text-[13px] font-semibold text-ink-faint hover:text-ink">
-                  Clear
-                </button>
+                <h2><UiText source={'Recent searches'} /></h2>
+                <button type="button" onClick={() => forget()} className="ml-auto text-[13px] font-semibold text-ink-faint hover:text-ink"><UiText source={'Clear'} /></button>
               </div>
               <div className="flex flex-wrap gap-2">
                 {recent.map((term) => (
@@ -151,7 +151,7 @@ export function SearchPage() {
                     <button type="button" onClick={() => setQuery(term)} className="flex items-center gap-1.5">
                       <History size={14} className="text-ink-faint" aria-hidden /> {term}
                     </button>
-                    <button type="button" aria-label={`Forget ${term}`} onClick={() => forget(term)} className="grid size-9 place-items-center text-ink-faint hover:text-ink">
+                    <button type="button" aria-label={translateUi('Forget {0}', [term])} onClick={() => forget(term)} className="grid size-9 place-items-center text-ink-faint hover:text-ink">
                       <X size={14} aria-hidden />
                     </button>
                   </span>
@@ -163,7 +163,7 @@ export function SearchPage() {
         </>
       ) : (
         <>
-          <div className="mb-5 flex gap-2" role="group" aria-label="Show">
+          <div className="mb-5 flex gap-2" role="group" aria-label={translateUi('Show')}>
             {KINDS.map(([k, label]) => (
               <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(k)} className={cx('h-9 rounded-full px-4 text-[14px] font-bold transition-colors', kind === k ? 'bg-[var(--room-pill)] text-[var(--room-pill-ink)]' : 'bg-[var(--room-fill)] text-[var(--room-soft)] hover:bg-[var(--room-fill-strong)]')}>
                 {label}
@@ -171,22 +171,14 @@ export function SearchPage() {
             ))}
           </div>
           {current?.corrected && !exact && (
-            <p className="mb-5 text-[14px] text-ink-soft">
-              Showing results for <b className="text-ink">{current.corrected}</b>.{' '}
-              <button type="button" onClick={() => setExact(true)} className="font-semibold text-[var(--room-rose)] hover:underline">
-                Search for “{q}” instead
-              </button>
-            </p>
+            <p className="mb-5 text-[14px] text-ink-soft"><UiText source={'Showing results for {0}.{1}{2}'} values={[<b className="text-ink">{current.corrected}</b>, ' ', <button type="button" onClick={() => setExact(true)} className="font-semibold text-[var(--room-rose)] hover:underline"><UiText source={'Search for “{0}” instead'} values={[q]} /></button>]} /></p>
           )}
           {state === 'failed' ? (
-            <p className="py-10 text-center text-[15px] text-ink-soft">The music search didn’t answer. Check the connection and try again.</p>
+            <p className="py-10 text-center text-[15px] text-ink-soft"><UiText source={'The music search didn’t answer. Check the connection and try again.'} /></p>
           ) : !current ? (
-            <SkeletonTiles label="Searching" />
+            <SkeletonTiles label={translateUi('Searching')} />
           ) : !current.songs.length && !current.artists.length && !current.albums.length ? (
-            <div className="py-12 text-center text-ink-soft">
-              <SearchX size={26} className="mx-auto mb-2 text-ink-faint" aria-hidden />
-              Nothing for “{q}”. Try the song’s name with the artist’s.
-            </div>
+            <div className="py-12 text-center text-ink-soft"><UiText source={'{0}Nothing for “{1}”. Try the song’s name with the artist’s.'} values={[<SearchX size={26} className="mx-auto mb-2 text-ink-faint" aria-hidden />, q]} /></div>
           ) : (
             <Found results={current} kind={kind} lang={lang} opening={opening} onOpen={open} onArtist={pickArtist} onAlbum={pickAlbum} onKind={setKind} />
           )}
@@ -217,6 +209,7 @@ function Found({
   onAlbum: (a: AlbumHit) => void;
   onKind: (k: Kind) => void;
 }) {
+  const translateUi = useUi();
   const [more, setMore] = useState(false);
   useEffect(() => setMore(false), [results, kind]);
   const busy = (hit: SongHit) => opening === String(hit.itunesId);
@@ -225,9 +218,7 @@ function Found({
     <div className="room-head">
       <h2>{title}</h2>
       {kind === 'all' && count > (k === 'songs' ? 6 : 0) && (
-        <button type="button" onClick={() => onKind(k)} className="ml-auto text-[13px] font-semibold text-ink-faint hover:text-ink">
-          See all
-        </button>
+        <button type="button" onClick={() => onKind(k)} className="ml-auto text-[13px] font-semibold text-ink-faint hover:text-ink"><UiText source={'See all'} /></button>
       )}
     </div>
   );
@@ -235,12 +226,12 @@ function Found({
     <>
       {kind === 'all' && results.top ? (
         <div className="room-section grid gap-6 lg:grid-cols-[minmax(280px,380px)_minmax(0,1fr)]">
-          <section aria-label="Top result">
-            <h2 className="room-head">Top result</h2>
+          <section aria-label={translateUi('Top result')}>
+            <h2 className="room-head"><UiText source={'Top result'} /></h2>
             <TopCard results={results} lang={lang} busy={results.top.kind === 'song' && busy(results.top.song)} onOpen={onOpen} onArtist={onArtist} />
           </section>
           {results.songs.length > 0 && (
-            <section aria-label="Songs" className="min-w-0">
+            <section aria-label={translateUi('Songs')} className="min-w-0">
               {head('Songs', 'songs', results.songs.length)}
               <SongRows songs={songs.slice(0, 5)} lang={lang} busy={busy} onOpen={onOpen} />
             </section>
@@ -249,19 +240,17 @@ function Found({
       ) : (
         (kind === 'all' || kind === 'songs') &&
         results.songs.length > 0 && (
-          <section aria-label="Songs" className="room-section">
+          <section aria-label={translateUi('Songs')} className="room-section">
             {head('Songs', 'songs', results.songs.length)}
             <SongRows songs={songs} lang={lang} busy={busy} onOpen={onOpen} />
             {kind === 'songs' && !more && results.songs.length > 20 && (
-              <button type="button" onClick={() => setMore(true)} className="room-pill-glass mt-3 h-10 rounded-full px-5 text-[14px] font-semibold">
-                Show more
-              </button>
+              <button type="button" onClick={() => setMore(true)} className="room-pill-glass mt-3 h-10 rounded-full px-5 text-[14px] font-semibold"><UiText source={'Show more'} /></button>
             )}
           </section>
         )
       )}
       {(kind === 'all' || kind === 'artists') && results.artists.length > 0 && (
-        <section aria-label="Artists" className="room-section">
+        <section aria-label={translateUi('Artists')} className="room-section">
           {head('Artists', 'artists', kind === 'all' ? results.artists.length : 0)}
           <ul className={cx(kind === 'all' ? 'room-rail' : 'room-grid', 'is-round')}>
             {results.artists.map((a, i) => (
@@ -271,7 +260,7 @@ function Found({
                     {a.name.charAt(0)}
                   </span>
                   <span className="mt-2 block truncate text-[13.5px] font-bold">{a.name}</span>
-                  <span className="block text-[12px] text-ink-faint">Artist</span>
+                  <span className="block text-[12px] text-ink-faint"><UiText source={'Artist'} /></span>
                 </button>
               </motion.li>
             ))}
@@ -279,7 +268,7 @@ function Found({
         </section>
       )}
       {(kind === 'all' || kind === 'albums') && results.albums.length > 0 && (
-        <section aria-label="Albums" className="room-section">
+        <section aria-label={translateUi('Albums')} className="room-section">
           {head('Albums', 'albums', kind === 'all' ? results.albums.length : 0)}
           <ul className={kind === 'all' ? 'room-rail' : 'room-grid'}>
             {results.albums.map((a, i) => (
@@ -299,6 +288,7 @@ function Found({
 }
 
 function TopCard({ results, lang, busy, onOpen, onArtist }: { results: CatalogResults; lang: string; busy: boolean; onOpen: (hit: SongHit) => void; onArtist: (a: ArtistHit) => void }) {
+  const translateUi = useUi();
   const top = results.top!;
   if (top.kind === 'artist') {
     const a = top.artist;
@@ -309,7 +299,7 @@ function TopCard({ results, lang, busy, onOpen, onArtist }: { results: CatalogRe
         </span>
         <span>
           <span className="block text-[26px] leading-tight font-extrabold">{a.name}</span>
-          <span className="text-[13.5px] text-ink-soft">Artist{a.genre ? ` · ${a.genre}` : ''}</span>
+          <span className="text-[13.5px] text-ink-soft"><UiText source={'Artist{0}'} values={[a.genre ? ` · ${a.genre}` : '']} /></span>
         </span>
       </button>
     );
@@ -322,9 +312,9 @@ function TopCard({ results, lang, busy, onOpen, onArtist }: { results: CatalogRe
         <span lang={lang} className="line-clamp-2 block text-[24px] leading-tight font-extrabold">
           {s.title}
         </span>
-        <span className="block truncate text-[13.5px] text-ink-soft">Song · {s.artist}</span>
+        <span className="block truncate text-[13.5px] text-ink-soft"><UiText source={'Song · {0}'} values={[s.artist]} /></span>
       </span>
-      <button type="button" onClick={() => onOpen(s)} aria-label={`Open ${s.title}`} className="room-pill-light absolute right-5 bottom-5 grid size-12 place-items-center rounded-full shadow-elev-1 transition-transform active:scale-90">
+      <button type="button" onClick={() => onOpen(s)} aria-label={translateUi('Open {0}', [s.title])} className="room-pill-light absolute right-5 bottom-5 grid size-12 place-items-center rounded-full shadow-elev-1 transition-transform active:scale-90">
         {busy ? <LoaderCircle size={20} className="animate-spin" aria-hidden /> : <Play size={20} className="translate-x-px fill-current" aria-hidden />}
       </button>
     </div>
@@ -342,6 +332,7 @@ function SongRows({ songs, lang, busy, onOpen }: { songs: SongHit[]; lang: strin
 }
 
 function SongRow({ hit, lang, busy, onOpen }: { hit: SongHit; lang: string; busy: boolean; onOpen: () => void }) {
+  const translateUi = useUi();
   const { playing, toggle } = usePreview(hit.previewUrl);
   return (
     <li className="flex items-center gap-1 rounded-xl px-2 transition-colors hover:bg-[var(--room-fill)]">
@@ -363,7 +354,7 @@ function SongRow({ hit, lang, busy, onOpen }: { hit: SongHit; lang: string; busy
         {hit.durationMs && <span className="hidden text-[12.5px] text-ink-faint tabular-nums sm:block">{formatClock(hit.durationMs)}</span>}
       </button>
       {hit.previewUrl && (
-        <button type="button" onClick={toggle} aria-label={playing ? 'Stop the 30-second preview' : `Hear a 30-second preview of ${hit.title}`} title="30-second preview" className="grid size-11 shrink-0 place-items-center rounded-full text-ink-soft hover:text-ink">
+        <button type="button" onClick={toggle} aria-label={playing ? translateUi('Stop the 30-second preview') : translateUi('Hear a 30-second preview of {0}', [hit.title])} title={translateUi('30-second preview')} className="grid size-11 shrink-0 place-items-center rounded-full text-ink-soft hover:text-ink">
           {playing ? <Pause size={17} className="fill-current" aria-hidden /> : <Play size={17} className="fill-current" aria-hidden />}
         </button>
       )}

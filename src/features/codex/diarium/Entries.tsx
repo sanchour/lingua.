@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Ref } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -27,6 +28,7 @@ const typing = (el: EventTarget | null) => el instanceof HTMLElement && (el.isCo
 
 /** Diarium's entries (5.2-5): search, sort, a menu on every row, and a calendar of the days written. */
 export function Entries({ entries, lang }: { entries: JournalEntry[]; lang: string }) {
+  const translateUi = useUi();
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<Sort>('newest');
   const [view, setView] = useState<View>('list');
@@ -66,13 +68,13 @@ export function Entries({ entries, lang }: { entries: JournalEntry[]; lang: stri
 
   if (!entries.length) return null;
   return (
-    <section aria-label="Entries">
+    <section aria-label={translateUi('Entries')}>
       <div className="mb-4 flex items-center gap-2">
-        <h2 className="mr-auto font-serif text-xl font-semibold">Entries</h2>
+        <h2 className="mr-auto font-serif text-xl font-semibold"><UiText source={'Entries'} /></h2>
         {view === 'list' && (
           <>
             <div className="relative w-64">
-              <SearchInput ref={search} value={query} onChange={setQuery} placeholder="Search entries" className="h-10" />
+              <SearchInput ref={search} value={query} onChange={setQuery} placeholder={translateUi('Search entries')} className="h-10" />
               {!query && (
                 <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
                   <Kbd>/</Kbd>
@@ -83,12 +85,12 @@ export function Entries({ entries, lang }: { entries: JournalEntry[]; lang: stri
           </>
         )}
         <Segmented<View>
-          label="View"
+          label={translateUi('View')}
           value={view}
           onChange={setView}
           options={[
-            { value: 'list', label: 'List', icon: List },
-            { value: 'calendar', label: 'Calendar', icon: CalendarDays },
+            { value: 'list', label: translateUi('List'), icon: List },
+            { value: 'calendar', label: translateUi('Calendar'), icon: CalendarDays },
           ]}
         />
       </div>
@@ -96,7 +98,7 @@ export function Entries({ entries, lang }: { entries: JournalEntry[]; lang: stri
       {view === 'calendar' ? (
         <Calendar entries={entries} lang={lang} />
       ) : shown.length === 0 ? (
-        <p className="py-8 text-center text-[15px] text-ink-soft">No entry has “{query.trim()}”.</p>
+        <p className="py-8 text-center text-[15px] text-ink-soft"><UiText source={'No entry has “{0}”.'} values={[query.trim()]} /></p>
       ) : (
         <div className="space-y-7">
           {groups.map(([month, list]) => (
@@ -130,6 +132,7 @@ export function deleteWithUndo(entry: JournalEntry) {
 }
 
 function EntryRow({ entry, lang, compact }: { entry: JournalEntry; lang: string; compact?: boolean }) {
+  const translateUi = useUi();
   const date = new Date(`${entry.date}T12:00:00`);
   const first = toPlain(entry.text).split('\n')[0];
   const review = entry.review;
@@ -166,17 +169,17 @@ function EntryRow({ entry, lang, compact }: { entry: JournalEntry; lang: string;
               {first}
             </p>
           ) : (
-            <p className="text-[15px] text-ink-faint italic">{entry.prompt ? `“${entry.prompt}”` : 'Not written yet'}</p>
+            <p className="text-[15px] text-ink-faint italic">{entry.prompt ? `“${entry.prompt}”` : translateUi('Not written yet')}</p>
           )}
           <p className="mt-1 text-[12.5px] text-ink-faint tabular-nums">
-            {entry.words} {entry.words === 1 ? 'word' : 'words'}
+            {entry.words} {entry.words === 1 ? translateUi('word') : translateUi('words')}
             {review ? ` · ${review.corrections.length} ${review.corrections.length === 1 ? 'correction' : 'corrections'}` : ''}
             {review?.cefr ? ` · ${review.cefr}` : ''}
             {compact ? ` · ${date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}` : ''}
           </p>
         </div>
         {review ? (
-          <Ring value={review.scores.overall / 100} size={compact ? 34 : 42} stroke={4} color={gradeColor(review.scores.overall)} label={`Grade ${review.scores.overall}`}>
+          <Ring value={review.scores.overall / 100} size={compact ? 34 : 42} stroke={4} color={gradeColor(review.scores.overall)} label={translateUi('Grade {0}', [review.scores.overall])}>
             <span className="text-[12px] font-bold tabular-nums">{review.scores.overall}</span>
           </Ring>
         ) : (
@@ -184,7 +187,7 @@ function EntryRow({ entry, lang, compact }: { entry: JournalEntry; lang: string;
         )}
       </Link>
       <Popover
-        label="Entry options"
+        label={translateUi('Entry options')}
         placement="bottom-end"
         trigger={(props) => (
           <button
@@ -194,7 +197,7 @@ function EntryRow({ entry, lang, compact }: { entry: JournalEntry; lang: string;
               more.current = el;
               assign(props.ref, el);
             }}
-            aria-label="Entry options"
+            aria-label={translateUi('Entry options')}
             className="mr-1 grid size-9 shrink-0 place-items-center rounded-xl text-ink-faint opacity-0 transition-opacity group-hover:opacity-100 hover:bg-raised hover:text-ink focus-visible:opacity-100 aria-expanded:opacity-100"
           >
             <Ellipsis size={18} aria-hidden />
@@ -205,7 +208,7 @@ function EntryRow({ entry, lang, compact }: { entry: JournalEntry; lang: string;
           <div className="w-52 p-1.5">
             <MenuItem
               icon={TextCursorInput}
-              label="Rename"
+              label={translateUi('Rename')}
               onClick={() => {
                 close();
                 setRenaming(true);
@@ -214,7 +217,7 @@ function EntryRow({ entry, lang, compact }: { entry: JournalEntry; lang: string;
             <MenuItem
               icon={Trash2}
               danger
-              label="Delete"
+              label={translateUi('Delete')}
               onClick={() => {
                 close();
                 deleteWithUndo(entry);
@@ -229,6 +232,7 @@ function EntryRow({ entry, lang, compact }: { entry: JournalEntry; lang: string;
 
 /** A title typed in place on the row. */
 function TitleField({ entry, onDone }: { entry: JournalEntry; onDone: (title?: string) => void }) {
+  const translateUi = useUi();
   const [title, setTitle] = useState(entry.title ?? '');
   const done = useRef(false);
   const finish = (result?: string) => {
@@ -241,7 +245,7 @@ function TitleField({ entry, onDone }: { entry: JournalEntry; onDone: (title?: s
       autoFocus
       value={title}
       placeholder={entry.prompt ?? 'A title'}
-      aria-label="Title"
+      aria-label={translateUi('Title')}
       onClick={(e) => e.preventDefault()}
       onChange={(e) => setTitle(e.target.value)}
       onBlur={() => finish(title.trim())}
@@ -263,6 +267,7 @@ function TitleField({ entry, onDone }: { entry: JournalEntry; onDone: (title?: s
 const ink = (words: number) => (words === 0 ? '' : words < 50 ? 'bg-sage/25' : words < 150 ? 'bg-sage/45' : words < 300 ? 'bg-sage/70' : 'bg-sage text-on-accent');
 
 function Calendar({ entries, lang }: { entries: JournalEntry[]; lang: string }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const [month, setMonth] = useState(() => (entries[0]?.date ?? localDateKey()).slice(0, 7));
   const year = Number(month.slice(0, 4));
@@ -315,11 +320,11 @@ function Calendar({ entries, lang }: { entries: JournalEntry[]; lang: string }) 
     <div>
       {/* The year strip */}
       <div className="mb-5 flex items-center gap-1">
-        <button type="button" aria-label="Year before" onClick={() => setMonth(`${year - 1}-12`)} className="grid size-8 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink">
+        <button type="button" aria-label={translateUi('Year before')} onClick={() => setMonth(`${year - 1}-12`)} className="grid size-8 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink">
           <ChevronLeft size={16} aria-hidden />
         </button>
         <span className="w-12 text-center text-[13px] font-bold tabular-nums">{year}</span>
-        <button type="button" aria-label="Year after" onClick={() => setMonth(`${year + 1}-01`)} className="grid size-8 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink">
+        <button type="button" aria-label={translateUi('Year after')} onClick={() => setMonth(`${year + 1}-01`)} className="grid size-8 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink">
           <ChevronRight size={16} aria-hidden />
         </button>
         <div className="ml-2 grid flex-1 grid-cols-12 gap-1">
@@ -345,10 +350,10 @@ function Calendar({ entries, lang }: { entries: JournalEntry[]; lang: string }) 
         <div>
           <div className="mb-3 flex items-center">
             <h3 className="mr-auto font-serif text-lg font-semibold">{monthName(month)}</h3>
-            <button type="button" aria-label="Month before" onClick={() => shift(-1)} className="grid size-8 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink">
+            <button type="button" aria-label={translateUi('Month before')} onClick={() => shift(-1)} className="grid size-8 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink">
               <ChevronLeft size={16} aria-hidden />
             </button>
-            <button type="button" aria-label="Month after" onClick={() => shift(1)} className="grid size-8 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink">
+            <button type="button" aria-label={translateUi('Month after')} onClick={() => shift(1)} className="grid size-8 place-items-center rounded-lg text-ink-soft hover:bg-surface hover:text-ink">
               <ChevronRight size={16} aria-hidden />
             </button>
           </div>
@@ -390,16 +395,9 @@ function Calendar({ entries, lang }: { entries: JournalEntry[]; lang: string }) 
               );
             })}
           </div>
-          <p className="mt-4 flex items-center gap-1.5 text-[12px] text-ink-faint">
-            Fewer words
-            {[20, 100, 200, 400].map((w) => (
+          <p className="mt-4 flex items-center gap-1.5 text-[12px] text-ink-faint"><UiText source={'Fewer words{0}More{1}'} values={[[20, 100, 200, 400].map((w) => (
               <span key={w} aria-hidden className={cx('size-3.5 rounded', ink(w))} />
-            ))}
-            More
-            <span className="ml-3 inline-flex items-center gap-1">
-              <Check size={12} className="text-sage-text" aria-hidden /> corrected
-            </span>
-          </p>
+            )), <span className="ml-3 inline-flex items-center gap-1"><UiText source={'{0} corrected'} values={[<Check size={12} className="text-sage-text" aria-hidden />]} /></span>]} /></p>
         </div>
 
         <aside className="space-y-5">
@@ -420,7 +418,7 @@ function Calendar({ entries, lang }: { entries: JournalEntry[]; lang: string }) 
               ))}
             </ul>
           ) : (
-            <p className="border-t border-line pt-3 text-[14px] text-ink-soft">Nothing written this month.</p>
+            <p className="border-t border-line pt-3 text-[14px] text-ink-soft"><UiText source={'Nothing written this month.'} /></p>
           )}
         </aside>
       </div>

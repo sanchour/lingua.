@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { BookHeadphones, Check, ExternalLink, FolderPlus, GraduationCap, Library, LoaderCircle, Plus, SearchX } from 'lucide-react';
@@ -24,6 +25,7 @@ type Shelf = 'shelf' | 'books' | 'courses';
 
 /** Sonus's Audiobooks (5.2-3): your shelf (books and courses), free audiobooks from LibriVox, and free courses to add. */
 export default function BooksTab({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const name = getLanguage(lang)?.name ?? lang;
   const books = useBooks(lang);
   const playback = usePlaybackMap();
@@ -47,25 +49,23 @@ export default function BooksTab({ lang }: { lang: string }) {
     <div className="space-y-8 pb-10">
       <div className="max-w-md">
         <Segmented<Shelf>
-          label="Audiobooks"
+          label={translateUi('Audiobooks')}
           value={tab}
           onChange={setShelf}
           block
           options={[
-            { value: 'shelf', label: 'Your shelf', icon: Library },
-            { value: 'books', label: 'Free audiobooks', icon: BookHeadphones },
-            { value: 'courses', label: 'Free courses', icon: GraduationCap },
+            { value: 'shelf', label: translateUi('Your shelf'), icon: Library },
+            { value: 'books', label: translateUi('Free audiobooks'), icon: BookHeadphones },
+            { value: 'courses', label: translateUi('Free courses'), icon: GraduationCap },
           ]}
         />
       </div>
 
       {tab === 'books' && (
-        <section aria-label="Free audiobooks">
+        <section aria-label={translateUi('Free audiobooks')}>
           <Librivox lang={lang} name={name} />
           {catalogue && (
-            <a href={catalogue.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-1 text-[13.5px] font-semibold text-ink-soft hover:text-ink">
-              LibriVox’s whole {name} catalogue, short works too <ExternalLink size={14} aria-hidden />
-            </a>
+            <a href={catalogue.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-1 text-[13.5px] font-semibold text-ink-soft hover:text-ink"><UiText source={'LibriVox’s whole {0} catalogue, short works too {1}'} values={[name, <ExternalLink size={14} aria-hidden />]} /></a>
           )}
         </section>
       )}
@@ -74,9 +74,9 @@ export default function BooksTab({ lang }: { lang: string }) {
 
       {tab === 'shelf' && (
       <>
-      <section aria-label="Your audiobooks">
+      <section aria-label={translateUi('Your audiobooks')}>
         <div className="mb-4 flex items-center gap-3">
-          <h2 className={cx(label, 'flex-1')}>Your audiobooks</h2>
+          <h2 className={cx(label, 'flex-1')}><UiText source={'Your audiobooks'} /></h2>
           {add('audiobook', 'Add your own')}
         </div>
         {audiobooks.length ? (
@@ -87,19 +87,16 @@ export default function BooksTab({ lang }: { lang: string }) {
               <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-sage-soft text-sage-text">
                 <BookHeadphones size={22} aria-hidden />
               </span>
-              <p className="text-[15px] leading-relaxed text-ink-soft">
-                <span className="block font-semibold text-ink">Whole books, part by part</span>
-                Books you start appear here, with chapters, a sleep timer and the book’s text to read along. Find a free one in {name} below, or add your own files or folder.
-              </p>
+              <p className="text-[15px] leading-relaxed text-ink-soft"><UiText source={'{0}Books you start appear here, with chapters, a sleep timer and the book’s text to read along. Find a free one in {1} below, or add your own files or folder.'} values={[<span className="block font-semibold text-ink"><UiText source={'Whole books, part by part'} /></span>, name]} /></p>
             </div>
           )
         )}
       </section>
 
       {courses.length > 0 && (
-        <section aria-label="Your courses">
+        <section aria-label={translateUi('Your courses')}>
           <div className="mb-4 flex items-center gap-3">
-            <h2 className={cx(label, 'flex-1')}>Your courses</h2>
+            <h2 className={cx(label, 'flex-1')}><UiText source={'Your courses'} /></h2>
             {add('course', 'Add a course')}
           </div>
           <BookGrid books={courses} progress={playback} />
@@ -118,6 +115,7 @@ const KIND_LABEL: Record<CourseKind, string> = { feed: 'Audio to add', files: 'C
 
 /** Free courses as a catalogue: cards with a cover, who made it, the level and the length, Add or Open; search and filters. */
 function CourseCatalogue({ lang, name, courses, onAddOwn }: { lang: string; name: string; courses: FreeCourse[]; onAddOwn: () => void }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const feeds = useFeeds(lang);
   const books = useBooks(lang);
@@ -148,17 +146,17 @@ function CourseCatalogue({ lang, name, courses, onAddOwn }: { lang: string; name
 
   const chip = (active: boolean) => cx('h-8 rounded-full border px-3 text-[13px] font-semibold transition-colors', active ? 'border-transparent bg-inverse text-on-inverse' : 'border-line bg-raised text-ink-soft hover:border-line-strong hover:text-ink');
   return (
-    <section aria-label="Free courses" className="space-y-5">
+    <section aria-label={translateUi('Free courses')} className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
-        <SearchInput value={query} onChange={setQuery} placeholder="Search courses" className="max-w-xs flex-1" />
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Level">
+        <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Search courses')} className="max-w-xs flex-1" />
+        <div className="flex flex-wrap gap-2" role="group" aria-label={translateUi('Level')}>
           {levels.length > 1 && [null, ...levels].map((l) => (
             <button key={l ?? 'any'} type="button" aria-pressed={level === l} onClick={() => setLevel(l)} className={chip(level === l)}>
               {l ?? 'Any level'}
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Kind">
+        <div className="flex flex-wrap gap-2" role="group" aria-label={translateUi('Kind')}>
           {kinds.length > 1 && kinds.map((k) => (
             <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(kind === k ? null : k)} className={chip(kind === k)}>
               {KIND_LABEL[k]}
@@ -183,18 +181,14 @@ function CourseCatalogue({ lang, name, courses, onAddOwn }: { lang: string; name
                   <span className="mt-1.5 flex-1 text-[13px] leading-snug text-ink-soft">{c.detail}</span>
                   <span className="mt-3 flex flex-wrap items-center gap-3">
                     {c.kind === 'link' ? (
-                      <a href={c.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[13.5px] font-semibold text-accent-text hover:underline">
-                        Open <ExternalLink size={14} aria-hidden />
-                      </a>
+                      <a href={c.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[13.5px] font-semibold text-accent-text hover:underline"><UiText source={'Open {0}'} values={[<ExternalLink size={14} aria-hidden />]} /></a>
                     ) : (
                       <Button size="sm" variant={have ? 'secondary' : 'primary'} icon={have ? Check : Plus} loading={busy === c.name} disabled={busy !== null && busy !== c.name} onClick={() => void add(c)}>
-                        {have ? 'On your shelf' : 'Add'}
+                        {have ? translateUi('On your shelf') : translateUi('Add')}
                       </Button>
                     )}
                     {c.kind === 'files' && (
-                      <a href={c.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
-                        The textbook <ExternalLink size={13} aria-hidden />
-                      </a>
+                      <a href={c.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'The textbook {0}'} values={[<ExternalLink size={13} aria-hidden />]} /></a>
                     )}
                   </span>
                 </div>
@@ -204,27 +198,24 @@ function CourseCatalogue({ lang, name, courses, onAddOwn }: { lang: string; name
         })}
         <li>
           <Card className="flex h-full flex-col p-4">
-            <span className="flex items-center gap-2 text-[15px] font-semibold">
-              <GraduationCap size={17} className="text-sage-text" aria-hidden /> Your own course
-            </span>
+            <span className="flex items-center gap-2 text-[15px] font-semibold"><UiText source={'{0} Your own course'} values={[<GraduationCap size={17} className="text-sage-text" aria-hidden />]} /></span>
             <span className="mt-1.5 flex-1 text-[13.5px] leading-snug text-ink-soft">
               {courses.length
-                ? 'Downloaded a course? Add its files or folder: lessons play in order and are marked done as you finish them.'
-                : `No free course for ${name} is listed yet. Add one you have: lessons play in order and are marked done.`}
+                ? translateUi('Downloaded a course? Add its files or folder: lessons play in order and are marked done as you finish them.')
+                : translateUi('No free course for {0} is listed yet. Add one you have: lessons play in order and are marked done.', [name])}
             </span>
-            <Button variant="secondary" size="sm" icon={FolderPlus} className="mt-3 self-start" onClick={onAddOwn}>
-              Add a course
-            </Button>
+            <Button variant="secondary" size="sm" icon={FolderPlus} className="mt-3 self-start" onClick={onAddOwn}><UiText source={'Add a course'} /></Button>
           </Card>
         </li>
       </ul>
-      {!shown.length && courses.length > 0 && <p className="text-[14px] text-ink-soft">No course matches. Try another level or kind.</p>}
+      {!shown.length && courses.length > 0 && <p className="text-[14px] text-ink-soft"><UiText source={'No course matches. Try another level or kind.'} /></p>}
     </section>
   );
 }
 
 /** LibriVox's books in the language, the most listened first, or a search by title or author. */
 function Librivox({ lang, name }: { lang: string; name: string }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const [typed, setTyped] = useState('');
   const [query, setQuery] = useState('');
@@ -276,18 +267,18 @@ function Librivox({ lang, name }: { lang: string; name: string }) {
 
   return (
     <div>
-      <SearchInput value={typed} onChange={setTyped} placeholder="Search by title or author" className="max-w-xl" />
+      <SearchInput value={typed} onChange={setTyped} placeholder={translateUi('Search by title or author')} className="max-w-xl" />
       <div className="mt-6">
         {failed && !hits?.length ? (
-          <p className="py-10 text-center text-sm text-ink-soft">LibriVox couldn’t be reached. Check your connection.</p>
+          <p className="py-10 text-center text-sm text-ink-soft"><UiText source={'LibriVox couldn’t be reached. Check your connection.'} /></p>
         ) : hits === null ? (
           <div className="grid place-items-center py-14 text-ink-faint">
-            <LoaderCircle size={22} className="animate-spin" aria-label="Searching" />
+            <LoaderCircle size={22} className="animate-spin" aria-label={translateUi('Searching')} />
           </div>
         ) : hits.length === 0 ? (
           <div className="flex flex-col items-center py-12 text-center text-ink-soft">
             <SearchX size={26} className="mb-2 text-ink-faint" aria-hidden />
-            {query ? `Nothing on LibriVox for “${query}”.` : `LibriVox has no books in ${name} yet.`}
+            {query ? translateUi('Nothing on LibriVox for “{0}”.', [query]) : translateUi('LibriVox has no books in {0} yet.', [name])}
           </div>
         ) : (
           <>
@@ -314,9 +305,7 @@ function Librivox({ lang, name }: { lang: string; name: string }) {
             </ul>
             {hits.length < total && (
               <div className="mt-8 flex justify-center">
-                <Button variant="secondary" loading={loading} onClick={() => setPage((p) => p + 1)}>
-                  Show more
-                </Button>
+                <Button variant="secondary" loading={loading} onClick={() => setPage((p) => p + 1)}><UiText source={'Show more'} /></Button>
               </div>
             )}
           </>

@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { Link } from 'react-router';
 import type { Feed } from '@/data/types';
 import { Artwork } from './Artwork';
@@ -18,9 +19,7 @@ export function PodcastGrid({ feeds }: { feeds: Feed[] }) {
             </span>
             <p className="mt-2.5 line-clamp-2 text-[14px] leading-snug font-semibold">{f.title}</p>
             <p className="truncate text-[12.5px] text-ink-soft">{f.author}</p>
-            <p className="mt-0.5 text-[11.5px] font-semibold text-ink-faint">
-              {f.episodes.length} episodes{latest ? ` · ${dateFmt.format(latest)}` : ''}
-            </p>
+            <p className="mt-0.5 text-[11.5px] font-semibold text-ink-faint"><UiText source={'{0} episodes{1}'} values={[f.episodes.length, latest ? ` · ${dateFmt.format(latest)}` : '']} /></p>
           </Link>
         );
       })}

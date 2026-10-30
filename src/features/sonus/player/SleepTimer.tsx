@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { Check, Moon } from 'lucide-react';
 import { Popover } from '@/design/primitives';
@@ -30,6 +31,7 @@ function useMinutesLeft(endsAt: number | null): number | null {
 
 /** The moon in the player: stop after some minutes, at the end of the chapter, or at the end of the part. */
 export function SleepButton() {
+  const translateUi = useUi();
   const media = usePlayer((s) => s.media);
   const sleep = usePlayer((s) => s.sleep);
   const left = useMinutesLeft(sleep?.mode === 'minutes' ? sleep.endsAt : null);
@@ -55,15 +57,15 @@ export function SleepButton() {
 
   return (
     <Popover
-      label="Sleep timer"
+      label={translateUi('Sleep timer')}
       placement="top"
       className="w-60"
       trigger={(props) => (
         <button
           {...props}
           type="button"
-          aria-label={sleep ? `Sleep timer: ${status.toLowerCase()}` : 'Sleep timer'}
-          title="Sleep timer"
+          aria-label={sleep ? translateUi('Sleep timer: {0}', [status.toLowerCase()]) : translateUi('Sleep timer')}
+          title={translateUi('Sleep timer')}
           className={cx(
             'relative grid size-9 place-items-center rounded-full border transition-colors',
             sleep ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong',
@@ -82,23 +84,21 @@ export function SleepButton() {
       {(close) => (
         <div>
           <div className="px-3 pt-1.5 pb-2">
-            <p className="text-sm font-bold">Sleep timer</p>
+            <p className="text-sm font-bold"><UiText source={'Sleep timer'} /></p>
             <p className="text-[12.5px] text-ink-soft">{status}</p>
           </div>
-          <div role="group" aria-label="Stop after" className="grid grid-cols-3 gap-1">
+          <div role="group" aria-label={translateUi('Stop after')} className="grid grid-cols-3 gap-1">
             {MINUTES.map((m) => (
               <button
                 key={m}
                 type="button"
-                aria-label={`${m} minutes`}
+                aria-label={translateUi('{0} minutes', [m])}
                 onClick={() => {
                   setSleepTimer({ minutes: m });
                   close();
                 }}
                 className="h-10 rounded-xl text-sm font-semibold tabular-nums transition-colors hover:bg-surface active:bg-surface"
-              >
-                {m} min
-              </button>
+              ><UiText source={'{0} min'} values={[m]} /></button>
             ))}
           </div>
           <div className="mx-2 my-1.5 h-px bg-line" />
@@ -112,9 +112,7 @@ export function SleepButton() {
                 close();
               }}
               className="flex w-full items-center rounded-xl px-3 py-2 text-sm font-semibold text-accent-text transition-colors hover:bg-surface"
-            >
-              Turn off
-            </button>
+            ><UiText source={'Turn off'} /></button>
           )}
         </div>
       )}

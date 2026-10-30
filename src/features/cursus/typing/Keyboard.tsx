@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 // The keyboard on screen: the language's layout on the physical keys, each finger's keys tinted
 // (as keybr does), and the next key to press lit.
 import { memo } from 'react';
@@ -50,9 +51,7 @@ export const Keyboard = memo(function Keyboard({ layout, next, shift, rtl }: { l
       key={side}
       className={cx('grid h-11 place-items-center rounded-lg text-[12px] font-semibold', shift && next ? 'bg-accent text-on-accent' : 'bg-sunken text-ink-faint')}
       style={{ width: side === 'left' ? '46px' : '96px' }}
-    >
-      shift
-    </span>
+    ><UiText source={'shift'} /></span>
   );
   return (
     <div className="mx-auto w-fit select-none" aria-hidden>

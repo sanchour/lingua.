@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -21,6 +22,7 @@ const BACK_TO: Record<string, string> = {
 };
 
 export function TopBar() {
+  const translateUi = useUi();
   const title = useUI((s) => s.pageTitle);
   const titleHidden = useUI((s) => s.pageTitleHidden);
   const setTopBarHeight = useUI((s) => s.setTopBarHeight);
@@ -64,7 +66,7 @@ export function TopBar() {
         style={{ paddingLeft: 'max(10px, env(safe-area-inset-left))', paddingRight: 'max(10px, env(safe-area-inset-right))' }}
       >
         {parent ? (
-          <IconButton icon={ChevronLeft} label="Back" showTooltip={false} onClick={() => navigate(parent)} />
+          <IconButton icon={ChevronLeft} label={translateUi('Back')} showTooltip={false} onClick={() => navigate(parent)} />
         ) : (
           <div className="flex items-center gap-1.5">
             <span className="pl-1">
@@ -85,7 +87,7 @@ export function TopBar() {
           {title}
         </motion.div>
 
-        <nav aria-label="Statistics and settings" className="ml-auto flex items-center gap-1">
+        <nav aria-label={translateUi('Statistics and settings')} className="ml-auto flex items-center gap-1">
           {HEADER_SECTIONS.map(({ id, path, name, role, icon: Icon }) => (
             <NavLink
               key={id}
@@ -133,17 +135,14 @@ export function TopBar() {
             'ml-auto inline-flex shrink-0 items-center gap-0.5 rounded-lg px-2.5 py-1 font-serif text-[14px] font-semibold transition-colors',
             inTool || toolsOpen ? 'bg-raised text-accent-text shadow-elev-1' : 'text-ink-soft hover:text-ink',
           )}
-        >
-          Tools
-          <ChevronRight size={14} className={cx('transition-transform duration-150', toolsOpen && 'rotate-90')} aria-hidden />
-        </button>
+        ><UiText source={'Tools{0}'} values={[<ChevronRight size={14} className={cx('transition-transform duration-150', toolsOpen && 'rotate-90')} aria-hidden />]} /></button>
       </div>
 
       <AnimatePresence initial={false}>
         {toolsOpen && (
           <motion.nav
             key="touch-tools"
-            aria-label="Tools"
+            aria-label={translateUi('Tools')}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}

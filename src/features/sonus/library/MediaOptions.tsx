@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { BookOpenText, CloudDownload, CloudOff, Ellipsis, Paperclip, Sparkles, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -12,6 +13,7 @@ import { toast } from '@/state/ui';
 
 /** The ⋯ menu for a listening item: offline copy, transcript, Codex, removal. */
 export function MediaOptions({ media, hasTranscript, className }: { media: Media; hasTranscript: boolean; className?: string }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const [confirm, setConfirm] = useState(false);
   const downloading = useJobs((s) => s.downloads[media.id]);
@@ -21,14 +23,14 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
   return (
     <>
       <Popover
-        label="Item options"
+        label={translateUi('Item options')}
         placement="bottom-end"
         className="w-64"
         trigger={(props) => (
           <button
             {...props}
             type="button"
-            aria-label={`${media.title} options`}
+            aria-label={translateUi('{0} options', [media.title])}
             className={
               className ??
               'grid size-9 shrink-0 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-surface hover:text-ink pointer-coarse:size-10'
@@ -43,7 +45,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
             {media.remoteUrl && !media.blobId && (
               <MenuItem
                 icon={CloudDownload}
-                label={downloading !== undefined ? `Downloading… ${Math.round(downloading * 100)}%` : 'Save for offline'}
+                label={downloading !== undefined ? translateUi('Downloading… {0}%', [Math.round(downloading * 100)]) : translateUi('Save for offline')}
                 detail={downloading !== undefined ? 'Tap to cancel' : 'Listen without a connection'}
                 onClick={() => {
                   close();
@@ -55,7 +57,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
             {media.remoteUrl && !media.blobId && downloading === undefined && (
               <MenuItem
                 icon={Paperclip}
-                label="Attach a downloaded file"
+                label={translateUi('Attach a downloaded file')}
                 detail="For hosts that block app downloads"
                 onClick={async () => {
                   close();
@@ -69,7 +71,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
             {media.remoteUrl && media.blobId && (
               <MenuItem
                 icon={CloudOff}
-                label="Remove download"
+                label={translateUi('Remove download')}
                 detail="Keeps streaming from the web"
                 onClick={() => {
                   close();
@@ -80,7 +82,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
             {!spotify && (
               <MenuItem
                 icon={Sparkles}
-                label={transcribing !== undefined ? 'Transcribing…' : hasTranscript ? 'Transcribe again' : 'Make a transcript'}
+                label={transcribing !== undefined ? translateUi('Transcribing…') : hasTranscript ? translateUi('Transcribe again') : translateUi('Make a transcript')}
                 detail="Whisper, with word timings"
                 onClick={() => {
                   close();
@@ -91,7 +93,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
             {hasTranscript && (
               <MenuItem
                 icon={BookOpenText}
-                label="Open in Codex"
+                label={translateUi('Open in Codex')}
                 detail="Read the transcript like a book"
                 onClick={async () => {
                   close();
@@ -102,7 +104,7 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
             )}
             <MenuItem
               icon={Trash2}
-              label="Remove"
+              label={translateUi('Remove')}
               danger
               onClick={() => {
                 close();
@@ -116,12 +118,10 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
       <Dialog
         open={confirm}
         onClose={() => setConfirm(false)}
-        title="Remove this item?"
+        title={translateUi('Remove this item?')}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setConfirm(false)}>
-              Keep
-            </Button>
+            <Button variant="ghost" onClick={() => setConfirm(false)}><UiText source={'Keep'} /></Button>
             <Button
               variant="danger"
               onClick={async () => {
@@ -130,14 +130,10 @@ export function MediaOptions({ media, hasTranscript, className }: { media: Media
                 await deleteMedia(media.id);
                 toast('Removed from Sonus.');
               }}
-            >
-              Remove
-            </Button>
+            ><UiText source={'Remove'} /></Button>
           </>
         }
-      >
-        “{media.title}”, its audio and transcript will be removed. Words you marked stay in your vocabulary.
-      </Dialog>
+      ><UiText source={'“{0}”, its audio and transcript will be removed. Words you marked stay in your vocabulary.'} values={[media.title]} /></Dialog>
     </>
   );
 }

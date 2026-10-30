@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { ArrowUp, CircleHelp, Clock, RotateCcw, SkipForward } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -18,6 +19,7 @@ const chip =
  * With Max a small box takes the same in the learner's own words.
  */
 export function ReplyBar({ replies }: { replies: Replies }) {
+  const translateUi = useUi();
   const max = useCan('ai');
   const [words, setWords] = useState('');
   const [busy, setBusy] = useState(false);
@@ -47,7 +49,7 @@ export function ReplyBar({ replies }: { replies: Replies }) {
 
   return (
     <div className="mt-4">
-      <div role="group" aria-label="Say something back to Mundus" className="flex flex-wrap items-center gap-2">
+      <div role="group" aria-label={translateUi('Say something back to Mundus')} className="flex flex-wrap items-center gap-2">
         {reply('short', Clock, 'Something shorter', Boolean(replies.short), () => say({ kind: 'short' }))}
         {ASKABLE.filter((l) => l !== replies.lane).map((l) => {
           const Icon = LANE_ICON[l];
@@ -56,9 +58,7 @@ export function ReplyBar({ replies }: { replies: Replies }) {
         {reply('why', CircleHelp, 'Why this?', replies.last === 'why', () => say({ kind: 'why' }))}
         {reply('skip', SkipForward, 'Not today', false, () => say({ kind: 'skip' }))}
         {said && (
-          <button type="button" onClick={() => say({ kind: 'reset' })} className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
-            <RotateCcw size={13} aria-hidden /> Start over
-          </button>
+          <button type="button" onClick={() => say({ kind: 'reset' })} className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'{0} Start over'} values={[<RotateCcw size={13} aria-hidden />]} /></button>
         )}
       </div>
       {max && (
@@ -73,11 +73,11 @@ export function ReplyBar({ replies }: { replies: Replies }) {
             value={words}
             onChange={(e) => setWords(e.target.value)}
             maxLength={200}
-            aria-label="Tell Mundus in your own words"
-            placeholder="Or say it your way: “20 minutes, and I’m tired”"
+            aria-label={translateUi('Tell Mundus in your own words')}
+            placeholder={translateUi('Or say it your way: “20 minutes, and I’m tired”')}
             className="h-8 min-w-0 flex-1 bg-transparent text-[13.5px] outline-none placeholder:text-ink-faint"
           />
-          <button type="submit" disabled={!words.trim() || busy} aria-label="Send" className="grid size-8 place-items-center rounded-full bg-inverse text-on-inverse disabled:opacity-40">
+          <button type="submit" disabled={!words.trim() || busy} aria-label={translateUi('Send')} className="grid size-8 place-items-center rounded-full bg-inverse text-on-inverse disabled:opacity-40">
             <ArrowUp size={15} aria-hidden />
           </button>
         </form>

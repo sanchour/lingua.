@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { Link } from 'react-router';
 import { Bike, Check, EyeOff, LoaderCircle, Pause, Play, Repeat, Repeat1, RotateCcw, RotateCw, SkipBack, SkipForward, StepForward } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -28,6 +29,7 @@ function Round({ icon: Icon, label, onClick, disabled, children }: { icon: Lucid
 
 /** Play/pause with skips, sentence steps, speed, sentence repeat, the sleep timer and the way into commute mode. */
 export function Transport({ className }: { className?: string }) {
+  const translateUi = useUi();
   const status = usePlayer((s) => s.status);
   const hasCues = usePlayer((s) => Boolean(s.cues?.length));
   const back = usePlayer((s) => s.skipBackSec);
@@ -43,13 +45,13 @@ export function Transport({ className }: { className?: string }) {
   return (
     <div className={className}>
       <div className="flex items-center justify-center gap-1 sm:gap-2">
-        <Round icon={SkipBack} label="Previous sentence" onClick={previousSentence} disabled={!hasCues} />
-        <Round icon={RotateCcw} label={`Back ${back} seconds`} onClick={() => skip(-back)}>
+        <Round icon={SkipBack} label={translateUi('Previous sentence')} onClick={previousSentence} disabled={!hasCues} />
+        <Round icon={RotateCcw} label={translateUi('Back {0} seconds', [back])} onClick={() => skip(-back)}>
           {String(back)}
         </Round>
         <button
           type="button"
-          aria-label={playing ? 'Pause' : 'Play'}
+          aria-label={playing ? translateUi('Pause') : translateUi('Play')}
           onClick={toggle}
           className="mx-1 grid size-16 place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-2 transition-transform duration-150 active:scale-90"
         >
@@ -61,26 +63,26 @@ export function Transport({ className }: { className?: string }) {
             <Play size={26} className="translate-x-0.5 fill-current" aria-hidden />
           )}
         </button>
-        <Round icon={RotateCw} label={`Forward ${fwd} seconds`} onClick={() => skip(fwd)}>
+        <Round icon={RotateCw} label={translateUi('Forward {0} seconds', [fwd])} onClick={() => skip(fwd)}>
           {String(fwd)}
         </Round>
-        <Round icon={SkipForward} label="Next sentence" onClick={nextSentence} disabled={!hasCues} />
+        <Round icon={SkipForward} label={translateUi('Next sentence')} onClick={nextSentence} disabled={!hasCues} />
       </div>
 
       {/* A very narrow phone wraps these rather than overflowing. */}
       <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
         <Popover
-          label="Speed"
+          label={translateUi('Speed')}
           placement="top"
           className="w-44"
           trigger={(props) => (
-            <button {...props} type="button" aria-label={`Speed ${rateLabel(rate)}`} className="h-9 min-w-14 rounded-full border border-line bg-raised px-3 text-[13px] font-bold tabular-nums transition-colors hover:border-line-strong">
+            <button {...props} type="button" aria-label={translateUi('Speed {0}', [rateLabel(rate)])} className="h-9 min-w-14 rounded-full border border-line bg-raised px-3 text-[13px] font-bold tabular-nums transition-colors hover:border-line-strong">
               {rateLabel(rate)}
             </button>
           )}
         >
           {(close) => (
-            <div role="radiogroup" aria-label="Speed">
+            <div role="radiogroup" aria-label={translateUi('Speed')}>
               {RATES.map((r) => (
                 <button
                   key={r}
@@ -93,22 +95,19 @@ export function Transport({ className }: { className?: string }) {
                   }}
                   className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold tabular-nums transition-colors hover:bg-surface"
                 >
-                  {r === 1 ? 'Normal' : rateLabel(r)}
+                  {r === 1 ? translateUi('Normal') : rateLabel(r)}
                   {r === rate && <Check size={15} className="text-accent-text" aria-hidden />}
                 </button>
               ))}
-              <label className="mt-1 flex cursor-pointer items-center gap-2 border-t border-line/60 px-3 pt-2 text-[13px] font-semibold">
-                <input type="checkbox" checked={keepPitch} onChange={(e) => setKeepPitch(e.target.checked)} />
-                Keep the pitch
-              </label>
+              <label className="mt-1 flex cursor-pointer items-center gap-2 border-t border-line/60 px-3 pt-2 text-[13px] font-semibold"><UiText source={'{0}Keep the pitch'} values={[<input type="checkbox" checked={keepPitch} onChange={(e) => setKeepPitch(e.target.checked)} />]} /></label>
             </div>
           )}
         </Popover>
         <button
           type="button"
           disabled={!hasCues}
-          title={hasCues ? 'Repeat each sentence' : 'Sentence repeats need a transcript'}
-          aria-label={`Repeat each sentence: ${repeat === 1 ? 'off' : `${repeat} times`}`}
+          title={hasCues ? translateUi('Repeat each sentence') : translateUi('Sentence repeats need a transcript')}
+          aria-label={translateUi('Repeat each sentence: {0}', [repeat === 1 ? 'off' : `${repeat} times`])}
           onClick={() => toggleRepeat()}
           className={cx(
             'flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors disabled:opacity-40',
@@ -116,12 +115,12 @@ export function Transport({ className }: { className?: string }) {
           )}
         >
           <Repeat size={14} aria-hidden />
-          {repeat > 1 ? `${repeat}×` : 'Repeat'}
+          {repeat > 1 ? `${repeat}×` : translateUi('Repeat')}
         </button>
         <button
           type="button"
-          title="Mark where a part starts, then where it ends: it plays again and again. A third press clears it. (key: [)"
-          aria-label={`Loop a part: ${loopLabel(loop)}`}
+          title={translateUi('Mark where a part starts, then where it ends: it plays again and again. A third press clears it. (key: [)')}
+          aria-label={translateUi('Loop a part: {0}', [loopLabel(loop)])}
           onClick={cycleLoop}
           className={cx('flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors', loop ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong')}
         >
@@ -131,29 +130,21 @@ export function Transport({ className }: { className?: string }) {
         <button
           type="button"
           disabled={!hasCues}
-          title={hasCues ? 'Pause after each line; press play for the next (key: L)' : 'Line by line needs a transcript'}
+          title={hasCues ? translateUi('Pause after each line; press play for the next (key: L)') : translateUi('Line by line needs a transcript')}
           aria-pressed={lineByLine}
           onClick={toggleLineByLine}
           className={cx('flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors disabled:opacity-40', lineByLine ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong')}
-        >
-          <StepForward size={14} aria-hidden />
-          Line by line
-        </button>
+        ><UiText source={'{0}Line by line'} values={[<StepForward size={14} aria-hidden />]} /></button>
         <button
           type="button"
           disabled={!hasCues}
-          title={hasCues ? 'Keep the text blurred until a line has played: listen first, then read' : 'Needs a transcript'}
+          title={hasCues ? translateUi('Keep the text blurred until a line has played: listen first, then read') : translateUi('Needs a transcript')}
           aria-pressed={listenFirst}
           onClick={toggleListenFirst}
           className={cx('flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-bold transition-colors disabled:opacity-40', listenFirst ? 'border-accent/40 bg-accent-soft text-accent-text' : 'border-line bg-raised hover:border-line-strong')}
-        >
-          <EyeOff size={14} aria-hidden />
-          Listen first
-        </button>
+        ><UiText source={'{0}Listen first'} values={[<EyeOff size={14} aria-hidden />]} /></button>
         <SleepButton />
-        <Link to="/sonus/commute" className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold transition-colors hover:border-line-strong">
-          <Bike size={15} aria-hidden /> Commute
-        </Link>
+        <Link to="/sonus/commute" className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-raised px-3 text-[13px] font-bold transition-colors hover:border-line-strong"><UiText source={'{0} Commute'} values={[<Bike size={15} aria-hidden />]} /></Link>
       </div>
     </div>
   );

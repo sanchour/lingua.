@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { BookHeart, ChevronDown, MessageCircleQuestion, PenLine, Sparkles } from 'lucide-react';
@@ -27,6 +28,7 @@ interface Props {
  * writing counts in Ratio as writing once the panel closes.
  */
 export function OwnWords({ lang, tasks, about, refId, autoFocus }: Props) {
+  const translateUi = useUi();
   const [taskId, setTaskId] = useState(tasks[0].id);
   const task = tasks.find((t) => t.id === taskId) ?? tasks[0];
   const w = useOwnWriting(lang, taskPrompt(task));
@@ -46,7 +48,7 @@ export function OwnWords({ lang, tasks, about, refId, autoFocus }: Props) {
 
   return (
     <div className="text-left">
-      {tasks.length > 1 && <Segmented label="What to write" value={task.id} onChange={setTaskId} options={tasks.map((t) => ({ value: t.id, label: t.label }))} />}
+      {tasks.length > 1 && <Segmented label={translateUi('What to write')} value={task.id} onChange={setTaskId} options={tasks.map((t) => ({ value: t.id, label: t.label }))} />}
       <p className="mt-3 text-[15px] leading-snug text-ink">{task.task}</p>
       {task.quote && (
         <p lang={lang} dir={rtl ? 'rtl' : undefined} className="mt-2 font-serif text-[19px] leading-snug font-semibold">
@@ -70,21 +72,17 @@ export function OwnWords({ lang, tasks, about, refId, autoFocus }: Props) {
       />
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <span className="mr-auto text-[12.5px] font-semibold text-ink-faint tabular-nums">
-          {w.count} {lang === 'zh' ? 'characters' : w.count === 1 ? 'word' : 'words'}
+          {w.count} {lang === 'zh' ? translateUi('characters') : w.count === 1 ? translateUi('word') : translateUi('words')}
         </span>
         {w.canCheck && (
-          <Button variant="secondary" size="sm" icon={Sparkles} loading={w.checking} disabled={!w.enough || Boolean(w.review)} onClick={() => void w.check()}>
-            Check it
-          </Button>
+          <Button variant="secondary" size="sm" icon={Sparkles} loading={w.checking} disabled={!w.enough || Boolean(w.review)} onClick={() => void w.check()}><UiText source={'Check it'} /></Button>
         )}
-        <Button variant="ghost" size="sm" icon={MessageCircleQuestion} disabled={!w.enough} onClick={() => void w.ask()}>
-          Ask a speaker
-        </Button>
+        <Button variant="ghost" size="sm" icon={MessageCircleQuestion} disabled={!w.enough} onClick={() => void w.ask()}><UiText source={'Ask a speaker'} /></Button>
         <Button variant="ghost" size="sm" icon={BookHeart} disabled={!w.enough || w.kept} onClick={() => void w.keep(about ?? task.quote ?? task.task)}>
-          {w.kept ? 'Kept in Diarium' : 'Keep in Diarium'}
+          {w.kept ? translateUi('Kept in Diarium') : translateUi('Keep in Diarium')}
         </Button>
       </div>
-      {!w.canCheck && <p className="mt-2 text-[12.5px] leading-relaxed text-ink-faint">With Max and an AI key (Settings › AI), Check it corrects your text. Without, ask a speaker.</p>}
+      {!w.canCheck && <p className="mt-2 text-[12.5px] leading-relaxed text-ink-faint"><UiText source={'With Max and an AI key (Settings › AI), Check it corrects your text. Without, ask a speaker.'} /></p>}
       {w.review && (
         <motion.div className="mt-5 space-y-5" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft}>
           <ReviewSummary review={w.review} />
@@ -104,8 +102,8 @@ export function OwnWordsFold({ lang, title, refId, className }: { lang: string; 
     <div className={cx('w-full rounded-3xl border border-line/70 bg-surface text-left', className)}>
       <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="flex w-full items-center gap-3 rounded-3xl px-5 py-4 text-left transition-colors hover:bg-raised">
         <span className="min-w-0 flex-1">
-          <span className="block font-semibold">In your own words</span>
-          <span className="block text-[14px] text-ink-soft">Retell it, or write what comes next, if you like. To keep in Diarium, or to have checked.</span>
+          <span className="block font-semibold"><UiText source={'In your own words'} /></span>
+          <span className="block text-[14px] text-ink-soft"><UiText source={'Retell it, or write what comes next, if you like. To keep in Diarium, or to have checked.'} /></span>
         </span>
         <ChevronDown size={18} className={cx('shrink-0 text-ink-faint transition-transform', open && 'rotate-180')} aria-hidden />
       </button>
@@ -127,14 +125,13 @@ export function OwnWordsFold({ lang, title, refId, className }: { lang: string; 
  * one thing from it.
  */
 export function OwnWordsButton({ lang, lane, title, refId, className }: { lang: string; lane: Lane; title: string; refId: string; className?: string }) {
+  const translateUi = useUi();
   const { language } = useApp();
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button variant="ghost" size="sm" icon={PenLine} className={cx(className)} onClick={() => setOpen(true)}>
-        In your own words
-      </Button>
-      <Drawer open={open} onClose={() => setOpen(false)} title="In your own words" description={title}>
+      <Button variant="ghost" size="sm" icon={PenLine} className={cx(className)} onClick={() => setOpen(true)}><UiText source={'In your own words'} /></Button>
+      <Drawer open={open} onClose={() => setOpen(false)} title={translateUi('In your own words')} description={title}>
         <OwnWords lang={lang} tasks={afterTasks(lane, title, language.level)} about={title} refId={refId} autoFocus />
       </Drawer>
     </>

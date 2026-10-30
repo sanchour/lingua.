@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import { Headphones, Pause, Play } from 'lucide-react';
 import { Badge, Button } from '@/design/primitives';
@@ -13,6 +14,7 @@ type Verdict = { hiddenSec: number; advancedSec: number; ok: boolean };
  * the wall clock across the hidden period. Uses a plain <audio> element, as Sonus will.
  */
 export function AudioTest() {
+  const translateUi = useUi();
   const audioRef = useRef<HTMLAudioElement>(null);
   const urlRef = useRef<string | null>(null);
   const hiddenAt = useRef<{ wall: number; t: number } | null>(null);
@@ -123,7 +125,7 @@ export function AudioTest() {
   };
 
   return (
-    <LabCard icon={Headphones} title="Background audio" description="Press play, lock the screen for about 20 seconds, then come back.">
+    <LabCard icon={Headphones} title={translateUi('Background audio')} description={translateUi('Press play, lock the screen for about 20 seconds, then come back.')}>
       {/* No `controls`, so the element itself is invisible; the buttons drive it. */}
       <audio
         ref={audioRef}
@@ -140,13 +142,11 @@ export function AudioTest() {
       />
       <div className="flex flex-wrap items-center gap-2">
         <Button icon={playing ? Pause : Play} onClick={toggle}>
-          {playing ? 'Pause' : 'Play test chime'}
+          {playing ? translateUi('Pause') : translateUi('Play test chime')}
         </Button>
-        <Button variant="secondary" onClick={() => void pickFile('audio/*').then((f) => f && start(f))}>
-          Use my own audio file
-        </Button>
+        <Button variant="secondary" onClick={() => void pickFile('audio/*').then((f) => f && start(f))}><UiText source={'Use my own audio file'} /></Button>
         {verdict && (
-          <Badge tone={verdict.ok ? 'sage' : 'accent'}>{verdict.ok ? 'Kept playing while locked' : 'Stopped while locked'}</Badge>
+          <Badge tone={verdict.ok ? 'sage' : 'accent'}>{verdict.ok ? translateUi('Kept playing while locked') : translateUi('Stopped while locked')}</Badge>
         )}
       </div>
       <LogList lines={log} empty="Events appear here (play, lock-screen controls, coming back)." />

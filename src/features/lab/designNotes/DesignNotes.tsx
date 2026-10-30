@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Check, ClipboardCopy, Frame, List, Minimize2, MousePointerClick, Move, PenLine, Sparkles } from 'lucide-react';
@@ -103,6 +104,7 @@ const place = (box: HTMLElement, r: Rect) => {
  * Claude as Markdown.
  */
 export default function DesignNotes() {
+  const translateUi = useUi();
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname + location.search;
@@ -443,7 +445,7 @@ export default function DesignNotes() {
   return (
     <>
       {picking && (
-        <style>{`[data-design-picking] *{cursor:crosshair!important}[data-design-picking] [${MARK}],[data-design-picking] [${MARK}] *{cursor:default!important}`}</style>
+        <style>{translateUi('[data-design-picking] *{cursor:crosshair!important}[data-design-picking] [{0}],[data-design-picking] [{1}] *{cursor:default!important}', [MARK, MARK])}</style>
       )}
       <div ref={outline} className="pointer-events-none fixed top-0 left-0 z-[119] rounded-md border-2 border-accent bg-accent/5 opacity-0" aria-hidden />
       <div ref={areaBox} className="pointer-events-none fixed top-0 left-0 z-[119] rounded-sm border-2 border-dashed border-accent bg-accent/10 opacity-0" aria-hidden />
@@ -474,7 +476,7 @@ export default function DesignNotes() {
           }}
           onClick={() => openNote(note)}
           title={[note.priority, note.kinds?.join(', '), note.text].filter(Boolean).join(' · ')}
-          aria-label={`Design note ${i + 1}: ${note.text}`}
+          aria-label={translateUi('Design note {0}: {1}', [i + 1, note.text])}
           className={cx(
             'fixed top-0 left-0 z-[120] grid size-[22px] place-items-center rounded-full border-2 text-[11px] font-bold tabular-nums shadow-elev-2 data-[lost=true]:border-dashed',
             note.done ? 'border-sage bg-sage-soft text-sage-text' : note.priority === 'Could' ? 'border-raised bg-sage text-on-accent' : 'border-raised bg-accent-fill text-on-accent',
@@ -501,23 +503,23 @@ export default function DesignNotes() {
       )}
 
       {panel && (
-        <aside {...{ [MARK]: '' }} aria-label="Design notes" className={cx('fixed z-[120] flex w-[340px] flex-col', corners.panel, 'overflow-hidden rounded-3xl border border-line bg-raised shadow-elev-3')}>
+        <aside {...{ [MARK]: '' }} aria-label={translateUi('Design notes')} className={cx('fixed z-[120] flex w-[340px] flex-col', corners.panel, 'overflow-hidden rounded-3xl border border-line bg-raised shadow-elev-3')}>
           <div className="flex items-center gap-2 border-b border-line px-4 pt-3 pb-2">
-            <h2 className="font-serif text-[17px] font-semibold">Design notes</h2>
+            <h2 className="font-serif text-[17px] font-semibold"><UiText source={'Design notes'} /></h2>
             <div className="ml-auto flex rounded-full bg-surface p-0.5 text-[12px] font-semibold">
               {(['page', 'all'] as const).map((scope) => (
                 <button key={scope} type="button" onClick={() => setPanel(scope)} className={cx('rounded-full px-2.5 py-1', panel === scope ? 'bg-raised shadow-elev-1' : 'text-ink-soft hover:text-ink')}>
-                  {scope === 'page' ? 'This page' : `All (${notes.length})`}
+                  {scope === 'page' ? translateUi('This page') : translateUi('All ({0})', [notes.length])}
                 </button>
               ))}
             </div>
-            <button type="button" onClick={() => setPanel(null)} aria-label="Close" className="grid size-7 place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink">
+            <button type="button" onClick={() => setPanel(null)} aria-label={translateUi('Close')} className="grid size-7 place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink">
               <span aria-hidden>×</span>
             </button>
           </div>
-          {listed.length > 0 && <p className="border-b border-line px-4 py-1.5 text-[11.5px] text-ink-faint">Open: {priorityCount(listed)}</p>}
+          {listed.length > 0 && <p className="border-b border-line px-4 py-1.5 text-[11.5px] text-ink-faint"><UiText source={'Open: {0}'} values={[priorityCount(listed)]} /></p>}
           <ol className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-3">
-            {!listed.length && <li className="px-2 py-8 text-center text-[13.5px] text-ink-soft">{panel === 'page' ? 'No notes on this page yet. Press Alt N, then click anything.' : 'No notes yet.'}</li>}
+            {!listed.length && <li className="px-2 py-8 text-center text-[13.5px] text-ink-soft">{panel === 'page' ? translateUi('No notes on this page yet. Press Alt N, then click anything.') : translateUi('No notes yet.')}</li>}
             {listed.map((note) => {
               const here = note.path === path;
               const number = notesOn(notes, note.path, note.room).indexOf(note) + 1;
@@ -527,7 +529,7 @@ export default function DesignNotes() {
                     <span className={cx('mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[10.5px] font-bold', note.done ? 'bg-sage-soft text-sage-text' : 'bg-accent-fill text-on-accent')}>{number}</span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[12.5px] font-semibold">
-                        {note.area && <span className="mr-1 text-accent-text">Area in</span>}
+                        {note.area && <span className="mr-1 text-accent-text"><UiText source={'Area in'} /></span>}
                         {note.element}
                       </p>
                       {panel === 'all' && <p className="truncate text-[11.5px] text-ink-faint">{note.room} · {note.path}</p>}
@@ -552,38 +554,30 @@ export default function DesignNotes() {
                   </div>
                   <div className="mt-2 flex items-center gap-1 pl-7 text-[12px] font-semibold">
                     <button type="button" onClick={() => (here ? openNote(note) : navigate(note.path))} className="rounded-lg px-2 py-1 text-accent-text hover:bg-accent-soft">
-                      {here ? 'Edit' : 'Go there'}
+                      {here ? translateUi('Edit') : translateUi('Go there')}
                     </button>
                     <button type="button" onClick={() => update(note.id, { done: !note.done })} className="rounded-lg px-2 py-1 text-ink-soft hover:bg-surface hover:text-ink">
-                      {note.done ? 'Open again' : 'Done'}
+                      {note.done ? translateUi('Open again') : translateUi('Done')}
                     </button>
-                    <button type="button" onClick={() => remove(note.id)} className="ml-auto rounded-lg px-2 py-1 text-ink-faint hover:bg-surface hover:text-ink">
-                      Delete
-                    </button>
+                    <button type="button" onClick={() => remove(note.id)} className="ml-auto rounded-lg px-2 py-1 text-ink-faint hover:bg-surface hover:text-ink"><UiText source={'Delete'} /></button>
                   </div>
                 </li>
               );
             })}
           </ol>
           <div className="flex items-center gap-2 border-t border-line px-3 py-2.5">
-            <Button size="sm" icon={ClipboardCopy} onClick={() => void copy(listed)} disabled={!listed.length}>
-              Copy for Claude
-            </Button>
-            <Button size="sm" variant="ghost" onClick={clearDone} disabled={!notes.some((n) => n.done)}>
-              Clear done
-            </Button>
+            <Button size="sm" icon={ClipboardCopy} onClick={() => void copy(listed)} disabled={!listed.length}><UiText source={'Copy for Claude'} /></Button>
+            <Button size="sm" variant="ghost" onClick={clearDone} disabled={!notes.some((n) => n.done)}><UiText source={'Clear done'} /></Button>
           </div>
         </aside>
       )}
 
       {shown && (
-        <div {...{ [MARK]: '' }} role="dialog" aria-label="Design notes as Markdown" className={cx('fixed z-[122] w-[460px]', corners.box, 'rounded-2xl border border-line bg-raised p-3 shadow-elev-3')}>
-          <p className="mb-2 text-[12.5px] text-ink-soft">Select all (Ctrl A), copy, and paste into Claude.</p>
-          <textarea readOnly autoFocus value={shown} rows={14} onFocus={(e) => e.currentTarget.select()} aria-label="Markdown" className="w-full resize-none rounded-xl border border-line bg-bg p-3 font-mono text-[11.5px] leading-relaxed" />
+        <div {...{ [MARK]: '' }} role="dialog" aria-label={translateUi('Design notes as Markdown')} className={cx('fixed z-[122] w-[460px]', corners.box, 'rounded-2xl border border-line bg-raised p-3 shadow-elev-3')}>
+          <p className="mb-2 text-[12.5px] text-ink-soft"><UiText source={'Select all (Ctrl A), copy, and paste into Claude.'} /></p>
+          <textarea readOnly autoFocus value={shown} rows={14} onFocus={(e) => e.currentTarget.select()} aria-label={translateUi('Markdown')} className="w-full resize-none rounded-xl border border-line bg-bg p-3 font-mono text-[11.5px] leading-relaxed" />
           <div className="mt-2 flex justify-end">
-            <Button size="sm" variant="ghost" onClick={() => setShown(null)}>
-              Close
-            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setShown(null)}><UiText source={'Close'} /></Button>
           </div>
         </div>
       )}
@@ -598,8 +592,8 @@ export default function DesignNotes() {
           <button
             type="button"
             onClick={() => setCollapsed(false)}
-            title={`Design notes (${pageNotes.length} on this page) · Click to expand${expandOnHover ? ' or hover' : ''}`}
-            aria-label={`Design notes (${pageNotes.length} on this page)`}
+            title={translateUi('Design notes ({0} on this page) · Click to expand{1}', [pageNotes.length, expandOnHover ? ' or hover' : ''])}
+            aria-label={translateUi('Design notes ({0} on this page)', [pageNotes.length])}
             className="relative grid size-9 place-items-center rounded-full bg-inverse text-on-inverse shadow-elev-3 transition-transform hover:scale-105 active:scale-95"
           >
             <PenLine size={15} aria-hidden />
@@ -618,25 +612,17 @@ export default function DesignNotes() {
           className={cx('fixed z-[120] flex items-center gap-0.5 rounded-full bg-inverse p-1 pl-3 text-on-inverse shadow-elev-3 transition-all duration-150', corners.bar)}
         >
           <PenLine size={14} aria-hidden />
-          <span className="mr-1 ml-1 text-[12px] font-semibold tabular-nums opacity-80">{pageNotes.length} here</span>
-          {picking && <span className="mr-1 text-[11.5px] opacity-70">↑ ↓ around or inside · Shift drag an area</span>}
-          <button type="button" aria-pressed={picking} onClick={() => setPicking((on) => !on)} title="Pick an element to note (Alt N)" className={cx(pill, picking ? 'bg-accent-fill text-on-accent' : 'hover:bg-on-inverse/10')}>
-            <MousePointerClick size={15} aria-hidden /> Pick <kbd className="font-sans text-[10.5px] opacity-70">Alt N</kbd>
-          </button>
-          <button type="button" aria-pressed={panel !== null} onClick={() => setPanel((p) => (p ? null : 'page'))} className={cx(pill, panel ? 'bg-on-inverse/15' : 'hover:bg-on-inverse/10')}>
-            <List size={15} aria-hidden /> Notes
-          </button>
-          <button type="button" onClick={() => void openCanvas()} title="Capture this page onto a Sandesigner canvas, with its notes (Alt Shift D)" className={cx(pill, 'hover:bg-on-inverse/10')}>
-            <Frame size={15} aria-hidden /> Canvas
-          </button>
-          <button type="button" onClick={() => void copy(notes)} title="Copy every note as Markdown for Claude" className={cx(pill, 'hover:bg-on-inverse/10')}>
-            <ClipboardCopy size={15} aria-hidden /> Copy
-          </button>
+          <span className="mr-1 ml-1 text-[12px] font-semibold tabular-nums opacity-80"><UiText source={'{0} here'} values={[pageNotes.length]} /></span>
+          {picking && <span className="mr-1 text-[11.5px] opacity-70"><UiText source={'↑ ↓ around or inside · Shift drag an area'} /></span>}
+          <button type="button" aria-pressed={picking} onClick={() => setPicking((on) => !on)} title={translateUi('Pick an element to note (Alt N)')} className={cx(pill, picking ? 'bg-accent-fill text-on-accent' : 'hover:bg-on-inverse/10')}><UiText source={'{0} Pick {1}'} values={[<MousePointerClick size={15} aria-hidden />, <kbd className="font-sans text-[10.5px] opacity-70"><UiText source={'Alt N'} /></kbd>]} /></button>
+          <button type="button" aria-pressed={panel !== null} onClick={() => setPanel((p) => (p ? null : 'page'))} className={cx(pill, panel ? 'bg-on-inverse/15' : 'hover:bg-on-inverse/10')}><UiText source={'{0} Notes'} values={[<List size={15} aria-hidden />]} /></button>
+          <button type="button" onClick={() => void openCanvas()} title={translateUi('Capture this page onto a Sandesigner canvas, with its notes (Alt Shift D)')} className={cx(pill, 'hover:bg-on-inverse/10')}><UiText source={'{0} Canvas'} values={[<Frame size={15} aria-hidden />]} /></button>
+          <button type="button" onClick={() => void copy(notes)} title={translateUi('Copy every note as Markdown for Claude')} className={cx(pill, 'hover:bg-on-inverse/10')}><UiText source={'{0} Copy'} values={[<ClipboardCopy size={15} aria-hidden />]} /></button>
           <button
             type="button"
             onClick={() => setExpandOnHover(!expandOnHover)}
-            title={expandOnHover ? 'Expand on hover: ON (click to switch to click-only)' : 'Expand on hover: OFF (click to enable)'}
-            aria-label="Toggle expand on hover"
+            title={expandOnHover ? translateUi('Expand on hover: ON (click to switch to click-only)') : translateUi('Expand on hover: OFF (click to enable)')}
+            aria-label={translateUi('Toggle expand on hover')}
             className={cx(
               'grid size-8 place-items-center rounded-full transition-colors hover:bg-on-inverse/10',
               expandOnHover ? 'text-accent-fill opacity-100' : 'opacity-60 hover:opacity-100'
@@ -650,13 +636,13 @@ export default function DesignNotes() {
               setCollapsed(true);
               setHovered(false);
             }}
-            title="Collapse to icon"
-            aria-label="Collapse to icon"
+            title={translateUi('Collapse to icon')}
+            aria-label={translateUi('Collapse to icon')}
             className="grid size-8 place-items-center rounded-full opacity-70 transition-colors hover:bg-on-inverse/10 hover:opacity-100"
           >
             <Minimize2 size={14} aria-hidden />
           </button>
-          <button type="button" onClick={moveCorner} title="Move to another corner" aria-label="Move the bar to another corner" className="grid size-8 place-items-center rounded-full opacity-70 transition-colors hover:bg-on-inverse/10 hover:opacity-100">
+          <button type="button" onClick={moveCorner} title={translateUi('Move to another corner')} aria-label={translateUi('Move the bar to another corner')} className="grid size-8 place-items-center rounded-full opacity-70 transition-colors hover:bg-on-inverse/10 hover:opacity-100">
             <Move size={14} aria-hidden />
           </button>
         </div>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -58,6 +59,7 @@ const DISCOVER_GROUPS: Array<{ value: DiscoverGroup; label: string }> = [
 ];
 
 export default function ThesaurusPage() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = language.id;
   const navigate = useNavigate();
@@ -152,24 +154,24 @@ export default function ThesaurusPage() {
             ref={searchRef}
             value={query}
             onChange={setQuery}
-            placeholder={tab === 'discover' ? 'Search ready-made decks and words' : 'Search decks, folders and themes'}
+            placeholder={tab === 'discover' ? translateUi('Search ready-made decks and words') : translateUi('Search decks, folders and themes')}
             onClose={closeSearch}
             autoFocus
             className="h-10! w-72"
           />
         ) : (
-          <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />
+          <IconButton icon={Search} label={translateUi('Search')} shortcut="/" onClick={() => setSearching(true)} />
         ))}
       {tab === 'decks' && hasDecks && (
         <SortMenu value={sort} options={SORTS} onChange={(deckSort) => void patchSetting('ui', { deckSort })}>
           <Segmented<'list' | 'cards'>
-            label="Show as"
+            label={translateUi('Show as')}
             block
             value={view}
             onChange={(deckView) => void patchSetting('ui', { deckView })}
             options={[
-              { value: 'list', label: 'List', icon: List },
-              { value: 'cards', label: 'Cards', icon: LayoutGrid },
+              { value: 'list', label: translateUi('List'), icon: List },
+              { value: 'cards', label: translateUi('Cards'), icon: LayoutGrid },
             ]}
           />
         </SortMenu>
@@ -192,15 +194,12 @@ export default function ThesaurusPage() {
   return (
     <>
       <PageHeader title="Thesaurus" />
-      <RoomTabs label="Thesaurus sections" tabs={tabs} active={tab} keys={!searching} end={tools} />
+      <RoomTabs label={translateUi('Thesaurus sections')} tabs={tabs} active={tab} keys={!searching} end={tools} />
 
       {imports.apkgProgress !== null && (
-        <div className="mb-4 flex items-center gap-3 rounded-2xl bg-surface px-4 py-3 text-sm font-semibold text-ink-soft" role="status">
-          Importing the Anki deck…
-          <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-sunken">
+        <div className="mb-4 flex items-center gap-3 rounded-2xl bg-surface px-4 py-3 text-sm font-semibold text-ink-soft" role="status"><UiText source={'Importing the Anki deck…{0}'} values={[<span className="h-1.5 flex-1 overflow-hidden rounded-full bg-sunken">
             <span className="block h-full origin-left rounded-full bg-sage transition-transform duration-300" style={{ transform: `scaleX(${Math.max(0.04, imports.apkgProgress)})` }} />
-          </span>
-        </div>
+          </span>]} /></div>
       )}
 
       {hasDecks && !rail && (
@@ -225,7 +224,7 @@ export default function ThesaurusPage() {
             transition={spring.snappy}
             className={rail ? 'grid grid-cols-[minmax(0,1fr)_296px] items-start gap-6' : undefined}
           >
-            <section aria-label="My decks" className="min-w-0">
+            <section aria-label={translateUi('My decks')} className="min-w-0">
               {hasDecks &&
                 folders &&
                 (view === 'cards' ? (
@@ -234,25 +233,23 @@ export default function ThesaurusPage() {
                   <DeckTree decks={decks!} folders={folders} counts={counts} lastStudied={outlook?.lastStudied} actions={actions} order={order} />
                 ))}
               {archivedCount > 0 && (
-                <button type="button" onClick={() => setShowArchived((v) => !v)} className="mt-5 text-[13.5px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
-                  {showArchived ? 'Hide' : 'Show'} {archivedCount} archived {archivedCount === 1 ? 'deck' : 'decks'}
-                </button>
+                <button type="button" onClick={() => setShowArchived((v) => !v)} className="mt-5 text-[13.5px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4"><UiText source={'{0} {1} archived {2}'} values={[showArchived ? 'Hide' : 'Show', archivedCount, archivedCount === 1 ? 'deck' : 'decks']} /></button>
               )}
               {decks && !hasDecks && <NoDecks onBrowse={browse} onNew={() => newDeck(null)} onImport={(kind) => choose(kind)} />}
               <JourneySection lang={lang} onOpen={openStarter} />
             </section>
             {rail && (
-              <aside aria-label="Today" className="sticky top-8">
+              <aside aria-label={translateUi('Today')} className="sticky top-8">
                 <TodayCard lang={lang} totals={totals} forecast={outlook?.forecast} rail />
               </aside>
             )}
           </motion.div>
         ) : tab === 'dictionary' ? (
-          <motion.section key="dictionary" aria-label="Dictionary" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>
+          <motion.section key="dictionary" aria-label={translateUi('Dictionary')} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>
             <DictionaryView lang={lang} />
           </motion.section>
         ) : (
-          <motion.section key="discover" aria-label="Ready-made decks" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>
+          <motion.section key="discover" aria-label={translateUi('Ready-made decks')} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={spring.snappy}>
             <StarterLibrary lang={lang} query={query} sort={discoverSort} group={discoverGroup} onOpen={openStarter} />
           </motion.section>
         )}
@@ -275,29 +272,13 @@ function NoDecks({ onBrowse, onNew, onImport }: { onBrowse: () => void; onNew: (
       <span className="mb-4 grid size-14 place-items-center rounded-2xl bg-sage-soft text-sage-text">
         <Layers size={24} aria-hidden />
       </span>
-      <p className="font-serif text-xl font-semibold">No decks yet</p>
-      <p className="mt-1.5 max-w-sm text-[14.5px] leading-relaxed text-ink-soft">
-        Start with ready-made words, make a deck of your own, or bring one from Anki. Words you mark as Learning while reading arrive on their own.
-      </p>
+      <p className="font-serif text-xl font-semibold"><UiText source={'No decks yet'} /></p>
+      <p className="mt-1.5 max-w-sm text-[14.5px] leading-relaxed text-ink-soft"><UiText source={'Start with ready-made words, make a deck of your own, or bring one from Anki. Words you mark as Learning while reading arrive on their own.'} /></p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
-        <Button icon={Sparkles} onClick={onBrowse}>
-          Browse ready-made decks
-        </Button>
-        <Button variant="secondary" icon={Plus} onClick={onNew}>
-          New deck
-        </Button>
+        <Button icon={Sparkles} onClick={onBrowse}><UiText source={'Browse ready-made decks'} /></Button>
+        <Button variant="secondary" icon={Plus} onClick={onNew}><UiText source={'New deck'} /></Button>
       </div>
-      <p className="mt-4 text-[13px] text-ink-soft">
-        Or import{' '}
-        <button type="button" onClick={() => onImport('apkg')} className="font-semibold text-accent-text underline-offset-2 hover:underline">
-          an Anki deck
-        </button>{' '}
-        or{' '}
-        <button type="button" onClick={() => onImport('csv')} className="font-semibold text-accent-text underline-offset-2 hover:underline">
-          a spreadsheet (CSV)
-        </button>
-        .
-      </p>
+      <p className="mt-4 text-[13px] text-ink-soft"><UiText source={'Or import{0}{1}{2}or{3}{4}.'} values={[' ', <button type="button" onClick={() => onImport('apkg')} className="font-semibold text-accent-text underline-offset-2 hover:underline"><UiText source={'an Anki deck'} /></button>, ' ', ' ', <button type="button" onClick={() => onImport('csv')} className="font-semibold text-accent-text underline-offset-2 hover:underline"><UiText source={'a spreadsheet (CSV)'} /></button>]} /></p>
     </Card>
   );
 }
@@ -328,8 +309,8 @@ function SearchResults({ lang, query, decks, folders, order, onOpenStarter, chil
     return (
       <div className="flex flex-col items-center py-14 text-center text-ink-soft">
         <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-        <p className="font-semibold text-ink">No decks or themes match “{query.trim()}”</p>
-        <p className="mt-1 text-sm">Try a shorter word, or browse Discover.</p>
+        <p className="font-semibold text-ink"><UiText source={'No decks or themes match “{0}”'} values={[query.trim()]} /></p>
+        <p className="mt-1 text-sm"><UiText source={'Try a shorter word, or browse Discover.'} /></p>
       </div>
     );
   }
@@ -337,13 +318,13 @@ function SearchResults({ lang, query, decks, folders, order, onOpenStarter, chil
     <div className="space-y-8">
       {found.length > 0 && (
         <div>
-          <p className="mb-2.5 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase">Your decks · {found.length}</p>
+          <p className="mb-2.5 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Your decks · {0}'} values={[found.length]} /></p>
           {children(found)}
         </div>
       )}
       {themes.length > 0 && (
         <div>
-          <p className="mb-2.5 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase">Ready-made themes</p>
+          <p className="mb-2.5 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Ready-made themes'} /></p>
           <div className="flex flex-wrap gap-2">
             {themes.map((t) => {
               const Icon = THEME_ICONS[t.id];

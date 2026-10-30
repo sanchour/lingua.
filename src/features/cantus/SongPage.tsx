@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -76,10 +77,8 @@ export function SongPlayer({ songId, collapsed, onGone }: { songId: string; coll
     return (
       <div className="song-page fixed inset-0 z-40 grid place-items-center bg-bg text-center">
         <div>
-          <p className="text-xl font-bold">This song isn’t in your music any more.</p>
-          <Link to={lastRoomPath()} className="mt-4 inline-block font-semibold text-accent-text">
-            Back to Cantus
-          </Link>
+          <p className="text-xl font-bold"><UiText source={'This song isn’t in your music any more.'} /></p>
+          <Link to={lastRoomPath()} className="mt-4 inline-block font-semibold text-accent-text"><UiText source={'Back to Cantus'} /></Link>
         </div>
       </div>
     );
@@ -247,6 +246,7 @@ function useHeight() {
 }
 
 function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
+  const translateUi = useUi();
   const { settings } = useApp();
   const { layout } = useLayout();
   const wide = layout === 'wide';
@@ -435,12 +435,10 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
   const actions = (
     <div className="flex items-center gap-1.5">
       <Button variant={song.savedAt ? 'secondary' : 'primary'} icon={Heart} onClick={() => void setSongSaved(song.id, !song.savedAt)} className={cx(Boolean(song.savedAt) && '[&_svg]:fill-current')}>
-        {song.savedAt ? 'In your songs' : 'Save'}
+        {song.savedAt ? translateUi('In your songs') : translateUi('Save')}
       </Button>
       {sungLines(song.lines).length >= 4 && (
-        <Button variant="secondary" icon={Gamepad2} onClick={() => navigate(gamesPath(song.id))}>
-          Learn it
-        </Button>
+        <Button variant="secondary" icon={Gamepad2} onClick={() => navigate(gamesPath(song.id))}><UiText source={'Learn it'} /></Button>
       )}
       {wide && <SongMenu song={song} onLink={() => setDialog('link')} onLyrics={() => setDialog('lyrics')} />}
     </div>
@@ -500,10 +498,10 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
       <div className={cx(shell, 'px-10 pb-8')} style={tint} aria-hidden={collapsed} inert={collapsed}>
         <div className="song-backdrop" aria-hidden />
         <header className="relative mx-auto flex h-16 w-full max-w-[1280px] shrink-0 items-center gap-2">
-          <button type="button" onClick={fold} aria-label="Fold the player away" title="Back to browsing" className="grid size-10 place-items-center rounded-full bg-[var(--room-fill)] text-ink-soft transition-colors hover:text-ink">
+          <button type="button" onClick={fold} aria-label={translateUi('Fold the player away')} title={translateUi('Back to browsing')} className="grid size-10 place-items-center rounded-full bg-[var(--room-fill)] text-ink-soft transition-colors hover:text-ink">
             <ChevronDown size={22} aria-hidden />
           </button>
-          <span className="ml-1 text-[12px] font-extrabold tracking-[0.14em] text-ink-faint uppercase">Playing in Cantus</span>
+          <span className="ml-1 text-[12px] font-extrabold tracking-[0.14em] text-ink-faint uppercase"><UiText source={'Playing in Cantus'} /></span>
           <LeaveButton className="ml-auto" />
         </header>
         <div className="relative mx-auto mt-2 grid min-h-0 w-full max-w-[1280px] flex-1 grid-cols-[minmax(250px,360px)_minmax(0,1fr)] gap-14">
@@ -518,7 +516,7 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
               <div className="mt-5">{player}</div>
             </div>
           </aside>
-          <section aria-label="Lyrics" className="flex min-h-0 min-w-0 flex-col">
+          <section aria-label={translateUi('Lyrics')} className="flex min-h-0 min-w-0 flex-col">
             <div className="shrink-0">{translationBar}</div>
             <div ref={scrollRef} className="lyric-scroll -mr-4 min-h-0 flex-1 overflow-y-auto overscroll-contain pt-2 pr-4 pb-24">
               {sheet}
@@ -536,7 +534,7 @@ function SongView({ song, collapsed }: { song: Song; collapsed: boolean }) {
     <div className={shell} style={tint} aria-hidden={collapsed} inert={collapsed}>
       <div className="song-backdrop" aria-hidden />
       <header className="no-callout relative z-20 flex shrink-0 items-center gap-1 px-2 pt-safe">
-        <button type="button" aria-label="Fold the player away" onClick={fold} className="grid size-11 place-items-center rounded-xl text-ink-soft">
+        <button type="button" aria-label={translateUi('Fold the player away')} onClick={fold} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronDown size={24} aria-hidden />
         </button>
         <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{song.artist}</p>
@@ -582,12 +580,7 @@ class Boundary extends Component<{ what: string; children: ReactNode }, { failed
   render() {
     if (!this.state.failed) return this.props.children;
     return (
-      <div className="rounded-2xl bg-surface/80 p-4 text-[14px] text-ink-soft">
-        {this.props.what} stopped working. Try again, or choose another way to play the song.
-        <button type="button" onClick={() => this.setState({ failed: false })} className="ml-2 font-semibold text-accent-text hover:underline">
-          Try again
-        </button>
-      </div>
+      <div className="rounded-2xl bg-surface/80 p-4 text-[14px] text-ink-soft"><UiText source={'{0} stopped working. Try again, or choose another way to play the song.{1}'} values={[this.props.what, <button type="button" onClick={() => this.setState({ failed: false })} className="ml-2 font-semibold text-accent-text hover:underline"><UiText source={'Try again'} /></button>]} /></div>
     );
   }
 }
@@ -609,10 +602,11 @@ function SongTitle({ song, large }: { song: Song; large?: boolean }) {
 
 /** "Playing from …": every way this song can play, and adding a link. */
 function SourceMenu({ song, kinds, source, setSource, onLink, onReject }: { song: Song; kinds: ClockKind[]; source: ClockKind | null; setSource: (s: ClockKind) => void; onLink: () => void; onReject: () => void }) {
+  const translateUi = useUi();
   const Icon = source ? SOURCE_ICON[source] : Link2;
   return (
     <Popover
-      label="Play from"
+      label={translateUi('Play from')}
       placement="bottom-start"
       className="w-72 p-1.5"
       trigger={(props) => (
@@ -622,7 +616,7 @@ function SourceMenu({ song, kinds, source, setSource, onLink, onReject }: { song
           className="flex h-10 max-w-full min-w-0 items-center gap-2 rounded-full border border-line/70 bg-surface/80 px-3.5 text-[13.5px] font-semibold text-ink-soft transition-colors hover:bg-surface hover:text-ink"
         >
           <Icon size={15} className="shrink-0" aria-hidden />
-          <span className="truncate">{source ? noteOf(source, song) : 'Choose how to play it'}</span>
+          <span className="truncate">{source ? noteOf(source, song) : translateUi('Choose how to play it')}</span>
           <ChevronDown size={15} className="shrink-0" aria-hidden />
         </button>
       )}
@@ -644,7 +638,7 @@ function SourceMenu({ song, kinds, source, setSource, onLink, onReject }: { song
           {source === 'youtube' && song.fullSource?.auto && (
             <MenuItem
               icon={Ban}
-              label="Not this one"
+              label={translateUi('Not this one')}
               detail="Find another recording"
               onClick={() => {
                 close();
@@ -654,7 +648,7 @@ function SourceMenu({ song, kinds, source, setSource, onLink, onReject }: { song
           )}
           <MenuItem
             icon={Link2}
-            label="Paste a link"
+            label={translateUi('Paste a link')}
             detail="YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion, Bandcamp"
             onClick={() => {
               close();
@@ -742,9 +736,10 @@ function PlayerArea({
 
 /** Leaves Cantus for Sonus › Music; the song keeps its place. */
 function LeaveButton({ className }: { className?: string }) {
+  const translateUi = useUi();
   const leave = useLeaveCantus();
   return (
-    <button type="button" onClick={leave} aria-label="Leave Cantus" title="Back to Lingua" className={cx('grid size-10 place-items-center rounded-full bg-[var(--room-fill)] text-ink-soft transition-colors hover:text-ink', className)}>
+    <button type="button" onClick={leave} aria-label={translateUi('Leave Cantus')} title={translateUi('Back to Lingua')} className={cx('grid size-10 place-items-center rounded-full bg-[var(--room-fill)] text-ink-soft transition-colors hover:text-ink', className)}>
       <X size={19} aria-hidden />
     </button>
   );
@@ -755,6 +750,7 @@ function LeaveButton({ className }: { className?: string }) {
  * back, play or pause, and a line on. Written straight to the page as it plays, never a render a frame.
  */
 function Transport({ song, clock }: { song: Song; clock: SongClock }) {
+  const translateUi = useUi();
   const [playing, setPlaying] = useState(clock.isPlaying());
   const bar = useRef<HTMLDivElement>(null);
   const at = useRef<HTMLSpanElement>(null);
@@ -790,13 +786,13 @@ function Transport({ song, clock }: { song: Song; clock: SongClock }) {
         <span>{song.durationMs ? formatClock(song.durationMs) : ''}</span>
       </div>
       <div className="mt-1 flex items-center justify-center gap-6">
-        <button type="button" aria-label="The line before" disabled={lineless} onClick={() => step(-1)} className={cx(ROUND, 'disabled:opacity-35')}>
+        <button type="button" aria-label={translateUi('The line before')} disabled={lineless} onClick={() => step(-1)} className={cx(ROUND, 'disabled:opacity-35')}>
           <SkipBack size={22} className="fill-current" aria-hidden />
         </button>
-        <button type="button" aria-label={playing ? 'Pause' : 'Play'} onClick={() => clock.toggle()} className="grid size-16 place-items-center rounded-full bg-[var(--room-pill,var(--color-inverse))] text-[var(--room-pill-ink,var(--color-on-inverse))] shadow-elev-1 transition-transform active:scale-90">
+        <button type="button" aria-label={playing ? translateUi('Pause') : translateUi('Play')} onClick={() => clock.toggle()} className="grid size-16 place-items-center rounded-full bg-[var(--room-pill,var(--color-inverse))] text-[var(--room-pill-ink,var(--color-on-inverse))] shadow-elev-1 transition-transform active:scale-90">
           {playing ? <Pause size={26} className="fill-current" aria-hidden /> : <Play size={26} className="translate-x-0.5 fill-current" aria-hidden />}
         </button>
-        <button type="button" aria-label="The next line" disabled={lineless} onClick={() => step(1)} className={cx(ROUND, 'disabled:opacity-35')}>
+        <button type="button" aria-label={translateUi('The next line')} disabled={lineless} onClick={() => step(1)} className={cx(ROUND, 'disabled:opacity-35')}>
           <SkipForward size={22} className="fill-current" aria-hidden />
         </button>
       </div>
@@ -808,12 +804,13 @@ const ROUND = 'grid size-11 shrink-0 place-items-center rounded-full text-ink-so
 
 /** The target: the next tap on a line says that line is being sung now. */
 function TargetButton({ syncing, onSync }: { syncing: boolean; onSync: (on: boolean) => void }) {
+  const translateUi = useUi();
   return (
     <button
       type="button"
-      aria-label="Tap the line you’re hearing"
+      aria-label={translateUi('Tap the line you’re hearing')}
       aria-pressed={syncing}
-      title="Tap the line you’re hearing"
+      title={translateUi('Tap the line you’re hearing')}
       onClick={() => onSync(!syncing)}
       className={syncing ? 'grid size-11 shrink-0 place-items-center rounded-full bg-[var(--song-ink)] text-bg shadow-elev-1 transition-transform active:scale-90' : ROUND}
     >
@@ -826,7 +823,7 @@ function TargetButton({ syncing, onSync }: { syncing: boolean; onSync: (on: bool
 function PlaceButton({ syncing, onSync }: { syncing: boolean; onSync: (on: boolean) => void }) {
   return (
     <div className="flex items-center gap-2 text-[13px] text-ink-soft">
-      <span className="min-w-0 flex-1 leading-snug">These lyrics have no timings: they follow an estimate. Out of step? Press the target, then tap the line being sung.</span>
+      <span className="min-w-0 flex-1 leading-snug"><UiText source={'These lyrics have no timings: they follow an estimate. Out of step? Press the target, then tap the line being sung.'} /></span>
       <TargetButton syncing={syncing} onSync={onSync} />
     </div>
   );
@@ -837,6 +834,7 @@ function PlaceButton({ syncing, onSync }: { syncing: boolean; onSync: (on: boole
  * line you're hearing; nudge until the lines match.
  */
 function TimerControls({ clock, apple, link, syncing, onSync, compact }: { clock: TimerClock; apple?: boolean; link?: boolean; syncing: boolean; onSync: (on: boolean) => void; compact?: boolean }) {
+  const translateUi = useUi();
   const [playing, setPlaying] = useState(clock.isPlaying());
   const [now, setNow] = useState(0);
   useEffect(() => clock.onPlaying(setPlaying), [clock]);
@@ -855,13 +853,13 @@ function TimerControls({ clock, apple, link, syncing, onSync, compact }: { clock
       <div className="flex items-center gap-2">
         <button type="button" onClick={() => clock.toggle()} className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-[var(--song-ink)] font-semibold text-bg shadow-elev-1 transition-transform active:scale-[0.98]">
           {playing ? <Pause size={19} className="fill-current" aria-hidden /> : <Play size={19} className="fill-current" aria-hidden />}
-          {playing ? 'Pause' : now > 0 ? 'Go on' : 'Start'}
+          {playing ? translateUi('Pause') : now > 0 ? translateUi('Go on') : translateUi('Start')}
         </button>
-        <button type="button" aria-label="A second back" onClick={() => clock.nudge(-1000)} className={ROUND}>
+        <button type="button" aria-label={translateUi('A second back')} onClick={() => clock.nudge(-1000)} className={ROUND}>
           <Minus size={18} aria-hidden />
         </button>
         <span className="w-12 text-center text-[13px] font-semibold text-ink-soft tabular-nums">{formatClock(now)}</span>
-        <button type="button" aria-label="A second ahead" onClick={() => clock.nudge(1000)} className={ROUND}>
+        <button type="button" aria-label={translateUi('A second ahead')} onClick={() => clock.nudge(1000)} className={ROUND}>
           <Plus size={18} aria-hidden />
         </button>
         <TargetButton syncing={syncing} onSync={onSync} />
@@ -869,10 +867,10 @@ function TimerControls({ clock, apple, link, syncing, onSync, compact }: { clock
       {!playing && now === 0 && !syncing && !compact && (
         <p className="mt-2 text-[12.5px] leading-snug text-ink-faint">
           {link
-            ? 'This player tells Lingua nothing: press play on it and Start here together, or press the target and tap the line you’re hearing.'
+            ? translateUi('This player tells Lingua nothing: press play on it and Start here together, or press the target and tap the line you’re hearing.')
             : apple
-            ? 'Press play on Apple Music and the lyrics start with it. Hearing a preview, or out of step? Press the target, then tap the line being sung.'
-            : 'Playing it on a speaker or anywhere else? Start when the song starts, or press the target and tap the line you’re hearing. Ahead or behind? Use − and +.'}
+            ? translateUi('Press play on Apple Music and the lyrics start with it. Hearing a preview, or out of step? Press the target, then tap the line being sung.')
+            : translateUi('Playing it on a speaker or anywhere else? Start when the song starts, or press the target and tap the line you’re hearing. Ahead or behind? Use − and +.')}
         </p>
       )}
     </div>
@@ -897,6 +895,7 @@ function PreviewControls({
   onSync: (on: boolean) => void;
   compact?: boolean;
 }) {
+  const translateUi = useUi();
   const [playing, setPlaying] = useState(clock.isPlaying());
   const bar = useRef<HTMLDivElement>(null);
   const [seconds, setSeconds] = useState(0);
@@ -918,7 +917,7 @@ function PreviewControls({
       <div className="flex items-center gap-2">
         <button type="button" onClick={() => clock.toggle()} className="flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-[var(--song-ink)] font-semibold text-bg shadow-elev-1 transition-transform active:scale-[0.98]">
           {playing ? <Pause size={19} className="fill-current" aria-hidden /> : <Play size={19} className="fill-current" aria-hidden />}
-          {playing ? 'Pause' : seconds > 0 ? 'Go on' : 'Play the preview'}
+          {playing ? translateUi('Pause') : seconds > 0 ? translateUi('Go on') : translateUi('Play the preview')}
         </button>
         <span className="w-12 text-center text-[13px] font-semibold text-ink-soft tabular-nums">0:{String(Math.min(30, seconds)).padStart(2, '0')}</span>
         {followable && <TargetButton syncing={syncing} onSync={onSync} />}
@@ -927,12 +926,12 @@ function PreviewControls({
         <div ref={bar} className="h-full origin-left rounded-full bg-[var(--song-ink)]" style={{ transform: 'scaleX(0)' }} />
       </div>
       {failed ? (
-        <p className="mt-2 text-[13px] font-semibold text-accent-text">The preview couldn’t play. Check the connection, or choose another way above.</p>
+        <p className="mt-2 text-[13px] font-semibold text-accent-text"><UiText source={'The preview couldn’t play. Check the connection, or choose another way above.'} /></p>
       ) : (
         !compact &&
         followable && (
           <p className="mt-2 text-[12.5px] leading-snug text-ink-faint">
-            {placed ? '30 seconds of the song, from Apple. The lyrics follow it.' : 'A 30-second piece from the middle of the song. Play it, then tap the line being sung, and the lyrics follow from there.'}
+            {placed ? translateUi('30 seconds of the song, from Apple. The lyrics follow it.') : translateUi('A 30-second piece from the middle of the song. Play it, then tap the line being sung, and the lyrics follow from there.')}
           </p>
         )
       )}
@@ -951,9 +950,7 @@ function AppleMusicLink({ song, onOpened }: { song: Song; onOpened: () => void }
       rel="noopener noreferrer"
       onClick={onOpened}
       className="flex h-11 items-center justify-center gap-2 rounded-2xl bg-[#fa2d48] font-semibold text-white shadow-elev-1 transition-transform active:scale-[0.98]"
-    >
-      <Music2 size={18} aria-hidden /> Play in Apple Music
-    </a>
+    ><UiText source={'{0} Play in Apple Music'} values={[<Music2 size={18} aria-hidden />]} /></a>
   );
 }
 
@@ -964,43 +961,39 @@ function LyricsCredit({ song, estimated }: { song: Song; estimated: boolean }) {
   const label = from === 'lyrics.ovh' ? 'lyrics.ovh' : 'LRCLIB';
   const href = from === 'lyrics.ovh' ? 'https://lyrics.ovh' : 'https://lrclib.net';
   return (
-    <p className="mt-10 text-center text-[12.5px] text-ink-faint">
-      Lyrics from{' '}
-      <a href={href} target="_blank" rel="noopener noreferrer" className="font-semibold hover:text-ink-soft hover:underline">
+    <p className="mt-10 text-center text-[12.5px] text-ink-faint"><UiText source={'Lyrics from{0}{1}{2}'} values={[' ', <a href={href} target="_blank" rel="noopener noreferrer" className="font-semibold hover:text-ink-soft hover:underline">
         {label}
-      </a>
-      {!isTimed(song.lines) && (estimated ? ' · not timed: following an estimate' : ' · not timed to the music')}
-    </p>
+      </a>, !isTimed(song.lines) && (estimated ? ' · not timed: following an estimate' : ' · not timed to the music')]} /></p>
   );
 }
 
 /** Lyrics a little early or late against the music: move them in quarter seconds. */
 function TimingNudge({ song }: { song: Song }) {
+  const translateUi = useUi();
   const offset = song.offsetMs ?? 0;
   const set = (ms: number) => void patchSong(song.id, { offsetMs: Math.max(-10_000, Math.min(10_000, ms)) || undefined });
   return (
     <div className="flex items-center gap-2 text-[13px] text-ink-soft">
       <Timer size={15} className="shrink-0" aria-hidden />
-      <span className="min-w-0 flex-1 truncate">{offset ? `Lyrics ${offset > 0 ? 'later' : 'earlier'} by ${(Math.abs(offset) / 1000).toFixed(2)} s` : 'Lyrics in time with the music'}</span>
-      <IconButton icon={Minus} label="Lyrics earlier" size="sm" onClick={() => set(offset - 250)} />
-      <IconButton icon={Plus} label="Lyrics later" size="sm" onClick={() => set(offset + 250)} />
-      {offset !== 0 && <IconButton icon={RotateCcw} label="Reset the timing" size="sm" onClick={() => set(0)} />}
+      <span className="min-w-0 flex-1 truncate">{offset ? translateUi('Lyrics {0} by {1} s', [offset > 0 ? 'later' : 'earlier', (Math.abs(offset) / 1000).toFixed(2)]) : translateUi('Lyrics in time with the music')}</span>
+      <IconButton icon={Minus} label={translateUi('Lyrics earlier')} size="sm" onClick={() => set(offset - 250)} />
+      <IconButton icon={Plus} label={translateUi('Lyrics later')} size="sm" onClick={() => set(offset + 250)} />
+      {offset !== 0 && <IconButton icon={RotateCcw} label={translateUi('Reset the timing')} size="sm" onClick={() => set(0)} />}
     </div>
   );
 }
 
 function NoPlayer({ song, onLink }: { song: Song; onLink: () => void }) {
+  const translateUi = useUi();
   return (
     <div className="rounded-2xl bg-surface/80 p-4">
       <p className="text-[14px] leading-snug text-ink-soft">
         {song.lines.length && !isTimed(song.lines)
-          ? 'These lyrics have no timings, and the song’s length isn’t known, so they won’t follow the music: scroll along as you listen.'
-          : 'Add the song’s YouTube or Spotify link to play it here with the lyrics following.'}
+          ? translateUi('These lyrics have no timings, and the song’s length isn’t known, so they won’t follow the music: scroll along as you listen.')
+          : translateUi('Add the song’s YouTube or Spotify link to play it here with the lyrics following.')}
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
-        <Button size="sm" variant="secondary" icon={Link2} onClick={onLink}>
-          Add a link
-        </Button>
+        <Button size="sm" variant="secondary" icon={Link2} onClick={onLink}><UiText source={'Add a link'} /></Button>
       </div>
     </div>
   );
@@ -1009,35 +1002,32 @@ function NoPlayer({ song, onLink }: { song: Song; onLink: () => void }) {
 // ── Translation ─────────────────────────────────────────────────────────────────────────────────
 
 function TranslationBar({ song, mode, translating, onTranslate }: { song: Song; mode: 'show' | 'blur' | 'hide'; translating: number | null; onTranslate: () => void }) {
+  const translateUi = useUi();
   if (translating !== null) {
     return (
-      <p className="mb-5 flex items-center gap-2 text-[13.5px] font-semibold text-ink-soft">
-        <LoaderCircle size={16} className="animate-spin" aria-hidden /> Translating the song… {Math.round(translating * 100)}%
-      </p>
+      <p className="mb-5 flex items-center gap-2 text-[13.5px] font-semibold text-ink-soft"><UiText source={'{0} Translating the song… {1}%'} values={[<LoaderCircle size={16} className="animate-spin" aria-hidden />, Math.round(translating * 100)]} /></p>
     );
   }
   if (!song.translation) {
     return (
       <div className="mb-5">
-        <Button size="sm" variant="secondary" icon={Languages} onClick={onTranslate}>
-          Translate every line
-        </Button>
+        <Button size="sm" variant="secondary" icon={Languages} onClick={onTranslate}><UiText source={'Translate every line'} /></Button>
       </div>
     );
   }
   return (
     <div className="mb-5 flex flex-wrap items-center gap-3">
       <Segmented
-        label="English under each line"
+        label={translateUi('English under each line')}
         value={mode}
         onChange={(translation) => void patchSetting('cantus', { translation })}
         options={[
-          { value: 'show', label: 'English' },
-          { value: 'blur', label: 'Blurred' },
-          { value: 'hide', label: 'Hidden' },
+          { value: 'show', label: translateUi('English') },
+          { value: 'blur', label: translateUi('Blurred') },
+          { value: 'hide', label: translateUi('Hidden') },
         ]}
       />
-      <span className="text-[12px] text-ink-faint">{song.translation.by === 'ai' ? 'Translated by your AI' : 'Machine translation'}</span>
+      <span className="text-[12px] text-ink-faint">{song.translation.by === 'ai' ? translateUi('Translated by your AI') : translateUi('Machine translation')}</span>
     </div>
   );
 }
@@ -1049,13 +1039,14 @@ const replaceLyrics = (song: Song, patch: Partial<Song>) => patchSong(song.id, {
 
 /** One set of lyrics to choose: its name, whether it's timed, its length and first line. */
 function LyricChoice({ found, onUse }: { found: FoundLyrics; onUse: () => void }) {
+  const translateUi = useUi();
   return (
     <button type="button" onClick={onUse} className="w-full rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-sunken">
       <span className="block truncate text-[14.5px] font-semibold">
         {found.title} <span className="font-normal text-ink-soft">· {found.artist}</span>
       </span>
       <span className="block truncate text-[12.5px] text-ink-faint">
-        {found.timed ? 'Timed to the music' : 'Not timed'}
+        {found.timed ? translateUi('Timed to the music') : translateUi('Not timed')}
         {found.durationMs ? ` · ${formatClock(found.durationMs)}` : ''} · {found.lines.find((l) => l.text)?.text}
       </span>
     </button>
@@ -1063,6 +1054,7 @@ function LyricChoice({ found, onUse }: { found: FoundLyrics; onUse: () => void }
 }
 
 function NoLyrics({ song, state, onFind, onPaste, onRetry }: { song: Song; state: 'idle' | 'loading' | 'failed'; onFind: () => void; onPaste: () => void; onRetry: () => void }) {
+  const translateUi = useUi();
   const missing = Boolean(song.lyricsMissing) && !song.instrumental && state === 'idle';
   // Nothing sure turned up: what LRCLIB has under a similar name, to pick from.
   const [picks, setPicks] = useState<FoundLyrics[] | null>(null);
@@ -1079,7 +1071,7 @@ function NoLyrics({ song, state, onFind, onPaste, onRetry }: { song: Song; state
 
   if (state === 'loading' || (!song.lyricsMissing && state === 'idle')) {
     return (
-      <div className="space-y-4" aria-label="Finding the lyrics">
+      <div className="space-y-4" aria-label={translateUi('Finding the lyrics')}>
         {[70, 52, 64, 40, 58].map((w, i) => (
           <div key={i} className="h-7 animate-pulse rounded-lg bg-sunken" style={{ width: `${w}%` }} />
         ))}
@@ -1090,16 +1082,16 @@ function NoLyrics({ song, state, onFind, onPaste, onRetry }: { song: Song; state
     <div className="rounded-3xl border border-line/70 bg-surface p-5 sm:p-6">
       <div className="text-center">
         <Music2 size={26} className="mx-auto text-[var(--song-ink)]" aria-hidden />
-        <p className="mt-3 font-serif text-lg font-semibold">{song.instrumental ? 'This song has no words.' : state === 'failed' ? 'The lyrics couldn’t be fetched.' : picks?.length ? 'Are these the lyrics?' : 'No lyrics found yet.'}</p>
+        <p className="mt-3 font-serif text-lg font-semibold">{song.instrumental ? translateUi('This song has no words.') : state === 'failed' ? translateUi('The lyrics couldn’t be fetched.') : picks?.length ? translateUi('Are these the lyrics?') : translateUi('No lyrics found yet.')}</p>
         {!song.instrumental && (
           <p className="mx-auto mt-1 max-w-sm text-[14px] text-ink-soft">
             {state === 'failed'
-              ? 'The lyrics library is busy or out of reach. It tries again by itself in a moment; or try now.'
+              ? translateUi('The lyrics library is busy or out of reach. It tries again by itself in a moment; or try now.')
               : picks?.length
-                ? 'Nothing matched this song for sure. Pick the right one, or find them another way.'
+                ? translateUi('Nothing matched this song for sure. Pick the right one, or find them another way.')
                 : picks
-                  ? 'Search under another name, or find them on Genius and paste them here.'
-                  : 'Looking for lyrics under similar names…'}
+                  ? translateUi('Search under another name, or find them on Genius and paste them here.')
+                  : translateUi('Looking for lyrics under similar names…')}
           </p>
         )}
       </div>
@@ -1115,20 +1107,12 @@ function NoLyrics({ song, state, onFind, onPaste, onRetry }: { song: Song; state
       {!song.instrumental && (
         <div className="mt-4 flex flex-wrap justify-center gap-2">
           {state === 'failed' ? (
-            <Button variant="secondary" icon={RotateCcw} onClick={onRetry}>
-              Try again
-            </Button>
+            <Button variant="secondary" icon={RotateCcw} onClick={onRetry}><UiText source={'Try again'} /></Button>
           ) : (
-            <Button variant="secondary" icon={Search} onClick={onFind}>
-              Search another name
-            </Button>
+            <Button variant="secondary" icon={Search} onClick={onFind}><UiText source={'Search another name'} /></Button>
           )}
-          <a href={geniusSearchUrl(song.title, song.artist)} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-1.5 rounded-2xl px-4 font-semibold text-ink-soft transition-colors hover:bg-sunken">
-            On Genius <ExternalLink size={14} aria-hidden />
-          </a>
-          <Button variant="ghost" onClick={onPaste}>
-            Paste them yourself
-          </Button>
+          <a href={geniusSearchUrl(song.title, song.artist)} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-1.5 rounded-2xl px-4 font-semibold text-ink-soft transition-colors hover:bg-sunken"><UiText source={'On Genius {0}'} values={[<ExternalLink size={14} aria-hidden />]} /></a>
+          <Button variant="ghost" onClick={onPaste}><UiText source={'Paste them yourself'} /></Button>
         </div>
       )}
     </div>
@@ -1136,6 +1120,7 @@ function NoLyrics({ song, state, onFind, onPaste, onRetry }: { song: Song; state
 }
 
 function LyricsDialog({ song, open, pasting, onClose }: { song: Song; open: boolean; pasting: boolean; onClose: () => void }) {
+  const translateUi = useUi();
   const [query, setQuery] = useState(`${song.title} ${song.artist}`);
   const [results, setResults] = useState<FoundLyrics[] | null>(null);
   const [busy, setBusy] = useState(false);
@@ -1177,7 +1162,7 @@ function LyricsDialog({ song, open, pasting, onClose }: { song: Song; open: bool
     else toast('lyrics.ovh doesn’t have this song’s lyrics.');
   };
   return (
-    <Dialog open={open} onClose={onClose} title={paste ? 'Paste the lyrics' : 'Find other lyrics'}>
+    <Dialog open={open} onClose={onClose} title={paste ? translateUi('Paste the lyrics') : translateUi('Find other lyrics')}>
       {paste ? (
         <>
           <textarea
@@ -1189,12 +1174,8 @@ function LyricsDialog({ song, open, pasting, onClose }: { song: Song; open: bool
             className="w-full rounded-xl border border-line bg-raised p-3 text-[15px] leading-relaxed"
           />
           <div className="mt-3 flex justify-end gap-2">
-            <Button variant="ghost" onClick={() => setPaste(false)}>
-              Back
-            </Button>
-            <Button disabled={!pasted.trim()} onClick={() => void use({ lines: parsePlain(pasted), lrclibId: undefined, lyricsFrom: 'pasted' })}>
-              Use these lyrics
-            </Button>
+            <Button variant="ghost" onClick={() => setPaste(false)}><UiText source={'Back'} /></Button>
+            <Button disabled={!pasted.trim()} onClick={() => void use({ lines: parsePlain(pasted), lrclibId: undefined, lyricsFrom: 'pasted' })}><UiText source={'Use these lyrics'} /></Button>
           </div>
         </>
       ) : (
@@ -1206,10 +1187,8 @@ function LyricsDialog({ song, open, pasting, onClose }: { song: Song; open: bool
             }}
             className="flex gap-2"
           >
-            <SearchInput value={query} onChange={setQuery} placeholder="Song and artist" className="flex-1" />
-            <Button type="submit" loading={busy}>
-              Search
-            </Button>
+            <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Song and artist')} className="flex-1" />
+            <Button type="submit" loading={busy}><UiText source={'Search'} /></Button>
           </form>
           <ul className="mt-3 max-h-[46dvh] space-y-1 overflow-y-auto">
             {results?.map((r) => (
@@ -1217,22 +1196,16 @@ function LyricsDialog({ song, open, pasting, onClose }: { song: Song; open: bool
                 <LyricChoice found={r} onUse={() => void use({ lines: r.lines, lrclibId: r.id, lyricsFrom: 'lrclib' })} />
               </li>
             ))}
-            {results?.length === 0 && <li className="px-3 py-4 text-center text-[14px] text-ink-soft">Nothing found under that name.</li>}
+            {results?.length === 0 && <li className="px-3 py-4 text-center text-[14px] text-ink-soft"><UiText source={'Nothing found under that name.'} /></li>}
           </ul>
           <div className="mt-4 border-t border-line pt-4">
-            <p className="mb-2 text-[13px] font-semibold text-ink-soft">Elsewhere</p>
+            <p className="mb-2 text-[13px] font-semibold text-ink-soft"><UiText source={'Elsewhere'} /></p>
             <div className="flex flex-wrap gap-2">
-              <Button size="sm" variant="secondary" loading={elsewhere} onClick={() => void fromLyricsOvh()}>
-                lyrics.ovh
-              </Button>
-              <a href={geniusSearchUrl(song.title, song.artist)} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-1.5 rounded-xl px-3 text-[14px] font-semibold text-ink-soft transition-colors hover:bg-sunken">
-                Look on Genius <ExternalLink size={13} aria-hidden />
-              </a>
-              <Button size="sm" variant="ghost" onClick={() => setPaste(true)}>
-                Paste them yourself
-              </Button>
+              <Button size="sm" variant="secondary" loading={elsewhere} onClick={() => void fromLyricsOvh()}><UiText source={'lyrics.ovh'} /></Button>
+              <a href={geniusSearchUrl(song.title, song.artist)} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-1.5 rounded-xl px-3 text-[14px] font-semibold text-ink-soft transition-colors hover:bg-sunken"><UiText source={'Look on Genius {0}'} values={[<ExternalLink size={13} aria-hidden />]} /></a>
+              <Button size="sm" variant="ghost" onClick={() => setPaste(true)}><UiText source={'Paste them yourself'} /></Button>
             </div>
-            <p className="mt-2 text-[12.5px] text-ink-faint">Found them on Genius? Copy the words, then Paste them yourself.</p>
+            <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'Found them on Genius? Copy the words, then Paste them yourself.'} /></p>
           </div>
         </>
       )}
@@ -1241,6 +1214,7 @@ function LyricsDialog({ song, open, pasting, onClose }: { song: Song; open: bool
 }
 
 function LinkDialog({ song, open, onClose, onAdded }: { song: Song; open: boolean; onClose: () => void; onAdded: (kind: ClockKind) => void }) {
+  const translateUi = useUi();
   const [value, setValue] = useState('');
   const [checking, setChecking] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
@@ -1281,63 +1255,54 @@ function LinkDialog({ song, open, onClose, onAdded }: { song: Song; open: boolea
     <Dialog
       open={open}
       onClose={onClose}
-      title="Play the song from a link"
+      title={translateUi('Play the song from a link')}
       actions={
         <>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button disabled={!link || checking} loading={checking} onClick={() => void add()}>
-            Add
-          </Button>
+          <Button variant="ghost" onClick={onClose}><UiText source={'Cancel'} /></Button>
+          <Button disabled={!link || checking} loading={checking} onClick={() => void add()}><UiText source={'Add'} /></Button>
         </>
       }
     >
-      <p className="text-[14px] leading-snug text-ink-soft">Paste the song’s link from YouTube (or YouTube Music), SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp. YouTube and SoundCloud play the whole song for everyone, and the lyrics follow them.</p>
+      <p className="text-[14px] leading-snug text-ink-soft"><UiText source={'Paste the song’s link from YouTube (or YouTube Music), SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp. YouTube and SoundCloud play the whole song for everyone, and the lyrics follow them.'} /></p>
       <input
         value={value}
         onChange={(e) => {
           setValue(e.target.value);
           setProblem(null);
         }}
-        placeholder="https://…"
+        placeholder={translateUi('https://…')}
         inputMode="url"
         autoCapitalize="off"
         autoCorrect="off"
         spellCheck={false}
         className="mt-3 h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[16px]"
-        aria-label="Link to the song"
+        aria-label={translateUi('Link to the song')}
       />
       {(problem || (value && !link)) && <p className="mt-2 text-[13px] text-accent-text">{problem ?? 'That isn’t a link Lingua can play: a song or video on YouTube, SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp.'}</p>}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
-        <a href={`https://www.youtube.com/results?search_query=${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
-          Find it on YouTube <ExternalLink size={12} aria-hidden />
-        </a>
-        <a href={`https://soundcloud.com/search/sounds?q=${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
-          On SoundCloud <ExternalLink size={12} aria-hidden />
-        </a>
-        <a href={`https://open.spotify.com/search/${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
-          On Spotify <ExternalLink size={12} aria-hidden />
-        </a>
+        <a href={`https://www.youtube.com/results?search_query=${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline"><UiText source={'Find it on YouTube {0}'} values={[<ExternalLink size={12} aria-hidden />]} /></a>
+        <a href={`https://soundcloud.com/search/sounds?q=${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline"><UiText source={'On SoundCloud {0}'} values={[<ExternalLink size={12} aria-hidden />]} /></a>
+        <a href={`https://open.spotify.com/search/${q}`} target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline"><UiText source={'On Spotify {0}'} values={[<ExternalLink size={12} aria-hidden />]} /></a>
       </div>
     </Dialog>
   );
 }
 
 function SongMenu({ song, onLink, onLyrics, className }: { song: Song; onLink: () => void; onLyrics: () => void; className?: string }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   return (
     <Popover
-      label="Song options"
+      label={translateUi('Song options')}
       placement="bottom-end"
       className="w-64 p-1.5"
       trigger={(props) =>
         className ? (
-          <button type="button" {...props} aria-label="Song options" className={className}>
+          <button type="button" {...props} aria-label={translateUi('Song options')} className={className}>
             <Ellipsis size={20} aria-hidden />
           </button>
         ) : (
-          <IconButton {...props} icon={Ellipsis} label="Song options" variant="soft" />
+          <IconButton {...props} icon={Ellipsis} label={translateUi('Song options')} variant="soft" />
         )
       }
     >
@@ -1346,7 +1311,7 @@ function SongMenu({ song, onLink, onLyrics, className }: { song: Song; onLink: (
           {song.lines.length > 0 && (
             <MenuItem
               icon={BookOpen}
-              label="Read in Codex"
+              label={translateUi('Read in Codex')}
               onClick={() => {
                 close();
                 void openLyricsInCodex(song).then((id) => navigate(`/codex/read/${id}`));
@@ -1355,7 +1320,7 @@ function SongMenu({ song, onLink, onLyrics, className }: { song: Song; onLink: (
           )}
           <MenuItem
             icon={Link2}
-            label="Add a YouTube or Spotify link"
+            label={translateUi('Add a YouTube or Spotify link')}
             onClick={() => {
               close();
               onLink();
@@ -1363,7 +1328,7 @@ function SongMenu({ song, onLink, onLyrics, className }: { song: Song; onLink: (
           />
           <MenuItem
             icon={Search}
-            label="Find other lyrics"
+            label={translateUi('Find other lyrics')}
             onClick={() => {
               close();
               onLyrics();
@@ -1372,7 +1337,7 @@ function SongMenu({ song, onLink, onLyrics, className }: { song: Song; onLink: (
           {song.appleUrl && (
             <MenuItem
               icon={ExternalLink}
-              label="Open in Apple Music"
+              label={translateUi('Open in Apple Music')}
               onClick={() => {
                 close();
                 window.open(song.appleUrl, '_blank', 'noopener');
@@ -1381,7 +1346,7 @@ function SongMenu({ song, onLink, onLyrics, className }: { song: Song; onLink: (
           )}
           <MenuItem
             icon={Trash2}
-            label="Remove from your music"
+            label={translateUi('Remove from your music')}
             danger
             onClick={() => {
               close();

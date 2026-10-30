@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Boxes drawn over a picture for an image-occlusion card (6-3b): drag to draw one, tap one to take it away.
 import { useRef, useState } from 'react';
 import type { Note } from '@/data/types';
@@ -5,6 +6,7 @@ import type { Note } from '@/data/types';
 type Box = NonNullable<Note['occlusion']>[number];
 
 export function OcclusionEditor({ src, boxes, onChange }: { src: string; boxes: Box[]; onChange: (b: Box[]) => void }) {
+  const translateUi = useUi();
   const area = useRef<HTMLDivElement>(null);
   const [draft, setDraft] = useState<Box | null>(null);
   const start = useRef<{ x: number; y: number } | null>(null);
@@ -40,7 +42,7 @@ export function OcclusionEditor({ src, boxes, onChange }: { src: string; boxes: 
           <button
             key={i}
             type="button"
-            aria-label={`Take box ${i + 1} away`}
+            aria-label={translateUi('Take box {0} away', [i + 1])}
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => i < boxes.length && onChange(boxes.filter((_, n) => n !== i))}
             className="absolute rounded-md border-2 border-accent bg-ink/80"
@@ -48,7 +50,7 @@ export function OcclusionEditor({ src, boxes, onChange }: { src: string; boxes: 
           />
         ))}
       </div>
-      <p className="mt-2 text-[12.5px] text-ink-faint">Drag over the parts to hide. Tap a box to take it away. {boxes.length} {boxes.length === 1 ? 'box' : 'boxes'}.</p>
+      <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'Drag over the parts to hide. Tap a box to take it away. {0} {1}.'} values={[boxes.length, boxes.length === 1 ? 'box' : 'boxes']} /></p>
     </div>
   );
 }

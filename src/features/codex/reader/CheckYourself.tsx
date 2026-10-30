@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Check, ChevronDown, RotateCcw, X } from 'lucide-react';
@@ -24,6 +25,7 @@ const PROMPT: Record<CheckItem['kind'], string> = {
  * in Ratio like a round of Ludus.
  */
 export function CheckYourself({ lang, refId, words, source }: { lang: string; refId: string; words: CheckItem[]; source: string }) {
+  const translateUi = useUi();
   const { settings } = useApp();
   const ai = settings.reader.endStory && aiBlock(settings, settings.llm.provider) === null;
   const [open, setOpen] = useState(false);
@@ -73,10 +75,8 @@ export function CheckYourself({ lang, refId, words, source }: { lang: string; re
     <div className="mt-10 w-full rounded-3xl border border-line/70 bg-surface text-left">
       <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="flex w-full items-center gap-3 rounded-3xl px-5 py-4 text-left transition-colors hover:bg-raised">
         <span className="min-w-0 flex-1">
-          <span className="block font-semibold">Check yourself</span>
-          <span className="block text-[14px] text-ink-soft">
-            {words.length} quick questions from this text{ai ? ', and two about the story' : ''}, if you like. They count in Ratio.
-          </span>
+          <span className="block font-semibold"><UiText source={'Check yourself'} /></span>
+          <span className="block text-[14px] text-ink-soft"><UiText source={'{0} quick questions from this text{1}, if you like. They count in Ratio.'} values={[words.length, ai ? ', and two about the story' : '']} /></span>
         </span>
         <ChevronDown size={18} className={cx('shrink-0 text-ink-faint transition-transform', open && 'rotate-180')} aria-hidden />
       </button>
@@ -86,13 +86,9 @@ export function CheckYourself({ lang, refId, words, source }: { lang: string; re
             <div className="border-t border-line/60 px-5 pt-4 pb-5">
               {done ? (
                 <div className="py-2 text-center">
-                  <p className="font-serif text-[26px] font-semibold tabular-nums">
-                    {right} of {items.length}
-                  </p>
-                  <p className="mt-1 text-ink-soft">{right === items.length ? 'Every one. You read this well.' : right >= items.length * 0.6 ? 'Most of it. Well read.' : 'A second read will make these stick.'}</p>
-                  <button type="button" onClick={again} className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft hover:text-ink">
-                    <RotateCcw size={14} aria-hidden /> Again
-                  </button>
+                  <p className="font-serif text-[26px] font-semibold tabular-nums"><UiText source={'{0} of {1}'} values={[right, items.length]} /></p>
+                  <p className="mt-1 text-ink-soft">{right === items.length ? translateUi('Every one. You read this well.') : right >= items.length * 0.6 ? translateUi('Most of it. Well read.') : translateUi('A second read will make these stick.')}</p>
+                  <button type="button" onClick={again} className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft hover:text-ink"><UiText source={'{0} Again'} values={[<RotateCcw size={14} aria-hidden />]} /></button>
                 </div>
               ) : (
                 <>
@@ -235,6 +231,7 @@ function OrderQuestion({ lang, item, answered, onAnswer }: { lang: string; item:
 }
 
 function Feedback({ ok, item, last, onNext }: { ok: boolean; item: CheckItem; last: boolean; onNext: () => void }) {
+  const translateUi = useUi();
   const solution = ok ? null : item.kind === 'order' ? item.answer.join(item.joiner) : item.answer;
 
   // Enter goes on.
@@ -252,9 +249,9 @@ function Feedback({ ok, item, last, onNext }: { ok: boolean; item: CheckItem; la
   return (
     <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy} className={cx('mt-4 flex items-center gap-3 rounded-2xl p-3.5', ok ? 'bg-sage-soft text-sage-text' : 'bg-accent-soft text-accent-text')}>
       {ok ? <Check size={18} className="shrink-0" aria-hidden /> : <X size={18} className="shrink-0" aria-hidden />}
-      <p className="min-w-0 flex-1 font-semibold">{ok ? 'Right.' : `It’s “${solution}”.`}</p>
+      <p className="min-w-0 flex-1 font-semibold">{ok ? translateUi('Right.') : translateUi('It’s “{0}”.', [solution])}</p>
       <Button size="sm" variant="secondary" onClick={onNext}>
-        {last ? 'See how it went' : 'Next'}
+        {last ? translateUi('See how it went') : translateUi('Next')}
       </Button>
     </motion.div>
   );

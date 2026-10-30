@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { sectionKey, SECTIONS } from '@/app/sections';
 import { useApp } from '@/app/context';
 import { patchSetting } from '@/data/settings';
@@ -77,6 +78,7 @@ export const WATCHING_SHORTCUTS: Array<[string[], string]> = [
 
 /** Every desktop shortcut, grouped. Shown in Settings and in the `?` dialog. */
 export function ShortcutList({ style }: { style?: KeyboardStyle }) {
+  const translateUi = useUi();
   let appStyle: KeyboardStyle = 'auto';
   try {
     const app = useApp();
@@ -88,11 +90,11 @@ export function ShortcutList({ style }: { style?: KeyboardStyle }) {
 
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      <Group isMac={isMac} title="Navigate" rows={[...SECTIONS.slice(0, 10).map((s, i): [string[], string] => [['Alt', String(sectionKey(i))], s.name]), ...GENERAL]} />
-      <Group isMac={isMac} title="Reading" rows={READER_SHORTCUTS} />
-      <Group isMac={isMac} title="Studying" rows={STUDY_SHORTCUTS} />
-      <Group isMac={isMac} title="Listening" rows={LISTENING_SHORTCUTS} />
-      <Group isMac={isMac} title="Watching" rows={WATCHING_SHORTCUTS} />
+      <Group isMac={isMac} title={translateUi('Navigate')} rows={[...SECTIONS.slice(0, 10).map((s, i): [string[], string] => [['Alt', String(sectionKey(i))], s.name]), ...GENERAL]} />
+      <Group isMac={isMac} title={translateUi('Reading')} rows={READER_SHORTCUTS} />
+      <Group isMac={isMac} title={translateUi('Studying')} rows={STUDY_SHORTCUTS} />
+      <Group isMac={isMac} title={translateUi('Listening')} rows={LISTENING_SHORTCUTS} />
+      <Group isMac={isMac} title={translateUi('Watching')} rows={WATCHING_SHORTCUTS} />
     </div>
   );
 }
@@ -118,6 +120,7 @@ function Group({ title, rows, isMac }: { title: string; rows: Array<[string[], s
 }
 
 export function ShortcutsDialog() {
+  const translateUi = useUi();
   const open = useUI((s) => s.shortcutsOpen);
   const setOpen = useUI((s) => s.setShortcutsOpen);
   let keyboardStyle: KeyboardStyle = 'auto';
@@ -132,23 +135,21 @@ export function ShortcutsDialog() {
     <Dialog
       open={open}
       onClose={() => setOpen(false)}
-      title="Keyboard shortcuts"
+      title={translateUi('Keyboard shortcuts')}
       maxWidth="max-w-2xl"
       actions={
         <div className="flex w-full flex-wrap items-center justify-between gap-3 sm:w-auto">
           <Segmented<KeyboardStyle>
-            label="Command symbols"
+            label={translateUi('Command symbols')}
             value={keyboardStyle}
             onChange={(val) => void patchSetting('ui', { keyboardStyle: val })}
             options={[
-              { value: 'auto', label: 'Auto' },
-              { value: 'mac', label: 'Mac (⌘ ⌥)' },
-              { value: 'windows', label: 'Win (Ctrl Alt)' },
+              { value: 'auto', label: translateUi('Auto') },
+              { value: 'mac', label: translateUi('Mac (⌘ ⌥)') },
+              { value: 'windows', label: translateUi('Win (Ctrl Alt)') },
             ]}
           />
-          <Button variant="secondary" onClick={() => setOpen(false)} data-autofocus>
-            Done
-          </Button>
+          <Button variant="secondary" onClick={() => setOpen(false)} data-autofocus><UiText source={'Done'} /></Button>
         </div>
       }
     >

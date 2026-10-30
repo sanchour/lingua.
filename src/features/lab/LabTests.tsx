@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import { Hand, HardDrive, PanelBottom, Share2, Smartphone, Type } from 'lucide-react';
 import { getLanguage, LANGUAGES } from '@/core/lang/languages';
@@ -25,6 +26,7 @@ function readSafeAreas(): Record<'top' | 'right' | 'bottom' | 'left', number> {
 }
 
 export function EnvironmentCard() {
+  const translateUi = useUi();
   const { layout, pointer } = useLayout();
   const record = useLabReport((s) => s.record);
   const env = useMemo(() => {
@@ -47,7 +49,7 @@ export function EnvironmentCard() {
 
   const sa = env.safeArea;
   return (
-    <LabCard icon={Smartphone} title="This device">
+    <LabCard icon={Smartphone} title={translateUi('This device')}>
       <Facts
         rows={[
           ['Opened as', env.standalone ? 'Installed app' : 'Browser tab'],
@@ -63,6 +65,7 @@ export function EnvironmentCard() {
 }
 
 export function StorageCard() {
+  const translateUi = useUi();
   const [info, setInfo] = useState<StorageInfo | null>(null);
   const [requested, setRequested] = useState<boolean | null>(null);
   const record = useLabReport((s) => s.record);
@@ -75,7 +78,7 @@ export function StorageCard() {
   }, [record]);
 
   return (
-    <LabCard icon={HardDrive} title="Storage" description="Whether the browser promises to keep Lingua’s data.">
+    <LabCard icon={HardDrive} title={translateUi('Storage')} description={translateUi('Whether the browser promises to keep Lingua’s data.')}>
       {info && (
         <Facts
           rows={[
@@ -95,23 +98,22 @@ export function StorageCard() {
             record('persistRequest', granted);
             setInfo(await getStorageInfo());
           }}
-        >
-          Request protection
-        </Button>
-        {requested !== null && <Badge tone={requested ? 'sage' : 'accent'}>{requested ? 'Granted' : 'Declined'}</Badge>}
+        ><UiText source={'Request protection'} /></Button>
+        {requested !== null && <Badge tone={requested ? 'sage' : 'accent'}>{requested ? translateUi('Granted') : translateUi('Declined')}</Badge>}
       </div>
     </LabCard>
   );
 }
 
 export function ShareCard() {
+  const translateUi = useUi();
   const [result, setResult] = useState<string | null>(null);
   const record = useLabReport((s) => s.record);
   const file = useMemo(() => new File(['Hello from Lingua.\n'], 'lingua-share-test.txt', { type: 'text/plain' }), []);
   const supported = typeof navigator.canShare === 'function' && canShareFile(file);
 
   return (
-    <LabCard icon={Share2} title="Share sheet" description="Used to send backups to AirDrop or Files.">
+    <LabCard icon={Share2} title={translateUi('Share sheet')} description={translateUi('Used to send backups to AirDrop or Files.')}>
       <div className="flex flex-wrap items-center gap-2">
         <Button
           variant="secondary"
@@ -127,10 +129,8 @@ export function ShareCard() {
               record('shareFiles', 'failed');
             }
           }}
-        >
-          Share a test file
-        </Button>
-        <Badge tone={supported ? 'sage' : 'neutral'}>{supported ? 'Supported' : 'Not supported here'}</Badge>
+        ><UiText source={'Share a test file'} /></Button>
+        <Badge tone={supported ? 'sage' : 'neutral'}>{supported ? translateUi('Supported') : translateUi('Not supported here')}</Badge>
         {result && <span className="text-sm text-ink-soft">{result}</span>}
       </div>
     </LabCard>
@@ -140,12 +140,13 @@ export function ShareCard() {
 const STRESS_SAMPLE = 'Я́ люблю́ чита́ть кни́ги.';
 
 export function WordsCard({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const [text, setText] = useState(() => `${getLanguage(lang)?.sample ?? LANGUAGES[0].sample} ${lang === 'ru' ? STRESS_SAMPLE : ''}`.trim());
   const tokens = useMemo(() => tokenize(text, lang), [text, lang]);
   const words = tokens.filter((t) => t.isWord);
 
   return (
-    <LabCard icon={Type} title="Words & scripts" description="How Lingua splits text into words for the reader. Tap a word to see its saved form.">
+    <LabCard icon={Type} title={translateUi('Words & scripts')} description={translateUi('How Lingua splits text into words for the reader. Tap a word to see its saved form.')}>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -161,7 +162,7 @@ export function WordsCard({ lang }: { lang: string }) {
           </span>
         ))}
       </div>
-      <p className="mt-2 text-[13px] text-ink-soft">{words.length} words</p>
+      <p className="mt-2 text-[13px] text-ink-soft"><UiText source={'{0} words'} values={[words.length]} /></p>
     </LabCard>
   );
 }
@@ -169,27 +170,24 @@ export function WordsCard({ lang }: { lang: string }) {
 const SHEET_ROWS = Array.from({ length: 24 }, (_, i) => i + 1);
 
 export function SheetCard() {
+  const translateUi = useUi();
   const [open, setOpen] = useState(false);
   const { layout } = useLayout();
   return (
     <LabCard
       icon={PanelBottom}
-      title="Drawers & sheets"
+      title={translateUi('Drawers & sheets')}
       description={
         layout === 'wide'
-          ? 'Opens as a slide-over panel on wide screens. Esc or a click outside closes it.'
-          : 'Drag the handle down to dismiss; the list inside should scroll without moving the page behind.'
+          ? translateUi('Opens as a slide-over panel on wide screens. Esc or a click outside closes it.')
+          : translateUi('Drag the handle down to dismiss; the list inside should scroll without moving the page behind.')
       }
     >
-      <Button variant="secondary" onClick={() => setOpen(true)}>
-        Open {layout === 'wide' ? 'slide-over' : 'bottom sheet'}
-      </Button>
-      <Drawer open={open} onClose={() => setOpen(false)} title="Word details" description="A sample of how the word drawer will feel.">
+      <Button variant="secondary" onClick={() => setOpen(true)}><UiText source={'Open {0}'} values={[layout === 'wide' ? 'slide-over' : 'bottom sheet']} /></Button>
+      <Drawer open={open} onClose={() => setOpen(false)} title={translateUi('Word details')} description={translateUi('A sample of how the word drawer will feel.')}>
         <ul className="divide-y divide-line">
           {SHEET_ROWS.map((n) => (
-            <li key={n} className="py-3 text-[15px]">
-              Row {n}
-            </li>
+            <li key={n} className="py-3 text-[15px]"><UiText source={'Row {0}'} values={[n]} /></li>
           ))}
         </ul>
       </Drawer>
@@ -198,6 +196,7 @@ export function SheetCard() {
 }
 
 export function LongPressCard() {
+  const translateUi = useUi();
   const [taps, setTaps] = useState(0);
   const [presses, setPresses] = useState(0);
   const [flash, setFlash] = useState(false);
@@ -213,7 +212,7 @@ export function LongPressCard() {
   );
 
   return (
-    <LabCard icon={Hand} title="Long-press" description="Hold the word. No copy menu or text selection should appear.">
+    <LabCard icon={Hand} title={translateUi('Long-press')} description={translateUi('Hold the word. No copy menu or text selection should appear.')}>
       <div className="flex flex-wrap items-center gap-4">
         <span
           {...handlers}
@@ -224,9 +223,7 @@ export function LongPressCard() {
         >
           слово · λέξη
         </span>
-        <span className="text-sm text-ink-soft">
-          Taps: <strong className="text-ink">{taps}</strong> · Long-presses: <strong className="text-ink">{presses}</strong>
-        </span>
+        <span className="text-sm text-ink-soft"><UiText source={'Taps: {0} · Long-presses: {1}'} values={[<strong className="text-ink">{taps}</strong>, <strong className="text-ink">{presses}</strong>]} /></span>
       </div>
     </LabCard>
   );

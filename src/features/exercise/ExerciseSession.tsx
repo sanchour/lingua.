@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // A run of exercises of any kind the engine has (6-4b): one screen for matching, dragging, typing, free sentences and form
 // changes. How it asks is the learner's: hints, "how sure are you?", answers only at the end, another example after a miss.
 import { HeardDiff } from './HeardDiff';
@@ -40,6 +41,7 @@ const isRight = (o: Outcome) => o === 'right' || o === 'close';
 const isMatch = (s: ExerciseSpec) => s.kind.startsWith('match-');
 
 export function ExerciseSession({ title, lang, specs, onClose }: { title: string; lang: string; specs: ExerciseSpec[]; onClose: () => void }) {
+  const translateUi = useUi();
   const feel = useLessonFeel();
   const random = useMemo(() => seededRandom(Date.now() % 2 ** 31), []);
   const [options, setOptions] = useState(DEFAULT_OPTIONS);
@@ -181,8 +183,8 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
     if (stage === 'review')
       return (
         <main className="mx-auto min-h-dvh max-w-2xl px-5 py-16">
-          <h1 className="font-serif text-3xl font-semibold">How it went</h1>
-          <p className="mt-1 text-ink-soft">Your answers, now that they are all in.</p>
+          <h1 className="font-serif text-3xl font-semibold"><UiText source={'How it went'} /></h1>
+          <p className="mt-1 text-ink-soft"><UiText source={'Your answers, now that they are all in.'} /></p>
           <ul className="mt-6 space-y-3">
             {taken.map((t, i) => (
               <li key={i} className={cx('rounded-2xl border px-4 py-3', isRight(t.outcome) ? 'border-sage/40 bg-sage-soft' : 'border-accent/40 bg-accent-soft')}>
@@ -192,7 +194,7 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
               </li>
             ))}
           </ul>
-          <Button className="mt-8" size="lg" onClick={() => setStage('end')}>Continue</Button>
+          <Button className="mt-8" size="lg" onClick={() => setStage('end')}><UiText source={'Continue'} /></Button>
         </main>
       );
     return <LessonEnd title={title} result={result} actions={[{ label: 'Again', onClick: restart }]} onDone={onClose} />;
@@ -206,27 +208,27 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
   return (
     <>
       <StudyBar title={title} progress={progress} onClose={onClose}>
-        <Popover label="How it asks" placement="bottom-end" className="w-80" onOpenChange={setAsking} trigger={(props) => <IconButton {...props} icon={Settings2} label="How it asks" size="sm" />}>
+        <Popover label={translateUi('How it asks')} placement="bottom-end" className="w-80" onOpenChange={setAsking} trigger={(props) => <IconButton {...props} icon={Settings2} label={translateUi('How it asks')} size="sm" />}>
           <div className="space-y-1 p-2">
-            <ToggleRow title="Hints" description="A tap reveals a hint, step by step." checked={options.hints} onChange={(v) => setOptions({ ...options, hints: v })} />
-            <ToggleRow title="How sure are you?" description="Rate each answer: guessed, unsure, sure." checked={options.confidence} onChange={(v) => setOptions({ ...options, confidence: v })} />
-            <ToggleRow title="Answers at the end" description="No verdict after each one, like an exam." checked={options.delayedFeedback} onChange={(v) => setOptions({ ...options, delayedFeedback: v })} />
-            <ToggleRow title="Another example after a miss" description="A missed one comes back once, with a different example." checked={options.retryWithNewExample} onChange={(v) => setOptions({ ...options, retryWithNewExample: v })} />
+            <ToggleRow title={translateUi('Hints')} description={translateUi('A tap reveals a hint, step by step.')} checked={options.hints} onChange={(v) => setOptions({ ...options, hints: v })} />
+            <ToggleRow title={translateUi('How sure are you?')} description={translateUi('Rate each answer: guessed, unsure, sure.')} checked={options.confidence} onChange={(v) => setOptions({ ...options, confidence: v })} />
+            <ToggleRow title={translateUi('Answers at the end')} description={translateUi('No verdict after each one, like an exam.')} checked={options.delayedFeedback} onChange={(v) => setOptions({ ...options, delayedFeedback: v })} />
+            <ToggleRow title={translateUi('Another example after a miss')} description={translateUi('A missed one comes back once, with a different example.')} checked={options.retryWithNewExample} onChange={(v) => setOptions({ ...options, retryWithNewExample: v })} />
           </div>
         </Popover>
       </StudyBar>
       <main className="mx-auto flex min-h-dvh max-w-2xl flex-col px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 112px)' }}>
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.section key={`${run}-${spec.key}`} initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -28, transition: { duration: 0.15 } }} transition={spring.soft}>
-            <p className="mb-6 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">{spec.key.endsWith('~r') ? 'Another example · ' : ''}{spec.instruction}</p>
+            <p className="mb-6 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">{spec.key.endsWith('~r') ? translateUi('Another example · ') : ''}{spec.instruction}</p>
             {spec.listen && <ListenBar listen={spec.listen} lang={lang} rate={listenRate} />}
             {isMatch(spec) && <MatchView body={spec.body as MatchBody} lang={lang} onDone={onMatched} random={random} />}
             {spec.kind === 'drag-drop' && <DragView prompt={(spec.body as DragBody).prompt} tiles={tiles} lang={lang} value={picked} onChange={setPicked} phase={phase} />}
             {spec.kind === 'transform' && <TransformView spec={spec as TransformSpec} lang={lang} value={text} onChange={setText} phase={phase} onSubmit={() => (phase === 'answer' ? void check() : next())} onHint={setHints} />}
             {!isMatch(spec) && spec.kind !== 'drag-drop' && spec.kind !== 'transform' && <TypedView spec={options.hints ? spec : { ...spec, hints: undefined }} lang={lang} value={text} onChange={setText} phase={phase} onSubmit={() => (phase === 'answer' ? void check() : next())} onHint={setHints} />}
             {options.confidence && phase === 'answer' && !isMatch(spec) && (
-              <div className="mt-6 flex items-center justify-center gap-2" role="group" aria-label="How sure are you?">
-                <span className="text-[13px] text-ink-faint">How sure?</span>
+              <div className="mt-6 flex items-center justify-center gap-2" role="group" aria-label={translateUi('How sure are you?')}>
+                <span className="text-[13px] text-ink-faint"><UiText source={'How sure?'} /></span>
                 {([['Guessing', 1], ['Unsure', 2], ['Sure', 3]] as const).map(([label, v]) => (
                   <button key={v} type="button" aria-pressed={sure === v} onClick={() => setSure(sure === v ? undefined : v)} className={cx('h-8 rounded-full px-3.5 text-[13px] font-semibold transition-colors', sure === v ? 'bg-ink text-bg' : 'bg-surface text-ink-soft hover:bg-sunken')}>
                     {label}
@@ -236,9 +238,9 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
             )}
             {rating && (
               <div className="mt-6 rounded-2xl bg-surface p-4 text-center">
-                <p className="text-[12.5px] font-semibold text-ink-faint">A model answer{message ? ` · ${message}` : ''}</p>
+                <p className="text-[12.5px] font-semibold text-ink-faint"><UiText source={'A model answer{0}'} values={[message ? ` · ${message}` : '']} /></p>
                 <p lang={lang} className="mt-1 font-serif text-[19px] font-semibold">{model}</p>
-                <p className="mt-3 text-[13.5px] text-ink-soft">Was yours as good?</p>
+                <p className="mt-3 text-[13.5px] text-ink-soft"><UiText source={'Was yours as good?'} /></p>
                 <div className="mt-2 flex justify-center gap-2">
                   {([['Yes', 'right'], ['Nearly', 'close'], ['Not yet', 'wrong']] as const).map(([label, o]) => (
                     <Button key={o} variant="secondary" size="sm" onClick={() => settle(o, text)}>{label}</Button>
@@ -260,7 +262,7 @@ export function ExerciseSession({ title, lang, specs, onClose }: { title: string
         rightNote={message || why ? <p className="text-sm text-ink-soft">{message ?? why}</p> : null}
         wrong={
           <div>
-            <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase">Answer</p>
+            <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase"><UiText source={'Answer'} /></p>
             <p lang={lang} className="font-serif text-xl font-semibold">{solutionOf(spec) || model}</p>
             {spec.kind === 'listen-type' && taken.at(-1)?.spec.key === spec.key && <HeardDiff given={taken.at(-1)!.given} said={solutionOf(spec)} lang={lang} />}
             {(message || why) && <p className="mt-1 text-[14px] leading-snug text-ink-soft">{message ? `${message} ` : ''}{why}</p>}

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
@@ -32,6 +33,7 @@ interface Plan {
  * practice once learned (`?mode=practice`), or the letters due (`/cursus/alphabets/review`).
  */
 export default function LettersLessonPage({ review = false }: { review?: boolean }) {
+  const translateUi = useUi();
   const { groupId = '' } = useParams();
   const [search] = useSearchParams();
   const practice = review || search.get('mode') === 'practice';
@@ -145,8 +147,8 @@ export default function LettersLessonPage({ review = false }: { review?: boolean
   }
   if (script === null || plan === 'empty') {
     return (
-      <Empty onBack={back} title={script === null ? 'No alphabet to learn here' : review ? 'Nothing due' : 'Nothing to practise'}>
-        {review ? 'Every letter is resting until its time comes. A new group moves you on in the meantime.' : 'This group has no exercises.'}
+      <Empty onBack={back} title={script === null ? translateUi('No alphabet to learn here') : review ? translateUi('Nothing due') : translateUi('Nothing to practise')}>
+        {review ? translateUi('Every letter is resting until its time comes. A new group moves you on in the meantime.') : translateUi('This group has no exercises.')}
       </Empty>
     );
   }
@@ -204,9 +206,7 @@ function Empty({ title, children, onBack }: { title: string; children: ReactNode
         </span>
         <h1 className="font-serif text-2xl font-semibold">{title}</h1>
         <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">{children}</p>
-        <button type="button" onClick={onBack} className={buttonClasses('primary', 'md') + ' mt-6'}>
-          Back
-        </button>
+        <button type="button" onClick={onBack} className={buttonClasses('primary', 'md') + ' mt-6'}><UiText source={'Back'} /></button>
       </div>
     </motion.div>
   );

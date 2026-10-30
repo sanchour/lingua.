@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowDown, Check, MousePointerClick, X } from 'lucide-react';
@@ -37,6 +38,7 @@ const COVER = PANEL + 12;
  * the map, and choosing one flies the map to where it is spoken.
  */
 export function LanguageStep({ target, onTarget }: LanguageStepProps) {
+  const translateUi = useUi();
   const [place, setPlace] = useState<string | null>(null);
   const [panel, setPanel] = useState<'place' | 'all' | null>(null);
   const [query, setQuery] = useState('');
@@ -73,7 +75,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
       role="radio"
       aria-checked={target === l.code}
       aria-disabled={l.soon || undefined}
-      title={l.soon ? `${l.name} is coming. Pick another language for now.` : TIERS[l.tier].includes}
+      title={l.soon ? translateUi('{0} is coming. Pick another language for now.', [l.name]) : TIERS[l.tier].includes}
       onClick={() => !l.soon && onTarget(l.code)}
       {...hoverProps(l)}
       className={cx(
@@ -92,7 +94,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
         </span>
         <span className="block truncate text-[11.5px] text-ink-soft">
           {status ? `${STATUS_NAME[status]} · ` : ''}
-          {l.soon ? 'Coming' : TIERS[l.tier].name}
+          {l.soon ? translateUi('Coming') : TIERS[l.tier].name}
         </span>
       </span>
       {target === l.code ? (
@@ -100,7 +102,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
           <Check size={14} strokeWidth={3.2} aria-hidden />
         </span>
       ) : (
-        l.tier === 1 && <span className="shrink-0 rounded-full bg-accent-soft px-2 py-0.5 text-[10.5px] font-bold tracking-wide text-accent-text uppercase">Core</span>
+        l.tier === 1 && <span className="shrink-0 rounded-full bg-accent-soft px-2 py-0.5 text-[10.5px] font-bold tracking-wide text-accent-text uppercase"><UiText source={'Core'} /></span>
       )}
     </button>
   );
@@ -115,7 +117,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
         role="radio"
         aria-checked={on}
         aria-disabled={l.soon || undefined}
-        title={l.soon ? `${l.name} is coming. Pick another language for now.` : `${l.name} · ${l.endonym}`}
+        title={l.soon ? translateUi('{0} is coming. Pick another language for now.', [l.name]) : `${l.name} · ${l.endonym}`}
         onClick={() => !l.soon && onTarget(l.code)}
         {...hoverProps(l)}
         className={cx(
@@ -145,8 +147,8 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
     <div>
       <div className="mb-3 flex items-end gap-4">
         <div className="min-w-0 flex-1">
-          <h1 className="font-serif text-[30px] leading-tight font-semibold tracking-tight">What language will it be?</h1>
-          <p className="mt-1 text-[14.5px] text-ink-soft">Click a country to see what’s spoken there, or scroll down for all of them. Commitment issues welcome: you can add more later.</p>
+          <h1 className="font-serif text-[30px] leading-tight font-semibold tracking-tight"><UiText source={'What language will it be?'} /></h1>
+          <p className="mt-1 text-[14.5px] text-ink-soft"><UiText source={'Click a country to see what’s spoken there, or scroll down for all of them. Commitment issues welcome: you can add more later.'} /></p>
         </div>
         <SearchInput
           value={query}
@@ -154,7 +156,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
             setQuery(v);
             if (v.trim() && panel !== 'all') setPanel('all');
           }}
-          placeholder="Search all languages"
+          placeholder={translateUi('Search all languages')}
           className="w-72"
         />
       </div>
@@ -174,7 +176,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
                 transition={spring.snappy}
                 className="flex items-center gap-2.5 rounded-full border border-accent/40 bg-raised py-1.5 pr-2 pl-3 shadow-elev-2"
               >
-                <span className="text-[12.5px] text-ink-soft">You’re learning</span>
+                <span className="text-[12.5px] text-ink-soft"><UiText source={'You’re learning'} /></span>
                 <LanguageFlag lang={chosen.code} width={22} />
                 <span lang={chosen.code} dir={chosen.rtl ? 'rtl' : undefined} className="font-serif text-[16px] font-semibold">
                   {chosen.endonym}
@@ -185,9 +187,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
               </motion.p>
             ) : (
               !open && (
-                <motion.p key="hint" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={spring.gentle} className="flex items-center gap-2 rounded-full border border-line bg-raised/95 px-4 py-2 text-[13.5px] font-semibold shadow-elev-1">
-                  <MousePointerClick size={16} className="text-accent-text" aria-hidden /> Click a country to begin
-                </motion.p>
+                <motion.p key="hint" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={spring.gentle} className="flex items-center gap-2 rounded-full border border-line bg-raised/95 px-4 py-2 text-[13.5px] font-semibold shadow-elev-1"><UiText source={'{0} Click a country to begin'} values={[<MousePointerClick size={16} className="text-accent-text" aria-hidden />]} /></motion.p>
               )
             )}
           </AnimatePresence>
@@ -200,7 +200,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 28 }}
               transition={spring.snappy}
-              aria-label="Languages"
+              aria-label={translateUi('Languages')}
               className="absolute top-3 right-3 bottom-3 z-20 flex flex-col overflow-hidden rounded-[20px] border border-line bg-raised shadow-elev-3"
               style={{ width: PANEL }}
             >
@@ -210,19 +210,17 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
                     <Flag code={place.toLowerCase()} width={18} /> {placeName(place)}
                   </button>
                 )}
-                <button type="button" onClick={() => setPanel('all')} className={cx('-mb-px border-b-2 px-3 pb-2 text-[13.5px] font-semibold', panel === 'all' ? 'border-accent text-ink' : 'border-transparent text-ink-soft hover:text-ink')}>
-                  All languages
-                </button>
-                <button type="button" onClick={close} aria-label="Close" className="mb-1.5 ml-auto grid size-7 place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink">
+                <button type="button" onClick={() => setPanel('all')} className={cx('-mb-px border-b-2 px-3 pb-2 text-[13.5px] font-semibold', panel === 'all' ? 'border-accent text-ink' : 'border-transparent text-ink-soft hover:text-ink')}><UiText source={'All languages'} /></button>
+                <button type="button" onClick={close} aria-label={translateUi('Close')} className="mb-1.5 ml-auto grid size-7 place-items-center rounded-lg text-ink-faint hover:bg-surface hover:text-ink">
                   <X size={16} aria-hidden />
                 </button>
               </div>
 
-              <div role="radiogroup" aria-label={panel === 'place' && place ? `Languages in ${placeName(place)}` : 'All languages'} className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2">
+              <div role="radiogroup" aria-label={panel === 'place' && place ? translateUi('Languages in {0}', [placeName(place)]) : translateUi('All languages')} className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2">
                 {panel === 'place' && place && (
                   <>
                     <p className="px-2 pt-1 pb-2 text-[12.5px] text-ink-soft">
-                      {here.length ? `${here.length === 1 ? 'One language' : `${here.length} languages`} you can learn, spoken in ${placeName(place)}.` : `None of Lingua’s languages is spoken in ${placeName(place)} yet.`}
+                      {here.length ? translateUi('{0} you can learn, spoken in {1}.', [here.length === 1 ? 'One language' : `${here.length} languages`, placeName(place)]) : translateUi('None of Lingua’s languages is spoken in {0} yet.', [placeName(place)])}
                     </p>
                     {here.map(({ l, status }) => row(l, status))}
                   </>
@@ -239,7 +237,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
                       </section>
                     );
                   })}
-                {panel === 'all' && !LANGUAGES.some(matches) && <p className="px-2 py-6 text-center text-[13.5px] text-ink-soft">No language matches “{query.trim()}”.</p>}
+                {panel === 'all' && !LANGUAGES.some(matches) && <p className="px-2 py-6 text-center text-[13.5px] text-ink-soft"><UiText source={'No language matches “{0}”.'} values={[query.trim()]} /></p>}
               </div>
             </motion.aside>
           )}
@@ -247,7 +245,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
       </div>
 
       {/* The six core languages, one click away, and the way down to every language. */}
-      <div role="radiogroup" aria-label="Core languages" className="mt-3 flex items-center gap-2">
+      <div role="radiogroup" aria-label={translateUi('Core languages')} className="mt-3 flex items-center gap-2">
         <span className="mr-1 text-[11.5px] font-bold tracking-[0.08em] text-ink-faint uppercase" title={TIERS[1].includes}>
           {TIERS[1].name}
         </span>
@@ -256,15 +254,13 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
           type="button"
           onClick={() => listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
           className="ml-auto inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[13.5px] font-semibold text-accent-text hover:bg-accent-soft"
-        >
-          All {LANGUAGES.length} languages <ArrowDown size={15} aria-hidden />
-        </button>
+        ><UiText source={'All {0} languages {1}'} values={[LANGUAGES.length, <ArrowDown size={15} aria-hidden />]} /></button>
       </div>
 
       {/* Every language by tier, peeking in at the bottom of the screen. */}
       <div ref={listRef} className="mt-7 scroll-mt-6 divide-y divide-line/70 border-t border-line/70 pb-6">
         {TIER_ORDER.slice(1).map((tier) => (
-          <div key={tier} role="radiogroup" aria-label={`${TIERS[tier].name} languages`} className="grid grid-cols-[190px_minmax(0,1fr)] gap-5 py-4">
+          <div key={tier} role="radiogroup" aria-label={translateUi('{0} languages', [TIERS[tier].name])} className="grid grid-cols-[190px_minmax(0,1fr)] gap-5 py-4">
             <div title={TIERS[tier].includes}>
               <h2 className="text-[12px] font-bold tracking-[0.08em] text-ink-faint uppercase">{TIERS[tier].name}</h2>
               <p className="mt-1 text-[12px] leading-snug text-ink-soft">{SHORT[tier]}</p>

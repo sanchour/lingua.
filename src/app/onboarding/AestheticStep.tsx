@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { Check, Moon, Sun } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { tokenize } from '@/core/text/tokenizer';
@@ -29,6 +30,7 @@ const LIGHTS: Array<{ theme: Theme; name: string; note: string; when: string; ic
  * for the day and one for the night. Choosing changes the whole screen at once.
  */
 export function AestheticStep({ pref, palette, sample, lang }: AestheticStepProps) {
+  const translateUi = useUi();
   const systemDark = useMediaQuery('(prefers-color-scheme: dark)');
   const shown = resolveTheme(pref, systemDark);
   const follow = pref === 'system';
@@ -40,14 +42,14 @@ export function AestheticStep({ pref, palette, sample, lang }: AestheticStepProp
     <div>
       <div className="flex items-start gap-6">
         <div className="min-w-0 flex-1">
-          <StepTitle title="Choose your study light" body="We have a fine selection of cute colour themes to choose from. Change it any time in Settings." />
+          <StepTitle title={translateUi('Choose your study light')} body="We have a fine selection of cute colour themes to choose from. Change it any time in Settings." />
         </div>
         <div className="mt-2 flex shrink-0 items-center gap-3 rounded-2xl border border-line bg-raised py-2.5 pr-3 pl-4">
           <span className="text-right">
-            <span className="block text-[14px] font-semibold">Follow my device</span>
-            <span className="block text-[12px] text-ink-faint">Light by day, dark at night</span>
+            <span className="block text-[14px] font-semibold"><UiText source={'Follow my device'} /></span>
+            <span className="block text-[12px] text-ink-faint"><UiText source={'Light by day, dark at night'} /></span>
           </span>
-          <Switch checked={follow} onChange={(on) => void setSetting('theme', on ? 'system' : shown)} label="Follow my device’s light and dark mode" />
+          <Switch checked={follow} onChange={(on) => void setSetting('theme', on ? 'system' : shown)} label={translateUi('Follow my device’s light and dark mode')} />
         </div>
       </div>
 
@@ -112,7 +114,7 @@ export function AestheticStep({ pref, palette, sample, lang }: AestheticStepProp
               {/* The palettes open under the light chosen (both when following the device); the space stays, so nothing jumps. */}
               <div
                 role="radiogroup"
-                aria-label={`${name} palettes`}
+                aria-label={translateUi('{0} palettes', [name])}
                 inert={!on}
                 className={cx('mt-3 grid grid-cols-6 gap-2 px-1 transition-[opacity,transform] duration-300', on ? 'opacity-100' : 'pointer-events-none -translate-y-1 opacity-0')}
               >

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
@@ -104,31 +105,31 @@ function Failed({ message, onRetry }: { message: string; onRetry: () => void }) 
   return (
     <p className="flex items-center gap-3 rounded-2xl bg-surface px-4 py-3 text-[14px] text-ink-soft">
       {message}
-      <button type="button" onClick={onRetry} className="inline-flex items-center gap-1.5 font-semibold text-accent-text hover:underline">
-        <RotateCcw size={13} aria-hidden /> Try again
-      </button>
+      <button type="button" onClick={onRetry} className="inline-flex items-center gap-1.5 font-semibold text-accent-text hover:underline"><UiText source={'{0} Try again'} values={[<RotateCcw size={13} aria-hidden />]} /></button>
     </p>
   );
 }
 
 /** What sits over an item while it is added, or once it is on the shelf. */
 function Badge({ status }: { status: 'adding' | 'shelved' | null }) {
+  const translateUi = useUi();
   if (!status) return null;
   return (
     <span className={cx('absolute top-2 right-2 z-10 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11.5px] font-bold shadow-elev-1', status === 'adding' ? 'bg-surface text-ink' : 'bg-sage-soft text-sage-text')}>
       {status === 'adding' ? <LoaderCircle size={12} className="animate-spin" aria-hidden /> : <BookCheck size={12} aria-hidden />}
-      {status === 'adding' ? 'Adding…' : 'On your shelf'}
+      {status === 'adding' ? translateUi('Adding…') : translateUi('On your shelf')}
     </span>
   );
 }
 
 function WikipediaShelf({ lang, name, status, onAdd }: { lang: string; name: string; status: Status; onAdd: (a: WikiArticle) => void }) {
+  const translateUi = useUi();
   const [list, retry] = useLoad(() => wikipediaToday(lang), [lang]);
   return (
-    <section aria-label="Most read on Wikipedia">
-      <ShelfHeader title="Most read on Wikipedia" note={`What ${name} speakers are reading today. Whole articles, without the lists of sources · CC BY-SA`} />
+    <section aria-label={translateUi('Most read on Wikipedia')}>
+      <ShelfHeader title={translateUi('Most read on Wikipedia')} note={`What ${name} speakers are reading today. Whole articles, without the lists of sources · CC BY-SA`} />
       {list.state === 'failed' && <Failed message={list.message} onRetry={retry} />}
-      {list.state === 'ready' && !list.items.length && <p className="text-[14px] text-ink-soft">Nothing to show from this Wikipedia today.</p>}
+      {list.state === 'ready' && !list.items.length && <p className="text-[14px] text-ink-soft"><UiText source={'Nothing to show from this Wikipedia today.'} /></p>}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {list.state === 'loading' && Array.from({ length: 8 }, (_, i) => <div key={i} className="h-60 animate-pulse rounded-2xl bg-sunken" />)}
         {list.state === 'ready' &&
@@ -150,7 +151,7 @@ function WikipediaShelf({ lang, name, status, onAdd }: { lang: string; name: str
                 {a.thumbnail && <img src={a.thumbnail} alt="" loading="lazy" referrerPolicy="no-referrer" className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />}
               </div>
               <div className="flex min-h-0 flex-1 flex-col p-4">
-                {a.featured && <span className="mb-1 text-[11px] font-bold tracking-[0.14em] text-sage-text uppercase">Article of the day</span>}
+                {a.featured && <span className="mb-1 text-[11px] font-bold tracking-[0.14em] text-sage-text uppercase"><UiText source={'Article of the day'} /></span>}
                 <span lang={lang} className="font-serif text-[17px] leading-snug font-semibold">
                   {a.title}
                 </span>
@@ -166,11 +167,12 @@ function WikipediaShelf({ lang, name, status, onAdd }: { lang: string; name: str
 }
 
 function NewsShelf({ lang, status, onAdd }: { lang: string; status: Status; onAdd: (item: NewsItem) => void }) {
+  const translateUi = useUi();
   const sources = (NEWS_SOURCES[lang] ?? []).slice(0, 2);
   if (!sources.length) return null;
   return (
-    <section aria-label="In the news">
-      <ShelfHeader title="In the news" note="The latest stories, read with the article only (no menus or adverts). From the sources in News & links." />
+    <section aria-label={translateUi('In the news')}>
+      <ShelfHeader title={translateUi('In the news')} note="The latest stories, read with the article only (no menus or adverts). From the sources in News & links." />
       <div className={cx('grid gap-4', sources.length > 1 && 'lg:grid-cols-2')}>
         {sources.map((s) => (
           <NewsSourceCard key={s.id} source={s} lang={lang} status={status} onAdd={onAdd} />
@@ -181,6 +183,7 @@ function NewsShelf({ lang, status, onAdd }: { lang: string; status: Status; onAd
 }
 
 function NewsSourceCard({ source, lang, status, onAdd }: { source: NewsSource; lang: string; status: Status; onAdd: (item: NewsItem) => void }) {
+  const translateUi = useUi();
   const [list, retry] = useLoad(() => latestNews(source), [source.id]);
   return (
     <div className="rounded-3xl border border-line/70 bg-surface p-2">
@@ -203,8 +206,8 @@ function NewsSourceCard({ source, lang, status, onAdd }: { source: NewsSource; l
                   <span lang={lang} className="min-w-0 flex-1 text-[14.5px] leading-snug font-semibold">
                     {item.title}
                   </span>
-                  {s === 'adding' && <LoaderCircle size={15} className="mt-0.5 shrink-0 animate-spin text-ink-faint" aria-label="Adding" />}
-                  {s === 'shelved' && <BookCheck size={15} className="mt-0.5 shrink-0 text-sage-text" aria-label="On your shelf" />}
+                  {s === 'adding' && <LoaderCircle size={15} className="mt-0.5 shrink-0 animate-spin text-ink-faint" aria-label={translateUi('Adding')} />}
+                  {s === 'shelved' && <BookCheck size={15} className="mt-0.5 shrink-0 text-sage-text" aria-label={translateUi('On your shelf')} />}
                 </button>
               </li>
             );
@@ -216,6 +219,7 @@ function NewsSourceCard({ source, lang, status, onAdd }: { source: NewsSource; l
 }
 
 function BooksShelf({ lang, name, status, progress, onBook, onWork }: { lang: string; name: string; status: Status; progress: number; onBook: (b: FreeBook) => void; onWork: (w: SourceWork) => void }) {
+  const translateUi = useUi();
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
   useEffect(() => {
@@ -226,13 +230,13 @@ function BooksShelf({ lang, name, status, progress, onBook, onWork }: { lang: st
   const [works] = useLoad(() => wikisourceSearch(lang, search), [lang, search]);
 
   return (
-    <section aria-label="Free books">
-      <ShelfHeader title="Free books" note={`Classics in ${name} from Project Gutenberg and Wikisource, free of copyright. A book’s chapters come with it.`}>
-        <SearchInput value={query} onChange={setQuery} placeholder="Search titles and authors" className="w-full sm:w-72" />
+    <section aria-label={translateUi('Free books')}>
+      <ShelfHeader title={translateUi('Free books')} note={`Classics in ${name} from Project Gutenberg and Wikisource, free of copyright. A book’s chapters come with it.`}>
+        <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Search titles and authors')} className="w-full sm:w-72" />
       </ShelfHeader>
       {books.state === 'failed' && <Failed message={books.message} onRetry={retry} />}
       {books.state === 'ready' && !books.items.length && (
-        <p className="text-[14px] text-ink-soft">{search ? `No books on Project Gutenberg match “${search}”.` : `Project Gutenberg has no books in ${name} yet.`}</p>
+        <p className="text-[14px] text-ink-soft">{search ? translateUi('No books on Project Gutenberg match “{0}”.', [search]) : translateUi('Project Gutenberg has no books in {0} yet.', [name])}</p>
       )}
       <div className="grid grid-cols-3 gap-x-5 gap-y-7 sm:grid-cols-4 lg:grid-cols-6">
         {books.state === 'loading' && Array.from({ length: 12 }, (_, i) => <div key={i} className="aspect-[2/3] animate-pulse rounded-[6px] bg-sunken" />)}
@@ -258,7 +262,7 @@ function BooksShelf({ lang, name, status, progress, onBook, onWork }: { lang: st
       </div>
       {works.state === 'ready' && works.items.length > 0 && (
         <div className="mt-8">
-          <p className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">On Wikisource</p>
+          <p className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'On Wikisource'} /></p>
           <ul className="divide-y divide-line/60 rounded-2xl border border-line/70 bg-surface">
             {works.items.map((w) => {
               const s = status(w.url);
@@ -274,10 +278,10 @@ function BooksShelf({ lang, name, status, progress, onBook, onWork }: { lang: st
                     {s === 'adding' && (
                       <span className="flex shrink-0 items-center gap-1.5 text-[12px] font-semibold text-ink-faint tabular-nums">
                         {progress > 0 && `${Math.round(progress * 100)}%`}
-                        <LoaderCircle size={15} className="animate-spin" aria-label="Adding" />
+                        <LoaderCircle size={15} className="animate-spin" aria-label={translateUi('Adding')} />
                       </span>
                     )}
-                    {s === 'shelved' && <BookCheck size={15} className="shrink-0 text-sage-text" aria-label="On your shelf" />}
+                    {s === 'shelved' && <BookCheck size={15} className="shrink-0 text-sage-text" aria-label={translateUi('On your shelf')} />}
                   </button>
                 </li>
               );
@@ -298,9 +302,10 @@ const PICTURE_BOOKS = [
 
 /** These libraries don't let apps read their files: open them, download a book, add it here. */
 function PictureBooks({ name }: { name: string }) {
+  const translateUi = useUi();
   return (
-    <section aria-label="Picture books and comics">
-      <ShelfHeader title="Picture books and comics" note={`Free libraries with books in ${name}. Download one there (EPUB, PDF or CBZ), then add it with Add › Import a book or Import a comic.`} />
+    <section aria-label={translateUi('Picture books and comics')}>
+      <ShelfHeader title={translateUi('Picture books and comics')} note={`Free libraries with books in ${name}. Download one there (EPUB, PDF or CBZ), then add it with Add › Import a book or Import a comic.`} />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {PICTURE_BOOKS.map((p) => (
           <a key={p.name} href={p.url} target="_blank" rel="noreferrer" className="group flex flex-col rounded-2xl border border-line/70 bg-surface p-4 transition-colors hover:bg-raised">

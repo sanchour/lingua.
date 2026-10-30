@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useLocation, useNavigate } from 'react-router';
 import { Check, ChevronsUpDown, Plus, Settings2 } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -11,6 +12,7 @@ import { cx } from '@/lib/cx';
 
 /** The language being studied. Opens a switcher with every language you study. */
 export function LanguageChip({ compact = false, placement }: { compact?: boolean; placement?: 'bottom-start' | 'right-start' }) {
+  const translateUi = useUi();
   const { language } = useApp();
   const languages = useLanguages() ?? [];
   const navigate = useNavigate();
@@ -27,14 +29,14 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
 
   return (
     <Popover
-      label="Switch language"
+      label={translateUi('Switch language')}
       placement={placement ?? (compact ? 'right-start' : 'bottom-start')}
       className="w-72"
       trigger={(props) => (
         <button
           {...props}
           type="button"
-          aria-label={`Studying ${target?.name ?? language.id}. Switch language`}
+          aria-label={translateUi('Studying {0}. Switch language', [target?.name ?? language.id])}
           title={compact ? `${target?.endonym ?? language.id} · ${language.level}` : undefined}
           className={cx(
             'no-callout group flex items-center gap-2 rounded-xl border border-line/80 bg-raised text-left transition-[border-color,transform] duration-150 hover:border-line-strong active:scale-[0.98]',
@@ -54,8 +56,8 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
     >
       {(close) => (
         <div>
-          <p className="px-3 pt-1.5 pb-1 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">Studying</p>
-          <div role="radiogroup" aria-label="Language">
+          <p className="px-3 pt-1.5 pb-1 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Studying'} /></p>
+          <div role="radiogroup" aria-label={translateUi('Language')}>
             {languages.map((l) => {
               const info = getLanguage(l.id);
               const active = l.id === language.id;
@@ -85,7 +87,7 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
           <div className="mt-1.5 space-y-0.5 border-t border-line pt-1.5">
             <MenuItem
               icon={Plus}
-              label="Add a language"
+              label={translateUi('Add a language')}
               onClick={() => {
                 close();
                 void startAnotherLanguage();
@@ -93,7 +95,7 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
             />
             <MenuItem
               icon={Settings2}
-              label="Language settings"
+              label={translateUi('Language settings')}
               onClick={() => {
                 close();
                 navigate('/settings/languages');

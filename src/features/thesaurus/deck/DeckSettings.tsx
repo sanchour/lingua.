@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { DeckLook } from './DeckLook';
 import { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -37,6 +38,7 @@ interface DeckSettingsProps {
  * and the Danger zone. Nothing changes until Save.
  */
 export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete }: DeckSettingsProps) {
+  const translateUi = useUi();
   const settings = useSettings();
   const look = settings?.cards ?? DEFAULT_SETTINGS.cards;
   const globalOff = useMemo(() => new Set(settings?.lessons.ludusOff ?? []), [settings]);
@@ -97,111 +99,109 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
     <Drawer
       open={open}
       onClose={onClose}
-      title="Deck settings"
+      title={translateUi('Deck settings')}
       description={deck.name}
       footer={
-        <Button block size="lg" loading={busy} onClick={() => void save()}>
-          Save
-        </Button>
+        <Button block size="lg" loading={busy} onClick={() => void save()}><UiText source={'Save'} /></Button>
       }
     >
       <div className="space-y-7">
         <Preview note={(front === 'sentence' && samples.find((n) => n.example?.text)) || samples[0]} lang={deck.lang} ways={ways} front={front} width={CARD_WIDTH[width === 'all' ? (look.width ?? 'normal') : width]} look={look} />
 
-        <Section title="Look">
+        <Section title={translateUi('Look')}>
           <DeckLook deck={deck} />
         </Section>
 
-        <Section title="About">
+        <Section title={translateUi('About')}>
           <label className="block">
-            <span className="mb-2 block text-[14px] font-semibold">Description</span>
-            <textarea value={about} onChange={(e) => setAbout(e.target.value)} rows={2} maxLength={300} placeholder="What this deck is for" className="w-full resize-y rounded-xl border border-line bg-raised p-3 text-[15px] outline-none focus:border-accent" />
+            <span className="mb-2 block text-[14px] font-semibold"><UiText source={'Description'} /></span>
+            <textarea value={about} onChange={(e) => setAbout(e.target.value)} rows={2} maxLength={300} placeholder={translateUi('What this deck is for')} className="w-full resize-y rounded-xl border border-line bg-raised p-3 text-[15px] outline-none focus:border-accent" />
           </label>
         </Section>
 
-        <Section title="Daily limits">
-          <Slider label="New cards a day" value={newPerDay} min={0} max={100} step={1} onChange={setNewPerDay} format={(v) => String(v)} />
-          <Slider label="Reviews a day, at most" value={maxReviews} min={20} max={1000} step={10} onChange={setMaxReviews} format={(v) => String(v)} />
+        <Section title={translateUi('Daily limits')}>
+          <Slider label={translateUi('New cards a day')} value={newPerDay} min={0} max={100} step={1} onChange={setNewPerDay} format={(v) => String(v)} />
+          <Slider label={translateUi('Reviews a day, at most')} value={maxReviews} min={20} max={1000} step={10} onChange={setMaxReviews} format={(v) => String(v)} />
           <div>
-            <Slider label="Remember" value={Math.round(retention * 100)} min={80} max={97} step={1} onChange={(v) => setRetention(v / 100)} format={(v) => `${v}%`} />
-            <Hint>How sure you want to be of a card when it comes back. Higher means more reviews; 90% is a calm balance.</Hint>
+            <Slider label={translateUi('Remember')} value={Math.round(retention * 100)} min={80} max={97} step={1} onChange={(v) => setRetention(v / 100)} format={(v) => `${v}%`} />
+            <Hint><UiText source={'How sure you want to be of a card when it comes back. Higher means more reviews; 90% is a calm balance.'} /></Hint>
           </div>
         </Section>
 
-        <Section title="Order">
-          <Field label="Study direction">
+        <Section title={translateUi('Order')}>
+          <Field label={translateUi('Study direction')}>
             <Segmented<Ways>
-              label="Study direction"
+              label={translateUi('Study direction')}
               block
               value={ways}
               onChange={setWays}
               options={[
-                { value: 'recognition', label: 'Word → meaning' },
-                { value: 'production', label: 'Meaning → word' },
-                { value: 'both', label: 'Both' },
+                { value: 'recognition', label: translateUi('Word → meaning') },
+                { value: 'production', label: translateUi('Meaning → word') },
+                { value: 'both', label: translateUi('Both') },
               ]}
             />
             {ways !== toWays(deck.config.directions) && (
               <Hint>
                 {ways === 'both' || !deck.config.directions.includes(ways === 'recognition' ? 'recognition' : 'production')
-                  ? 'New cards are added for the other direction.'
-                  : 'Cards for the direction you turn off are removed, with their history.'}
+                  ? translateUi('New cards are added for the other direction.')
+                  : translateUi('Cards for the direction you turn off are removed, with their history.')}
               </Hint>
             )}
           </Field>
-          {ways === 'both' && <ToggleRow title="One direction a day" description="After you answer a word one way, the other way waits until tomorrow." checked={bury} onChange={setBury} />}
-          <Field label="Learning steps">
-            <input value={steps} onChange={(e) => setSteps(e.target.value)} placeholder="1m 10m (the default)" aria-label="Learning steps" className="h-10 w-full rounded-xl border border-line bg-bg px-3 text-[15px] outline-none focus:border-ink" autoComplete="off" />
-            {steps.trim() && !parseSteps(steps) && <Hint>Use up to four, each longer than the one before: 1m, 10m, 1h, 1d.</Hint>}
-            {!steps.trim() && <Hint>How long a new or forgotten card waits between its first looks.</Hint>}
+          {ways === 'both' && <ToggleRow title={translateUi('One direction a day')} description={translateUi('After you answer a word one way, the other way waits until tomorrow.')} checked={bury} onChange={setBury} />}
+          <Field label={translateUi('Learning steps')}>
+            <input value={steps} onChange={(e) => setSteps(e.target.value)} placeholder={translateUi('1m 10m (the default)')} aria-label={translateUi('Learning steps')} className="h-10 w-full rounded-xl border border-line bg-bg px-3 text-[15px] outline-none focus:border-ink" autoComplete="off" />
+            {steps.trim() && !parseSteps(steps) && <Hint><UiText source={'Use up to four, each longer than the one before: 1m, 10m, 1h, 1d.'} /></Hint>}
+            {!steps.trim() && <Hint><UiText source={'How long a new or forgotten card waits between its first looks.'} /></Hint>}
           </Field>
-          <Field label="New cards">
+          <Field label={translateUi('New cards')}>
             <Segmented<NewOrder>
-              label="New cards"
+              label={translateUi('New cards')}
               block
               value={order}
               onChange={setOrder}
               options={[
-                { value: 'ordered', label: 'Most common first' },
-                { value: 'shuffled', label: 'Shuffled' },
+                { value: 'ordered', label: translateUi('Most common first') },
+                { value: 'shuffled', label: translateUi('Shuffled') },
               ]}
             />
-            <Hint>{order === 'ordered' ? 'The most common words come first, where the deck knows how common they are; the rest as they were added.' : 'New cards come in a random order, shuffled once now.'}</Hint>
+            <Hint>{order === 'ordered' ? translateUi('The most common words come first, where the deck knows how common they are; the rest as they were added.') : translateUi('New cards come in a random order, shuffled once now.')}</Hint>
           </Field>
         </Section>
 
-        <Section title="Card look">
-          <Field label="Front">
+        <Section title={translateUi('Card look')}>
+          <Field label={translateUi('Front')}>
             <Segmented<'word' | 'sentence'>
-              label="Card front"
+              label={translateUi('Card front')}
               block
               value={front}
               onChange={setFront}
               options={[
-                { value: 'word', label: 'The word' },
-                { value: 'sentence', label: 'A sentence with a gap' },
+                { value: 'word', label: translateUi('The word') },
+                { value: 'sentence', label: translateUi('A sentence with a gap') },
               ]}
             />
           </Field>
-          <Field label="Width">
+          <Field label={translateUi('Width')}>
             <Segmented<CardWidthChoice>
-              label="Card width"
+              label={translateUi('Card width')}
               block
               value={width}
               onChange={setWidth}
               options={[
-                { value: 'all', label: 'As all cards' },
-                { value: 'thin', label: 'Thin' },
-                { value: 'normal', label: 'Normal' },
-                { value: 'wide', label: 'Wide' },
+                { value: 'all', label: translateUi('As all cards') },
+                { value: 'thin', label: translateUi('Thin') },
+                { value: 'normal', label: translateUi('Normal') },
+                { value: 'wide', label: translateUi('Wide') },
               ]}
             />
           </Field>
-          <Hint>The style, colour and font are the same for every card: Settings › Study and cards.</Hint>
+          <Hint><UiText source={'The style, colour and font are the same for every card: Settings › Study and cards.'} /></Hint>
         </Section>
 
         <Section title="Ludus">
-          <Hint>The exercises in this deck’s lessons. Click one to leave it out here; greyed ones are off for every lesson.</Hint>
+          <Hint><UiText source={'The exercises in this deck’s lessons. Click one to leave it out here; greyed ones are off for every lesson.'} /></Hint>
           <div className="flex flex-wrap gap-1.5">
             {EXERCISE_KINDS.map((kind) => {
               const everywhere = globalOff.has(kind);
@@ -213,7 +213,7 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
                   disabled={everywhere}
                   aria-pressed={on}
                   onClick={() => toggleKind(kind)}
-                  title={everywhere ? 'Off for every lesson (Ludus’s own settings)' : undefined}
+                  title={everywhere ? translateUi('Off for every lesson (Ludus’s own settings)') : undefined}
                   className={cx(
                     'inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition-colors',
                     on ? 'border-transparent bg-sage-soft text-sage-text' : 'border-line text-ink-faint hover:border-line-strong hover:text-ink-soft',
@@ -228,9 +228,9 @@ export function DeckSettings({ deck, open, onClose, samples, onForget, onDelete 
           </div>
         </Section>
 
-        <Section title="Danger zone" danger>
-          <DangerRow title="Forget progress" detail="Every card back to new. Its review history stays in Ratio." action={<Button variant="secondary" size="sm" icon={Eraser} onClick={danger(onForget)}>Forget…</Button>} />
-          <DangerRow title="Delete deck" detail="The deck, its cards and their history go." action={<Button variant="danger" size="sm" icon={Trash2} onClick={danger(onDelete)}>Delete…</Button>} />
+        <Section title={translateUi('Danger zone')} danger>
+          <DangerRow title={translateUi('Forget progress')} detail="Every card back to new. Its review history stays in Ratio." action={<Button variant="secondary" size="sm" icon={Eraser} onClick={danger(onForget)}><UiText source={'Forget…'} /></Button>} />
+          <DangerRow title={translateUi('Delete deck')} detail="The deck, its cards and their history go." action={<Button variant="danger" size="sm" icon={Trash2} onClick={danger(onDelete)}><UiText source={'Delete…'} /></Button>} />
         </Section>
       </div>
     </Drawer>
@@ -282,6 +282,7 @@ interface PreviewProps {
 
 /** The deck's card as it will look: its front and, under a line, its back, drawn at the chosen width. */
 function Preview({ note, lang, ways, front, width, look }: PreviewProps) {
+  const translateUi = useUi();
   const props = cardLookProps(look, lang);
   const term = note?.term ?? 'palabra';
   const meaning = note?.meaning ?? 'word';
@@ -317,12 +318,12 @@ function Preview({ note, lang, ways, front, width, look }: PreviewProps) {
       </div>
       <p className="mt-2.5 text-center text-[12px] text-ink-faint">
         {ways === 'both'
-          ? 'Both ways: this card, and one with the meaning in front.'
+          ? translateUi('Both ways: this card, and one with the meaning in front.')
           : gap
-            ? 'A sentence with the word missing; cards without one show the word.'
+            ? translateUi('A sentence with the word missing; cards without one show the word.')
             : front === 'sentence' && ways === 'recognition'
-              ? 'No word here has a sentence yet, so its cards show the word.'
-              : 'Front, then the back under the line.'}
+              ? translateUi('No word here has a sentence yet, so its cards show the word.')
+              : translateUi('Front, then the back under the line.')}
       </p>
     </div>
   );

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
 import { loadScript } from '@/core/script/load';
@@ -22,8 +23,9 @@ export function useScript(lang: string): Script | null | undefined {
 
 /** A group's ring: empty, or full with a check once its lesson is passed. */
 export function GroupRing({ learned, size = 44 }: { learned: boolean; size?: number }) {
+  const translateUi = useUi();
   return (
-    <Ring value={learned ? 1 : 0} size={size} stroke={5} color="var(--sage)" label={learned ? 'Learned' : 'Not learned yet'}>
+    <Ring value={learned ? 1 : 0} size={size} stroke={5} color="var(--sage)" label={learned ? translateUi('Learned') : translateUi('Not learned yet')}>
       {learned && <Check size={18} className="text-sage-text" strokeWidth={3} aria-hidden />}
     </Ring>
   );
@@ -55,9 +57,7 @@ export function LetterSheet({ letter, script, onClose }: { letter: Letter | null
               {shown(letter)}
             </p>
             {named(letter) && (
-              <p className="mt-2 text-[14px] text-ink-faint">
-                called <span lang={lang}>{letter.name}</span>
-              </p>
+              <p className="mt-2 text-[14px] text-ink-faint"><UiText source={'called {0}'} values={[<span lang={lang}>{letter.name}</span>]} /></p>
             )}
             <p className="mx-auto mt-2 max-w-sm text-[15.5px] leading-snug text-ink-soft">{letter.sound}</p>
           </div>

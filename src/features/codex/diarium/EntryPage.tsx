@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
@@ -44,10 +45,8 @@ export default function EntryPage() {
   if (entry === null || entry.deletedAt) {
     return (
       <div className="py-20 text-center">
-        <p className="font-serif text-2xl font-semibold">This entry isn’t here any more</p>
-        <Link to="/mentis/diarium" className="mt-4 inline-block font-semibold text-accent-text">
-          Back to Diarium
-        </Link>
+        <p className="font-serif text-2xl font-semibold"><UiText source={'This entry isn’t here any more'} /></p>
+        <Link to="/mentis/diarium" className="mt-4 inline-block font-semibold text-accent-text"><UiText source={'Back to Diarium'} /></Link>
       </div>
     );
   }
@@ -57,6 +56,7 @@ export default function EntryPage() {
 type Mode = 'write' | 'review';
 
 function Entry({ entry }: { entry: JournalEntry }) {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = entry.lang;
   const navigate = useNavigate();
@@ -179,9 +179,9 @@ function Entry({ entry }: { entry: JournalEntry }) {
   const saving = (
     <span className="text-[13px] text-ink-faint">
       <span className="font-semibold text-ink-soft tabular-nums">
-        {words} {words === 1 ? 'word' : 'words'}
+        {words} {words === 1 ? translateUi('word') : translateUi('words')}
       </span>
-      <span className="ml-2">{saved ? 'Saved' : 'Saving…'}</span>
+      <span className="ml-2">{saved ? translateUi('Saved') : translateUi('Saving…')}</span>
     </span>
   );
 
@@ -211,7 +211,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
             </p>
           )}
           {entry.promptEn && !entry.title && <p className="mt-1.5 text-[14px] text-ink-faint italic">{entry.promptEn}</p>}
-          <p className="mt-1.5 text-[13px] text-ink-faint">A few sentences a day is plenty.</p>
+          <p className="mt-1.5 text-[13px] text-ink-faint"><UiText source={'A few sentences a day is plenty.'} /></p>
           {!hasAi && mode === 'write' && (
             <div className="mt-3 flex items-center gap-3">
               {saving}
@@ -220,15 +220,13 @@ function Entry({ entry }: { entry: JournalEntry }) {
           )}
         </div>
         {talkTopic && (
-          <Link to={`/mentis/sermo?topic=${encodeURIComponent(talkTopic)}`} className={cx(buttonClasses('secondary', 'md'), 'shrink-0')}>
-            <MessagesSquare size={16} aria-hidden /> Talk about this
-          </Link>
+          <Link to={`/mentis/sermo?topic=${encodeURIComponent(talkTopic)}`} className={cx(buttonClasses('secondary', 'md'), 'shrink-0')}><UiText source={'{0} Talk about this'} values={[<MessagesSquare size={16} aria-hidden />]} /></Link>
         )}
         <Popover
-          label="Entry options"
+          label={translateUi('Entry options')}
           placement="bottom-end"
           trigger={(props) => (
-            <button type="button" {...props} aria-label="Entry options" className="grid size-10 shrink-0 place-items-center rounded-xl text-ink-soft hover:bg-surface hover:text-ink">
+            <button type="button" {...props} aria-label={translateUi('Entry options')} className="grid size-10 shrink-0 place-items-center rounded-xl text-ink-soft hover:bg-surface hover:text-ink">
               <Ellipsis size={19} aria-hidden />
             </button>
           )}
@@ -237,7 +235,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
             <div className="w-64 p-1.5">
               <MenuItem
                 icon={TextCursorInput}
-                label="Rename"
+                label={translateUi('Rename')}
                 onClick={() => {
                   close();
                   setRenaming(true);
@@ -246,7 +244,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
               <MenuItem
                 icon={Trash2}
                 danger
-                label="Delete entry"
+                label={translateUi('Delete entry')}
                 onClick={() => {
                   close();
                   remove();
@@ -255,17 +253,9 @@ function Entry({ entry }: { entry: JournalEntry }) {
               {!hasAi && (
                 <p className="mt-1 border-t border-line px-3 pt-2.5 pb-1.5 text-[12.5px] leading-snug text-ink-faint">
                   {block === 'max' ? (
-                    <>
-                      Corrections and explanations come with <MaxLink className="font-semibold text-accent-text">Lingua+ Max</MaxLink>.
-                    </>
+                    <><UiText source={'Corrections and explanations come with {0}.'} values={[<MaxLink className="font-semibold text-accent-text"><UiText source={'Lingua+ Max'} /></MaxLink>]} /></>
                   ) : (
-                    <>
-                      For corrections, add an AI key in{' '}
-                      <Link to="/settings/ai" className="font-semibold text-accent-text">
-                        Settings
-                      </Link>
-                      .
-                    </>
+                    <><UiText source={'For corrections, add an AI key in{0}{1}.'} values={[' ', <Link to="/settings/ai" className="font-semibold text-accent-text"><UiText source={'Settings'} /></Link>]} /></>
                   )}
                 </p>
               )}
@@ -274,26 +264,26 @@ function Entry({ entry }: { entry: JournalEntry }) {
         </Popover>
       </header>
       {mode === 'write' && <WritingSession taskId={entry.writingTaskId} words={words} />}
-      {!hasAi && <p className="mb-4 text-sm text-ink-faint">Writing feedback needs Lingua+ Max and an AI key in Settings. Local writing tools work without them.</p>}
+      {!hasAi && <p className="mb-4 text-sm text-ink-faint"><UiText source={'Writing feedback needs Lingua+ Max and an AI key in Settings. Local writing tools work without them.'} /></p>}
       <WritingMeasures text={text} lang={lang} />
       <details className="mb-6 rounded-xl border border-line p-4 text-sm">
-        <summary className="cursor-pointer font-semibold">{entry.portfolio ? 'Kept in your portfolio' : 'Keep in your portfolio'}</summary>
+        <summary className="cursor-pointer font-semibold">{entry.portfolio ? translateUi('Kept in your portfolio') : translateUi('Keep in your portfolio')}</summary>
         <div className="mt-3 flex items-end gap-3">
-          <label className="flex-1 text-ink-soft">Topic<input value={portfolioTopic} onChange={(e) => setPortfolioTopic(e.target.value)} maxLength={120} className="mt-1 block w-full rounded-xl border border-line bg-raised p-2 text-ink" /></label>
-          <Button variant="secondary" size="sm" disabled={!words} onClick={() => void updateEntry(entry.id, { portfolio: { level: entry.portfolio?.level ?? language.level, topic: portfolioTopic.trim(), at: entry.portfolio?.at ?? Date.now() } }).then(() => toast('Kept in your portfolio.', { tone: 'success' })).catch(() => toast('Could not save the portfolio choice.', { tone: 'error' }))}>{entry.portfolio ? 'Save topic' : `Keep at ${language.level}`}</Button>
-          {entry.portfolio && <Button variant="ghost" size="sm" onClick={() => void updateEntry(entry.id, { portfolio: undefined }).then(() => toast('Removed from the portfolio. Your entry is still here.')).catch(() => toast('Could not change the portfolio.', { tone: 'error' }))}>Remove from portfolio</Button>}
+          <label className="flex-1 text-ink-soft"><UiText source={'Topic{0}'} values={[<input value={portfolioTopic} onChange={(e) => setPortfolioTopic(e.target.value)} maxLength={120} className="mt-1 block w-full rounded-xl border border-line bg-raised p-2 text-ink" />]} /></label>
+          <Button variant="secondary" size="sm" disabled={!words} onClick={() => void updateEntry(entry.id, { portfolio: { level: entry.portfolio?.level ?? language.level, topic: portfolioTopic.trim(), at: entry.portfolio?.at ?? Date.now() } }).then(() => toast('Kept in your portfolio.', { tone: 'success' })).catch(() => toast('Could not save the portfolio choice.', { tone: 'error' }))}>{entry.portfolio ? translateUi('Save topic') : translateUi('Keep at {0}', [language.level])}</Button>
+          {entry.portfolio && <Button variant="ghost" size="sm" onClick={() => void updateEntry(entry.id, { portfolio: undefined }).then(() => toast('Removed from the portfolio. Your entry is still here.')).catch(() => toast('Could not change the portfolio.', { tone: 'error' }))}><UiText source={'Remove from portfolio'} /></Button>}
         </div>
       </details>
 
       {review && (
         <div className="mb-7">
           <Segmented<Mode>
-            label="Mode"
+            label={translateUi('Mode')}
             value={mode}
             onChange={setMode}
             options={[
-              { value: 'write', label: 'Write', icon: PenLine },
-              { value: 'review', label: 'Review', icon: Sparkles },
+              { value: 'write', label: translateUi('Write'), icon: PenLine },
+              { value: 'review', label: translateUi('Review'), icon: Sparkles },
             ]}
           />
         </div>
@@ -322,13 +312,9 @@ function Entry({ entry }: { entry: JournalEntry }) {
               <WritingFeedback review={review} lang={lang} />
               <div className="flex flex-wrap gap-2">
                 {review.corrected.trim() !== plain.trim() && (
-                  <Button variant="secondary" icon={Wand2} onClick={() => void useCorrected()}>
-                    Use the corrected text
-                  </Button>
+                  <Button variant="secondary" icon={Wand2} onClick={() => void useCorrected()}><UiText source={'Use the corrected text'} /></Button>
                 )}
-                <Button variant="ghost" icon={PenLine} onClick={() => setMode('write')}>
-                  Keep writing
-                </Button>
+                <Button variant="ghost" icon={PenLine} onClick={() => setMode('write')}><UiText source={'Keep writing'} /></Button>
               </div>
               {!wide && <CorrectionList review={review} lang={lang} />}
             </div>
@@ -348,16 +334,14 @@ function Entry({ entry }: { entry: JournalEntry }) {
           <div className="pointer-events-auto flex w-full max-w-2xl items-center gap-3 rounded-3xl border border-line/80 bg-raised/95 p-2 pl-4 shadow-elev-3 backdrop-blur-xl">
             <div className="min-w-0 flex-1 leading-tight">
               {saving}
-              <p className="hidden truncate text-[13px] text-ink-faint sm:block">Checking sends this entry to {provider}.</p>
+              <p className="hidden truncate text-[13px] text-ink-faint sm:block"><UiText source={'Checking sends this entry to {0}.'} values={[provider]} /></p>
             </div>
             {stale && review && (
-              <button type="button" onClick={() => setMode('review')} className="hidden px-2 text-[13px] font-semibold text-ink-soft hover:text-ink sm:block">
-                Last review
-              </button>
+              <button type="button" onClick={() => setMode('review')} className="hidden px-2 text-[13px] font-semibold text-ink-soft hover:text-ink sm:block"><UiText source={'Last review'} /></button>
             )}
             <DictateButton lang={lang} onSpoken={speak} />
             <Button icon={review && stale ? RotateCcw : Sparkles} onClick={() => void check()} loading={checking} disabled={words < 3 || (Boolean(review) && !stale)}>
-              {review && stale ? 'Check again' : 'Check my writing'}
+              {review && stale ? translateUi('Check again') : translateUi('Check my writing')}
             </Button>
           </div>
         </div>
@@ -368,6 +352,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
 
 /** The entry's title, edited in place: Enter keeps it, Escape leaves it as it was, empty goes back to the heading. */
 function RenameField({ value, placeholder, onDone }: { value: string; placeholder: string; onDone: (title?: string) => void }) {
+  const translateUi = useUi();
   const [title, setTitle] = useState(value);
   const done = useRef(false);
   const finish = (result?: string) => {
@@ -380,7 +365,7 @@ function RenameField({ value, placeholder, onDone }: { value: string; placeholde
       autoFocus
       value={title}
       placeholder={placeholder}
-      aria-label="Title"
+      aria-label={translateUi('Title')}
       onChange={(e) => setTitle(e.target.value)}
       onFocus={(e) => e.target.select()}
       onBlur={() => finish(title.trim())}

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -63,6 +64,7 @@ const turn = {
  * the first start (7-0d) from that page: the language already chosen, and nothing saved at the end.
  */
 export default function Onboarding({ canCancel = false, replay }: { canCancel?: boolean; replay?: number }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const settings = useSettings();
   const active = useActiveLanguage();
@@ -162,18 +164,14 @@ export default function Onboarding({ canCancel = false, replay }: { canCancel?: 
       <header className={cx('mx-auto flex w-full items-center justify-between gap-4 px-8 pt-6', width)}>
         <Wordmark />
         {replaying ? (
-          <Button variant="secondary" size="sm" onClick={cancel} className="mr-auto">
-            Leave the replay <kbd className="ml-1 font-sans text-[11px] opacity-60">Esc</kbd>
-          </Button>
+          <Button variant="secondary" size="sm" onClick={cancel} className="mr-auto"><UiText source={'Leave the replay {0}'} values={[<kbd className="ml-1 font-sans text-[11px] opacity-60"><UiText source={'Esc'} /></kbd>]} /></Button>
         ) : (
           canCancel && (
-            <Button variant="ghost" size="sm" onClick={cancel} className="mr-auto">
-              Cancel
-            </Button>
+            <Button variant="ghost" size="sm" onClick={cancel} className="mr-auto"><UiText source={'Cancel'} /></Button>
           )
         )}
         {!INTRO.has(page) && (
-          <ol className="flex items-center gap-1.5" aria-label={`Step ${steps.indexOf(page) + 1} of ${steps.length}`}>
+          <ol className="flex items-center gap-1.5" aria-label={translateUi('Step {0} of {1}', [steps.indexOf(page) + 1, steps.length])}>
             {steps.map((step) => {
               const i = steps.indexOf(step);
               const at = steps.indexOf(page);
@@ -213,9 +211,7 @@ export default function Onboarding({ canCancel = false, replay }: { canCancel?: 
       <footer className="sticky bottom-0 bg-gradient-to-t from-bg via-bg/95 to-bg/0 px-8 pt-3 pb-4">
         <div className={cx('mx-auto flex gap-3', width, INTRO.has(page) && 'max-w-md')}>
           {index > 0 && (
-            <Button variant="secondary" size="lg" onClick={() => go(index - 1)} disabled={busy}>
-              Back
-            </Button>
+            <Button variant="secondary" size="lg" onClick={() => go(index - 1)} disabled={busy}><UiText source={'Back'} /></Button>
           )}
           <Button size="lg" className="flex-1" onClick={next} disabled={!canContinue} loading={busy} iconRight={ArrowRight}>
             {label}

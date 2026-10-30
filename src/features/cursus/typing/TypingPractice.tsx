@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Cursus › Typing (5.1-4a): keybr's way for the core languages. A line of words made of the letters
 // unlocked so far, typed on the language's own layout read from the physical keys (or the learner's
 // installed one); a wrong key is counted and the right one still has to be found. After each line the
@@ -39,6 +40,7 @@ const TARGETS = ['20', '25', '30', '35', '40', '50'] as const;
 const isTyping = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
 
 export function TypingPractice({ lang, data, saved }: { lang: string; data: TypingData; saved: TypingRow }) {
+  const translateUi = useUi();
   const settings = useSettings();
   const [row, setRow] = useState(saved);
   const rowRef = useRef(row);
@@ -148,12 +150,12 @@ export function TypingPractice({ lang, data, saved }: { lang: string; data: Typi
         <LetterStrip data={data} row={row} focus={focus} />
         {zh && (
           <Segmented
-            label="What to practise"
+            label={translateUi('What to practise')}
             value={row.zhMode ?? 'pinyin'}
             onChange={(zhMode) => setOption({ zhMode })}
             options={[
-              { value: 'pinyin', label: 'Pinyin, letter by letter' },
-              { value: 'chars', label: 'Characters: type pinyin, pick 1–5' },
+              { value: 'pinyin', label: translateUi('Pinyin, letter by letter') },
+              { value: 'chars', label: translateUi('Characters: type pinyin, pick 1–5') },
             ]}
           />
         )}
@@ -165,14 +167,10 @@ export function TypingPractice({ lang, data, saved }: { lang: string; data: Typi
                   {unlocked}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="flex items-center gap-1.5 text-[14px] font-semibold">
-                    <Sparkles size={15} className="text-accent-text" aria-hidden /> A new letter joins: {unlocked}
-                  </p>
+                  <p className="flex items-center gap-1.5 text-[14px] font-semibold"><UiText source={'{0} A new letter joins: {1}'} values={[<Sparkles size={15} className="text-accent-text" aria-hidden />, unlocked]} /></p>
                   <p className="mt-0.5 text-[13px] text-ink-soft">{howToType(layout, unlocked) ?? 'It turns up more often for a while, until it’s as quick as the rest.'}</p>
                 </div>
-                <button type="button" onClick={() => setUnlocked(null)} className="text-[13px] font-semibold text-ink-soft hover:text-ink">
-                  Got it
-                </button>
+                <button type="button" onClick={() => setUnlocked(null)} className="text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'Got it'} /></button>
               </Card>
             </motion.div>
           )}
@@ -223,9 +221,9 @@ export function TypingPractice({ lang, data, saved }: { lang: string; data: Typi
                 })()}
               </motion.p>
               <p className="mt-4 text-[13px] text-ink-faint">
-                {expected === ' ' ? 'Space' : `Next: ${expected}`}
-                {nextKey && !row.ownLayout ? ` · ${fingerFor(nextKey.code)} finger${nextKey.shift ? ', with shift' : ''}${keys.length > 1 && !r.dead ? ' (two keys: the accent first)' : ''}` : ''}
-                {last ? ` · last line ${last.wpm} wpm, ${last.acc}% right` : ' · just start typing'}
+                {expected === ' ' ? translateUi('Space') : translateUi('Next: {0}', [expected])}
+                {nextKey && !row.ownLayout ? translateUi(' · {0} finger{1}{2}', [fingerFor(nextKey.code), nextKey.shift ? ', with shift' : '', keys.length > 1 && !r.dead ? ' (two keys: the accent first)' : '']) : ''}
+                {last ? translateUi(' · last line {0} wpm, {1}% right', [last.wpm, last.acc]) : translateUi(' · just start typing')}
               </p>
             </Card>
             {!row.ownLayout && <Keyboard layout={layout} next={nextKey?.code ?? null} shift={Boolean(nextKey?.shift)} rtl={rtl} />}
@@ -235,21 +233,21 @@ export function TypingPractice({ lang, data, saved }: { lang: string; data: Typi
       <aside className="space-y-4 xl:sticky xl:top-6">
         <Card className="space-y-4 p-5">
           <Segmented
-            label="Keyboard"
+            label={translateUi('Keyboard')}
             block
             value={row.ownLayout ? 'own' : 'lingua'}
             onChange={(v) => setOption({ ownLayout: v === 'own' })}
             options={[
-              { value: 'lingua', label: 'Lingua’s map' },
-              { value: 'own', label: 'I have this layout' },
+              { value: 'lingua', label: translateUi('Lingua’s map') },
+              { value: 'own', label: translateUi('I have this layout') },
             ]}
           />
           <p className="text-[12.5px] leading-snug text-ink-soft">
             {row.ownLayout
-              ? 'Your computer’s own layout types the letters; switch it on in your system’s keyboard settings.'
-              : `Your keys type the ${layoutName(layout)} layout, whatever your keyboard says, so you can practise before installing it.`}
+              ? translateUi('Your computer’s own layout types the letters; switch it on in your system’s keyboard settings.')
+              : translateUi('Your keys type the {0} layout, whatever your keyboard says, so you can practise before installing it.', [layoutName(layout)])}
           </p>
-          <Select label="Target speed" value={String(row.target) as (typeof TARGETS)[number]} onChange={(v) => setOption({ target: Number(v) })} options={TARGETS.map((t) => ({ value: t, label: `${t} words a minute` }))} />
+          <Select label={translateUi('Target speed')} value={String(row.target) as (typeof TARGETS)[number]} onChange={(v) => setOption({ target: Number(v) })} options={TARGETS.map((t) => ({ value: t, label: `${t} words a minute` }))} />
         </Card>
         <LetterBars data={data} row={row} focus={focus} lang={lang} />
       </aside>
@@ -288,7 +286,7 @@ function LetterBars({ data, row, focus, lang }: { data: TypingData; row: TypingR
   const have = unlockedLetters(data, row);
   return (
     <Card className="p-5">
-      <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Your letters</p>
+      <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Your letters'} /></p>
       <ul className="mt-3 space-y-2" lang={lang}>
         {have.map((c) => {
           const s = row.stats[c];
@@ -304,7 +302,7 @@ function LetterBars({ data, row, focus, lang }: { data: TypingData; row: TypingR
           );
         })}
       </ul>
-      <p className="mt-3 text-[12px] leading-snug text-ink-faint">A new letter joins when every one is at {row.target} words a minute and 95% right.</p>
+      <p className="mt-3 text-[12px] leading-snug text-ink-faint"><UiText source={'A new letter joins when every one is at {0} words a minute and 95% right.'} values={[row.target]} /></p>
     </Card>
   );
 }

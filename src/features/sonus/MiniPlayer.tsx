@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -13,6 +14,7 @@ export const MINI_PLAYER_SPACE = 72;
 
 /** What's playing, wherever you are: a slim bar above the tab bar (phone) or a card (desktop). */
 export function MiniPlayer() {
+  const translateUi = useUi();
   const media = usePlayer((s) => s.media);
   const status = usePlayer((s) => s.status);
   const duration = usePlayer((s) => s.durationMs);
@@ -52,32 +54,32 @@ export function MiniPlayer() {
           style={wide ? undefined : { bottom: 'max(12px, env(safe-area-inset-bottom))' }}
         >
           <div className="flex items-center gap-3 p-2 pr-2.5">
-            <Link to={live ? `${sonusBase()}/station/${media.id.replace(/^radio:/, '')}` : `${sonusBase()}/play/${media.id}`} className="flex min-w-0 flex-1 items-center gap-3" aria-label={`Open ${media.title}`}>
+            <Link to={live ? `${sonusBase()}/station/${media.id.replace(/^radio:/, '')}` : `${sonusBase()}/play/${media.id}`} className="flex min-w-0 flex-1 items-center gap-3" aria-label={translateUi('Open {0}', [media.title])}>
               <Artwork title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="w-11" rounded="rounded-lg" />
               <span className="min-w-0">
                 <span lang={media.lang} className="block truncate text-[14px] font-semibold">
                   {media.title}
                 </span>
                 <span className="block truncate text-[12px] text-ink-faint">
-                  {sleeping && <Moon size={11} className="mr-1 inline-block -translate-y-px fill-current text-accent-text" aria-label="Sleep timer on" />}
-                  {status === 'error' ? 'Couldn’t play' : live ? (nowPlaying ?? `Live · ${media.artist ?? 'Radio'}`) : (media.collection ?? media.artist ?? 'Sonus')}
+                  {sleeping && <Moon size={11} className="mr-1 inline-block -translate-y-px fill-current text-accent-text" aria-label={translateUi('Sleep timer on')} />}
+                  {status === 'error' ? translateUi('Couldn’t play') : live ? (nowPlaying ?? `Live · ${media.artist ?? 'Radio'}`) : (media.collection ?? media.artist ?? 'Sonus')}
                 </span>
               </span>
             </Link>
             {wide && !live && (
-              <button type="button" aria-label="Back 10 seconds" onClick={() => skip(-usePlayer.getState().skipBackSec)} className="grid size-9 place-items-center rounded-full text-ink-soft hover:bg-surface">
+              <button type="button" aria-label={translateUi('Back 10 seconds')} onClick={() => skip(-usePlayer.getState().skipBackSec)} className="grid size-9 place-items-center rounded-full text-ink-soft hover:bg-surface">
                 <RotateCcw size={18} aria-hidden />
               </button>
             )}
             <button
               type="button"
-              aria-label={playing ? 'Pause' : 'Play'}
+              aria-label={playing ? translateUi('Pause') : translateUi('Play')}
               onClick={toggle}
               className="grid size-10 shrink-0 place-items-center rounded-full bg-inverse text-on-inverse transition-transform active:scale-90"
             >
               {status === 'loading' ? <LoaderCircle size={17} className="animate-spin" aria-hidden /> : playing ? <Pause size={17} className="fill-current" aria-hidden /> : <Play size={17} className="translate-x-px fill-current" aria-hidden />}
             </button>
-            <button type="button" aria-label="Close the player" onClick={() => void closePlayer()} className="grid size-9 shrink-0 place-items-center rounded-full text-ink-faint hover:bg-surface hover:text-ink">
+            <button type="button" aria-label={translateUi('Close the player')} onClick={() => void closePlayer()} className="grid size-9 shrink-0 place-items-center rounded-full text-ink-faint hover:bg-surface hover:text-ink">
               <X size={17} aria-hidden />
             </button>
           </div>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { memo, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { useNavigate } from 'react-router';
@@ -33,9 +34,10 @@ export const tint = (hue: string): CSSProperties => ({
 });
 
 function LevelPill({ value, ready }: { value: PickLevel; ready: boolean }) {
+  const translateUi = useUi();
   return (
     <span
-      title={ready ? 'At your level' : `From ${value}`}
+      title={ready ? translateUi('At your level') : translateUi('From {0}', [value])}
       className={cx('shrink-0 rounded-full px-2 py-0.5 text-[11.5px] font-bold tabular-nums', ready ? 'bg-sage-soft text-sage-text' : 'bg-sunken text-ink-soft')}
     >
       {value === 'A1' ? 'A1' : `${value}+`}
@@ -114,9 +116,7 @@ export const PickCard = memo(function PickCard({
             toast(added ? `“${pick.title}” is on your Codex wishlist.` : 'It’s already in Codex.', { tone: added ? 'success' : 'default', action: { label: 'Codex', onClick: () => navigate('/codex') } });
           })
         }
-      >
-        Add to Codex
-      </Button>
+      ><UiText source={'Add to Codex'} /></Button>
     ) : kind === 'podcast' ? (
       <Button
         size="sm"
@@ -130,9 +130,7 @@ export const PickCard = memo(function PickCard({
             else toast('Apple’s podcast directory doesn’t have it under that name. Try Spotify or Apple Podcasts.', { duration: 6000 });
           })
         }
-      >
-        Follow in Sonus
-      </Button>
+      ><UiText source={'Follow in Sonus'} /></Button>
     ) : screen ? (
       <Button
         size="sm"
@@ -145,9 +143,7 @@ export const PickCard = memo(function PickCard({
             if (id) navigate(`/visio/watch/${id}`);
           })
         }
-      >
-        Add its subtitles
-      </Button>
+      ><UiText source={'Add its subtitles'} /></Button>
     ) : null;
 
   return (
@@ -181,11 +177,9 @@ export const PickCard = memo(function PickCard({
         )}
         <p className="mt-1.5 text-[14px] leading-snug text-ink-soft">{pick.why}</p>
         {mine.length > 0 && (
-          <p className="mt-2 inline-flex items-center gap-1.5 self-start rounded-full bg-sage-soft px-2.5 py-1 text-[12px] font-bold text-sage-text">
-            <Check size={13} strokeWidth={3} aria-hidden /> On your {mine.map((id) => serviceById(id)?.name).join(', ')}
-          </p>
+          <p className="mt-2 inline-flex items-center gap-1.5 self-start rounded-full bg-sage-soft px-2.5 py-1 text-[12px] font-bold text-sage-text"><UiText source={'{0} On your {1}'} values={[<Check size={13} strokeWidth={3} aria-hidden />, mine.map((id) => serviceById(id)?.name).join(', ')]} /></p>
         )}
-        {checkedNone && <p className="mt-2 text-[12.5px] font-semibold text-ink-faint">Not on your services in {countryName(streaming.country)}</p>}
+        {checkedNone && <p className="mt-2 text-[12.5px] font-semibold text-ink-faint"><UiText source={'Not on your services in {0}'} values={[countryName(streaming.country)]} /></p>}
         <div className="mt-auto flex flex-wrap items-center gap-1.5 pt-3">
           {action}
           {links.map((l) => (

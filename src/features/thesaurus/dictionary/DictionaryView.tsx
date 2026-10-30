@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { Link, useSearchParams } from 'react-router';
 import { BookA, Brain } from 'lucide-react';
 import { hasFullDictionary } from '@/core/dictionary/format';
@@ -15,6 +16,7 @@ import type { RememberedRow } from './WordMemory';
  * Look any word up above; your own words are listed beside, and either opens on the right.
  */
 export function DictionaryView({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const [params, setParams] = useSearchParams();
   const word = params.get('word') ?? undefined;
   const full = hasFullDictionary(lang);
@@ -30,7 +32,7 @@ export function DictionaryView({ lang }: { lang: string }) {
       {full && (
         <div className="mb-7 flex items-center gap-5">
           <DictionarySearch lang={lang} size="lg" className="max-w-2xl flex-1" />
-          {ready && installed && <p className="shrink-0 text-[13px] text-ink-faint">{installed.words.toLocaleString()} words · works offline</p>}
+          {ready && installed && <p className="shrink-0 text-[13px] text-ink-faint"><UiText source={'{0} words · works offline'} values={[installed.words.toLocaleString()]} /></p>}
         </div>
       )}
       {full && installed?.state === 'none' && (
@@ -45,15 +47,13 @@ export function DictionaryView({ lang }: { lang: string }) {
       )}
 
       <div className="grid grid-cols-[minmax(300px,380px)_minmax(0,1fr)] items-start gap-8">
-        <section aria-label="Your words">
-          <h2 className="mb-3 flex items-baseline gap-2 font-serif text-xl font-semibold">
-            Your words <span className="font-sans text-sm font-bold text-ink-faint tabular-nums">{rows?.length ?? ''}</span>
-          </h2>
+        <section aria-label={translateUi('Your words')}>
+          <h2 className="mb-3 flex items-baseline gap-2 font-serif text-xl font-semibold"><UiText source={'Your words {0}'} values={[<span className="font-sans text-sm font-bold text-ink-faint tabular-nums">{rows?.length ?? ''}</span>]} /></h2>
           {rows && rows.length > 0 && <MemoryList lang={lang} rows={rows} selected={selected?.key} onSelect={open} />}
           {rows && rows.length === 0 && (
             <Card className="p-5">
               <Brain size={20} aria-hidden className="mb-2 text-sage-text" />
-              <p className="text-[14px] leading-relaxed text-ink-soft">Words you look up or mark while reading, listening or watching gather here, with the sentence and the place you met them.</p>
+              <p className="text-[14px] leading-relaxed text-ink-soft"><UiText source={'Words you look up or mark while reading, listening or watching gather here, with the sentence and the place you met them.'} /></p>
             </Card>
           )}
         </section>
@@ -79,14 +79,15 @@ export function DictionaryView({ lang }: { lang: string }) {
 }
 
 function Welcome({ lang, name, ready, words, recent }: { lang: string; name: string; ready: boolean; words: number; recent: RememberedRow[] }) {
+  const translateUi = useUi();
   return (
     <div className="py-6 text-center">
       <span className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-sage-soft text-sage-text">
         <BookA size={26} aria-hidden />
       </span>
-      <p className="font-serif text-2xl font-semibold">{ready ? 'Look up any word' : 'Your words'}</p>
+      <p className="font-serif text-2xl font-semibold">{ready ? translateUi('Look up any word') : translateUi('Your words')}</p>
       <p className="mx-auto mt-2 max-w-md text-[14.5px] leading-relaxed text-ink-soft">
-        {ready ? `${words.toLocaleString()} ${name} words, from Wiktionary. Type above, choose one of your words, or right-click a word while reading and choose Open dictionary.` : 'Choose one of your words to see where you met it.'}
+        {ready ? translateUi('{0} {1} words, from Wiktionary. Type above, choose one of your words, or right-click a word while reading and choose Open dictionary.', [words.toLocaleString(), name]) : translateUi('Choose one of your words to see where you met it.')}
       </p>
       {recent.length > 0 && (
         <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -102,9 +103,7 @@ function Welcome({ lang, name, ready, words, recent }: { lang: string; name: str
           type="button"
           onClick={() => void removeDictionary(lang).then(() => toast('The dictionary was removed from this device.'))}
           className="hit mt-10 text-[12.5px] font-semibold text-ink-faint underline-offset-2 hover:text-ink-soft hover:underline"
-        >
-          Remove the dictionary from this device
-        </button>
+        ><UiText source={'Remove the dictionary from this device'} /></button>
       )}
     </div>
   );

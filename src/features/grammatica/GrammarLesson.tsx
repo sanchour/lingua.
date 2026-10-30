@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { BookOpen, Keyboard, Settings2, Zap } from 'lucide-react';
@@ -76,6 +77,7 @@ interface Props {
  * missed twice Again).
  */
 export function GrammarLesson({ lang, title, drills, topics, random, endsAt, practice, retries: allowRetries = true, intro, step, onFinish, onClose, onActive, onSetup, labels }: Props) {
+  const translateUi = useUi();
   const lightning = endsAt !== undefined;
   const feel = useLessonFeel();
   const tracks = useRef<Map<string, Track> | null>(null);
@@ -301,15 +303,12 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
   }
 
   const ruleButton = topic && (
-    <button type="button" onClick={() => setRule(topic)} className="mt-1.5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-accent-text underline decoration-accent/40 underline-offset-4">
-      <BookOpen size={14} aria-hidden />
-      See the rule
-    </button>
+    <button type="button" onClick={() => setRule(topic)} className="mt-1.5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-accent-text underline decoration-accent/40 underline-offset-4"><UiText source={'{0}See the rule'} values={[<BookOpen size={14} aria-hidden />]} /></button>
   );
 
   const wrong = d && (
     <div>
-      <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase">{d.kind === 'own' ? 'Better' : 'Correct answer'}</p>
+      <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase">{d.kind === 'own' ? translateUi('Better') : translateUi('Correct answer')}</p>
       {d.kind === 'own' && own.result ? (
         <>
           <p lang={lang} dir="auto" className="font-serif text-lg font-semibold">
@@ -342,12 +341,9 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
   );
 
   const rightNote = near ? (
-    <p className="text-sm text-ink-soft">
-      Mind the accents:{' '}
-      <span lang={lang} className="font-semibold text-ink">
+    <p className="text-sm text-ink-soft"><UiText source={'Mind the accents:{0}{1}'} values={[' ', <span lang={lang} className="font-semibold text-ink">
         {near.expected}
-      </span>
-    </p>
+      </span>]} /></p>
   ) : d?.kind === 'transform' ? (
     <p className="text-sm leading-snug text-ink-soft">{note ?? d.spec.feedback?.why}</p>
   ) : d?.kind === 'own' && own.result ? (
@@ -363,7 +359,7 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
     <>
       <StudyBar wide title={title} progress={progress} onClose={onClose}>
         {lightning && endsAt ? <LightningClock endsAt={endsAt} onEnd={finish} onTick={() => feel.cue('tick')} /> : <ComboBadge combo={feel.combo} burst={feel.burst} onBurstEnd={feel.clearBurst} />}
-        {!lightning && <IconButton icon={Settings2} label="Lesson settings" size="sm" onClick={onSetup} />}
+        {!lightning && <IconButton icon={Settings2} label={translateUi('Lesson settings')} size="sm" onClick={onSetup} />}
       </StudyBar>
       <main className="mx-auto min-h-dvh max-w-6xl px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 104px)' }}>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -380,7 +376,7 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
                 >
                   <p id="drill-label" className="mb-6 flex items-center gap-2 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">
                     {lightning && <Zap size={14} aria-hidden />}
-                    {d.key.includes('-r') ? 'One more try · ' : d.key.includes('-due-') ? 'Due again · ' : ''}
+                    {d.key.includes('-r') ? translateUi('One more try · ') : d.key.includes('-due-') ? translateUi('Due again · ') : ''}
                     {labels?.[d.kind] ?? DRILL_LABEL[d.kind]}
                     {topics.size > 1 && topic && <span className="truncate font-semibold tracking-normal text-ink-faint normal-case">· {topic.title}</span>}
                   </p>
@@ -415,16 +411,11 @@ export function GrammarLesson({ lang, title, drills, topics, random, endsAt, pra
         hint={d?.kind === 'pairs' ? 'Tap one side, then its match' : lightning && d && 'options' in d ? 'Tap an answer' : undefined}
         aside={
           d?.kind === 'build' ? (
-            <button type="button" onClick={skipTyping} className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
-              <Keyboard size={15} aria-hidden />
-              Can’t type this now
-            </button>
+            <button type="button" onClick={skipTyping} className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4"><UiText source={'{0}Can’t type this now'} values={[<Keyboard size={15} aria-hidden />]} /></button>
           ) : d?.kind === 'spot' ? (
-            <p className="text-sm text-ink-soft">One word is wrong. Tap it.</p>
+            <p className="text-sm text-ink-soft"><UiText source={'One word is wrong. Tap it.'} /></p>
           ) : d?.kind === 'own' ? (
-            <button type="button" onClick={next} className="text-[14px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
-              Skip this one
-            </button>
+            <button type="button" onClick={next} className="text-[14px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4"><UiText source={'Skip this one'} /></button>
           ) : undefined
         }
       />

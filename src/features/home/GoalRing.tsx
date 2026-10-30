@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 /** A quiet progress ring (Apple Books' reading goal): fills as today's minutes add up. */
 export function GoalRing({ value, goal, size = 132 }: { value: number; goal: number; size?: number }) {
   const stroke = 10;
@@ -25,7 +26,7 @@ export function GoalRing({ value, goal, size = 132 }: { value: number; goal: num
       </svg>
       <div className="absolute text-center">
         <span className="block font-serif text-[30px] leading-none font-semibold tabular-nums">{Math.floor(value)}</span>
-        <span className="mt-1 block text-[11.5px] font-semibold text-ink-faint">of {goal} min</span>
+        <span className="mt-1 block text-[11.5px] font-semibold text-ink-faint"><UiText source={'of {0} min'} values={[goal]} /></span>
       </div>
     </div>
   );

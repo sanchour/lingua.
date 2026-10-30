@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // The grammar lesson's exercises, one view per kind (core/grammar/drills.ts makes them).
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -151,6 +152,7 @@ export function TableGapView({ d, lang, value, onChange, phase }: { d: Of<'table
 // ── 3 · Type the form ───────────────────────────────────────────────────────
 
 export function BuildView({ d, lang, value, onChange, phase, onSubmit }: { d: Of<'build'>; lang: string; value: string; onChange: (v: string) => void; phase: Phase; onSubmit: () => void }) {
+  const translateUi = useUi();
   const input = useRef<HTMLInputElement>(null);
   const { pointer } = useLayout();
   useEffect(() => {
@@ -217,7 +219,7 @@ export function BuildView({ d, lang, value, onChange, phase, onSubmit }: { d: Of
         />
       </form>
       {phase === 'answer' && LETTERS[lang] && pointer === 'fine' && (
-        <div className="flex flex-wrap justify-center gap-1.5" aria-label="Special letters">
+        <div className="flex flex-wrap justify-center gap-1.5" aria-label={translateUi('Special letters')}>
           {LETTERS[lang].map((ch) => (
             <button
               key={ch}
@@ -455,6 +457,7 @@ export function OwnView({
   error?: string;
   onSubmit: () => void;
 }) {
+  const translateUi = useUi();
   const area = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     const t = window.setTimeout(() => area.current?.focus(), 140);
@@ -464,8 +467,8 @@ export function OwnView({
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <p className="font-serif text-[clamp(1.25rem,4vw,1.6rem)] leading-snug">Write a sentence of your own with {topic.title.toLowerCase().startsWith('the ') ? topic.title.toLowerCase() : `“${topic.title}”`}.</p>
-        <p className="mt-2 text-[14px] text-ink-soft">For example:</p>
+        <p className="font-serif text-[clamp(1.25rem,4vw,1.6rem)] leading-snug"><UiText source={'Write a sentence of your own with {0}.'} values={[topic.title.toLowerCase().startsWith('the ') ? topic.title.toLowerCase() : `“${topic.title}”`]} /></p>
+        <p className="mt-2 text-[14px] text-ink-soft"><UiText source={'For example:'} /></p>
         <p lang={lang} dir={rtl ? 'rtl' : undefined} className={cx(serif, 'mt-1 text-[18px]')}>
           {d.example.s.replace(/[[\]]/g, '')}
         </p>
@@ -494,7 +497,7 @@ export function OwnView({
         )}
       />
       <p className="min-h-5 text-center text-[13.5px] text-ink-soft" aria-live="polite">
-        {checking ? 'Reading your sentence…' : error ? <span className="text-accent-text">{error}</span> : phase === 'answer' ? 'Checked by your AI (Settings › AI). It doesn’t move your schedule.' : ''}
+        {checking ? translateUi('Reading your sentence…') : error ? <span className="text-accent-text">{error}</span> : phase === 'answer' ? translateUi('Checked by your AI (Settings › AI). It doesn’t move your schedule.') : ''}
       </p>
     </div>
   );

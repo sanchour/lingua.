@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { Flag } from 'lucide-react';
 import type { KeyboardEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -59,6 +60,7 @@ interface GoalStepProps {
 
 /** Set your own goal (5.1-2b): the level to reach, as milestones on a path, and minutes a day on a slider; then about how long. */
 export function GoalStep({ level, goal, minutes, onGoal, onMinutes }: GoalStepProps) {
+  const translateUi = useUi();
   const ahead = ORDER.slice(ORDER.indexOf(level) + 1);
   const index = Math.max(0, DAILY_MINUTES.findIndex((d) => d.minutes === minutes));
   const last = DAILY_MINUTES.length - 1;
@@ -75,13 +77,13 @@ export function GoalStep({ level, goal, minutes, onGoal, onMinutes }: GoalStepPr
 
   return (
     <div>
-      <StepTitle title="Set your own goal" body="Aim high, start small. Both can change any time in Settings." />
+      <StepTitle title={translateUi('Set your own goal')} body="Aim high, start small. Both can change any time in Settings." />
 
       {/* The path: where you are, then each level ahead as a milestone; the goal carries the flag. */}
-      <h2 className="mb-3 text-[12px] font-bold tracking-[0.08em] text-ink-faint uppercase">Where do you want to get?</h2>
-      <div role="radiogroup" aria-label="The level to reach" className="flex items-stretch gap-2">
+      <h2 className="mb-3 text-[12px] font-bold tracking-[0.08em] text-ink-faint uppercase"><UiText source={'Where do you want to get?'} /></h2>
+      <div role="radiogroup" aria-label={translateUi('The level to reach')} className="flex items-stretch gap-2">
         <div className="flex w-24 shrink-0 flex-col items-center justify-center rounded-2xl border border-dashed border-line-strong px-2 py-3 text-center">
-          <span className="text-[11px] font-bold tracking-wide text-ink-faint uppercase">You</span>
+          <span className="text-[11px] font-bold tracking-wide text-ink-faint uppercase"><UiText source={'You'} /></span>
           <span className="font-serif text-[20px] font-semibold text-ink-soft">{level}</span>
         </div>
         {ahead.map((l, i) => {
@@ -112,15 +114,15 @@ export function GoalStep({ level, goal, minutes, onGoal, onMinutes }: GoalStepPr
       </div>
 
       <div className="mt-8 flex items-baseline justify-between">
-        <h2 className="text-[12px] font-bold tracking-[0.08em] text-ink-faint uppercase">Time a day</h2>
-        <p className="font-serif text-[22px] font-semibold text-accent-text tabular-nums">{minutes} min</p>
+        <h2 className="text-[12px] font-bold tracking-[0.08em] text-ink-faint uppercase"><UiText source={'Time a day'} /></h2>
+        <p className="font-serif text-[22px] font-semibold text-accent-text tabular-nums"><UiText source={'{0} min'} values={[minutes]} /></p>
       </div>
       {/* A slider that snaps to the checkpoints; the track is drawn by hand so the marks line up with the names. */}
       <div className="mt-2 px-3">
         <div
           role="slider"
           tabIndex={0}
-          aria-label="Time a day"
+          aria-label={translateUi('Time a day')}
           aria-valuemin={DAILY_MINUTES[0].minutes}
           aria-valuemax={DAILY_MINUTES[last].minutes}
           aria-valuenow={minutes}
@@ -168,16 +170,12 @@ export function GoalStep({ level, goal, minutes, onGoal, onMinutes }: GoalStepPr
       {/* The sum: about how long, at this pace. */}
       <div className="mt-6 flex items-center gap-4 rounded-3xl border border-line bg-raised px-5 py-4">
         <div className="min-w-0 flex-1">
-          <p className="text-[15px] leading-snug">
-            At {minutes} minutes a day, {goal} in about{' '}
-            <AnimatePresence mode="popLayout" initial={false}>
+          <p className="text-[15px] leading-snug"><UiText source={'At {0} minutes a day, {1} in about{2}{3}.'} values={[minutes, goal, ' ', <AnimatePresence mode="popLayout" initial={false}>
               <motion.span key={time} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={spring.snappy} className="inline-block font-serif text-[20px] font-semibold text-accent-text">
                 {time}
               </motion.span>
-            </AnimatePresence>
-            .
-          </p>
-          <p className="mt-0.5 text-[12px] text-ink-faint">A rough guide from the usual hours of study per level. Reading and listening every day count.</p>
+            </AnimatePresence>]} /></p>
+          <p className="mt-0.5 text-[12px] text-ink-faint"><UiText source={'A rough guide from the usual hours of study per level. Reading and listening every day count.'} /></p>
         </div>
         <p className="shrink-0 font-serif text-[15px] text-ink-soft italic">{verdict}</p>
       </div>

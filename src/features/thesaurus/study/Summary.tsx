@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { motion } from 'motion/react';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/design/primitives';
@@ -51,9 +52,7 @@ export function Summary({ title, stats, actions = [], onDone }: { title: string;
             {a.label}
           </Button>
         ))}
-        <Button size="lg" variant={actions.length ? 'ghost' : 'primary'} block onClick={onDone}>
-          Done
-        </Button>
+        <Button size="lg" variant={actions.length ? 'ghost' : 'primary'} block onClick={onDone}><UiText source={'Done'} /></Button>
       </div>
     </motion.div>
   );

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -79,6 +80,7 @@ const watched = (r: Item) => 'media' in r && isVideo(r.media);
  * Finding new things is Sonus+'s and Mundus's job.
  */
 export function LibraryHome({ lang, media, visible, feeds, playback, transcribed, view, onView, show, onShow, toolbar, results, onMusic, onPodcasts, onBooks, onRadio }: LibraryHomeProps) {
+  const translateUi = useUi();
   const saved = useSavedSongs(lang);
   const recentSongs = useRecentSongs(lang, 12);
   const savedStations = useSavedStations(lang);
@@ -191,14 +193,14 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
             <SongTile key={s.id} song={s} i={i} />
           ))}
         </ul>
-        <MoreIn onClick={onMusic}>More music in Sonus+</MoreIn>
+        <MoreIn onClick={onMusic}><UiText source={'More music in Sonus+'} /></MoreIn>
       </>
     );
   else if (view === 'podcasts')
     main = (
       <>
         <PodcastGrid feeds={feeds} />
-        <MoreIn onClick={onPodcasts}>Find podcasts in Sonus+</MoreIn>
+        <MoreIn onClick={onPodcasts}><UiText source={'Find podcasts in Sonus+'} /></MoreIn>
       </>
     );
   else if (view === 'episodes') main = rows(visible.filter((m) => m.feedId));
@@ -218,7 +220,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
     main = (
       <div className="space-y-10">
         {going.length > 0 && (
-          <Shelf title="Continue">
+          <Shelf title={translateUi('Continue')}>
             <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
               {going.map((m) => (
                 <li key={m.id} className="w-[296px] shrink-0 snap-start">
@@ -230,7 +232,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
         )}
 
         {played.length > 0 && (
-          <Shelf title="Recently played">
+          <Shelf title={translateUi('Recently played')}>
             <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none]">
               {played.map((r) => (
                 <li key={keyOf(r)} className="w-32 shrink-0 snap-start sm:w-36">
@@ -242,7 +244,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
         )}
 
         {latest.length > 0 && (
-          <Shelf title="Recently added">
+          <Shelf title={translateUi('Recently added')}>
             <ul className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 xl:grid-cols-6">
               {latest.map((r, i) => (
                 <motion.li key={keyOf(r)} {...enter(i)} className="min-w-0">
@@ -254,7 +256,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
         )}
 
         {listen && fresh.length > 0 && (
-          <Shelf title="New episodes">
+          <Shelf title={translateUi('New episodes')}>
             <div className="-mx-2 flex flex-col">
               {fresh.map(({ feed, episode }) => (
                 <EpisodeRow key={`${feed.id}:${episode.guid}`} feed={feed} episode={episode} onOpen={() => void openEpisode(feed, episode)} />
@@ -263,7 +265,7 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
           </Shelf>
         )}
 
-        {toWatch.length > 0 && <Shelf title="To watch">{videoGrid(toWatch)}</Shelf>}
+        {toWatch.length > 0 && <Shelf title={translateUi('To watch')}>{videoGrid(toWatch)}</Shelf>}
       </div>
     );
   }
@@ -275,19 +277,19 @@ export function LibraryHome({ lang, media, visible, feeds, playback, transcribed
           {onShow && (
             <Segmented<MediaShow>
               block
-              label="Show"
+              label={translateUi('Show')}
               value={show}
               onChange={onShow}
               options={[
-                { value: 'all', label: 'All' },
-                { value: 'listen', label: 'Listen' },
-                { value: 'watch', label: 'Watch' },
+                { value: 'all', label: translateUi('All') },
+                { value: 'listen', label: translateUi('Listen') },
+                { value: 'watch', label: translateUi('Watch') },
               ]}
             />
           )}
           {shown.length > 0 && (
-            <nav aria-label="Your library by kind">
-              <p className={cx(label, 'mb-2 hidden px-2 lg:block')}>Your library</p>
+            <nav aria-label={translateUi('Your library by kind')}>
+              <p className={cx(label, 'mb-2 hidden px-2 lg:block')}><UiText source={'Your library'} /></p>
               <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1 lg:gap-0.5">
                 {shown.map((k, i) => {
                   const active = Boolean(k.view) && view === k.view;
@@ -335,6 +337,7 @@ function Shelf({ title, children }: { title: string; children: ReactNode }) {
 
 /** Something half-finished: its artwork or poster, and how much is left. */
 function ContinueTile({ media, progress }: { media: Media; progress?: PlaybackProgress }) {
+  const translateUi = useUi();
   const video = isVideo(media);
   const share = progress && media.durationMs ? Math.min(1, progress.positionMs / media.durationMs) : 0;
   const to = video ? `/visio/watch/${media.id}` : `${sonusBase()}/play/${media.id}`;
@@ -347,7 +350,7 @@ function ContinueTile({ media, progress }: { media: Media; progress?: PlaybackPr
         <Artwork title={title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} className="w-16 shrink-0" rounded="rounded-xl" />
       )}
       <span className="min-w-0 flex-1">
-        <span className={cx('block text-[11px] font-bold tracking-[0.12em] uppercase', video ? 'text-accent-text' : 'text-sage-text')}>{video ? 'Watching' : 'Listening'}</span>
+        <span className={cx('block text-[11px] font-bold tracking-[0.12em] uppercase', video ? 'text-accent-text' : 'text-sage-text')}>{video ? translateUi('Watching') : translateUi('Listening')}</span>
         <span lang={media.lang} className="mt-0.5 line-clamp-2 text-[14px] leading-snug font-semibold">
           {title}
         </span>
@@ -385,7 +388,7 @@ function ItemTile({ item, lang, playback }: { item: Item; lang: string; playback
       >
         <span className="relative block">
           <Artwork title={s.name} coverUrl={s.favicon} className={art} rounded="rounded-xl" />
-          <span className="absolute top-2 left-2 rounded-full bg-black/55 px-1.5 py-0.5 text-[10px] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-sm">Live</span>
+          <span className="absolute top-2 left-2 rounded-full bg-black/55 px-1.5 py-0.5 text-[10px] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-sm"><UiText source={'Live'} /></span>
         </span>
         <TileText title={s.name} sub={stationPlace(s) ?? 'Radio'} icon={Radio} />
       </button>
@@ -473,9 +476,7 @@ function AddFiles({ lang, className }: { lang: string; className?: string }) {
         if (files.length) await importAudioFiles(lang, files);
       }}
       className={cx(buttonClasses('secondary', 'md'), className)}
-    >
-      <FileAudio size={17} aria-hidden /> Add audio files
-    </button>
+    ><UiText source={'{0} Add audio files'} values={[<FileAudio size={17} aria-hidden />]} /></button>
   );
 }
 
@@ -491,15 +492,15 @@ function EmptyLibrary({ lang, onDiscover }: { lang: string; onDiscover: () => vo
           <Clapperboard size={26} aria-hidden />
         </span>
       </div>
-      <h2 className="font-serif text-2xl font-semibold">Everything you listen to and watch</h2>
+      <h2 className="font-serif text-2xl font-semibold"><UiText source={'Everything you listen to and watch'} /></h2>
       <div className="mt-6 grid max-w-2xl gap-4 text-left sm:grid-cols-2">
         <div className="rounded-2xl border border-line p-4">
           <AddMenu lang={lang} onDiscover={onDiscover} label="Listen" />
-          <p className="mt-3 text-[14px] leading-relaxed text-ink-soft">Podcasts, audiobooks, your own audio, Spotify links and radio, with transcripts that follow along.</p>
+          <p className="mt-3 text-[14px] leading-relaxed text-ink-soft"><UiText source={'Podcasts, audiobooks, your own audio, Spotify links and radio, with transcripts that follow along.'} /></p>
         </div>
         <div className="rounded-2xl border border-line p-4">
           <AddVideoMenu lang={lang} label="Watch" />
-          <p className="mt-3 text-[14px] leading-relaxed text-ink-soft">Films and episodes with subtitles in both languages, videos from a link, and subtitles alone.</p>
+          <p className="mt-3 text-[14px] leading-relaxed text-ink-soft"><UiText source={'Films and episodes with subtitles in both languages, videos from a link, and subtitles alone.'} /></p>
         </div>
       </div>
     </Card>
@@ -513,16 +514,12 @@ function EmptyWatch({ lang }: { lang: string }) {
       <div className="mb-5 grid size-14 place-items-center rounded-2xl bg-accent-soft text-accent-text">
         <Clapperboard size={26} aria-hidden />
       </div>
-      <h2 className="font-serif text-2xl font-semibold">Nothing to watch yet</h2>
-      <p className="mt-2 max-w-md text-[15px] leading-relaxed text-ink-soft">
-        Add a film or an episode with its subtitles, or let Whisper write them. Every word on screen can be looked up, and any line can become a flashcard that replays its clip.
-      </p>
+      <h2 className="font-serif text-2xl font-semibold"><UiText source={'Nothing to watch yet'} /></h2>
+      <p className="mt-2 max-w-md text-[15px] leading-relaxed text-ink-soft"><UiText source={'Add a film or an episode with its subtitles, or let Whisper write them. Every word on screen can be looked up, and any line can become a flashcard that replays its clip.'} /></p>
       <div className="mt-6">
         <AddVideoMenu lang={lang} label="Watch" />
       </div>
-      <p className="mt-6 flex items-center gap-1.5 text-[13px] text-ink-faint">
-        <Search size={14} aria-hidden /> Shows on your streaming services are in the Streaming tab.
-      </p>
+      <p className="mt-6 flex items-center gap-1.5 text-[13px] text-ink-faint"><UiText source={'{0} Shows on your streaming services are in the Streaming tab.'} values={[<Search size={14} aria-hidden />]} /></p>
     </Card>
   );
 }

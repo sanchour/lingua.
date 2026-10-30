@@ -126,6 +126,7 @@ export interface Settings {
   spotify: { clientId: string; accessToken: string; refreshToken: string; expiresAt: number; user: string };
   /** Device-only. */
   ui: {
+    interfaceLanguage?: boolean;
     motion: MotionPref;
     sidebarCollapsed: boolean;
     perfHud: boolean;

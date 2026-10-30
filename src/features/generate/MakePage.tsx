@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // What Max makes for the learner (6-6b): a story, example sentences, a dialogue or a word list, at their level and on a topic,
 // checked before it is shown (core/generate), labelled "Generated" with Report, and turned into something they keep: a text in
 // Codex, or a deck. It needs Lingua+ Max and the learner's own key; without them the page says so.
@@ -39,6 +40,7 @@ const KINDS: Array<{ kind: GeneratedKind; title: string; detail: string; cost: s
 ];
 
 export default function MakePage() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = language.id;
   const navigate = useNavigate();
@@ -89,14 +91,12 @@ export default function MakePage() {
   return (
     <>
       <BackLink to="/thesaurus">Thesaurus</BackLink>
-      <PageHeader title="Made by Max" />
-      <p className="mb-6 max-w-2xl text-[15px] text-ink-soft">
-        Max writes it at your level, in short, common words; every word is looked up in the dictionary and the level is measured before you see it. It says so on the page, and you can report what is wrong.
-      </p>
+      <PageHeader title={translateUi('Made by Max')} />
+      <p className="mb-6 max-w-2xl text-[15px] text-ink-soft"><UiText source={'Max writes it at your level, in short, common words; every word is looked up in the dictionary and the level is measured before you see it. It says so on the page, and you can report what is wrong.'} /></p>
 
       <div className="grid gap-8 lg:grid-cols-[22rem_minmax(0,1fr)]">
-        <section aria-label="What to make" className="space-y-5">
-          <div className="space-y-2" role="radiogroup" aria-label="Kind">
+        <section aria-label={translateUi('What to make')} className="space-y-5">
+          <div className="space-y-2" role="radiogroup" aria-label={translateUi('Kind')}>
             {KINDS.map((k) => (
               <button
                 key={k.kind}
@@ -112,7 +112,7 @@ export default function MakePage() {
             ))}
           </div>
           {kind === 'quiz' && (
-            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="What the quiz is about">
+            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={translateUi('What the quiz is about')}>
               {([['topic', 'A topic'], ['library', 'A text of mine'], ['notes', 'My notes'], ['mistakes', 'My mistakes']] as const).map(([v, label]) => (
                 <button key={v} type="button" role="radio" aria-checked={from === v} onClick={() => setFrom(v)} className={cx('rounded-full border px-3 py-1 text-[13px] font-semibold', from === v ? 'border-accent bg-accent-soft text-accent-text' : 'border-line text-ink-soft hover:bg-surface')}>
                   {label}
@@ -121,13 +121,11 @@ export default function MakePage() {
             </div>
           )}
           {kind === 'quiz' && from === 'library' && (
-            <Select label="Text" value={textId} onChange={setTextId} options={[{ value: '', label: library?.length ? 'Choose a text…' : 'Your library is empty', disabled: true }, ...(library ?? []).map((t) => ({ value: t.id, label: t.title }))]} />
+            <Select label={translateUi('Text')} value={textId} onChange={setTextId} options={[{ value: '', label: library?.length ? 'Choose a text…' : 'Your library is empty', disabled: true }, ...(library ?? []).map((t) => ({ value: t.id, label: t.title }))]} />
           )}
-          {kind === 'quiz' && from === 'mistakes' && <p className="text-[13px] text-ink-soft">Questions on the words and grammar you keep getting wrong, taken from your record.</p>}
+          {kind === 'quiz' && from === 'mistakes' && <p className="text-[13px] text-ink-soft"><UiText source={'Questions on the words and grammar you keep getting wrong, taken from your record.'} /></p>}
           {kind === 'simplified' || (kind === 'quiz' && from === 'notes') ? (
-            <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
-              The text
-              <textarea
+            <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'The text{0}'} values={[<textarea
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
                 lang={lang}
@@ -135,38 +133,25 @@ export default function MakePage() {
                 maxLength={4000}
                 placeholder="An article, a page of a book…"
                 className="mt-1.5 w-full resize-y rounded-xl border border-line bg-raised p-3 text-[15px] font-normal tracking-normal text-ink normal-case outline-none focus:border-accent"
-              />
-            </label>
+              />]} /></label>
           ) : kind === 'quiz' && from !== 'topic' ? null : (
-            <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase">
-              About
-              <input
+            <label className="block text-[13px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'About{0}'} values={[<input
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 maxLength={80}
-                placeholder="a trip to the market, or a goal: a job interview in Spanish…"
+                placeholder={translateUi('a trip to the market, or a goal: a job interview in Spanish…')}
                 className="mt-1.5 h-11 w-full rounded-xl border border-line bg-raised px-3.5 text-[15px] font-medium tracking-normal text-ink normal-case outline-none focus:border-accent"
-              />
-            </label>
+              />]} /></label>
           )}
-          <Select<Cefr> label="Level" value={level} onChange={setLevel} options={CEFR_LEVELS.map((l) => ({ value: l, label: l }))} />
+          <Select<Cefr> label={translateUi('Level')} value={level} onChange={setLevel} options={CEFR_LEVELS.map((l) => ({ value: l, label: l }))} />
           <div>
-            <Button block size="lg" icon={Sparkles} loading={busy} disabled={block !== null} onClick={() => void make()}>
-              Make it
-            </Button>
-            <p className="mt-2 text-[12.5px] text-ink-faint">One request to your own AI key, {chosen.cost}. The same request is never paid for twice: what was made is kept on this device.</p>
+            <Button block size="lg" icon={Sparkles} loading={busy} disabled={block !== null} onClick={() => void make()}><UiText source={'Make it'} /></Button>
+            <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'One request to your own AI key, {0}. The same request is never paid for twice: what was made is kept on this device.'} values={[chosen.cost]} /></p>
             {block === 'max' && (
-              <p className="mt-2 text-[13px] text-accent-text">
-                This needs Lingua+ Max. <MaxLink className="underline" />
-              </p>
+              <p className="mt-2 text-[13px] text-accent-text"><UiText source={'This needs Lingua+ Max. {0}'} values={[<MaxLink className="underline" />]} /></p>
             )}
             {block === 'key' && (
-              <p className="mt-2 text-[13px] text-accent-text">
-                Add your AI key first:{' '}
-                <Link to="/settings/ai" className="font-semibold underline">
-                  Settings › AI
-                </Link>
-              </p>
+              <p className="mt-2 text-[13px] text-accent-text"><UiText source={'Add your AI key first:{0}{1}'} values={[' ', <Link to="/settings/ai" className="font-semibold underline"><UiText source={'Settings › AI'} /></Link>]} /></p>
             )}
             {error && (
               <p className="mt-2 text-[13px] text-accent-text">
@@ -176,11 +161,11 @@ export default function MakePage() {
           </div>
         </section>
 
-        <section aria-label="What was made" aria-live="polite">
+        <section aria-label={translateUi('What was made')} aria-live="polite">
           {row ? (
             <Made row={row} lang={lang} translated={translated} onTranslated={setTranslated} onReported={() => setRow(null)} keepStory={keepStory} deckOf={deckOf} original={kind === 'simplified' ? source.trim() : undefined} />
           ) : (
-            <p className="rounded-2xl border border-dashed border-line p-8 text-center text-[14px] text-ink-faint">{busy ? 'Max is writing…' : 'What Max makes appears here.'}</p>
+            <p className="rounded-2xl border border-dashed border-line p-8 text-center text-[14px] text-ink-faint">{busy ? translateUi('Max is writing…') : translateUi('What Max makes appears here.')}</p>
           )}
         </section>
       </div>
@@ -208,6 +193,7 @@ function Made({
   /** For a simplified text: what it was made from, shown beside it. */
   original?: string;
 }) {
+  const translateUi = useUi();
   const [busy, setBusy] = useState(false);
   const label = labelFor(row);
   const body = row.content;
@@ -218,7 +204,7 @@ function Made({
   };
   const toggle = (
     <Button variant="ghost" size="sm" onClick={() => onTranslated(!translated)}>
-      {translated ? 'Hide translation' : 'Show translation'}
+      {translated ? translateUi('Hide translation') : translateUi('Show translation')}
     </Button>
   );
 
@@ -264,9 +250,7 @@ function Made({
           )}
           <div className="mt-5 flex flex-wrap gap-2">
             {toggle}
-            <Button variant="secondary" icon={BookOpen} loading={busy} onClick={() => void run(() => keepStory(body as StoryBody))}>
-              Keep in Codex
-            </Button>
+            <Button variant="secondary" icon={BookOpen} loading={busy} onClick={() => void run(() => keepStory(body as StoryBody))}><UiText source={'Keep in Codex'} /></Button>
             <Button
               variant="secondary"
               icon={Layers}
@@ -278,9 +262,7 @@ function Made({
                   await deckOf((body as StoryBody).title, drafts);
                 })
               }
-            >
-              A deck of its new words
-            </Button>
+            ><UiText source={'A deck of its new words'} /></Button>
           </div>
         </>
       )}
@@ -321,9 +303,7 @@ function Made({
           </ul>
           <div className="mt-5 flex flex-wrap gap-2">
             {toggle}
-            <Link to="/thesaurus/practice/dialogue" className="inline-flex h-10 items-center rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface">
-              Practise it: complete the dialogue
-            </Link>
+            <Link to="/thesaurus/practice/dialogue" className="inline-flex h-10 items-center rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"><UiText source={'Practise it: complete the dialogue'} /></Link>
           </div>
         </>
       )}
@@ -348,9 +328,7 @@ function Made({
             ))}
           </ul>
           <div className="mt-5">
-            <Button icon={Layers} loading={busy} onClick={() => void run(() => deckOf('Made by Max', (body as WordlistBody).words))}>
-              Make a deck of these
-            </Button>
+            <Button icon={Layers} loading={busy} onClick={() => void run(() => deckOf('Made by Max', (body as WordlistBody).words))}><UiText source={'Make a deck of these'} /></Button>
           </div>
         </>
       )}
@@ -360,6 +338,7 @@ function Made({
 
 /** A quiz to answer: pick an option, see whether it was right and why, and a score at the end. */
 function Quiz({ body, lang }: { body: QuizBody; lang: string }) {
+  const translateUi = useUi();
   const [picked, setPicked] = useState<Record<number, number>>({});
   const done = Object.keys(picked).length === body.questions.length;
   const right = body.questions.filter((q, i) => picked[i] === q.answer).length;
@@ -374,7 +353,7 @@ function Quiz({ body, lang }: { body: QuizBody; lang: string }) {
               <p lang={lang} className="font-serif text-[18px] leading-snug font-semibold">
                 {i + 1}. {q.question}
               </p>
-              <div className="mt-2 grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label={`Question ${i + 1}`}>
+              <div className="mt-2 grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label={translateUi('Question {0}', [i + 1])}>
                 {q.options.map((o, j) => {
                   const shown = chosen !== undefined;
                   return (
@@ -406,9 +385,7 @@ function Quiz({ body, lang }: { body: QuizBody; lang: string }) {
         })}
       </ol>
       {done && (
-        <p className="mt-6 font-serif text-xl font-semibold" role="status">
-          {right} of {body.questions.length} right
-        </p>
+        <p className="mt-6 font-serif text-xl font-semibold" role="status"><UiText source={'{0} of {1} right'} values={[right, body.questions.length]} /></p>
       )}
     </>
   );

@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -99,13 +100,13 @@ export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { 
                 <button type="button" onClick={() => navigate('/thesaurus?tab=dictionary')} className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-[14px] hover:bg-surface">
                   <Download size={16} aria-hidden className="text-accent-text" />
                   <span>
-                    <span className="font-semibold">Get the {name} dictionary</span>
-                    <span className="block text-[12.5px] text-ink-soft">Downloaded once, then it works offline.</span>
+                    <span className="font-semibold"><UiText source={'Get the {0} dictionary'} values={[name]} /></span>
+                    <span className="block text-[12.5px] text-ink-soft"><UiText source={'Downloaded once, then it works offline.'} /></span>
                   </span>
                 </button>
               </li>
             ) : results.length === 0 ? (
-              <li className="px-3 py-2.5 text-[14px] text-ink-soft">No word starts like that.</li>
+              <li className="px-3 py-2.5 text-[14px] text-ink-soft"><UiText source={'No word starts like that.'} /></li>
             ) : (
               results.map((r, i) => (
                 <li key={r.key} role="option" aria-selected={i === active}>

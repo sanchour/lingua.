@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Captions, ExternalLink, Star } from 'lucide-react';
@@ -26,6 +27,7 @@ const label = 'mb-2 text-[12px] font-bold tracking-[0.14em] text-ink-faint upper
  * in your country (each opens the service), other ways to watch, and "Add its subtitles".
  */
 export function TitleSheet({ lang, title, onClose }: { lang: string; title: SheetTitle | null; onClose: () => void }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const { services, country, token } = useStreaming();
   const [details, setDetails] = useState<TmdbTitle | null>(null);
@@ -79,9 +81,7 @@ export function TitleSheet({ lang, title, onClose }: { lang: string; title: Shee
       title={name}
       description={[original && original !== name ? original : null, year, title?.pick?.by].filter(Boolean).join(' · ') || undefined}
       footer={
-        <Button block size="lg" icon={Captions} loading={busy} onClick={() => void addSubtitles()}>
-          Add its subtitles
-        </Button>
+        <Button block size="lg" icon={Captions} loading={busy} onClick={() => void addSubtitles()}><UiText source={'Add its subtitles'} /></Button>
       }
     >
       <div className="flex gap-4">
@@ -94,52 +94,46 @@ export function TitleSheet({ lang, title, onClose }: { lang: string; title: Shee
             </p>
           )}
           {(details ?? tmdb)?.rating ? (
-            <p className="mt-2 inline-flex items-center gap-1 text-[12.5px] font-semibold text-ink-faint">
-              <Star size={13} aria-hidden /> {(details ?? tmdb)!.rating!.toFixed(1)} on TMDB
-            </p>
+            <p className="mt-2 inline-flex items-center gap-1 text-[12.5px] font-semibold text-ink-faint"><UiText source={'{0} {1} on TMDB'} values={[<Star size={13} aria-hidden />, (details ?? tmdb)!.rating!.toFixed(1)]} /></p>
           ) : null}
         </div>
       </div>
 
       <div className="mt-6">
-        <p className={label}>On your services in {countryName(country)}</p>
+        <p className={label}><UiText source={'On your services in {0}'} values={[countryName(country)]} /></p>
         {yours.length ? (
           <div className="flex flex-wrap gap-2">
             {yours.map((id) => {
               const s = serviceById(id)!;
               return (
-                <a key={id} href={serviceLink(s, name, lang)} target="_blank" rel="noopener noreferrer" className="no-callout inline-flex h-11 items-center gap-2 rounded-xl border border-line bg-raised px-3.5 text-[14px] font-semibold transition-colors hover:border-line-strong">
-                  <ServiceMark service={s} size={22} /> Open in {s.name}
-                </a>
+                <a key={id} href={serviceLink(s, name, lang)} target="_blank" rel="noopener noreferrer" className="no-callout inline-flex h-11 items-center gap-2 rounded-xl border border-line bg-raised px-3.5 text-[14px] font-semibold transition-colors hover:border-line-strong"><UiText source={'{0} Open in {1}'} values={[<ServiceMark service={s} size={22} />, s.name]} /></a>
               );
             })}
           </div>
         ) : (
-          <p className="text-[14px] text-ink-soft">{services.length ? (where || !token ? 'None of your services has it here.' : 'Looking…') : 'Choose your services above to see where it streams for you.'}</p>
+          <p className="text-[14px] text-ink-soft">{services.length ? (where || !token ? translateUi('None of your services has it here.') : translateUi('Looking…')) : translateUi('Choose your services above to see where it streams for you.')}</p>
         )}
       </div>
 
       {others.length > 0 && (
         <div className="mt-5">
-          <p className={label}>Also streams on</p>
+          <p className={label}><UiText source={'Also streams on'} /></p>
           <p className="text-[14px] text-ink-soft">{others.map((p) => p.provider_name).join(' · ')}</p>
         </div>
       )}
       {where && where.rentOrBuy.length > 0 && (
         <div className="mt-5">
-          <p className={label}>To rent or buy</p>
+          <p className={label}><UiText source={'To rent or buy'} /></p>
           <p className="text-[14px] text-ink-soft">{where.rentOrBuy.slice(0, 6).map((p) => p.provider_name).join(' · ')}</p>
         </div>
       )}
 
       <div className="mt-6 flex flex-wrap gap-2">
-        {where?.link && <SheetLink href={where.link}>Every way to watch</SheetLink>}
-        <SheetLink href={youtubeSearch(`${name}${year ? ` ${year}` : ''} trailer`)}>Trailer</SheetLink>
-        <SheetLink href={subtitleSearch(title?.pick?.en ?? name, lang)}>Find subtitles</SheetLink>
+        {where?.link && <SheetLink href={where.link}>{translateUi('Every way to watch')}</SheetLink>}
+        <SheetLink href={youtubeSearch(`${name}${year ? ` ${year}` : ''} trailer`)}>{translateUi('Trailer')}</SheetLink>
+        <SheetLink href={subtitleSearch(title?.pick?.en ?? name, lang)}>{translateUi('Find subtitles')}</SheetLink>
       </div>
-      <p className="mt-4 text-[12.5px] leading-relaxed text-ink-faint">
-        Streaming services protect their video, so it plays in their own app; with its subtitles in Visio you can read along, look up words and save lines as cards beside it.
-      </p>
+      <p className="mt-4 text-[12.5px] leading-relaxed text-ink-faint"><UiText source={'Streaming services protect their video, so it plays in their own app; with its subtitles in Visio you can read along, look up words and save lines as cards beside it.'} /></p>
     </Drawer>
   );
 }

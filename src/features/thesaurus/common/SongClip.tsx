@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { Music2, Play, Square } from 'lucide-react';
@@ -14,6 +15,7 @@ import { SongArt } from '@/features/cantus/SongArt';
  * here (its YouTube video, or Spotify). Otherwise a link back to the song.
  */
 export function SongClip({ note }: { note: Note }) {
+  const translateUi = useUi();
   const song = useSong(note.context?.songId);
   const [playing, setPlaying] = useState(false);
   if (!song || song.deletedAt) return null;
@@ -33,7 +35,7 @@ export function SongClip({ note }: { note: Note }) {
         {canPlay ? (
           <button
             type="button"
-            aria-label={playing ? 'Stop the line' : 'Play the line from the song'}
+            aria-label={playing ? translateUi('Stop the line') : translateUi('Play the line from the song')}
             onClick={() => {
               if (!playing && usePlayer.getState().status === 'playing') pauseAudio();
               setPlaying((p) => !p);
@@ -49,7 +51,7 @@ export function SongClip({ note }: { note: Note }) {
       {playing && start !== undefined && end !== undefined && (
         song.youtubeId ? (
           <iframe
-            title={`${song.title}: this line`}
+            title={translateUi('{0}: this line', [song.title])}
             src={`https://www.youtube-nocookie.com/embed/${song.youtubeId}?start=${Math.max(0, Math.floor((start + shift) / 1000) - 1)}&end=${Math.ceil((end + shift) / 1000) + 1}&autoplay=1&playsinline=1&rel=0&modestbranding=1`}
             allow="autoplay; encrypted-media; picture-in-picture"
             className="mt-2 aspect-video w-full rounded-xl border-0 bg-black"

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import type { ReactNode } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { FEATURE_NAME, FEATURE_PLAN } from '@/data/plan';
@@ -10,6 +11,7 @@ import { useCan } from './usePlan';
 
 /** A small "+" (or MAX) chip on something locked; it opens the plans with that plan lifted. Never more than this. */
 export function PlusChip({ feature, className }: { feature: Feature; className?: string }) {
+  const translateUi = useUi();
   const openPlans = useUI((s) => s.openPlans);
   const max = FEATURE_PLAN[feature] === 'max';
   return (
@@ -20,8 +22,8 @@ export function PlusChip({ feature, className }: { feature: Feature; className?:
         e.stopPropagation();
         openPlans(feature);
       }}
-      title={`${FEATURE_NAME[feature]} comes with ${max ? 'Lingua+ Max' : 'Lingua+'}`}
-      aria-label={`${FEATURE_NAME[feature]}: see ${max ? 'Lingua+ Max' : 'Lingua+'}`}
+      title={translateUi('{0} comes with {1}', [FEATURE_NAME[feature], max ? 'Lingua+ Max' : 'Lingua+'])}
+      aria-label={translateUi('{0}: see {1}', [FEATURE_NAME[feature], max ? 'Lingua+ Max' : 'Lingua+'])}
       className={cx('inline-flex shrink-0 items-center', max ? '' : 'h-5 rounded-full bg-accent-soft px-1.5 text-[12px] leading-none font-bold text-accent-text', className)}
     >
       {max ? <MaxMark /> : '+'}
@@ -49,9 +51,7 @@ export function LockedCard({ feature, title }: { feature: Feature; title?: strin
       <span className="mb-4">{max ? <MaxMark className="text-[13px]" /> : <span className="font-serif text-[40px] leading-none text-accent-text">+</span>}</span>
       <h2 className="font-serif text-2xl font-semibold">{title ?? `${FEATURE_NAME[feature]} comes with ${max ? 'Lingua+ Max' : 'Lingua+'}`}</h2>
       <p className="mt-2 max-w-md text-[15px] leading-relaxed text-ink-soft">{WHAT[feature]}</p>
-      <button type="button" onClick={() => openPlans(feature)} className={cx(buttonClasses('primary', 'md'), 'mt-6')}>
-        See the plans <ArrowRight size={16} aria-hidden />
-      </button>
+      <button type="button" onClick={() => openPlans(feature)} className={cx(buttonClasses('primary', 'md'), 'mt-6')}><UiText source={'See the plans {0}'} values={[<ArrowRight size={16} aria-hidden />]} /></button>
     </Card>
   );
 }

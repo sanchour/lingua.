@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { Check, Lightbulb, Plus, Sparkles } from 'lucide-react';
 import { wordDiff } from '@/core/diff/words';
@@ -72,15 +73,13 @@ function CorrectionBody({ correction: c, lang }: { correction: JournalCorrection
     <div>
       <div className="mb-2 flex items-center gap-2">
         <Badge tone={c.severity === 'major' ? 'accent' : 'neutral'}>{c.category}</Badge>
-        {c.severity === 'major' && <span className="text-[11.5px] font-semibold text-accent-text">Worth learning</span>}
+        {c.severity === 'major' && <span className="text-[11.5px] font-semibold text-accent-text"><UiText source={'Worth learning'} /></span>}
       </div>
       <p lang={lang} className="font-serif text-[16px] leading-snug">
         <del className="text-accent-text decoration-accent/70">{c.original}</del> <span className="text-ink-faint">→</span> <ins className="text-sage-text no-underline">{c.suggestion}</ins>
       </p>
       {c.explanation && <p className="mt-2 text-[14px] leading-relaxed text-ink-soft">{c.explanation}</p>}
-      <button type="button" onClick={() => void saveCorrection(lang, c)} className="mt-3 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 -ml-2 text-[13px] font-semibold text-ink-soft hover:bg-surface hover:text-ink">
-        <Plus size={14} aria-hidden /> Add to the Journal deck
-      </button>
+      <button type="button" onClick={() => void saveCorrection(lang, c)} className="mt-3 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 -ml-2 text-[13px] font-semibold text-ink-soft hover:bg-surface hover:text-ink"><UiText source={'{0} Add to the Journal deck'} values={[<Plus size={14} aria-hidden />]} /></button>
     </div>
   );
 }
@@ -89,18 +88,19 @@ type TextView = 'changes' | 'corrected' | 'natural';
 
 /** Your text with its changes, the corrected text, or how a native speaker would put it. */
 export function ReviewText({ review, lang }: { review: JournalReview; lang: string }) {
+  const translateUi = useUi();
   const [view, setView] = useState<TextView>('changes');
   return (
     <div>
       <div className="mb-5">
         <Segmented<TextView>
-          label="Show"
+          label={translateUi('Show')}
           value={view}
           onChange={setView}
           options={[
-            { value: 'changes', label: 'Changes' },
-            { value: 'corrected', label: 'Corrected' },
-            ...(review.natural ? [{ value: 'natural' as const, label: 'Native-like' }] : []),
+            { value: 'changes', label: translateUi('Changes') },
+            { value: 'corrected', label: translateUi('Corrected') },
+            ...(review.natural ? [{ value: 'natural' as const, label: translateUi('Native-like') }] : []),
           ]}
         />
       </div>
@@ -110,7 +110,7 @@ export function ReviewText({ review, lang }: { review: JournalReview; lang: stri
           <GlossText text={view === 'corrected' ? review.corrected : review.natural} lang={lang} />
         </p>
       )}
-      {view === 'changes' && review.corrections.length > 0 && <p className="mt-4 text-[13px] text-ink-faint">Tap a marked change to see why.</p>}
+      {view === 'changes' && review.corrections.length > 0 && <p className="mt-4 text-[13px] text-ink-faint"><UiText source={'Tap a marked change to see why.'} /></p>}
     </div>
   );
 }
@@ -123,14 +123,15 @@ const SCORE_LABEL: Array<[keyof JournalReview['scores'], string]> = [
 
 /** Grade, level, what went well and one thing to work on. */
 export function ReviewSummary({ review }: { review: JournalReview }) {
+  const translateUi = useUi();
   const { scores } = review;
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-5">
-        <Ring value={scores.overall / 100} size={92} stroke={8} color={gradeColor(scores.overall)} label={`Overall ${scores.overall} of 100`}>
+        <Ring value={scores.overall / 100} size={92} stroke={8} color={gradeColor(scores.overall)} label={translateUi('Overall {0} of 100', [scores.overall])}>
           <span>
             <span className="block font-serif text-[28px] leading-none font-semibold tabular-nums">{scores.overall}</span>
-            <span className="mt-0.5 block text-[10.5px] font-bold tracking-wide text-ink-faint uppercase">overall</span>
+            <span className="mt-0.5 block text-[10.5px] font-bold tracking-wide text-ink-faint uppercase"><UiText source={'overall'} /></span>
           </span>
         </Ring>
         <div className="min-w-0 flex-1 space-y-2">
@@ -148,9 +149,7 @@ export function ReviewSummary({ review }: { review: JournalReview }) {
         </div>
       </div>
       {review.cefr && (
-        <p className="text-[14px] text-ink-soft">
-          This entry reads like <span className="font-semibold text-ink">{review.cefr}</span> writing.
-        </p>
+        <p className="text-[14px] text-ink-soft"><UiText source={'This entry reads like {0} writing.'} values={[<span className="font-semibold text-ink">{review.cefr}</span>]} /></p>
       )}
       {review.strengths.length > 0 && (
         <ul className="space-y-2">
@@ -174,11 +173,10 @@ export function ReviewSummary({ review }: { review: JournalReview }) {
 
 /** Every correction as a small card, each one tap away from the Journal deck. */
 export function CorrectionList({ review, lang }: { review: JournalReview; lang: string }) {
+  const translateUi = useUi();
   if (!review.corrections.length) {
     return (
-      <p className="flex items-center gap-2 text-[15px] text-sage-text">
-        <Sparkles size={17} aria-hidden /> Nothing to correct. Lovely work.
-      </p>
+      <p className="flex items-center gap-2 text-[15px] text-sage-text"><UiText source={'{0} Nothing to correct. Lovely work.'} values={[<Sparkles size={17} aria-hidden />]} /></p>
     );
   }
   const addAll = async () => {
@@ -200,11 +198,9 @@ export function CorrectionList({ review, lang }: { review: JournalReview; lang: 
     <div>
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-[13px] font-bold tracking-wide text-ink-soft uppercase">
-          {review.corrections.length} {review.corrections.length === 1 ? 'correction' : 'corrections'}
+          {review.corrections.length} {review.corrections.length === 1 ? translateUi('correction') : translateUi('corrections')}
         </h3>
-        <button type="button" onClick={() => void addAll()} className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[13px] font-semibold text-ink-soft hover:bg-surface hover:text-ink">
-          <Plus size={14} aria-hidden /> All to Journal
-        </button>
+        <button type="button" onClick={() => void addAll()} className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[13px] font-semibold text-ink-soft hover:bg-surface hover:text-ink"><UiText source={'{0} All to Journal'} values={[<Plus size={14} aria-hidden />]} /></button>
       </div>
       <ul className="space-y-2.5">
         {review.corrections.map((c, i) => (

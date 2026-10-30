@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { CultureWordNotes } from '@/features/culture/CultureShelf';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -41,6 +42,7 @@ const POS: Record<string, string> = { adj: 'adjective', adv: 'adverb', prep: 'pr
 
 /** Offers a language's dictionary for download (or a newer build of it). */
 export function InstallCard({ lang, update }: { lang: string; update?: boolean }) {
+  const translateUi = useUi();
   const job = useDictJobs((s) => s.jobs[lang]);
   const name = getLanguage(lang)?.name ?? lang;
   const install = () =>
@@ -53,22 +55,19 @@ export function InstallCard({ lang, update }: { lang: string; update?: boolean }
         <BookA size={24} aria-hidden />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="font-serif text-xl font-semibold">{update ? `A better ${name} dictionary is ready` : `The ${name} dictionary`}</p>
-        <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">
-          {update
+        <p className="font-serif text-xl font-semibold">{update ? translateUi('A better {0} dictionary is ready', [name]) : translateUi('The {0} dictionary', [name])}</p>
+        <p className="mt-0.5 text-[14px] leading-snug text-ink-soft"><UiText source={'{0}{1}About {2} MB, kept on this device.'} values={[update
             ? 'Syllables, what words are made of and where they come from, on top of the language’s own definitions and example sentences.'
-            : 'Every meaning with real examples, pronunciation, forms, phrases, synonyms and where the word comes from.'}{' '}
-          About {DICT_SIZE_MB[lang] ?? 8} MB, kept on this device.
-        </p>
+            : 'Every meaning with real examples, pronunciation, forms, phrases, synonyms and where the word comes from.', ' ', DICT_SIZE_MB[lang] ?? 8]} /></p>
         {job && (
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-sunken" role="status" aria-label={job.phase === 'download' ? 'Downloading' : 'Storing'}>
+          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-sunken" role="status" aria-label={job.phase === 'download' ? translateUi('Downloading') : translateUi('Storing')}>
             <div className="h-full origin-left rounded-full bg-sage transition-transform duration-300" style={{ transform: `scaleX(${Math.max(0.03, job.pct)})` }} />
           </div>
         )}
       </div>
       {!job && (
         <Button icon={Download} onClick={() => void install()}>
-          {update ? 'Update' : 'Download'}
+          {update ? translateUi('Update') : translateUi('Download')}
         </Button>
       )}
     </Card>
@@ -90,10 +89,8 @@ function NotFound({ lang, word }: { lang: string; word: string }) {
   }, [lang, word]);
   return (
     <div>
-      <p className="font-serif text-2xl font-semibold">
-        “<span lang={lang}>{word}</span>” isn’t a headword
-      </p>
-      <p className="mt-2 text-ink-soft">It may be a form of another word: right-click it while reading to see which. Words that start the same:</p>
+      <p className="font-serif text-2xl font-semibold"><UiText source={'“{0}” isn’t a headword'} values={[<span lang={lang}>{word}</span>]} /></p>
+      <p className="mt-2 text-ink-soft"><UiText source={'It may be a form of another word: right-click it while reading to see which. Words that start the same:'} /></p>
       <div className="mt-4 flex flex-wrap gap-2">
         {near.map((r) => (
           <Link key={r.key} to={entryPath(r.word)} lang={lang} className="rounded-full bg-surface px-3.5 py-1.5 font-serif text-[16px] hover:bg-sunken">
@@ -106,6 +103,7 @@ function NotFound({ lang, word }: { lang: string; word: string }) {
 }
 
 function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
+  const translateUi = useUi();
   const saved = useWord(lang, row.key);
   const state: WordState = saved && !saved.deletedAt ? saved.state : 0;
   const sightings = useSightings(lang, row.key, row.key);
@@ -150,8 +148,8 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
         {main?.audio && (
           <button
             type="button"
-            aria-label="Hear a recording"
-            title="Hear a recording (Wikimedia Commons)"
+            aria-label={translateUi('Hear a recording')}
+            title={translateUi('Hear a recording (Wikimedia Commons)')}
             onClick={() => void new Audio(main.audio).play().catch(() => toast('The recording couldn’t be played.', { tone: 'error' }))}
             className="grid size-10 place-items-center rounded-full bg-surface text-ink-soft transition-colors hover:bg-sunken hover:text-ink"
           >
@@ -163,9 +161,7 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
         {main?.ipa?.map((p) => <Badge key={p}>{p}</Badge>)}
         <SyllableBadge lang={lang} entry={row.entries.find((e) => e.syl) ?? main} />
         {row.rank && (
-          <Badge tone="sage">
-            #{row.rank.toLocaleString()} most common · {cefrForRank(row.rank)}
-          </Badge>
+          <Badge tone="sage"><UiText source={'#{0} most common · {1}'} values={[row.rank.toLocaleString(), cefrForRank(row.rank)]} /></Badge>
         )}
         {main?.gender && <Badge>{GENDER[main.gender] ?? main.gender}</Badge>}
         {main?.pair?.map(([label, w]) => (
@@ -181,14 +177,14 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
       <div className="mt-5 flex flex-wrap items-center gap-3">
         <div className="w-full max-w-sm">
           <Segmented<`${WordState}`>
-            label="Word state"
+            label={translateUi('Word state')}
             value={String(state) as `${WordState}`}
             onChange={(v) => void setWordState(lang, row.key, Number(v) as WordState, { surface: row.word, lemma: row.key, gloss })}
             block
             options={[
-              { value: '0', label: 'Unseen', icon: Circle },
-              { value: '1', label: 'Known', icon: Check },
-              { value: '2', label: 'Learning', icon: BookMarked },
+              { value: '0', label: translateUi('Unseen'), icon: Circle },
+              { value: '1', label: translateUi('Known'), icon: Check },
+              { value: '2', label: translateUi('Learning'), icon: BookMarked },
             ]}
           />
         </div>
@@ -207,7 +203,7 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
       </div>
 
       {row.mono && row.mono.length > 0 && (
-        <Section title={`In ${name}`} note={`From the ${name} Wiktionary`}>
+        <Section title={translateUi('In {0}', [name])} note={`From the ${name} Wiktionary`}>
           <div className="space-y-4">
             {row.mono.map((m, i) => (
               <div key={i}>
@@ -228,7 +224,7 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
       )}
 
       {((row.tatoeba?.length ?? 0) > 0 || (!sensesHaveExamples && (packExamples?.length ?? 0) > 0)) && (
-        <Section title="Sentences" note={row.tatoeba?.length ? 'From Tatoeba' : undefined}>
+        <Section title={translateUi('Sentences')} note={row.tatoeba?.length ? 'From Tatoeba' : undefined}>
           <ul className="space-y-3">
             {sentences.map(([sentence, translation, start, end]) => (
               <li key={sentence}>
@@ -250,7 +246,7 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
 
       <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-7">
         {phrases.length > 0 && (
-          <Side title="Set phrases" wide>
+          <Side title={translateUi('Set phrases')} wide>
             <ul className="grid grid-cols-2 gap-x-6 gap-y-1.5">
               {phrases.slice(0, 12).map(([p, g]) => (
                 <li key={p} className="text-[14.5px] leading-snug">
@@ -264,13 +260,13 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
           </Side>
         )}
         {(syn.length > 0 || ant.length > 0) && (
-          <Side title="Synonyms and antonyms">
+          <Side title={translateUi('Synonyms and antonyms')}>
             {syn.length > 0 && <WordLinks lang={lang} label="Like" words={syn} />}
             {ant.length > 0 && <WordLinks lang={lang} label="Opposite" words={ant} />}
           </Side>
         )}
         {grammarTopics.length > 0 && (
-          <Side title="Grammar for this word">
+          <Side title={translateUi('Grammar for this word')}>
             <div className="flex flex-wrap gap-1.5">
               {grammarTopics.map((t) => (
                 <Link key={t.id} to={`/cursus/grammatica/${t.id}`} className="rounded-full bg-surface px-3 py-0.5 text-[14px] transition-colors hover:bg-sunken">
@@ -281,52 +277,48 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
           </Side>
         )}
         {learnerErrorOf(lang, row.word) && (
-          <Side title="A common mistake">
+          <Side title={translateUi('A common mistake')}>
             <p className="text-[14.5px] leading-relaxed text-ink-soft">{learnerErrorOf(lang, row.word)}</p>
           </Side>
         )}
         {falseFriendOf(lang, row.word) && (
-          <Side title="A false friend">
-            <p className="text-[14.5px] leading-relaxed text-ink-soft">
-              It looks like the English “{falseFriendOf(lang, row.word)!.looks}”, but it means <b className="text-ink">{falseFriendOf(lang, row.word)!.means}</b>.
-            </p>
+          <Side title={translateUi('A false friend')}>
+            <p className="text-[14.5px] leading-relaxed text-ink-soft"><UiText source={'It looks like the English “{0}”, but it means {1}.'} values={[falseFriendOf(lang, row.word)!.looks, <b className="text-ink">{falseFriendOf(lang, row.word)!.means}</b>]} /></p>
           </Side>
         )}
         {row.confused && row.confused.length > 0 && (
-          <Side title="Easily confused with">
+          <Side title={translateUi('Easily confused with')}>
             <WordLinks lang={lang} words={row.confused} />
           </Side>
         )}
         {made.length > 0 && (
-          <Side title="Made from this word">
+          <Side title={translateUi('Made from this word')}>
             <WordLinks lang={lang} words={made} />
           </Side>
         )}
         {derived.length > 0 && (
-          <Side title="Related words">
+          <Side title={translateUi('Related words')}>
             <WordLinks lang={lang} words={derived} />
           </Side>
         )}
         {hom.length > 0 && (
-          <Side title="Sounds like">
+          <Side title={translateUi('Sounds like')}>
             <WordLinks lang={lang} words={hom} />
           </Side>
         )}
         {(ety || hasOrigin) && (
-          <Side title="Where it comes from">
+          <Side title={translateUi('Where it comes from')}>
             <OriginLines lang={lang} entries={row.entries} />
             {ety && <p className="text-[14px] leading-relaxed text-ink-soft">{ety}</p>}
           </Side>
         )}
         {sightings && sightings.length > 0 && (
-          <Side title="Where you met it" wide>
+          <Side title={translateUi('Where you met it')} wide>
             <WordPlaces lang={lang} sightings={sightings.slice(0, 6)} />
           </Side>
         )}
       </div>
-      <p className="mt-10 text-[11.5px] leading-relaxed text-ink-faint">
-        From Wiktionary via kaikki.org (CC BY-SA 4.0){row.tatoeba?.length ? ', sentences from Tatoeba (CC BY 2.0 FR)' : ''}. Frequency from FrequencyWords. Recordings from Wikimedia Commons.
-      </p>
+      <p className="mt-10 text-[11.5px] leading-relaxed text-ink-faint"><UiText source={'From Wiktionary via kaikki.org (CC BY-SA 4.0){0}. Frequency from FrequencyWords. Recordings from Wikimedia Commons.'} values={[row.tatoeba?.length ? ', sentences from Tatoeba (CC BY 2.0 FR)' : '']} /></p>
     </article>
   );
 }
@@ -351,17 +343,13 @@ function Tidy({ lang, row }: { lang: string; row: FullDictRow }) {
   if (!result) {
     return (
       <div className="mt-5">
-        <Button variant="ghost" size="sm" icon={Sparkles} loading={busy} onClick={() => void run()}>
-          At a glance, tidied by AI
-        </Button>
+        <Button variant="ghost" size="sm" icon={Sparkles} loading={busy} onClick={() => void run()}><UiText source={'At a glance, tidied by AI'} /></Button>
         {error && (
           <p className="mt-1.5 text-[13px] text-accent-text">
             {error.message}{' '}
             {error instanceof LlmError && error.kind === 'no-plan' && <MaxLink className="underline" />}
             {error instanceof LlmError && error.kind === 'no-key' && (
-              <Link to="/settings/ai" className="font-semibold underline">
-                Open settings
-              </Link>
+              <Link to="/settings/ai" className="font-semibold underline"><UiText source={'Open settings'} /></Link>
             )}
           </p>
         )}
@@ -370,9 +358,7 @@ function Tidy({ lang, row }: { lang: string; row: FullDictRow }) {
   }
   return (
     <motion.section initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft} className="mt-6 rounded-2xl border border-line bg-surface p-5">
-      <h3 className="mb-2 flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
-        <Sparkles size={13} aria-hidden /> At a glance
-      </h3>
+      <h3 className="mb-2 flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase"><UiText source={'{0} At a glance'} values={[<Sparkles size={13} aria-hidden />]} /></h3>
       {result.summary && <p className="text-[15px] leading-snug">{result.summary}</p>}
       <ol className="mt-3 space-y-2.5">
         {result.senses.map((s, i) => (
@@ -448,14 +434,14 @@ function EntrySection({ lang, entry }: { lang: string; entry: FullEntry }) {
                 <p className="mt-1 text-[13px] text-ink-soft">
                   {sense.syn && (
                     <>
-                      <span className="text-ink-faint">like </span>
+                      <span className="text-ink-faint"><UiText source={'like '} /></span>
                       <InlineLinks lang={lang} words={sense.syn} />
                     </>
                   )}
                   {sense.syn && sense.ant && <span className="text-ink-faint"> · </span>}
                   {sense.ant && (
                     <>
-                      <span className="text-ink-faint">opposite </span>
+                      <span className="text-ink-faint"><UiText source={'opposite '} /></span>
                       <InlineLinks lang={lang} words={sense.ant} />
                     </>
                   )}

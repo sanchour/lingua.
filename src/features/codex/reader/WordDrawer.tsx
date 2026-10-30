@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { CultureWordNotes } from '@/features/culture/CultureShelf';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
@@ -53,6 +54,7 @@ export function WordDrawer({ lang, word, onClose, onState, onGloss }: WordDrawer
 }
 
 function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: DrawerWord; onState: WordDrawerProps['onState']; onGloss: WordDrawerProps['onGloss'] }) {
+  const translateUi = useUi();
   const { norm, context } = word;
   const { settings } = useApp();
   // Reading the word in its sentence needs AI: Max with a key.
@@ -105,9 +107,7 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
           <SpeakButton lang={lang} text={context.surface ?? norm} size={16} label="Hear the word" className="size-8 shrink-0 bg-sunken text-ink-soft hover:text-ink" />
           {main?.ipa && <Badge>{main.ipa}</Badge>}
           {dict?.rank && (
-            <Badge tone="sage">
-              #{dict.rank.toLocaleString()} most common · {cefrForRank(dict.rank)}
-            </Badge>
+            <Badge tone="sage"><UiText source={'#{0} most common · {1}'} values={[dict.rank.toLocaleString(), cefrForRank(dict.rank)]} /></Badge>
           )}
           <span className="ml-auto">
             <AddToDeck
@@ -129,26 +129,26 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
       </div>
 
       <Segmented<`${WordState}`>
-        label="Word state"
+        label={translateUi('Word state')}
         value={String(state) as `${WordState}`}
         onChange={(v) => onState(norm, Number(v) as WordState)}
         block
         options={[
-          { value: '0', label: 'Unseen', icon: Circle },
-          { value: '1', label: 'Known', icon: Check },
-          { value: '2', label: 'Learning', icon: BookMarked },
+          { value: '0', label: translateUi('Unseen'), icon: Circle },
+          { value: '1', label: translateUi('Known'), icon: Check },
+          { value: '2', label: translateUi('Learning'), icon: BookMarked },
         ]}
       />
 
       {dict?.hasParadigm && (
         <Segmented
-          label="Show"
+          label={translateUi('Show')}
           value={tab}
           onChange={setTab}
           block
           options={[
-            { value: 'meaning', label: 'Meaning' },
-            { value: 'forms', label: 'Forms' },
+            { value: 'meaning', label: translateUi('Meaning') },
+            { value: 'forms', label: translateUi('Forms') },
           ]}
         />
       )}
@@ -164,37 +164,28 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
       ) : (
         <>
           <section>
-            <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</h3>
+            <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Meaning'} /></h3>
             <input
               value={gloss}
               onChange={(e) => setGloss(e.target.value)}
               onBlur={commitGloss}
               onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget as HTMLInputElement).blur()}
-              placeholder="Add your own translation"
-              aria-label="Your translation"
+              placeholder={translateUi('Add your own translation')}
+              aria-label={translateUi('Your translation')}
               className="h-11 w-full rounded-xl border border-line bg-bg px-3.5 text-[16px] font-semibold transition-colors hover:border-line-strong focus:border-accent"
             />
             {context.usualGloss && !saved?.gloss && gloss === context.gloss && (
               <p className="mt-2 flex items-start gap-1.5 text-[13px] leading-snug text-sage-text">
                 <Sparkles size={13} aria-hidden className="mt-0.5 shrink-0" />
-                <span>
-                  The meaning in this sentence. Usually “{context.usualGloss}”.
-                </span>
+                <span><UiText source={'The meaning in this sentence. Usually “{0}”.'} values={[context.usualGloss]} /></span>
               </p>
             )}
             {dict?.base && (
-              <p className="mt-2 text-[13px] text-ink-soft">
-                Not in the dictionary as written.{' '}
-                {dict.base.part ? (
-                  <>
-                    Its last part, <span lang={lang} className="font-semibold">…{dict.base.via}</span>, is below.
-                  </>
+              <p className="mt-2 text-[13px] text-ink-soft"><UiText source={'Not in the dictionary as written.{0}{1}'} values={[' ', dict.base.part ? (
+                  <><UiText source={'Its last part, {0}, is below.'} values={[<span lang={lang} className="font-semibold">…{dict.base.via}</span>]} /></>
                 ) : (
-                  <>
-                    Read as <span lang={lang} className="font-semibold">{dict.base.via}</span>.
-                  </>
-                )}
-              </p>
+                  <><UiText source={'Read as {0}.'} values={[<span lang={lang} className="font-semibold">{dict.base.via}</span>]} /></>
+                )]} /></p>
             )}
             {dict?.form?.d && !dict.hasParadigm && !dict.base && <p className="mt-2 text-[13px] text-ink-soft">{dict.form.d}</p>}
           </section>
@@ -202,11 +193,9 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
           {dict && dict.entries.length > 0 && (
             <section>
               <div className="mb-2 flex items-center gap-2">
-                <h3 className="flex-1 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Dictionary</h3>
+                <h3 className="flex-1 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Dictionary'} /></h3>
                 {hasFullDictionary(lang) && (
-                  <Link to={entryPath(main?.lemma ?? norm)} className="-my-1 inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[12.5px] font-semibold text-accent-text transition-colors hover:bg-accent-soft">
-                    <BookA size={13} aria-hidden /> Open dictionary
-                  </Link>
+                  <Link to={entryPath(main?.lemma ?? norm)} className="-my-1 inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[12.5px] font-semibold text-accent-text transition-colors hover:bg-accent-soft"><UiText source={'{0} Open dictionary'} values={[<BookA size={13} aria-hidden />]} /></Link>
                 )}
               </div>
               <div className="space-y-4">
@@ -243,13 +232,13 @@ function WordDetails({ lang, word, onState, onGloss }: { lang: string; word: Dra
                   ))}
                 </ul>
               )}
-              <p className="mt-3 text-[11.5px] text-ink-faint">Wiktionary via kaikki.org · CC BY-SA</p>
+              <p className="mt-3 text-[11.5px] text-ink-faint"><UiText source={'Wiktionary via kaikki.org · CC BY-SA'} /></p>
             </section>
           )}
 
           {ai && context.sentence && (
             <section>
-              <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">In context</h3>
+              <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'In context'} /></h3>
               <p lang={lang} className="rounded-2xl bg-surface px-4 py-3 font-serif text-[16px] leading-relaxed">
                 <Highlighted sentence={context.sentence} word={context.surface ?? norm} />
               </p>
@@ -295,17 +284,13 @@ function Explain({ lang, word, sentence }: { lang: string; word: string; sentenc
   if (!result) {
     return (
       <section>
-        <Button variant="secondary" icon={Sparkles} onClick={() => void run()} loading={busy} block>
-          Explain in context
-        </Button>
+        <Button variant="secondary" icon={Sparkles} onClick={() => void run()} loading={busy} block><UiText source={'Explain in context'} /></Button>
         {error && (
           <p className="mt-2 text-[13px] text-accent-text">
             {error.message}{' '}
             {error instanceof LlmError && error.kind === 'no-plan' && <MaxLink className="underline" />}
             {error instanceof LlmError && error.kind === 'no-key' && (
-              <Link to="/settings/ai" className="font-semibold underline">
-                Open settings
-              </Link>
+              <Link to="/settings/ai" className="font-semibold underline"><UiText source={'Open settings'} /></Link>
             )}
           </p>
         )}
@@ -315,9 +300,7 @@ function Explain({ lang, word, sentence }: { lang: string; word: string; sentenc
 
   return (
     <motion.section initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft} className="rounded-2xl border border-line bg-surface p-4">
-      <h3 className="mb-2 flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
-        <Sparkles size={13} aria-hidden /> Explanation
-      </h3>
+      <h3 className="mb-2 flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase"><UiText source={'{0} Explanation'} values={[<Sparkles size={13} aria-hidden />]} /></h3>
       <p className="text-[17px] font-semibold">{result.translation}</p>
       {(result.lemma || result.form) && (
         <p className="mt-0.5 text-[13px] text-ink-soft">

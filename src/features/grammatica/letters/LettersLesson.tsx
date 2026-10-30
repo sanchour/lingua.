@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // An alphabet lesson (Lingua 3.0-8, part 5): meet each letter, ask for it both ways, match pairs,
 // read real words, pick Arabic's joined shapes, trace and write. Each letter is graded into its FSRS
 // item when the lesson ends (no mistake Good, one Hard, missed again on the retry Again).
@@ -53,6 +54,7 @@ export const named = (l: Letter) => (l.name && l.name !== l.glyph && l.name !== 
 const drawnForm = (l: Letter) => l.lower ?? l.glyph;
 
 export function LettersLesson({ script, title, drills, random, practice, onFinish, onClose, onActive }: Props) {
+  const translateUi = useUi();
   const lang = script.lang;
   const dir = script.rtl ? 'rtl' : undefined;
   const feel = useLessonFeel();
@@ -170,7 +172,7 @@ export function LettersLesson({ script, title, drills, random, practice, onFinis
   const word = d && 'word' in d ? d.word : null;
   const wrong = d && (
     <div>
-      <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase">{d.kind === 'trace' || d.kind === 'write' ? 'Follow the shape' : 'Correct answer'}</p>
+      <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase">{d.kind === 'trace' || d.kind === 'write' ? translateUi('Follow the shape') : translateUi('Correct answer')}</p>
       <p lang={d.kind === 'sound' ? undefined : lang} dir="auto" className="font-serif text-xl font-semibold">
         {solution}
       </p>
@@ -224,7 +226,7 @@ export function LettersLesson({ script, title, drills, random, practice, onFinis
               aria-labelledby="drill-label"
             >
               <p id="drill-label" className="mb-6 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">
-                {d.key.includes('-r') ? 'One more try · ' : ''}
+                {d.key.includes('-r') ? translateUi('One more try · ') : ''}
                 {SCRIPT_DRILL_LABEL[d.kind]}
               </p>
               {d.kind === 'meet' && <MeetView letter={d.letter} script={script} />}
@@ -297,9 +299,9 @@ export function LettersLesson({ script, title, drills, random, practice, onFinis
         hint={d?.kind === 'pairs' ? 'Tap one side, then its match' : undefined}
         aside={
           d?.kind === 'trace' ? (
-            <p className="text-sm text-ink-soft">Draw over the grey letter.</p>
+            <p className="text-sm text-ink-soft"><UiText source={'Draw over the grey letter.'} /></p>
           ) : d?.kind === 'write' ? (
-            <p className="text-sm text-ink-soft">Draw it from memory, any size.</p>
+            <p className="text-sm text-ink-soft"><UiText source={'Draw it from memory, any size.'} /></p>
           ) : undefined
         }
       />
@@ -338,9 +340,7 @@ function MeetView({ letter, script }: { letter: Letter; script: Script }) {
         </motion.p>
         <p className="font-serif text-[24px] font-semibold">{letter.latin}</p>
         {named(letter) && (
-          <p className="text-[14px] text-ink-faint">
-            called <span lang={lang}>{letter.name}</span>
-          </p>
+          <p className="text-[14px] text-ink-faint"><UiText source={'called {0}'} values={[<span lang={lang}>{letter.name}</span>]} /></p>
         )}
         <p className="max-w-md text-[16px] leading-snug text-ink-soft">{letter.sound}</p>
       </div>
@@ -366,6 +366,7 @@ function MeetView({ letter, script }: { letter: Letter; script: Script }) {
 
 /** An Arabic letter's four shapes: alone, at the start, in the middle, at the end. */
 export function JoinedForms({ letter, lang }: { letter: Letter; lang: string }) {
+  const translateUi = useUi();
   if (letter.glyph.length > 1) return null;
   return (
     <div className="mx-auto grid max-w-md grid-cols-4 gap-2 text-center" dir="rtl">
@@ -375,7 +376,7 @@ export function JoinedForms({ letter, lang }: { letter: Letter; lang: string }) 
             {joinedForm(letter.glyph, p)}
           </p>
           <p className="text-[11px] font-semibold text-ink-faint" dir="ltr">
-            {p === 'isolated' ? 'alone' : p === 'initial' ? 'start' : p === 'medial' ? 'middle' : 'end'}
+            {p === 'isolated' ? translateUi('alone') : p === 'initial' ? translateUi('start') : p === 'medial' ? translateUi('middle') : translateUi('end')}
           </p>
         </div>
       ))}

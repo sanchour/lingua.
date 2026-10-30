@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent, RefObject } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -267,9 +268,7 @@ export function KaraokeTranscript({ media, cues, live, clock = engineClock, gutt
             transition={spring.snappy}
             className="fixed left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full bg-inverse px-4 py-2.5 text-sm font-semibold text-on-inverse shadow-elev-3"
             style={{ bottom: layout === 'wide' || !docked ? 'calc(env(safe-area-inset-bottom) + 28px)' : 'calc(env(safe-area-inset-bottom) + 210px)' }}
-          >
-            <LocateFixed size={16} aria-hidden /> Back to now
-          </motion.button>
+          ><UiText source={'{0} Back to now'} values={[<LocateFixed size={16} aria-hidden />]} /></motion.button>
         )}
       </AnimatePresence>
 

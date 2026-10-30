@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -16,6 +17,7 @@ interface BookProps {
 
 /** A small status line: progress and comprehension, or what a shelf-only book needs. */
 function BookMeta({ text, progress }: Pick<BookProps, 'text' | 'progress'>) {
+  const translateUi = useUi();
   const known = text.stats ? Math.round(text.stats.knownShare * 100) : null;
   const pct = progress ? Math.round(progress.percent * 100) : 0;
   if (text.kind === 'shelfItem') {
@@ -26,50 +28,52 @@ function BookMeta({ text, progress }: Pick<BookProps, 'text' | 'progress'>) {
             <Star size={11} className="fill-current" aria-hidden /> {text.goodreads.rating}
           </span>
         ) : null}
-        <span>Add an EPUB to read</span>
+        <span><UiText source={'Add an EPUB to read'} /></span>
       </>
     );
   }
   return (
     <>
       {(text.level ?? text.stats?.level) && <span className="rounded bg-sunken px-1 py-px text-[10.5px] text-ink-soft">{text.level ?? text.stats?.level}</span>}
-      {text.finishedAt ? <span className="text-sage-text">Finished</span> : pct > 0 ? <span>{pct}% read</span> : <span>New</span>}
-      {known !== null && <span aria-label={`${known} percent of words known`}>· {known}% known</span>}
+      {text.finishedAt ? <span className="text-sage-text"><UiText source={'Finished'} /></span> : pct > 0 ? <span><UiText source={'{0}% read'} values={[pct]} /></span> : <span><UiText source={'New'} /></span>}
+      {known !== null && <span aria-label={translateUi('{0} percent of words known', [known])}><UiText source={'· {0}% known'} values={[known]} /></span>}
     </>
   );
 }
 
 /** Opens the book, or (for a Goodreads shelf entry) asks for its EPUB. */
 function BookLink({ text, onAttach, className, children }: Pick<BookProps, 'text' | 'onAttach'> & { className?: string; children: ReactNode }) {
+  const translateUi = useUi();
   if (text.kind === 'shelfItem') {
     return (
-      <button type="button" onClick={() => onAttach(text)} className={className} aria-label={`${text.title}: attach an EPUB to read it`}>
+      <button type="button" onClick={() => onAttach(text)} className={className} aria-label={translateUi('{0}: attach an EPUB to read it', [text.title])}>
         {children}
       </button>
     );
   }
   return (
-    <Link to={`/codex/read/${text.id}`} className={className} aria-label={`Read ${text.title}`}>
+    <Link to={`/codex/read/${text.id}`} className={className} aria-label={translateUi('Read {0}', [text.title])}>
       {children}
     </Link>
   );
 }
 
 function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
+  const translateUi = useUi();
   const [confirm, setConfirm] = useState(false);
   const navigate = useNavigate();
   const shelfOnly = text.kind === 'shelfItem';
   return (
     <>
       <Popover
-        label="Book options"
+        label={translateUi('Book options')}
         placement="bottom-end"
         className="w-56"
         trigger={(props) => (
           <button
             {...props}
             type="button"
-            aria-label="Book options"
+            aria-label={translateUi('Book options')}
             className="-mr-1 grid size-8 shrink-0 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-surface hover:text-ink pointer-coarse:size-9"
           >
             <Ellipsis size={17} aria-hidden />
@@ -81,7 +85,7 @@ function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
             {shelfOnly ? (
               <MenuItem
                 icon={Paperclip}
-                label="Attach an EPUB"
+                label={translateUi('Attach an EPUB')}
                 onClick={() => {
                   close();
                   onAttach(text);
@@ -90,7 +94,7 @@ function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
             ) : (
               <MenuItem
                 icon={text.finishedAt ? BookOpen : BookCheck}
-                label={text.finishedAt ? 'Mark as reading' : 'Mark as finished'}
+                label={text.finishedAt ? translateUi('Mark as reading') : translateUi('Mark as finished')}
                 onClick={() => {
                   close();
                   void updateText(text.id, text.finishedAt ? { finishedAt: undefined, shelf: 'reading' } : { finishedAt: Date.now(), shelf: 'read' });
@@ -100,7 +104,7 @@ function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
             {!shelfOnly && (
               <MenuItem
                 icon={Pencil}
-                label="Edit"
+                label={translateUi('Edit')}
                 onClick={() => {
                   close();
                   navigate(`/codex/book/${text.id}`);
@@ -109,7 +113,7 @@ function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
             )}
             <MenuItem
               icon={Trash2}
-              label="Remove from library"
+              label={translateUi('Remove from library')}
               danger
               onClick={() => {
                 close();
@@ -123,12 +127,10 @@ function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
       <Dialog
         open={confirm}
         onClose={() => setConfirm(false)}
-        title="Remove this book?"
+        title={translateUi('Remove this book?')}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setConfirm(false)}>
-              Keep
-            </Button>
+            <Button variant="ghost" onClick={() => setConfirm(false)}><UiText source={'Keep'} /></Button>
             <Button
               variant="danger"
               onClick={async () => {
@@ -136,14 +138,10 @@ function BookOptions({ text, onAttach }: Pick<BookProps, 'text' | 'onAttach'>) {
                 await deleteText(text.id);
                 toast('Removed from your library.');
               }}
-            >
-              Remove
-            </Button>
+            ><UiText source={'Remove'} /></Button>
           </>
         }
-      >
-        “{text.title}” and your reading position will be removed. Words you marked stay in your vocabulary.
-      </Dialog>
+      ><UiText source={'“{0}” and your reading position will be removed. Words you marked stay in your vocabulary.'} values={[text.title]} /></Dialog>
     </>
   );
 }

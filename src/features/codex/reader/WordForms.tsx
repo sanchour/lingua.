@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ChevronDown } from 'lucide-react';
@@ -17,6 +18,7 @@ const FIRST = 2;
  * the text is highlighted.
  */
 export function WordForms({ lang, lemma, seen, heading = true }: { lang: string; lemma: string; seen: string; heading?: boolean }) {
+  const translateUi = useUi();
   const paradigm = useLiveQuery(() => db.dictParadigms.get([packId(lang), lemma]), [lang, lemma]);
   const [all, setAll] = useState(false);
   const built = useMemo(() => (paradigm ? formTables(lang, paradigm.forms, paradigm.pos) : null), [paradigm, lang]);
@@ -29,13 +31,13 @@ export function WordForms({ lang, lemma, seen, heading = true }: { lang: string;
 
   return (
     <section>
-      {heading && <h3 className="mb-2.5 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Forms</h3>}
+      {heading && <h3 className="mb-2.5 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Forms'} /></h3>}
       <div className="grid gap-3 sm:grid-cols-2">
         {tables.map((table) => (
           <div key={table.title} className={cx('rounded-2xl border border-line/70 bg-surface px-3.5 py-3', table.columns && table.columns.length > 2 && 'sm:col-span-2')}>
             <p className="mb-1.5 text-[12.5px] font-bold text-sage-text">
               {table.title}
-              {irregular.has(table.title) && <span className="ml-2 font-normal text-ink-faint">● irregular</span>}
+              {irregular.has(table.title) && <span className="ml-2 font-normal text-ink-faint"><UiText source={'● irregular'} /></span>}
             </p>
             <table className="w-full border-collapse text-left">
               {table.columns && (
@@ -85,7 +87,7 @@ export function WordForms({ lang, lemma, seen, heading = true }: { lang: string;
       )}
       {more > 0 && (
         <button type="button" onClick={() => setAll((v) => !v)} className="mt-2.5 flex items-center gap-1 text-[13px] font-semibold text-accent-text">
-          {all ? 'Fewer forms' : 'All forms'}
+          {all ? translateUi('Fewer forms') : translateUi('All forms')}
           <ChevronDown size={15} className={cx('transition-transform', all && 'rotate-180')} aria-hidden />
         </button>
       )}

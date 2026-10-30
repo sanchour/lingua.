@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -78,6 +79,7 @@ function sorter(sort: LibrarySort, progress: Map<string, ReadingProgress> | unde
 }
 
 export default function CodexPage() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = language.id;
   const all = useLibrary(lang);
@@ -166,9 +168,7 @@ export default function CodexPage() {
       <PageHeader
         title="Codex"
         actions={
-          <Link to="/codex/new" className={buttonClasses('primary', 'md')}>
-            <Plus size={17} aria-hidden /> Add
-          </Link>
+          <Link to="/codex/new" className={buttonClasses('primary', 'md')}><UiText source={'{0} Add'} values={[<Plus size={17} aria-hidden />]} /></Link>
         }
       />
       <RoomTabs label="Codex" tabs={TABS} active={tab} />
@@ -187,36 +187,34 @@ export default function CodexPage() {
               <AnimatePresence mode="popLayout" initial={false}>
                 {searching ? (
                   <motion.div key="search" className="absolute inset-0" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={fade}>
-                    <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search titles and authors" onClose={closeSearch} autoFocus />
+                    <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder={translateUi('Search titles and authors')} onClose={closeSearch} autoFocus />
                   </motion.div>
                 ) : (
                   <motion.div key="filter" className="absolute inset-0 overflow-x-auto [scrollbar-width:none]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
                     {inUse.size > 1 ? (
                       <Segmented<Filter>
-                        label="Shelf"
+                        label={translateUi('Shelf')}
                         value={filter}
                         onChange={setFilter}
-                        options={[{ value: 'all', label: 'All' }, ...GROUPS.filter((g) => inUse.has(g.id)).map((g) => ({ value: g.id, label: g.title }))]}
+                        options={[{ value: 'all', label: translateUi('All') }, ...GROUPS.filter((g) => inUse.has(g.id)).map((g) => ({ value: g.id, label: g.title }))]}
                       />
                     ) : (
-                      <p className="flex h-full items-center font-serif text-xl font-semibold">
-                        Your shelf <span className="ml-2 font-sans text-sm font-bold text-ink-faint tabular-nums">{texts.length}</span>
-                      </p>
+                      <p className="flex h-full items-center font-serif text-xl font-semibold"><UiText source={'Your shelf {0}'} values={[<span className="ml-2 font-sans text-sm font-bold text-ink-faint tabular-nums">{texts.length}</span>]} /></p>
                     )}
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
-            {!searching && <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />}
+            {!searching && <IconButton icon={Search} label={translateUi('Search')} shortcut="/" onClick={() => setSearching(true)} />}
             <SortMenu value={sort} options={SORTS} onChange={(librarySort) => void patchSetting('ui', { librarySort })}>
               <Segmented<'grid' | 'list'>
-                label="Show as"
+                label={translateUi('Show as')}
                 block
                 value={view}
                 onChange={(libraryView) => void patchSetting('ui', { libraryView })}
                 options={[
-                  { value: 'grid', label: 'Covers', icon: LayoutGrid },
-                  { value: 'list', label: 'List', icon: List },
+                  { value: 'grid', label: translateUi('Covers'), icon: LayoutGrid },
+                  { value: 'list', label: translateUi('List'), icon: List },
                 ]}
               />
             </SortMenu>
@@ -231,8 +229,8 @@ export default function CodexPage() {
           {matches === 0 && query ? (
             <div className="flex flex-col items-center py-14 text-center text-ink-soft">
               <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-              <p className="font-semibold text-ink">Nothing on your shelves matches “{query.trim()}”</p>
-              <p className="mt-1 text-sm">Try part of the title or the author’s surname.</p>
+              <p className="font-semibold text-ink"><UiText source={'Nothing on your shelves matches “{0}”'} values={[query.trim()]} /></p>
+              <p className="mt-1 text-sm"><UiText source={'Try part of the title or the author’s surname.'} /></p>
             </div>
           ) : (
             <div className="space-y-10">
@@ -282,14 +280,15 @@ function Shelf({ texts, progress, view, onAttach }: { texts: Text[]; progress?: 
 }
 
 function ContinueCard({ text, progress }: { text: Text; progress: ReadingProgress }) {
+  const translateUi = useUi();
   const pct = Math.round(progress.percent * 100);
   return (
     <Card className="relative flex items-center gap-5 p-4 sm:p-5">
-      <Link to={`/codex/read/${text.id}`} className="w-20 shrink-0 sm:w-24" aria-label={`Continue reading ${text.title}`}>
+      <Link to={`/codex/read/${text.id}`} className="w-20 shrink-0 sm:w-24" aria-label={translateUi('Continue reading {0}', [text.title])}>
         <BookCover text={text} size="sm" />
       </Link>
       <div className="min-w-0 flex-1">
-        <p className="text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">Continue reading</p>
+        <p className="text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase"><UiText source={'Continue reading'} /></p>
         <p lang={text.lang} className="mt-1 line-clamp-2 font-serif text-xl leading-tight font-semibold">
           {text.title}
         </p>
@@ -302,9 +301,7 @@ function ContinueCard({ text, progress }: { text: Text; progress: ReadingProgres
         </div>
       </div>
       <div className="hidden shrink-0 sm:block">
-        <Link to={`/codex/read/${text.id}`} className={buttonClasses('primary', 'md')}>
-          Continue <ArrowRight size={16} aria-hidden />
-        </Link>
+        <Link to={`/codex/read/${text.id}`} className={buttonClasses('primary', 'md')}><UiText source={'Continue {0}'} values={[<ArrowRight size={16} aria-hidden />]} /></Link>
       </div>
     </Card>
   );
@@ -316,17 +313,11 @@ function EmptyLibrary({ lang, busy, onSample }: { lang: string; busy: boolean; o
       <div className="mb-5 grid size-16 place-items-center rounded-2xl bg-sage-soft text-sage-text">
         <BookOpenText size={28} aria-hidden />
       </div>
-      <h2 className="font-serif text-2xl font-semibold">Your shelves are waiting</h2>
-      <p className="mt-2 max-w-sm text-[15px] leading-relaxed text-ink-soft">
-        Add a book, a text file or something you pasted. Or start with a short page, written for you.
-      </p>
+      <h2 className="font-serif text-2xl font-semibold"><UiText source={'Your shelves are waiting'} /></h2>
+      <p className="mt-2 max-w-sm text-[15px] leading-relaxed text-ink-soft"><UiText source={'Add a book, a text file or something you pasted. Or start with a short page, written for you.'} /></p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
-        <Link to="/codex/new" className={buttonClasses('primary', 'md')}>
-          <Plus size={17} aria-hidden /> Add a book or text
-        </Link>
-        <Button variant="secondary" icon={Sparkles} onClick={onSample} loading={busy}>
-          Read {quote(SAMPLES[lang] ? lang : 'en', SAMPLES[lang]?.title ?? SAMPLES.en.title)}
-        </Button>
+        <Link to="/codex/new" className={buttonClasses('primary', 'md')}><UiText source={'{0} Add a book or text'} values={[<Plus size={17} aria-hidden />]} /></Link>
+        <Button variant="secondary" icon={Sparkles} onClick={onSample} loading={busy}><UiText source={'Read {0}'} values={[quote(SAMPLES[lang] ? lang : 'en', SAMPLES[lang]?.title ?? SAMPLES.en.title)]} /></Button>
       </div>
     </Card>
   );

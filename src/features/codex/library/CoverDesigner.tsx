@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { Check, ImagePlus, X } from 'lucide-react';
 import type { CoverDesign, Text } from '@/data/types';
@@ -22,6 +23,7 @@ const Label = ({ children }: { children: string }) => <p className="mb-2 text-[1
 
 /** A book cover of your own: a picture, or a cloth colour with a small ornament. */
 export function CoverDesigner({ text, design, onDesign, image, onImage, hasStoredImage = false, onRemoveStored }: CoverDesignerProps) {
+  const translateUi = useUi();
   const [preview, setPreview] = useState<string | null>(null);
   useEffect(() => {
     if (!image) return setPreview(null);
@@ -45,8 +47,8 @@ export function CoverDesigner({ text, design, onDesign, image, onImage, hasStore
 
       <div className="min-w-0 flex-1 space-y-4">
         <div className={cx('transition-opacity', showsPicture && 'pointer-events-none opacity-40')}>
-          <Label>Cloth</Label>
-          <div role="radiogroup" aria-label="Cover colour" className="flex flex-wrap gap-1.5">
+          <Label>{translateUi('Cloth')}</Label>
+          <div role="radiogroup" aria-label={translateUi('Cover colour')} className="flex flex-wrap gap-1.5">
             {CLOTHS.map((c) => (
               <button
                 key={c.id}
@@ -66,8 +68,8 @@ export function CoverDesigner({ text, design, onDesign, image, onImage, hasStore
         </div>
 
         <div className={cx('transition-opacity', showsPicture && 'pointer-events-none opacity-40')}>
-          <Label>Ornament</Label>
-          <div role="radiogroup" aria-label="Cover ornament" className="flex flex-wrap gap-1.5">
+          <Label>{translateUi('Ornament')}</Label>
+          <div role="radiogroup" aria-label={translateUi('Cover ornament')} className="flex flex-wrap gap-1.5">
             {ORNAMENTS.map((o) => (
               <button
                 key={o.id}
@@ -95,16 +97,14 @@ export function CoverDesigner({ text, design, onDesign, image, onImage, hasStore
             }}
             className="flex h-9 items-center gap-1.5 rounded-xl border border-line bg-raised px-3 text-[13px] font-semibold transition-colors hover:border-line-strong"
           >
-            <ImagePlus size={15} aria-hidden /> {showsPicture ? 'Another picture' : 'Use a picture'}
+            <ImagePlus size={15} aria-hidden /> {showsPicture ? translateUi('Another picture') : translateUi('Use a picture')}
           </button>
           {showsPicture && (
             <button
               type="button"
               onClick={() => (preview ? onImage(null) : onRemoveStored?.())}
               className="flex h-9 items-center gap-1.5 rounded-xl px-3 text-[13px] font-semibold text-ink-soft transition-colors hover:bg-surface hover:text-ink"
-            >
-              <X size={15} aria-hidden /> Use a cloth cover
-            </button>
+            ><UiText source={'{0} Use a cloth cover'} values={[<X size={15} aria-hidden />]} /></button>
           )}
         </div>
       </div>

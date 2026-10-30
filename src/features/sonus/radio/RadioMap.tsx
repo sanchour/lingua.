@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Globe2, LocateFixed, Minus, Plus, Radio } from 'lucide-react';
 import type { RadioStation } from '@/data/types';
@@ -127,6 +128,7 @@ function countryBox(code: string, stations: RadioStation[]): Box | null {
  * and only when something changes.
  */
 export function RadioMap({ stations, places, countries, country, place, playing, onCountry, onPlace, caption }: RadioMapProps) {
+  const translateUi = useUi();
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pingRef = useRef<HTMLSpanElement>(null);
@@ -666,7 +668,7 @@ export function RadioMap({ stations, places, countries, country, place, playing,
       <canvas
         ref={canvasRef}
         role="img"
-        aria-label={`Map: ${caption}`}
+        aria-label={translateUi('Map: {0}', [caption])}
         className="absolute inset-0 size-full cursor-grab touch-none select-none"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -691,18 +693,18 @@ export function RadioMap({ stations, places, countries, country, place, playing,
         <span className="truncate">{caption}</span>
       </p>
       <div className="absolute top-3 right-3 flex flex-col gap-1.5">
-        <button type="button" aria-label="Zoom in" onClick={() => zoomBy(2)} className={button}>
+        <button type="button" aria-label={translateUi('Zoom in')} onClick={() => zoomBy(2)} className={button}>
           <Plus size={17} aria-hidden />
         </button>
-        <button type="button" aria-label="Zoom out" onClick={() => zoomBy(0.5)} className={button}>
+        <button type="button" aria-label={translateUi('Zoom out')} onClick={() => zoomBy(0.5)} className={button}>
           <Minus size={17} aria-hidden />
         </button>
       </div>
       <div className="absolute right-3 bottom-3 flex gap-1.5">
-        <button type="button" aria-label="Where it's on air" title="Where it's on air" onClick={() => flyTo(fitHome(size.w, size.h))} className={button}>
+        <button type="button" aria-label={translateUi('Where it\'s on air')} title={translateUi('Where it\'s on air')} onClick={() => flyTo(fitHome(size.w, size.h))} className={button}>
           <LocateFixed size={16} aria-hidden />
         </button>
-        <button type="button" aria-label="The whole world" title="The whole world" onClick={world} className={button}>
+        <button type="button" aria-label={translateUi('The whole world')} title={translateUi('The whole world')} onClick={world} className={button}>
           <Globe2 size={16} aria-hidden />
         </button>
       </div>

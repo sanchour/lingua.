@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // The parts of a grammar lesson around its drills: "See it" before (examples first), and the
 // topic's whole rule in a side panel after a mistake.
 import { motion } from 'motion/react';
@@ -18,6 +19,7 @@ import { CompareView, eyebrow, Rich, SentenceLine, TableView, WatchOut } from '.
  * sentence and the one-line reason.
  */
 export function SeeIt({ topic, lang, full, onStart }: { topic: Topic; lang: string; full: boolean; onStart: () => void }) {
+  const translateUi = useUi();
   const { layout, pointer } = useLayout();
   const examples = openingExamples(topic).slice(0, full ? 3 : 1);
   const wide = layout === 'wide';
@@ -30,7 +32,7 @@ export function SeeIt({ topic, lang, full, onStart }: { topic: Topic; lang: stri
       animate={{ opacity: 1, y: 0 }}
       transition={spring.soft}
     >
-      <p className={cx(eyebrow, 'text-sage-text')}>{full ? 'See it first' : 'Remember'}</p>
+      <p className={cx(eyebrow, 'text-sage-text')}>{full ? translateUi('See it first') : translateUi('Remember')}</p>
       <h1 className="mt-1 font-serif text-[clamp(1.7rem,4vw,2.3rem)] leading-tight font-semibold">{topic.title}</h1>
       <p className="mt-1 text-[16px] leading-snug text-ink-soft">{topic.summary}</p>
 
@@ -64,11 +66,8 @@ export function SeeIt({ topic, lang, full, onStart }: { topic: Topic; lang: stri
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-bg" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
         <div className={cx('mx-auto flex items-center justify-end gap-3 px-5 pt-4', wide ? 'max-w-5xl' : 'max-w-2xl')}>
-          <p className="hidden min-w-0 flex-1 text-sm text-ink-soft sm:block">{full ? 'Read them aloud, then try it yourself.' : 'Now use it.'}</p>
-          <Button size="lg" className="min-w-40 flex-1 sm:flex-none" onClick={onStart}>
-            Start
-            {pointer === 'fine' ? <Kbd tone="inverse">Enter</Kbd> : <ArrowRight size={18} aria-hidden />}
-          </Button>
+          <p className="hidden min-w-0 flex-1 text-sm text-ink-soft sm:block">{full ? translateUi('Read them aloud, then try it yourself.') : translateUi('Now use it.')}</p>
+          <Button size="lg" className="min-w-40 flex-1 sm:flex-none" onClick={onStart}><UiText source={'Start{0}'} values={[pointer === 'fine' ? <Kbd tone="inverse"><UiText source={'Enter'} /></Kbd> : <ArrowRight size={18} aria-hidden />]} /></Button>
         </div>
       </div>
     </motion.main>
@@ -109,13 +108,14 @@ export function RuleSheet({ topic, lang, onClose }: { topic: Topic | null; lang:
  * (the whole rule, tables and comparison are one click away).
  */
 export function LessonSide({ topic, lang, step, onRule }: { topic: Topic; lang: string; step: Step | null; onRule: () => void }) {
+  const translateUi = useUi();
   return (
-    <aside className="hidden self-start lg:sticky lg:top-20 lg:block" aria-label={`${topic.title}: steps and rule`}>
+    <aside className="hidden self-start lg:sticky lg:top-20 lg:block" aria-label={translateUi('{0}: steps and rule', [topic.title])}>
       <div className="rounded-3xl border border-line/70 bg-surface p-5">
         <p className={cx(eyebrow, 'text-sage-text')}>{topic.level}</p>
         <h2 className="mt-0.5 font-serif text-[19px] leading-snug font-semibold">{topic.title}</h2>
         {step && (
-          <ol className="mt-4 grid gap-1.5" aria-label="Steps">
+          <ol className="mt-4 grid gap-1.5" aria-label={translateUi('Steps')}>
             {STEPS.map((s) => (
               <li key={s.n} className={cx('flex items-center gap-2.5 text-[14px]', s.n === step ? 'font-semibold text-ink' : s.n < step ? 'text-sage-text' : 'text-ink-faint')}>
                 <span className={cx('grid size-5 shrink-0 place-items-center rounded-full text-[11px] font-bold', s.n === step ? 'bg-sage text-bg' : s.n < step ? 'bg-sage/25' : 'bg-sunken')}>{s.n}</span>
@@ -125,14 +125,11 @@ export function LessonSide({ topic, lang, step, onRule }: { topic: Topic; lang: 
           </ol>
         )}
         <div className="mt-4 border-t border-line/60 pt-4">
-          <p className={eyebrow}>The rule</p>
+          <p className={eyebrow}><UiText source={'The rule'} /></p>
           <p className="mt-1.5 text-[14.5px] leading-relaxed text-ink-soft">
             <Rich text={topic.rule[0] ?? topic.summary} lang={lang} />
           </p>
-          <button type="button" onClick={onRule} className="mt-2.5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-accent-text underline decoration-accent/40 underline-offset-4">
-            <BookOpen size={14} aria-hidden />
-            The whole rule
-          </button>
+          <button type="button" onClick={onRule} className="mt-2.5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-accent-text underline decoration-accent/40 underline-offset-4"><UiText source={'{0}The whole rule'} values={[<BookOpen size={14} aria-hidden />]} /></button>
         </div>
       </div>
     </aside>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { Plus, Trash2, X } from 'lucide-react';
 import { CEFR_LEVELS, removeCapability, saveCapability } from '@/data/journey';
@@ -31,6 +32,7 @@ function LevelPicker({ value, onChange, allowNone }: { value?: CefrLevel; onChan
 
 /** Everything about one language, tucked into a drawer: level, status, how, skills, certificates. */
 export function CapabilityDrawer({ capability, onClose, live }: { capability: Capability | null; onClose: () => void; live?: string }) {
+  const translateUi = useUi();
   const [draft, setDraft] = useState<Capability | null>(capability);
   const [custom, setCustom] = useState('');
   // The last row stays in the drawer while it slides away.
@@ -61,28 +63,24 @@ export function CapabilityDrawer({ capability, onClose, live }: { capability: Ca
               void removeCapability(draft.id);
               onClose();
             }}
-          >
-            Remove
-          </Button>
+          ><UiText source={'Remove'} /></Button>
           <span className="flex-1" />
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={() => void save()}>Save</Button>
+          <Button variant="ghost" onClick={onClose}><UiText source={'Cancel'} /></Button>
+          <Button onClick={() => void save()}><UiText source={'Save'} /></Button>
         </div>
       }
     >
       <div className="space-y-7">
         <div>
-          <span className={label}>Name</span>
-          <input className={input} value={draft.name} onChange={(e) => set({ name: e.target.value })} aria-label="Language name" />
+          <span className={label}><UiText source={'Name'} /></span>
+          <input className={input} value={draft.name} onChange={(e) => set({ name: e.target.value })} aria-label={translateUi('Language name')} />
         </div>
         <div>
-          <span className={label}>Overall level</span>
+          <span className={label}><UiText source={'Overall level'} /></span>
           <LevelPicker value={draft.level} onChange={(l) => l && set({ level: l })} />
         </div>
         <div>
-          <span className={label}>Status</span>
+          <span className={label}><UiText source={'Status'} /></span>
           <div className="grid gap-1.5 sm:grid-cols-2">
             {(Object.keys(STATUS_LABEL) as CapabilityStatus[]).map((s) => (
               <button
@@ -98,7 +96,7 @@ export function CapabilityDrawer({ capability, onClose, live }: { capability: Ca
           </div>
         </div>
         <div>
-          <span className={label}>How you learn it</span>
+          <span className={label}><UiText source={'How you learn it'} /></span>
           <div className="flex flex-wrap gap-1.5">
             {[...new Set([...METHOD_OPTIONS, ...draft.methods])].map((m) => (
               <button
@@ -119,22 +117,22 @@ export function CapabilityDrawer({ capability, onClose, live }: { capability: Ca
                 setCustom('');
               }}
             >
-              <input value={custom} onChange={(e) => setCustom(e.target.value)} placeholder="Add your own" aria-label="Add a method" className="h-9 w-32 rounded-full border border-dashed border-line bg-transparent px-3.5 text-[13px] outline-none focus:border-ink" />
+              <input value={custom} onChange={(e) => setCustom(e.target.value)} placeholder={translateUi('Add your own')} aria-label={translateUi('Add a method')} className="h-9 w-32 rounded-full border border-dashed border-line bg-transparent px-3.5 text-[13px] outline-none focus:border-ink" />
             </form>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <label>
-            <span className={label}>Started</span>
+            <span className={label}><UiText source={'Started'} /></span>
             <input type="date" className={input} value={draft.started ?? ''} onChange={(e) => set({ started: e.target.value || undefined })} />
           </label>
           <label>
-            <span className={label}>Hours before Lingua</span>
+            <span className={label}><UiText source={'Hours before Lingua'} /></span>
             <input type="number" min={0} inputMode="numeric" className={input} value={draft.extraHours ?? ''} onChange={(e) => set({ extraHours: e.target.value ? Math.max(0, Number(e.target.value)) : undefined })} />
           </label>
         </div>
         <div>
-          <span className={label}>Skills</span>
+          <span className={label}><UiText source={'Skills'} /></span>
           <div className="space-y-3">
             {SKILLS.map(([key, name]) => (
               <div key={key} className="grid gap-1.5 sm:grid-cols-[90px_1fr] sm:items-center">
@@ -145,24 +143,22 @@ export function CapabilityDrawer({ capability, onClose, live }: { capability: Ca
           </div>
         </div>
         <div>
-          <span className={label}>Certificates</span>
+          <span className={label}><UiText source={'Certificates'} /></span>
           <ul className="space-y-2">
             {certificates.map((c, i) => (
               <li key={i} className="grid grid-cols-[1fr_70px_auto] gap-2">
-                <input className={input} value={c.name} placeholder="DELE, Goethe…" aria-label="Certificate" onChange={(e) => set({ certificates: certificates.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)) })} />
-                <input className={input} value={c.level ?? ''} placeholder="B2" aria-label="Level" onChange={(e) => set({ certificates: certificates.map((x, j) => (j === i ? { ...x, level: e.target.value } : x)) })} />
-                <button type="button" aria-label="Remove certificate" onClick={() => set({ certificates: certificates.filter((_, j) => j !== i) })} className="grid size-11 place-items-center rounded-xl text-ink-faint hover:bg-surface hover:text-ink">
+                <input className={input} value={c.name} placeholder={translateUi('DELE, Goethe…')} aria-label={translateUi('Certificate')} onChange={(e) => set({ certificates: certificates.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)) })} />
+                <input className={input} value={c.level ?? ''} placeholder="B2" aria-label={translateUi('Level')} onChange={(e) => set({ certificates: certificates.map((x, j) => (j === i ? { ...x, level: e.target.value } : x)) })} />
+                <button type="button" aria-label={translateUi('Remove certificate')} onClick={() => set({ certificates: certificates.filter((_, j) => j !== i) })} className="grid size-11 place-items-center rounded-xl text-ink-faint hover:bg-surface hover:text-ink">
                   <X size={16} aria-hidden />
                 </button>
               </li>
             ))}
           </ul>
-          <button type="button" onClick={() => set({ certificates: [...certificates, { name: '' }] })} className="mt-2 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 -ml-2 text-[13px] font-semibold text-ink-soft hover:bg-surface hover:text-ink">
-            <Plus size={14} aria-hidden /> Add a certificate
-          </button>
+          <button type="button" onClick={() => set({ certificates: [...certificates, { name: '' }] })} className="mt-2 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 -ml-2 text-[13px] font-semibold text-ink-soft hover:bg-surface hover:text-ink"><UiText source={'{0} Add a certificate'} values={[<Plus size={14} aria-hidden />]} /></button>
         </div>
         <div>
-          <span className={label}>Notes</span>
+          <span className={label}><UiText source={'Notes'} /></span>
           <textarea rows={3} className="w-full resize-y rounded-xl border border-line bg-raised px-3.5 py-2.5 text-[15px] outline-none focus:border-ink" value={draft.notes ?? ''} onChange={(e) => set({ notes: e.target.value || undefined })} />
         </div>
       </div>

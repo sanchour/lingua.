@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Sparkles, Trash2 } from 'lucide-react';
@@ -32,6 +33,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 /** Adding and editing a card. "Add" keeps the drawer open for the next word. */
 export function NoteEditor({ lang, target, onClose }: { lang: string; target: EditorTarget | null; onClose: () => void }) {
+  const translateUi = useUi();
   const [term, setTerm] = useState('');
   const [meaning, setMeaning] = useState('');
   const [example, setExample] = useState('');
@@ -146,27 +148,27 @@ export function NoteEditor({ lang, target, onClose }: { lang: string; target: Ed
     <Drawer
       open={Boolean(target)}
       onClose={onClose}
-      title={editing ? 'Edit card' : 'New card'}
+      title={editing ? translateUi('Edit card') : translateUi('New card')}
       footer={
         <Button block size="lg" disabled={!term.trim()} loading={busy} onClick={() => void save()}>
-          {editing ? 'Save' : 'Add card'}
+          {editing ? translateUi('Save') : translateUi('Add card')}
         </Button>
       }
     >
       <form onSubmit={(e) => void save(e)} className="space-y-4">
-        <Field label="Word">
+        <Field label={translateUi('Word')}>
           <input ref={first} lang={lang} value={term} onChange={(e) => setTerm(e.target.value)} className={`${field} font-serif text-lg`} autoComplete="off" autoCapitalize="off" spellCheck={false} />
         </Field>
-        <Field label="Meaning">
+        <Field label={translateUi('Meaning')}>
           <input value={meaning} onChange={(e) => setMeaning(e.target.value)} className={field} autoComplete="off" />
         </Field>
-        <Field label="Example sentence">
+        <Field label={translateUi('Example sentence')}>
           <textarea lang={lang} value={example} onChange={(e) => setExample(e.target.value)} rows={2} className={`${field} resize-none font-serif`} />
         </Field>
-        <Field label="Its translation">
+        <Field label={translateUi('Its translation')}>
           <input value={translation} onChange={(e) => setTranslation(e.target.value)} className={field} autoComplete="off" />
         </Field>
-        <Field label="Kind of card">
+        <Field label={translateUi('Kind of card')}>
           <select value={template} onChange={(e) => setTemplate(e.target.value as CardTemplate)} className={field}>
             {TEMPLATES.map((t) => (
               <option key={t.id} value={t.id}>
@@ -182,23 +184,21 @@ export function NoteEditor({ lang, target, onClose }: { lang: string; target: Ed
           </Field>
         ))}
         {(info.fill?.length ?? 0) > 0 && (
-          <Button type="button" variant="secondary" size="sm" icon={Sparkles} loading={filling} disabled={!term.trim()} onClick={() => void fill()}>
-            Fill from the dictionary
-          </Button>
+          <Button type="button" variant="secondary" size="sm" icon={Sparkles} loading={filling} disabled={!term.trim()} onClick={() => void fill()}><UiText source={'Fill from the dictionary'} /></Button>
         )}
-        <Field label={info.needsImage ? 'Picture' : 'A picture (optional)'}>
+        <Field label={info.needsImage ? translateUi('Picture') : translateUi('A picture (optional)')}>
           <PictureField blobId={editing?.note.imageBlobId} credit={editing?.note.imageCredit} picked={picture} removed={pictureGone} term={term} onPick={(p) => { setPicture(p); setPictureGone(false); }} onRemove={() => { setPicture(null); setPictureGone(true); setBoxes([]); }} />
         </Field>
         {template === 'image-occlusion' && image && (
-          <Field label="Parts to hide">
+          <Field label={translateUi('Parts to hide')}>
             <OcclusionEditor src={image} boxes={boxes} onChange={setBoxes} />
           </Field>
         )}
-        <Field label="A way to remember it">
-          <textarea value={mnemonic} onChange={(e) => setMnemonic(e.target.value)} rows={2} placeholder="A picture, a rhyme, a word it sounds like…" className={`${field} resize-none`} />
+        <Field label={translateUi('A way to remember it')}>
+          <textarea value={mnemonic} onChange={(e) => setMnemonic(e.target.value)} rows={2} placeholder={translateUi('A picture, a rhyme, a word it sounds like…')} className={`${field} resize-none`} />
         </Field>
-        <Field label="Tags">
-          <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="food travel" className={field} autoComplete="off" />
+        <Field label={translateUi('Tags')}>
+          <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder={translateUi('food travel')} className={field} autoComplete="off" />
         </Field>
         <button type="submit" hidden />
       </form>
@@ -208,7 +208,7 @@ export function NoteEditor({ lang, target, onClose }: { lang: string; target: Ed
           {editing.cards.map((c) => (
             <CardMemory key={c.id} card={c} onChanged={onClose} />
           ))}
-          <ToggleRow title="Suspend" description="Keep the card but leave it out of reviews." checked={suspended} onChange={(v) => void setSuspended(editing.note.id, v)} />
+          <ToggleRow title={translateUi('Suspend')} description={translateUi('Keep the card but leave it out of reviews.')} checked={suspended} onChange={(v) => void setSuspended(editing.note.id, v)} />
           <Button
             variant="danger"
             icon={Trash2}
@@ -218,9 +218,7 @@ export function NoteEditor({ lang, target, onClose }: { lang: string; target: Ed
               onClose();
               toast(`Deleted “${editing.note.term}”`);
             }}
-          >
-            Delete card
-          </Button>
+          ><UiText source={'Delete card'} /></Button>
         </div>
       )}
     </Drawer>

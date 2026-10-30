@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -38,6 +39,7 @@ interface TodayCardProps {
  * one big Study with Ludus beside it, and the week ahead as a small bar line.
  */
 export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardProps) {
+  const translateUi = useUi();
   const activity = useToday(lang);
   const ludusGate = useGate('ludus');
   const [calendar, setCalendar] = useState(false);
@@ -51,13 +53,13 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
 
   return (
     <Card className="p-5 sm:p-6">
-      <p className="text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">Today</p>
+      <p className="text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase"><UiText source={'Today'} /></p>
       <div className={cx('mt-3 flex gap-5', rail ? 'flex-col' : 'flex-col sm:flex-row sm:items-center')}>
         <div className="flex min-w-0 flex-1 items-center gap-5">
           <Ring totals={totals} waiting={waiting} />
           <ul className="min-w-0 space-y-1.5 text-[13.5px]">
             {waiting === 0 ? (
-              <li className="font-serif text-lg leading-tight font-semibold">All caught up</li>
+              <li className="font-serif text-lg leading-tight font-semibold"><UiText source={'All caught up'} /></li>
             ) : (
               CARD_STATES.map((s) => (
                 <li key={s.key} className={cx('flex items-center gap-2', !totals[s.key] && 'opacity-45')}>
@@ -67,16 +69,13 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
                 </li>
               ))
             )}
-            {waiting > 0 && minutes ? <li className="pt-0.5 text-[12.5px] text-ink-faint">About {minutes} min</li> : null}
-            {done > 0 ? <li className="pt-0.5 text-[12.5px] text-ink-faint">{done.toLocaleString()} done today</li> : waiting === 0 && <li className="text-[12.5px] text-ink-soft">Nothing is due. Practise freely with Ludus.</li>}
+            {waiting > 0 && minutes ? <li className="pt-0.5 text-[12.5px] text-ink-faint"><UiText source={'About {0} min'} values={[minutes]} /></li> : null}
+            {done > 0 ? <li className="pt-0.5 text-[12.5px] text-ink-faint"><UiText source={'{0} done today'} values={[done.toLocaleString()]} /></li> : waiting === 0 && <li className="text-[12.5px] text-ink-soft"><UiText source={'Nothing is due. Practise freely with Ludus.'} /></li>}
           </ul>
         </div>
         <div className="flex gap-2">
           {waiting > 0 && (
-            <Link to="/thesaurus/study/all?mode=recall" className={cx(buttonClasses('primary', rail ? 'lg' : 'md'), rail && 'flex-1')}>
-              <Layers size={18} aria-hidden />
-              Study
-            </Link>
+            <Link to="/thesaurus/study/all?mode=recall" className={cx(buttonClasses('primary', rail ? 'lg' : 'md'), rail && 'flex-1')}><UiText source={'{0}Study'} values={[<Layers size={18} aria-hidden />]} /></Link>
           )}
           {ludusGate ? (
             <button type="button" onClick={ludusGate} className={ludusClass}>
@@ -115,7 +114,7 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
       <CatchUpOffer lang={lang} />
       {ahead && <WeekAhead forecast={ahead} />}
       <button type="button" aria-expanded={calendar} onClick={() => setCalendar((v) => !v)} className="mt-4 text-[12.5px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
-        {calendar ? 'Hide the calendar' : 'Show the next five weeks'}
+        {calendar ? translateUi('Hide the calendar') : translateUi('Show the next five weeks')}
       </button>
       {calendar && <DueCalendar lang={lang} />}
     </Card>
@@ -126,6 +125,7 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
 const CATCH_UP_FROM = 40;
 
 function CatchUpOffer({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const overdue = useLiveQuery(async () => (await overdueCards(lang)).length, [lang]);
   const [days, setDays] = useState(7);
   const [busy, setBusy] = useState(false);
@@ -141,23 +141,20 @@ function CatchUpOffer({ lang }: { lang: string }) {
   };
   return (
     <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-xl bg-sunken px-3.5 py-3 text-[13.5px]">
-      <p className="min-w-0 flex-1 basis-56 leading-snug text-ink-soft">
-        <span className="font-semibold text-ink">{overdue.toLocaleString()} cards have been waiting.</span> Spread the oldest first over some days instead of facing them at once.
-      </p>
-      <select aria-label="Spread the overdue cards over" value={days} onChange={(e) => setDays(Number(e.target.value))} className="h-9 rounded-full border border-line bg-raised px-3 text-[13px] font-semibold outline-none focus:border-ink">
-        <option value={3}>3 days</option>
-        <option value={7}>A week</option>
-        <option value={14}>Two weeks</option>
+      <p className="min-w-0 flex-1 basis-56 leading-snug text-ink-soft"><UiText source={'{0} Spread the oldest first over some days instead of facing them at once.'} values={[<span className="font-semibold text-ink"><UiText source={'{0} cards have been waiting.'} values={[overdue.toLocaleString()]} /></span>]} /></p>
+      <select aria-label={translateUi('Spread the overdue cards over')} value={days} onChange={(e) => setDays(Number(e.target.value))} className="h-9 rounded-full border border-line bg-raised px-3 text-[13px] font-semibold outline-none focus:border-ink">
+        <option value={3}>{translateUi('3 days')}</option>
+        <option value={7}>{translateUi('A week')}</option>
+        <option value={14}>{translateUi('Two weeks')}</option>
       </select>
-      <Button variant="secondary" size="sm" loading={busy} onClick={() => void spread()}>
-        Catch up
-      </Button>
+      <Button variant="secondary" size="sm" loading={busy} onClick={() => void spread()}><UiText source={'Catch up'} /></Button>
     </div>
   );
 }
 
 /** Today's work as a ring in three colours, the count in the middle; a full sage ring once it's all done. */
 function Ring({ totals, waiting }: { totals: DeckCounts; waiting: number }) {
+  const translateUi = useUi();
   const r = 42;
   const c = 2 * Math.PI * r;
   const parts = CARD_STATES.map((s) => ({ ...s, n: totals[s.key] })).filter((p) => p.n > 0);
@@ -176,7 +173,7 @@ function Ring({ totals, waiting }: { totals: DeckCounts; waiting: number }) {
       </svg>
       <span className="text-center">
         <span className="block font-serif text-[26px] leading-none font-semibold tabular-nums">{waiting === 0 ? '✓' : waiting.toLocaleString()}</span>
-        <span className="mt-1 block text-[11px] font-bold tracking-[0.08em] text-ink-faint uppercase">{waiting === 0 ? 'done' : 'to do'}</span>
+        <span className="mt-1 block text-[11px] font-bold tracking-[0.08em] text-ink-faint uppercase">{waiting === 0 ? translateUi('done') : translateUi('to do')}</span>
       </span>
     </span>
   );
@@ -184,17 +181,15 @@ function Ring({ totals, waiting }: { totals: DeckCounts; waiting: number }) {
 
 /** Seven slim bars: reviews coming due on each of the next days. */
 function WeekAhead({ forecast }: { forecast: number[] }) {
+  const translateUi = useUi();
   const peak = Math.max(1, ...forecast);
   const total = forecast.reduce((a, b) => a + b, 0);
   const day = (i: number) => (i === 0 ? 'Tmrw' : new Date(Date.now() + (i + 1) * DAY).toLocaleDateString('en', { weekday: 'short' }));
   return (
     <div className="mt-5 border-t border-line pt-4">
-      <p className="mb-2 flex items-baseline justify-between text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">
-        Week ahead
-        <span className="font-semibold tracking-normal normal-case tabular-nums">
-          {total.toLocaleString()} {total === 1 ? 'review' : 'reviews'}
-        </span>
-      </p>
+      <p className="mb-2 flex items-baseline justify-between text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Week ahead{0}'} values={[<span className="font-semibold tracking-normal normal-case tabular-nums">
+          {total.toLocaleString()} {total === 1 ? translateUi('review') : translateUi('reviews')}
+        </span>]} /></p>
       <div className="flex h-12 items-end gap-1.5" role="img" aria-label={forecast.map((n, i) => `${day(i)} ${n}`).join(', ')}>
         {forecast.map((n, i) => (
           <div key={i} className="flex h-full flex-1 flex-col items-center justify-end gap-1" title={`${day(i)}: ${n} ${n === 1 ? 'review' : 'reviews'}`}>

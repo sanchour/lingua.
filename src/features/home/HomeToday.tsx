@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -157,6 +158,7 @@ function TodayCard({
   streak: number;
   enjoys: Enjoyment[];
 }) {
+  const translateUi = useUi();
   const today = useToday(lang);
   const steps = useNextSteps(lang, level, enjoys, 3);
   const minutes = studyMinutes(today);
@@ -171,28 +173,26 @@ function TodayCard({
       <div>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
-            <p className={label}>Today</p>
+            <p className={label}><UiText source={'Today'} /></p>
             {streak > 0 && (
               <Link
                 to="/ratio"
                 className="inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 text-[12px] font-bold text-accent-text transition-colors hover:bg-accent/20"
               >
-                <Flame size={13} aria-hidden /> {streak} {streak === 1 ? 'day' : 'days'}
+                <Flame size={13} aria-hidden /> {streak} {streak === 1 ? translateUi('day') : translateUi('days')}
               </Link>
             )}
           </div>
           <p className="text-[13px] font-semibold text-ink-soft">
-            {minutes === 0 ? 'A fresh page.' : left === 0 ? 'Goal reached. Lovely.' : `${left} ${left === 1 ? 'minute' : 'minutes'} to go`}
+            {minutes === 0 ? translateUi('A fresh page.') : left === 0 ? translateUi('Goal reached. Lovely.') : translateUi('{0} {1} to go', [left, left === 1 ? 'minute' : 'minutes'])}
           </p>
         </div>
 
         <div className="mt-1.5 flex items-baseline justify-between gap-4">
           <p className="font-serif text-[30px] leading-none font-semibold tabular-nums sm:text-[32px]">
-            {Math.floor(minutes)} <span className="text-[17px] font-normal text-ink-soft">of {goal} minutes</span>
+            {Math.floor(minutes)} <span className="text-[17px] font-normal text-ink-soft"><UiText source={'of {0} minutes'} values={[goal]} /></span>
           </p>
-          <Link to="/ratio" className="text-[12.5px] font-semibold text-ink-faint transition-colors hover:text-ink">
-            Ratio ›
-          </Link>
+          <Link to="/ratio" className="text-[12.5px] font-semibold text-ink-faint transition-colors hover:text-ink"><UiText source={'Ratio ›'} /></Link>
         </div>
 
         {/* Goal ribbon across the card, split by room */}
@@ -202,7 +202,7 @@ function TodayCard({
           animate={{ scaleX: 1, opacity: 1 }}
           transition={spring.soft}
           role="img"
-          aria-label={`${Math.floor(minutes)} of ${goal} minutes today${parts.length ? `: ${parts.map((p) => `${p.name.toLowerCase()} ${Math.round(p.minutes)}`).join(', ')}` : ''}`}
+          aria-label={translateUi('{0} of {1} minutes today{2}', [Math.floor(minutes), goal, parts.length ? `: ${parts.map((p) => `${p.name.toLowerCase()} ${Math.round(p.minutes)}`).join(', ')}` : ''])}
         >
           {parts.map((p) => (
             <span key={p.key} className={cx('h-full border-r-2 border-raised last:border-r-0', p.tone)} style={{ width: `${(p.minutes / scale) * 100}%` }} />
@@ -213,24 +213,20 @@ function TodayCard({
         <p className="mt-2 flex min-h-4 flex-wrap gap-x-4 gap-y-1 text-[12px] text-ink-soft">
           {parts.length ? (
             parts.map((p) => (
-              <span key={p.key} className="inline-flex items-center gap-1.5">
-                <span className={cx('size-2 rounded-full', p.tone)} aria-hidden /> {p.name} {Math.round(p.minutes)} min
-              </span>
+              <span key={p.key} className="inline-flex items-center gap-1.5"><UiText source={'{0} {1} {2} min'} values={[<span className={cx('size-2 rounded-full', p.tone)} aria-hidden />, p.name, Math.round(p.minutes)]} /></span>
             ))
           ) : (
-            <span>Read, listen, watch or write: it all counts toward your daily goal.</span>
+            <span><UiText source={'Read, listen, watch or write: it all counts toward your daily goal.'} /></span>
           )}
-          {today?.reviews ? <span>{today.reviews} {today.reviews === 1 ? 'card' : 'cards'} reviewed</span> : null}
+          {today?.reviews ? <span><UiText source={'{0} {1} reviewed'} values={[today.reviews, today.reviews === 1 ? 'card' : 'cards']} /></span> : null}
         </p>
       </div>
 
       {/* Where you left off */}
       <div className="mt-3.5 border-t border-line pt-3">
         <div className="mb-2 flex items-center justify-between">
-          <p className={label}>Where you left off</p>
-          <Link to="/bibliotheca" className="text-[12px] font-semibold text-ink-faint transition-colors hover:text-ink">
-            All active ›
-          </Link>
+          <p className={label}><UiText source={'Where you left off'} /></p>
+          <Link to="/bibliotheca" className="text-[12px] font-semibold text-ink-faint transition-colors hover:text-ink"><UiText source={'All active ›'} /></Link>
         </div>
 
         {primary ? (
@@ -253,9 +249,7 @@ function TodayCard({
                 </span>
                 <span className="block truncate text-[12.5px] text-ink-soft">{primary.detail}</span>
               </span>
-              <span className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-accent px-3 text-[12.5px] font-semibold text-on-accent shadow-elev-1 transition-transform group-hover:translate-x-0.5">
-                Resume <ArrowRight size={13} aria-hidden />
-              </span>
+              <span className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-accent px-3 text-[12.5px] font-semibold text-on-accent shadow-elev-1 transition-transform group-hover:translate-x-0.5"><UiText source={'Resume {0}'} values={[<ArrowRight size={13} aria-hidden />]} /></span>
             </Link>
 
             {secondary.length > 0 && (
@@ -289,8 +283,8 @@ function TodayCard({
             className="group flex items-center justify-between gap-3 rounded-2xl border border-line/80 bg-surface p-3 transition-colors hover:border-line-strong"
           >
             <div>
-              <p className="font-serif text-[16px] font-semibold">Open a first page in Codex</p>
-              <p className="text-[12.5px] text-ink-soft">Start with a short sample story or add your own book.</p>
+              <p className="font-serif text-[16px] font-semibold"><UiText source={'Open a first page in Codex'} /></p>
+              <p className="text-[12.5px] text-ink-soft"><UiText source={'Start with a short sample story or add your own book.'} /></p>
             </div>
             <ArrowRight size={17} className="shrink-0 text-accent-text transition-transform group-hover:translate-x-0.5" aria-hidden />
           </Link>
@@ -409,8 +403,8 @@ function ChooseModeCard() {
   return (
     <Card className="flex h-full flex-col justify-between p-4 sm:p-5">
       <div className="mb-2.5 flex items-baseline justify-between gap-2">
-        <p className={label}>Choose a mode</p>
-        <span className="font-serif text-[12px] italic text-ink-faint">Your scriptorium</span>
+        <p className={label}><UiText source={'Choose a mode'} /></p>
+        <span className="font-serif text-[12px] italic text-ink-faint"><UiText source={'Your scriptorium'} /></span>
       </div>
 
       <div className="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-2">
@@ -444,6 +438,7 @@ interface ContinueItem {
 }
 
 function ContinueLearningSection({ lang, level }: { lang: string; level: Level }) {
+  const translateUi = useUi();
   const allTexts = useLibrary(lang);
   const progress = useAllProgress();
   const listening = useMediaList(lang);
@@ -596,7 +591,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         title: quote(SAMPLES[lang] ? lang : 'en', sampleTitle),
         detail: 'A short starter story, ready to read',
         langAttr: lang,
-        art: <WarmVignette hue="#c86d51" icon={BookOpen} label="Read" />,
+        art: <WarmVignette hue="#c86d51" icon={BookOpen} label={translateUi('Read')} />,
       });
     }
 
@@ -631,7 +626,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         room: 'Mentis',
         title: 'Today’s journal entry',
         detail: prompt.en || prompt.text,
-        art: <WarmVignette hue="#b56fa0" icon={PenLine} label="Write" />,
+        art: <WarmVignette hue="#b56fa0" icon={PenLine} label={translateUi('Write')} />,
       });
     }
 
@@ -642,7 +637,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         room: 'Sonus',
         title: 'Live radio & podcasts',
         detail: 'Listen in from stations around the world',
-        art: <WarmVignette hue="#d49b54" icon={Headphones} label="Live" />,
+        art: <WarmVignette hue="#d49b54" icon={Headphones} label={translateUi('Live')} />,
       });
     }
 
@@ -650,17 +645,13 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
   }, [allTexts, progress, listening, videos, audiobooks, playback, songs, due, journal, lang, level]);
 
   return (
-    <section aria-label="Continue learning">
+    <section aria-label={translateUi('Continue learning')}>
       <div className="mb-2.5 flex items-baseline justify-between gap-4">
         <Link to="/bibliotheca" className="group inline-flex items-center gap-1.5">
-          <h2 className="font-serif text-[20px] font-semibold tracking-tight transition-colors group-hover:text-accent-text sm:text-[22px]">
-            Continue learning
-          </h2>
+          <h2 className="font-serif text-[20px] font-semibold tracking-tight transition-colors group-hover:text-accent-text sm:text-[22px]"><UiText source={'Continue learning'} /></h2>
           <ChevronRight size={19} className="text-ink-soft transition-transform duration-150 group-hover:translate-x-1 group-hover:text-accent-text" aria-hidden />
         </Link>
-        <Link to="/bibliotheca" className="text-[12.5px] font-semibold text-ink-soft transition-colors hover:text-ink">
-          Bibliotheca ›
-        </Link>
+        <Link to="/bibliotheca" className="text-[12.5px] font-semibold text-ink-soft transition-colors hover:text-ink"><UiText source={'Bibliotheca ›'} /></Link>
       </div>
 
       <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-5">
@@ -692,9 +683,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
                 </p>
                 <p className="mt-0.5 line-clamp-1 text-[12px] leading-snug text-ink-soft">{item.detail}</p>
               </div>
-              <span className="mt-2 inline-flex items-center gap-1 text-[11.5px] font-semibold text-accent-text">
-                Continue <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
-              </span>
+              <span className="mt-2 inline-flex items-center gap-1 text-[11.5px] font-semibold text-accent-text"><UiText source={'Continue {0}'} values={[<ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" aria-hidden />]} /></span>
             </div>
           </Link>
         ))}
@@ -747,6 +736,7 @@ interface DiscoverCardItem {
 }
 
 function DiscoverContentSection({ lang, level }: { lang: string; level: Level }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const guide = useGuide();
   const starterList = useStarterList(lang);
@@ -832,7 +822,7 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
         title: src.name,
         detail: 'Today’s articles, clean and ready to read with 1-tap lookup',
         onClick: () => navigate('/explora?tab=read'),
-        art: <WarmVignette hue="#4f93a0" icon={Newspaper} label="News" />,
+        art: <WarmVignette hue="#4f93a0" icon={Newspaper} label={translateUi('News')} />,
       });
     }
 
@@ -844,7 +834,7 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
         title: 'Project Gutenberg & Wikipedia',
         detail: 'Free books and today’s most-read articles in your language',
         onClick: () => navigate('/explora?tab=read'),
-        art: <WarmVignette hue="#c86d51" icon={BookOpen} label="Free" />,
+        art: <WarmVignette hue="#c86d51" icon={BookOpen} label={translateUi('Free')} />,
       });
     }
     if (out.length < 5) {
@@ -854,7 +844,7 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
         title: 'LibriVox Audiobooks & Radio',
         detail: 'Free public-domain audiobooks and live radio stations',
         onClick: () => navigate('/sonus?tab=books'),
-        art: <WarmVignette hue="#5f87a8" icon={Headphones} label="Audio" />,
+        art: <WarmVignette hue="#5f87a8" icon={Headphones} label={translateUi('Audio')} />,
       });
     }
     if (out.length < 5) {
@@ -864,7 +854,7 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
         title: 'Top 100 Frequency Deck',
         detail: 'The words you meet most often, with example sentences',
         onClick: () => navigate('/explora?tab=words'),
-        art: <WarmVignette hue="#6b8e78" icon={Layers} label="Top 100" />,
+        art: <WarmVignette hue="#6b8e78" icon={Layers} label={translateUi('Top 100')} />,
       });
     }
     if (out.length < 5) {
@@ -874,7 +864,7 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
         title: 'Series & Films on Streaming',
         detail: 'Browse shows in your language with dual-subtitle support',
         onClick: () => navigate('/visio?tab=services'),
-        art: <WarmVignette hue="#b56fa0" icon={Clapperboard} label="Watch" />,
+        art: <WarmVignette hue="#b56fa0" icon={Clapperboard} label={translateUi('Watch')} />,
       });
     }
 
@@ -882,17 +872,13 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
   }, [guide?.picks, level, lookups, lang, starterList, navigate]);
 
   return (
-    <section aria-label="Discover your next content">
+    <section aria-label={translateUi('Discover your next content')}>
       <div className="mb-2.5 flex items-baseline justify-between gap-4">
         <Link to="/explora" className="group inline-flex items-center gap-1.5">
-          <h2 className="font-serif text-[20px] font-semibold tracking-tight transition-colors group-hover:text-accent-text sm:text-[22px]">
-            Discover your next content
-          </h2>
+          <h2 className="font-serif text-[20px] font-semibold tracking-tight transition-colors group-hover:text-accent-text sm:text-[22px]"><UiText source={'Discover your next content'} /></h2>
           <ChevronRight size={19} className="text-ink-soft transition-transform duration-150 group-hover:translate-x-1 group-hover:text-accent-text" aria-hidden />
         </Link>
-        <Link to="/explora" className="text-[12.5px] font-semibold text-ink-soft transition-colors hover:text-ink">
-          Explora ›
-        </Link>
+        <Link to="/explora" className="text-[12.5px] font-semibold text-ink-soft transition-colors hover:text-ink"><UiText source={'Explora ›'} /></Link>
       </div>
 
       <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-5">
@@ -925,9 +911,7 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
                 </p>
                 <p className="mt-0.5 line-clamp-1 text-[12px] leading-snug text-ink-soft">{item.detail}</p>
               </div>
-              <span className="mt-2 inline-flex items-center gap-1 text-[11.5px] font-semibold text-sage-text">
-                Explore <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
-              </span>
+              <span className="mt-2 inline-flex items-center gap-1 text-[11.5px] font-semibold text-sage-text"><UiText source={'Explore {0}'} values={[<ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" aria-hidden />]} /></span>
             </div>
           </button>
         ))}

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Settings2, Zap } from 'lucide-react';
@@ -121,6 +122,7 @@ interface LudusProps {
  * Right answers in a row build a combo; Lightning races the clock instead.
  */
 export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive, onSetup, lightning = false, deckOff, transforms }: LudusProps) {
+  const translateUi = useUi();
   const look = useSettings()?.cards ?? DEFAULT_SETTINGS.cards;
   const feel = useLessonFeel();
   const { speaker } = useSpeaker(lang);
@@ -322,7 +324,7 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
     <>
       <StudyBar title={title} progress={progress} onClose={onClose}>
         {lightning ? <LightningClock endsAt={endsAt} onEnd={finish} onTick={() => feel.cue('tick')} /> : <ComboBadge combo={feel.combo} burst={feel.burst} onBurstEnd={feel.clearBurst} />}
-        {!lightning && onSetup && <IconButton icon={Settings2} label="Lesson settings" size="sm" onClick={onSetup} />}
+        {!lightning && onSetup && <IconButton icon={Settings2} label={translateUi('Lesson settings')} size="sm" onClick={onSetup} />}
       </StudyBar>
       <main
         className="mx-auto flex min-h-dvh max-w-2xl flex-col px-5"
@@ -340,7 +342,7 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
             >
               <p id="exercise-label" className="mb-6 flex items-center gap-2 text-[13px] font-bold tracking-[0.12em] text-sage-text uppercase">
                 {lightning && <Zap size={14} aria-hidden />}
-                {ex.key.includes('-r') ? 'One more try · ' : ''}
+                {ex.key.includes('-r') ? translateUi('One more try · ') : ''}
                 {EXERCISE_LABEL[ex.kind]}
               </p>
               {(ex.kind === 'choose-meaning' || ex.kind === 'choose-term') && <ChoiceExercise ex={ex} lang={lang} value={choice} onChange={onChoose} phase={phase} />}
@@ -372,7 +374,7 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
             <p className="text-sm text-ink-soft">{note ?? ex.spec.feedback?.why}</p>
           ) : close ? (
             <p className="text-sm text-ink-soft">
-              {close.note === 'accent' ? 'Mind the accents: ' : 'Nearly — it’s spelled '}
+              {close.note === 'accent' ? translateUi('Mind the accents: ') : translateUi('Nearly — it’s spelled ')}
               <span lang={lang} className="font-semibold text-ink">
                 {close.expected}
               </span>
@@ -386,7 +388,7 @@ export function Ludus({ lang, title, entries, pool, onFinish, onClose, onActive,
         wrong={
           ex && (
             <>
-              <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase">Correct answer</p>
+              <p className="text-[13px] font-bold tracking-wide text-accent-text uppercase"><UiText source={'Correct answer'} /></p>
               <p lang={ex.kind === 'choose-meaning' || ex.kind === 'translate' || ex.kind === 'truefalse' ? undefined : lang} className="font-serif text-xl font-semibold">
                 {solution(ex)}
               </p>

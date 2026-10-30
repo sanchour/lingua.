@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
@@ -24,6 +25,7 @@ export interface Phrase {
 
 /** The translation of a selected phrase, with Save as a card and Copy. */
 export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: string; onClose: () => void }) {
+  const translateUi = useUi();
   const portalRoot = usePortalRoot();
   const ref = useRef<HTMLDivElement>(null);
   const [result, setResult] = useState<PhraseTranslation | null | undefined>(undefined);
@@ -67,7 +69,7 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
     <motion.div
       ref={ref}
       role="dialog"
-      aria-label="Translation of the selection"
+      aria-label={translateUi('Translation of the selection')}
       className="no-callout fixed top-0 left-0 z-[70] w-[min(380px,calc(100vw-20px))] rounded-2xl bg-inverse p-3.5 text-on-inverse shadow-elev-3"
       style={{ x: pos?.x ?? -9999, y: pos?.y ?? -9999 }}
       initial={{ opacity: 0, scale: 0.96 }}
@@ -78,16 +80,16 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
         <p lang={lang} className="line-clamp-3 min-w-0 flex-1 text-[14px] leading-snug opacity-75">
           {phrase.text}
         </p>
-        <button type="button" aria-label="Close" onClick={onClose} className="-mt-1 -mr-1 grid size-8 shrink-0 place-items-center rounded-full hover:bg-on-inverse/10">
+        <button type="button" aria-label={translateUi('Close')} onClick={onClose} className="-mt-1 -mr-1 grid size-8 shrink-0 place-items-center rounded-full hover:bg-on-inverse/10">
           <X size={16} aria-hidden />
         </button>
       </div>
       <p className={cx('mt-2 text-[16.5px] leading-snug font-semibold', result === undefined && 'animate-pulse opacity-60')}>
-        {result === undefined ? 'Translating…' : (result?.text ?? 'No translation came back. Check the connection.')}
+        {result === undefined ? translateUi('Translating…') : (result?.text ?? 'No translation came back. Check the connection.')}
       </p>
       {phrase.range && phrase.context.textId && <div className="mt-3 flex items-center gap-2">
-        <label className="text-xs">Highlight colour<select value={colour} onChange={(e) => setColour(e.target.value as MarkColour)} className="ml-2 rounded-md bg-bg p-1 text-ink"><option value="amber">Amber</option><option value="sage">Sage</option><option value="blue">Blue</option></select></label>
-        <button type="button" className={action} onClick={() => void saveReadingMark(phrase.context.textId!, { id: crypto.randomUUID(), chapterIndex: phrase.context.chapterIndex!, blockIndex: phrase.context.blockIndex!, ...phrase.range!, quote: phrase.range!.quote, colour, note: '' }).then(() => { toast('Highlight saved. Open Study tools for its margin note or card.'); onClose(); }).catch((e: unknown) => toast(e instanceof Error ? e.message : 'Could not save the highlight.', { tone: 'error' }))}>Highlight</button>
+        <label className="text-xs"><UiText source={'Highlight colour{0}'} values={[<select value={colour} onChange={(e) => setColour(e.target.value as MarkColour)} className="ml-2 rounded-md bg-bg p-1 text-ink"><option value="amber">{translateUi('Amber')}</option><option value="sage">{translateUi('Sage')}</option><option value="blue">{translateUi('Blue')}</option></select>]} /></label>
+        <button type="button" className={action} onClick={() => void saveReadingMark(phrase.context.textId!, { id: crypto.randomUUID(), chapterIndex: phrase.context.chapterIndex!, blockIndex: phrase.context.blockIndex!, ...phrase.range!, quote: phrase.range!.quote, colour, note: '' }).then(() => { toast('Highlight saved. Open Study tools for its margin note or card.'); onClose(); }).catch((e: unknown) => toast(e instanceof Error ? e.message : 'Could not save the highlight.', { tone: 'error' }))}><UiText source={'Highlight'} /></button>
       </div>}
       <div className="mt-3 -mb-1 flex flex-wrap gap-1">
         <button
@@ -101,7 +103,7 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
             toast(added ? 'Saved to “From my reading”.' : 'That phrase is already in your deck.', { tone: added ? 'success' : 'default' });
           }}
         >
-          {saved ? <Check size={15} aria-hidden /> : <BookmarkPlus size={15} aria-hidden />} {saved ? 'Saved' : 'Save as a card'}
+          {saved ? <Check size={15} aria-hidden /> : <BookmarkPlus size={15} aria-hidden />} {saved ? translateUi('Saved') : translateUi('Save as a card')}
         </button>
         <button
           type="button"
@@ -109,9 +111,7 @@ export function PhraseBubble({ phrase, lang, onClose }: { phrase: Phrase; lang: 
           onClick={() => {
             void navigator.clipboard?.writeText(result ? `${phrase.text}\n${result.text}` : phrase.text).then(() => toast('Copied.'));
           }}
-        >
-          <Copy size={15} aria-hidden /> Copy
-        </button>
+        ><UiText source={'{0} Copy'} values={[<Copy size={15} aria-hidden />]} /></button>
         <SpeakButton lang={lang} text={phrase.text} size={15} label="Hear it" className="ml-auto size-8 hover:bg-on-inverse/10" />
       </div>
     </motion.div>,

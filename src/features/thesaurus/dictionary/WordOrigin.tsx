@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 // The language's half of a word's page that Wiktionary gives as data (6-1b): how it is split into syllables, and what it is
 // made of, where it comes from and what it is called in other languages.
 import { Link } from 'react-router';
@@ -73,7 +74,7 @@ export function OriginLines({ lang, entries }: { lang: string; entries: FullEntr
     <ul className="mb-2 space-y-1 text-[14px] leading-snug">
       {parts && (
         <li>
-          <span className="text-ink-faint">Made of </span>
+          <span className="text-ink-faint"><UiText source={'Made of '} /></span>
           {parts.map((p, i) => {
             const word = p.replace(/^-+|-+$/g, '');
             return (
@@ -95,13 +96,13 @@ export function OriginLines({ lang, entries }: { lang: string; entries: FullEntr
       )}
       {root && (
         <li>
-          <span className="text-ink-faint">From {etymonName(root[0])} </span>
+          <span className="text-ink-faint"><UiText source={'From {0} '} values={[etymonName(root[0])]} /></span>
           <span className="font-serif font-semibold">{root[1]}</span>
         </li>
       )}
       {cog && (
         <li>
-          <span className="text-ink-faint">Also </span>
+          <span className="text-ink-faint"><UiText source={'Also '} /></span>
           {cog.map(([l, w], i) => (
             <span key={`${l}-${w}`}>
               {i > 0 && <span className="text-ink-faint"> · </span>}

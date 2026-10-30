@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import { TriangleAlert } from 'lucide-react';
 import { YouTubeVideo } from '@/core/visio/youtubeVideo';
@@ -57,8 +58,8 @@ export function YouTubeEmbed({ id, onPlayer }: { id: string; onPlayer: (player: 
         <div className="absolute inset-0 grid place-items-center bg-[#1d1a17] p-6 text-center text-white/85">
           <div>
             <TriangleAlert size={28} className="mx-auto mb-3 opacity-70" aria-hidden />
-            <p className="font-serif text-lg font-semibold text-white">YouTube didn’t play this one</p>
-            <p className="mx-auto mt-1 max-w-sm text-[13.5px] text-white/70">The video may not allow playing outside YouTube, or the player couldn’t load. Check your connection, or watch it on YouTube and add its subtitles as a file.</p>
+            <p className="font-serif text-lg font-semibold text-white"><UiText source={'YouTube didn’t play this one'} /></p>
+            <p className="mx-auto mt-1 max-w-sm text-[13.5px] text-white/70"><UiText source={'The video may not allow playing outside YouTube, or the player couldn’t load. Check your connection, or watch it on YouTube and add its subtitles as a file.'} /></p>
           </div>
         </div>
       )}

@@ -1,3 +1,5 @@
+import { UiLocale } from '@/design/i18n/UiText';
+import { uiLanguage } from '@/core/i18n/messages';
 import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { MotionConfig } from 'motion/react';
@@ -113,7 +115,7 @@ export function Root() {
   if (!settings || language === undefined) return <StartingUp waitingFor={!settings ? (language === undefined ? 'settings and language' : 'settings') : 'language'} />;
 
   return (
-    <MotionConfig reducedMotion={motionPref === 'reduced' ? 'always' : motionPref === 'full' ? 'never' : 'user'}>
+    <UiLocale.Provider value={settings.ui.interfaceLanguage ? uiLanguage(language?.id ?? '') : 'en'}><MotionConfig reducedMotion={motionPref === 'reduced' ? 'always' : motionPref === 'full' ? 'never' : 'user'}>
       {replay && context ? (
         <Suspense fallback={null}>
           <Onboarding key={`replay-${replay.from}`} replay={replay.from} />
@@ -145,6 +147,6 @@ export function Root() {
           <DesignNotes />
         </Suspense>
       )}
-    </MotionConfig>
+    </MotionConfig></UiLocale.Provider>
   );
 }

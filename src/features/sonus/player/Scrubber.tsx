@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { formatClock } from '@/core/audio/cues';
@@ -9,6 +10,7 @@ import { onTime, seek, skip, usePlayer } from '@/services/audio/engine';
  * dragging previews the time and seeks on release.
  */
 export function Scrubber({ className, compact = false }: { className?: string; compact?: boolean }) {
+  const translateUi = useUi();
   const duration = usePlayer((s) => s.durationMs);
   const trackRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
@@ -41,7 +43,7 @@ export function Scrubber({ className, compact = false }: { className?: string; c
         ref={trackRef}
         role="slider"
         tabIndex={0}
-        aria-label="Position"
+        aria-label={translateUi('Position')}
         aria-valuemin={0}
         aria-valuemax={Math.round(duration / 1000)}
         className={cx('group relative flex cursor-pointer touch-none items-center', compact ? 'h-4' : 'h-6')}

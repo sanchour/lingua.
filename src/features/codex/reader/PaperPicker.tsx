@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { patchSetting } from '@/data/settings';
 import type { Settings, Theme } from '@/data/settings';
 import { DARK_PAPERS, LIGHT_PAPERS } from '@/design/papers';
@@ -14,11 +15,12 @@ interface PaperPickerProps {
 
 /** Reading paper swatches: little pages in their own colours. */
 export function PaperPicker({ reader, theme, labelled = false }: PaperPickerProps) {
+  const translateUi = useUi();
   const day = theme === 'paper';
   const papers: Paper[] = day ? LIGHT_PAPERS : DARK_PAPERS;
   const selected = day ? reader.paperLight : reader.paperDark;
   return (
-    <div role="radiogroup" aria-label={day ? 'Day paper' : 'Night paper'} className={cx('grid grid-cols-7', labelled ? 'gap-2' : 'gap-1.5')}>
+    <div role="radiogroup" aria-label={day ? translateUi('Day paper') : translateUi('Night paper')} className={cx('grid grid-cols-7', labelled ? 'gap-2' : 'gap-1.5')}>
       {papers.map((p) => {
         const on = p.id === selected;
         return (
@@ -38,9 +40,7 @@ export function PaperPicker({ reader, theme, labelled = false }: PaperPickerProp
                 on ? 'shadow-elev-1 ring-2 ring-accent ring-offset-2 ring-offset-raised' : 'group-hover:-translate-y-0.5',
               )}
               style={{ background: p.vars.bg, color: p.vars.ink, borderColor: p.vars['line-strong'] }}
-            >
-              Aa
-            </span>
+            ><UiText source={'Aa'} /></span>
             {labelled && <span className={cx('w-full truncate text-center text-[11px] font-semibold', on ? 'text-ink' : 'text-ink-faint')}>{p.label}</span>}
           </button>
         );

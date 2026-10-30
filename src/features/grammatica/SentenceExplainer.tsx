@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { AlertCircle, ArrowRight, HelpCircle, Sparkles } from 'lucide-react';
 import {
@@ -38,6 +39,7 @@ const DEFAULT_SAMPLES: Record<string, string[]> = {
 };
 
 export function SentenceExplainer({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const rtl = isRtl(lang);
   const samples = DEFAULT_SAMPLES[lang] ?? DEFAULT_SAMPLES.es;
 
@@ -70,13 +72,8 @@ export function SentenceExplainer({ lang }: { lang: string }) {
       {/* Input section */}
       <div className="rounded-3xl border border-line bg-card p-5 sm:p-6 shadow-xs">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="text-[14px] font-semibold tracking-wider text-ink-faint uppercase">
-            Sentence Explainer
-          </h2>
-          <span className="flex items-center gap-1 text-[12px] font-medium text-ink-soft">
-            <Sparkles size={13} className="text-accent" />
-            Dictionary forms & syntax
-          </span>
+          <h2 className="text-[14px] font-semibold tracking-wider text-ink-faint uppercase"><UiText source={'Sentence Explainer'} /></h2>
+          <span className="flex items-center gap-1 text-[12px] font-medium text-ink-soft"><UiText source={'{0}Dictionary forms & syntax'} values={[<Sparkles size={13} className="text-accent" />]} /></span>
         </div>
 
         <div className="mt-3">
@@ -94,7 +91,7 @@ export function SentenceExplainer({ lang }: { lang: string }) {
         {/* Quick sample buttons & action */}
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[12px] font-medium text-ink-faint">Samples:</span>
+            <span className="text-[12px] font-medium text-ink-faint"><UiText source={'Samples:'} /></span>
             {samples.map((s, i) => (
               <button
                 key={i}
@@ -104,9 +101,7 @@ export function SentenceExplainer({ lang }: { lang: string }) {
                   setAnalysis(analyzeSentenceOffline(s, lang));
                 }}
                 className="rounded-lg bg-sunken px-2.5 py-1 text-[12px] font-medium text-ink-soft hover:bg-sunken/80 transition-colors"
-              >
-                Sample {i + 1}
-              </button>
+              ><UiText source={'Sample {0}'} values={[i + 1]} /></button>
             ))}
           </div>
 
@@ -116,7 +111,7 @@ export function SentenceExplainer({ lang }: { lang: string }) {
             disabled={loading || !inputSentence.trim()}
             className="inline-flex items-center gap-2 rounded-xl bg-ink px-4 py-2 text-[13.5px] font-semibold text-bg hover:opacity-90 disabled:opacity-50 transition-opacity"
           >
-            {loading ? 'Analyzing…' : 'Analyze grammar'}
+            {loading ? translateUi('Analyzing…') : translateUi('Analyze grammar')}
             <ArrowRight size={15} />
           </button>
         </div>
@@ -124,9 +119,7 @@ export function SentenceExplainer({ lang }: { lang: string }) {
         {analysis?.requiresMaxNotice && (
           <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-line/60 bg-sunken/40 p-3 text-[12.5px] text-ink-soft">
             <AlertCircle size={15} className="mt-0.5 shrink-0 text-accent" />
-            <span>
-              <strong>Offline dictionary breakdown active.</strong> Every word's lemma and ending are identified on device. {analysis.requiresMaxNotice}
-            </span>
+            <span><UiText source={'{0} Every word\'s lemma and ending are identified on device. {1}'} values={[<strong><UiText source={'Offline dictionary breakdown active.'} /></strong>, analysis.requiresMaxNotice]} /></span>
           </div>
         )}
       </div>
@@ -137,9 +130,7 @@ export function SentenceExplainer({ lang }: { lang: string }) {
           {/* Clause Structure */}
           {analysis.clauses.length > 0 && (
             <div className="rounded-3xl border border-line bg-card p-5 sm:p-6">
-              <h3 className="mb-3 text-[13px] font-bold uppercase tracking-wider text-ink-faint">
-                Clauses & Structure
-              </h3>
+              <h3 className="mb-3 text-[13px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Clauses & Structure'} /></h3>
               <div className="space-y-2.5">
                 {analysis.clauses.map((clause) => {
                   const isMain = clause.type === 'main';
@@ -161,9 +152,7 @@ export function SentenceExplainer({ lang }: { lang: string }) {
                               ? 'bg-sage/20 text-sage-text'
                               : 'bg-accent/20 text-accent-text',
                           )}
-                        >
-                          {clause.type} clause
-                        </span>
+                        ><UiText source={'{0} clause'} values={[clause.type]} /></span>
                         {clause.explanation && (
                           <span className="text-[12px] text-ink-soft italic">
                             {clause.explanation}
@@ -187,13 +176,11 @@ export function SentenceExplainer({ lang }: { lang: string }) {
           {/* Dependency Arcs Canvas (F0275) */}
           {analysis.arcs.length > 0 && (
             <div className="rounded-3xl border border-line bg-card p-5 sm:p-6">
-              <h3 className="mb-2 text-[13px] font-bold uppercase tracking-wider text-ink-faint">
-                Dependency Relationships
-              </h3>
+              <h3 className="mb-2 text-[13px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Dependency Relationships'} /></h3>
               <div className="overflow-x-auto py-4">
                 <div className="relative min-w-[600px]">
                   {/* SVG Arcs */}
-                  <svg className="h-28 w-full overflow-visible" role="img" aria-label="Dependency arcs">
+                  <svg className="h-28 w-full overflow-visible" role="img" aria-label={translateUi('Dependency arcs')}>
                     <defs>
                       <marker
                         id="arc-arrow"
@@ -271,9 +258,7 @@ export function SentenceExplainer({ lang }: { lang: string }) {
 
           {/* Word Breakdown Cards Grid */}
           <div className="rounded-3xl border border-line bg-card p-5 sm:p-6">
-            <h3 className="mb-3 text-[13px] font-bold uppercase tracking-wider text-ink-faint">
-              Word-by-Word Grammatical Breakdown
-            </h3>
+            <h3 className="mb-3 text-[13px] font-bold uppercase tracking-wider text-ink-faint"><UiText source={'Word-by-Word Grammatical Breakdown'} /></h3>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {analysis.words.map((w, idx) => {
                 const isSelected = selectedWordIdx === idx;
@@ -311,12 +296,12 @@ export function SentenceExplainer({ lang }: { lang: string }) {
 
                       <div className="mt-2 space-y-1 text-[13px] text-ink-soft">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-ink-faint">Lemma:</span>
+                          <span className="text-ink-faint"><UiText source={'Lemma:'} /></span>
                           <strong className="font-medium text-ink">{w.lemma}</strong>
                         </div>
                         {w.ending && (
                           <div className="flex items-center gap-1.5">
-                            <span className="text-ink-faint">Ending:</span>
+                            <span className="text-ink-faint"><UiText source={'Ending:'} /></span>
                             <span className="rounded bg-accent-soft/50 px-1 py-0.2 font-mono font-bold text-accent-text">
                               {w.ending}
                             </span>
@@ -324,7 +309,7 @@ export function SentenceExplainer({ lang }: { lang: string }) {
                         )}
                         {w.gloss && (
                           <div className="flex items-baseline gap-1.5">
-                            <span className="text-ink-faint">Meaning:</span>
+                            <span className="text-ink-faint"><UiText source={'Meaning:'} /></span>
                             <span>{w.gloss}</span>
                           </div>
                         )}
@@ -344,13 +329,8 @@ export function SentenceExplainer({ lang }: { lang: string }) {
           {/* Ambiguities / Alternative Interpretations (F0279) */}
           {analysis.alternatives && analysis.alternatives.length > 0 && (
             <div className="rounded-3xl border border-line bg-card p-5 sm:p-6">
-              <h3 className="flex items-center gap-2 text-[14px] font-bold text-ink">
-                <HelpCircle size={17} className="text-accent" />
-                Alternative Valid Interpretations
-              </h3>
-              <p className="mt-1 text-[13px] text-ink-soft">
-                This sentence possesses structural or lexical ambiguity. Multiple readings are grammatically valid:
-              </p>
+              <h3 className="flex items-center gap-2 text-[14px] font-bold text-ink"><UiText source={'{0}Alternative Valid Interpretations'} values={[<HelpCircle size={17} className="text-accent" />]} /></h3>
+              <p className="mt-1 text-[13px] text-ink-soft"><UiText source={'This sentence possesses structural or lexical ambiguity. Multiple readings are grammatically valid:'} /></p>
               <div className="mt-3 space-y-2.5">
                 {analysis.alternatives.map((alt, i) => (
                   <div key={i} className="rounded-xl border border-line/70 bg-sunken/40 p-3.5">
@@ -373,21 +353,19 @@ export function SentenceExplainer({ lang }: { lang: string }) {
                   type="button"
                   onClick={() => setSelectedWordIdx(null)}
                   className="text-[12px] font-semibold text-accent-text hover:underline"
-                >
-                  Close
-                </button>
+                ><UiText source={'Close'} /></button>
               </div>
               <div className="mt-2 grid gap-2 sm:grid-cols-3 text-[13px]">
                 <div>
-                  <span className="text-ink-faint">Dictionary base: </span>
+                  <span className="text-ink-faint"><UiText source={'Dictionary base: '} /></span>
                   <span className="font-semibold text-ink">{selectedWord.lemma}</span>
                 </div>
                 <div>
-                  <span className="text-ink-faint">Inflection: </span>
+                  <span className="text-ink-faint"><UiText source={'Inflection: '} /></span>
                   <span className="font-semibold text-accent-text">{selectedWord.ending ?? 'Base form'}</span>
                 </div>
                 <div>
-                  <span className="text-ink-faint">Syntactic Role: </span>
+                  <span className="text-ink-faint"><UiText source={'Syntactic Role: '} /></span>
                   <span className="font-semibold text-ink">{selectedWord.role ?? 'Determined by context'}</span>
                 </div>
               </div>

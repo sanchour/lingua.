@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -40,6 +41,7 @@ type Listening = { stop: () => void } | null;
  * turn on the unit's subject, read back to you (and corrected with an AI key).
  */
 export function SpeakLesson({ unit, content, lang, onClose, onActive, onFinish }: Props) {
+  const translateUi = useUi();
   const feel = useLessonFeel();
   const [canListen, setCanListen] = useState(recognitionSupported);
   const [index, setIndex] = useState(0);
@@ -138,14 +140,14 @@ export function SpeakLesson({ unit, content, lang, onClose, onActive, onFinish }
 
   return (
     <>
-      <StudyBar title={`${unit.short} · Speak`} progress={Math.min(1, index / (phrases.length + 1))} onClose={onClose} />
+      <StudyBar title={translateUi('{0} · Speak', [unit.short])} progress={Math.min(1, index / (phrases.length + 1))} onClose={onClose} />
       <main className="mx-auto max-w-2xl px-5" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 72px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 104px)' }}>
         <AnimatePresence mode="wait">
           {open ? (
             <OpenTurn key="open" unit={unit} lang={lang} canListen={canListen} onDone={finish} />
           ) : (
             <motion.div key={index} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={spring.soft} className="flex flex-col items-center text-center">
-              <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">{canListen ? 'Listen, then say it' : 'Listen, then say it aloud'}</p>
+              <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">{canListen ? translateUi('Listen, then say it') : translateUi('Listen, then say it aloud')}</p>
               <div className="mt-6">
                 <PlayBig lang={lang} text={text} playKey={`${index}`} />
               </div>
@@ -171,7 +173,7 @@ export function SpeakLesson({ unit, content, lang, onClose, onActive, onFinish }
                     onClick={listen}
                     whileTap={{ scale: 0.94 }}
                     className={cx('grid size-20 place-items-center rounded-full shadow-elev-2 transition-colors', listening ? 'bg-accent text-on-accent' : 'bg-raised text-ink hover:bg-surface')}
-                    aria-label={listening ? 'Stop listening' : 'Say it'}
+                    aria-label={listening ? translateUi('Stop listening') : translateUi('Say it')}
                   >
                     {listening ? <Square size={26} className="animate-pulse" aria-hidden /> : <Mic size={30} aria-hidden />}
                   </motion.button>
@@ -180,7 +182,7 @@ export function SpeakLesson({ unit, content, lang, onClose, onActive, onFinish }
                   </p>
                 </div>
               )}
-              {!canListen && note && <p className="mt-6 max-w-sm text-[13.5px] text-ink-soft">{note} Say it aloud yourself, then go on.</p>}
+              {!canListen && note && <p className="mt-6 max-w-sm text-[13.5px] text-ink-soft"><UiText source={'{0} Say it aloud yourself, then go on.'} values={[note]} /></p>}
             </motion.div>
           )}
         </AnimatePresence>
@@ -190,27 +192,23 @@ export function SpeakLesson({ unit, content, lang, onClose, onActive, onFinish }
           phase={phase}
           ready={!canListen}
           checkLabel="I said it"
-          hint={canListen ? <span className="text-ink-faint">{index + 1} of {phrases.length}</span> : undefined}
+          hint={canListen ? <span className="text-ink-faint"><UiText source={'{0} of {1}'} values={[index + 1, phrases.length]} /></span> : undefined}
           onCheck={() => grade(true)}
           onNext={next}
           praise={praise}
-          rightNote={match ? <p className="text-sm text-ink-soft">Heard: “{match.said}”</p> : undefined}
+          rightNote={match ? <p className="text-sm text-ink-soft"><UiText source={'Heard: “{0}”'} values={[match.said]} /></p> : undefined}
           wrong={
             <div className="flex items-center gap-3">
               <div className="min-w-0 flex-1">
-                <p className="font-semibold text-accent-text">Not quite: the marked words weren’t heard</p>
-                {match?.said && <p className="truncate text-sm text-ink-soft">Heard: “{match.said}”</p>}
+                <p className="font-semibold text-accent-text"><UiText source={'Not quite: the marked words weren’t heard'} /></p>
+                {match?.said && <p className="truncate text-sm text-ink-soft"><UiText source={'Heard: “{0}”'} values={[match.said]} /></p>}
               </div>
-              <Button variant="secondary" icon={RotateCcw} onClick={retry}>
-                Try again
-              </Button>
+              <Button variant="secondary" icon={RotateCcw} onClick={retry}><UiText source={'Try again'} /></Button>
             </div>
           }
           aside={
             canListen ? (
-              <button type="button" onClick={next} className="text-sm font-semibold text-ink-faint hover:text-ink">
-                Can’t speak now? Skip
-              </button>
+              <button type="button" onClick={next} className="text-sm font-semibold text-ink-faint hover:text-ink"><UiText source={'Can’t speak now? Skip'} /></button>
             ) : undefined
           }
         />
@@ -221,6 +219,7 @@ export function SpeakLesson({ unit, content, lang, onClose, onActive, onFinish }
 
 /** The last turn: talk about the unit's subject, see what was heard, and with an AI key, how to say it better. */
 function OpenTurn({ unit, lang, canListen, onDone }: { unit: UnitOutline; lang: string; canListen: boolean; onDone: () => void }) {
+  const translateUi = useUi();
   const { settings, language } = useApp();
   const navigate = useNavigate();
   const canCheck = Boolean(aiKeys(settings)[settings.llm.provider]?.trim() && settings.llm.model);
@@ -255,10 +254,10 @@ function OpenTurn({ unit, lang, canListen, onDone }: { unit: UnitOutline; lang: 
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft}>
-      <p className="text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">Your turn</p>
+      <p className="text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase"><UiText source={'Your turn'} /></p>
       <h1 className="mt-1 font-serif text-[clamp(1.6rem,4vw,2.1rem)] leading-tight font-semibold">{unit.speak}</h1>
       <p className="mt-2 text-[15px] text-ink-soft">
-        {canListen ? 'Press the microphone and talk; press again to add more. Use the phrases you just said.' : 'Say it aloud, in your own words, using the phrases you just practised.'}
+        {canListen ? translateUi('Press the microphone and talk; press again to add more. Use the phrases you just said.') : translateUi('Say it aloud, in your own words, using the phrases you just practised.')}
       </p>
       {canListen && (
         <div className="mt-6 flex items-start gap-4">
@@ -267,7 +266,7 @@ function OpenTurn({ unit, lang, canListen, onDone }: { unit: UnitOutline; lang: 
             onClick={listen}
             whileTap={{ scale: 0.94 }}
             className={cx('grid size-16 shrink-0 place-items-center rounded-full shadow-elev-2 transition-colors', listening ? 'bg-accent text-on-accent' : 'bg-raised text-ink hover:bg-surface')}
-            aria-label={listening ? 'Stop listening' : 'Talk'}
+            aria-label={listening ? translateUi('Stop listening') : translateUi('Talk')}
           >
             {listening ? <Square size={22} className="animate-pulse" aria-hidden /> : <Mic size={26} aria-hidden />}
           </motion.button>
@@ -291,11 +290,9 @@ function OpenTurn({ unit, lang, canListen, onDone }: { unit: UnitOutline; lang: 
       {typeof review === 'string' && review !== 'checking' && <p className="mt-4 text-sm text-accent-text">{review}</p>}
       <div className="mt-8 flex flex-wrap gap-2">
         {canCheck && said && !(review && typeof review !== 'string') && (
-          <Button variant="secondary" loading={review === 'checking'} onClick={() => void check()}>
-            How could I say it better?
-          </Button>
+          <Button variant="secondary" loading={review === 'checking'} onClick={() => void check()}><UiText source={'How could I say it better?'} /></Button>
         )}
-        <Button onClick={onDone}>Finish the lesson</Button>
+        <Button onClick={onDone}><UiText source={'Finish the lesson'} /></Button>
         {/* Sermo makes a prompt in the language for ChatGPT, Claude, Gemini or Copilot (or talks here with a key); the lesson is saved first. */}
         <Button
           variant="ghost"
@@ -304,9 +301,7 @@ function OpenTurn({ unit, lang, canListen, onDone }: { unit: UnitOutline; lang: 
             onDone();
             navigate(`/mentis/sermo?topic=${encodeURIComponent(unit.speak)}`);
           }}
-        >
-          Finish, and keep talking with an AI
-        </Button>
+        ><UiText source={'Finish, and keep talking with an AI'} /></Button>
       </div>
     </motion.div>
   );

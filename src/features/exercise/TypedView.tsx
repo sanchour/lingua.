@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 // The typed kinds of 6-4b: correct the mistake, rewrite, predict the form, complete the dialogue, and the free sentence tasks
 // (combine, expand, simplify, passive, reported, question). One input, hints that grow, the language's special letters.
 import { useEffect, useRef, useState } from 'react';
@@ -100,6 +101,7 @@ function Prompt({ spec, lang }: { spec: ExerciseSpec; lang: string }) {
 }
 
 export function TypedView({ spec, lang, value, onChange, phase, onSubmit, onHint }: Props) {
+  const translateUi = useUi();
   const input = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
   const { pointer } = useLayout();
   const [shown, setShown] = useState(0);
@@ -159,13 +161,13 @@ export function TypedView({ spec, lang, value, onChange, phase, onSubmit, onHint
           {shown < hints.length && (
             <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { setShown(shown + 1); onHint?.(shown + 1); input.current?.focus(); }} className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
               <Lightbulb size={15} aria-hidden />
-              {shown ? 'Another hint' : 'Hint'}
+              {shown ? translateUi('Another hint') : translateUi('Hint')}
             </button>
           )}
         </div>
       )}
       {phase === 'answer' && LETTERS[lang] && pointer === 'fine' && (
-        <div className="flex flex-wrap justify-center gap-1.5" aria-label="Special letters">
+        <div className="flex flex-wrap justify-center gap-1.5" aria-label={translateUi('Special letters')}>
           {LETTERS[lang].map((ch) => (
             <button key={ch} type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insert(ch)} className={cx('grid size-9 place-items-center rounded-lg border border-line bg-raised text-lg transition-colors hover:border-line-strong', serif)}>
               {ch}

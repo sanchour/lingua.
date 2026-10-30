@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import type { LucideIcon } from 'lucide-react';
@@ -29,6 +30,7 @@ interface RoomTabsProps<T extends string> {
 
 /** A room's tabs (Cursus, Sonus et Visio, Mentis): on desktop a tab strip like a desktop app's, with 1…n as shortcuts. */
 export function RoomTabs<T extends string>({ label, tabs, active, end, keys = true }: RoomTabsProps<T>) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const { layout, pointer } = useLayout();
   const hints = keys && pointer === 'fine';
@@ -44,7 +46,7 @@ export function RoomTabs<T extends string>({ label, tabs, active, end, keys = tr
     );
   }
   return (
-    <nav aria-label={label} className="mb-5 flex items-center gap-1 border-b border-line">
+    <nav aria-label={translateUi(label)} className="mb-5 flex items-center gap-1 border-b border-line">
       {tabs.map((t, i) => (
         <Link
           key={t.id}
@@ -53,7 +55,7 @@ export function RoomTabs<T extends string>({ label, tabs, active, end, keys = tr
           className={cx('-mb-px inline-flex h-11 items-center gap-2 border-b-2 px-3.5 text-[14.5px] font-semibold transition-colors', active === t.id ? 'border-ink text-ink' : 'border-transparent text-ink-soft hover:text-ink')}
         >
           {t.icon && <t.icon size={16} aria-hidden />}
-          {t.label}
+          <UiText source={t.label} />
           {t.badge}
           {hints && <Kbd>{i + 1}</Kbd>}
         </Link>

@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { useEffect, useRef } from 'react';
 import { startFrameMeter } from '@/services/perf/frames';
 
@@ -27,10 +28,8 @@ export default function PerfHud() {
       aria-hidden
     >
       <span ref={dotRef} className="size-2 rounded-full bg-sage" />
-      <span ref={fpsRef}>— fps</span>
-      <span ref={worstRef} className="opacity-70">
-        — ms
-      </span>
+      <span ref={fpsRef}><UiText source={'— fps'} /></span>
+      <span ref={worstRef} className="opacity-70"><UiText source={'— ms'} /></span>
     </div>
   );
 }

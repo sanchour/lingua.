@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { Check, ChevronDown, ExternalLink, Eye, EyeOff, KeyRound } from 'lucide-react';
@@ -24,6 +25,7 @@ const enter = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opaci
  * Each title opens in its service's app, and its subtitles can be added to Visio.
  */
 export function ServicesTab({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const { services, country, token } = useStreaming();
   const name = getLanguage(lang)?.name ?? lang;
   const [sheet, setSheet] = useState<SheetTitle | null>(null);
@@ -35,8 +37,8 @@ export function ServicesTab({ lang }: { lang: string }) {
       {token ? (
         services.length ? (
           <>
-            <TitleGrid title={`Series in ${name}`} titles={lists.tv} loading={lists.loading} error={lists.error} onOpen={(t) => setSheet({ tmdb: t })} country={country} />
-            <TitleGrid title={`Films in ${name}`} titles={lists.movie} loading={lists.loading} error={null} onOpen={(t) => setSheet({ tmdb: t })} country={country} />
+            <TitleGrid title={translateUi('Series in {0}', [name])} titles={lists.tv} loading={lists.loading} error={lists.error} onOpen={(t) => setSheet({ tmdb: t })} country={country} />
+            <TitleGrid title={translateUi('Films in {0}', [name])} titles={lists.movie} loading={lists.loading} error={null} onOpen={(t) => setSheet({ tmdb: t })} country={country} />
           </>
         ) : null
       ) : (
@@ -49,6 +51,7 @@ export function ServicesTab({ lang }: { lang: string }) {
 }
 
 function ChooseServices({ lang, services, country }: { lang: string; services: string[]; country: string }) {
+  const translateUi = useUi();
   const [more, setMore] = useState(false);
   const { main, more: rest } = useMemo(() => servicesFor(lang, country, services), [lang, country, services]);
   const toggle = (id: string) => void patchSetting('streaming', { services: services.includes(id) ? services.filter((s) => s !== id) : [...services, id] });
@@ -61,14 +64,14 @@ function ChooseServices({ lang, services, country }: { lang: string; services: s
   );
 
   return (
-    <section aria-label="Your services">
+    <section aria-label={translateUi('Your services')}>
       <div className="mb-4 flex flex-wrap items-end gap-4">
         <div className="min-w-0 flex-1">
-          <h2 className="font-serif text-[22px] font-semibold">Your services</h2>
-          <p className="mt-1 max-w-xl text-[14px] text-ink-soft">Tap the ones you have. Mundus’s picks and the lists below show what’s on them.</p>
+          <h2 className="font-serif text-[22px] font-semibold"><UiText source={'Your services'} /></h2>
+          <p className="mt-1 max-w-xl text-[14px] text-ink-soft"><UiText source={'Tap the ones you have. Mundus’s picks and the lists below show what’s on them.'} /></p>
         </div>
         <div className="w-full sm:w-60">
-          <Select label="Your country" value={country} onChange={(c) => void patchSetting('streaming', { country: c })} options={countries} />
+          <Select label={translateUi('Your country')} value={country} onChange={(c) => void patchSetting('streaming', { country: c })} options={countries} />
         </div>
       </div>
       <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
@@ -81,7 +84,7 @@ function ChooseServices({ lang, services, country }: { lang: string; services: s
       {rest.length > 0 && (
         <>
           <button type="button" onClick={() => setMore((m) => !m)} aria-expanded={more} className="hit mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-ink-soft hover:text-ink">
-            {more ? 'Fewer services' : `More services (${rest.length})`} <ChevronDown size={15} className={cx('transition-transform', more && 'rotate-180')} aria-hidden />
+            {more ? translateUi('Fewer services') : translateUi('More services ({0})', [rest.length])} <ChevronDown size={15} className={cx('transition-transform', more && 'rotate-180')} aria-hidden />
           </button>
           {more && (
             <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
@@ -112,7 +115,7 @@ function ServiceToggle({ service, on, onToggle }: { service: StreamingService; o
       <ServiceMark service={service} size={30} />
       <span className="min-w-0 flex-1">
         <span className="line-clamp-2 block text-[14px] leading-tight font-semibold">{service.name}</span>
-        {service.free && <span className="block text-[11.5px] font-semibold text-ink-faint">Free</span>}
+        {service.free && <span className="block text-[11.5px] font-semibold text-ink-faint"><UiText source={'Free'} /></span>}
       </span>
       <span className={cx('grid size-5 shrink-0 place-items-center rounded-full border-2', on ? 'border-sage bg-sage text-on-accent' : 'border-line-strong')}>
         {on && <Check size={12} strokeWidth={3} aria-hidden />}
@@ -126,7 +129,7 @@ function TitleGrid({ title, titles, loading, error, onOpen, country }: { title: 
     <section aria-label={title}>
       <div className="mb-4 flex items-baseline gap-3">
         <h2 className="font-serif text-[22px] font-semibold">{title}</h2>
-        <span className="text-[13px] font-semibold text-ink-faint">on your services in {countryName(country)}</span>
+        <span className="text-[13px] font-semibold text-ink-faint"><UiText source={'on your services in {0}'} values={[countryName(country)]} /></span>
       </div>
       {error ? (
         <p className="text-[14.5px] text-ink-soft">{error}</p>
@@ -149,7 +152,7 @@ function TitleGrid({ title, titles, loading, error, onOpen, country }: { title: 
           ))}
         </ul>
       ) : (
-        <p className="text-[14.5px] text-ink-soft">Nothing made in this language on your services here right now. Add another service above, or try the free ones.</p>
+        <p className="text-[14.5px] text-ink-soft"><UiText source={'Nothing made in this language on your services here right now. Add another service above, or try the free ones.'} /></p>
       )}
     </section>
   );
@@ -165,6 +168,7 @@ function Poster({ title }: { title: TmdbTitle }) {
 }
 
 function TmdbInvite() {
+  const translateUi = useUi();
   const [token, setToken] = useState('');
   const [reveal, setReveal] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -195,22 +199,17 @@ function TmdbInvite() {
           <KeyRound size={22} />
         </span>
         <div className="min-w-0 flex-1">
-          <p className={label}>Live lists</p>
-          <h2 className="mt-1 font-serif text-[22px] leading-snug font-semibold">See what’s on your services, in the language</h2>
-          <p className="mt-2 max-w-xl text-[14.5px] leading-relaxed text-ink-soft">
-            With a free key from TMDB (The Movie Database), Visio lists series and films made in the language that stream on your services in your country, with posters, and Mundus shows where each pick
-            is on. The key stays on this device.
-          </p>
+          <p className={label}><UiText source={'Live lists'} /></p>
+          <h2 className="mt-1 font-serif text-[22px] leading-snug font-semibold"><UiText source={'See what’s on your services, in the language'} /></h2>
+          <p className="mt-2 max-w-xl text-[14.5px] leading-relaxed text-ink-soft"><UiText source={'With a free key from TMDB (The Movie Database), Visio lists series and films made in the language that stream on your services in your country, with posters, and Mundus shows where each pick is on. The key stays on this device.'} /></p>
           <ol className="mt-3 space-y-1 text-[14px] text-ink-soft">
-            <li>1. Make a free account at themoviedb.org.</li>
-            <li>2. Settings › API: ask for a free developer key (personal use).</li>
-            <li>3. Copy the “API Read Access Token” and paste it here.</li>
+            <li><UiText source={'1. Make a free account at themoviedb.org.'} /></li>
+            <li><UiText source={'2. Settings › API: ask for a free developer key (personal use).'} /></li>
+            <li><UiText source={'3. Copy the “API Read Access Token” and paste it here.'} /></li>
           </ol>
           <div className="mt-4 flex gap-2">
             <div className="relative min-w-0 flex-1">
-              <label htmlFor="tmdb-token" className="sr-only">
-                TMDB API Read Access Token
-              </label>
+              <label htmlFor="tmdb-token" className="sr-only"><UiText source={'TMDB API Read Access Token'} /></label>
               <input
                 id="tmdb-token"
                 type={reveal ? 'text' : 'password'}
@@ -219,21 +218,17 @@ function TmdbInvite() {
                 onKeyDown={(e) => e.key === 'Enter' && token.trim() && void connect()}
                 autoComplete="off"
                 spellCheck={false}
-                placeholder="eyJhbGciOi…"
+                placeholder={translateUi('eyJhbGciOi…')}
                 className="h-11 w-full rounded-xl border border-line bg-raised pr-11 pl-3.5 font-mono text-[14px] transition-colors hover:border-line-strong"
               />
-              <button type="button" onClick={() => setReveal((r) => !r)} aria-label={reveal ? 'Hide token' : 'Show token'} className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-lg text-ink-faint hover:text-ink">
+              <button type="button" onClick={() => setReveal((r) => !r)} aria-label={reveal ? translateUi('Hide token') : translateUi('Show token')} className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-lg text-ink-faint hover:text-ink">
                 {reveal ? <EyeOff size={17} aria-hidden /> : <Eye size={17} aria-hidden />}
               </button>
             </div>
-            <Button variant="secondary" onClick={() => void connect()} loading={busy} disabled={!token.trim()}>
-              Connect
-            </Button>
+            <Button variant="secondary" onClick={() => void connect()} loading={busy} disabled={!token.trim()}><UiText source={'Connect'} /></Button>
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-3 text-[13px]">
-            <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline">
-              TMDB’s API settings <ExternalLink size={13} aria-hidden />
-            </a>
+            <a href="https://www.themoviedb.org/settings/api" target="_blank" rel="noopener noreferrer" className="hit inline-flex items-center gap-1 font-semibold text-accent-text hover:underline"><UiText source={'TMDB’s API settings {0}'} values={[<ExternalLink size={13} aria-hidden />]} /></a>
           </div>
           {status && <p className="mt-3 text-[13.5px] font-semibold text-accent-text">{status}</p>}
         </div>
@@ -244,11 +239,6 @@ function TmdbInvite() {
 
 function TmdbConnected() {
   return (
-    <p className="flex flex-wrap items-center gap-2 text-[13px] text-ink-faint">
-      Lists and posters from TMDB (The Movie Database); where to watch comes from JustWatch through TMDB.
-      <button type="button" onClick={() => void patchSetting('apiKeys', { tmdb: '' })} className="hit font-semibold text-ink-soft underline-offset-2 hover:underline">
-        Remove the TMDB key
-      </button>
-    </p>
+    <p className="flex flex-wrap items-center gap-2 text-[13px] text-ink-faint"><UiText source={'Lists and posters from TMDB (The Movie Database); where to watch comes from JustWatch through TMDB.{0}'} values={[<button type="button" onClick={() => void patchSetting('apiKeys', { tmdb: '' })} className="hit font-semibold text-ink-soft underline-offset-2 hover:underline"><UiText source={'Remove the TMDB key'} /></button>]} /></p>
   );
 }

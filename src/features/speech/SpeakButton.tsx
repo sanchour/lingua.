@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useContext, useEffect, useState } from 'react';
 import { Loader2, Volume2 } from 'lucide-react';
 import { AppContext } from '@/app/context';
@@ -43,6 +44,7 @@ function useRecorded(lang: string, text: string, speaker: Speaker | null): strin
 
 /** A speaker button that says `text` in a natural voice or a real person's recording; nothing at all when there's neither. */
 export function SpeakButton({ lang, text, size = 18, className, label = 'Listen' }: { lang: string; text: string; size?: number; className?: string; label?: string }) {
+  const translateUi = useUi();
   const { speaker, flag } = useSpeaker(lang);
   const recorded = useRecorded(lang, text, speaker);
   const [state, setState] = useState<'idle' | 'loading' | 'playing'>('idle');
@@ -66,8 +68,8 @@ export function SpeakButton({ lang, text, size = 18, className, label = 'Listen'
         e.stopPropagation();
         say();
       }}
-      aria-label={state === 'idle' ? label : 'Stop'}
-      title={speaker.kind === 'gemini' ? `${label} (${speaker.voice.name})` : recorded ? `${label} (recorded by ${recorded}, Wikimedia Commons)` : speaker.kind === 'piper' ? `${label} (${speaker.voice.name}, made on this device)` : label}
+      aria-label={state === 'idle' ? label : translateUi('Stop')}
+      title={speaker.kind === 'gemini' ? `${label} (${speaker.voice.name})` : recorded ? translateUi('{0} (recorded by {1}, Wikimedia Commons)', [label, recorded]) : speaker.kind === 'piper' ? translateUi('{0} ({1}, made on this device)', [label, speaker.voice.name]) : label}
       className={cx('inline-grid shrink-0 place-items-center rounded-full transition-colors', state === 'playing' && 'text-accent-text', className)}
     >
       {state === 'loading' ? <Loader2 size={size} className="animate-spin" aria-hidden /> : <Volume2 size={size} aria-hidden />}

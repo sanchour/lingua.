@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { ArrowRight, MessagesSquare, PenLine } from 'lucide-react';
@@ -16,6 +17,7 @@ const label = 'text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase'
  * day's prompt, only a prompt about this week is repeated.
  */
 export function TodayRail({ inDiarium = false }: { inDiarium?: boolean }) {
+  const translateUi = useUi();
   const { language } = useApp();
   const lang = language.id;
   const recent = useRecent(lang);
@@ -31,13 +33,11 @@ export function TodayRail({ inDiarium = false }: { inDiarium?: boolean }) {
   };
 
   return (
-    <aside aria-label="Today’s prompt" className="space-y-3 lg:sticky lg:top-12">
-      <p className={label}>Today’s prompt</p>
+    <aside aria-label={translateUi('Today’s prompt')} className="space-y-3 lg:sticky lg:top-12">
+      <p className={label}><UiText source={'Today’s prompt'} /></p>
       {(!inDiarium || write.about) && (
         <Card className="p-5">
-          <p className="flex items-center gap-2 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase">
-            <PenLine size={14} aria-hidden /> Write
-          </p>
+          <p className="flex items-center gap-2 text-[12px] font-bold tracking-[0.12em] text-sage-text uppercase"><UiText source={'{0} Write'} values={[<PenLine size={14} aria-hidden />]} /></p>
           {write.about ? (
             <p className="mt-2 text-[15px] leading-snug">{write.en}</p>
           ) : (
@@ -48,22 +48,16 @@ export function TodayRail({ inDiarium = false }: { inDiarium?: boolean }) {
               {write.en !== write.text && <p className="mt-1 text-[13px] leading-snug text-ink-soft">{write.en}</p>}
             </>
           )}
-          <Button className="mt-4" size="sm" icon={PenLine} loading={starting} onClick={() => void startWriting()}>
-            Start writing
-          </Button>
+          <Button className="mt-4" size="sm" icon={PenLine} loading={starting} onClick={() => void startWriting()}><UiText source={'Start writing'} /></Button>
         </Card>
       )}
       <Card className="p-5">
-        <p className="flex items-center gap-2 text-[12px] font-bold tracking-[0.12em] text-accent-text uppercase">
-          <MessagesSquare size={14} aria-hidden /> Talk
-        </p>
+        <p className="flex items-center gap-2 text-[12px] font-bold tracking-[0.12em] text-accent-text uppercase"><UiText source={'{0} Talk'} values={[<MessagesSquare size={14} aria-hidden />]} /></p>
         <p className="mt-2 font-serif text-[18px] leading-snug font-semibold">{talk.title}</p>
         <p className="mt-1 text-[13.5px] leading-snug text-ink-soft">{talk.detail}</p>
-        <Link to={talkPath(talk)} className="mt-4 inline-flex items-center gap-1 text-[14px] font-semibold text-accent-text hover:underline">
-          Open in Sermo <ArrowRight size={15} aria-hidden />
-        </Link>
+        <Link to={talkPath(talk)} className="mt-4 inline-flex items-center gap-1 text-[14px] font-semibold text-accent-text hover:underline"><UiText source={'Open in Sermo {0}'} values={[<ArrowRight size={15} aria-hidden />]} /></Link>
       </Card>
-      {recent.length === 0 && <p className="px-1 text-[12.5px] leading-snug text-ink-faint">Read, watch or listen to something this week and the prompts will be about it.</p>}
+      {recent.length === 0 && <p className="px-1 text-[12.5px] leading-snug text-ink-faint"><UiText source={'Read, watch or listen to something this week and the prompts will be about it.'} /></p>}
     </aside>
   );
 }

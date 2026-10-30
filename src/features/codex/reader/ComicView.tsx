@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent, ReactNode } from 'react';
 import { ChevronLeft, ChevronRight, LoaderCircle, RefreshCw, ScanText } from 'lucide-react';
@@ -196,6 +197,7 @@ function ComicPage({ blobId, w, h, boxes, lit, onBubble, onTurn, rtl }: { blobId
 // ── The comic view: the page, and its words beside or under it ──────────────
 
 export function ComicView({ text, model, ready, index, wide, onTurn, onPageRead, children }: { text: Text; model: ChapterModel | null | undefined; ready: boolean; index: number; wide: boolean; onTurn: (step: 1 | -1) => void; onPageRead: () => void; children: ReactNode }) {
+  const translateUi = useUi();
   const [status, setStatus] = useState<Status>({ state: 'idle' });
   const [lit, setLit] = useState<number | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -252,26 +254,23 @@ export function ComicView({ text, model, ready, index, wide, onTurn, onPageRead,
           <ComicPage blobId={img.blobId} w={img.w} h={img.h} boxes={boxes} lit={lit} onBubble={showBubble} onTurn={onTurn} rtl={rtl} />
         ) : (
           <div className="grid size-full place-items-center">
-            <LoaderCircle size={22} className="animate-spin text-ink-faint" aria-label="Opening the page" />
+            <LoaderCircle size={22} className="animate-spin text-ink-faint" aria-label={translateUi('Opening the page')} />
           </div>
         )}
       </div>
 
       <aside className={cx('flex min-h-0 flex-col', wide ? 'w-[min(420px,36vw)] shrink-0' : 'flex-1 border-t border-line/60 bg-bg')}>
         <div className={cx('flex items-center gap-2', wide ? 'pb-3' : 'px-5 pt-3 pb-1')}>
-          <p className="min-w-0 flex-1 text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase tabular-nums">
-            Page {index + 1} <span className="font-semibold opacity-70">of {text.chapterCount}</span>
-            {ready && !busy && chapter?.readAt && <span className="font-semibold normal-case tracking-normal opacity-70"> · {words === 1 ? '1 bubble' : `${words} bubbles`}</span>}
-          </p>
+          <p className="min-w-0 flex-1 text-[12px] font-bold tracking-[0.14em] text-ink-faint uppercase tabular-nums"><UiText source={'Page {0} {1}{2}'} values={[index + 1, <span className="font-semibold opacity-70"><UiText source={'of {0}'} values={[text.chapterCount]} /></span>, ready && !busy && chapter?.readAt && <span className="font-semibold normal-case tracking-normal opacity-70"> · {words === 1 ? translateUi('1 bubble') : translateUi('{0} bubbles', [words])}</span>]} /></p>
           {ready && !busy && chapter?.readAt && (
-            <button type="button" aria-label="Read this page’s bubbles again" title="Read the bubbles again" onClick={() => read(true)} className="grid size-9 place-items-center rounded-full text-ink-faint hover:bg-sunken hover:text-ink">
+            <button type="button" aria-label={translateUi('Read this page’s bubbles again')} title={translateUi('Read the bubbles again')} onClick={() => read(true)} className="grid size-9 place-items-center rounded-full text-ink-faint hover:bg-sunken hover:text-ink">
               <ScanText size={17} aria-hidden />
             </button>
           )}
-          <button type="button" aria-label={rtl ? 'Next page' : 'Previous page'} onClick={() => onTurn(rtl ? 1 : -1)} className="grid size-9 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
+          <button type="button" aria-label={rtl ? translateUi('Next page') : translateUi('Previous page')} onClick={() => onTurn(rtl ? 1 : -1)} className="grid size-9 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
             <ChevronLeft size={19} aria-hidden />
           </button>
-          <button type="button" aria-label={rtl ? 'Previous page' : 'Next page'} onClick={() => onTurn(rtl ? -1 : 1)} className="grid size-9 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
+          <button type="button" aria-label={rtl ? translateUi('Previous page') : translateUi('Next page')} onClick={() => onTurn(rtl ? -1 : 1)} className="grid size-9 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
             <ChevronRight size={19} aria-hidden />
           </button>
         </div>
@@ -280,23 +279,19 @@ export function ComicView({ text, model, ready, index, wide, onTurn, onPageRead,
           {busy && (
             <p className="flex items-center gap-2 py-4 text-[14px] text-ink-faint">
               <ScanText size={16} className="shrink-0 animate-pulse" aria-hidden />
-              {status.step === 'loading' ? 'Getting ready to read the bubbles (the first time, the language’s reading data downloads)…' : `Reading the bubbles… ${Math.round(status.fraction * 100)}%`}
+              {status.step === 'loading' ? translateUi('Getting ready to read the bubbles (the first time, the language’s reading data downloads)…') : translateUi('Reading the bubbles… {0}%', [Math.round(status.fraction * 100)])}
             </p>
           )}
           {status.state === 'failed' && (
             <div className="py-4 text-[14px] text-ink-soft">
-              <p>The bubbles couldn’t be read. {status.message}</p>
-              <Button size="sm" variant="secondary" icon={RefreshCw} className="mt-3" onClick={() => read(true)}>
-                Try again
-              </Button>
+              <p><UiText source={'The bubbles couldn’t be read. {0}'} values={[status.message]} /></p>
+              <Button size="sm" variant="secondary" icon={RefreshCw} className="mt-3" onClick={() => read(true)}><UiText source={'Try again'} /></Button>
             </div>
           )}
           {ready && !busy && status.state === 'idle' && chapter?.readAt && !words && (
             <div className="py-4 text-[14px] text-ink-soft">
-              <p>No speech bubbles were found on this page.</p>
-              <button type="button" onClick={() => read(true)} className="mt-2 font-semibold text-ink underline underline-offset-2">
-                Read it again
-              </button>
+              <p><UiText source={'No speech bubbles were found on this page.'} /></p>
+              <button type="button" onClick={() => read(true)} className="mt-2 font-semibold text-ink underline underline-offset-2"><UiText source={'Read it again'} /></button>
             </div>
           )}
         </div>

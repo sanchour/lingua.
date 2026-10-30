@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useParams } from 'react-router';
@@ -19,6 +20,7 @@ import type { Phase } from '@/features/lesson/kit';
 import { judgeReading, readingQuestions } from '@/services/llm/readingQuestions';
 
 export default function ReadingPractice() {
+  const translateUi = useUi();
   const { textId, chapterIndex } = useParams();
   const text = useText(textId);
   const chapter = useLiveQuery(async () => textId ? (await getChapter(textId, Number(chapterIndex) || 0)) ?? null : null, [textId, chapterIndex]);
@@ -32,8 +34,8 @@ export default function ReadingPractice() {
   const [run, setRun] = useState(0);
   const source = (chapter?.blocks ?? []).flatMap((b) => 'text' in b ? [b.text] : []).join('\n\n').slice(0, 6000);
   const block = aiBlock(settings, settings.llm.provider);
-  if (text === null || chapter === null) return <p>This chapter is no longer in your library.</p>;
-  if (!text || !chapter) return <p role="status">Loading the chapter…</p>;
+  if (text === null || chapter === null) return <p><UiText source={'This chapter is no longer in your library.'} /></p>;
+  if (!text || !chapter) return <p role="status"><UiText source={'Loading the chapter…'} /></p>;
   const make = async () => {
     setBusy(true); setError('');
     try {
@@ -45,32 +47,32 @@ export default function ReadingPractice() {
     finally { setBusy(false); }
   };
   return <>
-    <BackLink to={`/codex/read/${text.id}`}>Back to reading</BackLink>
-    <PageHeader title="Check understanding" />
-    <p className="mb-5 text-sm text-ink-soft">{text.title} · chapter {(Number(chapterIndex) || 0) + 1}. The passage stays beside your answers.</p>
+    <BackLink to={`/codex/read/${text.id}`}><UiText source={'Back to reading'} /></BackLink>
+    <PageHeader title={translateUi('Check understanding')} />
+    <p className="mb-5 text-sm text-ink-soft"><UiText source={'{0} · chapter {1}. The passage stays beside your answers.'} values={[text.title, (Number(chapterIndex) || 0) + 1]} /></p>
     <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-8">
-      <section aria-label="Source passage" className="sticky top-6 max-h-[78dvh] overflow-y-auto rounded-2xl border border-line bg-raised p-6">
-        <h2 className="mb-3 font-semibold">Source passage</h2>
+      <section aria-label={translateUi('Source passage')} className="sticky top-6 max-h-[78dvh] overflow-y-auto rounded-2xl border border-line bg-raised p-6">
+        <h2 className="mb-3 font-semibold"><UiText source={'Source passage'} /></h2>
         <p className="whitespace-pre-wrap font-serif text-lg leading-relaxed" lang={text.lang}>{source}</p>
-        <p className="mt-4 text-xs text-ink-faint">{source.length.toLocaleString()} characters. Long chapters use only the first 6,000 here; the rest is not assessed.</p>
+        <p className="mt-4 text-xs text-ink-faint"><UiText source={'{0} characters. Long chapters use only the first 6,000 here; the rest is not assessed.'} values={[source.length.toLocaleString()]} /></p>
       </section>
-      <section aria-label="Reading exercises" className="space-y-5 pb-10">
+      <section aria-label={translateUi('Reading exercises')} className="space-y-5 pb-10">
         {!specs ? <>
-          <h2 className="font-serif text-2xl font-semibold">Read, then put it in your own words</h2>
-          <p className="text-sm text-ink-soft">Four free prompts: the main idea, a title, a word in context and a short answer. You check against the passage with a guide; these are not automatically graded.</p>
-          <Button disabled={source.length < 40} onClick={() => { setGenerated(false); setSpecs(selfReadingSpecs(text.lang, text.id)); setRun((n) => n + 1); }}>Start self-check</Button>
+          <h2 className="font-serif text-2xl font-semibold"><UiText source={'Read, then put it in your own words'} /></h2>
+          <p className="text-sm text-ink-soft"><UiText source={'Four free prompts: the main idea, a title, a word in context and a short answer. You check against the passage with a guide; these are not automatically graded.'} /></p>
+          <Button disabled={source.length < 40} onClick={() => { setGenerated(false); setSpecs(selfReadingSpecs(text.lang, text.id)); setRun((n) => n + 1); }}><UiText source={'Start self-check'} /></Button>
           <div className="space-y-3 border-t border-line pt-5">
-            <h3 className="font-semibold">Questions from Max</h3>
-            <p className="text-sm text-ink-soft">Main idea, true or false, events in order, a title, meaning in context, headings to paragraphs, an unrelated sentence and a short answer. Max can omit a kind that the passage does not support.</p>
-            <p className="text-xs text-ink-faint">Generated interpretations can be wrong. Only format and exact source quotes are checked. The passage above is sent to your AI provider when you ask.</p>
-            <label className="flex gap-2 text-sm"><input type="checkbox" disabled={Boolean(block)} checked={judgeWithMax} onChange={(e) => setJudgeWithMax(e.target.checked)} />Ask Max to judge free answers; otherwise rate them yourself</label>
-            {block && <p className="text-sm text-ink-soft">Needs Max and a key in Settings › AI.</p>}
-            <Button variant="secondary" disabled={Boolean(block) || source.length < 40} loading={busy} onClick={() => void make()}>Make comprehension questions</Button>
+            <h3 className="font-semibold"><UiText source={'Questions from Max'} /></h3>
+            <p className="text-sm text-ink-soft"><UiText source={'Main idea, true or false, events in order, a title, meaning in context, headings to paragraphs, an unrelated sentence and a short answer. Max can omit a kind that the passage does not support.'} /></p>
+            <p className="text-xs text-ink-faint"><UiText source={'Generated interpretations can be wrong. Only format and exact source quotes are checked. The passage above is sent to your AI provider when you ask.'} /></p>
+            <label className="flex gap-2 text-sm"><UiText source={'{0}Ask Max to judge free answers; otherwise rate them yourself'} values={[<input type="checkbox" disabled={Boolean(block)} checked={judgeWithMax} onChange={(e) => setJudgeWithMax(e.target.checked)} />]} /></label>
+            {block && <p className="text-sm text-ink-soft"><UiText source={'Needs Max and a key in Settings › AI.'} /></p>}
+            <Button variant="secondary" disabled={Boolean(block) || source.length < 40} loading={busy} onClick={() => void make()}><UiText source={'Make comprehension questions'} /></Button>
           </div>
         </> : <>
-          <p className="text-xs text-ink-faint">{generated ? `Generated by Max · format and source quotes checked; meaning not verified. ${coverage}` : 'Offline self-check · your own rating, with a guide'}</p>
+          <p className="text-xs text-ink-faint">{generated ? translateUi('Generated by Max · format and source quotes checked; meaning not verified. {0}', [coverage]) : translateUi('Offline self-check · your own rating, with a guide')}</p>
           <ReadingRun key={run} specs={specs} source={source} guides={!generated} onDone={() => setSpecs(null)} />
-          {generated && <Button variant="ghost" size="sm" onClick={() => { setSpecs(null); setError('Questions discarded. You can use the offline self-check instead.'); }}>Discard incorrect questions</Button>}
+          {generated && <Button variant="ghost" size="sm" onClick={() => { setSpecs(null); setError('Questions discarded. You can use the offline self-check instead.'); }}><UiText source={'Discard incorrect questions'} /></Button>}
         </>}
         {error && <p role="alert" className="text-sm text-accent-text">{error}</p>}
       </section>
@@ -79,6 +81,7 @@ export default function ReadingPractice() {
 }
 
 export function ReadingRun({ specs, source, guides, onDone }: { specs: ExerciseSpec[]; source: string; guides: boolean; onDone: () => void }) {
+  const translateUi = useUi();
   const [index, setIndex] = useState(0);
   const [value, setValue] = useState('');
   const [picked, setPicked] = useState<number[]>([]);
@@ -114,7 +117,7 @@ export function ReadingRun({ specs, source, guides, onDone }: { specs: ExerciseS
     }
     await settle(judge(spec.check, spec.kind === 'drag-drop' ? picked.map((i) => tiles[i]) : value, spec.lang).outcome, spec.kind === 'drag-drop' ? picked.map((i) => tiles[i]).join(' → ') : value);
   };
-  if (!spec) return <div className="space-y-4"><h2 className="font-serif text-2xl">{count} answers kept in your reading record</h2><p className="text-sm">Self-ratings and Max’s opinions are learning evidence, not an exam score.</p><Button onClick={onDone}>Done</Button></div>;
+  if (!spec) return <div className="space-y-4"><h2 className="font-serif text-2xl"><UiText source={'{0} answers kept in your reading record'} values={[count]} /></h2><p className="text-sm"><UiText source={'Self-ratings and Max’s opinions are learning evidence, not an exam score.'} /></p><Button onClick={onDone}><UiText source={'Done'} /></Button></div>;
   return <div className="space-y-5">
     <p className="text-xs text-ink-faint">{index + 1} / {specs.length}</p>
     <h2 className="font-semibold">{guides ? spec.instruction.split(':')[0] : spec.instruction.split(' · ')[0]}</h2>
@@ -122,20 +125,20 @@ export function ReadingRun({ specs, source, guides, onDone }: { specs: ExerciseS
     {match ? <MatchView key={spec.key} body={spec.body as MatchBody} lang={spec.lang} random={Math.random} onDone={(mistakes) => void settle(mistakes ? 'close' : 'right', `${mistakes} slips`)} /> : spec.kind === 'drag-drop' ? <DragView prompt={(spec.body as DragBody).prompt} tiles={tiles} lang={spec.lang} value={picked} onChange={setPicked} phase={phase} /> : <TypedView spec={spec} lang={spec.lang} value={value} onChange={(v) => setValue(v.slice(0, 4000))} phase={phase} onSubmit={() => void check()} />}
     </fieldset>
     {rating && <div className="space-y-3 rounded-2xl bg-surface p-4">
-      <h3 className="font-semibold">{guides ? 'Self-check guide' : 'Max’s model answer · other valid answers are possible'}</h3>
+      <h3 className="font-semibold">{guides ? translateUi('Self-check guide') : translateUi('Max’s model answer · other valid answers are possible')}</h3>
       <p className="whitespace-pre-wrap">{solutionOf(spec)}</p>
       {spec.feedback?.why && <p className="whitespace-pre-wrap text-sm">{spec.feedback.why}</p>}
-      <p className="text-sm">How well does your answer fit the passage?</p>
+      <p className="text-sm"><UiText source={'How well does your answer fit the passage?'} /></p>
       <div className="flex flex-wrap gap-2">{([['Yes', 'right'], ['Nearly', 'close'], ['Not yet', 'wrong']] as const).map(([label, outcome]) => <Button key={outcome} size="sm" variant="secondary" disabled={busy} onClick={() => void settle(outcome)}>{label}</Button>)}</div>
     </div>}
-    {phase === 'answer' && !match && !rating && <Button loading={busy} disabled={spec.kind === 'drag-drop' ? picked.length !== tiles.length : !value.trim()} onClick={() => void check()}>{spec.check.rule === 'self' ? 'Show self-check' : spec.check.rule === 'ai' ? 'Check with Max' : 'Check answer'}</Button>}
-    {failed && <Button disabled={busy} onClick={() => void settle(failed.outcome, failed.given, failed.note)}>Retry saving answer</Button>}
+    {phase === 'answer' && !match && !rating && <Button loading={busy} disabled={spec.kind === 'drag-drop' ? picked.length !== tiles.length : !value.trim()} onClick={() => void check()}>{spec.check.rule === 'self' ? translateUi('Show self-check') : spec.check.rule === 'ai' ? translateUi('Check with Max') : translateUi('Check answer')}</Button>}
+    {failed && <Button disabled={busy} onClick={() => void settle(failed.outcome, failed.given, failed.note)}><UiText source={'Retry saving answer'} /></Button>}
     {message && <p role="status" className="text-sm">{message}</p>}
     {phase !== 'answer' && <div className="space-y-3 rounded-2xl border border-line p-4" aria-live="polite">
-      <p className="font-semibold">{phase === 'right' ? 'Answer recorded' : 'Compare with the answer'}</p>
+      <p className="font-semibold">{phase === 'right' ? translateUi('Answer recorded') : translateUi('Compare with the answer')}</p>
       {!guides && <p className="whitespace-pre-wrap">{solutionOf(spec)}</p>}
       {spec.feedback?.why && <p className="whitespace-pre-wrap text-sm">{spec.feedback.why}</p>}
-      <Button onClick={() => { locked.current = false; setIndex((n) => n + 1); setValue(''); setPicked([]); setPhase('answer'); setMessage(''); }}>Continue</Button>
+      <Button onClick={() => { locked.current = false; setIndex((n) => n + 1); setValue(''); setPicked([]); setPhase('answer'); setMessage(''); }}><UiText source={'Continue'} /></Button>
     </div>}
   </div>;
 }

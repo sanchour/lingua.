@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import type { Ref, RefObject } from 'react';
 import { EditorContent, useEditor, useEditorState } from '@tiptap/react';
@@ -89,6 +90,7 @@ const TOOLS: Tool[] = [
 
 /** The toolbar over a selection, placed above its middle. */
 function SelectionBar({ editor, wrap }: { editor: Editor; wrap: RefObject<HTMLDivElement | null> }) {
+  const translateUi = useUi();
   const state = useEditorState({
     editor,
     selector: ({ editor: e }) => {
@@ -115,7 +117,7 @@ function SelectionBar({ editor, wrap }: { editor: Editor; wrap: RefObject<HTMLDi
   return (
     <div
       role="toolbar"
-      aria-label="Format"
+      aria-label={translateUi('Format')}
       className="absolute z-30 flex -translate-x-1/2 -translate-y-[calc(100%+8px)] items-center gap-0.5 rounded-xl border border-line bg-raised p-1 shadow-elev-3"
       style={{ left: box.left, top: box.top }}
       onMouseDown={(e) => e.preventDefault()}

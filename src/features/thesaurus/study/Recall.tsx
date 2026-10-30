@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -52,6 +53,7 @@ const LONG_PRESS_MS = 520;
 
 /** Classic Recall: turn the card, grade yourself (Again · Hard · Good · Easy), FSRS does the rest. */
 export function Recall({ lang, title, session, onFinish, onClose, onActive, practice = false }: RecallProps) {
+  const translateUi = useUi();
   const { pointer } = useLayout();
   const settings = useSettings();
   const [queue, setQueue] = useState<Card[]>(session.queue);
@@ -230,25 +232,25 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
   return (
     <>
       <StudyBar title={title} progress={progress} onClose={onClose}>
-        <IconButton icon={Undo2} label="Undo" shortcut="Z" size="sm" disabled={!history.current.length || busy} onClick={() => void undo()} />
+        <IconButton icon={Undo2} label={translateUi('Undo')} shortcut="Z" size="sm" disabled={!history.current.length || busy} onClick={() => void undo()} />
         <Popover
-          label="Card style"
+          label={translateUi('Card style')}
           placement="bottom-end"
           onOpenChange={setStyling}
           trigger={(props) => (
-            <button {...props} type="button" aria-label="Card style" className="grid size-8 place-items-center rounded-lg text-ink-soft transition-colors hover:bg-surface hover:text-ink pointer-coarse:size-10">
+            <button {...props} type="button" aria-label={translateUi('Card style')} className="grid size-8 place-items-center rounded-lg text-ink-soft transition-colors hover:bg-surface hover:text-ink pointer-coarse:size-10">
               <Type size={16} aria-hidden />
             </button>
           )}
         >
           <CardLookPanel look={look} compact />
         </Popover>
-        <IconButton icon={EyeOff} label="Put away until tomorrow" size="sm" disabled={!card || busy || practice} onClick={() => void bury()} />
-        <IconButton icon={Pencil} label="Edit card" shortcut="E" size="sm" disabled={!note} onClick={() => card && note && setEditor({ mode: 'edit', note, cards: [card] })} />
+        <IconButton icon={EyeOff} label={translateUi('Put away until tomorrow')} size="sm" disabled={!card || busy || practice} onClick={() => void bury()} />
+        <IconButton icon={Pencil} label={translateUi('Edit card')} shortcut="E" size="sm" disabled={!note} onClick={() => card && note && setEditor({ mode: 'edit', note, cards: [card] })} />
       </StudyBar>
 
       <main className="mx-auto flex min-h-dvh w-full flex-col px-4 sm:px-6" style={{ maxWidth: Math.max(768, width + 48), paddingTop: 'calc(env(safe-area-inset-top) + 64px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)' }}>
-        <p className="mb-4 flex justify-center gap-3 text-[13px] font-bold tabular-nums" aria-label={`${counts.new} new, ${counts.learning} learning, ${counts.review} to review`}>
+        <p className="mb-4 flex justify-center gap-3 text-[13px] font-bold tabular-nums" aria-label={translateUi('{0} new, {1} learning, {2} to review', [counts.new, counts.learning, counts.review])}>
           <span className="text-sage-text">{counts.new}</span>
           <span className="text-accent-text">{counts.learning}</span>
           <span className="text-ink-soft">{counts.review}</span>
@@ -277,9 +279,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
           {flipped && (intervals || practice) ? (
             <>
             {!practice && (
-              <button type="button" aria-pressed={guessed} onClick={() => setGuessed((g) => !g)} className={cx('mx-auto mb-3 block h-8 rounded-full px-3.5 text-[13px] font-semibold transition-colors', guessed ? 'bg-ink text-bg' : 'bg-surface text-ink-soft hover:bg-sunken')}>
-                I guessed{guessed ? ': a right answer counts as Hard' : ''}
-              </button>
+              <button type="button" aria-pressed={guessed} onClick={() => setGuessed((g) => !g)} className={cx('mx-auto mb-3 block h-8 rounded-full px-3.5 text-[13px] font-semibold transition-colors', guessed ? 'bg-ink text-bg' : 'bg-surface text-ink-soft hover:bg-sunken')}><UiText source={'I guessed{0}'} values={[guessed ? ': a right answer counts as Hard' : '']} /></button>
             )}
             <motion.div className="grid grid-cols-4 gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>
               {GRADES.map((g) => (
@@ -304,7 +304,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
             <>
             {note && card?.direction === 'production' && hints < [...note.term].length && (
               <button type="button" onClick={() => setHints((h) => h + 1)} className="mx-auto mb-3 flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
-                <Lightbulb size={15} aria-hidden /> {hints ? 'Another letter' : 'Hint: the first letter'}
+                <Lightbulb size={15} aria-hidden /> {hints ? translateUi('Another letter') : translateUi('Hint: the first letter')}
               </button>
             )}
             {note && card?.direction === 'production' && hints > 0 && (
@@ -316,9 +316,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
               type="button"
               onClick={flip}
               className="no-callout flex h-[76px] w-full items-center justify-center gap-2 rounded-2xl border border-accent/25 bg-accent-soft text-[16px] font-semibold text-accent-text transition-[transform,background-color] duration-150 hover:bg-accent/20 active:scale-[0.98]"
-            >
-              Show answer {pointer === 'fine' && <Kbd tone="accent">Space</Kbd>}
-            </button>
+            ><UiText source={'Show answer {0}'} values={[pointer === 'fine' && <Kbd tone="accent"><UiText source={'Space'} /></Kbd>]} /></button>
             </>
           )}
         </div>

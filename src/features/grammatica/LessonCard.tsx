@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { Play, Repeat, Settings2, Zap } from 'lucide-react';
@@ -17,6 +18,7 @@ const SETUP_KINDS = DRILL_KINDS.map((id) => ({ id, label: DRILL_NAME[id] }));
  * a mixed practice once learned, a Lightning round, and the setup sheet.
  */
 export function LessonCard({ topic, state }: { topic: Topic; state?: TopicState }) {
+  const translateUi = useUi();
   const [setup, setSetup] = useState(false);
   const step = state?.step ?? 1;
   const learned = step >= 6;
@@ -26,9 +28,9 @@ export function LessonCard({ topic, state }: { topic: Topic; state?: TopicState 
       <div className="flex items-center gap-4">
         <TopicRing state={state} size={56} />
         <div className="min-w-0 flex-1">
-          <p className={cx(eyebrow, 'text-sage-text')}>{learned ? (state?.mastered ? 'Mastered' : 'Learned') : `Step ${step} of 5`}</p>
-          <p className="mt-0.5 font-serif text-[19px] leading-tight font-semibold">{learned ? 'Keep it fresh' : `${current.name}: ${current.hint.toLowerCase()}`}</p>
-          <ol className="mt-2 flex gap-1.5" aria-label="Steps">
+          <p className={cx(eyebrow, 'text-sage-text')}>{learned ? (state?.mastered ? translateUi('Mastered') : translateUi('Learned')) : translateUi('Step {0} of 5', [step])}</p>
+          <p className="mt-0.5 font-serif text-[19px] leading-tight font-semibold">{learned ? translateUi('Keep it fresh') : `${current.name}: ${current.hint.toLowerCase()}`}</p>
+          <ol className="mt-2 flex gap-1.5" aria-label={translateUi('Steps')}>
             {STEPS.map((s) => (
               <li
                 key={s.n}
@@ -38,24 +40,18 @@ export function LessonCard({ topic, state }: { topic: Topic; state?: TopicState 
             ))}
           </ol>
         </div>
-        <IconButton icon={Settings2} label="Lesson settings" size="sm" variant="soft" onClick={() => setSetup(true)} />
+        <IconButton icon={Settings2} label={translateUi('Lesson settings')} size="sm" variant="soft" onClick={() => setSetup(true)} />
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
         <Link to={`/cursus/grammatica/${topic.id}/lesson${learned ? '?mode=practice' : ''}`} className={cx(buttonClasses('primary', 'md'), 'flex-1 sm:flex-none')}>
           {learned ? <Repeat size={17} aria-hidden /> : <Play size={17} aria-hidden />}
-          {learned ? 'Practise' : state?.started ? `Continue: step ${step}` : 'Start'}
+          {learned ? translateUi('Practise') : state?.started ? translateUi('Continue: step {0}', [step]) : translateUi('Start')}
         </Link>
         {!learned && step > 1 && (
-          <Link to={`/cursus/grammatica/${topic.id}/lesson?mode=practice`} className={buttonClasses('secondary', 'md')}>
-            <Repeat size={17} aria-hidden />
-            Mixed
-          </Link>
+          <Link to={`/cursus/grammatica/${topic.id}/lesson?mode=practice`} className={buttonClasses('secondary', 'md')}><UiText source={'{0}Mixed'} values={[<Repeat size={17} aria-hidden />]} /></Link>
         )}
-        <Link to={`/cursus/grammatica/${topic.id}/lesson?mode=lightning`} className={buttonClasses('secondary', 'md')}>
-          <Zap size={17} aria-hidden />
-          Lightning
-        </Link>
-        {state && state.due > 0 && <span className="self-center text-[13.5px] font-semibold text-accent-text">{state.due} due for review</span>}
+        <Link to={`/cursus/grammatica/${topic.id}/lesson?mode=lightning`} className={buttonClasses('secondary', 'md')}><UiText source={'{0}Lightning'} values={[<Zap size={17} aria-hidden />]} /></Link>
+        {state && state.due > 0 && <span className="self-center text-[13.5px] font-semibold text-accent-text"><UiText source={'{0} due for review'} values={[state.due]} /></span>}
       </div>
       <LessonSetup open={setup} onClose={() => setSetup(false)} kinds={SETUP_KINDS} offKey="grammarOff" />
     </div>

@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { textChapters } from '@/data/library';
 import type { Text } from '@/data/types';
@@ -14,6 +15,7 @@ interface ContentsDrawerProps {
 
 /** Table of contents. Parts of a long chapter are grouped under one entry. */
 export function ContentsDrawer({ open, onClose, text, current, onChoose }: ContentsDrawerProps) {
+  const translateUi = useUi();
   const chapters = useLiveQuery(
     async () =>
       open
@@ -25,7 +27,7 @@ export function ContentsDrawer({ open, onClose, text, current, onChoose }: Conte
   const entries = (chapters ?? []).filter((c) => !c.part || c.part[0] === 1);
 
   return (
-    <Drawer open={open} onClose={onClose} title="Contents" description={text.title}>
+    <Drawer open={open} onClose={onClose} title={translateUi('Contents')} description={text.title}>
       <ol className="-mx-2">
         {entries.map((c, i) => {
           const parts = c.part?.[1] ?? 1;

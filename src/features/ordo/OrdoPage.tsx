@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router';
@@ -49,6 +50,7 @@ const NONE_HIDDEN: ReadonlySet<SectionId> = new Set();
  * /ordo#ai land on the group that holds that section.
  */
 export default function OrdoPage() {
+  const translateUi = useUi();
   const { group: groupId } = useParams();
   const { hash, state } = useLocation();
   const { layout, pointer } = useLayout();
@@ -65,7 +67,7 @@ export default function OrdoPage() {
   if (!groupId && settings.ui.settingsMode === 'simple') {
     return (
       <>
-        <PageHeader title="Settings" actions={<ModeSwitch />} />
+        <PageHeader title={translateUi('Settings')} actions={<ModeSwitch />} />
         <SimpleSettings />
       </>
     );
@@ -78,19 +80,20 @@ export default function OrdoPage() {
 // ── Phones and tablets ──────────────────────────────────────────────────────────────────────────
 
 function Overview({ hidden }: { hidden: ReadonlySet<SectionId> }) {
+  const translateUi = useUi();
   const [query, setQuery] = useState('');
   const summaries = useSummaries(hidden);
   return (
     <>
-      <PageHeader title="Settings" />
-      <SearchInput value={query} onChange={setQuery} placeholder="Search settings" className="mb-6" />
+      <PageHeader title={translateUi('Settings')} />
+      <SearchInput value={query} onChange={setQuery} placeholder={translateUi('Search settings')} className="mb-6" />
       {query.trim() ? (
         <SearchResults query={query} hidden={hidden} />
       ) : (
         <div className="space-y-6">
-          <GroupList title="Your learning" groups={GROUPS.filter((g) => LEARNING_GROUPS.includes(g.id))} summaries={summaries} />
+          <GroupList title={translateUi('Your learning')} groups={GROUPS.filter((g) => LEARNING_GROUPS.includes(g.id))} summaries={summaries} />
           <GroupList title="Lingua" groups={GROUPS.filter((g) => !LEARNING_GROUPS.includes(g.id) && !DEVELOPER_GROUPS.includes(g.id))} summaries={summaries} />
-          <GroupList title="Developer" groups={GROUPS.filter((g) => DEVELOPER_GROUPS.includes(g.id))} summaries={summaries} />
+          <GroupList title={translateUi('Developer')} groups={GROUPS.filter((g) => DEVELOPER_GROUPS.includes(g.id))} summaries={summaries} />
         </div>
       )}
     </>
@@ -108,7 +111,7 @@ function GroupList({ title, groups, summaries }: { title: string; groups: Settin
               <Tile group={g} />
               <span className={cx('flex min-h-[64px] min-w-0 flex-1 items-center gap-2 py-3 pr-3.5', i > 0 && 'border-t border-line/70')}>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15.5px] leading-snug font-semibold">{g.title}</span>
+                  <span className="block text-[15.5px] leading-snug font-semibold"><UiText source={g.title} /></span>
                   <span className={cx('block truncate text-[13px] leading-snug', summaries[g.id]?.attention ? 'text-accent-text' : 'text-ink-soft')}>
                     {summaries[g.id]?.text}
                   </span>
@@ -124,9 +127,10 @@ function GroupList({ title, groups, summaries }: { title: string; groups: Settin
 }
 
 function GroupPage({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet<SectionId> }) {
+  const translateUi = useUi();
   return (
     <>
-      <PageHeader eyebrow="Settings" title={group.title} />
+      <PageHeader eyebrow="Settings" title={translateUi(group.title)} />
       <GroupSections group={group} hidden={hidden} />
     </>
   );
@@ -135,6 +139,7 @@ function GroupPage({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySe
 // ── Wide screens ────────────────────────────────────────────────────────────────────────────────
 
 function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet<SectionId> }) {
+  const translateUi = useUi();
   const [query, setQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
   useHotkeys({ '/': () => searchRef.current?.focus() });
@@ -142,13 +147,13 @@ function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet
 
   return (
     <>
-      <PageHeader title="Settings" actions={<ModeSwitch />} />
+      <PageHeader title={translateUi('Settings')} actions={<ModeSwitch />} />
       <div className="grid grid-cols-[236px_minmax(0,1fr)] gap-10">
-        <nav aria-label="Settings" className="sticky top-12 self-start">
-          <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search settings" className="mb-4" />
+        <nav aria-label={translateUi('Settings')} className="sticky top-12 self-start">
+          <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder={translateUi('Search settings')} className="mb-4" />
           {[GROUPS.filter((g) => LEARNING_GROUPS.includes(g.id)), GROUPS.filter((g) => !LEARNING_GROUPS.includes(g.id) && !DEVELOPER_GROUPS.includes(g.id)), GROUPS.filter((g) => DEVELOPER_GROUPS.includes(g.id))].map((list, i) => (
             <ul key={i} className={cx('space-y-0.5', i === 1 && 'mt-3 border-t border-line/70 pt-3', i === 2 && 'mt-8 border-t border-dashed border-line-strong pt-3')}>
-              {i === 2 && <li className="mb-1 px-2.5 text-[11px] font-bold tracking-[0.14em] text-ink-faint uppercase">For developers</li>}
+              {i === 2 && <li className="mb-1 px-2.5 text-[11px] font-bold tracking-[0.14em] text-ink-faint uppercase"><UiText source={'For developers'} /></li>}
               {list.map((g) => {
                 const current = !searching && g.id === group.id;
                 return (
@@ -163,7 +168,7 @@ function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet
                       )}
                     >
                       <Tile group={g} small />
-                      {g.title}
+                      <UiText source={g.title} />
                     </Link>
                   </li>
                 );
@@ -176,7 +181,7 @@ function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet
             <SearchResults query={query} hidden={hidden} onPick={() => setQuery('')} />
           ) : (
             <motion.div key={group.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={fade}>
-              <h2 className="mb-5 font-serif text-[26px] leading-tight font-semibold">{group.title}</h2>
+              <h2 className="mb-5 font-serif text-[26px] leading-tight font-semibold"><UiText source={group.title} /></h2>
               <GroupSections group={group} hidden={hidden} />
             </motion.div>
           )}
@@ -188,19 +193,20 @@ function WideOrdo({ group, hidden }: { group: SettingsGroup; hidden: ReadonlySet
 
 /** Simple or Everything: the calm page of essentials, or every group and option. */
 function ModeSwitch() {
+  const translateUi = useUi();
   const { settings } = useApp();
   const navigate = useNavigate();
   return (
     <Segmented<Settings['ui']['settingsMode']>
-      label="Settings view"
+      label={translateUi('Settings view')}
       value={settings.ui.settingsMode}
       onChange={(settingsMode) => {
         void patchSetting('ui', { settingsMode });
         if (settingsMode === 'simple') navigate('/settings');
       }}
       options={[
-        { value: 'simple', label: 'Simple' },
-        { value: 'full', label: 'Everything' },
+        { value: 'simple', label: translateUi('Simple') },
+        { value: 'full', label: translateUi('Everything') },
       ]}
     />
   );
@@ -274,6 +280,7 @@ function SectionView({ id }: { id: SectionId }) {
 }
 
 function SearchResults({ query, hidden, onPick }: { query: string; hidden: ReadonlySet<SectionId>; onPick?: () => void }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const results = useMemo(() => searchSettings(query, hidden), [query, hidden]);
   const open = (entry: SettingEntry) => {
@@ -283,21 +290,21 @@ function SearchResults({ query, hidden, onPick }: { query: string; hidden: Reado
   };
 
   if (!results.length) {
-    return <p className="px-1 py-6 text-center text-[15px] text-ink-soft">Nothing in settings matches “{query.trim()}”.</p>;
+    return <p className="px-1 py-6 text-center text-[15px] text-ink-soft"><UiText source={'Nothing in settings matches “{0}”.'} values={[query.trim()]} /></p>;
   }
   return (
-    <ul aria-label="Matching settings" className="overflow-hidden rounded-3xl border border-line/70 bg-surface">
+    <ul aria-label={translateUi('Matching settings')} className="overflow-hidden rounded-3xl border border-line/70 bg-surface">
       {results.map((entry, i) => {
         const group = groupOf(entry.section)!;
         return (
-          <li key={`${entry.section}:${entry.label}`}>
+          <li key={`${entry.section}:$<UiText source={entry.label} />`}>
             <button type="button" onClick={() => open(entry)} className="flex w-full items-center gap-3.5 pl-4 text-left transition-colors hover:bg-sunken/60 active:bg-sunken">
               <Tile group={group} />
               <span className={cx('flex min-h-[60px] min-w-0 flex-1 items-center gap-2 py-2.5 pr-3.5', i > 0 && 'border-t border-line/70')}>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] leading-snug font-semibold">{entry.label}</span>
+                  <span className="block text-[15px] leading-snug font-semibold"><UiText source={entry.label} /></span>
                   <span className="block truncate text-[13px] leading-snug text-ink-soft">
-                    {group.title}
+                    <UiText source={group.title} />
                     {group.sections.length > 1 && ` › ${sectionTitle(entry.section)}`}
                   </span>
                 </span>

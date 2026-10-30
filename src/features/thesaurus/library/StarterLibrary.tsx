@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
 import { motion } from 'motion/react';
@@ -55,6 +56,7 @@ interface LibraryProps {
  * know), on shelves by kind or by level, sorted and searched (by name or by any word inside).
  */
 export function StarterLibrary({ lang, query, sort, group, onOpen }: LibraryProps) {
+  const translateUi = useUi();
   const list = useStarterList(lang);
   const added = useStarterDecks(lang);
   const stats = useThemeStats(lang);
@@ -117,13 +119,9 @@ export function StarterLibrary({ lang, query, sort, group, onOpen }: LibraryProp
   if (list === null) {
     return (
       <Card className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-        <p className="flex-1 text-sm text-ink-soft">
-          Ready-made {name} decks come with the {name} dictionary{job ? ', which is being installed now.' : '.'}
-        </p>
+        <p className="flex-1 text-sm text-ink-soft"><UiText source={'Ready-made {0} decks come with the {1} dictionary{2}'} values={[name, name, job ? ', which is being installed now.' : '.']} /></p>
         {!job && (
-          <Button variant="secondary" icon={Download} onClick={() => void installPack(lang)}>
-            Install dictionary
-          </Button>
+          <Button variant="secondary" icon={Download} onClick={() => void installPack(lang)}><UiText source={'Install dictionary'} /></Button>
         )}
       </Card>
     );
@@ -133,8 +131,8 @@ export function StarterLibrary({ lang, query, sort, group, onOpen }: LibraryProp
     return (
       <div className="flex flex-col items-center py-14 text-center text-ink-soft">
         <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-        <p className="font-semibold text-ink">No ready-made decks match “{query.trim()}”</p>
-        <p className="mt-1 text-sm">Try another word: decks are found by name and by the words inside them.</p>
+        <p className="font-semibold text-ink"><UiText source={'No ready-made decks match “{0}”'} values={[query.trim()]} /></p>
+        <p className="mt-1 text-sm"><UiText source={'Try another word: decks are found by name and by the words inside them.'} /></p>
       </div>
     );
   }
@@ -148,7 +146,7 @@ export function StarterLibrary({ lang, query, sort, group, onOpen }: LibraryProp
             <h3 className="font-serif text-[21px] font-semibold">{shelf.name}</h3>
             {shelf.blurb && <p className="truncate text-[13px] text-ink-faint">{shelf.blurb}</p>}
             <span className="ml-auto shrink-0 text-[12px] font-semibold text-ink-faint tabular-nums">
-              {shelf.entries.length} {shelf.entries.length === 1 ? 'deck' : 'decks'}
+              {shelf.entries.length} {shelf.entries.length === 1 ? translateUi('deck') : translateUi('decks')}
             </span>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
@@ -164,6 +162,7 @@ export function StarterLibrary({ lang, query, sort, group, onOpen }: LibraryProp
 
 /** One ready-made deck: a picture in its colour, the name, the size and how much of it you know. */
 function Tile({ entry, lang, index, added, onOpen }: { entry: Entry; lang: string; index: number; added: boolean; onOpen: (spec: StarterSpec) => void }) {
+  const translateUi = useUi();
   const { Icon } = entry;
   const share = entry.size ? entry.known / entry.size : 0;
   const pct = Math.round(share * 100);
@@ -180,7 +179,7 @@ function Tile({ entry, lang, index, added, onOpen }: { entry: Entry; lang: strin
       <button
         type="button"
         disabled={entry.empty}
-        title={entry.empty ? 'Words you look up in songs, videos and podcasts gather here.' : entry.blurb}
+        title={entry.empty ? translateUi('Words you look up in songs, videos and podcasts gather here.') : entry.blurb}
         onClick={() => onOpen(entry.spec)}
         className="no-callout flex h-full w-full flex-col overflow-hidden rounded-2xl border border-line/70 bg-raised text-left shadow-elev-1 transition-[translate,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--hue)_42%,var(--line))] hover:shadow-elev-2 active:translate-y-0 active:scale-[0.98] disabled:cursor-default disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-elev-1"
       >
@@ -210,9 +209,7 @@ function Tile({ entry, lang, index, added, onOpen }: { entry: Entry; lang: strin
         </span>
       </button>
       {added && (
-        <span className="pointer-events-none absolute top-2 left-2 flex items-center gap-1 rounded-full bg-sage px-2 py-0.5 text-[11px] font-bold text-bg">
-          <Check size={11} strokeWidth={3} aria-hidden /> Added
-        </span>
+        <span className="pointer-events-none absolute top-2 left-2 flex items-center gap-1 rounded-full bg-sage px-2 py-0.5 text-[11px] font-bold text-bg"><UiText source={'{0} Added'} values={[<Check size={11} strokeWidth={3} aria-hidden />]} /></span>
       )}
       {!entry.empty && (
         <div className="absolute top-2 right-2">

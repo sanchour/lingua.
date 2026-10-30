@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -48,6 +49,7 @@ interface StageProps {
 
 /** The picture with its two subtitle lines and a quiet set of controls that fade while playing. */
 export function VideoStage({ media, src, target, native, clock, stageRef, player, onVideo, live: standIn, embed, tracks, lines, fullscreen, onFullscreen, onHold, placeholder }: StageProps) {
+  const translateUi = useUi();
   const live = Boolean(src) || Boolean(standIn);
   const { pointer } = useLayout();
   const [playing, setPlaying] = useState(false);
@@ -139,7 +141,7 @@ export function VideoStage({ media, src, target, native, clock, stageRef, player
             {!started && !playing && (
               <button
                 type="button"
-                aria-label={playing ? 'Pause' : 'Play'}
+                aria-label={playing ? translateUi('Pause') : translateUi('Play')}
                 onClick={(e) => {
                   e.stopPropagation();
                   toggle();
@@ -156,18 +158,18 @@ export function VideoStage({ media, src, target, native, clock, stageRef, player
             >
               <Scrubber clock={clock} player={player} durationMs={media.durationMs} />
               <div className="flex items-center gap-0.5">
-                <button type="button" aria-label={playing ? 'Pause' : 'Play'} onClick={toggle} className={icon}>
+                <button type="button" aria-label={playing ? translateUi('Pause') : translateUi('Play')} onClick={toggle} className={icon}>
                   {playing ? <Pause size={19} className="fill-current" aria-hidden /> : <Play size={19} className="translate-x-px fill-current" aria-hidden />}
                 </button>
                 {fullscreen && lines.hasLines && (
                   <>
-                    <button type="button" aria-label="Previous line" onClick={lines.previous} className={icon}>
+                    <button type="button" aria-label={translateUi('Previous line')} onClick={lines.previous} className={icon}>
                       <SkipBack size={18} aria-hidden />
                     </button>
-                    <button type="button" aria-label="Repeat line" onClick={lines.repeat} className={icon}>
+                    <button type="button" aria-label={translateUi('Repeat line')} onClick={lines.repeat} className={icon}>
                       <Repeat size={18} aria-hidden />
                     </button>
-                    <button type="button" aria-label="Next line" onClick={lines.next} className={icon}>
+                    <button type="button" aria-label={translateUi('Next line')} onClick={lines.next} className={icon}>
                       <SkipForward size={18} aria-hidden />
                     </button>
                   </>
@@ -175,16 +177,16 @@ export function VideoStage({ media, src, target, native, clock, stageRef, player
                 <TimeLabel clock={clock} durationMs={media.durationMs} />
                 <span className="flex-1" />
                 {fullscreen && lines.hasLines && (
-                  <button type="button" aria-label="Save line" onClick={lines.save} className={icon}>
+                  <button type="button" aria-label={translateUi('Save line')} onClick={lines.save} className={icon}>
                     <Bookmark size={18} aria-hidden />
                   </button>
                 )}
                 <Popover
-                  label="Speed"
+                  label={translateUi('Speed')}
                   placement="top-end"
                   className="w-40"
                   trigger={(props) => (
-                    <button {...props} type="button" aria-label={`Speed ${rate}×`} className={cx(icon, 'w-auto px-2.5 text-[13px] font-bold tabular-nums')}>
+                    <button {...props} type="button" aria-label={translateUi('Speed {0}×', [rate])} className={cx(icon, 'w-auto px-2.5 text-[13px] font-bold tabular-nums')}>
                       {rate === 1 ? '1×' : `${rate}×`}
                     </button>
                   )}
@@ -201,14 +203,14 @@ export function VideoStage({ media, src, target, native, clock, stageRef, player
                           }}
                           className={cx('flex w-full rounded-lg px-3 py-2 text-left text-[14px] font-semibold tabular-nums hover:bg-surface', r === rate && 'bg-accent-soft text-accent-text')}
                         >
-                          {r}×{r === 1 ? ' · normal' : ''}
+                          {r}×{r === 1 ? translateUi(' · normal') : ''}
                         </button>
                       ))}
                     </div>
                   )}
                 </Popover>
                 {fullscreen && <SubtitleSettings dark />}
-                <button type="button" aria-label={fullscreen ? 'Exit full screen' : 'Full screen'} onClick={onFullscreen} className={icon}>
+                <button type="button" aria-label={fullscreen ? translateUi('Exit full screen') : translateUi('Full screen')} onClick={onFullscreen} className={icon}>
                   {fullscreen ? <Minimize size={18} aria-hidden /> : <Maximize size={18} aria-hidden />}
                 </button>
               </div>
@@ -236,6 +238,7 @@ function TimeLabel({ clock, durationMs }: { clock: VideoClock; durationMs?: numb
 }
 
 function Scrubber({ clock, player, durationMs }: { clock: VideoClock; player: VideoLike | null; durationMs?: number }) {
+  const translateUi = useUi();
   const ref = useRef<HTMLInputElement>(null);
   const dragging = useRef(false);
   useEffect(
@@ -257,7 +260,7 @@ function Scrubber({ clock, player, durationMs }: { clock: VideoClock; player: Vi
       type="range"
       min={0}
       step={100}
-      aria-label="Position"
+      aria-label={translateUi('Position')}
       className="visio-range block w-full"
       onPointerDown={() => (dragging.current = true)}
       onPointerUp={() => (dragging.current = false)}

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { ChevronDown, ChevronLeft, LoaderCircle, Play } from 'lucide-react';
@@ -35,10 +36,8 @@ export default function PlayerPage() {
     return (
       <div className="grid min-h-[60dvh] place-items-center text-center">
         <div>
-          <p className="font-serif text-xl">This item isn’t in Sonus any more.</p>
-          <Link to={sonusHome()} className="mt-4 inline-block font-semibold text-accent-text">
-            Back to Sonus
-          </Link>
+          <p className="font-serif text-xl"><UiText source={'This item isn’t in Sonus any more.'} /></p>
+          <Link to={sonusHome()} className="mt-4 inline-block font-semibold text-accent-text"><UiText source={'Back to Sonus'} /></Link>
         </div>
       </div>
     );
@@ -64,6 +63,7 @@ function Details({ media, large = false, book, live = false }: { media: Media; l
 }
 
 function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcript | null }) {
+  const translateUi = useUi();
   const cues = transcript?.cues ?? null;
   const { layout } = useLayout();
   const navigate = useNavigate();
@@ -137,10 +137,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
       <Bookmarks mediaId={media.id} />
     </>
   ) : (
-    <button type="button" onClick={playThis} className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-inverse font-semibold text-on-inverse shadow-elev-2 transition-transform active:scale-[0.98]">
-      {status === 'loading' ? <LoaderCircle size={20} className="animate-spin" aria-hidden /> : <Play size={20} className="fill-current" aria-hidden />}
-      Play this instead
-    </button>
+    <button type="button" onClick={playThis} className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-inverse font-semibold text-on-inverse shadow-elev-2 transition-transform active:scale-[0.98]"><UiText source={'{0}Play this instead'} values={[status === 'loading' ? <LoaderCircle size={20} className="animate-spin" aria-hidden /> : <Play size={20} className="fill-current" aria-hidden />]} /></button>
   );
 
   const back = media.bookId ? (
@@ -201,7 +198,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
               <OwnWordsButton lang={media.lang} lane="listen" title={media.title} refId={media.id} className="mt-3 -ml-3" />
             </div>
           </aside>
-          <section aria-label="Transcript" className="flex min-h-0 min-w-0 flex-col">
+          <section aria-label={translateUi('Transcript')} className="flex min-h-0 min-w-0 flex-col">
             {cues?.length ? (
               <>
                 <div className="shrink-0">
@@ -226,7 +223,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
   return (
     <div className="min-h-dvh bg-bg">
       <header className="no-callout sticky top-0 z-20 flex items-center gap-1 bg-bg/90 px-2 pt-safe backdrop-blur-xl">
-        <button type="button" aria-label="Close player" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(sonusHome()))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
+        <button type="button" aria-label={translateUi('Close player')} onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(sonusHome()))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronDown size={24} aria-hidden />
         </button>
         {media.bookId ? (
@@ -254,6 +251,7 @@ function AudioPlayer({ media, transcript }: { media: Media; transcript: Transcri
 }
 
 function SpotifyPlayer({ media, transcript }: { media: Media; transcript: Transcript | null }) {
+  const translateUi = useUi();
   const cues = transcript?.cues ?? null;
   const clock = useMemo(createSpotifyClock, [media.id]);
   return (
@@ -269,8 +267,8 @@ function SpotifyPlayer({ media, transcript }: { media: Media; transcript: Transc
           <MediaOptions media={media} hasTranscript={Boolean(cues?.length)} />
         </div>
         <SpotifyEmbed media={media} clock={clock} />
-        <p className="mt-2 text-[12.5px] text-ink-faint">Plays through Spotify. Sign in to Spotify in this browser for full episodes and songs.</p>
-        <section aria-label="Transcript" className="mt-10 pb-24">
+        <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'Plays through Spotify. Sign in to Spotify in this browser for full episodes and songs.'} /></p>
+        <section aria-label={translateUi('Transcript')} className="mt-10 pb-24">
           {cues?.length ? (
             <>
               <TranscriptBar media={media} transcript={transcript!} />

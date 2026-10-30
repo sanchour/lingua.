@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 // The quiet "Generated" label beside everything Max made (6-6): what was checked on hover, and Report when it is wrong.
 import { Flag, Sparkles } from 'lucide-react';
 import type { GeneratedRow } from '@/core/contracts/db';
@@ -21,9 +22,7 @@ export function GeneratedLabel({ row, onReported }: { row: GeneratedRow; onRepor
           });
         }}
         className="inline-flex items-center gap-1 underline decoration-line-strong underline-offset-4 hover:text-ink"
-      >
-        <Flag size={12} aria-hidden /> Report
-      </button>
+      ><UiText source={'{0} Report'} values={[<Flag size={12} aria-hidden />]} /></button>
     </span>
   );
 }

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useNavigate } from 'react-router';
 import { BookOpenText, Captions, Clock, Ellipsis, FileText, KeyRound, Sparkles, Trash2 } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -42,15 +43,16 @@ async function addFile(media: Media) {
  * the controls, its options in a popover, so the player itself can sit centred.
  */
 export function ReadAlongButton({ media }: { media: Media }) {
+  const translateUi = useUi();
   const progress = useJobs((s) => s.transcribing[media.id]);
   return (
     <Popover
-      label="Read along as you listen"
+      label={translateUi('Read along as you listen')}
       placement="top"
       className="w-[380px]"
       trigger={(props) => (
         <button {...props} type="button" className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-ink-soft transition-colors hover:bg-surface hover:text-ink">
-          <Captions size={15} aria-hidden /> {progress !== undefined ? `Writing the transcript… ${Math.round(progress * 100)}%` : 'Read along as you listen'}
+          <Captions size={15} aria-hidden /> {progress !== undefined ? translateUi('Writing the transcript… {0}%', [Math.round(progress * 100)]) : translateUi('Read along as you listen')}
         </button>
       )}
     >
@@ -61,6 +63,7 @@ export function ReadAlongButton({ media }: { media: Media }) {
 
 /** When there's no transcript yet: make one with Whisper, or add a file. */
 export function NoTranscript({ media, bare = false }: { media: Media; bare?: boolean }) {
+  const translateUi = useUi();
   const { settings } = useApp();
   const navigate = useNavigate();
   const progress = useJobs((s) => s.transcribing[media.id]);
@@ -80,43 +83,35 @@ export function NoTranscript({ media, bare = false }: { media: Media; bare?: boo
       )}
       {progress !== undefined ? (
         <>
-          <p className="font-serif text-xl font-semibold">Listening closely…</p>
-          <p className="mt-1.5 max-w-sm text-[14.5px] text-ink-soft">{note ?? 'Whisper is writing down every word with its timing.'} You can keep listening meanwhile.</p>
+          <p className="font-serif text-xl font-semibold"><UiText source={'Listening closely…'} /></p>
+          <p className="mt-1.5 max-w-sm text-[14.5px] text-ink-soft"><UiText source={'{0} You can keep listening meanwhile.'} values={[note ?? 'Whisper is writing down every word with its timing.']} /></p>
           <div className="mt-5 h-1.5 w-56 overflow-hidden rounded-full bg-sunken">
             <div className="h-full origin-left rounded-full bg-sage transition-transform duration-500" style={{ transform: `scaleX(${Math.max(0.06, progress)})` }} />
           </div>
         </>
       ) : (
         <>
-          <p className="font-serif text-xl font-semibold">Read along as you listen</p>
+          <p className="font-serif text-xl font-semibold"><UiText source={'Read along as you listen'} /></p>
           <p className="mt-1.5 max-w-sm text-[14.5px] leading-relaxed text-ink-soft">
             {spotify
-              ? 'Spotify’s audio can’t be transcribed here, but a subtitle or text file you add will follow the playback.'
-              : 'A transcript lights up sentence by sentence, and every word can be looked up and marked, just like in Codex.'}
+              ? translateUi('Spotify’s audio can’t be transcribed here, but a subtitle or text file you add will follow the playback.')
+              : translateUi('A transcript lights up sentence by sentence, and every word can be looked up and marked, just like in Codex.')}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             {!spotify &&
               (hasKey ? (
-                <Button icon={Sparkles} onClick={() => void startTranscription(media)}>
-                  Make a transcript
-                </Button>
+                <Button icon={Sparkles} onClick={() => void startTranscription(media)}><UiText source={'Make a transcript'} /></Button>
               ) : block === 'max' ? (
-                <MaxLink className={buttonClasses('primary', 'md')}>Transcripts with Lingua+ Max</MaxLink>
+                <MaxLink className={buttonClasses('primary', 'md')}><UiText source={'Transcripts with Lingua+ Max'} /></MaxLink>
               ) : (
-                <Button icon={KeyRound} onClick={() => navigate('/settings/ai')}>
-                  Add a free Groq key
-                </Button>
+                <Button icon={KeyRound} onClick={() => navigate('/settings/ai')}><UiText source={'Add a free Groq key'} /></Button>
               ))}
-            <Button variant="secondary" icon={FileText} onClick={() => void addFile(media)}>
-              Add a file
-            </Button>
+            <Button variant="secondary" icon={FileText} onClick={() => void addFile(media)}><UiText source={'Add a file'} /></Button>
           </div>
           {!spotify && !hasKey && (
-            <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">
-              Transcripts use Whisper on Groq with your own free key{block === 'max' ? ' (Lingua+ Max)' : ''}, or Whisper on this device (Settings › Listening). SRT, VTT and plain text files work without either.
-            </p>
+            <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint"><UiText source={'Transcripts use Whisper on Groq with your own free key{0}, or Whisper on this device (Settings › Listening). SRT, VTT and plain text files work without either.'} values={[block === 'max' ? ' (Lingua+ Max)' : '']} /></p>
           )}
-          {!spotify && onDevice && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint">Made on this device: private and free, slower than Groq.</p>}
+          {!spotify && onDevice && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint"><UiText source={'Made on this device: private and free, slower than Groq.'} /></p>}
         </>
       )}
     </Box>
@@ -125,6 +120,7 @@ export function NoTranscript({ media, bare = false }: { media: Media; bare?: boo
 
 /** The transcript's heading line: where it came from, and its tools. */
 export function TranscriptBar({ media, transcript }: { media: Media; transcript: Transcript }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const transcribing = useJobs((s) => s.transcribing[media.id] !== undefined);
   const shift = async (ms: number) => {
@@ -135,17 +131,17 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
   return (
     <div className="mb-4 flex items-center gap-3">
       <div className="min-w-0 flex-1">
-        <h2 className="font-serif text-xl font-semibold">Transcript</h2>
+        <h2 className="font-serif text-xl font-semibold"><UiText source={'Transcript'} /></h2>
         <p className="text-[12.5px] text-ink-faint">
-          {transcribing ? 'Making a new transcript…' : `${SOURCE[transcript.source]} · ${transcript.cues.length} sentences`}
+          {transcribing ? translateUi('Making a new transcript…') : translateUi('{0} · {1} sentences', [SOURCE[transcript.source], transcript.cues.length])}
         </p>
       </div>
       <Popover
-        label="Transcript options"
+        label={translateUi('Transcript options')}
         placement="bottom-end"
         className="w-64"
         trigger={(props) => (
-          <button {...props} type="button" aria-label="Transcript options" className="grid size-10 place-items-center rounded-xl text-ink-soft transition-colors hover:bg-surface hover:text-ink">
+          <button {...props} type="button" aria-label={translateUi('Transcript options')} className="grid size-10 place-items-center rounded-xl text-ink-soft transition-colors hover:bg-surface hover:text-ink">
             <Ellipsis size={18} aria-hidden />
           </button>
         )}
@@ -154,7 +150,7 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
           <div className="space-y-0.5">
             <MenuItem
               icon={BookOpenText}
-              label="Open in Codex"
+              label={translateUi('Open in Codex')}
               detail="Read it like a book"
               onClick={async () => {
                 close();
@@ -162,12 +158,12 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
                 if (id) navigate(`/codex/read/${id}`);
               }}
             />
-            <MenuItem icon={Clock} label="Text runs late" detail="Move everything 0.5 s earlier" onClick={() => void shift(-500)} />
-            <MenuItem icon={Clock} label="Text runs early" detail="Move everything 0.5 s later" onClick={() => void shift(500)} />
+            <MenuItem icon={Clock} label={translateUi('Text runs late')} detail="Move everything 0.5 s earlier" onClick={() => void shift(-500)} />
+            <MenuItem icon={Clock} label={translateUi('Text runs early')} detail="Move everything 0.5 s later" onClick={() => void shift(500)} />
             {media.kind !== 'spotify' && (
               <MenuItem
                 icon={Sparkles}
-                label="Transcribe again"
+                label={translateUi('Transcribe again')}
                 detail="Whisper on Groq"
                 onClick={() => {
                   close();
@@ -177,7 +173,7 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
             )}
             <MenuItem
               icon={FileText}
-              label="Replace with a file"
+              label={translateUi('Replace with a file')}
               detail="SRT, VTT or plain text"
               onClick={() => {
                 close();
@@ -186,7 +182,7 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
             />
             <MenuItem
               icon={Trash2}
-              label="Remove transcript"
+              label={translateUi('Remove transcript')}
               danger
               onClick={async () => {
                 close();

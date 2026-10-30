@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'motion/react';
@@ -21,6 +22,7 @@ export function PlansSheet() {
 }
 
 function Panel({ feature, onClose }: { feature?: Feature; onClose: () => void }) {
+  const translateUi = useUi();
   const ref = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const plan = usePlan();
@@ -47,9 +49,9 @@ function Panel({ feature, onClose }: { feature?: Feature; onClose: () => void })
             <h2 id={titleId} className="font-serif text-[28px] leading-tight font-semibold">
               {title}
             </h2>
-            <p className="mt-1 text-[14.5px] text-ink-soft">Everything free stays free. Choose what fits, or carry on as you are.</p>
+            <p className="mt-1 text-[14.5px] text-ink-soft"><UiText source={'Everything free stays free. Choose what fits, or carry on as you are.'} /></p>
           </div>
-          <IconButton icon={X} label="Close" onClick={onClose} />
+          <IconButton icon={X} label={translateUi('Close')} onClick={onClose} />
         </div>
         <PlanCards current={plan} feature={feature} onFree={onClose} onBought={onClose} />
       </motion.div>

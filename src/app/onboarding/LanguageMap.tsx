@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // The picker's map (Lingua 5.1-2b): the world drawn quietly, without dots. Hovering a country lifts
 // it and shows a small card with Lingua's languages there; clicking one that has any filters the
 // overview to them. A language hovered or chosen in the
@@ -82,6 +83,7 @@ interface LanguageMapProps {
 }
 
 export function LanguageMap({ highlight, selected, place, onPlace, inset = 0 }: LanguageMapProps) {
+  const translateUi = useUi();
   const boxRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -357,7 +359,7 @@ export function LanguageMap({ highlight, selected, place, onPlace, inset = 0 }: 
       <canvas
         ref={canvasRef}
         role="img"
-        aria-label="World map: the countries where Lingua’s languages are spoken. The overview below has the same languages."
+        aria-label={translateUi('World map: the countries where Lingua’s languages are spoken. The overview below has the same languages.')}
         style={{ width: size.w, height: size.h }}
         className={card && LIVE.has(card) ? 'block cursor-pointer' : 'block cursor-grab active:cursor-grabbing'}
         onPointerDown={(e) => {
@@ -420,7 +422,7 @@ export function LanguageMap({ highlight, selected, place, onPlace, inset = 0 }: 
       {card && (
         <div ref={cardRef} className="pointer-events-none absolute top-0 left-0 z-10 w-56 rounded-2xl border border-line bg-raised p-3 shadow-elev-2 will-change-transform">
           <p className="mb-1.5 text-[13px] font-bold">{placeName(card)}</p>
-          {!spoken.length && <p className="text-[12.5px] text-ink-faint">None of Lingua’s languages yet.</p>}
+          {!spoken.length && <p className="text-[12.5px] text-ink-faint"><UiText source={'None of Lingua’s languages yet.'} /></p>}
           <ul className="space-y-1">
             {spoken.map((l) => (
               <li key={l.lang} className="flex items-center gap-2 text-[13px]">

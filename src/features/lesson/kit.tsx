@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // What Ludus and the grammar lessons share (Lingua 3.0-8): the combo streak, sounds and
 // vibration, the check bar, Lightning's clock, confetti, the end screen and the setup sheet.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -67,6 +68,7 @@ export function useLessonFeel() {
 
 /** A flame with the streak, from three right in a row; it flares at each milestone. */
 export function ComboBadge({ combo, burst, onBurstEnd }: { combo: number; burst: { n: number; word: string } | null; onBurstEnd: () => void }) {
+  const translateUi = useUi();
   useEffect(() => {
     if (!burst) return;
     const t = window.setTimeout(onBurstEnd, 1400);
@@ -83,7 +85,7 @@ export function ComboBadge({ combo, burst, onBurstEnd }: { combo: number; burst:
             exit={{ opacity: 0, scale: 0.6 }}
             transition={spring.snappy}
             className={cx('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-bold tabular-nums', combo >= 5 ? 'bg-accent text-bg' : 'bg-accent-soft text-accent-text')}
-            aria-label={`${combo} right in a row`}
+            aria-label={translateUi('{0} right in a row', [combo])}
           >
             <motion.span key={combo} initial={{ scale: 1.5, rotate: -12 }} animate={{ scale: 1, rotate: 0 }} transition={spring.snappy} className="inline-flex">
               <Flame size={15} aria-hidden />
@@ -134,6 +136,7 @@ export interface FeedbackBarProps {
 }
 
 export function FeedbackBar({ phase, ready, onCheck, onNext, praise, rightNote, wrong, hint, aside, checkLabel = 'Check', wide }: FeedbackBarProps) {
+  const translateUi = useUi();
   const { pointer } = useLayout();
   return (
     <div
@@ -168,8 +171,8 @@ export function FeedbackBar({ phase, ready, onCheck, onNext, praise, rightNote, 
             <p className="text-sm text-ink-soft">{hint}</p>
           ) : (
             <Button size="lg" className="min-w-40 flex-1 sm:flex-none" variant={phase === 'answer' ? 'primary' : 'accent'} disabled={phase === 'answer' && !ready} onClick={() => (phase === 'answer' ? onCheck() : onNext())}>
-              {phase === 'answer' ? checkLabel : 'Continue'}
-              {pointer === 'fine' && <Kbd tone="inverse">Enter</Kbd>}
+              {phase === 'answer' ? checkLabel : translateUi('Continue')}
+              {pointer === 'fine' && <Kbd tone="inverse"><UiText source={'Enter'} /></Kbd>}
             </Button>
           )}
         </div>
@@ -184,6 +187,7 @@ export const LIGHTNING_MS = 60_000;
 
 /** Seconds left in a Lightning round, as a pill that turns urgent in the last ten. */
 export function LightningClock({ endsAt, onEnd, paused, onTick }: { endsAt: number; onEnd: () => void; paused?: boolean; onTick?: () => void }) {
+  const translateUi = useUi();
   const [now, setNow] = useState(() => Date.now());
   const ended = useRef(false);
   const lastSecond = useRef(-1);
@@ -205,7 +209,7 @@ export function LightningClock({ endsAt, onEnd, paused, onTick }: { endsAt: numb
     }
   }, [left, seconds, onEnd, onTick]);
   return (
-    <span className={cx('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-bold tabular-nums', seconds <= 10 ? 'bg-accent text-bg' : 'bg-sunken text-ink')} aria-label={`${seconds} seconds left`}>
+    <span className={cx('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-bold tabular-nums', seconds <= 10 ? 'bg-accent text-bg' : 'bg-sunken text-ink')} aria-label={translateUi('{0} seconds left', [seconds])}>
       <Timer size={14} aria-hidden />
       {seconds}s
     </span>
@@ -276,6 +280,7 @@ const minutes = (ms: number) => (ms < 60_000 ? `${Math.max(1, Math.round(ms / 10
  * `tiles` replaces the numbers for a lesson that isn't a run of exercises (writing, speaking).
  */
 export function LessonEnd({ title, note, result, actions = [], onDone, badge, children, tiles: own }: { title: string; note?: ReactNode; result: LessonResult; actions?: EndAction[]; onDone: () => void; badge?: ReactNode; children?: ReactNode; tiles?: Array<[string, string]> }) {
+  const translateUi = useUi();
   const lightning = result.score !== undefined;
   const newBest = lightning && result.score! > 0 && result.score! > (result.previousBest ?? 0);
   const perfect = !lightning && !own && result.answered > 0 && result.accuracy === 1;
@@ -308,7 +313,7 @@ export function LessonEnd({ title, note, result, actions = [], onDone, badge, ch
         >
           {badge ?? (lightning ? <Zap size={34} aria-hidden /> : perfect ? <Trophy size={34} aria-hidden /> : <Leaf size={34} aria-hidden />)}
         </motion.span>
-        <h1 className="font-serif text-3xl font-semibold">{newBest ? 'A new best!' : perfect ? 'Flawless' : title}</h1>
+        <h1 className="font-serif text-3xl font-semibold">{newBest ? translateUi('A new best!') : perfect ? translateUi('Flawless') : title}</h1>
         {note && <div className="mt-2 text-[15px] leading-relaxed text-ink-soft">{note}</div>}
         <dl className="mt-8 grid w-full grid-cols-3 gap-3">
           {tiles.map(([label, value], i) => (
@@ -325,9 +330,7 @@ export function LessonEnd({ title, note, result, actions = [], onDone, badge, ch
               {a.label}
             </Button>
           ))}
-          <Button size="lg" variant={actions.length ? 'ghost' : 'primary'} block onClick={onDone}>
-            Done
-          </Button>
+          <Button size="lg" variant={actions.length ? 'ghost' : 'primary'} block onClick={onDone}><UiText source={'Done'} /></Button>
         </div>
       </motion.div>
     </>
@@ -346,6 +349,7 @@ const MODES: Array<{ value: LessonMode; label: string; about: string }> = [
  * exercise it may use (at least one always stays on). Saved for next time.
  */
 export function LessonSetup({ open, onClose, kinds, offKey }: { open: boolean; onClose: () => void; kinds: Array<{ id: string; label: string }>; offKey: 'ludusOff' | 'grammarOff' }) {
+  const translateUi = useUi();
   const s = useLessonSettings();
   const off = new Set(s[offKey]);
   const set = (patch: Partial<LessonSettings>) => void patchSetting('lessons', patch);
@@ -357,30 +361,30 @@ export function LessonSetup({ open, onClose, kinds, offKey }: { open: boolean; o
   };
   const mode = MODES.find((m) => m.value === s.mode) ?? MODES[0];
   return (
-    <Drawer open={open} onClose={onClose} title="Your lessons" description="Saved for every lesson from now on.">
+    <Drawer open={open} onClose={onClose} title={translateUi('Your lessons')} description={translateUi('Saved for every lesson from now on.')}>
       <div className="space-y-6 pb-2">
         <section>
-          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Mode</h3>
-          <Segmented label="Mode" block value={s.mode} onChange={(v) => set({ mode: v })} options={MODES.map((m) => ({ value: m.value, label: m.label }))} />
+          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Mode'} /></h3>
+          <Segmented label={translateUi('Mode')} block value={s.mode} onChange={(v) => set({ mode: v })} options={MODES.map((m) => ({ value: m.value, label: m.label }))} />
           <p className="mt-2 text-[13.5px] leading-snug text-ink-soft">{mode.about}</p>
         </section>
         <section>
-          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Length</h3>
+          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Length'} /></h3>
           <Segmented
-            label="Exercises per lesson"
+            label={translateUi('Exercises per lesson')}
             block
             value={String(s.length) as '5' | '10' | '15' | '20'}
             onChange={(v) => set({ length: Number(v) as LessonSettings['length'] })}
             options={[
-              { value: '5', label: '5 · quick' },
-              { value: '10', label: '10' },
-              { value: '15', label: '15' },
-              { value: '20', label: '20 · long' },
+              { value: '5', label: translateUi('5 · quick') },
+              { value: '10', label: translateUi('10') },
+              { value: '15', label: translateUi('15') },
+              { value: '20', label: translateUi('20 · long') },
             ].map((o) => ({ ...o, short: o.value }))}
           />
         </section>
         <section>
-          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Exercises</h3>
+          <h3 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Exercises'} /></h3>
           <div className="flex flex-wrap gap-2">
             {kinds.map((k) => {
               const on = !off.has(k.id);
@@ -401,12 +405,12 @@ export function LessonSetup({ open, onClose, kinds, offKey }: { open: boolean; o
               );
             })}
           </div>
-          <p className="mt-2 text-[12.5px] text-ink-faint">An exercise that's off is replaced by a close cousin.</p>
+          <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'An exercise that\'s off is replaced by a close cousin.'} /></p>
         </section>
         <section className="divide-y divide-line/60">
-          <ToggleRow title="Typing" description="Off: forms and words are chosen instead of typed." checked={s.typing} onChange={(v) => set({ typing: v })} />
-          <ToggleRow title="Sounds" description="A chime for a right answer, a low note for a miss." checked={s.sounds} onChange={(v) => set({ sounds: v })} />
-          <ToggleRow title="Vibration" description="On phones that allow it." checked={s.haptics} onChange={(v) => set({ haptics: v })} />
+          <ToggleRow title={translateUi('Typing')} description={translateUi('Off: forms and words are chosen instead of typed.')} checked={s.typing} onChange={(v) => set({ typing: v })} />
+          <ToggleRow title={translateUi('Sounds')} description={translateUi('A chime for a right answer, a low note for a miss.')} checked={s.sounds} onChange={(v) => set({ sounds: v })} />
+          <ToggleRow title={translateUi('Vibration')} description={translateUi('On phones that allow it.')} checked={s.haptics} onChange={(v) => set({ haptics: v })} />
         </section>
       </div>
     </Drawer>
@@ -465,6 +469,7 @@ export function Choices({ options, value, onChange, phase, answer, lang, dir, wi
  * "Slower" link that reads it word by word.
  */
 export function PlayBig({ lang, text, playKey, slower = true }: { lang: string; text: string; playKey: string; slower?: boolean }) {
+  const translateUi = useUi();
   const { flag } = useSpeaker(lang);
   const [state, setState] = useState<'idle' | 'loading' | 'playing'>('idle');
   const say = useCallback(
@@ -488,13 +493,11 @@ export function PlayBig({ lang, text, playKey, slower = true }: { lang: string; 
   }, [playKey]);
   return (
     <div className="flex flex-col items-center gap-3">
-      <motion.button type="button" onClick={() => say()} whileTap={{ scale: 0.94 }} className="grid size-24 place-items-center rounded-full bg-sage text-bg shadow-elev-2" aria-label="Play it again">
+      <motion.button type="button" onClick={() => say()} whileTap={{ scale: 0.94 }} className="grid size-24 place-items-center rounded-full bg-sage text-bg shadow-elev-2" aria-label={translateUi('Play it again')}>
         {state === 'loading' ? <Loader2 size={34} className="animate-spin" aria-hidden /> : <Volume2 size={38} className={cx(state === 'playing' && 'animate-pulse')} aria-hidden />}
       </motion.button>
       {slower && (
-        <button type="button" onClick={() => say(true)} className="text-[13px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4">
-          Slower
-        </button>
+        <button type="button" onClick={() => say(true)} className="text-[13px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4"><UiText source={'Slower'} /></button>
       )}
     </div>
   );

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useNavigate } from 'react-router';
 import { Captions, Clock, Ellipsis, FileText, KeyRound, Languages, Sparkles, Trash2 } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -39,6 +40,7 @@ async function addFile(media: Media, role: TrackRole) {
 
 /** The video's two subtitle tracks: where they came from, and how to make, add, sync or remove them. */
 export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) {
+  const translateUi = useUi();
   const { settings } = useApp();
   const navigate = useNavigate();
   const transcribing = useJobs((s) => s.transcribing[media.id]);
@@ -70,7 +72,7 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
               </div>
             </>
           ) : (
-            <p className="text-[12.5px] text-ink-soft">{track ? `${SOURCE[track.source] ?? 'Subtitles'} · ${track.cues.length} lines` : 'None yet'}</p>
+            <p className="text-[12.5px] text-ink-soft">{track ? translateUi('{0} · {1} lines', [SOURCE[track.source] ?? 'Subtitles', track.cues.length]) : translateUi('None yet')}</p>
           )}
         </div>
         {!busy &&
@@ -80,27 +82,23 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
             <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
               {role === 'target' && hasSound && (
                 <Button size="sm" variant="secondary" icon={canTranscribe ? Sparkles : KeyRound} onClick={() => (canTranscribe ? void startTranscription(media) : needsMax ? openPlans('ai') : navigate('/settings/listening'))}>
-                  {canTranscribe ? 'Make' : 'Set up Whisper'}
+                  {canTranscribe ? translateUi('Make') : translateUi('Set up Whisper')}
                 </Button>
               )}
               {role === 'target' && media.youtubeId && (
                 <>
                   <Button size="sm" variant="secondary" icon={geminiBlock ? KeyRound : Sparkles} onClick={() => (geminiBlock === null ? void startGeminiTranscript(media) : geminiBlock === 'max' ? openPlans('ai') : navigate('/settings/ai'))}>
-                    {geminiBlock === null ? 'Gemini' : geminiBlock === 'max' ? 'Lingua+ Max' : 'Add Gemini key'}
+                    {geminiBlock === null ? translateUi('Gemini') : geminiBlock === 'max' ? translateUi('Lingua+ Max') : translateUi('Add Gemini key')}
                   </Button>
-                  <Button size="sm" variant="ghost" icon={Captions} onClick={() => void startYouTubeCaptions(media)}>
-                    Captions
-                  </Button>
+                  <Button size="sm" variant="ghost" icon={Captions} onClick={() => void startYouTubeCaptions(media)}><UiText source={'Captions'} /></Button>
                 </>
               )}
               {role === 'native' && tracks.target && (
                 <Button size="sm" variant="secondary" icon={hasAi ? Languages : KeyRound} onClick={() => (hasAi ? void startTranslation(media, tracks.target!.cues) : needsMax ? openPlans('ai') : navigate('/settings/ai'))}>
-                  {hasAi ? 'Translate' : needsMax ? 'Lingua+ Max' : 'Add AI key'}
+                  {hasAi ? translateUi('Translate') : needsMax ? translateUi('Lingua+ Max') : translateUi('Add AI key')}
                 </Button>
               )}
-              <Button size="sm" variant="ghost" icon={FileText} onClick={() => void addFile(media, role)}>
-                File
-              </Button>
+              <Button size="sm" variant="ghost" icon={FileText} onClick={() => void addFile(media, role)}><UiText source={'File'} /></Button>
             </div>
           ))}
       </div>
@@ -110,7 +108,7 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
   return (
     <Card className="divide-y divide-line">
       <div className="pb-3">
-        <p className="text-[12.5px] font-bold tracking-wide text-ink-soft uppercase">Subtitles</p>
+        <p className="text-[12.5px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'Subtitles'} /></p>
       </div>
       {row('target')}
       {row('native')}
@@ -119,29 +117,30 @@ export function TrackPanel({ media, tracks }: { media: Media; tracks: Tracks }) 
 }
 
 function TrackMenu({ media, role }: { media: Media; role: TrackRole }) {
+  const translateUi = useUi();
   const shift = async (ms: number) => {
     await shiftTrack(media.id, role, ms);
     toast(`Subtitles moved ${ms > 0 ? 'later' : 'earlier'} by ${Math.abs(ms) / 1000} s.`);
   };
   return (
     <Popover
-      label="Subtitle options"
+      label={translateUi('Subtitle options')}
       placement="bottom-end"
       className="w-64"
       trigger={(props) => (
-        <button {...props} type="button" aria-label="Subtitle options" className="grid size-9 shrink-0 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-surface hover:text-ink">
+        <button {...props} type="button" aria-label={translateUi('Subtitle options')} className="grid size-9 shrink-0 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-surface hover:text-ink">
           <Ellipsis size={17} aria-hidden />
         </button>
       )}
     >
       {(close) => (
         <div className="space-y-0.5">
-          <MenuItem icon={Clock} label="Earlier by 0.5 s" detail="When the text comes after the voice" onClick={() => void shift(-500)} />
-          <MenuItem icon={Clock} label="Later by 0.5 s" detail="When the text comes before the voice" onClick={() => void shift(500)} />
-          <MenuItem icon={FileText} label="Replace with a file" onClick={() => (close(), void addFile(media, role))} />
+          <MenuItem icon={Clock} label={translateUi('Earlier by 0.5 s')} detail="When the text comes after the voice" onClick={() => void shift(-500)} />
+          <MenuItem icon={Clock} label={translateUi('Later by 0.5 s')} detail="When the text comes before the voice" onClick={() => void shift(500)} />
+          <MenuItem icon={FileText} label={translateUi('Replace with a file')} onClick={() => (close(), void addFile(media, role))} />
           <MenuItem
             icon={Trash2}
-            label="Remove these subtitles"
+            label={translateUi('Remove these subtitles')}
             danger
             onClick={() => {
               close();

@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import type { ReactNode } from 'react';
 import { ArrowDownUp, Check } from 'lucide-react';
 import { cx } from '@/lib/cx';
@@ -48,19 +49,20 @@ function ChoiceList<T extends string>({ title, value, options, onChange, close }
 
 /** A sort icon that opens a short list of orderings (and, if given, of groupings). */
 export function SortMenu<T extends string, G extends string = string>({ value, options, onChange, group, children }: SortMenuProps<T, G>) {
+  const translateUi = useUi();
   return (
     <Popover
-      label="Sort"
+      label={translateUi('Sort')}
       placement="bottom-end"
       className="w-60"
-      trigger={(props) => <IconButton {...props} icon={ArrowDownUp} label="Sort" />}
+      trigger={(props) => <IconButton {...props} icon={ArrowDownUp} label={translateUi('Sort')} />}
     >
       {(close) => (
         <div>
-          <ChoiceList title="Sort by" value={value} options={options} onChange={onChange} close={close} />
+          <ChoiceList title={translateUi('Sort by')} value={value} options={options} onChange={onChange} close={close} />
           {group && (
             <div className="mt-1.5 border-t border-line pt-1.5">
-              <ChoiceList title="Group by" {...group} close={close} />
+              <ChoiceList title={translateUi('Group by')} {...group} close={close} />
             </div>
           )}
           {children && <div className="mt-1.5 border-t border-line px-1 pt-2.5 pb-1">{children}</div>}

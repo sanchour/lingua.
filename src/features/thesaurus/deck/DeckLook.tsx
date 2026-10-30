@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // A deck's colour and cover picture (6-2b): chosen in Deck settings, shown in front of its name everywhere.
 import { useRef } from 'react';
 import { ImagePlus, X } from 'lucide-react';
@@ -19,6 +20,7 @@ async function thumbnail(file: Blob): Promise<Blob> {
 }
 
 export function DeckLook({ deck }: { deck: Deck }) {
+  const translateUi = useUi();
   const input = useRef<HTMLInputElement>(null);
   const pick = async (file: File | undefined) => {
     if (!file) return;
@@ -31,10 +33,8 @@ export function DeckLook({ deck }: { deck: Deck }) {
     <div className="space-y-3">
       <div className="flex items-center gap-3">
         <DeckGlyph deck={deck} size="lg" />
-        <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Deck colour">
-          <button type="button" role="radio" aria-checked={!deck.color} onClick={() => void updateDeck(deck.id, { color: undefined })} className={cx('h-7 rounded-full border px-2.5 text-[12.5px] font-semibold', !deck.color ? 'border-ink' : 'border-line text-ink-soft')}>
-            Default
-          </button>
+        <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={translateUi('Deck colour')}>
+          <button type="button" role="radio" aria-checked={!deck.color} onClick={() => void updateDeck(deck.id, { color: undefined })} className={cx('h-7 rounded-full border px-2.5 text-[12.5px] font-semibold', !deck.color ? 'border-ink' : 'border-line text-ink-soft')}><UiText source={'Default'} /></button>
           {DECK_COLOURS.map((c) => (
             <button
               key={c}
@@ -50,14 +50,12 @@ export function DeckLook({ deck }: { deck: Deck }) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <input ref={input} type="file" accept="image/*" className="sr-only" aria-label="Cover picture" onChange={(e) => void pick(e.target.files?.[0]).finally(() => (e.target.value = ''))} />
+        <input ref={input} type="file" accept="image/*" className="sr-only" aria-label={translateUi('Cover picture')} onChange={(e) => void pick(e.target.files?.[0]).finally(() => (e.target.value = ''))} />
         <button type="button" onClick={() => input.current?.click()} className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-line px-3 text-[13.5px] font-semibold hover:bg-surface">
-          <ImagePlus size={15} aria-hidden /> {deck.coverBlobId ? 'Change the picture' : 'Add a cover picture'}
+          <ImagePlus size={15} aria-hidden /> {deck.coverBlobId ? translateUi('Change the picture') : translateUi('Add a cover picture')}
         </button>
         {deck.coverBlobId && (
-          <button type="button" onClick={() => void updateDeck(deck.id, { coverBlobId: undefined })} className="inline-flex h-9 items-center gap-1 rounded-xl px-2 text-[13px] text-ink-soft hover:text-ink">
-            <X size={14} aria-hidden /> Remove
-          </button>
+          <button type="button" onClick={() => void updateDeck(deck.id, { coverBlobId: undefined })} className="inline-flex h-9 items-center gap-1 rounded-xl px-2 text-[13px] text-ink-soft hover:text-ink"><UiText source={'{0} Remove'} values={[<X size={14} aria-hidden />]} /></button>
         )}
       </div>
     </div>

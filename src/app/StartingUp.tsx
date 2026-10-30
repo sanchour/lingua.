@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { db } from '@/data/db';
 
@@ -76,27 +77,23 @@ export function StartingUp({ waitingFor }: { waitingFor: string }) {
   return (
     <div className="grid min-h-dvh place-items-center bg-bg px-6 text-ink">
       <div className="max-w-lg">
-        <p className="font-serif text-2xl font-semibold">Lingua is waiting for its data</p>
-        <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-          Your settings and learning are kept in this browser’s database, and it hasn’t answered yet. Close any other Lingua tabs or windows (the installed app too), then reload.
-        </p>
+        <p className="font-serif text-2xl font-semibold"><UiText source={'Lingua is waiting for its data'} /></p>
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-soft"><UiText source={'Your settings and learning are kept in this browser’s database, and it hasn’t answered yet. Close any other Lingua tabs or windows (the installed app too), then reload.'} /></p>
         <dl className="mt-4 space-y-1 rounded-xl bg-surface px-4 py-3 font-mono text-[12.5px] text-ink-soft">
           <div>
-            <dt className="inline text-ink-faint">Waiting for: </dt>
+            <dt className="inline text-ink-faint"><UiText source={'Waiting for: '} /></dt>
             <dd className="inline">{waitingFor}</dd>
           </div>
           <div>
-            <dt className="inline text-ink-faint">The database: </dt>
+            <dt className="inline text-ink-faint"><UiText source={'The database: '} /></dt>
             <dd className="inline">{said}</dd>
           </div>
           <div>
-            <dt className="inline text-ink-faint">Lingua’s connection: </dt>
+            <dt className="inline text-ink-faint"><UiText source={'Lingua’s connection: '} /></dt>
             <dd className="inline">{dexie ?? 'opening…'}</dd>
           </div>
         </dl>
-        <button type="button" onClick={() => location.reload()} className="mt-5 inline-flex h-11 items-center rounded-xl bg-inverse px-5 text-sm font-semibold text-on-inverse">
-          Reload
-        </button>
+        <button type="button" onClick={() => location.reload()} className="mt-5 inline-flex h-11 items-center rounded-xl bg-inverse px-5 text-sm font-semibold text-on-inverse"><UiText source={'Reload'} /></button>
       </div>
     </div>
   );
@@ -133,54 +130,27 @@ function StorageBroken({ details }: { details: string[] }) {
   return (
     <div className="grid min-h-dvh place-items-center bg-bg px-6 py-10 text-ink">
       <div className="max-w-xl">
-        <p className="font-serif text-2xl font-semibold">The browser can’t open Lingua’s storage</p>
-        <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-          Your settings and learning live in this browser’s database for this site, and the browser answers with an internal error when Lingua asks for it. That happens when the browser’s files
-          are locked (often by the browser still running in the background, or by antivirus software) or damaged.
-        </p>
+        <p className="font-serif text-2xl font-semibold"><UiText source={'The browser can’t open Lingua’s storage'} /></p>
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-soft"><UiText source={'Your settings and learning live in this browser’s database for this site, and the browser answers with an internal error when Lingua asks for it. That happens when the browser’s files are locked (often by the browser still running in the background, or by antivirus software) or damaged.'} /></p>
         <ol className="mt-4 list-decimal space-y-2 pl-5 text-[15px] leading-relaxed">
-          <li>
-            <strong>Quit the browser completely</strong> (every window, and its icon by the clock: Brave and Chrome keep running in the background), then open Lingua again.
-          </li>
-          <li>
-            If that doesn’t help, <strong>restart the computer</strong>, or pause the antivirus for a moment and reload.
-          </li>
-          <li>
-            Still not? The browser’s copy is damaged. Your learning may still be in <strong>the installed Lingua app</strong> if it was installed from another browser, on a <strong>paired device</strong>, or
-            in a <strong>backup file</strong> (Settings › Backup).
-          </li>
-          <li>
-            Then start fresh here, and restore that backup in Settings › Backup.
-            <div className="mt-2">
+          <li><UiText source={'{0} (every window, and its icon by the clock: Brave and Chrome keep running in the background), then open Lingua again.'} values={[<strong><UiText source={'Quit the browser completely'} /></strong>]} /></li>
+          <li><UiText source={'If that doesn’t help, {0}, or pause the antivirus for a moment and reload.'} values={[<strong><UiText source={'restart the computer'} /></strong>]} /></li>
+          <li><UiText source={'Still not? The browser’s copy is damaged. Your learning may still be in {0} if it was installed from another browser, on a {1}, or in a {2} (Settings › Backup).'} values={[<strong><UiText source={'the installed Lingua app'} /></strong>, <strong><UiText source={'paired device'} /></strong>, <strong><UiText source={'backup file'} /></strong>]} /></li>
+          <li><UiText source={'Then start fresh here, and restore that backup in Settings › Backup.{0}'} values={[<div className="mt-2">
               {step === 'idle' && (
-                <button type="button" onClick={() => setStep('confirm')} className="text-[14px] font-semibold text-accent-text underline">
-                  Start fresh in this browser…
-                </button>
+                <button type="button" onClick={() => setStep('confirm')} className="text-[14px] font-semibold text-accent-text underline"><UiText source={'Start fresh in this browser…'} /></button>
               )}
               {step === 'confirm' && (
-                <span className="inline-flex flex-wrap items-center gap-2 text-[14px]">
-                  This deletes everything Lingua kept in this browser.
-                  <button type="button" onClick={() => void fresh()} className="rounded-lg bg-accent-fill px-3 py-1.5 font-semibold text-on-accent">
-                    Delete and start fresh
-                  </button>
-                  <button type="button" onClick={() => setStep('idle')} className="px-2 py-1.5 font-semibold text-ink-soft">
-                    Keep it
-                  </button>
-                </span>
+                <span className="inline-flex flex-wrap items-center gap-2 text-[14px]"><UiText source={'This deletes everything Lingua kept in this browser.{0}{1}'} values={[<button type="button" onClick={() => void fresh()} className="rounded-lg bg-accent-fill px-3 py-1.5 font-semibold text-on-accent"><UiText source={'Delete and start fresh'} /></button>, <button type="button" onClick={() => setStep('idle')} className="px-2 py-1.5 font-semibold text-ink-soft"><UiText source={'Keep it'} /></button>]} /></span>
               )}
-              {step === 'deleting' && <span className="text-[14px] text-ink-soft">Deleting…</span>}
+              {step === 'deleting' && <span className="text-[14px] text-ink-soft"><UiText source={'Deleting…'} /></span>}
               {step === 'failed' && (
-                <span className="text-[14px] text-ink-soft">
-                  The browser couldn’t delete it either. In the browser’s settings, open Privacy › Site data, find sanchour.github.io and clear it, then reload.
-                </span>
+                <span className="text-[14px] text-ink-soft"><UiText source={'The browser couldn’t delete it either. In the browser’s settings, open Privacy › Site data, find sanchour.github.io and clear it, then reload.'} /></span>
               )}
-            </div>
-          </li>
+            </div>]} /></li>
         </ol>
         <p className="mt-5 font-mono text-[12px] leading-relaxed break-words text-ink-faint">{details.join(' · ')}</p>
-        <button type="button" onClick={() => location.reload()} className="mt-5 inline-flex h-11 items-center rounded-xl bg-inverse px-5 text-sm font-semibold text-on-inverse">
-          Reload
-        </button>
+        <button type="button" onClick={() => location.reload()} className="mt-5 inline-flex h-11 items-center rounded-xl bg-inverse px-5 text-sm font-semibold text-on-inverse"><UiText source={'Reload'} /></button>
       </div>
     </div>
   );

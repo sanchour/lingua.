@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Check, ChevronDown, Download, ExternalLink, Loader2, Trash2, Volume2 } from 'lucide-react';
@@ -33,6 +34,7 @@ const BETTER_VOICE =
 
 /** Settings › Languages › Voice: who reads the language aloud, in which accent, and another voice to pick. */
 export function VoicePanel({ active }: { active: LanguageProfile }) {
+  const translateUi = useUi();
   const settings = useSettings();
   const { speaker } = useSpeaker(active.id);
   const [voices, setVoices] = useState<GeminiVoice[] | null>(null);
@@ -112,12 +114,12 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
     <div className="mt-6">
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-[14px] font-semibold">Voice</p>
+          <p className="text-[14px] font-semibold"><UiText source={'Voice'} /></p>
           <p data-hint="" className="mt-0.5 text-[13px] leading-snug text-ink-soft">{status}</p>
-          {speaker?.kind === 'device' && speaker.quality === 'robotic' && <p data-hint="" className="mt-1.5 text-[13px] leading-snug text-ink-soft">It sounds robotic: it’s the only voice for {accentName(speaker.locale)} this device has. {locale && piperVoicesFor(locale).length ? 'Or download a natural voice for Lingua below.' : BETTER_VOICE}</p>}
+          {speaker?.kind === 'device' && speaker.quality === 'robotic' && <p data-hint="" className="mt-1.5 text-[13px] leading-snug text-ink-soft"><UiText source={'It sounds robotic: it’s the only voice for {0} this device has. {1}'} values={[accentName(speaker.locale), locale && piperVoicesFor(locale).length ? 'Or download a natural voice for Lingua below.' : BETTER_VOICE]} /></p>}
         </div>
         <Switch
-          label="Read aloud"
+          label={translateUi('Read aloud')}
           checked={!voice.off}
           onChange={(on: boolean) => {
             void setSetting('voice', { ...voice, off: !on });
@@ -127,18 +129,16 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {speaker && speaker.kind !== 'none' && sample && (
-          <Button variant="secondary" size="sm" icon={Volume2} onClick={() => void speak(active.id, sample, { flag: active.flag }).catch(fail)}>
-            Hear a sample
-          </Button>
+          <Button variant="secondary" size="sm" icon={Volume2} onClick={() => void speak(active.id, sample, { flag: active.flag }).catch(fail)}><UiText source={'Hear a sample'} /></Button>
         )}
         {key && locale && !voice.off && (
           <Button variant="ghost" size="sm" onClick={() => void findVoices()} disabled={loading}>
-            {loading ? 'Looking for voices…' : voices ? 'Look again' : 'Choose another voice'}
+            {loading ? translateUi('Looking for voices…') : voices ? translateUi('Look again') : translateUi('Choose another voice')}
           </Button>
         )}
         {(speaker?.kind === 'device' || speaker?.kind === 'piper') && (
           <Button variant="ghost" size="sm" onClick={() => void findDeviceVoices()}>
-            {onDevice ? 'Look again' : 'Voices on this device'}
+            {onDevice ? translateUi('Look again') : translateUi('Voices on this device')}
           </Button>
         )}
       </div>
@@ -148,7 +148,7 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
             const current = speaker.kind === 'device' && speaker.voice.voiceURI === v.voiceURI;
             return (
               <li key={v.voiceURI} className="flex items-center gap-3 px-4 py-2.5">
-                <button type="button" onClick={() => tryOnDevice(v)} aria-label={`Hear ${v.name}`} className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-ink-soft hover:text-ink">
+                <button type="button" onClick={() => tryOnDevice(v)} aria-label={translateUi('Hear {0}', [v.name])} className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-ink-soft hover:text-ink">
                   {trying === v.voiceURI ? <Loader2 size={16} className="animate-spin" aria-hidden /> : <Volume2 size={16} aria-hidden />}
                 </button>
                 <span className="min-w-0 flex-1">
@@ -161,11 +161,9 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
                   className={cx('inline-flex h-9 items-center gap-1 rounded-full px-3 text-[13px] font-semibold', current ? 'bg-accent-soft text-accent-text' : 'border border-line hover:bg-sunken')}
                 >
                   {current ? (
-                    <>
-                      <Check size={14} aria-hidden /> In use
-                    </>
+                    <><UiText source={'{0} In use'} values={[<Check size={14} aria-hidden />]} /></>
                   ) : (
-                    'Use'
+                    translateUi('Use')
                   )}
                 </button>
               </li>
@@ -179,12 +177,12 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
       {recorded && <HeardRecordings lang={active.id} />}
       {voices && (
         <ul className="mt-3 max-h-80 divide-y divide-line overflow-y-auto rounded-2xl border border-line bg-raised">
-          {!voices.length && <li className="px-4 py-3 text-[13px] text-ink-soft">Gemini lists no voices for {name} in these accents yet.</li>}
+          {!voices.length && <li className="px-4 py-3 text-[13px] text-ink-soft"><UiText source={'Gemini lists no voices for {0} in these accents yet.'} values={[name]} /></li>}
           {voices.map((v) => {
             const current = speaker?.kind === 'gemini' && speaker.voice.id === v.id;
             return (
               <li key={`${v.locale}-${v.id}`} className="flex items-center gap-3 px-4 py-2.5">
-                <button type="button" onClick={() => tryVoice(v)} aria-label={`Hear ${v.name}`} className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-ink-soft hover:text-ink">
+                <button type="button" onClick={() => tryVoice(v)} aria-label={translateUi('Hear {0}', [v.name])} className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-ink-soft hover:text-ink">
                   {trying === v.id ? <Loader2 size={16} className="animate-spin" aria-hidden /> : <Volume2 size={16} aria-hidden />}
                 </button>
                 <span className="min-w-0 flex-1">
@@ -197,11 +195,9 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
                   className={cx('inline-flex h-9 items-center gap-1 rounded-full px-3 text-[13px] font-semibold', current ? 'bg-accent-soft text-accent-text' : 'border border-line hover:bg-sunken')}
                 >
                   {current ? (
-                    <>
-                      <Check size={14} aria-hidden /> In use
-                    </>
+                    <><UiText source={'{0} In use'} values={[<Check size={14} aria-hidden />]} /></>
                   ) : (
-                    'Use'
+                    translateUi('Use')
                   )}
                 </button>
               </li>
@@ -215,14 +211,12 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
 
 /** The recordings heard in this language, with who said them and their licence (they ask to be credited). */
 function HeardRecordings({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const rows = useLiveQuery(() => heardRecordings(lang), [lang]);
   if (!rows?.length) return null;
   return (
     <details className="group mt-3 rounded-2xl border border-line bg-raised">
-      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-2.5 text-[13px] font-semibold text-ink-soft hover:text-ink">
-        Recordings heard on this device ({rows.length})
-        <ChevronDown size={14} className="ml-auto transition-transform group-open:rotate-180" aria-hidden />
-      </summary>
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-2.5 text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'Recordings heard on this device ({0}){1}'} values={[rows.length, <ChevronDown size={14} className="ml-auto transition-transform group-open:rotate-180" aria-hidden />]} /></summary>
       <ul className="max-h-72 divide-y divide-line overflow-y-auto border-t border-line">
         {rows.map((r) => (
           <li key={r.id} className="flex items-center gap-3 px-4 py-2 text-[13px]">
@@ -231,7 +225,7 @@ function HeardRecordings({ lang }: { lang: string }) {
             </span>
             <span className="truncate text-ink-soft">{[r.credit?.speaker, r.credit?.licence].filter(Boolean).join(' · ')}</span>
             {r.credit?.page && (
-              <a href={r.credit.page} target="_blank" rel="noreferrer" aria-label={`The recording of ${r.text} on Wikimedia Commons`} className="shrink-0 text-ink-soft hover:text-ink">
+              <a href={r.credit.page} target="_blank" rel="noreferrer" aria-label={translateUi('The recording of {0} on Wikimedia Commons', [r.text])} className="shrink-0 text-ink-soft hover:text-ink">
                 <ExternalLink size={14} aria-hidden />
               </a>
             )}
@@ -246,6 +240,7 @@ const MB = (bytes: number) => `${Math.round(bytes / 1_000_000)} MB`;
 
 /** Piper's open voices for this accent: downloaded once, then made on this device, offline too. */
 function PiperVoices({ lang, locale, voice, sample, current }: { lang: string; locale: string; voice: Settings['voice']; sample: string; current: string | null }) {
+  const translateUi = useUi();
   const [installed, setInstalled] = useState<Set<string> | null>(null);
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [trying, setTrying] = useState<string | null>(null);
@@ -291,10 +286,8 @@ function PiperVoices({ lang, locale, voice, sample, current }: { lang: string; l
   return (
     <div className="mt-4 rounded-2xl border border-line bg-raised">
       <div className="px-4 pt-3 pb-2">
-        <p className="text-[13.5px] font-semibold">A natural voice made on this device</p>
-        <p className="mt-0.5 text-[12.5px] leading-snug text-ink-soft">
-          Piper’s open voices run inside Lingua: downloaded once from Hugging Face, then they speak without the internet. A sentence takes a moment to start on most laptops.
-        </p>
+        <p className="text-[13.5px] font-semibold"><UiText source={'A natural voice made on this device'} /></p>
+        <p className="mt-0.5 text-[12.5px] leading-snug text-ink-soft"><UiText source={'Piper’s open voices run inside Lingua: downloaded once from Hugging Face, then they speak without the internet. A sentence takes a moment to start on most laptops.'} /></p>
       </div>
       <ul className="divide-y divide-line border-t border-line">
         {piperVoicesFor(locale).map((v) => {
@@ -303,7 +296,7 @@ function PiperVoices({ lang, locale, voice, sample, current }: { lang: string; l
           return (
             <li key={v.id} className="flex items-center gap-3 px-4 py-2.5">
               {have ? (
-                <button type="button" onClick={() => hear(v)} aria-label={`Hear ${v.name}`} className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-ink-soft hover:text-ink">
+                <button type="button" onClick={() => hear(v)} aria-label={translateUi('Hear {0}', [v.name])} className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-ink-soft hover:text-ink">
                   {trying === v.id ? <Loader2 size={16} className="animate-spin" aria-hidden /> : <Volume2 size={16} aria-hidden />}
                 </button>
               ) : (
@@ -313,7 +306,7 @@ function PiperVoices({ lang, locale, voice, sample, current }: { lang: string; l
               )}
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-[14px] font-semibold">{v.name}</span>
-                <span className="block truncate text-[12.5px] text-ink-soft" title={`Voice data: ${v.credit} (${v.licence})`}>
+                <span className="block truncate text-[12.5px] text-ink-soft" title={translateUi('Voice data: {0} ({1})', [v.credit, v.licence])}>
                   {[accentName(v.locale), MB(v.size), `${v.credit} · ${v.licence}`].join(' · ')}
                 </span>
               </span>
@@ -321,7 +314,7 @@ function PiperVoices({ lang, locale, voice, sample, current }: { lang: string; l
                 <span className="w-24 shrink-0 text-right text-[13px] font-semibold tabular-nums text-ink-soft">{Math.round(pct * 100)}%</span>
               ) : have ? (
                 <>
-                  <button type="button" onClick={() => void remove(v)} aria-label={`Remove ${v.name} from this device`} title="Remove from this device" className="grid size-9 shrink-0 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
+                  <button type="button" onClick={() => void remove(v)} aria-label={translateUi('Remove {0} from this device', [v.name])} title={translateUi('Remove from this device')} className="grid size-9 shrink-0 place-items-center rounded-full text-ink-soft hover:bg-sunken hover:text-ink">
                     <Trash2 size={15} aria-hidden />
                   </button>
                   <button
@@ -330,18 +323,14 @@ function PiperVoices({ lang, locale, voice, sample, current }: { lang: string; l
                     className={cx('inline-flex h-9 items-center gap-1 rounded-full px-3 text-[13px] font-semibold', current === v.id ? 'bg-accent-soft text-accent-text' : 'border border-line hover:bg-sunken')}
                   >
                     {current === v.id ? (
-                      <>
-                        <Check size={14} aria-hidden /> In use
-                      </>
+                      <><UiText source={'{0} In use'} values={[<Check size={14} aria-hidden />]} /></>
                     ) : (
-                      'Use'
+                      translateUi('Use')
                     )}
                   </button>
                 </>
               ) : (
-                <button type="button" onClick={() => void download(v)} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-line px-3 text-[13px] font-semibold hover:bg-sunken">
-                  <Download size={14} aria-hidden /> Download · {MB(v.size)}
-                </button>
+                <button type="button" onClick={() => void download(v)} className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-line px-3 text-[13px] font-semibold hover:bg-sunken"><UiText source={'{0} Download · {1}'} values={[<Download size={14} aria-hidden />, MB(v.size)]} /></button>
               )}
             </li>
           );

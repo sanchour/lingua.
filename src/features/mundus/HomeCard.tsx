@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { Link } from 'react-router';
 import { ArrowRight, Compass as CompassIcon } from 'lucide-react';
 import { LANE_NAME } from '@/core/mundus/guide';
@@ -18,12 +19,8 @@ export function MundusHomeCard() {
   return (
     <Card className="p-5 sm:p-6">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="inline-flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] uppercase" style={{ color: MUNDUS }}>
-          <CompassIcon size={14} aria-hidden /> Mundus suggests
-        </p>
-        <Link to="/mentis" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline">
-          Your guide <ArrowRight size={14} aria-hidden />
-        </Link>
+        <p className="inline-flex items-center gap-1.5 text-[12px] font-bold tracking-[0.12em] uppercase" style={{ color: MUNDUS }}><UiText source={'{0} Mundus suggests'} values={[<CompassIcon size={14} aria-hidden />]} /></p>
+        <Link to="/mentis" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-accent-text hover:underline"><UiText source={'Your guide {0}'} values={[<ArrowRight size={14} aria-hidden />]} /></Link>
       </div>
       <Link to="/mentis" className="group -m-2 flex items-start gap-3.5 rounded-2xl p-2 transition-colors hover:bg-surface">
         <span className={step.type === 'pick' ? 'aspect-[2/3] w-12 shrink-0 overflow-hidden rounded-xl shadow-elev-1' : 'size-11 shrink-0 overflow-hidden rounded-2xl'} aria-hidden>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { Check } from 'lucide-react';
@@ -57,6 +58,7 @@ export function useBuy(onBought?: () => void) {
 
 /** Free, Lingua+ and Max side by side: what each adds, its price, one button. Never pushy. */
 export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps) {
+  const translateUi = useUi();
   const [yearly, setYearly] = useState(false);
   const { busy, get } = useBuy(onBought);
   const lifted = feature ? NEEDS[feature] : 'plus';
@@ -64,22 +66,18 @@ export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps
   return (
     <div>
       <div className="grid gap-3 md:grid-cols-3">
-        <Column title="Free" price="Free" note="Always" lifted={false} items={PLAN_LISTS.free}>
+        <Column title={translateUi('Free')} price="Free" note="Always" lifted={false} items={PLAN_LISTS.free}>
           {onFree ? (
-            <Button variant="secondary" block onClick={onFree}>
-              Continue free
-            </Button>
+            <Button variant="secondary" block onClick={onFree}><UiText source={'Continue free'} /></Button>
           ) : (
-            <p className="h-10 text-center text-[13.5px] leading-10 font-semibold text-ink-faint">{current === 'free' ? 'Your plan' : 'Always included'}</p>
+            <p className="h-10 text-center text-[13.5px] leading-10 font-semibold text-ink-faint">{current === 'free' ? translateUi('Your plan') : translateUi('Always included')}</p>
           )}
         </Column>
         <Column title={<>Lingua<span className="text-accent-text">+</span></>} price={PRICES.plus} note="Once, with every update" lifted={lifted === 'plus'} badge={lifted === 'plus' ? 'Best value' : undefined} items={PLAN_LISTS.plus}>
           {current === 'free' ? (
-            <Button block loading={busy === 'plus'} onClick={() => void get('plus')}>
-              Get Lingua+
-            </Button>
+            <Button block loading={busy === 'plus'} onClick={() => void get('plus')}><UiText source={'Get Lingua+'} /></Button>
           ) : (
-            <p className="h-10 text-center text-[13.5px] leading-10 font-semibold text-sage-text">{current === 'plus' ? 'Your plan' : 'Included in Max'}</p>
+            <p className="h-10 text-center text-[13.5px] leading-10 font-semibold text-sage-text">{current === 'plus' ? translateUi('Your plan') : translateUi('Included in Max')}</p>
           )}
         </Column>
         <Column
@@ -94,30 +92,25 @@ export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps
           items={PLAN_LISTS.max}
         >
           {current === 'max' ? (
-            <p className="h-10 text-center text-[13.5px] leading-10 font-semibold text-sage-text">Your plan</p>
+            <p className="h-10 text-center text-[13.5px] leading-10 font-semibold text-sage-text"><UiText source={'Your plan'} /></p>
           ) : (
             <div className="space-y-2">
               <Segmented<'year' | 'month'>
                 block
-                label="Billing"
+                label={translateUi('Billing')}
                 value={yearly ? 'year' : 'month'}
                 onChange={(v) => setYearly(v === 'year')}
                 options={[
-                  { value: 'month', label: 'Monthly' },
-                  { value: 'year', label: 'Yearly' },
+                  { value: 'month', label: translateUi('Monthly') },
+                  { value: 'year', label: translateUi('Yearly') },
                 ]}
               />
-              <Button block variant={lifted === 'max' ? 'primary' : 'secondary'} loading={busy === 'maxYear' || busy === 'maxMonth'} onClick={() => void get(yearly ? 'maxYear' : 'maxMonth')}>
-                Get Max
-              </Button>
+              <Button block variant={lifted === 'max' ? 'primary' : 'secondary'} loading={busy === 'maxYear' || busy === 'maxMonth'} onClick={() => void get(yearly ? 'maxYear' : 'maxMonth')}><UiText source={'Get Max'} /></Button>
             </div>
           )}
         </Column>
       </div>
-      <p className="mt-4 text-center text-[12.5px] leading-snug text-ink-faint">
-        {TEST_MODE ? 'Test mode: the buttons switch the plan on this device and charge nothing.' : 'Payments go through Stripe. Max renews until you cancel it in Settings › Lingua+.'} Lingua+ bought once stays yours,
-        Max or not.
-      </p>
+      <p className="mt-4 text-center text-[12.5px] leading-snug text-ink-faint"><UiText source={'{0} Lingua+ bought once stays yours, Max or not.'} values={[TEST_MODE ? 'Test mode: the buttons switch the plan on this device and charge nothing.' : 'Payments go through Stripe. Max renews until you cancel it in Settings › Lingua+.']} /></p>
     </div>
   );
 }

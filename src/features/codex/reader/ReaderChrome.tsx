@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import { useNavigate } from 'react-router';
 import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -23,6 +24,7 @@ interface ReaderChromeProps {
 
 /** The reader's top bar: hidden until needed, fades in over the page margin. */
 export function ReaderChrome({ tools, visible, text, chapterTitle, reader, theme, typographyOpen, setTypographyOpen, onContents, onHoverChange }: ReaderChromeProps) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const { layout } = useLayout();
 
@@ -44,7 +46,7 @@ export function ReaderChrome({ tools, visible, text, chapterTitle, reader, theme
               className="relative flex h-14 items-center gap-1"
               style={{ paddingLeft: 'max(10px, env(safe-area-inset-left))', paddingRight: 'max(10px, env(safe-area-inset-right))' }}
             >
-              <IconButton icon={ChevronLeft} label="Library" onClick={() => navigate('/codex')} tooltipPlacement="bottom" />
+              <IconButton icon={ChevronLeft} label={translateUi('Library')} onClick={() => navigate('/codex')} tooltipPlacement="bottom" />
               <div className="min-w-0 flex-1 px-2 text-center">
                 <p lang={text.lang} className="truncate font-serif text-[15px] font-semibold">
                   {text.title}
@@ -56,17 +58,17 @@ export function ReaderChrome({ tools, visible, text, chapterTitle, reader, theme
                 )}
               </div>
               {tools}
-              <IconButton icon={List} label="Contents" onClick={onContents} tooltipPlacement="bottom" />
+              <IconButton icon={List} label={translateUi('Contents')} onClick={onContents} tooltipPlacement="bottom" />
               {layout === 'wide' ? (
                 <Popover
-                  label="Typography"
+                  label={translateUi('Typography')}
                   placement="bottom-end"
                   onOpenChange={setTypographyOpen}
                   trigger={(props) => (
                     <button
                       {...props}
                       type="button"
-                      aria-label="Typography"
+                      aria-label={translateUi('Typography')}
                       className="grid size-10 place-items-center rounded-xl text-ink-soft transition-colors hover:bg-surface hover:text-ink"
                     >
                       <Type size={19} aria-hidden />
@@ -76,14 +78,14 @@ export function ReaderChrome({ tools, visible, text, chapterTitle, reader, theme
                   <TypographyPanel reader={reader} theme={theme} lang={text.lang} />
                 </Popover>
               ) : (
-                <IconButton icon={Type} label="Typography" onClick={() => setTypographyOpen(true)} showTooltip={false} />
+                <IconButton icon={Type} label={translateUi('Typography')} onClick={() => setTypographyOpen(true)} showTooltip={false} />
               )}
             </div>
           </motion.header>
         )}
       </AnimatePresence>
       {layout !== 'wide' && (
-        <Drawer open={typographyOpen} onClose={() => setTypographyOpen(false)} title="Reading">
+        <Drawer open={typographyOpen} onClose={() => setTypographyOpen(false)} title={translateUi('Reading')}>
           <div className="flex justify-center">
             <TypographyPanel reader={reader} theme={theme} lang={text.lang} />
           </div>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // The room's shelves: rails of artwork that scroll sideways (a grid after "See all"), and the
 // tiles that fill them: your songs, songs to explore with a preview, the charts, artists, styles.
 import { useEffect, useRef, useState } from 'react';
@@ -31,6 +32,7 @@ const quiet = 'text-[13px] font-semibold text-ink-faint transition-colors hover:
  * shows every one in a grid. On a mouse, two arrows move the row a screen at a time.
  */
 export function Rail({ title, aside, label, round = false, limit, children }: { title: ReactNode; aside?: ReactNode; label: string; round?: boolean; limit?: number; children: ReactNode[] }) {
+  const translateUi = useUi();
   const { pointer } = useLayout();
   const [all, setAll] = useState(false);
   const more = limit !== undefined && children.length > limit;
@@ -66,13 +68,13 @@ export function Rail({ title, aside, label, round = false, limit, children }: { 
           {aside}
           {more && (
             <button type="button" onClick={() => setAll((v) => !v)} className={cx(quiet, 'hit relative')}>
-              {all ? 'Show less' : 'See all'}
+              {all ? translateUi('Show less') : translateUi('See all')}
             </button>
           )}
           {arrows && !(ends.start && ends.end) && (
             <span className="flex gap-1">
-              <RailArrow label="Back" icon={ChevronLeft} disabled={ends.start} onClick={() => page(-1)} />
-              <RailArrow label="More" icon={ChevronRight} disabled={ends.end} onClick={() => page(1)} />
+              <RailArrow label={translateUi('Back')} icon={ChevronLeft} disabled={ends.start} onClick={() => page(-1)} />
+              <RailArrow label={translateUi('More')} icon={ChevronRight} disabled={ends.end} onClick={() => page(1)} />
             </span>
           )}
         </div>
@@ -129,6 +131,7 @@ export function SongTile({ song, plays = false, i }: { song: Song; plays?: boole
 
 /** A song to explore: tap it to open it with its lyrics, or its round button to hear 30 seconds first. */
 export function HitTile({ hit, busy, onOpen, i, lang }: { hit: SongHit; busy: boolean; onOpen: () => void; i: number; lang: string }) {
+  const translateUi = useUi();
   const { playing, toggle } = usePreview(hit.previewUrl);
   return (
     <motion.li {...enter(i)} className="relative">
@@ -142,7 +145,7 @@ export function HitTile({ hit, busy, onOpen, i, lang }: { hit: SongHit; busy: bo
       {hit.previewUrl && (
         <span className="pointer-events-none absolute inset-x-0 top-0 aspect-square">
           {/* 44px to tap, a 36px disc to see. */}
-          <button type="button" onClick={toggle} aria-label={playing ? 'Stop the preview' : `Hear a preview of ${hit.title}`} className="group/play pointer-events-auto absolute right-0 bottom-0 grid size-11 place-items-center">
+          <button type="button" onClick={toggle} aria-label={playing ? translateUi('Stop the preview') : translateUi('Hear a preview of {0}', [hit.title])} className="group/play pointer-events-auto absolute right-0 bottom-0 grid size-11 place-items-center">
             <span className={cx('grid size-9 place-items-center rounded-full text-white shadow-elev-1 transition-transform group-active/play:scale-90', playing ? 'bg-[var(--cantus)]' : 'bg-black/55 group-hover/play:bg-black/70')}>
               {playing ? <Pause size={15} className="fill-current" aria-hidden /> : <Play size={15} className="translate-x-px fill-current" aria-hidden />}
             </span>
@@ -187,7 +190,7 @@ export function ArtistTile({ artist, onPick, i }: { artist: PickedArtist; onPick
           {initialOf(artist.name)}
         </span>
         <span className="mt-2 block truncate text-[13.5px] font-bold">{artist.name}</span>
-        <span className={cx('block text-[12px]', artist.ease === 'clear' ? 'text-sage-text' : artist.ease === 'fast' ? 'text-[var(--room-rose)]' : 'text-ink-faint')}>{EASE_LABEL[artist.ease]} to follow</span>
+        <span className={cx('block text-[12px]', artist.ease === 'clear' ? 'text-sage-text' : artist.ease === 'fast' ? 'text-[var(--room-rose)]' : 'text-ink-faint')}><UiText source={'{0} to follow'} values={[EASE_LABEL[artist.ease]]} /></span>
       </button>
     </motion.li>
   );
@@ -198,16 +201,17 @@ const STYLE_HUES = [350, 20, 45, 160, 210, 280, 320, 75, 190, 250, 5, 130];
 
 /** Styles to explore: coloured tiles; tapping one searches for songs in that style. */
 export function StyleGrid({ styles, onPick, limit }: { styles: Array<[name: string, term: string]>; onPick: (term: string) => void; limit?: number }) {
+  const translateUi = useUi();
   const [all, setAll] = useState(false);
   const more = limit !== undefined && styles.length > limit;
   const shown = more && !all ? styles.slice(0, limit) : styles;
   return (
-    <section aria-label="Styles to explore" className="room-section">
+    <section aria-label={translateUi('Styles to explore')} className="room-section">
       <div className="room-head">
-        <h2 className="min-w-0 truncate">Styles to explore</h2>
+        <h2 className="min-w-0 truncate"><UiText source={'Styles to explore'} /></h2>
         {more && (
           <button type="button" onClick={() => setAll((v) => !v)} className={cx(quiet, 'hit relative ml-auto')}>
-            {all ? 'Show less' : 'See all'}
+            {all ? translateUi('Show less') : translateUi('See all')}
           </button>
         )}
       </div>

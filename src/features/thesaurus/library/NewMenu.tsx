@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { FileSpreadsheet, FolderPlus, Layers, ListPlus, Package, Plus, Sparkles } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -16,6 +17,7 @@ const OPTIONS: Array<{ action: NewAction; icon: LucideIcon; title: string; detai
 ];
 
 export function NewMenu({ busy, onChoose }: { busy: boolean; onChoose: (action: NewAction) => void }) {
+  const translateUi = useUi();
   const { layout } = useLayout();
   const [sheet, setSheet] = useState(false);
 
@@ -47,13 +49,11 @@ export function NewMenu({ busy, onChoose }: { busy: boolean; onChoose: (action: 
   if (layout === 'wide') {
     return (
       <Popover
-        label="Add to Thesaurus"
+        label={translateUi('Add to Thesaurus')}
         placement="bottom-end"
         className="w-76"
         trigger={(props) => (
-          <Button {...props} icon={Plus} loading={busy}>
-            New
-          </Button>
+          <Button {...props} icon={Plus} loading={busy}><UiText source={'New'} /></Button>
         )}
       >
         {(close) => list(close)}
@@ -62,10 +62,8 @@ export function NewMenu({ busy, onChoose }: { busy: boolean; onChoose: (action: 
   }
   return (
     <>
-      <Button icon={Plus} loading={busy} onClick={() => setSheet(true)}>
-        New
-      </Button>
-      <Drawer open={sheet} onClose={() => setSheet(false)} title="Add to Thesaurus">
+      <Button icon={Plus} loading={busy} onClick={() => setSheet(true)}><UiText source={'New'} /></Button>
+      <Drawer open={sheet} onClose={() => setSheet(false)} title={translateUi('Add to Thesaurus')}>
         {list(() => setSheet(false))}
       </Drawer>
     </>

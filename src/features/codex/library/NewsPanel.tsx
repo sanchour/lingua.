@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Link2, Newspaper, RefreshCw } from 'lucide-react';
@@ -33,6 +34,7 @@ const alreadyAdded = async (lang: string, url: string) => (await db.texts.where(
  * opens it). Pages are read through Jina Reader.
  */
 export function NewsPanel({ lang, onDone, onPaste }: { lang: string; onDone: (id: string) => void; onPaste: () => void }) {
+  const translateUi = useUi();
   const sources = newsSources(lang);
   const [link, setLink] = useState('');
   const [reading, setReading] = useState<string | null>(null);
@@ -62,7 +64,7 @@ export function NewsPanel({ lang, onDone, onPaste }: { lang: string; onDone: (id
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <section className="min-w-0">
-        <p className="mb-1.5 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase">From a link</p>
+        <p className="mb-1.5 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'From a link'} /></p>
         <form
           className="flex gap-2"
           onSubmit={(e) => {
@@ -78,25 +80,19 @@ export function NewsPanel({ lang, onDone, onPaste }: { lang: string; onDone: (id
               onChange={(e) => setLink(e.target.value)}
               inputMode="url"
               type="url"
-              placeholder="https://… a news story or blog post"
-              aria-label="Article link"
+              placeholder={translateUi('https://… a news story or blog post')}
+              aria-label={translateUi('Article link')}
               className="h-12 w-full rounded-xl border border-line bg-raised pr-3 pl-10 text-[15px] transition-colors focus:border-accent"
             />
           </label>
-          <Button size="lg" type="submit" loading={reading === link && link !== ''} disabled={!link.trim()}>
-            Read
-          </Button>
+          <Button size="lg" type="submit" loading={reading === link && link !== ''} disabled={!link.trim()}><UiText source={'Read'} /></Button>
         </form>
-        <p className="mt-2 text-[12.5px] leading-snug text-ink-faint">
-          The page is fetched by Jina Reader (r.jina.ai), which keeps only the article’s text. It sees the link, nothing else. Pages behind a login or paywall can’t be read; paste their text instead.
-        </p>
+        <p className="mt-2 text-[12.5px] leading-snug text-ink-faint"><UiText source={'The page is fetched by Jina Reader (r.jina.ai), which keeps only the article’s text. It sees the link, nothing else. Pages behind a login or paywall can’t be read; paste their text instead.'} /></p>
 
         {failed && (
           <Card className="mt-4 flex flex-col items-start gap-3 border-accent/30 sm:flex-row sm:items-center">
             <p className="flex-1 text-[14px] text-ink-soft">{failed}</p>
-            <Button variant="secondary" size="sm" onClick={onPaste}>
-              Paste the text
-            </Button>
+            <Button variant="secondary" size="sm" onClick={onPaste}><UiText source={'Paste the text'} /></Button>
           </Card>
         )}
 
@@ -110,30 +106,23 @@ export function NewsPanel({ lang, onDone, onPaste }: { lang: string; onDone: (id
               <p lang={lang} className="mt-2 line-clamp-3 font-serif text-[15px] leading-relaxed text-ink-soft">
                 {lead}
               </p>
-              <p className="mt-2 text-[12.5px] font-semibold text-ink-faint tabular-nums">
-                {words.toLocaleString()} words{article.article.published ? ` · ${ago(article.article.published)}` : ''}
-              </p>
+              <p className="mt-2 text-[12.5px] font-semibold text-ink-faint tabular-nums"><UiText source={'{0} words{1}'} values={[words.toLocaleString(), article.article.published ? ` · ${ago(article.article.published)}` : '']} /></p>
               <div className="mt-4">
-                <span className="mb-1.5 block text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase">Reading level</span>
+                <span className="mb-1.5 block text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Reading level'} /></span>
                 <LevelPicker value={level} onChange={setLevel} />
               </div>
-              <Button className="mt-4" icon={ArrowRight} onClick={async () => onDone(await addArticle(lang, article.article, article.url, level))}>
-                Add and read
-              </Button>
+              <Button className="mt-4" icon={ArrowRight} onClick={async () => onDone(await addArticle(lang, article.article, article.url, level))}><UiText source={'Add and read'} /></Button>
             </Card>
           </motion.div>
         )}
       </section>
 
       <section className="min-w-0">
-        <p className="mb-1.5 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase">Latest news</p>
+        <p className="mb-1.5 text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Latest news'} /></p>
         {sources.length ? (
           <Latest lang={lang} reading={reading} onRead={(url) => void read(url, true)} />
         ) : (
-          <Card className="text-[14px] text-ink-soft">
-            <Newspaper size={20} aria-hidden className="mb-2 text-ink-faint" />
-            No news sources for {getLanguage(lang)?.name ?? lang} yet. A link to any article works.
-          </Card>
+          <Card className="text-[14px] text-ink-soft"><UiText source={'{0}No news sources for {1} yet. A link to any article works.'} values={[<Newspaper size={20} aria-hidden className="mb-2 text-ink-faint" />, getLanguage(lang)?.name ?? lang]} /></Card>
         )}
       </section>
     </div>
@@ -141,6 +130,7 @@ export function NewsPanel({ lang, onDone, onPaste }: { lang: string; onDone: (id
 }
 
 function Latest({ lang, reading, onRead }: { lang: string; reading: string | null; onRead: (url: string) => void }) {
+  const translateUi = useUi();
   const sources = newsSources(lang);
   const [sourceId, setSourceId] = useState(sources[0].id);
   const source = sources.find((s) => s.id === sourceId) ?? sources[0];
@@ -167,7 +157,7 @@ function Latest({ lang, reading, onRead }: { lang: string; reading: string | nul
     <div>
       {sources.length > 1 && (
         <div className="mb-3">
-          <Segmented label="News source" value={sourceId} onChange={setSourceId} options={sources.map((s) => ({ value: s.id, label: s.name }))} />
+          <Segmented label={translateUi('News source')} value={sourceId} onChange={setSourceId} options={sources.map((s) => ({ value: s.id, label: s.name }))} />
         </div>
       )}
       {items === undefined && (
@@ -180,9 +170,7 @@ function Latest({ lang, reading, onRead }: { lang: string; reading: string | nul
       {items === null && (
         <Card className="flex items-center gap-3">
           <p className="flex-1 text-[14px] text-ink-soft">{error}</p>
-          <Button variant="secondary" size="sm" icon={RefreshCw} onClick={() => setRound((r) => r + 1)}>
-            Try again
-          </Button>
+          <Button variant="secondary" size="sm" icon={RefreshCw} onClick={() => setRound((r) => r + 1)}><UiText source={'Try again'} /></Button>
         </Card>
       )}
       {items && (
@@ -215,7 +203,7 @@ function Latest({ lang, reading, onRead }: { lang: string; reading: string | nul
           ))}
         </ul>
       )}
-      <p className="mt-2 text-[12px] text-ink-faint">Tap a story to add it to your library and start reading.</p>
+      <p className="mt-2 text-[12px] text-ink-faint"><UiText source={'Tap a story to add it to your library and start reading.'} /></p>
     </div>
   );
 }

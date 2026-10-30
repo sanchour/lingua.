@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { memo, useEffect, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/data/db';
@@ -47,9 +48,9 @@ export const ChapterBody = memo(function ChapterBody({ model, lang, images = tru
           })}
           {aids?.glosses && aids.hideGlosses && <span className="mt-2 block text-sm">{[...sentences].map((s, i) => {
             const key = `${b}:${s.index}`;
-            return <button key={key} type="button" className="mr-3 rounded-md border border-line bg-raised px-2 py-1 text-xs font-sans text-ink-soft" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); setRevealed((old) => { const next = new Set(old); if (next.has(key)) next.delete(key); else next.add(key); return next; }); onLayout?.(); }}>{revealed.has(key) ? 'Hide' : 'Reveal'} sentence {i + 1}</button>;
+            return <button key={key} type="button" className="mr-3 rounded-md border border-line bg-raised px-2 py-1 text-xs font-sans text-ink-soft" onPointerDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); setRevealed((old) => { const next = new Set(old); if (next.has(key)) next.delete(key); else next.add(key); return next; }); onLayout?.(); }}><UiText source={'{0} sentence {1}'} values={[revealed.has(key) ? 'Hide' : 'Reveal', i + 1]} /></button>;
           })}</span>}
-          {localMarks.filter((m) => m.note).map((m) => <small key={m.id} className="my-2 block border-l-2 border-line pl-3 font-sans text-sm leading-normal text-ink-soft">Margin note: {m.note}</small>)}
+          {localMarks.filter((m) => m.note).map((m) => <small key={m.id} className="my-2 block border-l-2 border-line pl-3 font-sans text-sm leading-normal text-ink-soft"><UiText source={'Margin note: {0}'} values={[m.note]} /></small>)}
         </>;
         if (block.t === 'h') {
           return (

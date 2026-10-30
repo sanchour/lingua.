@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
@@ -43,6 +44,7 @@ const SETUP_KINDS = DRILL_KINDS.map((id) => ({ id, label: DRILL_NAME[id] }));
  * across topics (`/cursus/grammatica/review`).
  */
 export default function GrammarLessonPage({ review = false, placement = false }: { review?: boolean; placement?: boolean }) {
+  const translateUi = useUi();
   const { topicId = '' } = useParams();
   const [search] = useSearchParams();
   const kind: Kind = placement ? 'placement' : search.get('mode') === 'lightning' ? 'lightning' : review ? 'review' : search.get('mode') === 'practice' ? 'practice' : 'step';
@@ -164,8 +166,8 @@ export default function GrammarLessonPage({ review = false, placement = false }:
   }
   if (grammar === null || plan === 'empty') {
     return (
-      <Empty onBack={back} title={grammar === null ? 'No grammar here yet' : review ? 'Nothing due' : 'Nothing to practise'}>
-        {review ? 'Every grammar item is resting until its time comes. A lesson on a topic moves you on in the meantime.' : 'This topic has no exercises yet.'}
+      <Empty onBack={back} title={grammar === null ? translateUi('No grammar here yet') : review ? translateUi('Nothing due') : translateUi('Nothing to practise')}>
+        {review ? translateUi('Every grammar item is resting until its time comes. A lesson on a topic moves you on in the meantime.') : translateUi('This topic has no exercises yet.')}
       </Empty>
     );
   }
@@ -259,9 +261,7 @@ function Empty({ title, children, onBack }: { title: string; children: ReactNode
         </span>
         <h1 className="font-serif text-2xl font-semibold">{title}</h1>
         <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">{children}</p>
-        <button type="button" onClick={onBack} className={buttonClasses('primary', 'md') + ' mt-6'}>
-          Back
-        </button>
+        <button type="button" onClick={onBack} className={buttonClasses('primary', 'md') + ' mt-6'}><UiText source={'Back'} /></button>
       </div>
     </motion.div>
   );
@@ -272,7 +272,7 @@ function Empty({ title, children, onBack }: { title: string; children: ReactNode
 function WentWrong({ missed, grammar, lang }: { missed: Missed[]; grammar: Grammar; lang: string }) {
   return (
     <section className="mt-8 w-full text-left">
-      <h2 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">What went wrong</h2>
+      <h2 className="mb-2 text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'What went wrong'} /></h2>
       <ul className="divide-y divide-line/60 rounded-2xl bg-surface">
         {missed.slice(0, 8).map(({ topic, item }) => {
           const t = findTopic(grammar, topic);

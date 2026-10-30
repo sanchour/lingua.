@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useRef, useState } from 'react';
 import type { DragEvent, ReactNode } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -34,6 +35,7 @@ const asWay = (v: string | null): Way => (v === 'file' ? 'book' : WAYS.includes(
 
 /** Adding to the library, on a page of its own: write or paste, import a book or a comic, news, or Goodreads shelves. */
 export default function NewTextPage() {
+  const translateUi = useUi();
   const { language } = useApp();
   const compact = useLayout().layout === 'compact';
   const lang = language.id;
@@ -45,13 +47,13 @@ export default function NewTextPage() {
     <>
       <BackLink to="/codex">Codex</BackLink>
       <header className="mb-7">
-        <p className="mb-1.5 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase">New on the shelf</p>
-        <h1 className="font-serif text-[34px] leading-tight font-semibold tracking-tight sm:text-[40px]">Add to your library</h1>
+        <p className="mb-1.5 text-[12px] font-bold tracking-[0.14em] text-sage-text uppercase"><UiText source={'New on the shelf'} /></p>
+        <h1 className="font-serif text-[34px] leading-tight font-semibold tracking-tight sm:text-[40px]"><UiText source={'Add to your library'} /></h1>
       </header>
 
       <div className="mb-7">
         <Segmented<Way>
-          label="How to add"
+          label={translateUi('How to add')}
           value={way}
           onChange={setWay}
           block={compact}
@@ -61,7 +63,7 @@ export default function NewTextPage() {
             { value: 'book', label: compact ? 'Book' : 'Import a book', icon: compact ? undefined : BookUp },
             { value: 'comic', label: compact ? 'Comic' : 'Import a comic', icon: compact ? undefined : PanelsTopLeft },
             { value: 'news', label: compact ? 'News' : 'News & links', icon: compact ? undefined : Newspaper },
-            { value: 'goodreads', label: 'Goodreads', icon: compact ? undefined : Library },
+            { value: 'goodreads', label: translateUi('Goodreads'), icon: compact ? undefined : Library },
           ]}
         />
       </div>
@@ -86,6 +88,7 @@ const Field = ({ label, children }: { label: string; children: ReactNode }) => (
 );
 
 function WriteOrPaste({ lang, onDone }: { lang: string; onDone: (id: string) => void }) {
+  const translateUi = useUi();
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [body, setBody] = useState('');
@@ -110,13 +113,13 @@ function WriteOrPaste({ lang, onDone }: { lang: string; onDone: (id: string) => 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
       <div className="space-y-4">
-        <Field label="Title">
+        <Field label={translateUi('Title')}>
           <input value={title} onChange={(e) => setTitle(e.target.value)} lang={lang} placeholder="Untitled" className="h-12 w-full rounded-xl border border-line bg-raised px-4 font-serif text-[19px] font-semibold transition-colors focus:border-accent" />
         </Field>
-        <Field label="Author">
-          <input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Optional" className="h-11 w-full rounded-xl border border-line bg-raised px-4 text-[15px] transition-colors focus:border-accent" />
+        <Field label={translateUi('Author')}>
+          <input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder={translateUi('Optional')} className="h-11 w-full rounded-xl border border-line bg-raised px-4 text-[15px] transition-colors focus:border-accent" />
         </Field>
-        <Field label="Text">
+        <Field label={translateUi('Text')}>
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
@@ -128,20 +131,18 @@ function WriteOrPaste({ lang, onDone }: { lang: string; onDone: (id: string) => 
           />
         </Field>
         <div>
-          <span className="mb-1.5 block text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase">Reading level</span>
+          <span className="mb-1.5 block text-[12px] font-bold tracking-[0.1em] text-ink-faint uppercase"><UiText source={'Reading level'} /></span>
           <LevelPicker value={level} onChange={setLevel} />
         </div>
         <div className="flex items-center gap-3">
-          <Button size="lg" icon={Sparkles} onClick={() => void save()} loading={busy} disabled={!body.trim()}>
-            Add and read
-          </Button>
-          <span className="text-[13px] font-semibold text-ink-faint tabular-nums">{words ? `${words.toLocaleString()} words` : ''}</span>
+          <Button size="lg" icon={Sparkles} onClick={() => void save()} loading={busy} disabled={!body.trim()}><UiText source={'Add and read'} /></Button>
+          <span className="text-[13px] font-semibold text-ink-faint tabular-nums">{words ? translateUi('{0} words', [words.toLocaleString()]) : ''}</span>
         </div>
       </div>
 
       <aside>
         <Card className="lg:sticky lg:top-8">
-          <p className="mb-4 font-serif text-lg font-semibold">Cover</p>
+          <p className="mb-4 font-serif text-lg font-semibold"><UiText source={'Cover'} /></p>
           <CoverDesigner text={{ id: 'new', title: title || 'Untitled', author: author || undefined, lang }} design={design} onDesign={setDesign} image={image} onImage={setImage} />
         </Card>
       </aside>
@@ -156,6 +157,7 @@ type Busy = { name: string; progress: number; note?: string };
  * one clear button. Once the file is read its cover shows for a moment before the book opens.
  */
 function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; lang: string; onDone: (id: string) => void; onComic: (id: string) => void }) {
+  const translateUi = useUi();
   const [busy, setBusy] = useState<Busy | null>(null);
   const [shelved, setShelved] = useState<Text | null>(null);
   const [photos, setPhotos] = useState(false);
@@ -233,7 +235,7 @@ function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; l
         {shelved ? (
           <motion.div key="shelved" className="flex flex-col items-center" initial={{ opacity: 0, scale: 0.92, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={spring.soft}>
             <BookCover text={shelved} size="lg" className="w-36 shadow-elev-2" />
-            <p className="mt-5 font-serif text-2xl font-semibold">On your shelf</p>
+            <p className="mt-5 font-serif text-2xl font-semibold"><UiText source={'On your shelf'} /></p>
             <p lang={lang} className="mt-1 max-w-sm truncate text-[14.5px] text-ink-soft">
               {shelved.title}
             </p>
@@ -242,7 +244,7 @@ function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; l
           <motion.div key="drop" className="flex w-full flex-col items-center" exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.15 }}>
             <KindDrawing kind={drawing} className={cx('mb-5 h-20 w-auto transition-colors', over ? 'text-accent-text' : 'text-sage-text')} />
             <p className="font-serif text-2xl font-semibold">
-              {busy ? (photos ? 'Reading the pages…' : `Shelving “${busy.name}”…`) : kind === 'book' ? 'Drop a book here' : 'Drop a comic here'}
+              {busy ? (photos ? translateUi('Reading the pages…') : translateUi('Shelving “{0}”…', [busy.name])) : kind === 'book' ? translateUi('Drop a book here') : translateUi('Drop a comic here')}
             </p>
             {busy ? (
               <div className="mt-5 w-full max-w-xs">
@@ -255,27 +257,23 @@ function ImportFile({ kind, lang, onDone, onComic }: { kind: 'book' | 'comic'; l
               <>
                 <p className="mt-2 max-w-md text-[14.5px] leading-relaxed text-ink-soft">
                   {kind === 'book'
-                    ? 'An EPUB without DRM, a PDF with real text, or a plain text file. Photos of a printed book’s pages work too.'
-                    : 'CBZ (or CBR made as zip) files, PDFs of pages, or the pages’ pictures. Lingua reads the speech bubbles on this device.'}
+                    ? translateUi('An EPUB without DRM, a PDF with real text, or a plain text file. Photos of a printed book’s pages work too.')
+                    : translateUi('CBZ (or CBR made as zip) files, PDFs of pages, or the pages’ pictures. Lingua reads the speech bubbles on this device.')}
                 </p>
                 <Button size="lg" className="mt-6" icon={kind === 'book' ? BookUp : PanelsTopLeft} onClick={() => void (kind === 'book' ? pickFile(BOOK_FILE_ACCEPT).then((f) => f && take(f)) : pickFiles(COMIC_FILE_ACCEPT).then(takeComic))}>
-                  {kind === 'book' ? 'Choose a book' : 'Choose a comic'}
+                  {kind === 'book' ? translateUi('Choose a book') : translateUi('Choose a comic')}
                 </Button>
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] font-semibold">
                   {kind === 'book' ? (
                     <>
                       <button type="button" onClick={() => void (pointer === 'fine' ? pickFolder() : pickFiles('image/*')).then(takePhotos)} className="hit text-accent-text underline-offset-2 hover:underline">
-                        {pointer === 'fine' ? 'A folder of page photos' : 'Photos of the pages'}
+                        {pointer === 'fine' ? translateUi('A folder of page photos') : translateUi('Photos of the pages')}
                       </button>
-                      <button type="button" onClick={() => void run('a short sample', () => importSample(lang), onDone, 'The sample couldn’t be added.')} className="hit text-ink-soft underline-offset-2 hover:text-ink hover:underline">
-                        Or start with a short sample
-                      </button>
+                      <button type="button" onClick={() => void run('a short sample', () => importSample(lang), onDone, 'The sample couldn’t be added.')} className="hit text-ink-soft underline-offset-2 hover:text-ink hover:underline"><UiText source={'Or start with a short sample'} /></button>
                     </>
                   ) : (
                     pointer === 'fine' && (
-                      <button type="button" onClick={() => void pickFolder().then(takeComic)} className="hit text-accent-text underline-offset-2 hover:underline">
-                        A folder of pages
-                      </button>
+                      <button type="button" onClick={() => void pickFolder().then(takeComic)} className="hit text-accent-text underline-offset-2 hover:underline"><UiText source={'A folder of pages'} /></button>
                     )
                   )}
                 </div>

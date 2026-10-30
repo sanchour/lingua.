@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowRight } from 'lucide-react';
@@ -19,6 +20,7 @@ const NO_FOLDER = '__none';
 
 /** Confirms how a spreadsheet maps onto cards (columns are guessed), then imports it as a deck. */
 export function CsvImportDrawer({ lang, source, folders, onClose }: { lang: string; source: CsvSource | null; folders: Folder[]; onClose: () => void }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const [header, setHeader] = useState(false);
   const [roles, setRoles] = useState<ColumnRole[]>([]);
@@ -59,16 +61,16 @@ export function CsvImportDrawer({ lang, source, folders, onClose }: { lang: stri
     <Drawer
       open={Boolean(source)}
       onClose={onClose}
-      title="Import a word list"
-      description="Check which column is which. The first rows are shown below."
+      title={translateUi('Import a word list')}
+      description={translateUi('Check which column is which. The first rows are shown below.')}
       footer={
         <Button block size="lg" iconRight={ArrowRight} disabled={!notes.length || !roles.includes('term')} loading={busy} onClick={() => void run()}>
-          {notes.length ? `Import ${notes.length.toLocaleString()} ${notes.length === 1 ? 'card' : 'cards'}` : 'Choose a Word column'}
+          {notes.length ? translateUi('Import {0} {1}', [notes.length.toLocaleString(), notes.length === 1 ? 'card' : 'cards']) : translateUi('Choose a Word column')}
         </Button>
       }
     >
       <label className="block">
-        <span className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase">Deck name</span>
+        <span className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'Deck name'} /></span>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -77,11 +79,11 @@ export function CsvImportDrawer({ lang, source, folders, onClose }: { lang: stri
       </label>
       {folders.length > 0 && (
         <div className="mt-3">
-          <Select label="Folder" value={folder} onChange={setFolder} options={folderOptions(folders)} />
+          <Select label={translateUi('Folder')} value={folder} onChange={setFolder} options={folderOptions(folders)} />
         </div>
       )}
       <div className="mt-2 border-b border-line">
-        <ToggleRow title="First row is a header" checked={header} onChange={setHeader} />
+        <ToggleRow title={translateUi('First row is a header')} checked={header} onChange={setHeader} />
       </div>
 
       <div className="mt-4 -mx-6 overflow-x-auto px-6">
@@ -91,7 +93,7 @@ export function CsvImportDrawer({ lang, source, folders, onClose }: { lang: stri
               {Array.from({ length: width }, (_, i) => (
                 <th key={i} className="min-w-36 pr-2 pb-2 text-left align-bottom font-normal">
                   {header && <span className="mb-1 block truncate text-[12px] font-semibold text-ink-faint">{table?.rows[0][i]}</span>}
-                  <Select label={`Column ${i + 1}`} hideLabel value={roles[i] ?? 'ignore'} onChange={(r) => setRole(i, r)} options={ROLES.map((r) => ({ value: r, label: ROLE_LABELS[r] }))} />
+                  <Select label={translateUi('Column {0}', [i + 1])} hideLabel value={roles[i] ?? 'ignore'} onChange={(r) => setRole(i, r)} options={ROLES.map((r) => ({ value: r, label: ROLE_LABELS[r] }))} />
                 </th>
               ))}
             </tr>

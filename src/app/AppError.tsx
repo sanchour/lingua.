@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect } from 'react';
 import { useRouteError } from 'react-router';
 
@@ -34,6 +35,7 @@ export function settleReload() {
  * anything else says what happened, with Reload.
  */
 export function AppError() {
+  const translateUi = useUi();
   const error = useRouteError();
   const stale = isStaleChunk(error);
   useEffect(() => {
@@ -43,14 +45,12 @@ export function AppError() {
   return (
     <div className="grid min-h-dvh place-items-center bg-bg px-6 text-ink">
       <div className="max-w-md text-center">
-        <p className="font-serif text-2xl font-semibold">{stale ? 'Lingua was updated' : 'Something went wrong'}</p>
+        <p className="font-serif text-2xl font-semibold">{stale ? translateUi('Lingua was updated') : translateUi('Something went wrong')}</p>
         <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-          {stale ? 'This page still had the old version. Reload to open the new one; your learning is kept.' : 'This page stopped working. Reload to try again; your learning is kept on this device.'}
+          {stale ? translateUi('This page still had the old version. Reload to open the new one; your learning is kept.') : translateUi('This page stopped working. Reload to try again; your learning is kept on this device.')}
         </p>
         {!stale && <p className="mt-3 rounded-xl bg-surface px-3 py-2 text-left font-mono text-[12px] break-words text-ink-faint">{message}</p>}
-        <button type="button" onClick={() => location.reload()} className="mt-5 inline-flex h-11 items-center rounded-xl bg-inverse px-5 text-sm font-semibold text-on-inverse">
-          Reload
-        </button>
+        <button type="button" onClick={() => location.reload()} className="mt-5 inline-flex h-11 items-center rounded-xl bg-inverse px-5 text-sm font-semibold text-on-inverse"><UiText source={'Reload'} /></button>
       </div>
     </div>
   );

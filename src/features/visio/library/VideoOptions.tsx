@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { Captions, Download, Ellipsis, FileVideo, HardDriveDownload, Pencil, Sparkles, Trash2 } from 'lucide-react';
 import { deleteMedia, updateMedia } from '@/data/media';
@@ -13,6 +14,7 @@ import { toast } from '@/state/ui';
 
 /** The ⋯ menu for a video: rename, its file, subtitles, removal. */
 export function VideoOptions({ media, className, onRemoved }: { media: Media; className?: string; onRemoved?: () => void }) {
+  const translateUi = useUi();
   const tracks = useTracks(media.id);
   const transcribing = useJobs((s) => s.transcribing[media.id]);
   const [dialog, setDialog] = useState<'rename' | 'remove' | 'slim' | null>(null);
@@ -29,14 +31,14 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
   return (
     <>
       <Popover
-        label="Video options"
+        label={translateUi('Video options')}
         placement="bottom-end"
         className="w-72"
         trigger={(props) => (
           <button
             {...props}
             type="button"
-            aria-label={`${media.title} options`}
+            aria-label={translateUi('{0} options', [media.title])}
             className={className ?? 'grid size-9 shrink-0 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-surface hover:text-ink pointer-coarse:size-10'}
           >
             <Ellipsis size={17} aria-hidden />
@@ -47,7 +49,7 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
           <div className="space-y-0.5">
             <MenuItem
               icon={Pencil}
-              label="Rename"
+              label={translateUi('Rename')}
               onClick={() => {
                 close();
                 setTitle(media.title);
@@ -57,7 +59,7 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
             {hasSound && (
               <MenuItem
                 icon={Sparkles}
-                label={transcribing !== undefined ? 'Making subtitles…' : tracks?.target ? 'Make subtitles again' : 'Make subtitles'}
+                label={transcribing !== undefined ? translateUi('Making subtitles…') : tracks?.target ? translateUi('Make subtitles again') : translateUi('Make subtitles')}
                 detail="Whisper listens and writes every line"
                 onClick={() => {
                   close();
@@ -65,11 +67,11 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
                 }}
               />
             )}
-            {tracks?.target && <MenuItem icon={Download} label="Export subtitles" detail="As an .srt file" onClick={() => (close(), exportTrack('target'))} />}
-            {tracks?.native && <MenuItem icon={Captions} label="Export English subtitles" onClick={() => (close(), exportTrack('native'))} />}
+            {tracks?.target && <MenuItem icon={Download} label={translateUi('Export subtitles')} detail="As an .srt file" onClick={() => (close(), exportTrack('target'))} />}
+            {tracks?.native && <MenuItem icon={Captions} label={translateUi('Export English subtitles')} onClick={() => (close(), exportTrack('native'))} />}
             <MenuItem
               icon={FileVideo}
-              label={media.blobId ? 'Replace the video file' : 'Attach the video file'}
+              label={media.blobId ? translateUi('Replace the video file') : translateUi('Attach the video file')}
               detail={media.blobId ? undefined : 'Watch here with your subtitles'}
               onClick={async () => {
                 close();
@@ -82,7 +84,7 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
             {media.blobId && (
               <MenuItem
                 icon={HardDriveDownload}
-                label="Keep subtitles only"
+                label={translateUi('Keep subtitles only')}
                 detail={media.sizeBytes ? `Frees ${formatBytes(media.sizeBytes)}` : 'Frees the space of the video'}
                 onClick={() => {
                   close();
@@ -90,7 +92,7 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
                 }}
               />
             )}
-            <MenuItem icon={Trash2} label="Remove" danger onClick={() => (close(), setDialog('remove'))} />
+            <MenuItem icon={Trash2} label={translateUi('Remove')} danger onClick={() => (close(), setDialog('remove'))} />
           </div>
         )}
       </Popover>
@@ -98,28 +100,24 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
       <Dialog
         open={dialog === 'rename'}
         onClose={() => setDialog(null)}
-        title="Rename"
+        title={translateUi('Rename')}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setDialog(null)}>
-              Cancel
-            </Button>
+            <Button variant="ghost" onClick={() => setDialog(null)}><UiText source={'Cancel'} /></Button>
             <Button
               disabled={!title.trim()}
               onClick={async () => {
                 setDialog(null);
                 await updateMedia(media.id, { title: title.trim() });
               }}
-            >
-              Save
-            </Button>
+            ><UiText source={'Save'} /></Button>
           </>
         }
       >
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          aria-label="Title"
+          aria-label={translateUi('Title')}
           data-autofocus
           className="h-11 w-full rounded-xl border border-line bg-bg px-3.5 text-[15px] text-ink"
         />
@@ -128,36 +126,28 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
       <Dialog
         open={dialog === 'slim'}
         onClose={() => setDialog(null)}
-        title="Keep subtitles only?"
+        title={translateUi('Keep subtitles only?')}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setDialog(null)}>
-              Cancel
-            </Button>
+            <Button variant="ghost" onClick={() => setDialog(null)}><UiText source={'Cancel'} /></Button>
             <Button
               onClick={async () => {
                 setDialog(null);
                 await keepSubtitlesOnly(media.id);
                 toast('The video file is gone; its subtitles and cards stay.');
               }}
-            >
-              Free the space
-            </Button>
+            ><UiText source={'Free the space'} /></Button>
           </>
         }
-      >
-        The video file leaves this device. Its subtitles, the words you marked and the lines you saved all stay, and you can attach the file again any time.
-      </Dialog>
+      ><UiText source={'The video file leaves this device. Its subtitles, the words you marked and the lines you saved all stay, and you can attach the file again any time.'} /></Dialog>
 
       <Dialog
         open={dialog === 'remove'}
         onClose={() => setDialog(null)}
-        title="Remove this video?"
+        title={translateUi('Remove this video?')}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setDialog(null)}>
-              Keep
-            </Button>
+            <Button variant="ghost" onClick={() => setDialog(null)}><UiText source={'Keep'} /></Button>
             <Button
               variant="danger"
               onClick={async () => {
@@ -166,14 +156,10 @@ export function VideoOptions({ media, className, onRemoved }: { media: Media; cl
                 toast('Removed from Visio.');
                 onRemoved?.();
               }}
-            >
-              Remove
-            </Button>
+            ><UiText source={'Remove'} /></Button>
           </>
         }
-      >
-        “{media.title}”, its file and subtitles will be removed. Words you marked and lines you saved stay in Thesaurus.
-      </Dialog>
+      ><UiText source={'“{0}”, its file and subtitles will be removed. Words you marked and lines you saved stay in Thesaurus.'} values={[media.title]} /></Dialog>
     </>
   );
 }

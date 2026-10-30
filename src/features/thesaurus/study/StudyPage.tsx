@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { motion } from 'motion/react';
@@ -122,6 +123,7 @@ export default function StudyPage() {
 }
 
 function CardStudy() {
+  const translateUi = useUi();
   const { deckId: param } = useParams();
   const [search] = useSearchParams();
   const mode = search.get('mode') === 'ludus' ? 'ludus' : 'recall';
@@ -208,7 +210,7 @@ function CardStudy() {
     return (
       <div className="grid min-h-dvh place-items-center py-10">
         <LessonEnd
-          title={lightning ? 'Time!' : 'Lesson complete'}
+          title={lightning ? translateUi('Time!') : translateUi('Lesson complete')}
           note={lightning ? (ludusEnd.score ? `${ludusEnd.score} right in a minute.` : 'The clock won this time. Another go?') : undefined}
           result={ludusEnd}
           actions={actions}
@@ -241,7 +243,7 @@ function CardStudy() {
           ];
     return (
       <div className="grid min-h-dvh place-items-center py-10">
-        <Summary title={mode === 'ludus' ? 'Lesson complete' : loaded?.kind === 'recall' && loaded.practice ? 'Another pass done' : 'Done for now'} stats={summary} onDone={back} actions={actions} />
+        <Summary title={mode === 'ludus' ? translateUi('Lesson complete') : loaded?.kind === 'recall' && loaded.practice ? translateUi('Another pass done') : translateUi('Done for now')} stats={summary} onDone={back} actions={actions} />
       </div>
     );
   }
@@ -256,14 +258,12 @@ function CardStudy() {
           <span className="mx-auto mb-5 grid size-16 place-items-center rounded-2xl bg-sage-soft text-sage-text">
             <Coffee size={28} aria-hidden />
           </span>
-          <h1 className="font-serif text-2xl font-semibold">{loaded.kind === 'recall' ? 'Nothing due right now' : 'No cards to play with yet'}</h1>
+          <h1 className="font-serif text-2xl font-semibold">{loaded.kind === 'recall' ? translateUi('Nothing due right now') : translateUi('No cards to play with yet')}</h1>
           <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-            {loaded.kind === 'recall' ? 'Every card is resting until its time comes. Ludus lets you practise anyway.' : 'Add a ready-made deck or a few words of your own, then come back.'}
+            {loaded.kind === 'recall' ? translateUi('Every card is resting until its time comes. Ludus lets you practise anyway.') : translateUi('Add a ready-made deck or a few words of your own, then come back.')}
           </p>
           <div className="mt-6 flex justify-center gap-2">
-            <button type="button" onClick={back} className={buttonClasses('secondary', 'md')}>
-              Back
-            </button>
+            <button type="button" onClick={back} className={buttonClasses('secondary', 'md')}><UiText source={'Back'} /></button>
             {loaded.kind === 'recall' && (
               <Link to={`/thesaurus/study/${param}?mode=ludus`} replace className={buttonClasses('primary', 'md')}>
                 Ludus

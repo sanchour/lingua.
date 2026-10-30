@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 // The shared screen of a transformation (core/exercise/transform.ts): one form is shown, the learner types another form
 // of the same word. Every room draws it the same way; the room owns the typed value and the phase, as it does for its
 // own kinds, so this fits any lesson screen.
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export function TransformView({ spec, lang, value, onChange, phase, onSubmit, onHint }: Props) {
+  const translateUi = useUi();
   const input = useRef<HTMLInputElement>(null);
   const { pointer } = useLayout();
   const [shown, setShown] = useState(0);
@@ -112,13 +114,13 @@ export function TransformView({ spec, lang, value, onChange, phase, onSubmit, on
               className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4"
             >
               <Lightbulb size={15} aria-hidden />
-              {shown ? 'Another hint' : 'Hint'}
+              {shown ? translateUi('Another hint') : translateUi('Hint')}
             </button>
           )}
         </div>
       )}
       {phase === 'answer' && LETTERS[lang] && pointer === 'fine' && (
-        <div className="flex flex-wrap justify-center gap-1.5" aria-label="Special letters">
+        <div className="flex flex-wrap justify-center gap-1.5" aria-label={translateUi('Special letters')}>
           {LETTERS[lang].map((ch) => (
             <button
               key={ch}

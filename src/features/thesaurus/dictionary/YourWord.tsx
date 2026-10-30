@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // The learner's half of a word's page (6-1): favourite and important, their own tags and note, and what they have done with
 // the word (first met, reviews, how often they recalled it). The language's half is the rest of the page.
 import { useEffect, useRef, useState } from 'react';
@@ -10,6 +11,7 @@ const RATING: Record<number, string> = { 1: 'Again', 2: 'Hard', 3: 'Good', 4: 'E
 const day = (at: number) => new Date(at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 
 export function YourWord({ lang, norm, lemma, gloss }: { lang: string; norm: string; lemma?: string; gloss?: string }) {
+  const translateUi = useUi();
   const word = useWord(lang, norm);
   const history = useWordHistory(lang, norm);
   const ctx = { lemma, gloss };
@@ -52,22 +54,22 @@ export function YourWord({ lang, norm, lemma, gloss }: { lang: string; norm: str
   return (
     <Card className="mt-6 p-5">
       <div className="flex items-center gap-2">
-        <h3 className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">You</h3>
+        <h3 className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'You'} /></h3>
         <span className="flex-1" />
-        <IconButton icon={Star} label={word?.favourite ? 'Remove from favourites' : 'Favourite'} active={Boolean(word?.favourite)} onClick={() => void setWordFavourite(lang, norm, !word?.favourite, ctx)} />
-        <IconButton icon={Flag} label={word?.important ? 'Not important' : 'Important'} active={Boolean(word?.important)} onClick={() => void setWordImportant(lang, norm, !word?.important, ctx)} />
+        <IconButton icon={Star} label={word?.favourite ? translateUi('Remove from favourites') : translateUi('Favourite')} active={Boolean(word?.favourite)} onClick={() => void setWordFavourite(lang, norm, !word?.favourite, ctx)} />
+        <IconButton icon={Flag} label={word?.important ? translateUi('Not important') : translateUi('Important')} active={Boolean(word?.important)} onClick={() => void setWordImportant(lang, norm, !word?.important, ctx)} />
       </div>
 
       <div className="mt-3 space-y-5">
         <div>
-          <p className="mb-1.5 text-[12.5px] font-semibold text-ink-faint">Tags</p>
+          <p className="mb-1.5 text-[12.5px] font-semibold text-ink-faint"><UiText source={'Tags'} /></p>
           <div className="flex flex-wrap items-center gap-1.5">
             {tags.map((t) => (
               <span key={t} className="inline-flex items-center gap-1 rounded-full bg-sage-soft py-0.5 pr-1 pl-2.5 text-[13px] font-semibold text-sage-text">
                 {t}
                 <button
                   type="button"
-                  aria-label={`Remove the tag ${t}`}
+                  aria-label={translateUi('Remove the tag {0}', [t])}
                   onClick={() => void changeWordTags(lang, norm, (list) => list.filter((x) => x !== t), ctx)}
                   className="grid size-5 place-items-center rounded-full hover:bg-sage/20"
                 >
@@ -91,8 +93,8 @@ export function YourWord({ lang, norm, lemma, gloss }: { lang: string; norm: str
                     addTags([tag]);
                     setTag('');
                   }}
-                  placeholder="Add a tag"
-                  aria-label="Add a tag"
+                  placeholder={translateUi('Add a tag')}
+                  aria-label={translateUi('Add a tag')}
                   maxLength={25}
                   className="h-7 w-28 rounded-full border border-dashed border-line bg-transparent px-2.5 text-[13px] outline-none placeholder:text-ink-faint focus:border-ink"
                 />
@@ -101,14 +103,12 @@ export function YourWord({ lang, norm, lemma, gloss }: { lang: string; norm: str
             )}
           </div>
 
-          <label className="mt-4 mb-1.5 block text-[12.5px] font-semibold text-ink-faint" htmlFor={`note-${lang}-${norm}`}>
-            Your note
-          </label>
+          <label className="mt-4 mb-1.5 block text-[12.5px] font-semibold text-ink-faint" htmlFor={`note-${lang}-${norm}`}><UiText source={'Your note'} /></label>
           <textarea
             id={`note-${lang}-${norm}`}
             value={note}
             rows={3}
-            placeholder="A mnemonic, a mix-up to avoid, where you heard it…"
+            placeholder={translateUi('A mnemonic, a mix-up to avoid, where you heard it…')}
             onChange={(e) => setNote(e.target.value)}
             onBlur={() => note !== saved && void setWordNote(lang, norm, note, ctx)}
             className={cx('w-full resize-y rounded-xl border border-line bg-raised px-3 py-2 text-[15px] leading-snug outline-none placeholder:text-ink-faint focus:border-ink')}
@@ -116,7 +116,7 @@ export function YourWord({ lang, norm, lemma, gloss }: { lang: string; norm: str
         </div>
 
         <div>
-          <p className="mb-1.5 text-[12.5px] font-semibold text-ink-faint">What you have done with it</p>
+          <p className="mb-1.5 text-[12.5px] font-semibold text-ink-faint"><UiText source={'What you have done with it'} /></p>
           {facts.length ? (
             <ul className="space-y-1 text-[14.5px] text-ink-soft">
               {facts.map((f) => (
@@ -124,17 +124,17 @@ export function YourWord({ lang, norm, lemma, gloss }: { lang: string; norm: str
               ))}
             </ul>
           ) : (
-            <p className="text-[14.5px] text-ink-soft">Nothing yet. Mark it Learning, and its reviews show here.</p>
+            <p className="text-[14.5px] text-ink-soft"><UiText source={'Nothing yet. Mark it Learning, and its reviews show here.'} /></p>
           )}
           {history?.log && history.log.length > 0 && (
             <details className="mt-2 text-[14px]">
-              <summary className="cursor-pointer text-ink-soft select-none hover:text-ink">Review by review</summary>
+              <summary className="cursor-pointer text-ink-soft select-none hover:text-ink"><UiText source={'Review by review'} /></summary>
               <ul className="mt-2 divide-y divide-line/60">
                 {history.log.map((l) => (
                   <li key={l.at} className="flex items-center gap-3 py-1.5">
                     <span className="w-28 text-ink-faint tabular-nums">{day(l.at)}</span>
                     <span className={cx('font-semibold', l.rating >= 3 ? 'text-sage-text' : 'text-accent-text')}>{RATING[l.rating] ?? l.rating}</span>
-                    <span className="text-ink-faint">{l.mode === 'classic' ? 'flashcard' : l.mode}</span>
+                    <span className="text-ink-faint">{l.mode === 'classic' ? translateUi('flashcard') : l.mode}</span>
                   </li>
                 ))}
               </ul>

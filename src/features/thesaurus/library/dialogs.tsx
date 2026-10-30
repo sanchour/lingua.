@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Deck, Folder } from '@/data/types';
@@ -26,6 +27,7 @@ export interface NameRequest {
 
 /** Asks for a name (and optionally a folder): new deck, new folder, rename. */
 export function NameDialog({ request, onClose }: { request: NameRequest | null; onClose: () => void }) {
+  const translateUi = useUi();
   const [name, setName] = useState('');
   const [folder, setFolder] = useState<string>(NO_FOLDER);
   const [busy, setBusy] = useState(false);
@@ -55,9 +57,7 @@ export function NameDialog({ request, onClose }: { request: NameRequest | null; 
       title={request?.title ?? ''}
       actions={
         <>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
+          <Button variant="ghost" onClick={onClose}><UiText source={'Cancel'} /></Button>
           <Button onClick={() => void submit()} disabled={!name.trim()} loading={busy}>
             {request?.confirm}
           </Button>
@@ -76,7 +76,7 @@ export function NameDialog({ request, onClose }: { request: NameRequest | null; 
           />
         </label>
         {request?.folders && request.folders.length > 0 && (
-          <Select label="Folder" value={folder} onChange={setFolder} options={folderOptions(request.folders)} />
+          <Select label={translateUi('Folder')} value={folder} onChange={setFolder} options={folderOptions(request.folders)} />
         )}
       </form>
     </Dialog>
@@ -100,9 +100,7 @@ export function ConfirmDialog({ request, onClose }: { request: ConfirmRequest | 
       title={request?.title ?? ''}
       actions={
         <>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
+          <Button variant="ghost" onClick={onClose}><UiText source={'Cancel'} /></Button>
           <Button
             variant="danger"
             loading={busy}
@@ -144,9 +142,7 @@ export function MergeDialog({ request, onClose }: { request: MergeRequest | null
       title={request?.title ?? ''}
       actions={
         <>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
+          <Button variant="ghost" onClick={onClose}><UiText source={'Cancel'} /></Button>
           <Button
             disabled={none}
             onClick={async () => {
@@ -160,7 +156,7 @@ export function MergeDialog({ request, onClose }: { request: MergeRequest | null
       }
     >
       <div className="pt-2">
-        {none ? <p className="text-[14px] text-ink-soft">There is no other deck in this language.</p> : <Select label={request?.label ?? 'Into'} value={target} onChange={setTarget} options={(request?.decks ?? []).map((d) => ({ value: d.id, label: d.name }))} />}
+        {none ? <p className="text-[14px] text-ink-soft"><UiText source={'There is no other deck in this language.'} /></p> : <Select label={request?.label ?? 'Into'} value={target} onChange={setTarget} options={(request?.decks ?? []).map((d) => ({ value: d.id, label: d.name }))} />}
       </div>
     </Dialog>
   );
@@ -176,6 +172,7 @@ export interface MoveRequest {
 }
 
 export function MoveDialog({ request, onClose }: { request: MoveRequest | null; onClose: () => void }) {
+  const translateUi = useUi();
   const [folder, setFolder] = useState<string>(NO_FOLDER);
   useEffect(() => setFolder(request?.current ?? NO_FOLDER), [request]);
   return (
@@ -185,22 +182,18 @@ export function MoveDialog({ request, onClose }: { request: MoveRequest | null; 
       title={request?.title ?? ''}
       actions={
         <>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
+          <Button variant="ghost" onClick={onClose}><UiText source={'Cancel'} /></Button>
           <Button
             onClick={async () => {
               await request?.onConfirm(folder === NO_FOLDER ? null : folder);
               onClose();
             }}
-          >
-            Move
-          </Button>
+          ><UiText source={'Move'} /></Button>
         </>
       }
     >
       <div className="pt-2">
-        <Select label="Folder" value={folder} onChange={setFolder} options={request ? folderOptions(request.folders, request.exclude) : []} />
+        <Select label={translateUi('Folder')} value={folder} onChange={setFolder} options={request ? folderOptions(request.folders, request.exclude) : []} />
       </div>
     </Dialog>
   );

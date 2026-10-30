@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -23,6 +24,7 @@ const asLevel = (v: string | null): GapLevel => (LEVELS.includes(v as GapLevel) 
  * deck's own words come first when it's played from a deck, then your words, then your level's.
  */
 export function SentencesRound({ deckId }: { deckId: string | null }) {
+  const translateUi = useUi();
   const { language } = useApp();
   const lang = language.id;
   const navigate = useNavigate();
@@ -116,19 +118,19 @@ export function SentencesRound({ deckId }: { deckId: string | null }) {
   return (
     <div className="min-h-dvh bg-bg" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <header className="mx-auto flex max-w-4xl items-center gap-3 px-4 pt-4 sm:px-8 sm:pt-6">
-        <IconButton icon={X} label="Close" onClick={back} />
+        <IconButton icon={X} label={translateUi('Close')} onClick={back} />
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-bold tracking-[0.14em] text-sage-text uppercase">Ludus</p>
-          <h1 className="font-serif text-[20px] leading-tight font-semibold">Sentences</h1>
+          <h1 className="font-serif text-[20px] leading-tight font-semibold"><UiText source={'Sentences'} /></h1>
         </div>
         <Segmented<GapLevel>
-          label="Difficulty"
+          label={translateUi('Difficulty')}
           value={level}
           onChange={setLevel}
           options={[
-            { value: 'choose', label: 'Choose' },
-            { value: 'type', label: 'Type' },
-            { value: 'hard', label: 'Harder' },
+            { value: 'choose', label: translateUi('Choose') },
+            { value: 'type', label: translateUi('Type') },
+            { value: 'hard', label: translateUi('Harder') },
           ]}
         />
       </header>
@@ -140,21 +142,18 @@ export function SentencesRound({ deckId }: { deckId: string | null }) {
       </div>
 
       <main className="mx-auto flex max-w-2xl flex-col px-5 pt-[min(12vh,96px)] pb-16 sm:px-8">
-        {items === null && <p className="text-center text-ink-soft">Finding sentences…</p>}
+        {items === null && <p className="text-center text-ink-soft"><UiText source={'Finding sentences…'} /></p>}
         {items && items.length === 0 && (
           <div className="text-center">
-            <p className="font-serif text-2xl font-semibold">No sentences yet</p>
-            <p className="mt-2 text-ink-soft">This language’s pack has no example sentences on this device. Open Codex once so the pack is downloaded, then try again.</p>
+            <p className="font-serif text-2xl font-semibold"><UiText source={'No sentences yet'} /></p>
+            <p className="mt-2 text-ink-soft"><UiText source={'This language’s pack has no example sentences on this device. Open Codex once so the pack is downloaded, then try again.'} /></p>
           </div>
         )}
 
         <AnimatePresence mode="wait" initial={false}>
           {item && (
             <motion.div key={item.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={spring.snappy}>
-              <p className="mb-6 text-center text-[12.5px] font-semibold text-ink-faint">
-                {at + 1} of {items!.length}
-                {' · '}
-                {item.from === 'deck'
+              <p className="mb-6 text-center text-[12.5px] font-semibold text-ink-faint"><UiText source={'{0} of {1}{2}{3}{4}'} values={[at + 1, items!.length, ' · ', item.from === 'deck'
                   ? 'from this deck'
                   : item.from === 'learning'
                     ? 'a word you’re learning'
@@ -162,9 +161,7 @@ export function SentencesRound({ deckId }: { deckId: string | null }) {
                       ? item.metIn
                         ? `met in ${item.metIn.title}`
                         : 'one of your words'
-                      : 'around your level'}
-                {item.from !== 'level' && item.metIn && item.from === 'learning' && ` · ${SIGHTING_KINDS[item.metIn.kind].label.toLowerCase()}`}
-              </p>
+                      : 'around your level', item.from !== 'level' && item.metIn && item.from === 'learning' && ` · ${SIGHTING_KINDS[item.metIn.kind].label.toLowerCase()}`]} /></p>
 
               <p lang={lang} className="text-center font-serif text-[clamp(1.5rem,3.6vw,2.15rem)] leading-relaxed">
                 <GlossText text={item.before} lang={lang} />
@@ -217,25 +214,21 @@ export function SentencesRound({ deckId }: { deckId: string | null }) {
               )}
               {phase === 'answer' && level !== 'choose' && (
                 <div className="mt-10 flex justify-center">
-                  <Button icon={Check} onClick={check} disabled={!typed.trim()}>
-                    Check
-                  </Button>
+                  <Button icon={Check} onClick={check} disabled={!typed.trim()}><UiText source={'Check'} /></Button>
                 </div>
               )}
 
               {phase !== 'answer' && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft} className="mt-10 flex flex-col items-center gap-4 text-center">
                   <p className={cx('text-[15px] font-semibold', phase === 'wrong' ? 'text-accent-text' : 'text-sage-text')}>
-                    {phase === 'right' ? `Right: “${item.answer}”.` : phase === 'close' ? `Almost: it’s spelt “${item.answer}”.` : picked !== null && item.options ? `Not “${item.options[picked]}”: it’s “${item.answer}”.` : `It’s “${item.answer}”.`}
+                    {phase === 'right' ? translateUi('Right: “{0}”.', [item.answer]) : phase === 'close' ? translateUi('Almost: it’s spelt “{0}”.', [item.answer]) : picked !== null && item.options ? translateUi('Not “{0}”: it’s “{1}”.', [item.options[picked], item.answer]) : translateUi('It’s “{0}”.', [item.answer])}
                     {item.gloss && <span className="font-normal text-ink-soft"> · {item.gloss}</span>}
                   </p>
                   <div className="flex items-center gap-2">
                     <SpeakButton lang={lang} text={`${item.before}${item.answer}${item.after}`} label="Hear the sentence" className="size-11 bg-surface text-ink-soft hover:text-ink" />
-                    <Button iconRight={ArrowRight} onClick={next}>
-                      Next
-                    </Button>
+                    <Button iconRight={ArrowRight} onClick={next}><UiText source={'Next'} /></Button>
                   </div>
-                  <p className="text-[12px] text-ink-faint pointer-coarse:hidden">Enter for the next sentence</p>
+                  <p className="text-[12px] text-ink-faint pointer-coarse:hidden"><UiText source={'Enter for the next sentence'} /></p>
                 </motion.div>
               )}
             </motion.div>
@@ -244,23 +237,19 @@ export function SentencesRound({ deckId }: { deckId: string | null }) {
 
         {finished && items!.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft} className="text-center">
-            <p className="text-[12px] font-bold tracking-[0.22em] text-sage-text uppercase">Round done</p>
+            <p className="text-[12px] font-bold tracking-[0.22em] text-sage-text uppercase"><UiText source={'Round done'} /></p>
             <p className="mt-4 font-serif text-[56px] leading-none font-semibold tabular-nums">
               {right}
               <span className="text-ink-faint">/{firstTry.size}</span>
             </p>
-            <p className="mt-3 text-ink-soft">right the first time</p>
+            <p className="mt-3 text-ink-soft"><UiText source={'right the first time'} /></p>
             <div className="mx-auto mt-10 flex max-w-xs flex-col gap-2">
-              <Button icon={RotateCcw} size="lg" block onClick={() => setRoundNo((n) => n + 1)}>
-                Another round
-              </Button>
+              <Button icon={RotateCcw} size="lg" block onClick={() => setRoundNo((n) => n + 1)}><UiText source={'Another round'} /></Button>
               {level !== 'hard' && (
-                <Button variant="secondary" block onClick={() => setLevel(level === 'choose' ? 'type' : 'hard')}>
-                  Try it harder
-                </Button>
+                <Button variant="secondary" block onClick={() => setLevel(level === 'choose' ? 'type' : 'hard')}><UiText source={'Try it harder'} /></Button>
               )}
               <Button variant="ghost" block onClick={back}>
-                {deckId ? 'Back to the deck' : 'Back to Thesaurus'}
+                {deckId ? translateUi('Back to the deck') : translateUi('Back to Thesaurus')}
               </Button>
             </div>
           </motion.div>

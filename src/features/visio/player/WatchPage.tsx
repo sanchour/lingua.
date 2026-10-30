@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { Bookmark, ChevronLeft, FileVideo, Repeat, SkipBack, SkipForward, Timer } from 'lucide-react';
@@ -42,10 +43,8 @@ export default function WatchPage() {
     return (
       <div className="grid min-h-[60dvh] place-items-center text-center">
         <div>
-          <p className="font-serif text-xl">This video isn’t in your library any more.</p>
-          <Link to="/sonus?show=watch" className="mt-4 inline-block font-semibold text-accent-text">
-            Back to Sonus et Visio
-          </Link>
+          <p className="font-serif text-xl"><UiText source={'This video isn’t in your library any more.'} /></p>
+          <Link to="/sonus?show=watch" className="mt-4 inline-block font-semibold text-accent-text"><UiText source={'Back to Sonus et Visio'} /></Link>
         </div>
       </div>
     );
@@ -89,6 +88,7 @@ function useVttTracks(media: Media, tracks: Tracks) {
 }
 
 function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
+  const translateUi = useUi();
   const { settings } = useApp();
   const { layout } = useLayout();
   const navigate = useNavigate();
@@ -326,8 +326,8 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     <div className="absolute inset-0 grid place-items-center bg-[#1d1a17] p-6 text-center text-white/85">
       <div>
         <FileVideo size={30} className="mx-auto mb-3 opacity-70" aria-hidden />
-        <p className="font-serif text-lg font-semibold text-white">Subtitles only</p>
-        <p className="mx-auto mt-1 max-w-xs text-[13.5px] text-white/70">Attach the video file to watch it here. The lines below can be read, looked up and saved meanwhile.</p>
+        <p className="font-serif text-lg font-semibold text-white"><UiText source={'Subtitles only'} /></p>
+        <p className="mx-auto mt-1 max-w-xs text-[13.5px] text-white/70"><UiText source={'Attach the video file to watch it here. The lines below can be read, looked up and saved meanwhile.'} /></p>
         <button
           type="button"
           onClick={async () => {
@@ -335,9 +335,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
             if (file) await attachVideoFile(media.id, file);
           }}
           className="mt-4 rounded-full bg-white px-4 py-2 text-[14px] font-semibold text-[#1d1a17]"
-        >
-          Attach the video file
-        </button>
+        ><UiText source={'Attach the video file'} /></button>
       </div>
     </div>
   );
@@ -346,8 +344,8 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
     <div className="absolute inset-0 grid place-items-center bg-[#1d1a17] p-6 text-center text-white/85">
       <div className="-mt-16">
         <Timer size={28} className="mx-auto mb-3 opacity-70" aria-hidden />
-        <p className="font-serif text-lg font-semibold text-white">Follow along</p>
-        <p className="mx-auto mt-1 max-w-sm text-[13.5px] text-white/70">Press play here when your show plays in its own app, and pause it when you pause. If the lines drift, nudge them with , and . (half a second).</p>
+        <p className="font-serif text-lg font-semibold text-white"><UiText source={'Follow along'} /></p>
+        <p className="mx-auto mt-1 max-w-sm text-[13.5px] text-white/70"><UiText source={'Press play here when your show plays in its own app, and pause it when you pause. If the lines drift, nudge them with , and . (half a second).'} /></p>
       </div>
     </div>
   );
@@ -375,23 +373,21 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
 
   const lineBar = (
     <div className="flex items-center gap-1 px-3 sm:px-0">
-      <LineButton icon={SkipBack} label="Previous line" shortcut="↑" onClick={lines.previous} disabled={!lines.hasLines || !ready} />
-      <LineButton icon={Repeat} label="Repeat line" shortcut="R" onClick={lines.repeat} disabled={!lines.hasLines || !ready} />
-      <LineButton icon={SkipForward} label="Next line" shortcut="↓" onClick={lines.next} disabled={!lines.hasLines || !ready} />
+      <LineButton icon={SkipBack} label={translateUi('Previous line')} shortcut="↑" onClick={lines.previous} disabled={!lines.hasLines || !ready} />
+      <LineButton icon={Repeat} label={translateUi('Repeat line')} shortcut="R" onClick={lines.repeat} disabled={!lines.hasLines || !ready} />
+      <LineButton icon={SkipForward} label={translateUi('Next line')} shortcut="↓" onClick={lines.next} disabled={!lines.hasLines || !ready} />
       {following && (
         <>
-          <Button size="sm" variant="ghost" onClick={() => nudge(-500)} aria-label="Lines half a second earlier">
+          <Button size="sm" variant="ghost" onClick={() => nudge(-500)} aria-label={translateUi('Lines half a second earlier')}>
             −0.5 s
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => nudge(500)} aria-label="Lines half a second later">
+          <Button size="sm" variant="ghost" onClick={() => nudge(500)} aria-label={translateUi('Lines half a second later')}>
             +0.5 s
           </Button>
         </>
       )}
       <span className="flex-1" />
-      <Button size="sm" variant="secondary" icon={Bookmark} onClick={() => void lines.save()} disabled={!lines.hasLines || !ready}>
-        Save line
-      </Button>
+      <Button size="sm" variant="secondary" icon={Bookmark} onClick={() => void lines.save()} disabled={!lines.hasLines || !ready}><UiText source={'Save line'} /></Button>
       <SubtitleSettings />
     </div>
   );
@@ -411,8 +407,8 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
   );
 
   const transcript = target?.length ? (
-    <section aria-label="Lines">
-      <p className="mb-3 text-[12.5px] font-bold tracking-wide text-ink-soft uppercase">All lines</p>
+    <section aria-label={translateUi('Lines')}>
+      <p className="mb-3 text-[12.5px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'All lines'} /></p>
       <KaraokeTranscript media={media} cues={target} live={ready} clock={clock} gutter={false} docked={false} />
     </section>
   ) : null;
@@ -420,7 +416,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
   if (wide) {
     return (
       <>
-        <BackLink to="/sonus?show=watch">Sonus et Visio</BackLink>
+        <BackLink to="/sonus?show=watch"><UiText source={'Sonus et Visio'} /></BackLink>
         <div className="grid gap-8 min-[1180px]:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0 space-y-5">
             {stage}
@@ -430,9 +426,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
           </div>
           <aside className="min-w-0 min-[1180px]:sticky min-[1180px]:top-8 min-[1180px]:max-h-[calc(100dvh-4rem)] min-[1180px]:self-start min-[1180px]:overflow-x-hidden min-[1180px]:overflow-y-auto min-[1180px]:pr-1">
             {transcript ?? (
-              <Card className="text-[14px] text-ink-soft">
-                Once there are {getLanguage(media.lang)?.name ?? ''} subtitles, every line appears here to read along, look up and jump to.
-              </Card>
+              <Card className="text-[14px] text-ink-soft"><UiText source={'Once there are {0} subtitles, every line appears here to read along, look up and jump to.'} values={[getLanguage(media.lang)?.name ?? '']} /></Card>
             )}
           </aside>
         </div>
@@ -444,7 +438,7 @@ function Watch({ media, tracks }: { media: Media; tracks: Tracks }) {
   return (
     <div className="min-h-dvh bg-bg pb-[calc(env(safe-area-inset-bottom)+40px)]">
       <header className="no-callout sticky top-0 z-20 flex items-center gap-1 bg-bg/90 px-2 pt-safe backdrop-blur-xl">
-        <button type="button" aria-label="Back to Sonus et Visio" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus?show=watch'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
+        <button type="button" aria-label={translateUi('Back to Sonus et Visio')} onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/sonus?show=watch'))} className="grid size-11 place-items-center rounded-xl text-ink-soft">
           <ChevronLeft size={24} aria-hidden />
         </button>
         <p className="min-w-0 flex-1 truncate text-center text-[13px] font-semibold text-ink-soft">{media.collection ?? 'Visio'}</p>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -89,6 +90,7 @@ const chip = 'no-callout inline-flex h-8 items-center gap-1.5 rounded-full borde
  * this week, and the time and place filters find one for the moment. Mundus marks the one to try today.
  */
 export function TipsView({ lang }: { lang: string }) {
+  const translateUi = useUi();
   const { language } = useApp();
   const tips = useMemo(() => tipsFor(lang), [lang]);
   const rows = useChallenges(lang);
@@ -137,24 +139,22 @@ export function TipsView({ lang }: { lang: string }) {
 
       <div className="mt-6 mb-4 flex flex-wrap items-center gap-x-5 gap-y-3">
         <Segmented<TryFilter['show']>
-          label="Show"
+          label={translateUi('Show')}
           value={filter.show}
           onChange={(show) => setFilter((f) => ({ ...f, show }))}
           options={[
-            { value: 'all', label: 'All' },
-            { value: 'open', label: 'To try' },
-            { value: 'done', label: 'Done' },
+            { value: 'all', label: translateUi('All') },
+            { value: 'open', label: translateUi('To try') },
+            { value: 'done', label: translateUi('Done') },
           ]}
         />
-        <div role="group" aria-label="How long" className="flex items-center gap-1.5">
+        <div role="group" aria-label={translateUi('How long')} className="flex items-center gap-1.5">
           <Clock size={15} className="text-ink-faint" aria-hidden />
           {MINUTES.map((m) => (
-            <Chip key={m} on={filter.minutes === m} onClick={() => setFilter((f) => ({ ...f, minutes: f.minutes === m ? 'any' : m }))}>
-              {m} min
-            </Chip>
+            <Chip key={m} on={filter.minutes === m} onClick={() => setFilter((f) => ({ ...f, minutes: f.minutes === m ? 'any' : m }))}><UiText source={'{0} min'} values={[m]} /></Chip>
           ))}
         </div>
-        <div role="group" aria-label="Where" className="flex flex-wrap items-center gap-1.5">
+        <div role="group" aria-label={translateUi('Where')} className="flex flex-wrap items-center gap-1.5">
           {WHERES.map((w) => (
             <Chip key={w.id} on={filter.where === w.id} onClick={() => setFilter((f) => ({ ...f, where: f.where === w.id ? 'any' : (w.id as Where) }))}>
               {w.label}
@@ -162,9 +162,7 @@ export function TipsView({ lang }: { lang: string }) {
           ))}
         </div>
         {filtered && (
-          <button type="button" onClick={() => setFilter((f) => ({ ...f, minutes: 'any', where: 'any' }))} className="hit text-[13px] font-semibold text-ink-soft hover:text-ink">
-            Clear
-          </button>
+          <button type="button" onClick={() => setFilter((f) => ({ ...f, minutes: 'any', where: 'any' }))} className="hit text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'Clear'} /></button>
         )}
       </div>
 
@@ -177,7 +175,7 @@ export function TipsView({ lang }: { lang: string }) {
           ))}
         </ul>
       ) : (
-        <p className="py-10 text-center text-[15px] text-ink-soft">{filter.show === 'done' ? 'Challenges you mark as done gather here.' : filtered ? 'Nothing matches. Try another time or place.' : 'All done. Habits come back tomorrow.'}</p>
+        <p className="py-10 text-center text-[15px] text-ink-soft">{filter.show === 'done' ? translateUi('Challenges you mark as done gather here.') : filtered ? translateUi('Nothing matches. Try another time or place.') : translateUi('All done. Habits come back tomorrow.')}</p>
       )}
 
       <Drawer open={Boolean(detailTip)} onClose={() => setDetails(undefined)} title={detailTip?.title ?? ''}>
@@ -196,6 +194,7 @@ function Chip({ on, onClick, children }: { on: boolean; onClick: () => void; chi
 }
 
 function StreakCard({ days, doneToday, week, tried, total, onDeal }: { days: number; doneToday: boolean; week: number; tried: number; total: number; onDeal: () => void }) {
+  const translateUi = useUi();
   return (
     <div className="flex items-center gap-4 rounded-3xl border border-line/70 bg-surface p-4 sm:p-5">
       <div className={cx('grid size-14 shrink-0 place-items-center rounded-2xl', days > 0 ? 'bg-accent-soft text-accent-text' : 'bg-sunken text-ink-faint')}>
@@ -205,24 +204,20 @@ function StreakCard({ days, doneToday, week, tried, total, onDeal }: { days: num
         </div>
       </div>
       <div className="min-w-0 flex-1">
-        <p className={label}>Beyond the app</p>
+        <p className={label}><UiText source={'Beyond the app'} /></p>
         <p className="mt-0.5 font-serif text-[18px] leading-snug font-semibold">
-          {week === 0 ? 'Take the language out for a walk.' : week === 1 ? 'One challenge this week.' : `${week} challenges this week.`}
+          {week === 0 ? translateUi('Take the language out for a walk.') : week === 1 ? translateUi('One challenge this week.') : translateUi('{0} challenges this week.', [week])}
         </p>
-        <p className="mt-0.5 text-[13px] text-ink-soft">
-          {days > 1 ? `${days} days in a row${doneToday ? '' : ': one more today keeps it alive'}. ` : ''}
-          {tried} of {total} tried.
-        </p>
+        <p className="mt-0.5 text-[13px] text-ink-soft"><UiText source={'{0}{1} of {2} tried.'} values={[days > 1 ? `${days} days in a row${doneToday ? '' : ': one more today keeps it alive'}. ` : '', tried, total]} /></p>
       </div>
-      <button type="button" onClick={onDeal} className="no-callout inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-inverse px-4 text-[14px] font-semibold text-on-inverse transition-transform active:scale-[0.97]">
-        <Dices size={18} aria-hidden /> Deal me one
-      </button>
+      <button type="button" onClick={onDeal} className="no-callout inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-inverse px-4 text-[14px] font-semibold text-on-inverse transition-transform active:scale-[0.97]"><UiText source={'{0} Deal me one'} values={[<Dices size={18} aria-hidden />]} /></button>
     </div>
   );
 }
 
 /** The card turned over by "Deal me one": big enough to read and do, until it is done or closed. */
 function DealtPanel({ tip, dates, today, onMark, onAnother, onOpen, onClose }: { tip?: Tip; dates: readonly string[]; today: string; onMark: (t: Tip) => void; onAnother: () => void; onOpen: (id: string) => void; onClose: () => void }) {
+  const translateUi = useUi();
   const Icon = tip ? TIP_ICONS[tip.icon] : Dices;
   const hue = tip ? hueOf(tip.id) : '#9a8466';
   const done = tip ? (tip.habit ? dates.includes(today) : dates.length > 0) : false;
@@ -235,24 +230,18 @@ function DealtPanel({ tip, dates, today, onMark, onAnother, onOpen, onClose }: {
               <Icon size={26} aria-hidden />
             </span>
             <div className="flex min-w-0 flex-1 flex-col">
-              <p className={label}>
-                Dealt · {tipMinutes(tip)} min
-              </p>
+              <p className={label}><UiText source={'Dealt · {0} min'} values={[tipMinutes(tip)]} /></p>
               <h3 className="mt-0.5 font-serif text-[20px] leading-snug font-semibold">{tip.title}</h3>
               <p className="mt-1 text-[14px] leading-snug text-ink-soft">{tip.teaser}</p>
               <div className="mt-auto flex flex-wrap items-center gap-2 pt-3">
                 <button type="button" onClick={() => onMark(tip)} aria-pressed={done} className={cx(chip, 'h-9', done ? 'border-transparent bg-sage text-on-accent' : 'border-transparent bg-inverse text-on-inverse')}>
-                  <Check size={15} strokeWidth={2.6} aria-hidden /> {done ? 'Done' : 'I did it'}
+                  <Check size={15} strokeWidth={2.6} aria-hidden /> {done ? translateUi('Done') : translateUi('I did it')}
                 </button>
-                <button type="button" onClick={() => onOpen(tip.id)} className={cx(chip, 'h-9 border-line bg-surface text-ink-soft hover:text-ink')}>
-                  How <ArrowRight size={14} aria-hidden />
-                </button>
-                <button type="button" onClick={onAnother} className={cx(chip, 'h-9 border-line bg-surface text-ink-soft hover:text-ink')}>
-                  <Dices size={14} aria-hidden /> Another
-                </button>
+                <button type="button" onClick={() => onOpen(tip.id)} className={cx(chip, 'h-9 border-line bg-surface text-ink-soft hover:text-ink')}><UiText source={'How {0}'} values={[<ArrowRight size={14} aria-hidden />]} /></button>
+                <button type="button" onClick={onAnother} className={cx(chip, 'h-9 border-line bg-surface text-ink-soft hover:text-ink')}><UiText source={'{0} Another'} values={[<Dices size={14} aria-hidden />]} /></button>
               </div>
             </div>
-            <button type="button" onClick={onClose} aria-label="Put it back" className="-mt-1 -mr-1 grid size-8 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-sunken hover:text-ink">
+            <button type="button" onClick={onClose} aria-label={translateUi('Put it back')} className="-mt-1 -mr-1 grid size-8 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-sunken hover:text-ink">
               <X size={16} aria-hidden />
             </button>
           </motion.div>
@@ -261,7 +250,7 @@ function DealtPanel({ tip, dates, today, onMark, onAnother, onOpen, onClose }: {
             <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-sunken text-ink-faint">
               <Dices size={26} aria-hidden />
             </span>
-            <p className="text-[14.5px] leading-snug">Not sure what to try? Deal one: it turns over a challenge you haven’t done, for the time and place you chose below.</p>
+            <p className="text-[14.5px] leading-snug"><UiText source={'Not sure what to try? Deal one: it turns over a challenge you haven’t done, for the time and place you chose below.'} /></p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -271,36 +260,37 @@ function DealtPanel({ tip, dates, today, onMark, onAnother, onOpen, onClose }: {
 
 /** A small card: what it is, how long, and a tick. A tick stamps it. */
 function SmallCard({ tip, dates, today, isToday, dealt, onOpen, onMark }: { tip: Tip; dates: readonly string[]; today: string; isToday: boolean; dealt: boolean; onOpen: () => void; onMark: () => void }) {
+  const translateUi = useUi();
   const Icon = TIP_ICONS[tip.icon];
   const hue = hueOf(tip.id);
   const done = dates.length > 0;
   const doneNow = tip.habit ? dates.includes(today) : done;
   return (
     <div className={cx('group relative flex h-full flex-col rounded-2xl border bg-surface transition-[border-color,opacity,box-shadow]', dealt ? 'border-accent shadow-elev-1' : 'border-line/70 hover:border-line-strong', doneNow && 'opacity-75')}>
-      <button type="button" onClick={onOpen} aria-label={`${tip.title}: show how`} className="no-callout flex flex-1 flex-col rounded-2xl p-3.5 text-left">
+      <button type="button" onClick={onOpen} aria-label={translateUi('{0}: show how', [tip.title])} className="no-callout flex flex-1 flex-col rounded-2xl p-3.5 text-left">
         <span className="flex items-center gap-2">
           <span className="grid size-8 place-items-center rounded-xl" style={soft(hue)}>
             <Icon size={16} aria-hidden />
           </span>
-          <span className="rounded-full bg-sunken px-2 py-0.5 text-[11.5px] font-bold text-ink-faint tabular-nums">{tipMinutes(tip)} min</span>
-          {isToday && <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11.5px] font-bold text-accent-text">Today</span>}
+          <span className="rounded-full bg-sunken px-2 py-0.5 text-[11.5px] font-bold text-ink-faint tabular-nums"><UiText source={'{0} min'} values={[tipMinutes(tip)]} /></span>
+          {isToday && <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11.5px] font-bold text-accent-text"><UiText source={'Today'} /></span>}
         </span>
         <span className="mt-2.5 line-clamp-2 block text-[14.5px] leading-snug font-semibold">{tip.title}</span>
         <span className="mt-1 line-clamp-2 block text-[12.5px] leading-snug text-ink-soft">{tip.teaser}</span>
-        {tip.habit && dates.length > 0 && <span className="mt-1.5 text-[11.5px] font-bold text-sage-text">{dates.length}× so far</span>}
+        {tip.habit && dates.length > 0 && <span className="mt-1.5 text-[11.5px] font-bold text-sage-text"><UiText source={'{0}× so far'} values={[dates.length]} /></span>}
       </button>
       <button
         type="button"
         onClick={onMark}
         aria-pressed={doneNow}
-        aria-label={doneNow ? `${tip.title}: done, undo` : `${tip.title}: mark done`}
+        aria-label={doneNow ? translateUi('{0}: done, undo', [tip.title]) : translateUi('{0}: mark done', [tip.title])}
         className={cx('absolute top-2.5 right-2.5 grid size-8 place-items-center rounded-full border transition-[background-color,border-color,transform] active:scale-90', doneNow ? 'border-transparent bg-sage text-on-accent' : 'border-line bg-raised text-ink-faint hover:border-line-strong hover:text-ink')}
       >
         <Check size={15} strokeWidth={2.6} aria-hidden />
       </button>
       {doneNow && (
         <span aria-hidden className="pointer-events-none absolute right-3 bottom-3 -rotate-12 rounded-md border-2 border-sage px-1.5 py-0.5 text-[11px] font-extrabold tracking-widest text-sage uppercase">
-          {tip.habit ? 'Today' : 'Done'}
+          {tip.habit ? translateUi('Today') : translateUi('Done')}
         </span>
       )}
     </div>
@@ -309,6 +299,7 @@ function SmallCard({ tip, dates, today, isToday, dealt, onOpen, onMark }: { tip:
 
 /** The back of a card: how to do it, in steps, with a mark and where to go. */
 function Detail({ tip, dates, today, onMark }: { tip: Tip; dates: readonly string[]; today: string; onMark: () => void }) {
+  const translateUi = useUi();
   const [platform, setPlatform] = useState(0);
   const steps = tip.platforms ? tip.platforms[platform]?.steps : tip.steps;
   const done = tip.habit ? dates.includes(today) : dates.length > 0;
@@ -316,11 +307,9 @@ function Detail({ tip, dates, today, onMark }: { tip: Tip; dates: readonly strin
   return (
     <div>
       <p className="text-[15px] leading-relaxed text-ink-soft">{tip.teaser}</p>
-      <p className="mt-2 text-[12.5px] font-semibold text-ink-faint">
-        About {tipMinutes(tip)} minutes{level !== 'A1' ? ` · from ${level}` : ''}
-      </p>
+      <p className="mt-2 text-[12.5px] font-semibold text-ink-faint"><UiText source={'About {0} minutes{1}'} values={[tipMinutes(tip), level !== 'A1' ? ` · from ${level}` : '']} /></p>
       {tip.platforms && (
-        <div className="mt-4 flex flex-wrap gap-1.5" role="tablist" aria-label="Where">
+        <div className="mt-4 flex flex-wrap gap-1.5" role="tablist" aria-label={translateUi('Where')}>
           {tip.platforms.map((p, i) => (
             <button key={p.name} type="button" role="tab" aria-selected={i === platform} onClick={() => setPlatform(i)} className={cx('h-8 rounded-full px-3 text-[12.5px] font-semibold transition-colors', i === platform ? 'bg-inverse text-on-inverse' : 'bg-sunken text-ink-soft hover:text-ink')}>
               {p.name}
@@ -338,7 +327,7 @@ function Detail({ tip, dates, today, onMark }: { tip: Tip; dates: readonly strin
       </ol>
       <div className="mt-6 flex flex-wrap items-center gap-2">
         <button type="button" onClick={onMark} aria-pressed={done} className={cx(chip, 'h-10 px-4 text-[14px]', done ? 'border-transparent bg-sage text-on-accent' : 'border-transparent bg-inverse text-on-inverse')}>
-          <Check size={15} strokeWidth={2.6} aria-hidden /> {tip.habit ? (done ? 'Done today' : 'Did it today') : done ? 'Done' : 'Mark done'}
+          <Check size={15} strokeWidth={2.6} aria-hidden /> {tip.habit ? (done ? translateUi('Done today') : translateUi('Did it today')) : done ? translateUi('Done') : translateUi('Mark done')}
         </button>
         {tip.action?.to && (
           <Link to={tip.action.to} className={cx(chip, 'h-10 border-line px-4 text-[14px] text-ink-soft hover:text-ink')}>

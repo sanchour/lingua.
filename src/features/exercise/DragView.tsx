@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Words dragged into order (6-4b). The pointer drags a tile from the bank to the line, or along the line; a click moves a tile
 // too, and the arrow keys move the one in focus, so it works without dragging.
 import { useRef, useState } from 'react';
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export function DragView({ prompt, tiles, lang, value, onChange, phase }: Props) {
+  const translateUi = useUi();
   const drag = useRef<number | null>(null);
   const [over, setOver] = useState<number | null>(null);
   const rtl = isRtl(lang);
@@ -79,7 +81,7 @@ export function DragView({ prompt, tiles, lang, value, onChange, phase }: Props)
       <p className="text-center text-[16px] text-ink-soft italic">{prompt}</p>
       <div
         dir={rtl ? 'rtl' : undefined}
-        aria-label="Your sentence, in order"
+        aria-label={translateUi('Your sentence, in order')}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
@@ -88,13 +90,13 @@ export function DragView({ prompt, tiles, lang, value, onChange, phase }: Props)
         }}
         className="flex min-h-20 flex-wrap items-center gap-2 rounded-2xl border-2 border-dashed border-line-strong p-3"
       >
-        {value.length === 0 && <span className="px-2 text-[14px] text-ink-faint">Drag the words here, or tap them in order.</span>}
+        {value.length === 0 && <span className="px-2 text-[14px] text-ink-faint"><UiText source={'Drag the words here, or tap them in order.'} /></span>}
         {value.map((i, at) => chip(i, true, at))}
       </div>
-      <div dir={rtl ? 'rtl' : undefined} aria-label="The words" className="flex flex-wrap justify-center gap-2">
+      <div dir={rtl ? 'rtl' : undefined} aria-label={translateUi('The words')} className="flex flex-wrap justify-center gap-2">
         {bank.map((i) => chip(i, false))}
       </div>
-      {phase === 'answer' && <p className="text-center text-[12.5px] text-ink-faint">Arrow keys move a word in the line.</p>}
+      {phase === 'answer' && <p className="text-center text-[12.5px] text-ink-faint"><UiText source={'Arrow keys move a word in the line.'} /></p>}
     </div>
   );
 }

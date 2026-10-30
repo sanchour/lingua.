@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent, RefObject } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -284,9 +285,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
     <>
       <div {...handlers} onContextMenu={onContextMenu}>
         {syncByTap && timed && (
-          <p role="status" className="pointer-events-none fixed top-[calc(env(safe-area-inset-top)+3.75rem)] left-1/2 z-30 -translate-x-1/2 rounded-full bg-[var(--song-ink)] px-4 py-2 text-[13.5px] font-semibold whitespace-nowrap text-bg shadow-elev-3 lg:top-6">
-            Tap the line you’re hearing
-          </p>
+          <p role="status" className="pointer-events-none fixed top-[calc(env(safe-area-inset-top)+3.75rem)] left-1/2 z-30 -translate-x-1/2 rounded-full bg-[var(--song-ink)] px-4 py-2 text-[13.5px] font-semibold whitespace-nowrap text-bg shadow-elev-3 lg:top-6"><UiText source={'Tap the line you’re hearing'} /></p>
         )}
         <div ref={flowRef} lang={lang} style={style} className={cx('reader-flow lyric-sheet', reader.highlightUnseen && 'hl-unseen', timed ? 'is-live' : 'is-still', syncByTap && timed && 'is-syncing')}>
           {model && (
@@ -329,9 +328,7 @@ export function LyricSheet({ song, clock, translationMode, savedLines, onSaveLin
             transition={spring.snappy}
             className="fixed left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full bg-inverse px-4 py-2.5 text-sm font-semibold text-on-inverse shadow-elev-3"
             style={{ bottom: layout === 'wide' ? 'calc(env(safe-area-inset-bottom) + 28px)' : `calc(env(safe-area-inset-bottom) + ${dockedHeight + 16}px)` }}
-          >
-            <LocateFixed size={16} aria-hidden /> Back to the song
-          </motion.button>
+          ><UiText source={'{0} Back to the song'} values={[<LocateFixed size={16} aria-hidden />]} /></motion.button>
         )}
       </AnimatePresence>
 
@@ -432,6 +429,7 @@ function LineActions({
   onCopy: () => void;
   onClose: () => void;
 }) {
+  const translateUi = useUi();
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   useLayoutEffect(() => {
     const place = () => {
@@ -454,7 +452,7 @@ function LineActions({
     <motion.div
       data-line-actions
       role="toolbar"
-      aria-label="This line"
+      aria-label={translateUi('This line')}
       initial={{ opacity: 0, y: -4, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={spring.snappy}
@@ -462,14 +460,12 @@ function LineActions({
       style={{ top: pos.top, left: pos.left }}
     >
       {canPlay && (
-        <button type="button" className={item} onClick={onPlay}>
-          <Play size={15} aria-hidden /> From here
-        </button>
+        <button type="button" className={item} onClick={onPlay}><UiText source={'{0} From here'} values={[<Play size={15} aria-hidden />]} /></button>
       )}
       <button type="button" className={item} onClick={onSave} disabled={saved}>
-        {saved ? <BookmarkCheck size={16} aria-hidden /> : <BookmarkPlus size={16} aria-hidden />} {saved ? 'Saved' : 'Save line'}
+        {saved ? <BookmarkCheck size={16} aria-hidden /> : <BookmarkPlus size={16} aria-hidden />} {saved ? translateUi('Saved') : translateUi('Save line')}
       </button>
-      <button type="button" className={item} onClick={onCopy} aria-label="Copy line">
+      <button type="button" className={item} onClick={onCopy} aria-label={translateUi('Copy line')}>
         <Copy size={15} aria-hidden />
       </button>
     </motion.div>

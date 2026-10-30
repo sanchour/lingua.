@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { motion } from 'motion/react';
@@ -39,6 +40,7 @@ function Face({ back, look, children, onClick }: { back?: boolean; look: CardLoo
 }
 
 function AudioButton({ blobId }: { blobId: string }) {
+  const translateUi = useUi();
   const url = useLiveQuery(async () => {
     const row = await db.blobs.get(blobId);
     return row ? URL.createObjectURL(row.blob) : null;
@@ -48,7 +50,7 @@ function AudioButton({ blobId }: { blobId: string }) {
   return (
     <button
       type="button"
-      aria-label="Play recording"
+      aria-label={translateUi('Play recording')}
       onClick={(e) => {
         e.stopPropagation();
         void new Audio(url).play();
@@ -125,6 +127,7 @@ function Term({ note, lang, size }: { note: Note; lang: string; size: 'lg' | 'md
 }
 
 function Sentence({ note, lang }: { note: Note; lang: string }) {
+  const translateUi = useUi();
   const ex = note.example;
   const sentence = ex?.text ?? (note.context?.sentence !== note.term ? note.context?.sentence : undefined);
   const span = useMemo(() => {
@@ -151,7 +154,7 @@ function Sentence({ note, lang }: { note: Note; lang: string }) {
       {ex?.translation && <p className="mt-1 text-[14px] text-ink-soft italic">{ex.translation}</p>}
       {!ex && note.context && (
         <p className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-ink-faint">
-          <BookOpen size={13} aria-hidden /> {note.source === 'visio' ? 'Heard in Visio' : note.source === 'sonus' ? 'Heard in Sonus' : note.source === 'cantus' ? 'Sung in a song' : 'From your reading'}
+          <BookOpen size={13} aria-hidden /> {note.source === 'visio' ? translateUi('Heard in Visio') : note.source === 'sonus' ? translateUi('Heard in Sonus') : note.source === 'cantus' ? translateUi('Sung in a song') : translateUi('From your reading')}
         </p>
       )}
     </div>
@@ -230,7 +233,7 @@ export function FlipCard({ look, card, note: own, lang, flipped, onFlip, deckNam
             ) : production ? (
               <>
                 <p className="text-[calc(clamp(1.75rem,5vw,2.5rem)*var(--card-scale,1))] leading-tight font-semibold">{note.meaning || '—'}</p>
-                <p className="mt-3 text-sm text-ink-faint">Say it, then turn the card</p>
+                <p className="mt-3 text-sm text-ink-faint"><UiText source={'Say it, then turn the card'} /></p>
               </>
             ) : gapParts ? (
               <>
@@ -242,7 +245,7 @@ export function FlipCard({ look, card, note: own, lang, flipped, onFlip, deckNam
                   {gapParts[2]}
                 </p>
                 {gap!.translation && <p className="mt-3 text-[15px] text-ink-soft italic">{gap!.translation}</p>}
-                <p className="mt-4 text-sm text-ink-faint">Which word is missing?</p>
+                <p className="mt-4 text-sm text-ink-faint"><UiText source={'Which word is missing?'} /></p>
               </>
             ) : (
               <>
@@ -251,8 +254,8 @@ export function FlipCard({ look, card, note: own, lang, flipped, onFlip, deckNam
               </>
             )}
           </div>
-          <p className="text-center text-[12px] font-semibold text-ink-faint pointer-coarse:hidden">Space to turn</p>
-          <p className="hidden text-center text-[12px] font-semibold text-ink-faint pointer-coarse:block">Tap to turn</p>
+          <p className="text-center text-[12px] font-semibold text-ink-faint pointer-coarse:hidden"><UiText source={'Space to turn'} /></p>
+          <p className="hidden text-center text-[12px] font-semibold text-ink-faint pointer-coarse:block"><UiText source={'Tap to turn'} /></p>
         </Face>
 
         <Face back look={look}>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import Dexie from 'dexie';
@@ -16,6 +17,7 @@ const COLORS: Record<Maturity, string> = { new: STAGES.new.color, learning: STAG
 
 /** Today's counts, how settled the deck is (maturity), true retention and the week ahead. */
 export function DeckStats({ deckId, cards, counts }: { deckId: string; cards: Card[]; counts: DeckCounts | undefined }) {
+  const translateUi = useUi();
   const now = Date.now();
   const maturity = useMemo(() => {
     const m: Record<Maturity, number> = { new: 0, learning: 0, young: 0, mature: 0 };
@@ -85,10 +87,10 @@ export function DeckStats({ deckId, cards, counts }: { deckId: string; cards: Ca
       </Panel>
 
       <Panel>
-        <p className="text-[12px] font-bold tracking-wide text-ink-faint uppercase">The week ahead</p>
+        <p className="text-[12px] font-bold tracking-wide text-ink-faint uppercase"><UiText source={'The week ahead'} /></p>
         <div className="mt-3 flex h-24 items-end gap-2">
           {forecast.map((n, i) => (
-            <div key={i} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5" title={`${weekday(i)}: ${n} reviews`}>
+            <div key={i} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5" title={translateUi('{0}: {1} reviews', [weekday(i), n])}>
               <span className="text-[11px] font-semibold text-ink-faint tabular-nums">{n || ''}</span>
               <span
                 className="w-full rounded-md"
@@ -98,7 +100,7 @@ export function DeckStats({ deckId, cards, counts }: { deckId: string; cards: Ca
             </div>
           ))}
         </div>
-        {retention && <p className="mt-3 text-[12.5px] text-ink-soft">Retention counts {retention.n} reviews of known cards in the last 30 days.</p>}
+        {retention && <p className="mt-3 text-[12.5px] text-ink-soft"><UiText source={'Retention counts {0} reviews of known cards in the last 30 days.'} values={[retention.n]} /></p>}
       </Panel>
     </div>
   );

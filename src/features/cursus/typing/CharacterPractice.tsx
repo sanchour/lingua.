@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Mandarin's practice input method (5.1-4a): a common word in characters; type each character's
 // pinyin (no tones, ü as v), then pick it from the candidates with 1–5, or Space for the first, as
 // on a real pinyin keyboard.
@@ -15,6 +16,7 @@ const pickWord = (data: TypingData) => {
 };
 
 export function CharacterPractice({ data, lang }: { data: TypingData; lang: string }) {
+  const translateUi = useUi();
   const [word, setWord] = useState(() => pickWord(data));
   const [at, setAt] = useState(0);
   const [buffer, setBuffer] = useState('');
@@ -82,12 +84,12 @@ export function CharacterPractice({ data, lang }: { data: TypingData; lang: stri
           ))}
         </p>
         <button type="button" onClick={() => setHint((h) => !h)} className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-ink-soft hover:text-ink">
-          {hint ? <EyeOff size={14} aria-hidden /> : <Eye size={14} aria-hidden />} {hint ? 'Hide pinyin' : 'Show pinyin'}
+          {hint ? <EyeOff size={14} aria-hidden /> : <Eye size={14} aria-hidden />} {hint ? translateUi('Hide pinyin') : translateUi('Show pinyin')}
         </button>
       </div>
       {hint && <p className="mt-2 text-[16px] text-ink-soft">{plain.replace(/v/g, 'ü')}</p>}
       <div className="mt-6 flex min-h-12 items-center gap-3 rounded-2xl border border-line bg-raised px-4 py-2.5">
-        <span className="min-w-16 font-mono text-[18px] text-ink">{buffer || <span className="text-ink-faint">type pinyin…</span>}</span>
+        <span className="min-w-16 font-mono text-[18px] text-ink">{buffer || <span className="text-ink-faint"><UiText source={'type pinyin…'} /></span>}</span>
         <span className="flex flex-wrap gap-2" lang={lang}>
           {options.map((c, i) => (
             <span key={c} className={cx('rounded-lg px-2 py-0.5 text-[20px]', i === 0 ? 'bg-accent-soft' : 'bg-sunken')}>
@@ -99,8 +101,8 @@ export function CharacterPractice({ data, lang }: { data: TypingData; lang: stri
         </span>
       </div>
       <p className="mt-4 text-[13px] text-ink-faint">
-        {wrong ? `${wrong} isn’t it: try again.` : 'Type the pinyin without tones (ü is v), then 1–5 to pick, or Space for the first.'}
-        {done ? ` · ${done} ${done === 1 ? 'word' : 'words'} so far` : ''}
+        {wrong ? translateUi('{0} isn’t it: try again.', [wrong]) : translateUi('Type the pinyin without tones (ü is v), then 1–5 to pick, or Space for the first.')}
+        {done ? translateUi(' · {0} {1} so far', [done, done === 1 ? 'word' : 'words']) : ''}
       </p>
     </Card>
   );

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { memo } from 'react';
 import { Link } from 'react-router';
 import { Captions, Subtitles } from 'lucide-react';
@@ -25,9 +26,7 @@ export const VideoCard = memo(function VideoCard({ media, progress, roles }: { m
             <span className="absolute right-2 bottom-2 rounded-md bg-black/65 px-1.5 py-0.5 text-[11.5px] font-semibold text-white tabular-nums">{formatDuration(media.durationMs)}</span>
           )}
           {subtitlesOnly && (
-            <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-md bg-black/60 px-1.5 py-0.5 text-[11px] font-semibold text-white">
-              <Captions size={12} aria-hidden /> Subtitles only
-            </span>
+            <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-md bg-black/60 px-1.5 py-0.5 text-[11px] font-semibold text-white"><UiText source={'{0} Subtitles only'} values={[<Captions size={12} aria-hidden />]} /></span>
           )}
           {share > 0 && (
             <span className="absolute inset-x-0 bottom-0 h-1 bg-black/35" aria-hidden>
@@ -45,7 +44,7 @@ export const VideoCard = memo(function VideoCard({ media, progress, roles }: { m
             {media.collection && <span className="truncate">{media.collection}</span>}
             <TrackPill on={roles?.has('target')} label={media.lang.toUpperCase()} />
             <TrackPill on={roles?.has('native')} label="EN" />
-            {progress?.completed ? <span>Watched</span> : null}
+            {progress?.completed ? <span><UiText source={'Watched'} /></span> : null}
             {busy && <span className="font-semibold text-accent-text">{busy}</span>}
           </p>
         </Link>
@@ -56,10 +55,11 @@ export const VideoCard = memo(function VideoCard({ media, progress, roles }: { m
 });
 
 function TrackPill({ on, label }: { on?: boolean; label: string }) {
+  const translateUi = useUi();
   return (
     <span
       className={cx('inline-flex items-center gap-0.5 rounded px-1 py-px text-[10.5px] font-bold tracking-wide', on ? 'bg-sage-soft text-sage-text' : 'bg-sunken text-ink-faint line-through decoration-1')}
-      title={on ? `${label} subtitles` : `No ${label} subtitles yet`}
+      title={on ? translateUi('{0} subtitles', [label]) : translateUi('No {0} subtitles yet', [label])}
     >
       <Subtitles size={11} aria-hidden /> {label}
     </span>

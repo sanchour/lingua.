@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { Check } from 'lucide-react';
 import { patchSetting } from '@/data/settings';
 import type { Settings } from '@/data/settings';
@@ -10,12 +11,13 @@ const Label = ({ children }: { children: string }) => <p className="mb-2 text-[1
 
 /** Font, card style, colour, width and size for flashcards. Changes show at once on the card itself. */
 export function CardLookPanel({ look, compact = false }: { look: Settings['cards']; compact?: boolean }) {
+  const translateUi = useUi();
   const set = (patch: Partial<Settings['cards']>) => void patchSetting('cards', patch);
   return (
     <div className={cx('space-y-5', compact && 'w-[19rem] p-2')}>
       <div>
-        <Label>Font</Label>
-        <div role="radiogroup" aria-label="Card font" className="flex flex-wrap gap-1.5">
+        <Label>{translateUi('Font')}</Label>
+        <div role="radiogroup" aria-label={translateUi('Card font')} className="flex flex-wrap gap-1.5">
           {READER_FONTS.map((f) => (
             <button
               key={f.id}
@@ -36,8 +38,8 @@ export function CardLookPanel({ look, compact = false }: { look: Settings['cards
       </div>
 
       <div>
-        <Label>Style</Label>
-        <div role="radiogroup" aria-label="Card style" className="grid grid-cols-4 gap-2">
+        <Label>{translateUi('Style')}</Label>
+        <div role="radiogroup" aria-label={translateUi('Card style')} className="grid grid-cols-4 gap-2">
           {CARD_STYLES.map((s) => {
             const props = cardLookProps({ ...look, style: s.id });
             return (
@@ -49,9 +51,7 @@ export function CardLookPanel({ look, compact = false }: { look: Settings['cards
                     look.style === s.id ? 'border-accent ring-2 ring-accent/40' : 'border-line',
                   )}
                   style={{ ...props.style, backgroundSize: 'auto, auto', backgroundPosition: s.id === 'index' ? '0 -46px, 0 2px' : undefined }}
-                >
-                  Aa
-                </span>
+                ><UiText source={'Aa'} /></span>
                 <span className="text-[11.5px] font-semibold text-ink-soft">{s.label}</span>
               </button>
             );
@@ -60,8 +60,8 @@ export function CardLookPanel({ look, compact = false }: { look: Settings['cards
       </div>
 
       <div>
-        <Label>Colour</Label>
-        <div role="radiogroup" aria-label="Card colour" className="flex flex-wrap gap-2">
+        <Label>{translateUi('Colour')}</Label>
+        <div role="radiogroup" aria-label={translateUi('Card colour')} className="flex flex-wrap gap-2">
           {CARD_TINTS.map((t) => (
             <button
               key={t.id}
@@ -84,16 +84,16 @@ export function CardLookPanel({ look, compact = false }: { look: Settings['cards
       </div>
 
       <div>
-        <Label>Card width</Label>
+        <Label>{translateUi('Card width')}</Label>
         <Segmented<Settings['cards']['width']>
-          label="Card width"
+          label={translateUi('Card width')}
           block
           value={look.width ?? 'normal'}
           onChange={(width) => set({ width })}
           options={[
-            { value: 'thin', label: 'Thin' },
-            { value: 'normal', label: 'Normal' },
-            { value: 'wide', label: 'Wide' },
+            { value: 'thin', label: translateUi('Thin') },
+            { value: 'normal', label: translateUi('Normal') },
+            { value: 'wide', label: translateUi('Wide') },
           ]}
         />
         {/* The three widths side by side, to scale, the chosen one filled. */}
@@ -109,16 +109,16 @@ export function CardLookPanel({ look, compact = false }: { look: Settings['cards
       </div>
 
       <div>
-        <Label>Text size</Label>
+        <Label>{translateUi('Text size')}</Label>
         <Segmented<Settings['cards']['size']>
-          label="Card text size"
+          label={translateUi('Card text size')}
           block
           value={look.size}
           onChange={(size) => set({ size })}
           options={[
-            { value: 'sm', label: 'Small' },
-            { value: 'md', label: 'Medium' },
-            { value: 'lg', label: 'Large' },
+            { value: 'sm', label: translateUi('Small') },
+            { value: 'md', label: translateUi('Medium') },
+            { value: 'lg', label: translateUi('Large') },
           ]}
         />
       </div>

@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
@@ -30,6 +31,7 @@ const PAGE = 120;
 const KINDS = ['noun', 'verb', 'adj', 'adv', 'prep', 'pron', 'conj', 'det', 'num', 'intj', 'phrase'];
 
 export default function DeckPage() {
+  const translateUi = useUi();
   const { deckId } = useParams();
   const { language } = useApp();
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ export default function DeckPage() {
 
   if (deck === null || deck?.deletedAt) {
     return (
-      <EmptyState icon={Layers} title="This deck isn’t here any more" action={<Link to="/thesaurus" className={buttonClasses('secondary', 'md')}>Back to Thesaurus</Link>} />
+      <EmptyState icon={Layers} title={translateUi('This deck isn’t here any more')} action={<Link to="/thesaurus" className={buttonClasses('secondary', 'md')}><UiText source={'Back to Thesaurus'} /></Link>} />
     );
   }
   if (!deck || !notes || !cards) return <div className="min-h-[60dvh]" />;
@@ -153,24 +155,24 @@ export default function DeckPage() {
         actions={
           <>
             <Button variant="secondary" icon={Plus} onClick={() => setEditor({ mode: 'new', deckId: deck.id })}>
-              <span className="hidden sm:inline">Add card</span>
+              <span className="hidden sm:inline"><UiText source={'Add card'} /></span>
             </Button>
             <Popover
-              label="Deck options"
+              label={translateUi('Deck options')}
               placement="bottom-end"
               className="w-60"
               trigger={(props) => (
-                <button {...props} type="button" aria-label="Deck options" className="grid size-10 place-items-center rounded-xl text-ink-soft transition-colors hover:bg-surface hover:text-ink">
+                <button {...props} type="button" aria-label={translateUi('Deck options')} className="grid size-10 place-items-center rounded-xl text-ink-soft transition-colors hover:bg-surface hover:text-ink">
                   <Ellipsis size={19} aria-hidden />
                 </button>
               )}
             >
               {(close) => (
                 <div className="space-y-0.5">
-                  <MenuItem icon={Settings2} label="Deck settings" onClick={() => (close(), setSettings(true))} />
+                  <MenuItem icon={Settings2} label={translateUi('Deck settings')} onClick={() => (close(), setSettings(true))} />
                   <MenuItem
                     icon={Pencil}
-                    label="Rename"
+                    label={translateUi('Rename')}
                     onClick={() => {
                       close();
                       setNaming({ title: 'Rename deck', label: 'Name', initial: deck.name, confirm: 'Rename', onConfirm: (name) => updateDeck(deck.id, { name }) });
@@ -178,14 +180,14 @@ export default function DeckPage() {
                   />
                   <MenuItem
                     icon={FolderInput}
-                    label="Move to folder…"
+                    label={translateUi('Move to folder…')}
                     onClick={() => {
                       close();
                       setMoving({ title: `Move “${deck.name}”`, folders: folders ?? [], current: deck.folderId, onConfirm: (folderId) => updateDeck(deck.id, { folderId }) });
                     }}
                   />
-                  <MenuItem icon={Sparkles} label="Tidy…" onClick={() => (close(), setTidying(true))} />
-                  <MenuItem icon={Trash2} label="Delete deck" danger onClick={() => (close(), askDelete())} />
+                  <MenuItem icon={Sparkles} label={translateUi('Tidy…')} onClick={() => (close(), setTidying(true))} />
+                  <MenuItem icon={Trash2} label={translateUi('Delete deck')} danger onClick={() => (close(), askDelete())} />
                 </div>
               )}
             </Popover>
@@ -206,21 +208,15 @@ export default function DeckPage() {
             aria-disabled={!due}
           >
             <Layers size={18} aria-hidden />
-            {due ? `Review ${due}` : 'Nothing due'}
+            {due ? translateUi('Review {0}', [due]) : translateUi('Nothing due')}
           </Link>
           <Link to={`/thesaurus/study/${deck.id}?mode=ludus`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')}>
             <Puzzle size={18} aria-hidden />
             Ludus
             {ludusGate && <PlusChip feature="ludus" />}
           </Link>
-          <Link to={`/thesaurus/study/${deck.id}?mode=ludus&lightning=1`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')}>
-            <Zap size={18} aria-hidden />
-            Lightning
-          </Link>
-          <Link to={`/thesaurus/study/${deck.id}?mode=ludus&kind=sentences`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')} title="Real sentences with one of the deck's words missing">
-            <TextCursorInput size={18} aria-hidden />
-            Sentences
-          </Link>
+          <Link to={`/thesaurus/study/${deck.id}?mode=ludus&lightning=1`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')}><UiText source={'{0}Lightning'} values={[<Zap size={18} aria-hidden />]} /></Link>
+          <Link to={`/thesaurus/study/${deck.id}?mode=ludus&kind=sentences`} onClick={ludusGate ?? undefined} className={buttonClasses('secondary', 'lg')} title={translateUi('Real sentences with one of the deck\'s words missing')}><UiText source={'{0}Sentences'} values={[<TextCursorInput size={18} aria-hidden />]} /></Link>
         </div>
       )}
 
@@ -228,9 +224,7 @@ export default function DeckPage() {
 
       <section className="mt-10" aria-labelledby="cards-title">
         <div className="mb-3 flex items-center gap-3">
-          <h2 id="cards-title" className="flex-1 font-serif text-2xl font-semibold">
-            Cards
-          </h2>
+          <h2 id="cards-title" className="flex-1 font-serif text-2xl font-semibold"><UiText source={'Cards'} /></h2>
           {notes.length > 0 && (
             <p className="hidden items-center gap-3 text-[12.5px] text-ink-soft lg:flex" aria-hidden>
               {Object.values(STAGES).map((s) => (
@@ -243,7 +237,7 @@ export default function DeckPage() {
           )}
           {notes.length > 1 && (
             <select
-              aria-label="Order the cards"
+              aria-label={translateUi('Order the cards')}
               value={how}
               onChange={(e) => setHow(e.target.value as NoteSort)}
               className="h-10 cursor-pointer rounded-xl border border-line bg-raised px-3 text-[13.5px] font-medium text-ink-soft outline-none hover:border-line-strong"
@@ -264,12 +258,12 @@ export default function DeckPage() {
                 setPicked(new Set());
               }}
             >
-              {selecting ? 'Done' : 'Select'}
+              {selecting ? translateUi('Done') : translateUi('Select')}
             </Button>
           )}
           {notes.length > 8 && (
             <label className="relative">
-              <span className="sr-only">Search cards</span>
+              <span className="sr-only"><UiText source={'Search cards'} /></span>
               <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-faint" aria-hidden />
               <input
                 value={query}
@@ -277,7 +271,7 @@ export default function DeckPage() {
                   setQuery(e.target.value);
                   setShown(PAGE);
                 }}
-                placeholder="Search"
+                placeholder={translateUi('Search')}
                 className="h-10 w-44 rounded-xl border border-line bg-raised pr-3 pl-9 text-sm outline-none focus:border-accent sm:w-60"
               />
             </label>
@@ -285,9 +279,7 @@ export default function DeckPage() {
         </div>
 
         {notes.length === 0 ? (
-          <EmptyState icon={Plus} title="No cards yet" action={<Button icon={Plus} onClick={() => setEditor({ mode: 'new', deckId: deck.id })}>Add the first card</Button>}>
-            Add words by hand here, or mark words as Learning while you read.
-          </EmptyState>
+          <EmptyState icon={Plus} title={translateUi('No cards yet')} action={<Button icon={Plus} onClick={() => setEditor({ mode: 'new', deckId: deck.id })}><UiText source={'Add the first card'} /></Button>}><UiText source={'Add words by hand here, or mark words as Learning while you read.'} /></EmptyState>
         ) : (
           <>
             <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -302,56 +294,32 @@ export default function DeckPage() {
                   onOpen={() => (selecting ? toggle(note.id) : setEditor({ mode: 'edit', note, cards: cardsByNote.get(note.id) ?? [] }))}
                 />
               ))}
-              {list.length === 0 && <li className="col-span-full py-6 text-center text-sm text-ink-soft">No cards match “{query}”.</li>}
+              {list.length === 0 && <li className="col-span-full py-6 text-center text-sm text-ink-soft"><UiText source={'No cards match “{0}”.'} values={[query]} /></li>}
             </ul>
             {selecting && (
-              <div className="sticky bottom-4 z-20 mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-line bg-raised p-2.5 shadow-elev-3" role="toolbar" aria-label="Selected cards">
-                <span className="px-2 text-[14px] font-semibold tabular-nums">{ids.length} selected</span>
-                <Button variant="ghost" onClick={() => setPicked(new Set(list.map((n) => n.id)))}>
-                  Select all{query ? ' shown' : ''}
-                </Button>
+              <div className="sticky bottom-4 z-20 mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-line bg-raised p-2.5 shadow-elev-3" role="toolbar" aria-label={translateUi('Selected cards')}>
+                <span className="px-2 text-[14px] font-semibold tabular-nums"><UiText source={'{0} selected'} values={[ids.length]} /></span>
+                <Button variant="ghost" onClick={() => setPicked(new Set(list.map((n) => n.id)))}><UiText source={'Select all{0}'} values={[query ? ' shown' : '']} /></Button>
                 <span className="flex-1" />
-                <Button variant="secondary" icon={Tag} disabled={!ids.length} onClick={() => askTags(false)}>
-                  Tag
-                </Button>
-                <Button variant="ghost" disabled={!ids.length} onClick={() => askTags(true)}>
-                  Untag
-                </Button>
-                <Button variant="secondary" icon={FolderInput} disabled={!ids.length} onClick={askMove}>
-                  Move
-                </Button>
+                <Button variant="secondary" icon={Tag} disabled={!ids.length} onClick={() => askTags(false)}><UiText source={'Tag'} /></Button>
+                <Button variant="ghost" disabled={!ids.length} onClick={() => askTags(true)}><UiText source={'Untag'} /></Button>
+                <Button variant="secondary" icon={FolderInput} disabled={!ids.length} onClick={askMove}><UiText source={'Move'} /></Button>
                 {how === 'hand' && (
                   <>
-                    <Button variant="secondary" icon={ArrowUp} disabled={!ids.length} onClick={() => void shiftNotes(list.map((n) => n.id), picked, -1)}>
-                      Earlier
-                    </Button>
-                    <Button variant="secondary" icon={ArrowDown} disabled={!ids.length} onClick={() => void shiftNotes(list.map((n) => n.id), picked, 1)}>
-                      Later
-                    </Button>
+                    <Button variant="secondary" icon={ArrowUp} disabled={!ids.length} onClick={() => void shiftNotes(list.map((n) => n.id), picked, -1)}><UiText source={'Earlier'} /></Button>
+                    <Button variant="secondary" icon={ArrowDown} disabled={!ids.length} onClick={() => void shiftNotes(list.map((n) => n.id), picked, 1)}><UiText source={'Later'} /></Button>
                   </>
                 )}
-                <Button variant="secondary" icon={Pencil} disabled={!ids.length} onClick={askKind}>
-                  Edit
-                </Button>
-                <Button variant="secondary" icon={Layers} disabled={!ids.length} onClick={askSplit}>
-                  Split off
-                </Button>
-                <Button variant="secondary" icon={Pause} disabled={!ids.length} onClick={() => void suspendNotes(ids, true)}>
-                  Suspend
-                </Button>
-                <Button variant="secondary" icon={Play} disabled={!ids.length} onClick={() => void suspendNotes(ids, false)}>
-                  Resume
-                </Button>
-                <Button variant="secondary" icon={Trash2} disabled={!ids.length} onClick={askDeleteCards}>
-                  Delete
-                </Button>
+                <Button variant="secondary" icon={Pencil} disabled={!ids.length} onClick={askKind}><UiText source={'Edit'} /></Button>
+                <Button variant="secondary" icon={Layers} disabled={!ids.length} onClick={askSplit}><UiText source={'Split off'} /></Button>
+                <Button variant="secondary" icon={Pause} disabled={!ids.length} onClick={() => void suspendNotes(ids, true)}><UiText source={'Suspend'} /></Button>
+                <Button variant="secondary" icon={Play} disabled={!ids.length} onClick={() => void suspendNotes(ids, false)}><UiText source={'Resume'} /></Button>
+                <Button variant="secondary" icon={Trash2} disabled={!ids.length} onClick={askDeleteCards}><UiText source={'Delete'} /></Button>
               </div>
             )}
             {list.length > shown && (
               <div className="mt-4 text-center">
-                <Button variant="ghost" onClick={() => setShown((n) => n + PAGE * 4)}>
-                  Show more ({(list.length - shown).toLocaleString()})
-                </Button>
+                <Button variant="ghost" onClick={() => setShown((n) => n + PAGE * 4)}><UiText source={'Show more ({0})'} values={[(list.length - shown).toLocaleString()]} /></Button>
               </div>
             )}
           </>
@@ -367,26 +335,22 @@ export default function DeckPage() {
       <Dialog
         open={Boolean(editing)}
         onClose={() => setEditing(null)}
-        title={`Edit ${ids.length} ${ids.length === 1 ? 'card' : 'cards'}`}
+        title={translateUi('Edit {0} {1}', [ids.length, ids.length === 1 ? 'card' : 'cards'])}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setEditing(null)}>
-              Cancel
-            </Button>
+            <Button variant="ghost" onClick={() => setEditing(null)}><UiText source={'Cancel'} /></Button>
             <Button
               onClick={async () => {
                 if (editing) await editNotes(ids, { ...(editing.pos !== '' && { pos: editing.pos === '-' ? '' : editing.pos }), ...(editing.gender !== '' && { gender: editing.gender === '-' ? '' : editing.gender }) });
                 setEditing(null);
               }}
-            >
-              Apply
-            </Button>
+            ><UiText source={'Apply'} /></Button>
           </>
         }
       >
         <div className="space-y-4 pt-2">
-          <Select label="Kind of word" value={editing?.pos ?? ''} onChange={(pos) => setEditing((e) => (e ? { ...e, pos } : e))} options={[{ value: '', label: 'Leave as it is' }, { value: '-', label: 'Take it off' }, ...KINDS.map((k) => ({ value: k, label: k }))]} />
-          <Select label="Gender" value={editing?.gender ?? ''} onChange={(gender) => setEditing((e) => (e ? { ...e, gender } : e))} options={[{ value: '', label: 'Leave as it is' }, { value: '-', label: 'Take it off' }, { value: 'm', label: 'masculine' }, { value: 'f', label: 'feminine' }, { value: 'n', label: 'neuter' }]} />
+          <Select label={translateUi('Kind of word')} value={editing?.pos ?? ''} onChange={(pos) => setEditing((e) => (e ? { ...e, pos } : e))} options={[{ value: '', label: translateUi('Leave as it is') }, { value: '-', label: translateUi('Take it off') }, ...KINDS.map((k) => ({ value: k, label: k }))]} />
+          <Select label={translateUi('Gender')} value={editing?.gender ?? ''} onChange={(gender) => setEditing((e) => (e ? { ...e, gender } : e))} options={[{ value: '', label: translateUi('Leave as it is') }, { value: '-', label: translateUi('Take it off') }, { value: 'm', label: translateUi('masculine') }, { value: 'f', label: translateUi('feminine') }, { value: 'n', label: translateUi('neuter') }]} />
         </div>
       </Dialog>
       <TidyDialog open={tidying} onClose={() => setTidying(false)} notes={notes} lang={deck.lang} />

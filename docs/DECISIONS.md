@@ -1936,3 +1936,7 @@ A small offline catalogue links culture to the same words learners meet in the r
 ### 2026-10-29 · Daily immersion and reference help (6-19 C2, Codex)
 
 Every day reuses Diarium tasks, Sermo topics, the on-device photo OCR and Visio’s existing YouTube player/importer. Playlist levels are learner labels, not measured difficulty; embedding/captions depend on the source. Shopping and playlist metadata use bounded per-language settings rows, with transactional updates and Undo; malformed saved data is kept rather than replaced. Global reference help is reached from the sidebar/reader or Ctrl/⌘ Shift E. Selections are reviewed before sending only the two visible fields, with credential inputs excluded; generated explanations state uncertainty and invent no source links. Only fake injected model output was checked. No new table or dependency.
+
+### 2026-10-30 · Offline interface catalogue (6-19 C3, Codex)
+
+Use explicit React message sites rather than changing DOM text or translating arbitrary learner strings. Numeric/rich values remain React nodes; Latin room names stay recognizable. English is the default and fallback. The user approved two exact batches of source interface copy for one-time Google translation drafts; the application ships their JSON and makes no translation requests for its interface. Core navigation labels were corrected locally; broad linguistic review remains outstanding. This checkpoint does not claim every dynamic UI string is migrated.

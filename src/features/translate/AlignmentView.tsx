@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { BookOpen, Layers, Sparkles } from 'lucide-react';
 import { Card, Badge } from '@/design/primitives';
@@ -9,6 +10,7 @@ interface AlignmentViewProps {
 }
 
 export function AlignmentView({ selectedLang }: AlignmentViewProps) {
+  const translateUi = useUi();
   const pairs = ALIGNMENT_PAIRS.filter((p) => p.toLang === selectedLang);
   const [selectedPairIndex, setSelectedPairIndex] = useState(0);
   const [hoveredLink, setHoveredLink] = useState<TokenLink | null>(null);
@@ -19,9 +21,7 @@ export function AlignmentView({ selectedLang }: AlignmentViewProps) {
 
   if (!currentPair) {
     return (
-      <Card className="p-8 text-center text-sand-500">
-        No alignment pairs available for this language yet.
-      </Card>
+      <Card className="p-8 text-center text-sand-500"><UiText source={'No alignment pairs available for this language yet.'} /></Card>
     );
   }
 
@@ -40,9 +40,7 @@ export function AlignmentView({ selectedLang }: AlignmentViewProps) {
       <div className="flex flex-wrap items-center justify-between gap-3 bg-sand-50/70 p-3 rounded-xl border border-sand-200/60 dark:bg-sand-900/30 dark:border-sand-800/60">
         <div className="flex items-center gap-2">
           <Layers className="w-4 h-4 text-terracotta-600 dark:text-terracotta-400" />
-          <span className="text-xs font-semibold text-sand-700 dark:text-sand-300">
-            Word-by-Word Alignment & Sentence Structure
-          </span>
+          <span className="text-xs font-semibold text-sand-700 dark:text-sand-300"><UiText source={'Word-by-Word Alignment & Sentence Structure'} /></span>
         </div>
 
         {pairs.length > 1 && (
@@ -62,9 +60,7 @@ export function AlignmentView({ selectedLang }: AlignmentViewProps) {
                     ? 'border-terracotta-500 bg-terracotta-50 text-terracotta-800 font-semibold dark:bg-terracotta-950/40 dark:text-terracotta-200'
                     : 'border-sand-200 bg-white text-sand-600 hover:border-sand-300 dark:border-sand-800 dark:bg-sand-900 dark:text-sand-400',
                 )}
-              >
-                Sentence {i + 1}
-              </button>
+              ><UiText source={'Sentence {0}'} values={[i + 1]} /></button>
             ))}
           </div>
         )}
@@ -74,25 +70,19 @@ export function AlignmentView({ selectedLang }: AlignmentViewProps) {
       <Card className="p-6 space-y-8 border-sand-300/70 dark:border-sand-800/70">
         <div className="space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-sand-400 uppercase tracking-wider">
-              Interactive Cross-Language Token Mapping
-            </span>
+            <span className="text-xs font-semibold text-sand-400 uppercase tracking-wider"><UiText source={'Interactive Cross-Language Token Mapping'} /></span>
             <Badge tone="neutral">
-              <span className="text-[10px] font-mono uppercase">Hover words to trace syntax</span>
+              <span className="text-[10px] font-mono uppercase"><UiText source={'Hover words to trace syntax'} /></span>
             </Badge>
           </div>
-          <p className="text-xs text-sand-500">
-            Hover over tokens on either row to trace semantic correspondence and structural word-order shifts.
-          </p>
+          <p className="text-xs text-sand-500"><UiText source={'Hover over tokens on either row to trace semantic correspondence and structural word-order shifts.'} /></p>
         </div>
 
         {/* Alignment Canvas */}
         <div className="relative py-6 px-4 bg-sand-50/50 rounded-2xl border border-sand-200/50 dark:bg-sand-900/20 dark:border-sand-800/50 space-y-10">
           {/* Source Tokens Row */}
           <div className="space-y-2">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-sand-400">
-              Source (English):
-            </div>
+            <div className="text-[11px] font-mono uppercase tracking-wider text-sand-400"><UiText source={'Source (English):'} /></div>
             <div className="flex flex-wrap gap-2.5 items-center">
               {currentPair.sourceTokens.map((token, idx) => {
                 const isLinked = activeLink?.sourceIndices.includes(idx);
@@ -119,16 +109,14 @@ export function AlignmentView({ selectedLang }: AlignmentViewProps) {
           <div className="flex items-center justify-center gap-2 py-1 text-xs text-sand-400">
             <div className="h-px bg-sand-200 flex-1 dark:bg-sand-800" />
             <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-sand-100 dark:bg-sand-800">
-              {activeLink ? (activeLink.label ?? 'Aligned link') : '↕ syntax alignment'}
+              {activeLink ? (activeLink.label ?? 'Aligned link') : translateUi('↕ syntax alignment')}
             </span>
             <div className="h-px bg-sand-200 flex-1 dark:bg-sand-800" />
           </div>
 
           {/* Target Tokens Row */}
           <div className="space-y-2">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-sand-400">
-              Target ({selectedPairIndex >= 0 ? selectedLang.toUpperCase() : ''}):
-            </div>
+            <div className="text-[11px] font-mono uppercase tracking-wider text-sand-400"><UiText source={'Target ({0}):'} values={[selectedPairIndex >= 0 ? selectedLang.toUpperCase() : '']} /></div>
             <div className="flex flex-wrap gap-2.5 items-center">
               {currentPair.targetTokens.map((token, idx) => {
                 const isLinked = activeLink?.targetIndices.includes(idx);
@@ -157,7 +145,7 @@ export function AlignmentView({ selectedLang }: AlignmentViewProps) {
           <div className="p-4 rounded-xl bg-terracotta-50/60 border border-terracotta-200/70 dark:bg-terracotta-950/30 dark:border-terracotta-900/50 space-y-1.5 transition-all">
             <div className="flex items-center gap-2 text-xs font-semibold text-terracotta-900 dark:text-terracotta-200">
               <Sparkles className="w-4 h-4 text-terracotta-600" />
-              <span>Token Correspondence:</span>
+              <span><UiText source={'Token Correspondence:'} /></span>
               <span className="font-serif text-sm font-bold">
                 "{activeLink.sourceIndices.map((i) => currentPair.sourceTokens[i]).join(' ')}"
                 {' ↔ '}
@@ -177,7 +165,7 @@ export function AlignmentView({ selectedLang }: AlignmentViewProps) {
           <div className="p-4 rounded-xl bg-sand-50/80 border border-sand-200/70 dark:bg-sand-900/40 dark:border-sand-800/60 space-y-2">
             <div className="flex items-center gap-2 text-xs font-semibold text-sand-800 dark:text-sand-200">
               <BookOpen className="w-4 h-4 text-sand-600 dark:text-sand-400" />
-              <span>Sentence Structure Contrast:</span>
+              <span><UiText source={'Sentence Structure Contrast:'} /></span>
             </div>
             <p className="text-xs text-sand-700 dark:text-sand-300 leading-relaxed font-serif pl-6">
               {currentPair.shiftNote}

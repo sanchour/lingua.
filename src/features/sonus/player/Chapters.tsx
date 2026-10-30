@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AudioLines, ListOrdered } from 'lucide-react';
 import { formatClock } from '@/core/audio/cues';
@@ -40,7 +41,7 @@ export function ChapterNow({ media, live, className }: { media: Media; live: boo
           {chapterTitle(chapters, index)}
         </span>
       ) : (
-        <span className="truncate">{chapters.length} chapters</span>
+        <span className="truncate"><UiText source={'{0} chapters'} values={[chapters.length]} /></span>
       )}
     </p>
   );
@@ -107,18 +108,17 @@ function ChapterList({ media, live, onPick }: { media: Media; live: boolean; onP
 
 /** "Chapters": each chapter with its start time, the one playing marked; tapping one plays from there. */
 export function ChaptersButton({ media, live, className }: { media: Media; live: boolean; className?: string }) {
+  const translateUi = useUi();
   const { layout } = useLayout();
   const [sheet, setSheet] = useState(false);
   const label = (
-    <>
-      <ListOrdered size={15} aria-hidden /> Chapters
-    </>
+    <><UiText source={'{0} Chapters'} values={[<ListOrdered size={15} aria-hidden />]} /></>
   );
 
   if (layout === 'wide') {
     return (
       <Popover
-        label="Chapters"
+        label={translateUi('Chapters')}
         placement="top-start"
         className="w-80"
         trigger={(props) => (
@@ -140,7 +140,7 @@ export function ChaptersButton({ media, live, className }: { media: Media; live:
       <button type="button" onClick={() => setSheet(true)} className={className}>
         {label}
       </button>
-      <Drawer open={sheet} onClose={() => setSheet(false)} title="Chapters" description={media.title}>
+      <Drawer open={sheet} onClose={() => setSheet(false)} title={translateUi('Chapters')} description={media.title}>
         <ChapterList media={media} live={live} onPick={() => setSheet(false)} />
       </Drawer>
     </>

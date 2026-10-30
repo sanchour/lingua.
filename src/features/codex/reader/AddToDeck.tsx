@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { ArrowRightLeft, Check, Layers, Plus } from 'lucide-react';
 import { db } from '@/data/db';
@@ -12,6 +13,7 @@ import { toast } from '@/state/ui';
  * A word already saved by marking it Learning (`move`) is moved to that deck instead of copied.
  */
 export function AddToDeck({ lang, note, move }: { lang: string; note: NoteInput; move?: { noteId: string; deckId: string } }) {
+  const translateUi = useUi();
   const decks = useDecks(lang);
   const [naming, setNaming] = useState(false);
   const [name, setName] = useState('');
@@ -35,7 +37,7 @@ export function AddToDeck({ lang, note, move }: { lang: string; note: NoteInput;
 
   return (
     <Popover
-      label={move ? 'Move to a deck' : 'Add to a deck'}
+      label={move ? translateUi('Move to a deck') : translateUi('Add to a deck')}
       placement="bottom-end"
       className="w-72"
       onOpenChange={(open) => !open && setNaming(false)}
@@ -43,20 +45,20 @@ export function AddToDeck({ lang, note, move }: { lang: string; note: NoteInput;
         <button
           {...props}
           type="button"
-          title={added ? `In ${added}` : move ? 'Move to another deck' : 'Add to a deck'}
+          title={added ? translateUi('In {0}', [added]) : move ? translateUi('Move to another deck') : translateUi('Add to a deck')}
           className={cx(
             'flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[12.5px] font-bold transition-colors',
             added ? 'border-sage/40 bg-sage-soft text-sage-text' : 'border-line bg-raised text-ink-soft hover:border-line-strong hover:text-ink',
           )}
         >
           {added ? <Check size={14} aria-hidden /> : move ? <ArrowRightLeft size={13} aria-hidden /> : <Plus size={14} aria-hidden />}
-          {move && !added ? 'Move' : 'Deck'}
+          {move && !added ? translateUi('Move') : translateUi('Deck')}
         </button>
       )}
     >
       {(close) => (
         <div>
-          <p className="px-3 pt-1.5 pb-1 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">{move ? 'Move to' : 'Add to'}</p>
+          <p className="px-3 pt-1.5 pb-1 text-[11.5px] font-bold tracking-[0.1em] text-ink-faint uppercase">{move ? translateUi('Move to') : translateUi('Add to')}</p>
           <div className="max-h-64 overflow-y-auto">
             {(decks ?? []).filter((d) => d.id !== move?.deckId).map((d) => (
               <button
@@ -86,19 +88,15 @@ export function AddToDeck({ lang, note, move }: { lang: string; note: NoteInput;
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Deck name"
+                  placeholder={translateUi('Deck name')}
                   autoFocus
                   className="h-9 min-w-0 flex-1 rounded-lg border border-line bg-bg px-2.5 text-[14px]"
-                  aria-label="New deck name"
+                  aria-label={translateUi('New deck name')}
                 />
-                <button type="submit" disabled={!name.trim()} className="h-9 rounded-lg bg-inverse px-3 text-[13px] font-bold text-on-inverse disabled:opacity-40">
-                  Add
-                </button>
+                <button type="submit" disabled={!name.trim()} className="h-9 rounded-lg bg-inverse px-3 text-[13px] font-bold text-on-inverse disabled:opacity-40"><UiText source={'Add'} /></button>
               </form>
             ) : (
-              <button type="button" onClick={() => setNaming(true)} className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm font-semibold text-accent-text transition-colors hover:bg-surface">
-                <Plus size={15} aria-hidden /> New deck…
-              </button>
+              <button type="button" onClick={() => setNaming(true)} className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm font-semibold text-accent-text transition-colors hover:bg-surface"><UiText source={'{0} New deck…'} values={[<Plus size={15} aria-hidden />]} /></button>
             )}
           </div>
         </div>

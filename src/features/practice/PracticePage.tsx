@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Practice (6-4b): sets of exercises made from your own words and from Grammatica, in every kind the engine has: matching games,
 // correct the mistake, rewrite, what comes next, drag the words, change a form. Each runs in one session screen.
 import { useEffect, useMemo, useState } from 'react';
@@ -250,6 +251,7 @@ function buildSets(lang: string, c: Ctx, level: Cefr): PracticeSet[] {
 }
 
 export default function PracticePage() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = language.id;
   const level = (language.level === 'A0' ? 'A1' : language.level) as Cefr;
@@ -310,9 +312,7 @@ export default function PracticePage() {
       <div className="p-10 text-ink-soft">
         <p>{error ?? (sets.find((s) => s.id === chosen)?.makeLater ? 'Max is making it for you…' : ctx ? 'This set can’t be made yet.' : 'Getting it ready…')}</p>
         {error && (
-          <Link to="/thesaurus/practice" className="mt-3 inline-block font-semibold text-ink underline decoration-line-strong underline-offset-4">
-            Back to Practice
-          </Link>
+          <Link to="/thesaurus/practice" className="mt-3 inline-block font-semibold text-ink underline decoration-line-strong underline-offset-4"><UiText source={'Back to Practice'} /></Link>
         )}
       </div>
     );
@@ -330,11 +330,9 @@ export default function PracticePage() {
               <p className="font-serif text-lg font-semibold">{s.title}</p>
               <p className="mt-1 flex-1 text-[14px] leading-snug text-ink-soft">{s.detail}</p>
               {ready.get(s.id) ? (
-                <Link to={`/thesaurus/practice/${s.id}`} className={buttonClasses('primary', 'sm') + ' mt-4 self-start'}>
-                  Start
-                </Link>
+                <Link to={`/thesaurus/practice/${s.id}`} className={buttonClasses('primary', 'sm') + ' mt-4 self-start'}><UiText source={'Start'} /></Link>
               ) : (
-                <p className="mt-4 text-[12.5px] text-ink-faint">Needs {s.needs}.</p>
+                <p className="mt-4 text-[12.5px] text-ink-faint"><UiText source={'Needs {0}.'} values={[s.needs]} /></p>
               )}
             </Card>
           ))}
@@ -344,14 +342,9 @@ export default function PracticePage() {
 
   return (
     <>
-      <PageHeader title="Practice" eyebrow={`${name}, in every kind of exercise`} />
-      <p className="max-w-2xl text-[15px] leading-relaxed text-ink-soft">
-        Sets made from your own words and from Grammatica. Missed ones come back once with another example; in the options (top right) you can ask to be asked how sure you are, or to see the answers only at the end.{' '}
-        <Link to="/thesaurus" className="font-semibold text-ink underline decoration-line-strong underline-offset-4">
-          Back to Thesaurus
-        </Link>
-      </p>
-      {!ctx ? <p className="mt-8 text-ink-soft">Looking at your words…</p> : (
+      <PageHeader title={translateUi('Practice')} eyebrow={`${name}, in every kind of exercise`} />
+      <p className="max-w-2xl text-[15px] leading-relaxed text-ink-soft"><UiText source={'Sets made from your own words and from Grammatica. Missed ones come back once with another example; in the options (top right) you can ask to be asked how sure you are, or to see the answers only at the end.{0}{1}'} values={[' ', <Link to="/thesaurus" className="font-semibold text-ink underline decoration-line-strong underline-offset-4"><UiText source={'Back to Thesaurus'} /></Link>]} /></p>
+      {!ctx ? <p className="mt-8 text-ink-soft"><UiText source={'Looking at your words…'} /></p> : (
         <>
           {section('words', 'Your words')}
           {section('grammar', 'Grammar')}

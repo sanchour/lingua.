@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { BackLink } from '@/app/BackLink';
@@ -19,6 +20,7 @@ const dateFmt = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short', 
 
 /** A followed podcast: its details and every episode, ready to stream, save or transcribe. */
 export default function FeedPage() {
+  const translateUi = useUi();
   const { feedId } = useParams();
   const navigate = useNavigate();
   const feed = useFeed(feedId);
@@ -34,10 +36,8 @@ export default function FeedPage() {
   if (feed === null) {
     return (
       <div className="py-20 text-center">
-        <p className="font-serif text-xl">This podcast isn’t followed any more.</p>
-        <Link to="/cantus/podcasts" className="mt-4 inline-block font-semibold text-accent-text">
-          Back to Sonus
-        </Link>
+        <p className="font-serif text-xl"><UiText source={'This podcast isn’t followed any more.'} /></p>
+        <Link to="/cantus/podcasts" className="mt-4 inline-block font-semibold text-accent-text"><UiText source={'Back to Sonus'} /></Link>
       </div>
     );
   }
@@ -64,26 +64,24 @@ export default function FeedPage() {
         <div className="min-w-0 flex-1">
           <h1 className="font-serif text-[30px] leading-tight font-semibold tracking-tight sm:text-[38px]">{feed.title}</h1>
           {feed.author && <p className="mt-1 text-ink-soft">{feed.author}</p>}
-          <p className="mt-1 text-[13px] font-semibold text-ink-faint">{feed.episodes.length} episodes</p>
+          <p className="mt-1 text-[13px] font-semibold text-ink-faint"><UiText source={'{0} episodes'} values={[feed.episodes.length]} /></p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" icon={RefreshCw} loading={refreshing} onClick={() => void refresh()}>
-            Refresh
-          </Button>
+          <Button variant="secondary" icon={RefreshCw} loading={refreshing} onClick={() => void refresh()}><UiText source={'Refresh'} /></Button>
           <Popover
-            label="Podcast options"
+            label={translateUi('Podcast options')}
             placement="bottom-end"
             className="w-60"
             trigger={(props) => (
-              <button {...props} type="button" aria-label="Podcast options" className="grid size-10 place-items-center rounded-xl text-ink-soft transition-colors hover:bg-surface hover:text-ink">
+              <button {...props} type="button" aria-label={translateUi('Podcast options')} className="grid size-10 place-items-center rounded-xl text-ink-soft transition-colors hover:bg-surface hover:text-ink">
                 <Ellipsis size={18} aria-hidden />
               </button>
             )}
           >
             {(close) => (
               <div className="space-y-0.5">
-                {feed.link && <MenuItem icon={ExternalLink} label="Podcast website" onClick={() => (close(), window.open(feed.link, '_blank', 'noopener'))} />}
-                <MenuItem icon={Trash2} label="Unfollow" danger onClick={() => (close(), setConfirm(true))} />
+                {feed.link && <MenuItem icon={ExternalLink} label={translateUi('Podcast website')} onClick={() => (close(), window.open(feed.link, '_blank', 'noopener'))} />}
+                <MenuItem icon={Trash2} label={translateUi('Unfollow')} danger onClick={() => (close(), setConfirm(true))} />
               </div>
             )}
           </Popover>
@@ -92,7 +90,7 @@ export default function FeedPage() {
 
       {feed.description && <p className="mt-6 line-clamp-4 max-w-3xl text-[14.5px] leading-relaxed whitespace-pre-line text-ink-soft">{feed.description}</p>}
 
-      <h2 className="mt-10 mb-3 border-b border-line pb-2 font-serif text-xl font-semibold">Episodes</h2>
+      <h2 className="mt-10 mb-3 border-b border-line pb-2 font-serif text-xl font-semibold"><UiText source={'Episodes'} /></h2>
       <div className="-mx-2 flex flex-col">
         {episodes.map((ep) => {
           const media = inLibrary?.get(ep.guid);
@@ -105,21 +103,17 @@ export default function FeedPage() {
       </div>
       {feed.episodes.length > shown && (
         <div className="mt-6 flex justify-center">
-          <Button variant="secondary" onClick={() => setShown((n) => n + PAGE)}>
-            Show more episodes
-          </Button>
+          <Button variant="secondary" onClick={() => setShown((n) => n + PAGE)}><UiText source={'Show more episodes'} /></Button>
         </div>
       )}
 
       <Dialog
         open={confirm}
         onClose={() => setConfirm(false)}
-        title="Unfollow this podcast?"
+        title={translateUi('Unfollow this podcast?')}
         actions={
           <>
-            <Button variant="ghost" onClick={() => setConfirm(false)}>
-              Keep
-            </Button>
+            <Button variant="ghost" onClick={() => setConfirm(false)}><UiText source={'Keep'} /></Button>
             <Button
               variant="danger"
               onClick={async () => {
@@ -127,20 +121,17 @@ export default function FeedPage() {
                 await unsubscribe(feed.id);
                 navigate('/cantus/podcasts');
               }}
-            >
-              Unfollow
-            </Button>
+            ><UiText source={'Unfollow'} /></Button>
           </>
         }
-      >
-        Episodes you’ve played or saved stay in your library.
-      </Dialog>
+      ><UiText source={'Episodes you’ve played or saved stay in your library.'} /></Dialog>
     </>
   );
 }
 
 /** An episode not yet in the library: playing or opening it adds it. */
 export function EpisodeRow({ feed, episode, onOpen }: { feed: Feed; episode: FeedEpisode; onOpen: () => void }) {
+  const translateUi = useUi();
   const playing = usePlayer((s) => s.media?.guid === episode.guid && s.status === 'playing');
   const details = [episode.publishedAt && dateFmt.format(episode.publishedAt), episode.durationMs && formatDuration(episode.durationMs)].filter(Boolean);
   return (
@@ -156,7 +147,7 @@ export function EpisodeRow({ feed, episode, onOpen }: { feed: Feed; episode: Fee
       </button>
       <button
         type="button"
-        aria-label={`Play ${episode.title}`}
+        aria-label={translateUi('Play {0}', [episode.title])}
         onClick={async () => {
           unlockAudio();
           const media = await db.media.get(await episodeMedia(feed, episode));

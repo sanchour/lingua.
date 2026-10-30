@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 import type { Ref } from 'react';
 import { Search, X } from 'lucide-react';
 import { cx } from '@/lib/cx';
@@ -15,6 +16,7 @@ interface SearchInputProps {
 
 /** A rounded search field. Escape clears it first, then closes it. */
 export function SearchInput({ value, onChange, placeholder, onClose, autoFocus, ref, className }: SearchInputProps) {
+  const translateUi = useUi();
   return (
     <label className={cx('flex h-11 items-center gap-2 rounded-2xl border border-line bg-raised pr-1.5 pl-3.5 transition-colors focus-within:border-line-strong', className)}>
       <Search size={17} className="shrink-0 text-ink-faint" aria-hidden />
@@ -38,7 +40,7 @@ export function SearchInput({ value, onChange, placeholder, onClose, autoFocus, 
       {(value || onClose) && (
         <button
           type="button"
-          aria-label={value ? 'Clear search' : 'Close search'}
+          aria-label={value ? translateUi('Clear search') : translateUi('Close search')}
           onClick={() => (value ? onChange('') : onClose?.())}
           className="grid size-8 shrink-0 place-items-center rounded-xl text-ink-faint transition-colors hover:bg-surface hover:text-ink"
         >

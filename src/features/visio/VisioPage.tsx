@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { lazy, Suspense, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -57,6 +58,7 @@ function sorter(sort: MediaSort): (a: Media, b: Media) => number {
 }
 
 export default function VisioPage() {
+  const translateUi = useUi();
   const { language, settings } = useApp();
   const lang = language.id;
   const { pointer } = useLayout();
@@ -129,23 +131,21 @@ export default function VisioPage() {
               <AnimatePresence mode="popLayout" initial={false}>
                 {searching ? (
                   <motion.div key="search" className="absolute inset-0" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={fade}>
-                    <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder="Search titles" onClose={closeSearch} autoFocus />
+                    <SearchInput ref={searchRef} value={query} onChange={setQuery} placeholder={translateUi('Search titles')} onClose={closeSearch} autoFocus />
                   </motion.div>
                 ) : (
-                  <motion.p key="count" className="flex h-full items-center font-serif text-xl font-semibold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
-                    Your videos <span className="ml-2 font-sans text-sm font-bold text-ink-faint tabular-nums">{videos.length}</span>
-                  </motion.p>
+                  <motion.p key="count" className="flex h-full items-center font-serif text-xl font-semibold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}><UiText source={'Your videos {0}'} values={[<span className="ml-2 font-sans text-sm font-bold text-ink-faint tabular-nums">{videos.length}</span>]} /></motion.p>
                 )}
               </AnimatePresence>
             </div>
-            {!searching && <IconButton icon={Search} label="Search" shortcut="/" onClick={() => setSearching(true)} />}
+            {!searching && <IconButton icon={Search} label={translateUi('Search')} shortcut="/" onClick={() => setSearching(true)} />}
             <SortMenu value={sort} options={SORTS} onChange={(mediaSort) => void patchSetting('ui', { mediaSort })} />
           </div>
 
           {visible.length === 0 ? (
             <div className="flex flex-col items-center py-14 text-center text-ink-soft">
               <SearchX size={28} className="mb-3 text-ink-faint" aria-hidden />
-              <p className="font-semibold text-ink">Nothing matches “{query.trim()}”</p>
+              <p className="font-semibold text-ink"><UiText source={'Nothing matches “{0}”'} values={[query.trim()]} /></p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
@@ -169,15 +169,16 @@ export default function VisioPage() {
 }
 
 function ContinueCard({ media, progress }: { media: Media; progress?: PlaybackProgress }) {
+  const translateUi = useUi();
   const share = progress && media.durationMs ? progress.positionMs / media.durationMs : 0;
   const left = media.durationMs && progress ? Math.max(0, media.durationMs - progress.positionMs) : 0;
   return (
     <Card className="flex items-center gap-4 p-4 sm:gap-5 sm:p-5">
-      <Link to={`/visio/watch/${media.id}`} className="w-28 shrink-0 sm:w-36" aria-label={`Continue watching ${media.title}`}>
+      <Link to={`/visio/watch/${media.id}`} className="w-28 shrink-0 sm:w-36" aria-label={translateUi('Continue watching {0}', [media.title])}>
         <Poster title={media.title} coverBlobId={media.coverBlobId} coverUrl={media.coverUrl} />
       </Link>
       <div className="min-w-0 flex-1">
-        <p className="text-[12px] font-bold tracking-[0.12em] text-accent-text uppercase">Continue watching</p>
+        <p className="text-[12px] font-bold tracking-[0.12em] text-accent-text uppercase"><UiText source={'Continue watching'} /></p>
         <p lang={media.lang} className="mt-1 line-clamp-2 font-serif text-xl leading-tight font-semibold">
           {media.title}
         </p>
@@ -185,13 +186,11 @@ function ContinueCard({ media, progress }: { media: Media; progress?: PlaybackPr
           <div className="h-1.5 max-w-48 flex-1 overflow-hidden rounded-full bg-sunken">
             <div className="h-full origin-left rounded-full bg-accent" style={{ transform: `scaleX(${Math.max(0.03, share)})` }} />
           </div>
-          {left > 0 && <span className="text-xs font-semibold text-ink-faint tabular-nums">{formatDuration(left)} left</span>}
+          {left > 0 && <span className="text-xs font-semibold text-ink-faint tabular-nums"><UiText source={'{0} left'} values={[formatDuration(left)]} /></span>}
         </div>
       </div>
       <div className="hidden shrink-0 sm:block">
-        <Link to={`/visio/watch/${media.id}`} className={buttonClasses('primary', 'md')}>
-          Continue <ArrowRight size={16} aria-hidden />
-        </Link>
+        <Link to={`/visio/watch/${media.id}`} className={buttonClasses('primary', 'md')}><UiText source={'Continue {0}'} values={[<ArrowRight size={16} aria-hidden />]} /></Link>
       </div>
     </Card>
   );
@@ -204,18 +203,12 @@ function EmptyLibrary({ lang, onServices }: { lang: string; onServices: () => vo
       <div className="mb-5 grid size-16 place-items-center rounded-2xl bg-accent-soft text-accent-text">
         <Clapperboard size={28} aria-hidden />
       </div>
-      <h2 className="font-serif text-2xl font-semibold">Nothing on screen yet</h2>
-      <p className="mt-2 max-w-md text-[15px] leading-relaxed text-ink-soft">
-        Add a video and its subtitles, or just the subtitles for a show you watch elsewhere. Every line is clickable; pause on any word to look it up or save it.
-      </p>
+      <h2 className="font-serif text-2xl font-semibold"><UiText source={'Nothing on screen yet'} /></h2>
+      <p className="mt-2 max-w-md text-[15px] leading-relaxed text-ink-soft"><UiText source={'Add a video and its subtitles, or just the subtitles for a show you watch elsewhere. Every line is clickable; pause on any word to look it up or save it.'} /></p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
         <AddVideoMenu lang={lang} label="Add a video or subtitles" />
-        <button type="button" onClick={onServices} className={buttonClasses('secondary', 'md')}>
-          <Tv size={17} aria-hidden /> Browse {name} streaming
-        </button>
-        <Link to="/explora" className={buttonClasses('secondary', 'md')}>
-          <Compass size={17} aria-hidden /> Discover in Explora
-        </Link>
+        <button type="button" onClick={onServices} className={buttonClasses('secondary', 'md')}><UiText source={'{0} Browse {1} streaming'} values={[<Tv size={17} aria-hidden />, name]} /></button>
+        <Link to="/explora" className={buttonClasses('secondary', 'md')}><UiText source={'{0} Discover in Explora'} values={[<Compass size={17} aria-hidden />]} /></Link>
       </div>
     </Card>
   );

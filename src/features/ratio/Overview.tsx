@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, BookOpen, Clock, Compass, Feather, Headphones, Keyboard, Layers, Plus, Sprout } from 'lucide-react';
@@ -53,12 +54,8 @@ export function Overview() {
   return (
     <div className="space-y-5">
       <div className="flex justify-end gap-2">
-        <Button variant="ghost" icon={Clock} onClick={() => setDrawer('time')}>
-          Log time
-        </Button>
-        <Button variant="ghost" icon={Plus} onClick={() => setDrawer('moment')}>
-          Add a moment
-        </Button>
+        <Button variant="ghost" icon={Clock} onClick={() => setDrawer('time')}><UiText source={'Log time'} /></Button>
+        <Button variant="ghost" icon={Plus} onClick={() => setDrawer('moment')}><UiText source={'Add a moment'} /></Button>
       </div>
       {!data ? <div className="h-96 animate-pulse rounded-3xl bg-surface" /> : <Dashboard data={data} lang={lang} />}
       <LogTimeDrawer open={drawer === 'time'} onClose={close} languages={languages ?? []} lang={lang} />
@@ -68,13 +65,14 @@ export function Overview() {
 }
 
 function LevelCard({ known, said }: { known: number; said: string }) {
+  const translateUi = useUi();
   const e = estimateLevel(known);
   return (
-    <Panel title="Where you are" icon={Compass}>
+    <Panel title={translateUi('Where you are')} icon={Compass}>
       <div className="grid items-center gap-6 sm:grid-cols-[auto_minmax(0,1fr)]">
         <div>
           <p className="font-serif text-[40px] leading-none font-semibold tabular-nums">~{e.level}</p>
-          <p className="mt-1 text-[12px] font-bold tracking-wide text-ink-faint uppercase">Estimated</p>
+          <p className="mt-1 text-[12px] font-bold tracking-wide text-ink-faint uppercase"><UiText source={'Estimated'} /></p>
         </div>
         <div className="min-w-0">
           {e.next && (
@@ -82,14 +80,10 @@ function LevelCard({ known, said }: { known: number; said: string }) {
               <div className="h-2 overflow-hidden rounded-full bg-sunken">
                 <div className="h-full rounded-full bg-sage" style={{ width: `${e.progress * 100}%` }} />
               </div>
-              <p className="mt-1.5 text-[13.5px] text-ink-soft tabular-nums">
-                {e.next.remaining.toLocaleString()} more words to about {e.next.level}.
-              </p>
+              <p className="mt-1.5 text-[13.5px] text-ink-soft tabular-nums"><UiText source={'{0} more words to about {1}.'} values={[e.next.remaining.toLocaleString(), e.next.level]} /></p>
             </>
           )}
-          <p className="mt-2 text-[13px] leading-snug text-ink-faint">
-            An estimate from the {known.toLocaleString()} words you know, nothing more: listening, speaking and grammar can sit above or below it. You say you are {said}; that is the level Lingua uses.
-          </p>
+          <p className="mt-2 text-[13px] leading-snug text-ink-faint"><UiText source={'An estimate from the {0} words you know, nothing more: listening, speaking and grammar can sit above or below it. You say you are {1}; that is the level Lingua uses.'} values={[known.toLocaleString(), said]} /></p>
         </div>
       </div>
     </Panel>
@@ -97,6 +91,7 @@ function LevelCard({ known, said }: { known: number; said: string }) {
 }
 
 function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
+  const translateUi = useUi();
   const { language } = useApp();
   const { vocabulary: v, reading: r, listening: l, flashcards: f, writing: w, habit: h } = data;
   const totalMinutes = ACTIVITIES.reduce((n, a) => n + h.totals[a], 0);
@@ -138,11 +133,11 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
       <LevelCard known={v.known} said={language.level} />
 
       {/* Time & habit */}
-      <Panel title="Time and habit" icon={Clock}>
+      <Panel title={translateUi('Time and habit')} icon={Clock}>
         <Heatmap values={heat} format={(m) => `${hours(m)} studied`} />
         <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px]">
           <div>
-            <p className="mb-3 text-[13px] font-semibold text-ink-soft">Last 30 days, minutes a day</p>
+            <p className="mb-3 text-[13px] font-semibold text-ink-soft"><UiText source={'Last 30 days, minutes a day'} /></p>
             <BarChart bars={last30} colors={ACTIVITIES.map((a) => ACTIVITY_COLOR[a])} names={ACTIVITIES.map((a) => ACTIVITY_LABEL[a])} labelEvery={5} format={(n) => compact(n)} />
             <div className="mt-3">
               <Legend items={ACTIVITIES.filter((a) => h.totals[a] >= 1).map((a) => ({ label: `${ACTIVITY_LABEL[a]} · ${hours(h.totals[a])}`, color: ACTIVITY_COLOR[a] }))} />
@@ -150,7 +145,7 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
           </div>
           <div className="space-y-5">
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink-soft">When you study</p>
+              <p className="mb-2 text-[13px] font-semibold text-ink-soft"><UiText source={'When you study'} /></p>
               <ul className="space-y-1.5">
                 {dayparts.map((d) => (
                   <li key={d.label} className="grid grid-cols-[76px_1fr_auto] items-center gap-2 text-[12.5px]">
@@ -164,7 +159,7 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
               </ul>
             </div>
             <div>
-              <p className="mb-2 text-[13px] font-semibold text-ink-soft">This week’s goal</p>
+              <p className="mb-2 text-[13px] font-semibold text-ink-soft"><UiText source={'This week’s goal'} /></p>
               <div className="flex gap-1.5">
                 {h.weekMet.map((met, i) => (
                   <span key={i} className={cx('grid size-8 place-items-center rounded-full text-[11px] font-bold', met ? 'bg-sage text-bg' : 'bg-sunken text-ink-faint')}>
@@ -179,11 +174,11 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
 
       <div className="grid gap-5 lg:grid-cols-2">
         {/* Vocabulary */}
-        <Panel title="Vocabulary" icon={Sprout}>
+        <Panel title={translateUi('Vocabulary')} icon={Sprout}>
           <dl className="mb-5 grid grid-cols-3 gap-3">
-            <Stat value={v.known.toLocaleString()} label="Known" />
-            <Stat value={v.learning.toLocaleString()} label="Learning" />
-            <Stat value={v.families.toLocaleString()} label="Word families" />
+            <Stat value={v.known.toLocaleString()} label={translateUi('Known')} />
+            <Stat value={v.learning.toLocaleString()} label={translateUi('Learning')} />
+            <Stat value={v.families.toLocaleString()} label={translateUi('Word families')} />
           </dl>
           <LineChart
             series={[
@@ -195,40 +190,37 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
           />
           {v.coverage && (
             <div className="mt-6">
-              <p className="mb-3 text-[13px] font-semibold text-ink-soft">Of the most common words, you know</p>
+              <p className="mb-3 text-[13px] font-semibold text-ink-soft"><UiText source={'Of the most common words, you know'} /></p>
               <div className="flex justify-between gap-2">
                 {v.coverage.map((c) => (
                   <div key={c.top} className="flex flex-col items-center gap-1.5">
-                    <Ring value={c.share} size={58} stroke={5} label={`${pct(c.share)} of the top ${c.top}`}>
+                    <Ring value={c.share} size={58} stroke={5} label={translateUi('{0} of the top {1}', [pct(c.share), c.top])}>
                       <span className="text-[13px] font-bold tabular-nums">{pct(c.share)}</span>
                     </Ring>
-                    <span className="text-[11.5px] font-semibold text-ink-faint">top {compact(c.top)}</span>
+                    <span className="text-[11.5px] font-semibold text-ink-faint"><UiText source={'top {0}'} values={[compact(c.top)]} /></span>
                   </div>
                 ))}
               </div>
             </div>
           )}
           <div className="mt-6">
-            <p className="mb-3 text-[13px] font-semibold text-ink-soft">New words a week</p>
+            <p className="mb-3 text-[13px] font-semibold text-ink-soft"><UiText source={'New words a week'} /></p>
             <BarChart bars={v.newPerWeek.map((x) => ({ label: shortDate(new Date(`${x.week}T12:00:00`).getTime()), values: [x.words], current: x.current }))} colors={['var(--sage)']} names={['New words']} height={110} labelEvery={3} />
           </div>
         </Panel>
 
         {/* Reading */}
-        <Panel title="Reading" icon={BookOpen}>
+        <Panel title={translateUi('Reading')} icon={BookOpen}>
           <dl className="mb-5 grid grid-cols-3 gap-3">
-            <Stat value={hours(r.minutes)} label="Read" />
-            <Stat value={compact(r.words)} label="Words" />
-            <Stat value={r.wpm ?? '—'} label="Words / min" />
+            <Stat value={hours(r.minutes)} label={translateUi('Read')} />
+            <Stat value={compact(r.words)} label={translateUi('Words')} />
+            <Stat value={r.wpm ?? '—'} label={translateUi('Words / min')} />
           </dl>
           <p className="mb-5 text-[14px] text-ink-soft">
-            {lookups === null ? 'Look-ups per 1,000 words show once you have read a little more.' : <><span className="font-semibold text-ink tabular-nums">{lookups}</span> look-ups per 1,000 words read{lookups <= 20 ? ': you are reading mostly without help.' : '.'}</>}
+            {lookups === null ? translateUi('Look-ups per 1,000 words show once you have read a little more.') : <><UiText source={'{0} look-ups per 1,000 words read{1}'} values={[<span className="font-semibold text-ink tabular-nums">{lookups}</span>, lookups <= 20 ? ': you are reading mostly without help.' : '.']} /></>}
           </p>
           <LineChart series={[{ name: 'Words a minute', color: 'var(--sage)', points: r.wpmSeries }]} formatX={(x) => `Week of ${shortDate(x)}`} height={130} empty="Read a few sessions to see your speed" />
-          <p className="mt-5 text-[14px] text-ink-soft">
-            <span className="font-semibold text-ink">{r.finished}</span> {r.finished === 1 ? 'book' : 'books'} finished
-            {r.finishedThisYear ? `, ${r.finishedThisYear} this year` : ''}.
-          </p>
+          <p className="mt-5 text-[14px] text-ink-soft"><UiText source={'{0} {1} finished{2}.'} values={[<span className="font-semibold text-ink">{r.finished}</span>, r.finished === 1 ? 'book' : 'books', r.finishedThisYear ? `, ${r.finishedThisYear} this year` : '']} /></p>
           {r.books.length > 0 && (
             <ul className="mt-4 space-y-2.5">
               {r.books.map((b) => (
@@ -237,7 +229,7 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
                     <span lang={b.lang} className="truncate text-[14px] font-semibold group-hover:underline">
                       {b.title}
                     </span>
-                    <span className="text-[12.5px] text-ink-faint tabular-nums">{pct(b.known)} known</span>
+                    <span className="text-[12.5px] text-ink-faint tabular-nums"><UiText source={'{0} known'} values={[pct(b.known)]} /></span>
                     <span className="col-span-2 h-1.5 overflow-hidden rounded-full bg-sunken">
                       <span className="block h-full origin-left rounded-full bg-sage" style={{ transform: `scaleX(${b.known})` }} />
                     </span>
@@ -249,17 +241,17 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
         </Panel>
 
         {/* Flashcards */}
-        <Panel title="Flashcards" icon={Layers}>
+        <Panel title={translateUi('Flashcards')} icon={Layers}>
           <dl className="mb-5 grid grid-cols-3 gap-3">
-            <Stat value={f.retention30 === null ? '—' : pct(f.retention30)} label="Recall 30 d" />
-            <Stat value={f.retention90 === null ? '—' : pct(f.retention90)} label="Recall 90 d" />
-            <Stat value={f.secondsPerCard === null ? '—' : `${f.secondsPerCard} s`} label="Per card" />
+            <Stat value={f.retention30 === null ? '—' : pct(f.retention30)} label={translateUi('Recall 30 d')} />
+            <Stat value={f.retention90 === null ? '—' : pct(f.retention90)} label={translateUi('Recall 90 d')} />
+            <Stat value={f.secondsPerCard === null ? '—' : `${f.secondsPerCard} s`} label={translateUi('Per card')} />
           </dl>
-          <p className="mb-3 text-[13px] font-semibold text-ink-soft">Reviews, last 30 days</p>
+          <p className="mb-3 text-[13px] font-semibold text-ink-soft"><UiText source={'Reviews, last 30 days'} /></p>
           <BarChart bars={f.reviewsPerDay.map((d, i) => ({ label: new Date(`${d.date}T12:00:00`).getDate().toString(), values: [d.reviews], current: i === f.reviewsPerDay.length - 1 }))} colors={['var(--accent)']} names={['Reviews']} height={110} labelEvery={5} />
-          <p className="mt-6 mb-3 text-[13px] font-semibold text-ink-soft">Coming up (14 days)</p>
+          <p className="mt-6 mb-3 text-[13px] font-semibold text-ink-soft"><UiText source={'Coming up (14 days)'} /></p>
           <BarChart bars={f.forecast.map((d, i) => ({ label: i === 0 ? 'Today' : weekday(d.date), values: [d.due], current: i === 0 }))} colors={['color-mix(in oklab, var(--accent) 55%, var(--sunken))']} names={['Due']} height={100} labelEvery={1} />
-          <p className="mt-6 mb-2 text-[13px] font-semibold text-ink-soft">Your cards</p>
+          <p className="mt-6 mb-2 text-[13px] font-semibold text-ink-soft"><UiText source={'Your cards'} /></p>
           <div className="flex h-3 overflow-hidden rounded-full bg-sunken">
             {(
               [
@@ -284,7 +276,7 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
           </div>
           {f.ludus.length > 0 && (
             <>
-              <p className="mt-6 mb-2 text-[13px] font-semibold text-ink-soft">Ludus, right the first time</p>
+              <p className="mt-6 mb-2 text-[13px] font-semibold text-ink-soft"><UiText source={'Ludus, right the first time'} /></p>
               <ul className="space-y-1.5">
                 {f.ludus.map((m) => (
                   <li key={m.mode} className="grid grid-cols-[110px_1fr_auto] items-center gap-2 text-[12.5px]">
@@ -302,18 +294,18 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
 
         <div className="space-y-5">
           {/* Listening */}
-          <Panel title="Listening, music and watching" icon={Headphones}>
+          <Panel title={translateUi('Listening, music and watching')} icon={Headphones}>
             <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              <Stat value={hours(l.minutes)} label="Listened" />
-              <Stat value={l.finished} label="Finished" />
-              <Stat value={l.withTranscript} label="Read along" />
-              <Stat value={l.songs} label={l.songs === 1 ? 'Song sung' : 'Songs sung'} />
-              <Stat value={hours(l.songMinutes)} label="With music" />
-              <Stat value={l.mined} label="Words saved" />
+              <Stat value={hours(l.minutes)} label={translateUi('Listened')} />
+              <Stat value={l.finished} label={translateUi('Finished')} />
+              <Stat value={l.withTranscript} label={translateUi('Read along')} />
+              <Stat value={l.songs} label={l.songs === 1 ? translateUi('Song sung') : translateUi('Songs sung')} />
+              <Stat value={hours(l.songMinutes)} label={translateUi('With music')} />
+              <Stat value={l.mined} label={translateUi('Words saved')} />
             </dl>
             {l.byKind.length > 0 && (
               <div className="mt-5">
-                <p className="mb-3 text-[13px] font-semibold text-ink-soft">By kind</p>
+                <p className="mb-3 text-[13px] font-semibold text-ink-soft"><UiText source={'By kind'} /></p>
                 <ul className="space-y-2">
                   {l.byKind.map((k) => (
                     <li key={k.kind} className="flex items-center gap-3 text-[14px]">
@@ -331,26 +323,24 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
 
           {data.typing && (
             <Panel
-              title="Typing"
+              title={translateUi('Typing')}
               icon={Keyboard}
               action={
-                <Link to="/cursus/typing" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
-                  Practise <ArrowRight size={14} aria-hidden />
-                </Link>
+                <Link to="/cursus/typing" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink"><UiText source={'Practise {0}'} values={[<ArrowRight size={14} aria-hidden />]} /></Link>
               }
             >
               <dl className="grid grid-cols-3 gap-3">
-                <Stat value={data.typing.averageWpm ?? '—'} label="Words / min" hint="Average over the letters practised" />
-                <Stat value={data.typing.accuracy === null ? '—' : pct(data.typing.accuracy)} label="Accuracy" />
-                <Stat value={data.typing.unlocked} label="Letters" />
+                <Stat value={data.typing.averageWpm ?? '—'} label={translateUi('Words / min')} hint="Average over the letters practised" />
+                <Stat value={data.typing.accuracy === null ? '—' : pct(data.typing.accuracy)} label={translateUi('Accuracy')} />
+                <Stat value={data.typing.unlocked} label={translateUi('Letters')} />
               </dl>
-              <p className="mt-4 text-[13.5px] text-ink-soft">Your slowest letter types at {data.typing.wpm} words a minute; the course asks for {data.typing.target}.</p>
+              <p className="mt-4 text-[13.5px] text-ink-soft"><UiText source={'Your slowest letter types at {0} words a minute; the course asks for {1}.'} values={[data.typing.wpm, data.typing.target]} /></p>
             </Panel>
           )}
 
           {/* Writing */}
           <Panel
-            title="Writing"
+            title={translateUi('Writing')}
             icon={Feather}
             action={
               <Link to="/mentis/diarium" className="hit inline-flex items-center gap-1 text-[13px] font-semibold text-ink-soft hover:text-ink">
@@ -359,14 +349,14 @@ function Dashboard({ data, lang }: { data: OverviewData; lang: string }) {
             }
           >
             <dl className="mb-5 grid grid-cols-3 gap-3">
-              <Stat value={w.entries} label="Entries" />
-              <Stat value={compact(w.words)} label="Words" />
-              <Stat value={w.grades.length ? w.grades.at(-1)!.y : '—'} label="Last grade" />
+              <Stat value={w.entries} label={translateUi('Entries')} />
+              <Stat value={compact(w.words)} label={translateUi('Words')} />
+              <Stat value={w.grades.length ? w.grades.at(-1)!.y : '—'} label={translateUi('Last grade')} />
             </dl>
             <LineChart series={[{ name: 'Grade', color: 'var(--sage)', points: w.grades }]} formatX={shortDate} yMax={100} height={120} empty="Check two entries to see your grade trend" />
             {w.errors.length > 0 && (
               <>
-                <p className="mt-5 mb-2 text-[13px] font-semibold text-ink-soft">What to work on</p>
+                <p className="mt-5 mb-2 text-[13px] font-semibold text-ink-soft"><UiText source={'What to work on'} /></p>
                 <ul className="flex flex-wrap gap-1.5">
                   {w.errors.map((e) => (
                     <li key={e.category} className="rounded-full bg-accent-soft px-3 py-1 text-[12.5px] font-semibold text-accent-text">

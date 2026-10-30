@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Captions, Film, Link2, Plus } from 'lucide-react';
@@ -30,6 +31,7 @@ export async function addVideoFiles(lang: string, onOpen: (id: string) => void):
 
 /** "Add" in the Visio header: video files, a link, or subtitles on their own. */
 export function AddVideoMenu({ lang, label = 'Add' }: { lang: string; label?: string }) {
+  const translateUi = useUi();
   const { layout } = useLayout();
   const navigate = useNavigate();
   const [sheet, setSheet] = useState(false);
@@ -85,7 +87,7 @@ export function AddVideoMenu({ lang, label = 'Add' }: { lang: string; label?: st
     <>
       {layout === 'wide' ? (
         <Popover
-          label="Add something to watch"
+          label={translateUi('Add something to watch')}
           placement="bottom-end"
           className="w-80"
           trigger={(props) => (
@@ -101,7 +103,7 @@ export function AddVideoMenu({ lang, label = 'Add' }: { lang: string; label?: st
           <Button icon={Plus} loading={busy} onClick={() => setSheet(true)}>
             {label}
           </Button>
-          <Drawer open={sheet} onClose={() => setSheet(false)} title="Add something to watch">
+          <Drawer open={sheet} onClose={() => setSheet(false)} title={translateUi('Add something to watch')}>
             {list(() => setSheet(false))}
           </Drawer>
         </>
@@ -112,6 +114,7 @@ export function AddVideoMenu({ lang, label = 'Add' }: { lang: string; label?: st
 }
 
 function LinkDrawer({ lang, open, onClose, onAdded }: { lang: string; open: boolean; onClose: () => void; onAdded: (id: string) => void }) {
+  const translateUi = useUi();
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
   const [busy, setBusy] = useState(false);
@@ -136,16 +139,14 @@ function LinkDrawer({ lang, open, onClose, onAdded }: { lang: string; open: bool
     <Drawer
       open={open}
       onClose={onClose}
-      title="Add a video link"
-      description="A YouTube link plays here with two subtitle lines once you add subtitles. A direct link to a video file (.mp4, .webm) streams the same way. Other streaming services can’t be played inside Lingua; add their subtitles instead and follow along."
+      title={translateUi('Add a video link')}
+      description={translateUi('A YouTube link plays here with two subtitle lines once you add subtitles. A direct link to a video file (.mp4, .webm) streams the same way. Other streaming services can’t be played inside Lingua; add their subtitles instead and follow along.')}
       footer={
-        <Button block size="lg" onClick={() => void save()} loading={busy} disabled={!url.trim()}>
-          Add
-        </Button>
+        <Button block size="lg" onClick={() => void save()} loading={busy} disabled={!url.trim()}><UiText source={'Add'} /></Button>
       }
     >
       <label className="block">
-        <span className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase">Link</span>
+        <span className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'Link'} /></span>
         <input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
@@ -154,13 +155,13 @@ function LinkDrawer({ lang, open, onClose, onAdded }: { lang: string; open: bool
           autoCapitalize="off"
           autoCorrect="off"
           spellCheck={false}
-          placeholder="https://youtu.be/… or https://…/episode.mp4"
+          placeholder={translateUi('https://youtu.be/… or https://…/episode.mp4')}
           data-autofocus
           className={field}
         />
       </label>
       <label className="mt-4 block">
-        <span className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase">Title (optional)</span>
+        <span className="mb-1.5 block text-[13px] font-bold tracking-wide text-ink-soft uppercase"><UiText source={'Title (optional)'} /></span>
         <input value={title} onChange={(e) => setTitle(e.target.value)} className={field} />
       </label>
     </Drawer>

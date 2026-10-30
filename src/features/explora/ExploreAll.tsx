@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
@@ -102,6 +103,7 @@ const BAND_HINT: Record<Band, string> = {
  * picture tiles with the level large in three bands (at your level, a stretch, easier), and a side bar with the rest.
  */
 export function ExploreAll({ lang, picks, level }: { lang: string; picks: Picks | null; level: Level }) {
+  const translateUi = useUi();
   const [params, setParams] = useSearchParams();
   const requested = params.get('kind');
   const kind: Kind | 'all' | 'saved' = requested === 'saved' ? 'saved' : KINDS.some((k) => k.id === requested) ? (requested as Kind) : 'all';
@@ -163,15 +165,11 @@ export function ExploreAll({ lang, picks, level }: { lang: string; picks: Picks 
 
   return (
     <div className={cx('grid gap-7', open ? 'grid-cols-[172px_minmax(0,1fr)_330px]' : 'grid-cols-[172px_minmax(0,1fr)]')}>
-      <nav aria-label="Kinds and level" className="sticky top-6 flex flex-col gap-6 self-start">
-        <div role="group" aria-label="Kinds" className="flex flex-col gap-0.5">
-          <Row active={kind === 'all'} onClick={() => setKind('all')} count={items.length}>
-            Everything
-          </Row>
+      <nav aria-label={translateUi('Kinds and level')} className="sticky top-6 flex flex-col gap-6 self-start">
+        <div role="group" aria-label={translateUi('Kinds')} className="flex flex-col gap-0.5">
+          <Row active={kind === 'all'} onClick={() => setKind('all')} count={items.length}><UiText source={'Everything'} /></Row>
           {saved.length > 0 && (
-            <Row active={kind === 'saved'} onClick={() => setKind('saved')} icon={Bookmark} count={saved.length}>
-              Saved
-            </Row>
+            <Row active={kind === 'saved'} onClick={() => setKind('saved')} icon={Bookmark} count={saved.length}><UiText source={'Saved'} /></Row>
           )}
           {KINDS.filter((k) => counts.get(k.id)).map((k) => (
             <Row key={k.id} active={kind === k.id} onClick={() => setKind(k.id)} icon={k.icon} count={counts.get(k.id)}>
@@ -179,13 +177,9 @@ export function ExploreAll({ lang, picks, level }: { lang: string; picks: Picks 
             </Row>
           ))}
         </div>
-        <div role="group" aria-label="Level" className="flex flex-col gap-0.5 border-t border-line pt-5">
-          <Row active={filter === 'mine'} onClick={() => setFilter('mine')}>
-            Around my level
-          </Row>
-          <Row active={filter === 'any'} onClick={() => setFilter('any')}>
-            Any level
-          </Row>
+        <div role="group" aria-label={translateUi('Level')} className="flex flex-col gap-0.5 border-t border-line pt-5">
+          <Row active={filter === 'mine'} onClick={() => setFilter('mine')}><UiText source={'Around my level'} /></Row>
+          <Row active={filter === 'any'} onClick={() => setFilter('any')}><UiText source={'Any level'} /></Row>
           <div className="mt-1.5 flex flex-wrap gap-1.5 px-1">
             {LEVELS.map((l) => (
               <button
@@ -205,14 +199,12 @@ export function ExploreAll({ lang, picks, level }: { lang: string; picks: Picks 
 
       <div className="min-w-0">
         {!picks && (
-          <p className="mb-6 max-w-2xl text-[14px] leading-relaxed text-ink-soft">
-            Series, films, books and podcasts picked by hand come with the twenty main languages. Here, Sonus et Visio › Streaming lists what streams in the language on your services.
-          </p>
+          <p className="mb-6 max-w-2xl text-[14px] leading-relaxed text-ink-soft"><UiText source={'Series, films, books and podcasts picked by hand come with the twenty main languages. Here, Sonus et Visio › Streaming lists what streams in the language on your services.'} /></p>
         )}
         {note && <p className="mb-5 max-w-2xl text-[14px] text-ink-soft">{note}</p>}
         {bands.length === 0 && (
           <p className="py-16 text-center text-[15px] text-ink-soft">
-            {kind === 'saved' ? 'Things you save gather here.' : 'Nothing at this level here yet. Try another level, or Any level.'}
+            {kind === 'saved' ? translateUi('Things you save gather here.') : translateUi('Nothing at this level here yet. Try another level, or Any level.')}
           </p>
         )}
         <div className="space-y-10">
@@ -250,9 +242,10 @@ function Row({ active, onClick, icon: Icon, count, children }: { active: boolean
 
 /** The level, large: a coloured badge that reads at a glance. */
 function LevelBadge({ level, estimated, size = 'md' }: { level: PickLevel; estimated?: boolean; size?: 'md' | 'lg' }) {
+  const translateUi = useUi();
   return (
     <span
-      title={estimated ? `About ${level} (estimated)` : `From ${level}`}
+      title={estimated ? translateUi('About {0} (estimated)', [level]) : translateUi('From {0}', [level])}
       className={cx('inline-flex items-center justify-center rounded-lg font-bold text-white tabular-nums shadow-elev-1', size === 'lg' ? 'h-9 min-w-12 px-3 text-[18px]' : 'h-7 min-w-9 px-2 text-[15px]')}
       style={{ background: LEVEL_HUE[level] }}
     >
@@ -280,6 +273,7 @@ function Picture({ item, lang, lookup }: { item: Item; lang: string; lookup?: Pi
 }
 
 function Tile({ item, lang, lookup, active, saved, onOpen }: { item: Item; lang: string; lookup?: PickLookup; active: boolean; saved: boolean; onOpen: () => void }) {
+  const translateUi = useUi();
   const k = KIND[item.kind];
   return (
     <li>
@@ -290,7 +284,7 @@ function Tile({ item, lang, lookup, active, saved, onOpen }: { item: Item; lang:
             <LevelBadge level={item.level} estimated={item.estimated} />
           </span>
           {saved && (
-            <span className="absolute top-2 right-2 grid size-6 place-items-center rounded-full bg-raised/90 text-accent-text" aria-label="Saved">
+            <span className="absolute top-2 right-2 grid size-6 place-items-center rounded-full bg-raised/90 text-accent-text" aria-label={translateUi('Saved')}>
               <Bookmark size={13} fill="currentColor" aria-hidden />
             </span>
           )}
@@ -309,6 +303,7 @@ function Tile({ item, lang, lookup, active, saved, onOpen }: { item: Item; lang:
 
 /** The bar on the right: the rest of what to know about one item, and what to do with it. */
 function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; lang: string; level: Level; lookup?: PickLookup; saved: boolean; onClose: () => void }) {
+  const translateUi = useUi();
   const navigate = useNavigate();
   const streaming = useStreaming();
   const [busy, setBusy] = useState(false);
@@ -353,9 +348,7 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
         <Button icon={BookPlus} loading={busy} onClick={() => void run(async () => {
           const added = await addBookToCodex(lang, pick);
           toast(added ? `“${pick.title}” is on your Codex wishlist.` : 'It’s already in Codex.', { tone: added ? 'success' : 'default', action: { label: 'Codex', onClick: () => navigate('/codex') } });
-        })}>
-          Add to Codex
-        </Button>
+        })}><UiText source={'Add to Codex'} /></Button>
       );
     }
     if (item.kind === 'podcasts' && item.pick) {
@@ -365,9 +358,7 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
           const feedId = await followPodcast(lang, pick);
           if (feedId) navigate(`${sonusBase()}/podcast/${feedId}`);
           else toast('Apple’s podcast directory doesn’t have it under that name. Try Spotify or Apple Podcasts.', { duration: 6000 });
-        })}>
-          Follow in Sonus
-        </Button>
+        })}><UiText source={'Follow in Sonus'} /></Button>
       );
     }
     if (screen && item.pick) {
@@ -376,21 +367,17 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
         <Button icon={Captions} loading={busy} onClick={() => void run(async () => {
           const id = await addSubtitlesFor(lang, pick.title);
           if (id) navigate(`/visio/watch/${id}`);
-        })}>
-          Add its subtitles
-        </Button>
+        })}><UiText source={'Add its subtitles'} /></Button>
       );
     }
-    if (item.station) return <Button icon={Play} onClick={() => navigate(`${sonusBase()}/station/${item.station!.id}`)}>Play in Sonus</Button>;
+    if (item.station) return <Button icon={Play} onClick={() => navigate(`${sonusBase()}/station/${item.station!.id}`)}><UiText source={'Play in Sonus'} /></Button>;
     if (item.book) {
       const book = item.book;
       return (
-        <Button icon={Play} loading={busy} onClick={() => void run(async () => navigate(`${sonusBase()}/book/${await openLibrivoxBook(lang, book.identifier)}`))}>
-          Listen in Sonus
-        </Button>
+        <Button icon={Play} loading={busy} onClick={() => void run(async () => navigate(`${sonusBase()}/book/${await openLibrivoxBook(lang, book.identifier)}`))}><UiText source={'Listen in Sonus'} /></Button>
       );
     }
-    if (item.artist) return <Button icon={Music2} onClick={() => navigate(`/sonus?tab=music&q=${encodeURIComponent(item.artist!.name)}`)}>Songs in Sonus</Button>;
+    if (item.artist) return <Button icon={Music2} onClick={() => navigate(`/sonus?tab=music&q=${encodeURIComponent(item.artist!.name)}`)}><UiText source={'Songs in Sonus'} /></Button>;
     return null;
   })();
 
@@ -409,7 +396,7 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
           </h2>
           {(item.pick?.en || item.sub) && <p className="mt-0.5 text-[13px] text-ink-faint">{[item.pick?.en, item.sub].filter(Boolean).join(' · ')}</p>}
         </div>
-        <button type="button" onClick={onClose} aria-label="Close" className="-mt-1 -mr-1 grid size-8 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-sunken hover:text-ink">
+        <button type="button" onClick={onClose} aria-label={translateUi('Close')} className="-mt-1 -mr-1 grid size-8 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-sunken hover:text-ink">
           <X size={16} aria-hidden />
         </button>
       </div>
@@ -420,7 +407,7 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
           {LEVEL_WHY[item.level]}
           {item.estimated && ' This level is an estimate.'}
           {' '}
-          {LEVELS.indexOf(item.level) <= Math.max(0, LEVELS.indexOf(level as PickLevel)) ? 'You can enjoy it now.' : LEVELS.indexOf(item.level) === Math.max(0, LEVELS.indexOf(level as PickLevel)) + 1 ? 'A stretch: worth a try.' : 'Come back to it later.'}
+          {LEVELS.indexOf(item.level) <= Math.max(0, LEVELS.indexOf(level as PickLevel)) ? translateUi('You can enjoy it now.') : LEVELS.indexOf(item.level) === Math.max(0, LEVELS.indexOf(level as PickLevel)) + 1 ? translateUi('A stretch: worth a try.') : translateUi('Come back to it later.')}
         </p>
       </div>
 
@@ -429,7 +416,7 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
 
       {screen && (
         <div className="mt-4">
-          <p className={label}>Where to watch</p>
+          <p className={label}><UiText source={'Where to watch'} /></p>
           {mine.length > 0 ? (
             <p className="mt-2 flex flex-wrap items-center gap-2 text-[13.5px] font-semibold text-sage-text">
               <Check size={14} strokeWidth={3} aria-hidden />
@@ -438,11 +425,11 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
                   <ServiceMark service={id} size={20} /> {serviceById(id)?.name}
                 </span>
               ))}
-              <span className="font-normal text-ink-soft">in {countryName(streaming.country)}</span>
+              <span className="font-normal text-ink-soft"><UiText source={'in {0}'} values={[countryName(streaming.country)]} /></span>
             </p>
           ) : (
             lookup &&
-            streaming.services.length > 0 && <p className="mt-2 text-[13px] text-ink-faint">Not on your services in {countryName(streaming.country)}.</p>
+            streaming.services.length > 0 && <p className="mt-2 text-[13px] text-ink-faint"><UiText source={'Not on your services in {0}.'} values={[countryName(streaming.country)]} /></p>
           )}
         </div>
       )}
@@ -450,7 +437,7 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
       <div className="mt-5 flex flex-wrap items-center gap-2">
         {action}
         <Button variant={saved ? 'accent' : 'secondary'} icon={Bookmark} aria-pressed={saved} onClick={() => toggleSaved(lang, item.id)}>
-          {saved ? 'Saved' : 'Save'}
+          {saved ? translateUi('Saved') : translateUi('Save')}
         </Button>
       </div>
 
@@ -465,9 +452,7 @@ function SideBar({ item, lang, level, lookup, saved, onClose }: { item: Item; la
         {item.artist && <LinkPill link={{ label: 'YouTube', url: `https://www.youtube.com/results?search_query=${encodeURIComponent(item.artist.name)}` }} />}
       </div>
       {screen && (
-        <p className="mt-4 text-[12.5px] leading-snug text-ink-faint">
-          Watched somewhere else? Add its subtitles and Visio turns the episode into a lesson. <Link to="/sonus?tab=streaming" className="font-semibold text-accent-text hover:underline">Your services</Link>
-        </p>
+        <p className="mt-4 text-[12.5px] leading-snug text-ink-faint"><UiText source={'Watched somewhere else? Add its subtitles and Visio turns the episode into a lesson. {0}'} values={[<Link to="/sonus?tab=streaming" className="font-semibold text-accent-text hover:underline"><UiText source={'Your services'} /></Link>]} /></p>
       )}
     </aside>
   );

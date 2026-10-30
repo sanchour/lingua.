@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { ReferenceButton } from '@/features/culture/ReferenceHelp';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
@@ -22,6 +23,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+  const translateUi = useUi();
   const { settings } = useApp();
   const { pathname } = useLocation();
   const plan = planOf(settings.meta);
@@ -53,7 +55,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         </motion.span>
         <IconButton
           icon={collapsed ? PanelLeftOpen : PanelLeftClose}
-          label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          label={collapsed ? translateUi('Expand sidebar') : translateUi('Collapse sidebar')}
           shortcut="["
           size="sm"
           tooltipPlacement="right"
@@ -65,13 +67,13 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <LanguageChip compact={collapsed} />
       </div>
 
-      <nav aria-label="Sections" className="mt-3 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain [scrollbar-width:none]">
+      <nav aria-label={translateUi('Sections')} className="mt-3 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain [scrollbar-width:none]">
         {PRIMARY_SECTIONS.map((section) => (
           <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
         ))}
 
         <div className="mt-1.5 pt-1.5 border-t border-line/60">
-          <Tooltip label={toolsOpen ? 'Hide tools' : 'Show tools'} placement="right" disabled={!collapsed}>
+          <Tooltip label={toolsOpen ? translateUi('Hide tools') : translateUi('Show tools')} placement="right" disabled={!collapsed}>
             <button
               type="button"
               aria-expanded={toolsOpen}
@@ -87,7 +89,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 animate={{ opacity: collapsed ? 0 : 1 }}
                 transition={{ duration: 0.12 }}
               >
-                <span>Tools</span>
+                <span><UiText source={'Tools'} /></span>
                 <ChevronRight
                   size={15}
                   className={cx('text-ink-faint transition-transform duration-200 group-hover:text-ink', toolsOpen && 'rotate-90')}
@@ -118,7 +120,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         </div>
       </nav>
 
-      <nav aria-label="Statistics and settings" className="mt-2 flex shrink-0 flex-col gap-0.5 border-t border-line pt-2">
+      <nav aria-label={translateUi('Statistics and settings')} className="mt-2 flex shrink-0 flex-col gap-0.5 border-t border-line pt-2">
         <ReferenceButton compact={collapsed} />
         {BOTTOM_SECTIONS.map((section) => (
           <SidebarLink key={section.id} section={section} collapsed={collapsed} index={sectionKey(SECTIONS.indexOf(section))} />
@@ -129,9 +131,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 }
 
 function SidebarLink({ section, collapsed, index, compact = false }: { section: Section; collapsed: boolean; index: number; compact?: boolean }) {
+  const translateUi = useUi();
   const Icon = section.icon;
   return (
-    <Tooltip label={section.name} shortcut={index ? `Alt ${index}` : undefined} placement="right" disabled={!collapsed}>
+    <Tooltip label={translateUi(section.name)} shortcut={index ? `Alt ${index}` : undefined} placement="right" disabled={!collapsed}>
       <NavLink
         to={section.path}
         end={section.path === '/'}
@@ -159,7 +162,7 @@ function SidebarLink({ section, collapsed, index, compact = false }: { section: 
               animate={{ opacity: collapsed ? 0 : 1 }}
               transition={{ duration: 0.12 }}
             >
-              {section.name}
+              <UiText source={section.name} />
             </motion.span>
           </>
         )}
