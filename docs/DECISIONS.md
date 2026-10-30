@@ -1983,3 +1983,7 @@ The user reported the app running at 30 fps on open:
 - **Bounded queries & component memoization**: Replaced unindexed full-table counting (`db.frequency.where('id').startsWith(...).count()`) in `DailyWordCard` with bounded range queries (`.limit(100)`), cutting ~200ms of main-thread blocking. Static presentation cards (`ChooseModeCard`, `TodayCard`) in `HomeToday` are memoized to eliminate cascading re-renders during Dexie hydration.
 - **macOS Low Power Mode detection**: On macOS, Low Power Mode (`lowpowermode 1` in `pmset -g`) hardware-throttles WebKit/Safari `requestAnimationFrame` to 30 Hz to save battery. The live frame meter warms up for 3 frames to avoid cold mount skew, detects the clean uniform 30 Hz cadence, and flags it as `30 fps (LPM)` with an amber indicator and descriptive tooltip rather than reporting false lag in red. Disabling Low Power Mode in macOS *System Settings › Battery* restores full 60 fps / 120 fps ProMotion.
 
+
+### 2026-10-30 · Phrasebook persistence (6-20 P1, Codex)
+
+Phrasebook and notebook records use one keyed settings row each, so existing backup/sync handles them without a new table or shared per-language array overwrites. Deletions retain a tombstone for backup merging and Undo. Audio uses existing local blobs and is written with its phrase in one transaction; replacements retain older media for recovery. Saved data is validated without replacing malformed rows. Formal/informal text is supplied by the learner. Export reuses the existing Markdown/CSV writers.

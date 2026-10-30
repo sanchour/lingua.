@@ -897,7 +897,7 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [x] `F0680` Synonym finder · **6-12**
 - [x] `F0681` Collocation suggestions · **6-12**
 - [x] `F0682` Phrase bank · **6-12**
-- [ ] `F0683` Personal phrasebook · **6-20**
+- [x] `F0683` Personal phrasebook · **6-20**
 - [ ] `F0684` Reusable sentence templates · **6-12**
 - [x] `F0685` Writing prompts
 - [x] `F0686` Draft history
@@ -1091,7 +1091,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0832` Read local advertisements and signs · **6-19** · partly there
 - [ ] `F0833` Practice common phone calls · **5.2-6** · planned in Lingua 5.2
 - [x] `F0834` Write real messages with feedback · **6-12** · partly there
-- [ ] `F0835` Maintain a personal phrasebook · **6-20**
+- [x] `F0835` Maintain a personal phrasebook · **6-20**
 - [x] `F0836` Set a daily target-language challenge
 - [x] `F0837` Build a list of real-life communication goals · **6-17**
 - [ ] `F0838` Create a personal immersion plan · **6-16**
@@ -1423,28 +1423,28 @@ Think of this as a personal linguistic knowledge base.
 *In Lingua: Phrases saved from the reader as cards ("From my reading").*
 
 - [x] `F1096` Save complete phrases
-- [ ] `F1097` Save sentence templates · **6-20**
-- [ ] `F1098` Organize by situation · **6-20**
-- [ ] `F1099` Organize by topic · **6-20**
-- [ ] `F1100` Store formal and informal alternatives · **6-20**
-- [ ] `F1101` Save useful conversational responses · **6-20**
-- [ ] `F1102` Store sentence starters · **6-20**
-- [ ] `F1103` Store linking expressions · **6-20**
-- [ ] `F1104` Store debate phrases · **6-20**
-- [ ] `F1105` Store idioms · **6-20**
-- [ ] `F1106` Store polite requests · **6-20**
-- [ ] `F1107` Store emergency phrases · **6-20**
-- [ ] `F1108` Save travel phrases · **6-20**
-- [ ] `F1109` Attach audio · **6-20**
-- [ ] `F1110` Attach translations · **6-20**
-- [ ] `F1111` Add personal notes · **6-20**
-- [ ] `F1112` Search saved phrases · **6-20**
+- [x] `F1097` Save sentence templates · **6-20**
+- [x] `F1098` Organize by situation · **6-20**
+- [x] `F1099` Organize by topic · **6-20**
+- [x] `F1100` Store formal and informal alternatives · **6-20**
+- [x] `F1101` Save useful conversational responses · **6-20**
+- [x] `F1102` Store sentence starters · **6-20**
+- [x] `F1103` Store linking expressions · **6-20**
+- [x] `F1104` Store debate phrases · **6-20**
+- [x] `F1105` Store idioms · **6-20**
+- [x] `F1106` Store polite requests · **6-20**
+- [x] `F1107` Store emergency phrases · **6-20**
+- [x] `F1108` Save travel phrases · **6-20**
+- [x] `F1109` Attach audio · **6-20**
+- [x] `F1110` Attach translations · **6-20**
+- [x] `F1111` Add personal notes · **6-20**
+- [x] `F1112` Search saved phrases · **6-20**
 - [ ] `F1113` Practice phrases through recall · **6-20** · partly there
 - [ ] `F1114` Convert phrases into flashcards · **6-20** · partly there
 - [ ] `F1115` Generate new phrases from templates · **6-20**
-- [ ] `F1116` Build a phrasebook for an upcoming trip · **6-20**
-- [ ] `F1117` Export the phrasebook · **6-20**
-- [ ] `F1118` Make selected phrases available offline · **6-20**
+- [x] `F1116` Build a phrasebook for an upcoming trip · **6-20**
+- [x] `F1117` Export the phrasebook · **6-20**
+- [x] `F1118` Make selected phrases available offline · **6-20**
 
 #### 13.4 Language notebook
 

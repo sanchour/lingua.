@@ -1,3 +1,4 @@
+import { Phrasebook } from '@/features/phrasebook/Phrasebook';
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -38,7 +39,7 @@ import { TodayCard } from './library/TodayCard';
 import { useDeckImport } from './library/useDeckImport';
 import { DictionaryView } from './dictionary/DictionaryView';
 
-type Tab = 'decks' | 'discover' | 'dictionary';
+type Tab = 'decks' | 'discover' | 'dictionary' | 'phrases';
 
 const SORTS: Array<{ value: DeckSort; label: string }> = [
   { value: 'due', label: 'Most to do' },
@@ -81,7 +82,7 @@ export default function ThesaurusPage() {
   // The tab you pick wins; with nothing chosen, an empty treasury opens on Discover.
   const picked = params.get('tab');
   // "memory" was the word memory's own tab before it joined the dictionary.
-  const tab: Tab = picked === 'decks' || picked === 'discover' || picked === 'dictionary' ? picked : picked === 'memory' ? 'dictionary' : allDecks && !hasDecks ? 'discover' : 'decks';
+  const tab: Tab = picked === 'decks' || picked === 'discover' || picked === 'dictionary' || picked === 'phrases' ? picked : picked === 'memory' ? 'dictionary' : allDecks && !hasDecks ? 'discover' : 'decks';
   const browse = () => {
     setSearching(false);
     setQuery('');
@@ -92,6 +93,7 @@ export default function ThesaurusPage() {
     { id: 'decks', label: 'My decks', to: '/thesaurus?tab=decks', icon: Layers },
     { id: 'discover', label: 'Discover', to: '/thesaurus?tab=discover', icon: Compass },
     { id: 'dictionary', label: 'Dictionary', to: '/thesaurus?tab=dictionary', icon: BookA },
+    { id: 'phrases', label: 'Phrases', to: '/thesaurus?tab=phrases', icon: BookA },
   ];
 
   const [searching, setSearching] = useState(false);
@@ -209,7 +211,7 @@ export default function ThesaurusPage() {
       )}
 
       <AnimatePresence mode="wait" initial={false}>
-        {query.trim() && tab !== 'discover' ? (
+        {tab === 'phrases' ? <Phrasebook key={lang} lang={lang} /> : query.trim() && tab !== 'discover' ? (
           <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
             <SearchResults lang={lang} query={query} decks={decks ?? []} folders={folders ?? []} order={order.decks} onOpenStarter={openStarter}>
               {(found) => <DeckResults decks={found} folders={folders ?? []} counts={counts} lastStudied={outlook?.lastStudied} actions={actions} />}
