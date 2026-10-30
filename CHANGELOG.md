@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.111** · 2026-10-30 · 6-10: melody and stress; fixes for long translations, accents in Say it, watch count, speech cache
 - **0.6.0-alpha.96** · 2026-10-29 · 6-19 C2: daily immersion and reference help on the Codex branch
 - **0.6.0-alpha.90** · 2026-10-29 · 6-19 C1: sourced Culture shelf, word notes, cards and regional voices
 - **0.6.0-alpha.88** · 2026-10-29 · Claim 6-19 for Codex again; culture, immersion and interface languages

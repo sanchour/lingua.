@@ -6,6 +6,7 @@
 // What Gemini and Piper say and the recordings are kept, so each is made or fetched once.
 import { sameLocale, voiceLocale } from '@/core/lang/voiceLocale';
 import { db } from '@/data/db';
+import { putSpeech } from '@/data/speechCache';
 import { getAiSettings } from '@/data/plan';
 import { listVoices, pcmToWav, SpeechError, synthesize } from './gemini';
 import { installedPiperFor, piperSpeech, warmPiper } from './piper';
@@ -286,7 +287,8 @@ export async function sayWith(voice: string, lang: string, text: string, onStart
     const { apiKeys } = await getAiSettings();
     const blob = await synthesize(apiKeys.gemini.trim(), voice, clean);
     row = { id, lang, text: clean, voice, blob, createdAt: Date.now() };
-    await db.speech.put(row);
+    // A full disk must not stop the sentence from being said.
+    await putSpeech(row).catch(() => undefined);
   }
   return play(row.blob, onStart);
 }

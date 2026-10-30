@@ -4,6 +4,7 @@
 import { floatToPcm16, piperModelUrl, piperVoice, piperVoicesFor } from '@/core/audio/piper';
 import type { PiperConfig, PiperVoice } from '@/core/audio/piper';
 import { db } from '@/data/db';
+import { putSpeech } from '@/data/speechCache';
 import type { PiperWorkerMessage } from '@/workers/piper.worker';
 import PiperWorker from '@/workers/piper.worker?worker';
 import { pcmToWav } from './gemini';
@@ -114,7 +115,7 @@ export function piperSpeech(voice: string, lang: string, text: string): Promise<
     w.postMessage({ type: 'speak', id, text });
     const { samples, sampleRate } = await audio;
     const blob = new Blob([pcmToWav(floatToPcm16(samples), sampleRate) as Uint8Array<ArrayBuffer>], { type: 'audio/wav' });
-    await db.speech.put({ id: key, lang, text, voice: `piper:${voice}`, blob, createdAt: Date.now() }).catch(() => undefined);
+    await putSpeech({ id: key, lang, text, voice: `piper:${voice}`, blob, createdAt: Date.now() }).catch(() => undefined);
     return blob;
   });
   busy = job.catch(() => undefined);

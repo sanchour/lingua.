@@ -56,3 +56,18 @@ describe('the spectrogram', () => {
     expect(s.frames[0].length * s.binHz).toBeLessThanOrEqual(4000 + s.binHz);
   });
 });
+
+describe('endDirection', () => {
+  it('says whether the voice rises, falls or stays at the end', async () => {
+    const { endDirection } = await import('./pitch');
+    const ramp = (from: number, to: number, n = 40) => Array.from({ length: n }, (_, i) => from + ((to - from) * i) / (n - 1));
+    expect(endDirection([...ramp(3, 3, 20), ...ramp(3, 8, 20)])).toBe('rise');
+    expect(endDirection([...ramp(6, 6, 20), ...ramp(6, 1, 20)])).toBe('fall');
+    expect(endDirection(ramp(4, 4.4))).toBe('level');
+  });
+  it('leaves gaps out, and gives up on too little voice', async () => {
+    const { endDirection } = await import('./pitch');
+    expect(endDirection([null, 3, null, 3, null, 3, 3, null, 3, 3, 3, 9, 9, 9, 9, 9])).toBe('rise');
+    expect(endDirection([1, 2, 3, null, null])).toBeNull();
+  });
+});

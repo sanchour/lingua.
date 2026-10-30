@@ -63,7 +63,8 @@ export function vowelPoint(v: Vowel): { x: number; y: number } {
 
 /** Where the device's reading of a spoken word differs from the word, letter by letter (longest common subsequence): what you left out, and what came in instead. */
 export function letterHints(word: string, heard: string): { missing: string[]; extra: string[] } {
-  const norm = (s: string) => [...s.toLocaleLowerCase().replace(/[^\p{L}]/gu, '')];
+  // Accents don't count: the recogniser doesn't write them reliably (as in core/course/speech).
+  const norm = (s: string) => [...s.toLocaleLowerCase().normalize('NFD').replace(/[^\p{L}]|\p{M}/gu, '')];
   const a = norm(word);
   const b = norm(heard);
   const t = Array.from({ length: a.length + 1 }, () => new Array<number>(b.length + 1).fill(0));
