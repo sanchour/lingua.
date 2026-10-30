@@ -23,3 +23,12 @@ describe('marks drills', () => {
     }
   });
 });
+
+describe('Russian practice', () => {
+  it('covers each topic of the step with several items', async () => {
+    const { MARKS } = await import('./marks');
+    const kinds = new Map<string, number>();
+    for (const it of MARKS.ru) kinds.set(it.kind, (kinds.get(it.kind) ?? 0) + 1);
+    for (const k of ['signs', 'vowels', 'stress', 'aspect', 'motion', 'numerals', 'participles', 'reflexive', 'order']) expect(kinds.get(k) ?? 0).toBeGreaterThanOrEqual(2);
+  });
+});

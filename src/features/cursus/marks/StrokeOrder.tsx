@@ -1,16 +1,24 @@
 // A Chinese character drawn stroke by stroke (6-23): an animation, the order as a row of steps, and the parts it is built from.
 import { useEffect, useId, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw } from 'lucide-react';
-import { loadStrokes, medianLength, medianPath } from '@/core/script/strokes';
-import type { HanziStrokes } from '@/core/script/strokes';
+import { isKanji, loadStrokes, medianLength, medianPath, strokeCount } from '@/core/script/strokes';
+import type { StrokeData, StrokeSet } from '@/core/script/strokes';
 import { cx } from '@/lib/cx';
 
 const DRAW_MS = 550;
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /** Strokes 0..upto drawn in full, the stroke `partial` of the way through the next one. */
-function Glyph({ data, upto, partial = 1, size, current = true }: { data: HanziStrokes; upto: number; partial?: number; size: number; current?: boolean }) {
+function Glyph({ data, upto, partial = 1, size, current = true }: { data: StrokeData; upto: number; partial?: number; size: number; current?: boolean }) {
   const id = useId();
+  if (isKanji(data))
+    return (
+      <svg viewBox="0 0 109 109" width={size} height={size} aria-hidden className="shrink-0">
+        {data.p.map((d, i) => (
+          <path key={i} d={d} pathLength={1} fill="none" stroke="currentColor" strokeWidth={4.5} strokeLinecap="round" strokeLinejoin="round" opacity={i > upto ? 0.1 : i === upto && current ? 1 : 0.55} strokeDasharray={i === upto ? 1 : undefined} strokeDashoffset={i === upto ? 1 - partial : undefined} />
+        ))}
+      </svg>
+    );
   return (
     <svg viewBox="0 0 1024 1024" width={size} height={size} aria-hidden className="shrink-0">
       <g transform="scale(1, -1) translate(0, -900)">
@@ -31,8 +39,8 @@ function Glyph({ data, upto, partial = 1, size, current = true }: { data: HanziS
   );
 }
 
-export function StrokeOrder({ char, onOpen }: { char: string; onOpen?: (c: string) => void }) {
-  const [all, setAll] = useState<Record<string, HanziStrokes> | null | undefined>();
+export function StrokeOrder({ char, set = 'zh', onOpen }: { char: string; set?: StrokeSet; onOpen?: (c: string) => void }) {
+  const [all, setAll] = useState<Record<string, StrokeData> | null | undefined>();
   const data = all?.[char];
   const [step, setStep] = useState(0);
   const [partial, setPartial] = useState(1);
@@ -40,18 +48,18 @@ export function StrokeOrder({ char, onOpen }: { char: string; onOpen?: (c: strin
   const raf = useRef(0);
   useEffect(() => {
     let live = true;
-    loadStrokes().then((a) => live && setAll(a), () => live && setAll(null));
+    loadStrokes(set).then((a) => live && setAll(a), () => live && setAll(null));
     return () => {
       live = false;
     };
-  }, []);
+  }, [set]);
   useEffect(() => {
     cancelAnimationFrame(raf.current);
     setStep(0);
     setPartial(1);
     setPlaying(false);
   }, [char]);
-  const total = data?.s.length ?? 0;
+  const total = data ? strokeCount(data) : 0;
 
   useEffect(() => {
     if (!playing || !data) return;
@@ -62,7 +70,7 @@ export function StrokeOrder({ char, onOpen }: { char: string; onOpen?: (c: strin
       setStep(i);
       setPartial(p);
       if (p < 1) raf.current = requestAnimationFrame(tick);
-      else if (i + 1 < data.s.length) {
+      else if (i + 1 < strokeCount(data)) {
         i += 1;
         start = now;
         raf.current = requestAnimationFrame(tick);
@@ -99,9 +107,9 @@ export function StrokeOrder({ char, onOpen }: { char: string; onOpen?: (c: strin
         </div>
         <div className="min-w-0 flex-1 space-y-1.5 text-[14.5px]">
           <p className="text-ink-soft">Stroke {step + 1} of {total}</p>
-          {data.e && <p>{data.e}</p>}
-          {data.h && <p className="text-ink-soft">{data.h}</p>}
-          {data.r && <p className="text-ink-soft">Radical <span lang="zh" className="font-serif text-[18px] text-ink">{data.r}</span></p>}
+          {!isKanji(data) && data.e && <p>{data.e}</p>}
+          {!isKanji(data) && data.h && <p className="text-ink-soft">{data.h}</p>}
+          {!isKanji(data) && data.r && <p className="text-ink-soft">Radical <span lang="zh" className="font-serif text-[18px] text-ink">{data.r}</span></p>}
           <div className="flex gap-2 pt-1">
             <button type="button" onClick={play} className="inline-flex items-center gap-1.5 rounded-xl border border-line px-3 py-1.5 text-[14px] hover:border-line-strong">
               {playing ? <Pause size={15} aria-hidden /> : <Play size={15} aria-hidden />}{playing ? 'Pause' : 'Play'}
@@ -113,7 +121,7 @@ export function StrokeOrder({ char, onOpen }: { char: string; onOpen?: (c: strin
         </div>
       </div>
       <ol className="flex flex-wrap gap-1.5" aria-label="Stroke order">
-        {data.s.map((_, i) => (
+        {Array.from({ length: total }, (_, i) => (
           <li key={i}>
             <button type="button" aria-label={`Show stroke ${i + 1}`} aria-current={i === step} onClick={() => { setPlaying(false); setStep(i); setPartial(1); }} className={cx('grid place-items-center rounded-lg border p-0.5 text-ink', i === step ? 'border-accent-text bg-accent-soft' : 'border-line/60 bg-surface hover:border-line-strong')}>
               <Glyph data={data} upto={i} size={44} />
@@ -128,7 +136,7 @@ export function StrokeOrder({ char, onOpen }: { char: string; onOpen?: (c: strin
           <ul className="flex flex-wrap gap-2">
             {parts.map((p, i) => (
               <li key={i}>
-                <button type="button" lang="zh" disabled={!onOpen || !all[p]} onClick={() => onOpen?.(p)} className="rounded-xl border border-line/70 bg-surface px-3 py-1.5 font-serif text-[24px] enabled:hover:border-line-strong disabled:opacity-70">
+                <button type="button" lang={set} disabled={!onOpen || !all[p]} onClick={() => onOpen?.(p)} className="rounded-xl border border-line/70 bg-surface px-3 py-1.5 font-serif text-[24px] enabled:hover:border-line-strong disabled:opacity-70">
                   {p}
                 </button>
               </li>

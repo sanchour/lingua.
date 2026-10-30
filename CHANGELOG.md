@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.124** · 2026-10-30 · 6-23: kanji stroke order (KanjiVG) and slice 4: Russian practice (signs, vowels, stress, aspect, motion, numerals, participles, reflexives, word order)
 - **0.6.0-alpha.123** · 2026-10-30 · 6-23 slice 3: stroke order animation and character parts for Mandarin (Make Me a Hanzi)
 - **0.6.0-alpha.122** · 2026-10-30 · 6-23 slice 2: Cursus › Marks: Serbian and Chinese script conversion, accent, diacritic, ligature and cursive drills
 - **0.6.0-alpha.121** · 2026-10-30 · 6-23 slice 1: transliteration over Russian, Greek, Arabic, Korean and Georgian words (new, fading, all), code points in the letter sheet

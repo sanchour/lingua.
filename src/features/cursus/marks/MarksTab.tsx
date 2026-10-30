@@ -11,15 +11,15 @@ import { StrokeOrder } from './StrokeOrder';
 import { cx } from '@/lib/cx';
 
 /** Whether a language has anything on the Marks tab. */
-export const hasMarks = (lang: string) => marksOf(lang).length > 0 || CONVERSIONS.some((c) => c.lang === lang);
+export const hasMarks = (lang: string) => marksOf(lang).length > 0 || CONVERSIONS.some((c) => c.lang === lang) || lang === 'ja';
 
 export function MarksTab() {
   const { language } = useApp();
   const lang = language.id;
   return (
     <div className="space-y-8">
-      {lang === 'zh' && <Hanzi />}
-      <Converter lang={lang} />
+      {(lang === 'zh' || lang === 'ja') && <Hanzi set={lang} />}
+      {CONVERSIONS.some((c) => c.lang === lang) && <Converter lang={lang} />}
       {marksOf(lang).length > 0 && <Drill lang={lang} />}
     </div>
   );
@@ -59,10 +59,14 @@ function Drill({ lang }: { lang: string }) {
   const items = useMemo(() => shuffle(all.filter((i) => i.kind === kind), Math.random), [all, kind]);
   return (
     <Card>
-      <h2 className="font-serif text-[22px] font-semibold">Marks and shapes</h2>
+      <h2 className="font-serif text-[22px] font-semibold">Practice</h2>
       {kinds.length > 1 && (
-        <div className="mt-3">
-          <Segmented label="Kind" value={kind} onChange={setKind} options={kinds.map((k) => ({ value: k, label: MARK_LABEL[k] }))} />
+        <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label="Kind">
+          {kinds.map((k) => (
+            <button key={k} type="button" aria-pressed={k === kind} onClick={() => setKind(k)} className={cx('rounded-full border px-3 py-1 text-[13.5px]', k === kind ? 'border-accent-text bg-accent-soft' : 'border-line bg-surface hover:border-line-strong')}>
+              {MARK_LABEL[k]}
+            </button>
+          ))}
         </div>
       )}
       <Questions key={kind + lang} lang={lang} items={items} />
@@ -110,15 +114,17 @@ function Questions({ lang, items }: { lang: string; items: MarkItem[] }) {
   );
 }
 
-function Hanzi() {
-  const [char, setChar] = useState('好');
+function Hanzi({ set }: { set: 'zh' | 'ja' }) {
+  const [char, setChar] = useState(set === 'ja' ? '語' : '好');
   return (
     <Card>
       <h2 className="font-serif text-[22px] font-semibold">Stroke order</h2>
-      <p className="mt-1 mb-4 max-w-2xl text-[14px] text-ink-soft">Type a character to see it drawn stroke by stroke and what it is built from; tap a part to open it. Covers the 1,000 most used characters.</p>
-      <input aria-label="Character" lang="zh" value={char} maxLength={2} onChange={(e) => setChar([...e.target.value].slice(-1).join(''))} className="mb-4 w-24 rounded-2xl border border-line bg-surface p-2 text-center font-serif text-[32px]" />
-      {char && <StrokeOrder char={char} onOpen={setChar} />}
-      <p className="mt-4 text-[12.5px] text-ink-faint">Stroke shapes from Make Me a Hanzi (Arphic Public License); parts and meanings from its dictionary (LGPL).</p>
+      <p className="mt-1 mb-4 max-w-2xl text-[14px] text-ink-soft">Type a {set === 'ja' ? 'kanji' : 'character'} to see it drawn stroke by stroke and what it is built from; tap a part to open it. Covers the 1,000 most used.</p>
+      <input aria-label="Character" lang={set} value={char} maxLength={2} onChange={(e) => setChar([...e.target.value].slice(-1).join(''))} className="mb-4 w-24 rounded-2xl border border-line bg-surface p-2 text-center font-serif text-[32px]" />
+      {char && <StrokeOrder key={set} char={char} set={set} onOpen={setChar} />}
+      <p className="mt-4 text-[12.5px] text-ink-faint">
+        {set === 'ja' ? 'Stroke order from KanjiVG (CC BY-SA 3.0).' : 'Stroke shapes from Make Me a Hanzi (Arphic Public License); parts and meanings from its dictionary (LGPL).'}
+      </p>
     </Card>
   );
 }

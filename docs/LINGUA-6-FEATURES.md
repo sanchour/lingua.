@@ -1681,24 +1681,24 @@ Different languages require different learning interfaces. This could become a m
 #### Russian and other Slavic languages
 
 - [x] `F1307` Cyrillic alphabet trainer
-- [ ] `F1308` Soft and hard sign exercises · **6-23**
+- [x] `F1308` Soft and hard sign exercises · **6-23**
 - [x] `F1309` Palatalization practice · **6-10**
-- [ ] `F1310` Stress placement · **6-23** · partly there
-- [ ] `F1311` Unstressed vowel recognition · **6-23**
+- [x] `F1310` Stress placement · **6-23** · partly there
+- [x] `F1311` Unstressed vowel recognition · **6-23**
 - [x] `F1312` Noun case tables
 - [x] `F1313` Case-selection exercises
-- [ ] `F1314` Verb aspect comparison · **6-23** · partly there
-- [ ] `F1315` Perfective and imperfective pairs · **6-23**
-- [ ] `F1316` Motion verbs · **6-23** · partly there
-- [ ] `F1317` Prefixes of motion verbs · **6-23**
+- [x] `F1314` Verb aspect comparison · **6-23** · partly there
+- [x] `F1315` Perfective and imperfective pairs · **6-23**
+- [x] `F1316` Motion verbs · **6-23** · partly there
+- [x] `F1317` Prefixes of motion verbs · **6-23**
 - [x] `F1318` Verb conjugation
 - [x] `F1319` Adjective agreement
 - [x] `F1320` Pronoun declension
-- [ ] `F1321` Numeral declension · **6-23**
-- [ ] `F1322` Participles · **6-23**
-- [ ] `F1323` Reflexive verbs · **6-23** · partly there
-- [ ] `F1324` Word order flexibility · **6-23**
-- [ ] `F1325` Natural stress in sentences · **6-23**
+- [x] `F1321` Numeral declension · **6-23**
+- [x] `F1322` Participles · **6-23**
+- [x] `F1323` Reflexive verbs · **6-23** · partly there
+- [x] `F1324` Word order flexibility · **6-23**
+- [x] `F1325` Natural stress in sentences · **6-23**
 
 #### Spanish, Portuguese and other Romance languages
 

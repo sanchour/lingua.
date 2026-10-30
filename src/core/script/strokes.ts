@@ -15,16 +15,27 @@ export interface HanziStrokes {
   h?: string;
 }
 
-let all: Promise<Record<string, HanziStrokes>> | undefined;
+/** A kanji from KanjiVG: each stroke is a centre line (a path in a 109 box, y down), drawn with a pen, and its parts. */
+export interface KanjiStrokes {
+  p: string[];
+  c?: string;
+}
+export type StrokeSet = 'zh' | 'ja';
+export type StrokeData = HanziStrokes | KanjiStrokes;
+export const isKanji = (d: StrokeData): d is KanjiStrokes => 'p' in d;
+/** How many strokes a character has. */
+export const strokeCount = (d: StrokeData) => (isKanji(d) ? d.p.length : d.s.length);
 
-/** The stroke data, fetched once (about 1 MB compressed) the first time a character is opened. */
-export function loadStrokes(): Promise<Record<string, HanziStrokes>> {
-  all ??= fetch(`${import.meta.env.BASE_URL}strokes/zh.json`).then((r) => {
+const loading: Partial<Record<StrokeSet, Promise<Record<string, StrokeData>>>> = {};
+
+/** A set's stroke data, fetched once (about 1 MB compressed for Mandarin, 0.35 MB for Japanese) the first time a character is opened. */
+export function loadStrokes(set: StrokeSet = 'zh'): Promise<Record<string, StrokeData>> {
+  const hit = (loading[set] ??= fetch(`${import.meta.env.BASE_URL}strokes/${set}.json`).then((r) => {
     if (!r.ok) throw new Error('Stroke data is not available');
-    return r.json() as Promise<Record<string, HanziStrokes>>;
-  });
-  all.catch(() => (all = undefined));
-  return all;
+    return r.json() as Promise<Record<string, StrokeData>>;
+  }));
+  hit.catch(() => delete loading[set]);
+  return hit;
 }
 
 /** How long a stroke's centre line is, to draw it along its length. */
