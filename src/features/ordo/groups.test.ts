@@ -12,7 +12,7 @@ const SECTION_FILES: Record<string, string[]> = {
   listening: ['sections/ListeningSection.tsx'],
   music: ['sections/MusicSection.tsx'],
   language: ['sections/LanguageSection.tsx', 'sections/VoicePanel.tsx'],
-  ai: ['sections/AiSection.tsx'],
+  ai: ['sections/AiSection.tsx', '../tutor/TutorSettingsPanel.tsx'],
   plus: ['sections/PlanSection.tsx', '../plans/PlanCards.tsx'],
   sync: ['sections/SyncSection.tsx'],
   storage: ['sections/StorageSection.tsx'],

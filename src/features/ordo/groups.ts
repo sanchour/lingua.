@@ -113,6 +113,9 @@ export const SETTINGS_INDEX: SettingEntry[] = [
   { label: 'Model', section: 'ai', also: 'llama llm' },
   { label: 'Online fallback: MyMemory', section: 'ai', also: 'translation translator online' },
   { label: 'Online fallback: Lingva', section: 'ai', also: 'translation translator online google' },
+  { label: 'Tutor preset', find: 'Tutor Preset', section: 'ai', also: 'tutor teacher coach editor persona style explanation' },
+  { label: 'Target language exposure', find: 'Target language exposure', section: 'ai', also: 'tutor immersion bilingual simple technical sentence length translation complexity' },
+  { label: 'Tutor speech speed', find: 'Tutor speech speed', section: 'ai', also: 'tutor hobbies interests speed rate voice hints' },
 
   { label: 'Storage used', section: 'storage', also: 'space disk quota protect persist' },
   { label: 'Storage by kind', section: 'storage', also: 'storage breakdown dictionaries texts flashcards media cache clear' },

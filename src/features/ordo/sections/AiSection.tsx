@@ -8,15 +8,18 @@ import { useCan } from '@/features/plans/usePlan';
 import { listModels, LlmError, PROVIDERS } from '@/services/llm/client';
 import type { Provider } from '@/services/llm/client';
 import { SettingsSection } from '../SettingsSection';
+import { TutorSettingsPanel } from '@/features/tutor/TutorSettingsPanel';
+import { DEFAULT_SETTINGS } from '@/data/settings';
 import { useDraft } from '../useDraft';
 
 interface AiSectionProps {
   llm: Settings['llm'];
   apiKeys: Settings['apiKeys'];
   translation: Settings['translation'];
+  tutor?: Settings['tutor'];
 }
 
-export function AiSection({ llm, apiKeys, translation }: AiSectionProps) {
+export function AiSection({ llm, apiKeys, translation, tutor }: AiSectionProps) {
   const provider = llm.provider;
   const [key, setKey] = useDraft(apiKeys[provider], (value) => void patchSetting('apiKeys', { [provider]: value.trim() }), 400);
   const [reveal, setReveal] = useState(false);
@@ -128,6 +131,8 @@ export function AiSection({ llm, apiKeys, translation }: AiSectionProps) {
         />
         <ToggleRow title="Online fallback: Lingva" description="A second free translator, used if MyMemory has no answer." checked={chain.includes('lingva')} onChange={(on) => toggleProvider('lingva', on)} />
       </div>
+
+      <TutorSettingsPanel tutor={tutor ?? DEFAULT_SETTINGS.tutor} />
     </SettingsSection>
   );
 }
