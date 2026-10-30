@@ -1921,3 +1921,10 @@ The user asked for the word graph's plan to be made "superbly", and added while 
 ## Stroke data (6-23, 2026-10-30)
 
 Stroke order comes from Make Me a Hanzi: the stroke shapes are under the Arphic Public License, the dictionary's decomposition, radical and etymology under LGPL; both are credited on the Marks tab and in the Mandarin alphabet's sources. `scripts/script/strokes.ts` keeps the 1,000 most used characters (by the frequency list) plus the alphabet's own in `public/strokes/zh.json` (2.4 MB, about 1 MB compressed), not precached: it is fetched the first time a character is opened. More characters cost about 2.4 KB compressed each. Japanese: KanjiVG (CC BY-SA 3.0, credited on the Marks tab), the first 1,000 kanji met in the Japanese pack's words, centre lines drawn with a pen (`public/strokes/ja.json`, 0.86 MB, 0.34 MB compressed); `scripts/script/kanji.ts` builds it from `scripts/.cache/kanjivg.xml.gz`. Not done: checking handwriting against the strokes.
+
+## 2026-10-30 — Sonus+: Streaming and sharing songs from music services (YouTube Music, Amazon Music, Spotify, Apple Music)
+
+The user decided: when listening to music in **YouTube Music, Amazon Music, Spotify, or Apple Music**, the learner can easily stream or share the song to Sonus+, and it opens cleanly and immediately in Sonus+ (`/cantus`).
+- **Immediate handoff:** Whether shared through the system share sheet (Share Target API), desktop protocol/deep link (`lingua://sonus?stream=...` / `/cantus?stream=...` / `/cantus?share=...`), browser companion, or pasted URL, Sonus+ resolves the song without extra modal queries or dead ends.
+- **Clean open:** Sonus+ parses the service URL or track metadata, identifies the song and artist, matches timed lyrics from LRCLIB (falling back to lyrics.ovh or estimated timing), selects the best playable audio source (official audio or embedded player), and transitions straight into the full-screen lyric sheet and song learning interface.
+- **Supported external services:** YouTube Music, Amazon Music, Spotify, and Apple Music are all first-class sources for inbound song sharing and streaming into Sonus+.

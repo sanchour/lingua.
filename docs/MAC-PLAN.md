@@ -111,6 +111,7 @@ Pick what's cheap; none is needed to "see":
 - Dock badge with the number of cards due (Tauri's `set_badge_count`); a native notification for the daily review
   (`tauri-plugin-notification`), only if the user wants it.
 - Open a `.apkg` / `.epub` / `.srt` with Lingua (file associations in `tauri.conf.json`), the same import as dragging.
+- Song streaming & sharing to Sonus+: register custom URL scheme (`lingua://`) or share target so songs streamed or shared from **YouTube Music, Amazon Music, Spotify, or Apple Music** open immediately and cleanly in Sonus+ (`/cantus`).
 - A native "Open file" dialog for imports (`tauri-plugin-dialog`) when the web one is awkward.
 
 ### M-5 · Build the app and the disk image

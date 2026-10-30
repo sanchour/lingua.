@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.126** · 2026-10-30 · Docs: Sonus+ music streaming/sharing, 6-8 done and 6-19 claimed by Codex
 - **0.6.0-alpha.125** · 2026-10-30 · 6-23 slice 5: Romance practice (clitic pronouns, verbs and prepositions, regional words, European and Brazilian Portuguese)
 - **0.6.0-alpha.124** · 2026-10-30 · 6-23: kanji stroke order (KanjiVG) and slice 4: Russian practice (signs, vowels, stress, aspect, motion, numerals, participles, reflexives, word order)
 - **0.6.0-alpha.123** · 2026-10-30 · 6-23 slice 3: stroke order animation and character parts for Mandarin (Make Me a Hanzi)

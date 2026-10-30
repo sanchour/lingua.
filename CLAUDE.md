@@ -59,6 +59,10 @@ Commit as `sanchour <255895307+sanchour@users.noreply.github.com>`
   isn't needed anymore** (the user: "Phone is not needed anymore"): don't design, build or check
   for it; what exists for it stays as it is.
 
+- **Sonus+ song streaming and sharing (the user, 2026-10-30):** When listening to music in **YouTube Music,
+  Amazon Music, Spotify, or Apple Music**, the learner can easily stream or share the song straight to Sonus+;
+  the song opens cleanly and immediately in Sonus+ (`/cantus`), resolving lyrics, vocabulary, and player without friction.
+
 - Work only inside this repository's folder. Never open or change anything to do with the user's
   internship, or other folders on the computer. Temporary files go in the session's scratchpad.
 - API keys (Groq, Gemini) stay on the device and travel only in request headers, never
