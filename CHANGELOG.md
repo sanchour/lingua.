@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.138** · 2026-10-30 · Claim 6-20: phrasebook and notebook (Codex)
 - **0.6.0-alpha.137** · 2026-10-30 · Correct 6-19 status: incomplete, remaining translation and verification gaps
 - **0.6.0-alpha.136** · 2026-10-30 · 6-19: offline interface languages, culture and immersion; Ratio live-query fix
 
