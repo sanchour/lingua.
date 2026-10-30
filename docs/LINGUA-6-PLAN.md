@@ -93,7 +93,7 @@ exams, the tutor, games, a phrasebook and notebook, conversation feedback, and m
 | 6-13 | [x] | *done by Antigravity-1 2026-10-29; Compare translations added by Claude (alpha.110): Thesaurus › Make › Compare translations (Max): paste a passage, get it three ways (word for word, natural, literary), a note on each and where they part (F0405, F0767; looked at with a made row put in by hand, not with a real model). T1 done (translation practice sets, hints, literal vs natural, required words, accepted alternatives, idioms, slang, formal registers, dialogues, paragraphs, custom passages, timed challenges; F0389, F0754–F0756, F0758–F0766, F0768, F0771, F0777, F0778); T2 done (interactive word-by-word alignment with syntactic links, round-trip back-translation with drift analysis, scrambled-tile sentence reconstruction, reference comparison; F0769, F0770, F0774–F0776); T3 done: hand-made contrast tables across English and the six core languages (es, fr, de, it, ru, zh) and Romance cross-pairs covering word order, gender systems, case declensions, tense & aspect, articles, prepositions, politeness/address, false friends, shared roots, pronunciation, and cultural semantics, with saved personal notes; F0268–F0272, F0772, F0779–F0794, F1341 ticked; typecheck, 1,326 tests and build pass; not looked at in a browser.* Translating and comparing languages | 45 new · 2 to finish | 6-4, 6-6 | L |
 | **Part C · Paths and guidance** | | | | | |
 | 6-14 | [ ] | Courses and lessons | 29 new · 10 to finish | Part B's 6-8 to 6-10 | XL |
-| 6-15 | [ ] | The tutor, in context | 28 new · 10 to finish | 6-5, 6-6 | M |
+| 6-15 | [~] | *claimed by Antigravity-1 2026-10-30* The tutor, in context | 28 new · 10 to finish | 6-5, 6-6 | M |
 | 6-16 | [ ] | Personal and adaptive | 27 new · 11 to finish | 6-5 | L |
 | 6-17 | [ ] | Goals, habits and progress | 24 new · 12 to finish | 6-5 | L |
 | 6-18 | [ ] | Exams and levels | 38 new · 1 to finish | 6-14, 6-16 | L |
@@ -477,6 +477,17 @@ second time. **Entries (19 new · 3 to finish):** F0278, F0438, F1013–F1018, F
   how much of the language, how often to correct, how much translation, how fast it speaks. Presets: teacher, editor,
   coach. Encouraging, never gushing (the handbook's voice).
 **Entries (28 new · 10 to finish):** F0222–F0223, F0955–F0958, F0960–F0968, F0970–F0971, F0979, F0981–F0985, F0989–F0992, F0994–F0995, F0998–F1005, F1012
+
+
+##### Antigravity-1 implementation plan (2026-10-30):
+- **Slice 1 · Settings & Presets (`F0985`, `F0989`, `F0990`, `F0991`, `F0992`, `F0998`, `F0999`, `F1000`, `F1001`, `F1002`, `F1003`, `F1004`, `F1005`):**
+  Add `tutor` schema to `Settings` with presets (`teacher`, `editor`, `coach`), explanation complexity (`simple`, `balanced`, `technical`), sentence length, target exposure (`immersion`, `mostly`, `bilingual`, `native`), correction frequency (`gentle`, `balanced`, `strict`), translation visibility, speech speed, and learner interests. Build UI controls in Settings › AI / Tutor.
+- **Slice 2 · Context Engine & LLM Prompting (`F0222`, `F0223`, `F0955`, `F0956`, `F0957`, `F0958`, `F0960`, `F0961`, `F0962`, `F0963`, `F0964`, `F0965`, `F0967`, `F0968`, `F0970`, `F0981`, `F0982`, `F0983`, `F0984`, `F0994`, `F0995`, `F1012`):**
+  Build `src/core/tutor/tutorEngine.ts` and `src/services/llm/tutor.ts`. Assemble contextual prompt payload containing current text, active grammar topic or exercise, known vocabulary stats from `db.notes`, studied grammar topics from `db.grammarUserData`, and recent error categories. Implement structured prompt modes: word nuance, grammar analogy, idiom/slang explanation, pronunciation advice, regional difference, compare similar words, progressive hints, wrong-answer explanation, and natural language grammar question answering. Comprehensive mock tests in `src/services/llm/tutor.test.ts`.
+- **Slice 3 · The Ask Side Panel (`F0966`, `F0971`, `F0979`):**
+  Build `src/features/tutor/AskPanel.tsx` (440px desktop side drawer complying with Handbook p. 3456 & 3522). Supports hotkey `Alt+T` / `Shift+?`, quick action chips based on context kind, question input, streaming/cached answers, audio pronunciation of examples, and "Save to Notebook / Keep as mini-lesson" saving directly to Diarium/notes.
+- **Slice 4 · Cross-Room Integration:**
+  Mount Ask panel at app shell level and expose context trigger `useAskTutor()` across Codex (sentence/word selection), Thesaurus (word drawer & flip cards), Grammatica (topic & sentence explainer), Ludus / Practice (active question, hint request, wrong answer breakdown), and a floating Ask trigger on learning screens.
 
 #### 6-16 · Personal and adaptive (Home, Mundus, Ludus)
 

@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.112** · 2026-10-30 · Claim step 6-15 (The tutor, in context)
 - **0.6.0-alpha.111** · 2026-10-30 · 6-10: melody and stress; fixes for long translations, accents in Say it, watch count, speech cache
 - **0.6.0-alpha.110** · 2026-10-29 · 6-13: Compare translations (Max): a passage three ways and where they part
 - **0.6.0-alpha.109** · 2026-10-29 · 6-9 C4: Visio after the line and less help each time, Noise button, conversation with a voice for each speaker, label the speakers
