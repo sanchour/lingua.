@@ -132,19 +132,26 @@ export function DailyWordCard({ lang }: { lang: string }) {
         const dpip = (window as unknown as { documentPictureInPicture: { requestWindow: (opts: { width: number; height: number }) => Promise<Window> } }).documentPictureInPicture;
         const pipWin = await dpip.requestWindow({ width: 380, height: 480 });
         pipWin.document.title = 'Lingua · Quick Review';
-        pipWin.document.body.innerHTML = `
-          <div style="font-family: -apple-system, system-ui, sans-serif; padding: 20px; text-align: center; background: #faf6f0; color: #262220; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-              <p style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #776c63; letter-spacing: 0.1em;">Quick Review · Floating</p>
-              <h2 style="font-size: 26px; margin: 12px 0 4px 0;">${dailyWord?.word ?? 'Practice'}</h2>
-              <p style="color: #5e554e; font-size: 14px;">${dailyWord?.gloss ?? ''}</p>
-            </div>
-            <div>
-              <p style="font-size: 13px; color: #776c63; margin-bottom: 12px;">${due?.due ?? 0} cards due today</p>
-              <a href="/thesaurus/study/all?mode=recall" target="_blank" style="display: block; padding: 10px; background: #c86d51; color: white; border-radius: 12px; font-weight: 600; text-decoration: none;">Full Review</a>
-            </div>
-          </div>
-        `;
+        // Built from elements, not an HTML string: the word and its gloss are data and are never read as markup.
+        const doc = pipWin.document;
+        const el = (tag: string, css: string, text?: string, parent?: HTMLElement) => {
+          const e = doc.createElement(tag);
+          e.style.cssText = css;
+          if (text !== undefined) e.textContent = text;
+          parent?.append(e);
+          return e;
+        };
+        const page = el('div', 'font-family: -apple-system, system-ui, sans-serif; padding: 20px; text-align: center; background: #faf6f0; color: #262220; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;');
+        const top = el('div', '', undefined, page);
+        el('p', 'font-size: 11px; font-weight: 700; text-transform: uppercase; color: #776c63; letter-spacing: 0.1em;', 'Quick Review · Floating', top);
+        el('h2', 'font-size: 26px; margin: 12px 0 4px 0;', dailyWord?.word ?? 'Practice', top);
+        el('p', 'color: #5e554e; font-size: 14px;', dailyWord?.gloss ?? '', top);
+        const bottom = el('div', '', undefined, page);
+        el('p', 'font-size: 13px; color: #776c63; margin-bottom: 12px;', `${due?.due ?? 0} cards due today`, bottom);
+        const link = el('a', 'display: block; padding: 10px; background: #c86d51; color: white; border-radius: 12px; font-weight: 600; text-decoration: none;', 'Full Review', bottom) as HTMLAnchorElement;
+        link.href = '/thesaurus/study/all?mode=recall';
+        link.target = '_blank';
+        doc.body.replaceChildren(page);
         return;
       } catch {
         // Fall back to modal

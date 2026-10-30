@@ -10,6 +10,8 @@ export interface Env {
   LICENCE_PRIVATE_KEY: string;
   /** The app's origin, the only page allowed to call this from a browser. */
   ALLOWED_ORIGIN?: string;
+  /** A KV namespace that remembers when each checkout was first claimed (optional: without it a checkout can be claimed again at any time). */
+  CLAIMED?: { get(key: string): Promise<string | null>; put(key: string, value: string): Promise<void> };
 }
 
 /** The payload the app reads (src/services/licence/licence.ts keeps the same shape). */
@@ -40,6 +42,8 @@ interface StripeCheckout {
 
 const ALGORITHM = { name: 'ECDSA', namedCurve: 'P-256' } as const;
 const SIGN = { name: 'ECDSA', hash: 'SHA-256' } as const;
+/** The learner who paid may claim again for this long (a lost page, a second device); after that the checkout is spent. */
+export const CLAIM_WINDOW_MS = 24 * 3_600_000;
 const LIVE = new Set(['active', 'trialing', 'past_due']);
 
 /** A refusal the learner can act on (a 400 with its message), unlike a fault of ours. */
@@ -99,6 +103,11 @@ export async function claim(env: Env, session: string): Promise<string> {
   const checkout = await stripe<StripeCheckout>(env, `checkout/sessions/${session}?expand[]=subscription`);
   if (checkout.status !== 'complete' || (checkout.payment_status !== 'paid' && checkout.payment_status !== 'no_payment_required')) {
     throw new Refusal('That checkout isn’t paid yet.');
+  }
+  if (env.CLAIMED) {
+    const first = Number(await env.CLAIMED.get(session));
+    if (first && Date.now() - first > CLAIM_WINDOW_MS) throw new Refusal('That checkout was claimed a while ago. Your licence is on the device you used then; to move it, write to support.');
+    if (!first) await env.CLAIMED.put(session, String(Date.now()));
   }
   const email = checkout.customer_details?.email ?? undefined;
   const customer = checkout.customer ?? undefined;

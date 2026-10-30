@@ -77,6 +77,19 @@ describe('the licence server', () => {
     expect((await post('/refresh', { licence: `${body}.bad` })).status).toBe(400);
   });
 
+  it('lets the buyer claim again at first, and refuses the same checkout after a day', async () => {
+    const seen = new Map<string, string>();
+    const claimed = { get: async (k: string) => seen.get(k) ?? null, put: async (k: string, v: string) => void seen.set(k, v) };
+    stripe({ 'checkout/sessions/cs_test_once': { status: 'complete', payment_status: 'paid', mode: 'payment', customer: null } });
+    const withKv = (session: string) => worker.fetch(new Request('https://licence.example/claim', { method: 'POST', body: JSON.stringify({ session }) }), { ...env, CLAIMED: claimed });
+    expect((await withKv('cs_test_once')).status).toBe(200);
+    expect((await withKv('cs_test_once')).status).toBe(200);
+    seen.set('cs_test_once', String(Date.now() - 25 * 3_600_000));
+    const late = await withKv('cs_test_once');
+    expect(late.status).toBe(400);
+    expect(((await late.json()) as { error: string }).error).toMatch(/claimed a while ago/);
+  });
+
   it('answers the browser’s preflight and nothing but its two addresses', async () => {
     const options = await worker.fetch(new Request('https://licence.example/claim', { method: 'OPTIONS' }), env);
     expect(options.status).toBe(204);

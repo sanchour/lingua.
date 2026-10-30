@@ -55,3 +55,5 @@ Do it all first in Stripe's **test mode** (its test cards, nothing charged), the
 An app that runs entirely on the device can be unlocked by someone determined to edit it. The
 licence stops casual sharing, not that. The private key must never be in the repository: whoever
 has it can make licences. A new key pair (`keygen.mjs --replace`) invalidates every licence sold.
+
+A checkout's address (`?checkout=cs_…`) can be seen in history or a screenshot. With the optional `CLAIMED` namespace (see `wrangler.toml`) the buyer can claim again for 24 hours, and after that the checkout is spent. Without it a checkout can be claimed at any time, and a licence string itself can still be copied: it is not tied to a device.

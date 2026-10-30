@@ -146,6 +146,9 @@ describe('the later kinds', () => {
     expect(readDifference({ summary: 'x', rows: [row('ser')] })).toBeNull();
     expect(readDifference({ rows: [row('ser'), row('estar')] })).toBeNull();
   });
+  it('a translation’s label does not claim a level or dictionary check', () => {
+    expect(labelFor({ kind: 'translations', checks: ['schema'], level: 'A1' }).detail).not.toContain('level');
+  });
   it('translations are the three versions, once each, and their texts are not measured', () => {
     const v = (style: string) => ({ style, text: `The ${style} one.`, note: 'Keeps the order.' });
     const ok = readTranslations({ versions: [v('literal'), v('natural'), v('literary')], choices: [{ phrase: 'ni siquiera', why: 'Emphasis.' }, { phrase: '', why: 'x' }] });

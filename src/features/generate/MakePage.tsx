@@ -303,8 +303,8 @@ function Made({
             <>
               <h3 className="mt-5 text-[14px] font-bold">Where they part</h3>
               <ul className="mt-2 space-y-2 text-[14.5px]">
-                {(body as TranslationsBody).choices.map((c) => (
-                  <li key={c.phrase}>
+                {(body as TranslationsBody).choices.map((c, i) => (
+                  <li key={`${i}${c.phrase}`}>
                     <span lang={lang} className="font-serif font-semibold">{c.phrase}</span>
                     <span className="text-ink-soft"> — {c.why}</span>
                   </li>
