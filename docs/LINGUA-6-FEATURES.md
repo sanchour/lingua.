@@ -266,10 +266,10 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 
 - [x] `F0166` Timed recall
 - [x] `F0167` Word matching
-- [ ] `F0168` Word hunting · **6-21**
-- [ ] `F0169` Word ladders · **6-21**
+- [x] `F0168` Word hunting · **6-21**
+- [x] `F0169` Word ladders · **6-21**
 - [ ] `F0170` Crossword puzzles · **6-21**
-- [ ] `F0171` Word searches · **6-21**
+- [x] `F0171` Word searches · **6-21**
 - [x] `F0172` Hangman-style spelling · **6-21**
 - [x] `F0173` Anagrams · **6-21** · partly there
 - [x] `F0174` Sentence completion
@@ -1543,7 +1543,7 @@ each with its definition, private and exportable. Lingua 5.2-9 already expands R
 - [x] `F1191` Pronunciation challenges · **6-10**
 - [ ] `F1192` Word association games · **6-21**
 - [ ] `F1193` Crossword puzzles · **6-21**
-- [ ] `F1194` Word searches · **6-21**
+- [x] `F1194` Word searches · **6-21**
 - [x] `F1195` Anagrams · **6-21**
 - [x] `F1196` Hangman-style spelling · **6-21**
 - [x] `F1197` Guess-the-word games · **6-21**

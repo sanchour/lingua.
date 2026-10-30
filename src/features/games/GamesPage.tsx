@@ -18,7 +18,10 @@ import { buttonClasses, Card, EmptyState } from '@/design/primitives';
 import { Anagram } from './Anagram';
 import { Clues } from './Clues';
 import { Hangman } from './Hangman';
+import { Hunt } from './Hunt';
+import { Ladder } from './Ladder';
 import { MissingLetters } from './MissingLetters';
+import { WordSearch } from './WordSearch';
 
 interface ScreenProps {
   lang: string;
@@ -28,7 +31,7 @@ interface ScreenProps {
 }
 
 /** The screen of each game that has one; a game without one is not on the shelf yet. */
-const SCREENS: Record<string, ComponentType<ScreenProps>> = { hangman: Hangman, anagram: Anagram, missing: MissingLetters, clues: Clues };
+const SCREENS: Record<string, ComponentType<ScreenProps>> = { hangman: Hangman, anagram: Anagram, missing: MissingLetters, clues: Clues, wordsearch: WordSearch, hunt: Hunt, ladder: Ladder };
 const GAMES = ALL_GAMES.filter((g) => g.id in SCREENS);
 
 export default function GamesPage() {
