@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.128** · 2026-10-30 · 6-23 slices 6 and 7: East Asian quizzes, hanja, write pad and Arabic root explorer; 6-23 done
 - **0.6.0-alpha.127** · 2026-10-30 · Claim 6-21 and plan it: games and projects, seven pushes
 - **0.6.0-alpha.126** · 2026-10-30 · Docs: Sonus+ music streaming/sharing, 6-8 done and 6-19 claimed by Codex
 - **0.6.0-alpha.125** · 2026-10-30 · 6-23 slice 5: Romance practice (clitic pronouns, verbs and prepositions, regional words, European and Brazilian Portuguese)

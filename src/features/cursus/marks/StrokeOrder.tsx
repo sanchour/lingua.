@@ -1,7 +1,9 @@
 // A Chinese character drawn stroke by stroke (6-23): an animation, the order as a row of steps, and the parts it is built from.
 import { useEffect, useId, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw } from 'lucide-react';
-import { isKanji, loadStrokes, medianLength, medianPath, strokeCount } from '@/core/script/strokes';
+import { isKanji, loadReadings, loadStrokes, medianLength, medianPath, strokeCount } from '@/core/script/strokes';
+import type { CharReadings } from '@/core/script/hanzi';
+import { WriteCheck } from './WriteCheck';
 import type { StrokeData, StrokeSet } from '@/core/script/strokes';
 import { cx } from '@/lib/cx';
 
@@ -42,6 +44,11 @@ function Glyph({ data, upto, partial = 1, size, current = true }: { data: Stroke
 export function StrokeOrder({ char, set = 'zh', onOpen }: { char: string; set?: StrokeSet; onOpen?: (c: string) => void }) {
   const [all, setAll] = useState<Record<string, StrokeData> | null | undefined>();
   const data = all?.[char];
+  const [readings, setReadings] = useState<Record<string, CharReadings>>({});
+  useEffect(() => {
+    void loadReadings().then(setReadings, () => undefined);
+  }, []);
+  const rd = readings[char];
   const [step, setStep] = useState(0);
   const [partial, setPartial] = useState(1);
   const [playing, setPlaying] = useState(false);
@@ -107,6 +114,9 @@ export function StrokeOrder({ char, set = 'zh', onOpen }: { char: string; set?: 
         </div>
         <div className="min-w-0 flex-1 space-y-1.5 text-[14.5px]">
           <p className="text-ink-soft">Stroke {step + 1} of {total}</p>
+          {rd?.d && (isKanji(data) || !data.e) && <p>{rd.d}</p>}
+          {rd && (rd.on?.length || rd.kun?.length) && set === 'ja' && <p className="text-ink-soft">{rd.on?.length ? `On: ${rd.on.join(', ')}` : ''}{rd.on?.length && rd.kun?.length ? ' · ' : ''}{rd.kun?.length ? `Kun: ${rd.kun.join(', ')}` : ''}</p>}
+          {rd?.ko?.length && <p className="text-ink-soft">Korean hanja reading: <span lang="ko">{rd.ko.join(', ')}</span></p>}
           {!isKanji(data) && data.e && <p>{data.e}</p>}
           {!isKanji(data) && data.h && <p className="text-ink-soft">{data.h}</p>}
           {!isKanji(data) && data.r && <p className="text-ink-soft">Radical <span lang="zh" className="font-serif text-[18px] text-ink">{data.r}</span></p>}
@@ -130,6 +140,7 @@ export function StrokeOrder({ char, set = 'zh', onOpen }: { char: string; set?: 
           </li>
         ))}
       </ol>
+      <WriteCheck key={char} char={char} data={data} lang={set} />
       {parts.length > 0 && (
         <div>
           <p className="mb-1.5 text-[12.5px] font-semibold tracking-wide text-ink-faint uppercase">Built from</p>

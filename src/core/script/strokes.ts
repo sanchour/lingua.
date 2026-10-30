@@ -47,3 +47,15 @@ export function medianLength(median: number[][]): number {
 
 /** The path of a stroke's centre line. */
 export const medianPath = (median: number[][]) => median.map(([x, y], i) => `${i ? 'L' : 'M'} ${x} ${y}`).join(' ');
+
+import type { CharReadings } from './hanzi';
+let readingsLoad: Promise<Record<string, CharReadings>> | undefined;
+/** What the characters are called in Japanese and Korean and what they mean (public/chars/readings.json, 0.1 MB), fetched once. */
+export function loadReadings(): Promise<Record<string, CharReadings>> {
+  readingsLoad ??= fetch(`${import.meta.env.BASE_URL}chars/readings.json`).then((r) => {
+    if (!r.ok) throw new Error('Readings are not available');
+    return r.json() as Promise<Record<string, CharReadings>>;
+  });
+  readingsLoad.catch(() => (readingsLoad = undefined));
+  return readingsLoad;
+}

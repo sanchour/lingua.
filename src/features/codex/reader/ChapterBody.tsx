@@ -6,6 +6,7 @@ import { endingStart, markMatches, MARK_COLOURS, POS_COLOURS } from '@/core/read
 import type { ReadingAids, ReadingMark } from '@/core/reading/aids';
 import { READING_LANGS } from '@/core/lang/languages';
 import { TRANSLIT_LANGS, translitFor } from '@/core/script/reading';
+import { simpleTranslit } from '@/core/script/arabic';
 import { blobUrl } from '@/data/library';
 import type { ChapterModel } from './model';
 
@@ -14,7 +15,7 @@ import type { ChapterModel } from './model';
  * (data-o) and state (data-s). Rendered once per chapter; after that the word engine updates
  * spans directly, so word clicks never re-render this tree.
  */
-export const ChapterBody = memo(function ChapterBody({ model, lang, images = true, aids, marks = [], onLayout }: { model: ChapterModel; lang: string; images?: boolean; aids?: ReadingAids; marks?: ReadingMark[]; onLayout?: () => void }) {
+export const ChapterBody = memo(function ChapterBody({ model, lang, images = true, aids, marks = [], plainTranslit, onLayout }: { model: ChapterModel; lang: string; images?: boolean; aids?: ReadingAids; marks?: ReadingMark[]; plainTranslit?: boolean; onLayout?: () => void }) {
   const readings = READING_LANGS.has(lang) || TRANSLIT_LANGS.has(lang);
   const [revealed, setRevealed] = useState<Set<string>>(() => new Set());
   useEffect(() => setRevealed(new Set()), [model.chapter.id]);
@@ -39,11 +40,11 @@ export const ChapterBody = memo(function ChapterBody({ model, lang, images = tru
             const mark = localMarks.find((m) => t.start < m.end && t.start + t.text.length > m.start);
             const sentence = `${b}:${sentences.containing(t.start)?.index ?? 0}`;
             return <span key={i} className="w" data-n={t.norm} data-o={t.start} data-s={model.states.get(t.norm!) ?? 0}
-              data-r={readings ? readingFor(lang, t.text, gloss?.reading) ?? translitFor(lang, t.text) : undefined}
+              data-r={readings ? readingFor(lang, t.text, gloss?.reading) ?? plain(translitFor(lang, t.text), plainTranslit) : undefined}
               data-gloss={aids?.glosses ? (!aids.hideGlosses || revealed.has(sentence) ? gloss?.text ?? '—' : '…') : undefined}
               title={aids?.pos ? `${pos || 'Category not listed'}${ending !== undefined ? ` · dictionary form: ${gloss?.lemma}` : ''}` : ending !== undefined ? `Dictionary form: ${gloss?.lemma}` : undefined}
               style={{ color: aids?.pos ? POS_COLOURS[pos] : undefined, backgroundColor: mark ? MARK_COLOURS[mark.colour] : undefined, boxShadow: mark ? 'inset 0 -2px currentColor' : undefined }}>
-              {ending === undefined ? t.text : <>{t.text.slice(0, ending)}<u className="decoration-dotted decoration-2 underline-offset-4">{t.text.slice(ending)}</u></>}
+              {ending === undefined ? (lang === 'ar' ? vowelRuns(t.text) : t.text) : <>{t.text.slice(0, ending)}<u className="decoration-dotted decoration-2 underline-offset-4">{t.text.slice(ending)}</u></>}
             </span>;
           })}
           {aids?.glosses && aids.hideGlosses && <span className="mt-2 block text-sm">{[...sentences].map((s, i) => {
@@ -111,4 +112,11 @@ function ReaderImage({ blobId, alt, index }: { blobId: string; alt?: string; ind
       {url && <img src={url} alt={alt ?? ''} draggable={false} />}
     </figure>
   );
+}
+
+const plain = (s: string | undefined, on?: boolean) => (s && on ? simpleTranslit(s) : s);
+
+/** Arabic text with its short vowel marks in spans of their own, so the reader can fade them as a word is learned (CSS: .hk). */
+function vowelRuns(text: string) {
+  return text.split(/([\u064B-\u0652\u0670]+)/).map((part, i) => (i % 2 ? <span key={i} className="hk">{part}</span> : part));
 }

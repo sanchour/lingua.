@@ -1,6 +1,6 @@
 // Marks and shapes (6-23): small multiple-choice drills for what the alphabet chart doesn't teach. Accent marks and
 // where they go, diacritics, ligatures, and Russian cursive. Hand-written, one fact per item, checked in marks.test.ts.
-export type MarkKind = 'accent' | 'diacritic' | 'ligature' | 'cursive' | 'signs' | 'vowels' | 'stress' | 'aspect' | 'motion' | 'numerals' | 'participles' | 'reflexive' | 'order' | 'clitics' | 'prepositions' | 'regional' | 'variety';
+export type MarkKind = 'accent' | 'diacritic' | 'ligature' | 'cursive' | 'signs' | 'vowels' | 'stress' | 'aspect' | 'motion' | 'numerals' | 'participles' | 'reflexive' | 'order' | 'chars' | 'tones' | 'honorifics' | 'politeness' | 'counters' | 'particles' | 'shortvowels' | 'dialect' | 'registers' | 'roots' | 'clitics' | 'prepositions' | 'regional' | 'variety';
 export interface MarkItem {
   kind: MarkKind;
   prompt: string;
@@ -11,6 +11,7 @@ export interface MarkItem {
 export const MARK_LABEL: Record<MarkKind, string> = {
   accent: 'Accent marks', diacritic: 'Diacritics', ligature: 'Ligatures', cursive: 'Cursive',
   signs: 'Soft and hard signs', vowels: 'Unstressed vowels', stress: 'Stress', aspect: 'Aspect', motion: 'Verbs of motion', numerals: 'Numerals', participles: 'Participles', reflexive: 'Reflexive verbs', order: 'Word order', clitics: 'Clitic pronouns', prepositions: 'Verbs and prepositions', regional: 'Regional words', variety: 'European and Brazilian',
+  chars: 'Characters', tones: 'Tones', honorifics: 'Honorifics', politeness: 'Politeness levels', counters: 'Counters and measure words', particles: 'Particles', shortvowels: 'Short vowels', dialect: 'Dialect and standard', registers: 'Formal and colloquial', roots: 'Roots and patterns',
 };
 
 const a = (prompt: string, ok: string, wrong: string, why: string): MarkItem => ({ kind: 'accent', prompt, options: [ok, wrong], why });
@@ -128,7 +129,96 @@ const ROM: Record<string, MarkItem[]> = {
   ],
 };
 
+/** Mandarin, Japanese and Korean (6-23, slice 6): measure words, particles, politeness and honorifics. */
+const EA: Record<string, MarkItem[]> = {
+  zh: [
+    r('counters', '“a book”', '一本书', '一个书', 'Books take 本 (bound things). 个 is the all-purpose measure word, but books ask for their own.'),
+    r('counters', '“a sheet of paper”', '一张纸', '一本纸', '张 is for flat things: paper, tables, tickets, beds.'),
+    r('counters', '“a cup of tea”', '一杯茶', '一个茶', '杯 is the cup, as a measure of the drink.'),
+    r('counters', '“a cat”', '一只猫', '一条猫', '只 is for most small animals; 条 is for long things and fish.'),
+    r('counters', '“a fish”', '一条鱼', '一只鱼', '条 is for long, flexible things: fish, roads, rivers, trousers.'),
+    r('counters', '“a car”', '一辆车', '一个车', '辆 is for vehicles.'),
+    r('counters', '“a shirt”', '一件衣服', '一本衣服', '件 is for clothes (upper body) and for matters.'),
+    r('counters', '“a guest” (politely)', '一位客人', '一只客人', '位 is the polite measure word for people.'),
+    r('particles', '“I have been to Beijing” (an experience)', '我去过北京', '我去了北京', '过 says it happened at least once; 了 says it was done (“I went”).'),
+    r('particles', '“Is it good?” (a yes-no question)', '好吗', '好吧', '吗 makes a question; 吧 suggests or softens (“OK then”).'),
+    r('particles', '“He runs fast”: 他跑___很快', '得', '的', '得 links a verb to how it is done; 的 links a noun to its description.'),
+    r('particles', '“my book”: 我___书', '的', '得', '的 marks possession.'),
+    r('particles', '“Let’s go”', '我们走吧', '我们走吗', '吧 suggests; 吗 would turn it into a question.'),
+  ],
+  ja: [
+    r('counters', '“three pens” (long, thin things)', 'ペンを三本', 'ペンを三枚', '本 counts long things (さんぼん). 枚 is for flat things.'),
+    r('counters', '“two sheets of paper”', '紙を二枚', '紙を二本', '枚 counts flat, thin things.'),
+    r('counters', '“three books”', '本を三冊', '本を三枚', '冊 counts bound volumes.'),
+    r('counters', '“a cat”', '猫が一匹', '猫が一頭', '匹 counts small animals; 頭 is for large ones (cows, horses).'),
+    r('counters', '“one person”', 'ひとり', 'いちにん', 'People have irregular first two: ひとり, ふたり; from three on, さんにん.'),
+    r('counters', '“two cars”', '車が二台', '車が二個', '台 counts machines and vehicles.'),
+    r('particles', '“Who ate it?” “I did.”', '私が食べました', '私は食べました', 'が marks the new information that answers “who”; は marks a known topic.'),
+    r('particles', '“I eat sushi”', '寿司を食べる', '寿司に食べる', 'を marks the direct object.'),
+    r('particles', '“I study at the library”', '図書館で勉強する', '図書館に勉強する', 'で marks where an action happens.'),
+    r('particles', '“There is a cat in the garden”', '庭に猫がいる', '庭で猫がいる', 'に marks where something exists.'),
+    r('politeness', '“eat”, polite (the -ます form)', '食べます', '食べる', 'The dictionary form 食べる is plain; -ます is polite.'),
+    r('politeness', '“I don’t go”, polite', '行きません', '行かない', '行かない is plain; the polite negative is 行きません.'),
+    r('politeness', '“I ate”, polite', '食べました', '食べた', '食べた is plain past.'),
+    r('politeness', '“is” (polite)', 'です', 'だ', 'だ is plain; です is polite.'),
+    r('honorifics', '“The teacher is coming” (honorific)', '先生がいらっしゃる', '先生が参る', '参る is humble, said about yourself; いらっしゃる raises the other person.'),
+    r('honorifics', '“Please eat” (to a guest)', 'どうぞ召し上がってください', 'どうぞいただいてください', '召し上がる honours the guest’s eating; いただく is humble.'),
+    r('honorifics', '“My name is Tanaka” (humble)', '田中と申します', '田中とおっしゃいます', '申す is humble (about yourself); おっしゃる is honorific (about others).'),
+    r('honorifics', '“The teacher reads” (honorific)', '先生がお読みになる', '先生がお読みする', 'お…になる raises the other person; お…する is humble.'),
+    r('honorifics', '“I will do it” (humble)', '致します', 'なさいます', '致す is humble; なさる is the honorific of する.'),
+  ],
+  ko: [
+    r('counters', '“two cats”', '고양이 두 마리', '고양이 두 명', '마리 counts animals; 명 counts people.'),
+    r('counters', '“two cups of coffee”', '커피 두 잔', '커피 두 개', '잔 counts cups and glasses.'),
+    r('counters', '“three books”', '책 세 권', '책 세 장', '권 counts bound volumes; 장 counts sheets.'),
+    r('counters', '“two sheets of paper”', '종이 두 장', '종이 두 권', '장 counts flat things.'),
+    r('counters', '“three people”', '세 명', '삼 명', 'Native numbers (하나, 둘, 셋: 세 before a counter) go with 명, 개, 마리; Sino-Korean ones go with 분, 월, 원.'),
+    r('particles', 'The topic marker after 책 (ends in a consonant)', '책은', '책는', '은 after a consonant, 는 after a vowel.'),
+    r('particles', 'The subject marker after 사과 (ends in a vowel)', '사과가', '사과이', '이 after a consonant, 가 after a vowel.'),
+    r('particles', 'The object marker after 밥 (ends in a consonant)', '밥을', '밥를', '을 after a consonant, 를 after a vowel.'),
+    r('particles', '“I study at school”', '학교에서 공부해요', '학교에 공부해요', '에서 marks where an action happens; 에 marks a destination or an existing place.'),
+    r('particles', '“I go to school”', '학교에 가요', '학교에서 가요', '에 marks the destination.'),
+    r('politeness', 'The formal polite “thank you”', '감사합니다', '감사해', '-ㅂ니다/-습니다 is the formal polite level; -해 is casual (banmal).'),
+    r('politeness', '“go”, polite informal', '가요', '가', '-요 makes the everyday polite form; the bare 가 is casual.'),
+    r('politeness', '“I ate rice” to a friend (casual)', '밥 먹었어', '밥 드셨어요', '-어 is casual; 드셨어요 is polite and honorific.'),
+    r('politeness', '“Give” to a teacher (humble)', '선생님께 드려요', '선생님께 줘요', '드리다 is the humble “give”; 주다 is plain.'),
+    r('honorifics', '“The teacher is coming”', '선생님께서 오세요', '선생님이 와요', '께서 and -(으)시- honour the subject: the plain 이 / -아요 are for equals.'),
+    r('honorifics', '“Please eat”, honorific', '드세요', '먹으세요', '드시다 is the special honorific of 먹다.'),
+    r('honorifics', '“Is the teacher at home?” (honorific “is”)', '선생님 계세요?', '선생님 있으세요?', '계시다 is the honorific of 있다 for a person who is somewhere.'),
+    r('honorifics', '“age” of an elderly person', '연세', '나이', '연세 is the honorific word for age.'),
+  ],
+};
+
+/** Arabic (6-23, slice 7). */
+const AR: MarkItem[] = [
+  r('shortvowels', 'The small mark below a letter is…', 'kasra (i)', 'ḍamma (u)', 'Kasra sits below the letter; fatḥa and ḍamma sit above.'),
+  r('shortvowels', 'The mark that looks like a small و above a letter is…', 'ḍamma (u)', 'fatḥa (a)', 'Ḍamma (ـُ) is a small و; fatḥa (ـَ) is a small slanted stroke.'),
+  r('shortvowels', 'How is كَتَبَ read?', 'kataba', 'kutiba', 'Three fatḥas: ka-ta-ba, “he wrote”.'),
+  r('shortvowels', 'How is كُتِبَ read?', 'kutiba', 'kataba', 'ḍamma on ك, kasra on ت: ku-ti-ba, “it was written”.'),
+  r('shortvowels', 'How is كِتَابٌ read?', 'kitābun', 'kitābu', 'The doubled ٌ (tanwīn) adds -un: a book (indefinite).'),
+  r('diacritic', 'The hamza of إ is written below the alif because…', 'the vowel is kasra (i)', 'the vowel is fatḥa (a)', 'An initial hamza is below alif with kasra (إِنْ) and above it with fatḥa or ḍamma (أَنْ, أُمّ).'),
+  r('diacritic', 'The letter ة at the end of a word is…', 'tā’ marbūṭa (a feminine ending)', 'an ordinary ت', 'ة has two dots above a ه-shape; it is usually pronounced -a, or -at when joined to another word.'),
+  r('dialect', 'Egyptian Arabic for “what?”', 'إيه', 'ماذا', 'ماذا is Modern Standard Arabic; Egyptians say إيه.'),
+  r('dialect', 'Levantine (Syria, Lebanon) for “what?”', 'شو', 'إيه', 'شو is Levantine; إيه is Egyptian.'),
+  r('dialect', 'Modern Standard Arabic for “what?”', 'ماذا', 'شو', 'شو is a dialect word, not for writing.'),
+  r('dialect', 'Egyptian for “now”', 'دلوقتي', 'الآن', 'الآن is the standard word.'),
+  r('dialect', 'Levantine for “I want”', 'بدي', 'أريد', 'أريد is the standard word.'),
+  r('dialect', 'Egyptian for “I want” (a man says)', 'عايز', 'بدي', 'بدي is Levantine; عايز (also عاوز) is Egyptian.'),
+  r('dialect', 'Moroccan for “a lot”', 'بزاف', 'كثير', 'كثير is the standard word.'),
+  r('roots', 'Root ك ت ب in the pattern فاعِل (doer)', 'كاتِب', 'مَكْتوب', 'The doer of writing is a writer; مَكْتوب is “written”.'),
+  r('roots', 'Root ك ت ب in the pattern مَفْعول (done)', 'مَكْتوب', 'كاتِب', 'The passive participle: “written”.'),
+  r('roots', 'Root ك ت ب in the pattern مَفْعَل (place)', 'مَكْتَب', 'كِتاب', 'The place of writing is an office or desk.'),
+  r('roots', 'Root د ر س: the place of studying', 'مَدْرَسة', 'دَرْس', 'The place pattern with a feminine ending: a school. دَرْس is “lesson”.'),
+  r('roots', 'Root ع ل م, Form II doer (مُفَعِّل)', 'مُعَلِّم', 'عالِم', 'The one who makes others know is a teacher; عالِم is a scholar.'),
+  r('roots', 'Root ج ل س in the pattern مَفْعِل (the place of sitting)', 'مَجْلِس', 'جَلْسة', 'A council or sitting room; جَلْسة is a single session.'),
+  r('registers', '“he went” in a news report', 'ذهب', 'راح', 'راح is colloquial in many dialects; news says ذهب.'),
+  r('registers', '“is not” in a formal text', 'ليس', 'مش', 'مش is colloquial (Egyptian, Levantine).'),
+  r('registers', '“who/which” in a formal text', 'الذي', 'اللي', 'اللي is the colloquial relative word.'),
+  r('registers', '“What do you want?” in a formal setting', 'ماذا تريد', 'عايز إيه', 'عايز إيه is Egyptian colloquial.'),
+];
+
 export const MARKS: Record<string, MarkItem[]> = {
+  ...EA,
   es: [
     a('“he/she is” (the verb estar)', 'está', 'esta', 'esta without a mark is “this”.'),
     a('“you” (subject)', 'tú', 'tu', 'tu without a mark is “your”.'),
@@ -185,6 +275,7 @@ export const MARKS: Record<string, MarkItem[]> = {
     ...RU,
   ],
   ar: [
+    ...AR,
     { kind: 'ligature', prompt: 'ل followed by ا is always written…', options: ['لا', 'ل ا'], why: 'Lām and alif join in a crossed ligature, the one compulsory ligature of Arabic.' },
     { kind: 'diacritic', prompt: 'The mark that doubles a consonant', options: ['ّ (shadda)', 'ْ (sukūn)'], why: 'Shadda doubles; sukūn says “no vowel here”.' },
   ],

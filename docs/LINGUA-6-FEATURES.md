@@ -1722,38 +1722,38 @@ Different languages require different learning interfaces. This could become a m
 #### Chinese, Japanese and other East Asian languages
 
 - [x] `F1342` Pinyin or kana training
-- [ ] `F1343` Tone recognition · **6-23** · partly there
+- [x] `F1343` Tone recognition · **6-23** · partly there
 - [x] `F1344` Tone production · **6-10**
-- [ ] `F1345` Character decomposition · **6-23**
-- [ ] `F1346` Radicals and components · **6-23**
-- [ ] `F1347` Stroke order · **6-23** · partly there
-- [ ] `F1348` Kanji readings · **6-23**
-- [ ] `F1349` Hanzi recognition · **6-23** · partly there
-- [ ] `F1350` Hanja reference where relevant · **6-23**
+- [x] `F1345` Character decomposition · **6-23**
+- [x] `F1346` Radicals and components · **6-23**
+- [x] `F1347` Stroke order · **6-23** · partly there
+- [x] `F1348` Kanji readings · **6-23**
+- [x] `F1349` Hanzi recognition · **6-23** · partly there
+- [x] `F1350` Hanja reference where relevant · **6-23**
 - [ ] `F1351` Pitch-accent training · **6-10**
-- [ ] `F1352` Honorifics · **6-23**
-- [ ] `F1353` Politeness levels · **6-23**
-- [ ] `F1354` Measure words · **6-23** · partly there
-- [ ] `F1355` Classifiers · **6-23**
-- [ ] `F1356` Particles · **6-23** · partly there
+- [x] `F1352` Honorifics · **6-23**
+- [x] `F1353` Politeness levels · **6-23**
+- [x] `F1354` Measure words · **6-23** · partly there
+- [x] `F1355` Classifiers · **6-23**
+- [x] `F1356` Particles · **6-23** · partly there
 - [x] `F1357` Character frequency
 - [x] `F1358` Reading with furigana
-- [ ] `F1359` Gradual removal of reading aids · **6-23**
-- [ ] `F1360` Traditional versus simplified Chinese · **6-23** · partly there
-- [ ] `F1361` Kana-to-kanji practice · **6-23**
-- [ ] `F1362` Character handwriting recognition · **6-23** · partly there
+- [x] `F1359` Gradual removal of reading aids · **6-23**
+- [x] `F1360` Traditional versus simplified Chinese · **6-23** · partly there
+- [x] `F1361` Kana-to-kanji practice · **6-23**
+- [x] `F1362` Character handwriting recognition · **6-23** · partly there
 
 #### Arabic and other languages with complex orthography
 
 - [x] `F1363` Right-to-left interface support
 - [x] `F1364` Connected letter forms
-- [ ] `F1365` Short-vowel recognition · **6-23** · partly there
-- [ ] `F1366` Diacritic training · **6-23**
-- [ ] `F1367` Root-and-pattern morphology · **6-23**
-- [ ] `F1368` Dialect versus standard language · **6-23**
-- [ ] `F1369` Formal versus colloquial registers · **6-23**
+- [x] `F1365` Short-vowel recognition · **6-23** · partly there
+- [x] `F1366` Diacritic training · **6-23**
+- [x] `F1367` Root-and-pattern morphology · **6-23**
+- [x] `F1368` Dialect versus standard language · **6-23**
+- [x] `F1369` Formal versus colloquial registers · **6-23**
 - [x] `F1370` Arabic script handwriting
-- [ ] `F1371` Transliteration controls · **6-23**
+- [x] `F1371` Transliteration controls · **6-23**
 - [x] `F1372` Pronunciation of emphatic consonants · **6-10**
 
 ## 20 · Exams and proficiency certification
