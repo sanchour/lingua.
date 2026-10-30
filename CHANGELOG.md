@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.131** · 2026-10-30 · 6-23 reopened: the deep plan (LINGUA-6-23-PLAN.md), entries open again
 - **0.6.0-alpha.130** · 2026-10-30 · 6-21 plan: word hunting from texts, ready-made stories to B1, a written quality bar
 - **0.6.0-alpha.129** · 2026-10-30 · Docs: 6-23's version numbers
 - **0.6.0-alpha.128** · 2026-10-30 · 6-23 slices 6 and 7: East Asian quizzes, hanja, write pad and Arabic root explorer; 6-23 done

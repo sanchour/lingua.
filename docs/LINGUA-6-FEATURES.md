@@ -1664,41 +1664,41 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1291` Alphabet trainer
 - [x] `F1292` Letter recognition
 - [x] `F1293` Handwriting practice
-- [x] `F1294` Stroke-order animations · **6-23** · partly there
-- [x] `F1295` Character decomposition · **6-23**
+- [ ] `F1294` Stroke-order animations · **6-23** · partly there (6-23 reopened)
+- [ ] `F1295` Character decomposition · **6-23** · partly there (light version, 6-23 reopened)
 - [x] `F1296` Character recognition quizzes
 - [x] `F1297` Keyboard training
-- [x] `F1298` Transliteration · **6-23** · partly there
-- [x] `F1299` Script conversion · **6-23** · partly there
-- [x] `F1300` Reading without transliteration · **6-23** · partly there
-- [x] `F1301` Gradually hide transliteration · **6-23**
-- [x] `F1302` Diacritic training · **6-23**
-- [x] `F1303` Accent-mark exercises · **6-23**
-- [x] `F1304` Ligature recognition · **6-23**
-- [x] `F1305` Cursive recognition · **6-23**
-- [x] `F1306` Unicode character reference · **6-23**
+- [ ] `F1298` Transliteration · **6-23** · partly there (6-23 reopened)
+- [ ] `F1299` Script conversion · **6-23** · partly there (6-23 reopened)
+- [ ] `F1300` Reading without transliteration · **6-23** · partly there (6-23 reopened)
+- [ ] `F1301` Gradually hide transliteration · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1302` Diacritic training · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1303` Accent-mark exercises · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1304` Ligature recognition · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1305` Cursive recognition · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1306` Unicode character reference · **6-23** · partly there (light version, 6-23 reopened)
 
 #### Russian and other Slavic languages
 
 - [x] `F1307` Cyrillic alphabet trainer
-- [x] `F1308` Soft and hard sign exercises · **6-23**
+- [ ] `F1308` Soft and hard sign exercises · **6-23** · partly there (light version, 6-23 reopened)
 - [x] `F1309` Palatalization practice · **6-10**
-- [x] `F1310` Stress placement · **6-23** · partly there
-- [x] `F1311` Unstressed vowel recognition · **6-23**
+- [ ] `F1310` Stress placement · **6-23** · partly there (6-23 reopened)
+- [ ] `F1311` Unstressed vowel recognition · **6-23** · partly there (light version, 6-23 reopened)
 - [x] `F1312` Noun case tables
 - [x] `F1313` Case-selection exercises
-- [x] `F1314` Verb aspect comparison · **6-23** · partly there
-- [x] `F1315` Perfective and imperfective pairs · **6-23**
-- [x] `F1316` Motion verbs · **6-23** · partly there
-- [x] `F1317` Prefixes of motion verbs · **6-23**
+- [ ] `F1314` Verb aspect comparison · **6-23** · partly there (6-23 reopened)
+- [ ] `F1315` Perfective and imperfective pairs · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1316` Motion verbs · **6-23** · partly there (6-23 reopened)
+- [ ] `F1317` Prefixes of motion verbs · **6-23** · partly there (light version, 6-23 reopened)
 - [x] `F1318` Verb conjugation
 - [x] `F1319` Adjective agreement
 - [x] `F1320` Pronoun declension
-- [x] `F1321` Numeral declension · **6-23**
-- [x] `F1322` Participles · **6-23**
-- [x] `F1323` Reflexive verbs · **6-23** · partly there
-- [x] `F1324` Word order flexibility · **6-23**
-- [x] `F1325` Natural stress in sentences · **6-23**
+- [ ] `F1321` Numeral declension · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1322` Participles · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1323` Reflexive verbs · **6-23** · partly there (6-23 reopened)
+- [ ] `F1324` Word order flexibility · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1325` Natural stress in sentences · **6-23** · partly there (light version, 6-23 reopened)
 
 #### Spanish, Portuguese and other Romance languages
 
@@ -1707,53 +1707,53 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1328` Tense selection
 - [x] `F1329` Ser versus estar
 - [x] `F1330` Por versus para
-- [x] `F1331` Clitic pronouns · **6-23** · partly there
+- [ ] `F1331` Clitic pronouns · **6-23** · partly there (6-23 reopened)
 - [x] `F1332` Gender and agreement
 - [x] `F1333` Contractions
-- [x] `F1334` Accent placement · **6-23**
-- [x] `F1335` Regional vocabulary · **6-23** · partly there
+- [ ] `F1334` Accent placement · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1335` Regional vocabulary · **6-23** · partly there (6-23 reopened)
 - [x] `F1336` Formal versus informal address
-- [x] `F1337` Spanish dialect comparisons · **6-23**
-- [x] `F1338` European versus Brazilian Portuguese · **6-23** · partly there
+- [ ] `F1337` Spanish dialect comparisons · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1338` European versus Brazilian Portuguese · **6-23** · partly there (6-23 reopened)
 - [x] `F1339` Nasal vowel practice · **6-10**
-- [x] `F1340` Verb-preposition combinations · **6-23**
+- [ ] `F1340` Verb-preposition combinations · **6-23** · partly there (light version, 6-23 reopened)
 - [x] `F1341` False friends between Romance languages · **6-13**
 
 #### Chinese, Japanese and other East Asian languages
 
 - [x] `F1342` Pinyin or kana training
-- [x] `F1343` Tone recognition · **6-23** · partly there
+- [ ] `F1343` Tone recognition · **6-23** · partly there (6-23 reopened)
 - [x] `F1344` Tone production · **6-10**
-- [x] `F1345` Character decomposition · **6-23**
-- [x] `F1346` Radicals and components · **6-23**
-- [x] `F1347` Stroke order · **6-23** · partly there
-- [x] `F1348` Kanji readings · **6-23**
-- [x] `F1349` Hanzi recognition · **6-23** · partly there
-- [x] `F1350` Hanja reference where relevant · **6-23**
+- [ ] `F1345` Character decomposition · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1346` Radicals and components · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1347` Stroke order · **6-23** · partly there (6-23 reopened)
+- [ ] `F1348` Kanji readings · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1349` Hanzi recognition · **6-23** · partly there (6-23 reopened)
+- [ ] `F1350` Hanja reference where relevant · **6-23** · partly there (light version, 6-23 reopened)
 - [ ] `F1351` Pitch-accent training · **6-10**
-- [x] `F1352` Honorifics · **6-23**
-- [x] `F1353` Politeness levels · **6-23**
-- [x] `F1354` Measure words · **6-23** · partly there
-- [x] `F1355` Classifiers · **6-23**
-- [x] `F1356` Particles · **6-23** · partly there
+- [ ] `F1352` Honorifics · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1353` Politeness levels · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1354` Measure words · **6-23** · partly there (6-23 reopened)
+- [ ] `F1355` Classifiers · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1356` Particles · **6-23** · partly there (6-23 reopened)
 - [x] `F1357` Character frequency
 - [x] `F1358` Reading with furigana
-- [x] `F1359` Gradual removal of reading aids · **6-23**
-- [x] `F1360` Traditional versus simplified Chinese · **6-23** · partly there
-- [x] `F1361` Kana-to-kanji practice · **6-23**
-- [x] `F1362` Character handwriting recognition · **6-23** · partly there
+- [ ] `F1359` Gradual removal of reading aids · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1360` Traditional versus simplified Chinese · **6-23** · partly there (6-23 reopened)
+- [ ] `F1361` Kana-to-kanji practice · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1362` Character handwriting recognition · **6-23** · partly there (6-23 reopened)
 
 #### Arabic and other languages with complex orthography
 
 - [x] `F1363` Right-to-left interface support
 - [x] `F1364` Connected letter forms
-- [x] `F1365` Short-vowel recognition · **6-23** · partly there
-- [x] `F1366` Diacritic training · **6-23**
-- [x] `F1367` Root-and-pattern morphology · **6-23**
-- [x] `F1368` Dialect versus standard language · **6-23**
-- [x] `F1369` Formal versus colloquial registers · **6-23**
+- [ ] `F1365` Short-vowel recognition · **6-23** · partly there (6-23 reopened)
+- [ ] `F1366` Diacritic training · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1367` Root-and-pattern morphology · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1368` Dialect versus standard language · **6-23** · partly there (light version, 6-23 reopened)
+- [ ] `F1369` Formal versus colloquial registers · **6-23** · partly there (light version, 6-23 reopened)
 - [x] `F1370` Arabic script handwriting
-- [x] `F1371` Transliteration controls · **6-23**
+- [ ] `F1371` Transliteration controls · **6-23** · partly there (light version, 6-23 reopened)
 - [x] `F1372` Pronunciation of emphatic consonants · **6-10**
 
 ## 20 · Exams and proficiency certification
