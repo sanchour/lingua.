@@ -1987,3 +1987,7 @@ The user reported the app running at 30 fps on open:
 ### 2026-10-30 · Phrasebook persistence (6-20 P1, Codex)
 
 Phrasebook and notebook records use one keyed settings row each, so existing backup/sync handles them without a new table or shared per-language array overwrites. Deletions retain a tombstone for backup merging and Undo. Audio uses existing local blobs and is written with its phrase in one transaction; replacements retain older media for recovery. Saved data is validated without replacing malformed rows. Formal/informal text is supplied by the learner. Export reuses the existing Markdown/CSV writers.
+
+### 2026-10-30 · Notebook workspace (6-20 N1, Codex)
+
+Notebook reuses Diarium’s Markdown editor/parser, rendering text as React nodes rather than interpreting learner HTML. Notes have explicit internal links, with backlinks computed from the same records. Existing grammar/pair notes remain in their original storage and are copied only on request; no silent migration. Unfinished drafts are local device drafts, outside backups until saved. Mentis exposes the existing learner error log and weak spots rather than duplicating evidence. No new table or dependency.

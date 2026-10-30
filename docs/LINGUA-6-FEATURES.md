@@ -239,8 +239,8 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0143` Audio pronunciation
 - [x] `F0144` Common spelling mistakes · **6-1**
 - [x] `F0145` Common learner errors · **6-1**
-- [ ] `F0146` Synonym maps · **6-20** · partly there
-- [ ] `F0147` Antonym maps · **6-20** · partly there
+- [ ] `F0146` Synonym maps · **6-29** · partly there
+- [ ] `F0147` Antonym maps · **6-29** · partly there
 - [x] `F0148` False friends between languages · **6-1** · partly there
 - [x] `F0149` Cognates · **6-1** · partly there
 - [x] `F0150` False cognates · **6-1** · partly there
@@ -252,7 +252,7 @@ Vocabulary is much more than translating a word and flipping a flashcard. Learne
 - [x] `F0156` Compound words · **6-1**
 - [x] `F0157` Proverbs and sayings · **6-1** · partly there
 - [x] `F0158` Words that don’t translate neatly · **6-19**
-- [ ] `F0159` Semantic fields · **6-20** · partly there
+- [ ] `F0159` Semantic fields · **6-29** · partly there
 - [x] `F0160` Frequency-ranked synonyms · **6-1**
 - [x] `F0161` Differences between similar words · **6-1** · partly there
 - [x] `F0162` Example sentences ranked by difficulty · **6-1** · partly there
@@ -905,7 +905,7 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [x] `F0688` Word counter
 - [x] `F0689` Writing timer · **6-12**
 - [x] `F0690` Offline writing journal
-- [ ] `F0691` Notebook folders and tags · **6-20** · partly there
+- [x] `F0691` Notebook folders and tags · **6-20** · partly there
 - [x] `F0692` Export to Markdown, TXT or PDF · **6-24**
 - [x] `F0693` Save selected sentences to vocabulary
 - [x] `F0694` Turn corrections into flashcards
@@ -1035,7 +1035,7 @@ Translation can be a powerful learning method when used actively. It becomes les
 - [x] `F0792` Compare pronunciation of similar words · **6-13**
 - [x] `F0793` Compare semantic differences · **6-13**
 - [x] `F0794` Compare cultural associations · **6-13**
-- [ ] `F0795` Maintain personal notes on difficult language pairs · **6-20**
+- [x] `F0795` Maintain personal notes on difficult language pairs · **6-20**
 
 ## 10 · Real-world immersion
 
@@ -1451,24 +1451,24 @@ Think of this as a personal linguistic knowledge base.
 *In Lingua: Diarium, its daily prompts; goals.*
 
 - [x] `F1119` Daily language journal
-- [ ] `F1120` Free-form notes · **6-20**
-- [ ] `F1121` Grammar notes · **6-20**
-- [ ] `F1122` Vocabulary notes · **6-20** · partly there
-- [ ] `F1123` Notes about confusing expressions · **6-20**
+- [x] `F1120` Free-form notes · **6-20**
+- [x] `F1121` Grammar notes · **6-20**
+- [x] `F1122` Vocabulary notes · **6-20** · partly there
+- [x] `F1123` Notes about confusing expressions · **6-20**
 - [x] `F1124` Saved quotations · **6-8**
 - [x] `F1125` Notes from reading · **6-8**
 - [x] `F1126` Notes from conversations · **6-11**
 - [x] `F1127` Personal error log · **6-5**
 - [x] `F1128` Weekly learning reflections · **6-17**
 - [x] `F1129` Language goals
-- [ ] `F1130` Book and media notes · **6-20**
-- [ ] `F1131` Attach vocabulary to notes · **6-20**
-- [ ] `F1132` Link notes to grammar topics · **6-20**
-- [ ] `F1133` Link notes to lessons · **6-20**
-- [ ] `F1134` Link notes to texts · **6-20**
-- [ ] `F1135` Markdown support · **6-20** · partly there
-- [ ] `F1136` Folders and tags · **6-20**
-- [ ] `F1137` Search across all notes · **6-20** · partly there
+- [x] `F1130` Book and media notes · **6-20**
+- [x] `F1131` Attach vocabulary to notes · **6-20**
+- [x] `F1132` Link notes to grammar topics · **6-20**
+- [x] `F1133` Link notes to lessons · **6-20**
+- [x] `F1134` Link notes to texts · **6-20**
+- [x] `F1135` Markdown support · **6-20** · partly there
+- [x] `F1136` Folders and tags · **6-20**
+- [x] `F1137` Search across all notes · **6-20** · partly there
 - [x] `F1138` Export notes · **6-24**
 - [x] `F1139` Daily journal prompts
 - [ ] `F1140` AI-generated summaries of learning notes · **6-20**
@@ -2092,7 +2092,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [x] `F1592` Grammar reference and exercises
 - [x] `F1593` Interactive reading with word lookup
 - [x] `F1594` Audio pronunciation
-- [ ] `F1595` Personal notes and phrasebook · **6-20** · partly there
+- [x] `F1595` Personal notes and phrasebook · **6-20** · partly there
 - [x] `F1596` Basic progress tracking
 - [x] `F1597` Import and export
 

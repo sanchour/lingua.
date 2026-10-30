@@ -1,3 +1,4 @@
+import { Notebook } from '@/features/notebook/Notebook';
 import { interpolate } from '@/core/i18n/messages';
 import { useUi } from '@/design/i18n/UiText';
 import { Navigate, useParams } from 'react-router';
@@ -15,11 +16,12 @@ import { PlusChip, RequirePlan } from '@/features/plans/Locked';
 import { useCan } from '@/features/plans/usePlan';
 import { TodayRail } from './TodayRail';
 
-type Tab = 'mundus' | 'sermo' | 'diarium';
+type Tab = 'mundus' | 'sermo' | 'diarium' | 'notebook';
 const TABS: Array<RoomTab<Tab>> = [
   { id: 'mundus', label: 'Mundus', to: '/mentis', icon: Earth },
   { id: 'sermo', label: 'Sermo', to: '/mentis/sermo', icon: MessagesSquare },
   { id: 'diarium', label: 'Diarium', to: '/mentis/diarium', icon: Feather },
+  { id: 'notebook', label: 'Notebook', to: '/mentis/notebook', icon: Feather },
 ];
 const MUNDUS_TABS = new Set(['', 'try', 'culture', 'immerse']);
 
@@ -32,7 +34,7 @@ export default function MentisPage() {
   const { language } = useApp();
   const sermoOpen = useCan('sermo');
   const sub = (useParams()['*'] ?? '').replace(/\/+$/, '');
-  const tab: Tab | null = MUNDUS_TABS.has(sub) ? 'mundus' : sub === 'sermo' || sub === 'diarium' ? sub : null;
+  const tab: Tab | null = MUNDUS_TABS.has(sub) ? 'mundus' : sub === 'sermo' || sub === 'diarium' || sub === 'notebook' ? sub : null;
   if (!tab) return <Navigate to="/mentis" replace />;
   const name = getLanguage(language.id)?.name ?? language.id;
   const tabs = sermoOpen ? TABS : TABS.map((t) => (t.id === 'sermo' ? { ...t, badge: <PlusChip feature="sermo" /> } : t));
@@ -41,7 +43,7 @@ export default function MentisPage() {
     <>
       <PageHeader title={translateUi('Mentis')} englishTitle={'Mentis'} eyebrow={translateUi('Think, talk and write in {0}', [translateUi(name)])} englishEyebrow={interpolate('Think, talk and write in {0}', [name])} actions={tab === 'diarium' ? <NewEntryButton /> : undefined} />
       <RoomTabs label={translateUi('Mentis')} tabs={tabs} active={tab} />
-      <div className={(sub === 'culture' || sub === 'immerse') ? '' : 'grid gap-10 lg:grid-cols-[minmax(0,1fr)_288px]'}>
+      <div className={(sub === 'culture' || sub === 'immerse' || sub === 'notebook') ? '' : 'grid gap-10 lg:grid-cols-[minmax(0,1fr)_288px]'}>
         <div className="min-w-0">
           <InRoom.Provider value>
             {tab === 'mundus' && <MundusPage />}
@@ -51,9 +53,10 @@ export default function MentisPage() {
               </RequirePlan>
             )}
             {tab === 'diarium' && <DiariumHome />}
+            {tab === 'notebook' && <Notebook />}
           </InRoom.Provider>
         </div>
-        {sub !== 'culture' && sub !== 'immerse' && <TodayRail inDiarium={tab === 'diarium'} />}
+        {sub !== 'culture' && sub !== 'immerse' && sub !== 'notebook' && <TodayRail inDiarium={tab === 'diarium'} />}
       </div>
     </>
   );

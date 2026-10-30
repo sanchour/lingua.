@@ -57,3 +57,7 @@ export async function phraseToCard(phrase: SavedPhrase, database: LinguaDB = db)
 export function useLibrary<K extends Kind>(kind: K, lang: string) {
   return useLiveQuery(async () => { try { return { items: await listLibrary(kind, lang), error: '' }; } catch (e) { return { items: [] as Item<K>[], error: e instanceof Error ? e.message : 'Could not read the saved library.' }; } }, [kind, lang]);
 }
+
+export function newNotebookNote(lang: string): NotebookNote {
+  return { id: crypto.randomUUID(), lang, title: '', body: '', kind: 'Free note', folder: '', tags: [], links: [], createdAt: Date.now(), updatedAt: Date.now() };
+}

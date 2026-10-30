@@ -1,6 +1,6 @@
 import { afterAll, afterEach, expect, it } from 'vitest';
 import { createDb } from './db';
-import { listLibrary, newPhrase, phraseToCard, removeLibrary, saveLibrary } from './notebook';
+import { listLibrary, newPhrase, newNotebookNote, phraseToCard, removeLibrary, saveLibrary } from './notebook';
 const database = createDb('notebook-test-' + Math.random());
 afterAll(() => database.delete());
 afterEach(async () => { await database.settings.clear(); await database.blobs.clear(); });
@@ -29,4 +29,14 @@ it('stores attached audio with its phrase atomically on the device', async () =>
   const saved = await saveLibrary('phrasebook', newPhrase('es', 'Buenos días'), new Blob(['audio'], { type: 'audio/webm' }), database);
   expect(saved.audioBlobId).toBeTruthy();
   expect((await database.blobs.get(saved.audioBlobId!))?.size).toBe(5);
+});
+
+it('keeps notebook links, tags, Markdown and tombstone undo independently', async () => {
+  const item = { ...newNotebookNote('es'), title: 'Gender', body: '# Forms\n\n**la casa**', folder: 'Grammar', tags: ['gender'], links: [{ kind: 'word' as const, target: 'casa', label: 'casa' }] };
+  const saved = await saveLibrary('notebook', item, undefined, database);
+  expect(await listLibrary('notebook', 'es', database)).toEqual([saved]);
+  await removeLibrary('notebook', saved, database);
+  expect(await listLibrary('notebook', 'es', database)).toEqual([]);
+  await saveLibrary('notebook', saved, undefined, database);
+  expect((await listLibrary('notebook', 'es', database))[0].links[0].target).toBe('casa');
 });
