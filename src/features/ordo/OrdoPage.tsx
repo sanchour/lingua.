@@ -261,7 +261,7 @@ function SectionView({ id }: { id: SectionId }) {
     case 'reading':
       return <ReadingSection reader={settings.reader} lang={language.id} />;
     case 'study':
-      return <StudySection study={settings.study} />;
+      return <StudySection study={settings.study} habits={settings.habits} langName={getLanguage(language.id)?.name ?? language.id} />;
     case 'cards':
       return <CardsSection look={settings.cards} lang={language.id} />;
     case 'listening':
@@ -271,7 +271,7 @@ function SectionView({ id }: { id: SectionId }) {
     case 'language':
       return <LanguageSection active={language} />;
     case 'ai':
-      return <AiSection llm={settings.llm} apiKeys={settings.apiKeys} translation={settings.translation} />;
+      return <AiSection llm={settings.llm} apiKeys={settings.apiKeys} translation={settings.translation} tutor={settings.tutor} />;
     case 'plus':
       return <PlanSection meta={settings.meta} />;
     case 'sync':

@@ -2,6 +2,8 @@
 <html lang="en" data-theme="paper">
   <head>
     <meta charset="UTF-8" />
+    <!-- Only the safe parts of a policy (no plugins, no changed base address): scripts and connections are not limited, because the app talks to many services (AI keys, Commons, YouTube, sync) and GitHub Pages cannot send a report-only header to find them first. -->
+    <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content="A calm, local-first studio for reading, vocabulary, listening and watching in a new language." />
     <meta name="mobile-web-app-capable" content="yes" />

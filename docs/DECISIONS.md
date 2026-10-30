@@ -1946,3 +1946,9 @@ The catalogues are separate bundled chunks so the service worker can cache every
 ### 2026-10-30 · Interface integration (6-19 C3/C4, Codex)
 
 App-authored notifications carry a source and literal values to the existing toaster, so a learner title such as Home is never mistaken for interface copy. Rich-message slot keys follow their slot rather than translated position, preserving input drafts across reordered sentences. Settings search accepts both English and localized labels. Page headings retain explicit English hover text without translating arbitrary learner titles. The third exact source-copy payload was approved for the offline draft build; later notification/control translations were written locally. Tests cover all registered messages and placeholder sets; independent native-speaker review and every-screen browser coverage remain unverified.
+
+Incoming main through alpha.119 added tutor/goals/pronunciation interface copy. Its controls, presets, stamps and notification labels were translated locally rather than sending another source payload. The underlying learning, notification permissions, model requests and exported learner content are unchanged.
+
+### 2026-10-30 · Ratio live-query regression found during 6-19
+
+The user authorized fixing the pre-existing Ratio crash. A live learner-record read disables derived-summary cache writes: Dexie live queries must stay read-only. Ordinary record reads retain caching and existing invalidation. A regression test reads an uncached finished day inside a real Dexie live query; Ratio also opened successfully in the browser afterward. No learner evidence is changed or deleted.

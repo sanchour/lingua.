@@ -31,6 +31,7 @@ import { STARTER_THEMES } from '@/core/lang/starter';
 import { GROUP_KIND, withinReach } from '@/core/mundus/types';
 import type { Pick, PickGroup } from '@/core/mundus/types';
 import { useBooks } from '@/data/books';
+import { getDailyQuote } from '@/core/ratio/analytics';
 import { useJournal } from '@/data/journal';
 import { useAllProgress, useLibrary } from '@/data/library';
 import { useMediaList, usePlaybackMap } from '@/data/media';
@@ -134,6 +135,17 @@ export function HomeToday() {
           <DailyWordCard lang={language.id} />
         </motion.div>
 
+        {/* Daily motivational quote (6-17, F1164) */}
+        {(() => {
+          const quote = getDailyQuote();
+          return (
+            <motion.div {...enter(2.5)} className="rounded-2xl border border-line bg-surface/70 px-5 py-3 text-center sm:px-8">
+              <p className="font-serif text-[14.5px] italic text-ink">"{quote.text}"</p>
+              <p className="mt-1 font-sans text-[11.5px] font-semibold text-ink-faint">— {quote.author}</p>
+            </motion.div>
+          );
+        })()}
+
         {/* Middle section: Continue learning > (opens Bibliotheca) */}
         <motion.div {...enter(3)}>
           <ContinueLearningSection lang={language.id} level={language.level} />
@@ -164,6 +176,7 @@ function TodayCard({
   enjoys: Enjoyment[];
 }) {
   const translateUi = useUi();
+  const { settings } = useApp();
   const today = useToday(lang);
   const steps = useNextSteps(lang, level, enjoys, 3);
   const minutes = studyMinutes(today);
@@ -172,6 +185,8 @@ function TodayCard({
   const parts = ROOMS.map((r) => ({ ...r, minutes: (today?.[r.key] ?? 0) / 60_000 })).filter((r) => r.minutes >= 0.5);
   const primary = steps?.[0];
   const secondary = (steps ?? []).slice(1, 3);
+  const streakEnabled = settings.habits?.streakEnabled ?? true;
+  const isRestDay = (settings.habits?.restDays ?? []).includes(new Date().getDay());
 
   return (
     <Card className="flex h-full flex-col justify-between p-4 sm:p-5">
@@ -179,7 +194,7 @@ function TodayCard({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
             <p className={label}><UiText source={'Today'} /></p>
-            {streak > 0 && (
+            {streakEnabled && streak > 0 && (
               <Link
                 to="/ratio"
                 className="inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 text-[12px] font-bold text-accent-text transition-colors hover:bg-accent/20"
@@ -187,9 +202,18 @@ function TodayCard({
                 <Flame size={13} aria-hidden /> {streak} {streak === 1 ? translateUi('day') : translateUi('days')}
               </Link>
             )}
+            {isRestDay && (
+              <span className="inline-flex items-center rounded-full bg-sunken px-2.5 py-0.5 text-[11px] font-semibold text-ink-faint"><UiText source={'Rest day'} /></span>
+            )}
           </div>
           <p className="text-[13px] font-semibold text-ink-soft">
-            {minutes === 0 ? translateUi('A fresh page.') : left === 0 ? translateUi('Goal reached. Lovely.') : translateUi('{0} {1} to go', [left, left === 1 ? 'minute' : 'minutes'])}
+            {isRestDay && minutes === 0
+              ? translateUi('Rest day. Practice gently if you wish.')
+              : minutes === 0
+                ? translateUi('A fresh page.')
+                : left === 0
+                  ? translateUi('Goal reached. Lovely.')
+                  : translateUi('{0} {1} to go', [left, left === 1 ? 'minute' : 'minutes'])}
           </p>
         </div>
 

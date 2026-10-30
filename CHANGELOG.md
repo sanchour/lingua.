@@ -4,6 +4,16 @@ Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIO
 
 <!-- new versions go here -->
 - **0.6.0-alpha.114** · 2026-10-30 · 6-19 C3: bundled offline interface languages
+- **0.6.0-alpha.119** · 2026-10-30 · Audit leftovers: no HTML string in the daily-word window, translation label, safe CSP parts, optional claim limit
+- **0.6.0-alpha.118** · 2026-10-30 · 6-17: Goals, habits and progress (Ratio and Home)
+- **0.6.0-alpha.117** · 2026-10-30 · Claim step 6-17 (Goals, habits and progress)
+- **0.6.0-alpha.116** · 2026-10-30 · 6-15: The tutor, in context (everywhere, with Max)
+- **0.6.0-alpha.115** · 2026-10-30 · 6-10: beats, rhythm and sentence stress; fixes for blob URLs, speaker labels, watch counts
+- **0.6.0-alpha.114** · 2026-10-30 · 6-10: beats, rhythm and sentence stress; fixes for blob URLs, speaker labels, watch counts
+- **0.6.0-alpha.113** · 2026-10-30 · 6-10: beats, rhythm and sentence stress; fixes for blob URLs, speaker labels, watch counts
+- **0.6.0-alpha.112** · 2026-10-30 · 6-10: beats, rhythm and sentence stress; fixes for blob URLs, speaker labels, watch counts
+- **0.6.0-alpha.113** · 2026-10-30 · 6-15: The tutor, in context (everywhere, with Max)
+- **0.6.0-alpha.112** · 2026-10-30 · Claim step 6-15 (The tutor, in context)
 - **0.6.0-alpha.111** · 2026-10-30 · 6-10: melody and stress; fixes for long translations, accents in Say it, watch count, speech cache
 - **0.6.0-alpha.96** · 2026-10-29 · 6-19 C2: daily immersion and reference help on the Codex branch
 - **0.6.0-alpha.90** · 2026-10-29 · 6-19 C1: sourced Culture shelf, word notes, cards and regional voices

@@ -7,6 +7,7 @@ import {
   type WordGrammarBreakdown,
 } from '@/core/grammar/sentenceExplainer';
 import { analyzeSentenceGrammar } from '@/services/llm/grammarExplainer';
+import { AskButton } from '@/features/tutor/AskButton';
 import { cx } from '@/lib/cx';
 import { isRtl } from '@/core/lang/languages';
 
@@ -114,6 +115,16 @@ export function SentenceExplainer({ lang }: { lang: string }) {
             {loading ? translateUi('Analyzing…') : translateUi('Analyze grammar')}
             <ArrowRight size={15} />
           </button>
+          <AskButton
+            variant="subtle"
+            label={translateUi('Ask tutor about this sentence')}
+            context={{
+              kind: 'sentence',
+              lang,
+              sentence: inputSentence,
+              room: 'grammatica',
+            }}
+          />
         </div>
 
         {analysis?.requiresMaxNotice && (

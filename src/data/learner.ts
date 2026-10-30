@@ -30,7 +30,7 @@ async function rowsOf(lang: string, from: number, to: number, database: LinguaDB
 const WEAK_WINDOW = 120 * 86_400_000;
 
 /** The questions other rooms ask. They are the only way to read the table. */
-export function learnerRecord(database: LinguaDB = db, now: () => number = Date.now): LearnerRecord {
+export function learnerRecord(database: LinguaDB = db, now: () => number = Date.now, cacheSummaries = true): LearnerRecord {
   return {
     record: async (row) => {
       await recordEvidence(row as NewEvidence, database);
@@ -53,7 +53,7 @@ export function learnerRecord(database: LinguaDB = db, now: () => number = Date.
       for (const [day, rows] of [...byDay.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
         const summary = cached.get(day) ?? summariseDay(lang, day, rows);
         // A finished day's summary is kept; today's changes, so it is not.
-        if (!cached.has(day) && day !== today) await database.evidenceDays.put(summary);
+        if (cacheSummaries && !cached.has(day) && day !== today) await database.evidenceDays.put(summary);
         out.push(summary);
       }
       return out;
@@ -88,7 +88,8 @@ const BALANCE_DAYS = 14;
 /** Skills side by side over the last two weeks, and the words known when shown but not when asked for: for Ratio. */
 export function useSkillBalance(lang: string) {
   return useLiveQuery(async () => {
-    const rec = learnerRecord();
+    // Live queries must not write the derived summary cache.
+    const rec = learnerRecord(db, Date.now, false);
     const to = Date.now();
     const days = await rec.days(lang, localDateKey(to - BALANCE_DAYS * 86_400_000), localDateKey(to));
     return { balance: skillBalance(days), stuck: await rec.recognisedNotRecalled(lang, 8) };

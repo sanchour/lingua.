@@ -177,7 +177,8 @@
     "src/features/mundus/MundusPage.tsx",
     "src/features/mundus/TipsView.tsx",
     "src/features/ratio/forms.tsx",
-    "src/features/sonus/player/SleepTimer.tsx"
+    "src/features/sonus/player/SleepTimer.tsx",
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
   ],
   "At {0} minutes a day, {1} in about{2}{3}.": [
     "src/app/onboarding/GoalStep.tsx"
@@ -255,7 +256,8 @@
     "src/features/thesaurus/deck/TidyDialog.tsx",
     "src/features/thesaurus/study/SentencesRound.tsx",
     "src/features/thesaurus/study/StudyBar.tsx",
-    "src/features/home/DailyWordCard.tsx"
+    "src/features/home/DailyWordCard.tsx",
+    "src/features/ratio/MonthlyReportModal.tsx"
   ],
   "Languages in {0}": [
     "src/app/onboarding/LanguageStep.tsx"
@@ -935,7 +937,9 @@
     "src/features/sonus/library/AddMenu.tsx",
     "src/features/sonus/library/BooksTab.tsx",
     "src/features/visio/library/AddVideoMenu.tsx",
-    "src/features/sonus/library/PlaylistDialog.tsx"
+    "src/features/sonus/library/PlaylistDialog.tsx",
+    "src/features/ratio/RealLifeGoalsPanel.tsx",
+    "src/features/tutor/TutorSettingsPanel.tsx"
   ],
   "Paste the song’s link from YouTube (or YouTube Music), SoundCloud, Spotify, Apple Music, Vimeo, Dailymotion or Bandcamp. YouTube and SoundCloud play the whole song for everyone, and the lyrics follow them.": [
     "src/features/cantus/SongPage.tsx"
@@ -1573,7 +1577,8 @@
     "src/features/codex/diarium/EntryPage.tsx",
     "src/features/cursus/course/WriteLesson.tsx",
     "src/features/production/OwnWords.tsx",
-    "src/features/thesaurus/library/AddStarterMenu.tsx"
+    "src/features/thesaurus/library/AddStarterMenu.tsx",
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
   ],
   "Grade {0}": [
     "src/features/codex/diarium/Entries.tsx"
@@ -5912,7 +5917,8 @@
     "src/features/ratio/Overview.tsx"
   ],
   "New words a week": [
-    "src/features/ratio/Overview.tsx"
+    "src/features/ratio/Overview.tsx",
+    "src/features/ratio/forms.tsx"
   ],
   "Words / min": [
     "src/features/ratio/Overview.tsx"
@@ -5984,7 +5990,8 @@
     "src/features/ratio/Overview.tsx"
   ],
   "Accuracy": [
-    "src/features/ratio/Overview.tsx"
+    "src/features/ratio/Overview.tsx",
+    "src/features/ratio/MonthlyReportModal.tsx"
   ],
   "Letters": [
     "src/features/ratio/Overview.tsx"
@@ -6128,7 +6135,8 @@
     "src/features/ratio/tabula/CapabilityDrawer.tsx"
   ],
   "Skills": [
-    "src/features/ratio/tabula/CapabilityDrawer.tsx"
+    "src/features/ratio/tabula/CapabilityDrawer.tsx",
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
   ],
   "Certificates": [
     "src/features/ratio/tabula/CapabilityDrawer.tsx"
@@ -7873,7 +7881,8 @@
     "src/features/thesaurus/library/FromListDialog.tsx"
   ],
   "Conversation": [
-    "src/features/thesaurus/library/FromListDialog.tsx"
+    "src/features/thesaurus/library/FromListDialog.tsx",
+    "src/features/ratio/forms.tsx"
   ],
   "My list": [
     "src/features/thesaurus/library/FromListDialog.tsx"
@@ -9064,7 +9073,8 @@
     "src/features/ordo/sections/PlanSection.tsx"
   ],
   "Max": [
-    "src/features/lab/PretendCard.tsx"
+    "src/features/lab/PretendCard.tsx",
+    "src/features/tutor/TutorSettingsPanel.tsx"
   ],
   "Real": [
     "src/features/lab/PretendCard.tsx"
@@ -10197,7 +10207,8 @@
     "src/features/home/DailyWordCard.tsx"
   ],
   "Hear pronunciation": [
-    "src/features/home/DailyWordCard.tsx"
+    "src/features/home/DailyWordCard.tsx",
+    "src/features/tutor/AskPanel.tsx"
   ],
   "Add to deck": [
     "src/features/home/DailyWordCard.tsx"
@@ -11667,5 +11678,1200 @@
   ],
   "Narrate your day": [
     "src/design/i18n/UiText.tsx"
+  ],
+  "Ask tutor about this word": [
+    "src/features/codex/reader/WordDrawer.tsx"
+  ],
+  "Say the answer": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "{0}“{1}” is what the question asks for, so it carries the stress.{2}{3}": [
+    "src/features/cursus/sounds/Intonation.tsx"
+  ],
+  "{0}: loudness above, pitch below, and a tick for each syllable": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Arabic is written without its short vowels, so the syllables of a sentence cannot be counted from the letters. Look for the tallest tick in the picture and listen for it.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Your syllables could not be matched to the words well enough to say which one you stressed. Say it again, a little louder and clearly.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "The strongest syllable of your sentence was in “{0}”, the word to stress.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "The strongest syllable of your sentence was in “{0}”; the question asks for “{1}”. Try again, with more weight on it.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "very even": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "fairly even": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "uneven: short and long gaps alternate": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Your {0} beats were {1}. {2}": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Found from loudness and pitch in your recording: a guide, not a mark.": [
+    "src/features/cursus/sounds/RecordCompare.tsx"
+  ],
+  "Ask tutor about this sentence": [
+    "src/features/grammatica/SentenceExplainer.tsx"
+  ],
+  "Rest day": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Rest day. Practice gently if you wish.": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "How flashcards, habits, goals and reminders behave.": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Streak tracking": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Show consecutive goal days and milestones. Turn off for a zero-pressure learning environment without counters.": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Rest days": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Designate rest days where not studying will never break your streak or trigger reminders.": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Flexible weekly target": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Bending targets distribute smoothly across your active study days, accommodating rest days.": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Study reminders": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Desktop notifications at chosen times. Suppressed automatically during quiet hours.": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Reminder time": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Quiet hours window": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "to": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Export study calendar": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Add your recurring study routine to Apple Calendar, Google Calendar or Outlook (.ics).": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Download .ics": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Deep Learning Analytics": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Section 14 Analytics: multi-skill balance, delayed recall, assisted ratios, and CEFR progress.": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "{0} items": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "{0}% accuracy": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Delayed Recall vs Immediate Echo": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Retention percentage after sleep and time have elapsed.": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Independence from Scaffolding": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Answers solved unassisted vs those using hints or translations.": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Unassisted answers": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "{0} answered alone": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Assisted with hints": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "{0} used hints": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Unassisted accuracy: {0} · Assisted accuracy: {1}": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Target Proficiency Level: {0}": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Comparison of accumulated study volume against typical CEFR syllabi.": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Overall benchmark coverage": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Comprehension by Playback Speed": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Accuracy across different playback tempos (F0509).": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Comprehension by Regional Accent": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Comprehension across dialects and accents (F0508).": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Mistake Categories Over Time": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Recent vs historical mistakes across the last 30 days (F1608).": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "No recent mistakes recorded. Keep practicing to see error trends!": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "{0} recent · {1} previous": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "What this chart says:": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "What it doesn't say:": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Stamps, not points": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Milestones collected as postage marks on your journey ({0} of {1} earned).": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Self-set rewards ({0})": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Stamped on {0}": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Self-Set Reward": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "No personal reward set for this milestone yet.": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Set a personal reward": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Self-set learner rewards": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Celebrate meaningful progress on your own terms. Connect a real-world treat to a study milestone.": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Set a new reward": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "When I reach milestone": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "My reward will be": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "e.g. Order a novel in Spanish, visit an authentic bistro, buy coffee": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Save reward": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Your promised rewards": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "No custom rewards set yet. What would delight you upon reaching 1,000 words or finishing a book?": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Upon reaching: {0}": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Monthly Learning Report": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Print or save as a PDF for your personal records.": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Print / Save PDF": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Lingua · Language Learning Journal": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "{0} Progress Report": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "At a Glance": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Total Known Words": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "+{0} this month": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Study Time": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "logged practice": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Books & Stories": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "finished in Codex": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Active Streak": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "days consistent": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Activity by Skill Area": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Skill": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Hours": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Milestones & Stamps Earned": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Learner Reflection": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Generated by Lingua · Private on-device language learning · {0}": [
+    "src/features/ratio/MonthlyReportModal.tsx"
+  ],
+  "Weekly review": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Monthly report": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Real-life goals & encounters": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Language lives in encounters, not just drills. Track practical communication milestones.": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Log encounter": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Add goal": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Communication Checklist": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "No real-life goals set yet.": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Pick practical goals": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Recorded Encounters": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "No encounters logged yet.": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Did you chat with a barista or hear an accent today?": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Record an encounter": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Add real-life communication goal": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Tangible milestones beyond the app.": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Write your own goal": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "e.g. Chat with my Spanish neighbor about the garden": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Or choose common practical goals": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Log a real-world encounter": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Celebrate moments you used or encountered the language in daily life.": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "What happened / Where?": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "e.g. Ordered espresso at local Italian café, overheard French tourists": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "How did it feel / Notes": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "e.g. Understood their greeting right away; took a moment to recall the word for receipt.": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Date": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Save encounter": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Weekly Review & Reflection": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Habit Formation Routines": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Welcome Back: Re-entry": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Take two quiet minutes to acknowledge your growth and notice how the language feels.": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Anchor language practice to familiar rituals so consistency becomes effortless.": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Return gently after a pause without the overwhelm of an overdue review mountain.": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Reflect": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Habit Plans": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Restart Plan": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Reflection Prompt": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Different question": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Your thoughts": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Write freely. What words did you encounter? What felt natural? What sparked curiosity?": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Save weekly reflection": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Active Habit Routine: {0}": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "In Progress": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Start routine": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Habit Anchor:": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Language learning is for life": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Breaks happen to every learner. Coming back should feel welcoming and gentle, not like paying a debt of overdue flashcards.": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Active Restart: {0}": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Activate plan": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Goal kind": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "By (target date)": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Destination or Event": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "e.g. Trip to Barcelona, Conference in Paris": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Travel date": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Target words": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Lessons to complete": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Books to read": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Conversations to hold": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Journal entries": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Hours of listening": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "By (optional deadline)": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Ask the tutor (Alt+T)": [
+    "src/features/tutor/AskButton.tsx"
+  ],
+  "Ask the tutor": [
+    "src/features/tutor/AskButton.tsx"
+  ],
+  "Ask the tutor about this (Alt+T)": [
+    "src/features/tutor/AskButton.tsx"
+  ],
+  "The Contextual Tutor": [
+    "src/features/tutor/AskPanel.tsx",
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "The Tutor": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Exploring \"{0}\"": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Ready for questions in {0}": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Tutor Settings": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Close Tutor": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Active on screen ({0})": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Meaning: {0}": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Submitted: \"{0}\"": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Expected: \"{0}\"": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Suggested Questions": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Ask about \"{0}\"...": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Ask any question or grammar rule...": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Send question": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Consulting your tutor...": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Synthesizing grammar and examples for {0}": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Progressive Clue": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Reveal closer clue": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Closer Clue:": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Why this was incorrect": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Real-World Analogy": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Nuances & Usage Notes": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Pronunciation & Stress": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Stress: {0}": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Comparing {0} vs {1}": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Feature": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Examples in Context": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Connected Grammatica Lessons": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Topic: {0}": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Saved to Notes": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Keep as Mini-Lesson": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Copy explanation": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Follow-up": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Customize how your tutor explains nuance, gives hints, and phrases answers across Lingua.": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Tutor Preset": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Target language exposure": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Immersion (90%+)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Mostly (70%)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Bilingual (50%)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "English (25%)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Explanation complexity": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Simple (Plain everyday words)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Balanced (Standard terms)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Technical (Linguistic precision)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Sentence length": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Short & punchy": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Moderate": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Rich & detailed": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Correction frequency": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Gentle (Focus on meaning)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Balanced (Noticeable slips)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Strict (Every nuance & typo)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Translation display": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Full translations": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Subtle / on-demand": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Minimal (Target focus)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "{0}Tutor speech speed ({1}x)": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Examples before explanation": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Present illustrative sentences first to build intuition before describing the grammatical rule.": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Interests & Topics for Examples": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "The tutor tailors sentence examples and context analogies to your chosen subjects.": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Add a custom interest (e.g. Sailing)...": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Nuance & register": [
+    "src/core/tutor/context.ts"
+  ],
+  "More examples": [
+    "src/core/tutor/context.ts"
+  ],
+  "Compare similar words": [
+    "src/core/tutor/context.ts"
+  ],
+  "Idioms & slang": [
+    "src/core/tutor/context.ts"
+  ],
+  "Pronunciation & stress": [
+    "src/core/tutor/context.ts"
+  ],
+  "Cultural / regional note": [
+    "src/core/tutor/context.ts"
+  ],
+  "Explain in simple terms": [
+    "src/core/tutor/context.ts"
+  ],
+  "Real-world analogy": [
+    "src/core/tutor/context.ts"
+  ],
+  "Connections to other lessons": [
+    "src/core/tutor/context.ts"
+  ],
+  "Clear examples": [
+    "src/core/tutor/context.ts"
+  ],
+  "Make it even simpler": [
+    "src/core/tutor/context.ts"
+  ],
+  "Give me a hint": [
+    "src/core/tutor/context.ts"
+  ],
+  "Why is this wrong?": [
+    "src/core/tutor/context.ts"
+  ],
+  "Underlying grammar": [
+    "src/core/tutor/context.ts"
+  ],
+  "Show other examples": [
+    "src/core/tutor/context.ts"
+  ],
+  "Why was this corrected?": [
+    "src/core/tutor/context.ts"
+  ],
+  "Nuance & tone difference": [
+    "src/core/tutor/context.ts"
+  ],
+  "Correct example sentences": [
+    "src/core/tutor/context.ts"
+  ],
+  "Break down phrasing": [
+    "src/core/tutor/context.ts"
+  ],
+  "Check for idioms / slang": [
+    "src/core/tutor/context.ts"
+  ],
+  "How to say it simpler": [
+    "src/core/tutor/context.ts"
+  ],
+  "Cultural context": [
+    "src/core/tutor/context.ts"
+  ],
+  "Similar patterns": [
+    "src/core/tutor/context.ts"
+  ],
+  "Explain grammar rule": [
+    "src/core/tutor/context.ts"
+  ],
+  "Compare two words": [
+    "src/core/tutor/context.ts"
+  ],
+  "Common idioms & sayings": [
+    "src/core/tutor/context.ts"
+  ],
+  "Memory analogy": [
+    "src/core/tutor/context.ts"
+  ],
+  "Known vocabulary": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Grammar topics": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Listening immersion": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Reading volume": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "First Word": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "The Journey Begins": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Learn your first word": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "500 Words": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Foundation": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Master 500 words": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "1,000 Words": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Conversational Core": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Master 1,000 words": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "2,500 Words": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Expanding Horizon": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Master 2,500 words": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "First Book": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "The Open Page": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Finish reading your first book": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Five Books": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Voracious Reader": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Finish reading 5 books": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "First Dialogue": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Giving Voice": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Complete your first speaking practice": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Ten Dialogues": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Confident Speaker": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Complete 10 conversations": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "First Journal": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "In Ink": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Write your first Diarium journal entry": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "First Song": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Singing in Tongues": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Sing along with a song in Cantus": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "One Week": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Consistency": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Maintain a 7-day habit": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "One Month": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Second Nature": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Maintain a 30-day habit": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "100 Days": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "A New Language in Mind": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Maintain a 100-day habit": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "10 Hours": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Deep Immersion": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Log 10 hours of study time": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "50 Hours": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "The Sound of Words": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Log 50 hours of study time": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "100 Hours": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Living the Language": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Log 100 hours of study time": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "The Morning Coffee Anchor": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "5 quiet minutes with your cup": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Review 5 cards while your coffee cools": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Review 10 cards, noticing one word you love": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "5 minutes of flashcards, then stop cleanly": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "5 minutes of flashcards and 1 example sentence": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Morning rhythm established: 5-7 minutes": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "The Commute Listener": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Tune into native voices on the go": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Listen to 1 song in Cantus and glance at lyrics": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Listen to 5 minutes of native radio in Sonus": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Listen to 1 short podcast or dialogue": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Repeat 1 memorable phrase out loud under your breath": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Your daily listening habit is anchored": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "The Bedtime Bookplate": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Unwind with one calm chapter": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Read 1 short fable or paragraph in Codex": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Read 2 pages, focusing on the flow rather than lookups": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Read for 8 minutes in quiet nocturne mode": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "One chapter of a graded reader": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Peaceful reading routine cemented": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Welcome Back: 3-Day Re-entry": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "No guilt, no backlog mountain": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Day 1: Warm-up — Review just 5 familiar words, no timer": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Day 2: Reconnection — Read 1 short easy story or listen to 1 familiar song": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Day 3: Finding Flow — 10-minute session in your favourite room": [
+    "src/core/ratio/analytics.ts"
+  ],
+  "Patient Teacher": [
+    "src/data/settings.ts"
+  ],
+  "Encouraging, step-by-step explanations with analogies, clear translations, and balanced hints.": [
+    "src/data/settings.ts"
+  ],
+  "Writing Editor": [
+    "src/data/settings.ts"
+  ],
+  "Precise, technical analysis of register, nuance, collocations, punctuation, and idioms.": [
+    "src/data/settings.ts"
+  ],
+  "Language Coach": [
+    "src/data/settings.ts"
+  ],
+  "High-energy immersion, pragmatic communication, fluency-focused tips, and conversational hints.": [
+    "src/data/settings.ts"
+  ],
+  "Travel & culture": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Literature & poetry": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Food & cooking": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "History & philosophy": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Cinema & arts": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Music & theatre": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Nature & outdoors": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Science & tech": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Everyday conversation": [
+    "src/features/tutor/TutorSettingsPanel.tsx"
+  ],
+  "Retention & Help": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "CEFR Benchmark": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Listening Speeds": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Mistakes": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Same day (< 24 h)": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Working memory echo": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "1 to 6 days": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Early consolidation": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "7 to 29 days": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Medium-term storage": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "30+ days": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Mature durable memory": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Class": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Tutoring": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Exam or certificate": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Trip": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Words learned": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Lessons completed": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Books read": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Conversations": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Writing practice": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Listening hours": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Travel countdown": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Hours a week": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Reach a level": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Books this year": [
+    "src/features/ratio/forms.tsx"
+  ],
+  "Mon": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Tue": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Wed": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Thu": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Fri": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Sat": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Sun": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "habit": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "improving": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "stable": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "frequent": [
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+  ],
+  "Notification permission was not granted by your browser.": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Study calendar (.ics) downloaded.": [
+    "src/features/ordo/sections/StudySection.tsx"
+  ],
+  "Reward removed.": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Custom learner reward saved!": [
+    "src/features/ratio/MilestoneStamps.tsx"
+  ],
+  "Goal added to checklist.": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Custom real-life goal added.": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Encounter recorded in your journey!": [
+    "src/features/ratio/RealLifeGoalsPanel.tsx"
+  ],
+  "Reflection recorded in your learning journey.": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "Activated plan: \"{0}\"": [
+    "src/features/ratio/ReflectionDrawer.tsx"
+  ],
+  "The transcript changed while the AI worked. Try again.": [
+    "src/features/sonus/player/TranscriptTools.tsx"
+  ],
+  "Saved mini-lesson to your notes!": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Copied explanation to clipboard": [
+    "src/features/tutor/AskPanel.tsx"
+  ],
+  "Ask": [
+    "src/features/tutor/AskButton.tsx"
+  ],
+  "{0} learning": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Longest: {0}": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "New {0}": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Learning {0}": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Young {0}": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Mature {0}": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  " · {0} helped": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Read a few sessions to see your speed": [
+    "src/features/ratio/Overview.tsx"
+  ],
+  "Check two entries to see your grade trend": [
+    "src/features/ratio/Overview.tsx"
   ]
 }

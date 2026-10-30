@@ -33,6 +33,12 @@ export function matchingLine(native: readonly Cue[] | null | undefined, cue: Cue
 /** "Less help each time" (6-9): the English line shown, then blurred, then only after the line, then hidden, one step per full watch. */
 export const adaptiveMode = (watches: number) => (['show', 'blur', 'after', 'hide'] as const)[Math.max(0, Math.min(3, watches))];
 
+/** Time heard so far, in seconds of video: a step between two checks counts only when it is a short, forward one, so a seek is not a watch. */
+export const heardMore = (heard: number, last: number, now: number) => (now - last > 0 && now - last < 2 ? heard + (now - last) : heard);
+
+/** A watch counts when this share of the video was heard in order. */
+export const FULL_WATCH = 0.8;
+
 /** A line stays up a moment after it ends, so short ones can still be read. */
 const LINGER_MS = 350;
 

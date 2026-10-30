@@ -1,3 +1,4 @@
+import { liveQuery } from 'dexie';
 import { afterEach, describe, expect, it } from 'vitest';
 import { DAY } from '@/core/srs/scheduler';
 import { createDb } from './db';
@@ -53,6 +54,17 @@ describe('the learner’s record', () => {
     await recordEvidence({ ...base, at: NOW - 2 * DAY + 2000 }, db);
     expect(await db.evidenceDays.count()).toBe(0);
     expect((await record.days('es', from, to))[0].bySkill.grammar).toEqual({ right: 1, wrong: 2, assisted: 0 });
+  });
+
+  it('reads uncached finished days inside a live query without writing', async () => {
+    const db = freshDb();
+    await recordEvidence({ ...base, at: NOW - DAY }, db);
+    const query = liveQuery(() => learnerRecord(db, () => NOW, false).days('es', localDateKey(NOW - DAY), localDateKey(NOW)));
+    const days = await new Promise<Awaited<ReturnType<ReturnType<typeof learnerRecord>['days']>>>((resolve, reject) => {
+      const sub = query.subscribe({ next: (value) => { sub.unsubscribe(); resolve(value); }, error: reject });
+    });
+    expect(days).toMatchObject([{ day: localDateKey(NOW - DAY), bySkill: { grammar: { wrong: 1 } } }]);
+    expect(await db.evidenceDays.count()).toBe(0);
   });
 
   it('forgets a language and no other', async () => {

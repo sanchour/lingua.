@@ -13,7 +13,7 @@ export function SkillBalancePanel({ lang }: { lang: string }) {
   const data = useSkillBalance(lang);
   if (!data || !data.balance.some((s) => s.answers > 0)) return null;
   const most = Math.max(...data.balance.map((s) => s.answers), 1);
-  const quiet = data.balance.filter((s) => s.answers === 0).map((s) => NAME[s.skill]);
+  const quiet = data.balance.filter((s) => s.answers === 0).map((s) => translateUi(NAME[s.skill]));
 
   return (
     <Panel title={translateUi('Skills, side by side')} icon={Scale}>
@@ -21,13 +21,13 @@ export function SkillBalancePanel({ lang }: { lang: string }) {
       <ul className="space-y-1.5">
         {data.balance.map((s) => (
           <li key={s.skill} className="flex items-center gap-3 text-[13.5px]">
-            <span className="w-28 shrink-0 text-ink-soft">{NAME[s.skill]}</span>
+            <span className="w-28 shrink-0 text-ink-soft"><UiText source={NAME[s.skill]} /></span>
             <span className="relative h-2 flex-1 overflow-hidden rounded-full bg-sunken" role="img" aria-label={translateUi('{0} answers, {1} with help', [s.answers, s.assisted])}>
               <span className="absolute inset-y-0 left-0 bg-sage" style={{ width: `${(s.answers / most) * 100}%` }} />
               <span className="absolute inset-y-0 left-0 bg-accent" style={{ width: `${(Math.min(s.assisted, s.answers) / most) * 100}%` }} />
             </span>
             <span className="w-24 shrink-0 text-right text-ink-faint tabular-nums">
-              {s.answers ? `${s.answers}${s.assisted ? ` · ${s.assisted} helped` : ''}` : translateUi('nothing yet')}
+              {s.answers ? `${s.answers}${s.assisted ? translateUi(' · {0} helped', [s.assisted]) : ''}` : translateUi('nothing yet')}
             </span>
           </li>
         ))}

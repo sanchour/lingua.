@@ -179,8 +179,8 @@ export function TranscriptBar({ media, transcript }: { media: Media; transcript:
               onClick={async () => {
                 close();
                 try {
-                  const cues = await labelSpeakers(transcript.cues);
-                  await saveSpeakers(media.id, cues);
+                  const cues = await saveSpeakers(media.id, await labelSpeakers(transcript.cues));
+                  if (!cues) return toast('The transcript changed while the AI worked. Try again.', { tone: 'error' });
                   setCues(media.id, cues);
                   toast('Speakers labelled: a guess from the words, not from the voices.', { tone: 'success' });
                 } catch (e) {

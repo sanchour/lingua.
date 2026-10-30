@@ -5,6 +5,11 @@ name = "lingua-licence"
 main = "src/index.ts"
 compatibility_date = "2026-10-01"
 
+# Optional: one claim per checkout after 24 hours. Create it with `npx wrangler kv namespace create CLAIMED`, then uncomment with the id it prints.
+# [[kv_namespaces]]
+# binding = "CLAIMED"
+# id = "…"
+
 [vars]
 # The app's origin: the only page browsers let call this server.
 ALLOWED_ORIGIN = "https://sanchour.github.io"

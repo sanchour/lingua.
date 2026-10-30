@@ -336,8 +336,10 @@ export function cacheKey(req: { lang: string; kind: GeneratedKind; level: string
 }
 
 /** The quiet label shown beside everything generated: what it is, and what was checked. */
-export function labelFor(row: Pick<GeneratedRow, 'checks' | 'unknownWords' | 'level'>): { text: string; detail: string } {
+export function labelFor(row: Pick<GeneratedRow, 'checks' | 'unknownWords' | 'level'> & { kind?: string }): { text: string; detail: string } {
   const done = new Set(row.checks);
+  // A translation is in the learner's own language: there is no level or dictionary to check, and the label says so.
+  if (row.kind === 'translations') return { text: 'Generated', detail: 'Made by AI. Built to a fixed shape; the translations themselves are not checked.' };
   const parts = [
     done.has('schema') ? 'built to a fixed shape' : null,
     done.has('dictionary') ? (row.unknownWords?.length ? `${row.unknownWords.length} words the dictionary doesn’t know` : 'every word is in the dictionary') : 'words not checked',

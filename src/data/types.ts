@@ -772,7 +772,16 @@ export type JourneyKind =
   | 'level'
   | 'deck'
   | 'song'
-  | 'manual';
+  | 'manual'
+  | 'conversation'
+  | 'writing'
+  | 'listening'
+  | 'moment'
+  | 'encounter'
+  | 'stamp'
+  | 'milestone'
+  | 'reflection'
+  | 'real-life';
 
 /** A moment on the journey: automatic milestones and the learner's own entries. */
 export interface JourneyEvent extends Synced {
@@ -799,15 +808,34 @@ export interface StudyLog extends Synced {
   note?: string;
 }
 
+export type GoalKind =
+  | 'level'
+  | 'hours-week'
+  | 'words-week'
+  | 'books-year'
+  | 'words'
+  | 'lessons'
+  | 'books'
+  | 'conversations'
+  | 'writing'
+  | 'listening-hours'
+  | 'travel'
+  | 'real-life'
+  | 'custom';
+
 export interface Goal extends Synced {
   id: string;
   lang: Lang;
-  kind: 'level' | 'hours-week' | 'words-week' | 'books-year';
-  /** Target level for 'level', otherwise a number. */
-  target: CefrLevel | number;
-  /** YYYY-MM-DD, for level goals. */
+  kind: GoalKind;
+  /** Target level for 'level', number for counts/hours, or string for travel/real-life. */
+  target: CefrLevel | number | string;
+  /** YYYY-MM-DD, for level goals, deadlines, travel countdowns. */
   by?: string;
   year?: number;
+  title?: string;
+  unit?: string;
+  completedAt?: number;
+  notes?: string;
 }
 
 export interface DailyStat {

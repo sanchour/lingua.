@@ -1,6 +1,7 @@
 import type { UiMessage } from '@/core/i18n/types';
 import { create } from 'zustand';
 import type { Feature } from '@/data/plan';
+import type { TutorContext } from '@/core/tutor/types';
 
 export type ToastMessage = string | UiMessage;
 export type ToastTone = 'default' | 'success' | 'error';
@@ -26,6 +27,10 @@ interface UIState {
   closeReference: () => void;
   shortcutsOpen: boolean;
   globalSearchOpen: boolean;
+  tutorOpen: boolean;
+  tutorContext: TutorContext | null;
+  openTutor: (context?: TutorContext) => void;
+  closeTutor: () => void;
   /** The plans sheet: open for a locked feature, for all plans, or closed. */
   plansFor: Feature | 'all' | null;
   openPlans: (feature?: Feature) => void;
@@ -51,6 +56,10 @@ export const useUI = create<UIState>((set) => ({
   closeReference: () => set({ reference: null }),
   shortcutsOpen: false,
   globalSearchOpen: false,
+  tutorOpen: false,
+  tutorContext: null,
+  openTutor: (tutorContext) => set({ tutorOpen: true, tutorContext: tutorContext ?? null }),
+  closeTutor: () => set({ tutorOpen: false }),
   plansFor: null,
   openPlans: (feature) => set({ plansFor: feature ?? 'all' }),
   closePlans: () => set({ plansFor: null }),

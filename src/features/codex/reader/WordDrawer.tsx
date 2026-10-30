@@ -28,6 +28,7 @@ import { WordForms } from './WordForms';
 import { entryPath } from '@/features/thesaurus/dictionary/DictionarySearch';
 import { WhyThisForm } from '@/features/grammatica/links';
 import { SpeakButton } from '@/features/speech/SpeakButton';
+import { AskButton } from '@/features/tutor/AskButton';
 
 export interface DrawerWord {
   norm: string;
@@ -265,6 +266,7 @@ function Highlighted({ sentence, word }: { sentence: string; word: string }) {
 }
 
 function Explain({ lang, word, sentence }: { lang: string; word: string; sentence: string }) {
+  const translateUi = useUi();
   const [result, setResult] = useState<WordExplanation | null>(null);
   const [error, setError] = useState<LlmError | Error | null>(null);
   const [busy, setBusy] = useState(false);
@@ -284,7 +286,22 @@ function Explain({ lang, word, sentence }: { lang: string; word: string; sentenc
   if (!result) {
     return (
       <section>
-        <Button variant="secondary" icon={Sparkles} onClick={() => void run()} loading={busy} block><UiText source={'Explain in context'} /></Button>
+        <Button variant="secondary" icon={Sparkles} onClick={() => void run()} loading={busy} block>
+          <UiText source={'Explain in context'} />
+        </Button>
+        <div className="mt-2 flex justify-center">
+          <AskButton
+            variant="subtle"
+            label={translateUi('Ask tutor about this word')}
+            context={{
+              kind: 'word',
+              lang,
+              word,
+              sentence,
+              room: 'codex',
+            }}
+          />
+        </div>
         {error && (
           <p className="mt-2 text-[13px] text-accent-text">
             {error.message}{' '}

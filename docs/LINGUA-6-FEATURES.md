@@ -329,8 +329,8 @@ Grammar can be taught through explanation, pattern recognition, repeated example
 - [x] `F0219` Interactive grammar maps · **6-7**
 - [x] `F0220` Cross-references between related rules · **6-7** · partly there
 - [x] `F0221` Prerequisite links showing what to learn first · **6-7**
-- [ ] `F0222` Grammar search by natural language question · **6-15**
-- [ ] `F0223` AI-generated explanations at different difficulty levels · **6-15**
+- [x] `F0222` Grammar search by natural language question · **6-15**
+- [x] `F0223` AI-generated explanations at different difficulty levels · **6-15**
 - [x] `F0224` Grammar explanations in the target language · **6-7**
 - [x] `F0225` Grammar explanations in the learner’s native language · **6-7** · partly there
 - [x] `F0226` Side-by-side explanations in two languages · **6-7**
@@ -675,8 +675,8 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0505` Listening-speed progression · **6-9**
 - [ ] `F0506` Compare the same sentence across speakers · **6-9**
 - [x] `F0507` Compare slow, careful speech with natural speech · **6-9**
-- [ ] `F0508` Track listening comprehension by accent · **6-17**
-- [ ] `F0509` Track comprehension as playback speed increases · **6-17**
+- [x] `F0508` Track listening comprehension by accent · **6-17**
+- [x] `F0509` Track comprehension as playback speed increases · **6-17**
 - [x] `F0510` Identify specific phonemes that are repeatedly confused · **6-10**
 
 ## 06 · Speaking and conversation
@@ -785,7 +785,7 @@ This is where an AI-powered app can become especially valuable. Learners often h
 - [x] `F0589` Pronunciation recording comparisons · **6-10**
 - [x] `F0590` Phoneme-level pronunciation feedback · **6-10**
 - [x] `F0591` Word stress detection · **6-10**
-- [ ] `F0592` Sentence stress detection · **6-10**
+- [x] `F0592` Sentence stress detection · **6-10**
 - [x] `F0593` Rhythm and intonation analysis · **6-10**
 - [x] `F0594` Tone recognition for tonal languages · **6-10**
 - [x] `F0595` Pitch contour visualization · **6-10**
@@ -937,7 +937,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0711` Stress placement · **6-10**
 - [x] `F0712` Word-level stress rules · **6-10**
 - [x] `F0713` Sentence intonation · **6-10**
-- [ ] `F0714` Rhythm patterns · **6-10**
+- [x] `F0714` Rhythm patterns · **6-10**
 - [x] `F0715` Connected speech · **6-10**
 - [x] `F0716` Sound reduction · **6-10**
 - [x] `F0717` Assimilation · **6-10**
@@ -1093,10 +1093,10 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0834` Write real messages with feedback · **6-12** · partly there
 - [ ] `F0835` Maintain a personal phrasebook · **6-20**
 - [x] `F0836` Set a daily target-language challenge
-- [ ] `F0837` Build a list of real-life communication goals · **6-17**
+- [x] `F0837` Build a list of real-life communication goals · **6-17**
 - [ ] `F0838` Create a personal immersion plan · **6-16**
 - [x] `F0839` Track time spent using the language
-- [ ] `F0840` Record real-world language encounters · **6-17** · partly there
+- [x] `F0840` Record real-world language encounters · **6-17** · partly there
 
 #### 10.3 Cultural immersion
 
@@ -1197,7 +1197,7 @@ This is the structured side of the app. Learners need a route through the materi
 - [ ] `F0919` Import an existing syllabus · **6-14**
 - [ ] `F0920` Build a course from a textbook · **6-14**
 - [ ] `F0921` Build a course around a personal goal · **6-14**
-- [ ] `F0922` Compare curriculum progress against a target proficiency level · **6-17**
+- [x] `F0922` Compare curriculum progress against a target proficiency level · **6-17**
 
 #### 11.3 Lesson interaction patterns
 
@@ -1244,23 +1244,23 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 
 *In Lingua: Sentence translation (S), Mundus's next steps, Diarium's review, Sermo for conversation and debate.*
 
-- [ ] `F0955` ⭐ Ask any language question · **6-15** · partly there
-- [ ] `F0956` ⭐ Explain grammar in simple terms · **6-15** · partly there
-- [ ] `F0957` ⭐ Explain vocabulary nuances · **6-15** · partly there
-- [ ] `F0958` ⭐ Generate examples on demand · **6-15** · partly there
+- [x] `F0955` ⭐ Ask any language question · **6-15** · partly there
+- [x] `F0956` ⭐ Explain grammar in simple terms · **6-15** · partly there
+- [x] `F0957` ⭐ Explain vocabulary nuances · **6-15** · partly there
+- [x] `F0958` ⭐ Generate examples on demand · **6-15** · partly there
 - [x] `F0959` Translate difficult sentences
-- [ ] `F0960` Explain idioms · **6-15**
-- [ ] `F0961` Explain slang · **6-15**
-- [ ] `F0962` Compare similar words · **6-15**
-- [ ] `F0963` Explain pronunciation · **6-15**
-- [ ] `F0964` Explain regional differences · **6-15**
-- [ ] `F0965` Explain cultural references · **6-15**
-- [ ] `F0966` Answer questions about an active lesson · **6-15**
-- [ ] `F0967` Explain why an answer was incorrect · **6-15** · partly there
-- [ ] `F0968` Create additional examples · **6-15**
+- [x] `F0960` Explain idioms · **6-15**
+- [x] `F0961` Explain slang · **6-15**
+- [x] `F0962` Compare similar words · **6-15**
+- [x] `F0963` Explain pronunciation · **6-15**
+- [x] `F0964` Explain regional differences · **6-15**
+- [x] `F0965` Explain cultural references · **6-15**
+- [x] `F0966` Answer questions about an active lesson · **6-15**
+- [x] `F0967` Explain why an answer was incorrect · **6-15** · partly there
+- [x] `F0968` Create additional examples · **6-15**
 - [ ] `F0969` Give progressively harder exercises · **6-16**
-- [ ] `F0970` Simplify difficult material · **6-15**
-- [ ] `F0971` Generate a lesson on a specific topic · **6-15**
+- [x] `F0970` Simplify difficult material · **6-15**
+- [x] `F0971` Generate a lesson on a specific topic · **6-15**
 - [ ] `F0972` Generate a personalized study plan · **6-16**
 - [x] `F0973` Recommend a next step
 - [x] `F0974` Diagnose recurring mistakes · **6-5**
@@ -1268,45 +1268,45 @@ The AI tutor could be the layer that connects every other feature. Instead of be
 - [x] `F0976` Review an essay
 - [x] `F0977` Review a pronunciation recording · **6-10**
 - [x] `F0978` Generate vocabulary from a conversation · **6-11**
-- [ ] `F0979` Turn a question into a mini-lesson · **6-15**
+- [x] `F0979` Turn a question into a mini-lesson · **6-15**
 - [ ] `F0980` Turn a mistake into a practice exercise · **6-16**
-- [ ] `F0981` Create analogies for difficult grammar · **6-15**
-- [ ] `F0982` Explain a concept using the learner’s native language · **6-15** · partly there
-- [ ] `F0983` Explain a concept entirely in the target language · **6-15**
-- [ ] `F0984` Provide hints without giving away the answer · **6-15**
-- [ ] `F0985` Simulate a patient teacher · **6-15**
+- [x] `F0981` Create analogies for difficult grammar · **6-15**
+- [x] `F0982` Explain a concept using the learner’s native language · **6-15** · partly there
+- [x] `F0983` Explain a concept entirely in the target language · **6-15**
+- [x] `F0984` Provide hints without giving away the answer · **6-15**
+- [x] `F0985` Simulate a patient teacher · **6-15**
 - [ ] `F0986` Simulate an examiner · **6-18**
 - [x] `F0987` Simulate a conversation partner
 - [x] `F0988` Simulate a debate opponent
-- [ ] `F0989` Simulate a writing editor · **6-15**
-- [ ] `F0990` Simulate a language coach · **6-15**
-- [ ] `F0991` Provide encouragement without exaggerated praise · **6-15**
+- [x] `F0989` Simulate a writing editor · **6-15**
+- [x] `F0990` Simulate a language coach · **6-15**
+- [x] `F0991` Provide encouragement without exaggerated praise · **6-15**
 
 #### 12.2 Tutor personalization
 
 *In Lingua: The translation language; what you enjoy (Settings › Languages).*
 
-- [ ] `F0992` Remember the learner’s preferred explanation style · **6-15**
+- [x] `F0992` Remember the learner’s preferred explanation style · **6-15**
 - [x] `F0993` Remember the learner’s native language
-- [ ] `F0994` Remember known vocabulary · **6-15** · partly there
-- [ ] `F0995` Remember grammar topics already studied · **6-15** · partly there
+- [x] `F0994` Remember known vocabulary · **6-15** · partly there
+- [x] `F0995` Remember grammar topics already studied · **6-15** · partly there
 - [x] `F0996` Remember recurring errors · **6-5**
 - [x] `F0997` Remember personal interests
-- [ ] `F0998` Adjust explanation complexity · **6-15**
-- [ ] `F0999` Adjust sentence length · **6-15**
-- [ ] `F1000` Adjust vocabulary difficulty · **6-15**
-- [ ] `F1001` Adjust speech speed · **6-15** · partly there
-- [ ] `F1002` Adjust correction frequency · **6-15**
-- [ ] `F1003` Adjust the amount of target-language exposure · **6-15**
-- [ ] `F1004` Adjust how much translation is shown · **6-15**
-- [ ] `F1005` Adapt examples to hobbies and interests · **6-15** · partly there
+- [x] `F0998` Adjust explanation complexity · **6-15**
+- [x] `F0999` Adjust sentence length · **6-15**
+- [x] `F1000` Adjust vocabulary difficulty · **6-15**
+- [x] `F1001` Adjust speech speed · **6-15** · partly there
+- [x] `F1002` Adjust correction frequency · **6-15**
+- [x] `F1003` Adjust the amount of target-language exposure · **6-15**
+- [x] `F1004` Adjust how much translation is shown · **6-15**
+- [x] `F1005` Adapt examples to hobbies and interests · **6-15** · partly there
 - [ ] `F1006` Adapt practice to upcoming travel · **6-16**
 - [ ] `F1007` Adapt practice to exams · **6-18**
 - [ ] `F1008` Adapt to time available · **6-16** · partly there
 - [x] `F1009` Distinguish persistent mistakes from occasional slips · **6-5**
 - [ ] `F1010` Avoid repeatedly teaching mastered concepts · **6-16**
 - [ ] `F1011` Recommend prerequisite material when needed · **6-16**
-- [ ] `F1012` Explain connections between different lessons · **6-15**
+- [x] `F1012` Explain connections between different lessons · **6-15**
 
 #### 12.3 AI-generated learning materials
 
@@ -1459,7 +1459,7 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1125` Notes from reading · **6-8**
 - [x] `F1126` Notes from conversations · **6-11**
 - [x] `F1127` Personal error log · **6-5**
-- [ ] `F1128` Weekly learning reflections · **6-17**
+- [x] `F1128` Weekly learning reflections · **6-17**
 - [x] `F1129` Language goals
 - [ ] `F1130` Book and media notes · **6-20**
 - [ ] `F1131` Attach vocabulary to notes · **6-20**
@@ -1488,41 +1488,41 @@ each with its definition, private and exportable. Lingua 5.2-9 already expands R
 
 - [x] `F1142` ⭐ Daily, weekly and monthly learning goals
 - [x] `F1143` Goals based on minutes studied
-- [ ] `F1144` Goals based on words learned · **6-17** · partly there
-- [ ] `F1145` Goals based on lessons completed · **6-17**
-- [ ] `F1146` Goals based on books read · **6-17** · partly there
-- [ ] `F1147` Goals based on conversations held · **6-17**
-- [ ] `F1148` Goals based on writing practice · **6-17**
-- [ ] `F1149` Goals based on listening hours · **6-17**
-- [ ] `F1150` Milestones for vocabulary size · **6-17** · partly there
-- [ ] `F1151` Milestones for CEFR proficiency · **6-17** · partly there
+- [x] `F1144` Goals based on words learned · **6-17** · partly there
+- [x] `F1145` Goals based on lessons completed · **6-17**
+- [x] `F1146` Goals based on books read · **6-17** · partly there
+- [x] `F1147` Goals based on conversations held · **6-17**
+- [x] `F1148` Goals based on writing practice · **6-17**
+- [x] `F1149` Goals based on listening hours · **6-17**
+- [x] `F1150` Milestones for vocabulary size · **6-17** · partly there
+- [x] `F1151` Milestones for CEFR proficiency · **6-17** · partly there
 - [x] `F1152` Personal learning challenges
-- [ ] `F1153` Custom deadlines · **6-17** · partly there
+- [x] `F1153` Custom deadlines · **6-17** · partly there
 - [ ] `F1154` Exam countdowns · **6-18**
-- [ ] `F1155` Travel preparation countdowns · **6-17**
+- [x] `F1155` Travel preparation countdowns · **6-17**
 - [x] `F1156` Habit calendar
-- [ ] `F1157` Optional streak tracking · **6-17** · partly there
-- [ ] `F1158` Streak freeze or recovery · **6-17**
-- [ ] `F1159` Flexible weekly targets · **6-17** · partly there
-- [ ] `F1160` Rest days · **6-17**
-- [ ] `F1161` Study reminders · **6-17**
-- [ ] `F1162` Custom reminder schedules · **6-17**
-- [ ] `F1163` Quiet hours · **6-17**
-- [ ] `F1164` Daily motivational messages · **6-17** · partly there
-- [ ] `F1165` Weekly progress summaries · **6-17** · partly there
-- [ ] `F1166` Monthly progress reports · **6-17**
-- [ ] `F1167` Personal achievement badges · **6-17**
+- [x] `F1157` Optional streak tracking · **6-17** · partly there
+- [x] `F1158` Streak freeze or recovery · **6-17**
+- [x] `F1159` Flexible weekly targets · **6-17** · partly there
+- [x] `F1160` Rest days · **6-17**
+- [x] `F1161` Study reminders · **6-17**
+- [x] `F1162` Custom reminder schedules · **6-17**
+- [x] `F1163` Quiet hours · **6-17**
+- [x] `F1164` Daily motivational messages · **6-17** · partly there
+- [x] `F1165` Weekly progress summaries · **6-17** · partly there
+- [x] `F1166` Monthly progress reports · **6-17**
+- [x] `F1167` Personal achievement badges · **6-17**
 - [x] `F1168` Milestone celebrations
 - [x] `F1169` Personal best tracking
-- [ ] `F1170` Reflection prompts · **6-17**
-- [ ] `F1171` Weekly review of goals · **6-17**
+- [x] `F1170` Reflection prompts · **6-17**
+- [x] `F1171` Weekly review of goals · **6-17**
 - [ ] `F1172` Goal adjustment recommendations · **6-16**
-- [ ] `F1173` Habit formation plans · **6-17**
-- [ ] `F1174` Restart plans after a long break · **6-17**
+- [x] `F1173` Habit formation plans · **6-17**
+- [x] `F1174` Restart plans after a long break · **6-17**
 - [x] `F1175` Visual progress journeys
 - [x] `F1176` Personal reasons for learning
-- [ ] `F1177` A record of memorable learning moments · **6-17** · partly there
-- [ ] `F1178` Reward customization · **6-17**
+- [x] `F1177` A record of memorable learning moments · **6-17** · partly there
+- [x] `F1178` Reward customization · **6-17**
 - [ ] `F1179` Optional accountability partner · **6-27** · needs the user's word
 - [ ] `F1180` Study challenges with friends · **6-27** · needs the user's word
 - [ ] `F1181` Opt-in leaderboards · **6-27** · needs the user's word
@@ -1912,7 +1912,7 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1507` Speech-to-text integration
 - [x] `F1508` Dictionary API integration
 - [x] `F1509` Calendar integration for study planning · **6-24**
-- [ ] `F1510` Reminder integration · **6-17**
+- [x] `F1510` Reminder integration · **6-17**
 - [x] `F1511` Integration with note-taking tools · **6-24**
 - [x] `F1512` Integration with e-readers where supported · **6-24**
 
@@ -1932,7 +1932,7 @@ Different languages require different learning interfaces. This could become a m
 - [ ] `F1522` Home-screen widgets · **6-27** · needs the user's word
 - [x] `F1523` Quick vocabulary review · **6-25**
 - [x] `F1524` Daily word widget · **6-25**
-- [ ] `F1525` Push notifications · **6-17**
+- [x] `F1525` Push notifications · **6-17**
 - [x] `F1526` Keyboard shortcuts
 - [x] `F1527` Dark mode
 - [x] `F1528` Light mode
@@ -2111,7 +2111,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [x] `F1605` Video and subtitle learning
 - [x] `F1606` Authentic media library
 - [ ] `F1607` Personal linguistic knowledge graph · **6-20**
-- [ ] `F1608` Advanced learning analytics · **6-17** · partly there
+- [x] `F1608` Advanced learning analytics · **6-17** · partly there
 - [x] `F1609` AI-generated courses and interactive stories · **6-6** · partly there
 - [ ] `F1610` Deep personalization · **6-16**
 - [x] `F1611` Multi-language learning workspace
