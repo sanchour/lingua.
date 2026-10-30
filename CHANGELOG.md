@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.135** · 2026-10-30 · Smoothness: 60+ FPS enforcement, zero-jank startup pipeline, and macOS Low Power Mode handling
 - **0.6.0-alpha.134** · 2026-10-30 · 6-21 G2: word search, word hunt, word ladder
 - **0.6.0-alpha.133** · 2026-10-30 · 6-21 G2 checkpoint: Ludus in the sidebar, anagrams, missing letters, guess from clues
 - **0.6.0-alpha.132** · 2026-10-30 · 6-21 G1: Thesaurus › Games, the engine and Hangman

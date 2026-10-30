@@ -76,14 +76,26 @@ export const OrdoPage = lazy(loaders.ordo);
 export const LabPage = lazy(loaders.lab);
 export const TranslatePracticePage = lazy(loaders.translatePractice);
 
-/** Fetches every section chunk when the browser is idle. Returns a cancel function. */
+/** Fetches every section chunk when the browser is idle, staggered to preserve 60 fps. Returns a cancel function. */
 export function preloadSections(): () => void {
-  const run = () => Object.values(loaders).forEach((load) => void load());
-  // Safari has no requestIdleCallback; fall back to a short delay.
-  if (typeof window.requestIdleCallback === 'function') {
-    const id = window.requestIdleCallback(run, { timeout: 3000 });
-    return () => window.cancelIdleCallback(id);
-  }
-  const id = window.setTimeout(run, 1200);
-  return () => window.clearTimeout(id);
+  const entries = Object.values(loaders);
+  let stepTimer: number | undefined;
+  let index = 0;
+
+  const loadNext = () => {
+    if (index >= entries.length) return;
+    const load = entries[index++];
+    void load();
+    if (index < entries.length) {
+      stepTimer = window.setTimeout(loadNext, 120);
+    }
+  };
+
+  // Wait 4 seconds for the initial screen to render and settle entrance animations at 60 fps
+  const startTimer = window.setTimeout(loadNext, 4000);
+
+  return () => {
+    window.clearTimeout(startTimer);
+    if (stepTimer !== undefined) window.clearTimeout(stepTimer);
+  };
 }

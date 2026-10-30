@@ -51,21 +51,36 @@ export function measureFrames(durationMs: number): Promise<FrameStats> {
 }
 
 /** Rolling one-second FPS samples for the live monitor. Returns a stop function. */
-export function startFrameMeter(onSample: (fps: number, worstMs: number) => void): () => void {
+export function startFrameMeter(onSample: (fps: number, worstMs: number, lowPowerMode?: boolean) => void): () => void {
   let frame = 0;
   let windowStart = 0;
   let last = 0;
   let count = 0;
   let worst = 0;
+  let warmTicks = 0;
   const tick = (now: number) => {
-    if (!windowStart) windowStart = now;
+    // Warm up for the first few frames so cold script execution on mount does not skew the readout
+    if (warmTicks < 3) {
+      warmTicks++;
+      last = now;
+      windowStart = now;
+      frame = requestAnimationFrame(tick);
+      return;
+    }
+
     if (last) {
-      worst = Math.max(worst, now - last);
+      const delta = now - last;
+      worst = Math.max(worst, delta);
       count++;
     }
     last = now;
     if (now - windowStart >= 1000) {
-      onSample((count * 1000) / (now - windowStart), worst);
+      const elapsed = now - windowStart;
+      const rawFps = (count * 1000) / elapsed;
+      // macOS Low Power Mode locks rAF cadence to 30 Hz. When Low Power Mode is active,
+      // frames are evenly spaced at ~33.3ms, worst interval is <= 45ms, and fps is ~28-32.
+      const lowPower = rawFps >= 27 && rawFps <= 33 && worst <= 45;
+      onSample(rawFps, worst, lowPower);
       windowStart = now;
       count = 0;
       worst = 0;

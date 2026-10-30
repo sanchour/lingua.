@@ -114,8 +114,14 @@ export function Root() {
     const off = onMilestone((events) => {
       for (const e of events.slice(0, 2)) toast(`Milestone: ${e.title}`, { tone: 'success', action: { label: 'Ratio', onClick: () => navigate('/ratio?tab=tabula') } });
     });
-    void checkAllMilestones().catch(() => {});
-    return off;
+    // Check milestones quietly after startup rendering and animations settle
+    const timer = window.setTimeout(() => {
+      void checkAllMilestones().catch(() => {});
+    }, 3500);
+    return () => {
+      off();
+      window.clearTimeout(timer);
+    };
   }, [onboarded, navigate]);
 
   const context = useMemo(() => (settings && language ? { settings, language } : null), [settings, language]);
