@@ -212,3 +212,5 @@ adventure path like Duolingo's and HelloChinese's (ROADMAP "Cursus as an adventu
 **Codex progress, 2026-10-30:** 6-8 Reading is finished. Codex is now doing 6-19 Immersion and culture.
 
 **Sonus+ music streaming/sharing rule (the user, 2026-10-30):** For Sonus+ (`/cantus`), when listening to music on **YouTube Music, Amazon Music, Spotify, or Apple Music**, the learner can easily stream or share the song straight to Sonus+; the song opens cleanly and immediately in Sonus+ with synchronized lyrics, vocabulary translation, and player.
+
+**Current user instruction, 2026-10-30:** merge Codex and main now, before implementing 6-20, then finish 6-20 on codex/lingua. The user explicitly approved pushing the merge directly to main and triggering deployment, including incomplete 6-19 work. Current main was merged into Codex with both sides preserved; integration typecheck, 1,565 tests (one skipped) and build passed. Publish the combined history by a normal fast-forward, without force or rewriting history. The 6-20 claim is Codex’s (alpha.138); implementation has not started at this merge checkpoint.
