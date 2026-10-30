@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useApp } from '@/app/context';
 import { resolveTheme, syncThemeColor } from '@/app/theme';
 import { READING_LANGS } from '@/core/lang/languages';
+import { TRANSLIT_LANGS } from '@/core/script/reading';
 import { db } from '@/data/db';
 import { markOpened, refreshTextStats, saveProgress, updateText, useText } from '@/data/library';
 import type { WordState } from '@/data/types';
@@ -495,7 +496,7 @@ export default function ReaderPage() {
     comic && 'is-comic',
     reader.justify && 'is-justified',
     reader.highlightUnseen && 'hl-unseen',
-    READING_LANGS.has(lang) && reader.readings !== 'off' && `readings-${reader.readings}`,
+    (READING_LANGS.has(lang) || TRANSLIT_LANGS.has(lang)) && reader.readings !== 'off' && `readings-${reader.readings}`,
   );
   const chapterTitle = model?.chapter.title ? `${model.chapter.title}${model.chapter.part ? ` · ${model.chapter.part[0]}/${model.chapter.part[1]}` : ''}` : undefined;
   const wide = layout === 'wide';

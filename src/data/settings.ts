@@ -161,8 +161,8 @@ export interface Settings {
     paperDark: PaperDarkId;
     /** With an AI key: words get the meaning their sentence needs (one request per sentence looked up). */
     contextGlosses: boolean;
-    /** Mandarin and Japanese: pinyin or kana over words you don't know yet, over every word, or none. */
-    readings: 'new' | 'all' | 'off';
+    /** Pinyin, kana or a transliteration over words you don't know yet, over every word, fading as a word is learned (full while unseen, faint while learning, gone once known), or none. */
+    readings: 'new' | 'all' | 'fade' | 'off';
     /** How Known, Learning and Unseen words look; unset is the usual look. Unseen marks show with `highlightUnseen`. */
     words?: Partial<Record<WordLookState, WordLook>>;
     /** The end page of a text: "Check yourself", the two story questions with AI, and "In your own words". */
@@ -244,7 +244,7 @@ export interface Settings {
     /** Home's "first steps" list, once put away. */
     firstStepsHidden: boolean;
     /** Cursus opens on the tab used last (none yet: Course for tier 1, Grammatica otherwise). */
-    cursusTab: '' | 'course' | 'grammatica' | 'alphabets' | 'sounds' | 'typing';
+    cursusTab: '' | 'course' | 'grammatica' | 'alphabets' | 'marks' | 'sounds' | 'typing';
     /** Sonus et Visio's library filter. */
     sonusShow: MediaShow;
     /** Home's layout: Today (5.1-2c) or the one before it. */
