@@ -3,6 +3,8 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.146** · 2026-10-31 · docs: record Slang & Dialects section idea for the 6 core languages with visual map (to be planned by Opus)
+- **0.6.0-alpha.145** · 2026-10-31 · docs: record Slang & Dialects section idea for the 6 core languages with visual map (to be planned by Opus)
 - **0.6.0-alpha.144** · 2026-10-30 · Publish completed 6-20 to main
 - **0.6.0-alpha.143** · 2026-10-30 · 6-20 N2: notebook study tools, connections and completion
 - **0.6.0-alpha.142** · 2026-10-30 · 6-20 P2: capture, recall, cards and templates

@@ -2380,3 +2380,19 @@ motivated and excited, i think i will like tauri a lot"). A look, not a launch: 
 **6-20 complete on codex/lingua (Codex, 2026-10-30):** claim alpha.138; the separately approved safe main/Codex merge was published as alpha.139 before implementation. P1 alpha.140: local phrasebook, audio and export. N1 alpha.141: Markdown notebook, organization, links, drafts and error log. P2 alpha.142: capture, recall, cards and templates. Final N2: opt-in Max summaries/exercises, explicit note connections and integrated phrasebook export. All four slices checked and separately versioned. Final typecheck, 1,581 tests (one skipped) and build pass. Phrases and Notebook looked at at 1280, 1440 and 1366×768 in Paper/Nocturne; connections additionally checked at 1440 light/1366 dark. No real model, actual audio playback, browser downloads, screen reader, full media capture or backup/restore round trip; six-language visual review remains outstanding. The final implementation pushes target Codex only; Pages deployment was not confirmed. 6-19 remains explicitly incomplete and claimed by Codex. Stop here; no new step claimed.
 
 **6-20 publication (Codex, 2026-10-30):** GitHub’s transient server errors cleared; final N2 alpha.143 reached codex/lingua. The user explicitly requested merging 6-20 to main. Main remains an ancestor of the checked Codex history, so publication is a normal fast-forward with a separate version; no pushed history is rewritten. No source code changed after the final passing typecheck, 1,581 tests (one skipped), build and documented browser pass. 6-19 remains incomplete; this publication does not change its status.
+
+## Slang & Dialects (Idea, 2026-10-31)
+
+The user proposed a new section dedicated to **Slang & Dialects** across the six core languages, featuring an interactive **visual dialect map**, regional vocabulary comparisons, and "how to speak in that dialect" guides.
+
+- **Status**: Logged as an idea; **do not add as a plan yet — a stronger model (e.g. Claude Opus) will plan it out in full** before any implementation begins.
+- **Scope**: Tier 1 / six core languages first:
+  - *Spanish*: Latin American varieties and sub-regions (e.g. Colombia: Paisa, Caleño, Costeño; Argentina/Rioplatense; Chile; Peru; Mexico; Caribbean: Dominican Republic, Cuba, Puerto Rico; Spain/Castilian, etc.).
+  - *Mandarin*: Regional dialects, topolects, and regional varieties (e.g. Taiwanese Mandarin, Dongbei, Sichuanese, Cantonese influence, Shanghainese varieties, etc.).
+  - *French*: Regional and global varieties (e.g. Quebecois, Parisian/Verlan, Southern/Marseillais, Belgian, Swiss, West African).
+  - *German, Italian, Russian*: Core regional dialects, urban slang, and pronunciation contrasts.
+- **Core elements to plan**:
+  1. Interactive visual dialect map with regional boundaries, sub-regional slang hubs, and accent audio samples.
+  2. Slang & dialect dictionary / comparative lexicon (compare local terms and expressions across regions).
+  3. "How to speak in that dialect": phonological shifts, intonation curves, cadence, rhythm, colloquial phrasing, and speech mannerisms.
+  4. Dialect practice and recognition drills.

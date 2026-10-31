@@ -1999,3 +1999,16 @@ Global capture and source actions open an editable local draft, never an automat
 ### 2026-10-30 · Notebook study and connections (6-20 N2, Codex)
 
 Max receives only the source preview the learner explicitly submits (up to 6,000 characters, at most ten filtered notes). Output is temporary and tied to that exact source; original notes are unchanged. Every exercise answer must quote the source exactly; questions remain self-rated because exact quotes do not establish linguistic correctness. The shared recall runner records retry-safe evidence. Tests inject a fake model; no real key/model was used. Connections visualizes explicit saved links only, bounded to 40 notes, 40 destinations and 120 edges, without a graph engine. Settings export now includes saved phrases alongside legacy phrase cards, deduplicating converted records. New Markdown/recall DOM tests use .test.ts so the existing runner actually discovers them; unrelated test configuration was not broadened.
+
+## 2026-10-31 — Idea: Slang & Dialects section with visual map (6 core languages; to be planned)
+
+The user proposed a new section for **Slang & Dialects**:
+- **Core purpose**: Compare and learn regional slang and dialect words, colloquial expressions, idioms, and regional variations across native-speaking regions.
+- **Linguistic depth**: Differences in vocabulary, pronunciation/phonetics, syntax/grammar, intonation, and practical "how to speak in that dialect" guides (accent, speech habits, rhythm, tone, local mannerisms).
+- **Visual dialect map**: An interactive regional map visualizing dialectal zones, sub-regional slang hubs, and accent audio/examples.
+- **Scope (6 core languages first)**:
+  - *Spanish*: Latin American varieties and sub-regions (e.g. Colombia: Paisa, Caleño, Costeño; Argentina/Rioplatense; Chile; Peru; Mexico; Caribbean: Dominican Republic, Cuba, Puerto Rico; Spain/Castilian, etc.).
+  - *Mandarin*: Regional dialects, topolects, and regional varieties (e.g. Taiwanese Mandarin, Dongbei, Sichuanese, Cantonese influence, Shanghainese varieties, etc.).
+  - *French*: Regional and global varieties (e.g. Quebecois, Parisian/Verlan, Southern/Marseillais, Belgian, Swiss, West African).
+  - *German, Italian, Russian*: Core regional dialects, urban slang, and pronunciation contrasts.
+- **Next step**: Do not implement yet. A stronger model (e.g. Claude Opus) will plan this feature out in full (structure, data sources, visual map interaction, learning/comparison drills) before building begins.
