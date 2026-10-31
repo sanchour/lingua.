@@ -7327,5 +7327,15 @@
   "Lingua · Quick Review": "Lingua · Быстрое повторение",
   "Quick Review · Floating": "Быстрое повторение · Плавающее окно",
   "{0} cards due today": "Карточек на сегодня: {0}",
-  "Full Review": "Полное повторение"
+  "Full Review": "Полное повторение",
+  "Recordings": "Записи",
+  "Images": "Изображения",
+  "Delete {0}?": "Удалить {0}?",
+  "Delete saved {0}": "Удалить сохранённые файлы: {0}",
+  "Deleted {0} files. Undo is available on this page.": "Удалено файлов: {0}. На этой странице можно отменить удаление.",
+  "These are saved files, not a cache. Deleting removes attachments across languages. Undo is available until you leave this page.": "Это сохранённые файлы, а не кэш. Удаление затронет вложения во всех языках. Отмена доступна, пока вы не покинете эту страницу.",
+  "Could not change stored media.": "Не удалось изменить сохранённые медиафайлы.",
+  "Saved content stays on this device. Online features send only the content they need.": "Сохранённые данные остаются на этом устройстве. Онлайн-функции отправляют только необходимые им данные.",
+  "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "ИИ отправляет выбранный текст или аудио выбранному провайдеру с вашим ключом. Действуют его правила конфиденциальности и хранения.",
+  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "Локальные голоса и Whisper работают на этом устройстве. Онлайн-речь использует выбранного провайдера; распознавание браузера может использовать серверы его разработчика."
 }

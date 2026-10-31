@@ -1951,13 +1951,13 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1541` Keyboard-only navigation · **6-25**
 - [x] `F1542` Data export
 - [x] `F1543` Account deletion
-- [ ] `F1544` Privacy controls · **6-25** · verification incomplete: destination copy contains unsupported retention/privacy promises
+- [ ] `F1544` Privacy controls · **6-25** · S1 repaired provider disclosure; online destinations are conditional, no retention guarantee
 - [x] `F1545` Synchronization status
-- [ ] `F1546` Storage management · **6-25** · verification failed: media clear deletes all saved blobs; required per-kind controls incomplete
+- [ ] `F1546` Storage management · **6-25** · S1 replaces blanket clear with scoped saved-media deletion and page Undo; packs/voices follow-up pending
 - [ ] `F1547` Battery-efficient audio · **6-25** · verification incomplete: hidden-page handler stops TTS, not transcription
 - [x] `F1548` Local data caching
 - [x] `F1549` Clear error messages · **6-25**
-- [ ] `F1550` Undo for destructive actions · **6-25** · verification failed: cached-media clear has no undo and includes saved recordings/media
+- [ ] `F1550` Undo for destructive actions · **6-25** · S1 media deletion now confirms and supports page Undo; comprehensive destructive-action pass still pending
 
 ## 25 · Advanced and experimental features
 

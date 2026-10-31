@@ -2023,3 +2023,6 @@ The user proposed a new section for **Slang & Dialects**:
 
 
 **6-22/24/25 verification, 2026-10-31 (Codex):** preserve historical implementation records but reopen their unqualified completion statuses after real dictionary searches and source inspection found failures. Record automated, browser and static evidence separately in [LINGUA-6-VERIFICATION.md](LINGUA-6-VERIFICATION.md). Do not exercise blanket blob deletion, rewrite protected shared controls, or claim external-app/screen-reader compatibility. Stop without source repairs under the user’s existing-failure rule; the browser extension remains excluded.
+
+
+**S1 repair, Codex 2026-10-31:** blanket blob clearing removed. Storage now shows explicit saved audio/video/recording/image/cover counts and bytes, confirms scoped deletion, and holds Undo on the page without overwriting newer media. Provider disclosures now describe opt-in content and provider/browser policies; all six offline interface catalogues updated locally. Typecheck, 1,586 tests (one skipped), build pass. Browser: attached a disposable WAV to a phrase, deleted Audio after confirmation, observed 1→0, then Undo restored 0→1. No real recordings deleted. Undo expires on leaving the page; packs/voice management and remaining 6-25 checks still pending.

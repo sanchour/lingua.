@@ -7327,5 +7327,15 @@
   "Lingua · Quick Review": "Lingua · Révision rapide",
   "Quick Review · Floating": "Révision rapide · Fenêtre flottante",
   "{0} cards due today": "{0} cartes à réviser aujourd’hui",
-  "Full Review": "Révision complète"
+  "Full Review": "Révision complète",
+  "Recordings": "Enregistrements",
+  "Images": "Images",
+  "Delete {0}?": "Supprimer {0} ?",
+  "Delete saved {0}": "Supprimer les fichiers {0} enregistrés",
+  "Deleted {0} files. Undo is available on this page.": "{0} fichiers supprimés. Vous pouvez annuler sur cette page.",
+  "These are saved files, not a cache. Deleting removes attachments across languages. Undo is available until you leave this page.": "Ces fichiers sont enregistrés, pas en cache. La suppression retire des pièces jointes dans toutes les langues. Vous pouvez annuler avant de quitter cette page.",
+  "Could not change stored media.": "Impossible de modifier les fichiers multimédias.",
+  "Saved content stays on this device. Online features send only the content they need.": "Le contenu enregistré reste sur cet appareil. Les fonctions en ligne envoient seulement le contenu nécessaire.",
+  "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "L’IA envoie le texte ou l’audio choisi au fournisseur sélectionné avec votre clé. Ses règles de confidentialité et de conservation s’appliquent.",
+  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "Les voix locales et Whisper fonctionnent sur cet appareil. La parole en ligne utilise le fournisseur choisi ; la reconnaissance du navigateur peut utiliser les serveurs de son éditeur."
 }

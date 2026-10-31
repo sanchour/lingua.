@@ -7327,5 +7327,15 @@
   "Lingua · Quick Review": "Lingua · 快速复习",
   "Quick Review · Floating": "快速复习 · 悬浮窗口",
   "{0} cards due today": "今天有 {0} 张卡片到期",
-  "Full Review": "完整复习"
+  "Full Review": "完整复习",
+  "Recordings": "录音",
+  "Images": "图片",
+  "Delete {0}?": "删除{0}？",
+  "Delete saved {0}": "删除已保存的{0}",
+  "Deleted {0} files. Undo is available on this page.": "已删除{0}个文件。可在此页面撤销。",
+  "These are saved files, not a cache. Deleting removes attachments across languages. Undo is available until you leave this page.": "这些是保存的文件，不是缓存。删除会移除所有语言的附件。离开此页面前可以撤销。",
+  "Could not change stored media.": "无法更改保存的媒体。",
+  "Saved content stays on this device. Online features send only the content they need.": "保存的内容保留在此设备上。在线功能仅发送所需的内容。",
+  "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "AI 使用你的密钥将所选文本或音频发送给所选服务商。适用该服务商的隐私和保留政策。",
+  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "本地语音和 Whisper 在此设备上运行。在线语音使用所选服务商；浏览器语音识别可能使用浏览器厂商的服务器。"
 }

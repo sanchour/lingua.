@@ -14610,5 +14610,38 @@
   ],
   "Full Review": [
     "src/features/home/DailyWordCard.tsx"
+  ],
+  "Video": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Recordings": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Images": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Delete {0}?": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Delete saved {0}": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Deleted {0} files. Undo is available on this page.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "These are saved files, not a cache. Deleting removes attachments across languages. Undo is available until you leave this page.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Could not change stored media.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Saved content stays on this device. Online features send only the content they need.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": [
+    "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": [
+    "src/features/ordo/sections/StorageSection.tsx"
   ]
 }

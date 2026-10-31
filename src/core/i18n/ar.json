@@ -7327,5 +7327,15 @@
   "Lingua · Quick Review": "Lingua · مراجعة سريعة",
   "Quick Review · Floating": "مراجعة سريعة · نافذة عائمة",
   "{0} cards due today": "بطاقات مستحقة اليوم: {0}",
-  "Full Review": "مراجعة كاملة"
+  "Full Review": "مراجعة كاملة",
+  "Recordings": "التسجيلات",
+  "Images": "الصور",
+  "Delete {0}?": "حذف {0}؟",
+  "Delete saved {0}": "حذف الملفات المحفوظة: {0}",
+  "Deleted {0} files. Undo is available on this page.": "حُذف {0} ملفًا. يمكنك التراجع في هذه الصفحة.",
+  "These are saved files, not a cache. Deleting removes attachments across languages. Undo is available until you leave this page.": "هذه ملفات محفوظة وليست ذاكرة مؤقتة. سيؤدي الحذف إلى إزالة المرفقات في جميع اللغات. يمكنك التراجع حتى مغادرة هذه الصفحة.",
+  "Could not change stored media.": "تعذّر تغيير الوسائط المحفوظة.",
+  "Saved content stays on this device. Online features send only the content they need.": "يبقى المحتوى المحفوظ على هذا الجهاز. ترسل الميزات المتصلة فقط المحتوى الذي تحتاج إليه.",
+  "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "يرسل الذكاء الاصطناعي النص أو الصوت الذي تختاره إلى المزود المحدد باستخدام مفتاحك. تسري سياسات الخصوصية والاحتفاظ الخاصة به.",
+  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "تعمل الأصوات المحلية وWhisper على هذا الجهاز. تستخدم خدمات الكلام المتصلة المزود المحدد؛ وقد يستخدم تعرف المتصفح على الكلام خوادم مطوّره."
 }
