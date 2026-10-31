@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.145** · 2026-10-31 · 6-19: offline coverage checkpoint before final browser pass
 - **0.6.0-alpha.144** · 2026-10-30 · Publish completed 6-20 to main
 - **0.6.0-alpha.143** · 2026-10-30 · 6-20 N2: notebook study tools, connections and completion
 - **0.6.0-alpha.142** · 2026-10-30 · 6-20 P2: capture, recall, cards and templates
