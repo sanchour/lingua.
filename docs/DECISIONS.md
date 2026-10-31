@@ -2020,3 +2020,6 @@ The user proposed a new section for **Slang & Dialects**:
   - *French*: Regional and global varieties (e.g. Quebecois, Parisian/Verlan, Southern/Marseillais, Belgian, Swiss, West African).
   - *German, Italian, Russian*: Core regional dialects, urban slang, and pronunciation contrasts.
 - **Next step**: Do not implement yet. A stronger model (e.g. Claude Opus) will plan this feature out in full (structure, data sources, visual map interaction, learning/comparison drills) before building begins.
+
+
+**6-22/24/25 verification, 2026-10-31 (Codex):** preserve historical implementation records but reopen their unqualified completion statuses after real dictionary searches and source inspection found failures. Record automated, browser and static evidence separately in [LINGUA-6-VERIFICATION.md](LINGUA-6-VERIFICATION.md). Do not exercise blanket blob deletion, rewrite protected shared controls, or claim external-app/screen-reader compatibility. Stop without source repairs under the user’s existing-failure rule; the browser extension remains excluded.

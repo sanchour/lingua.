@@ -1640,7 +1640,7 @@ These are integrated activities that combine skills instead of training each one
 - [x] `F1276` Search for a word from its definition · **6-22**
 - [x] `F1277` Search for rhymes · **6-22**
 - [x] `F1278` Search for words with similar sounds · **6-22**
-- [x] `F1279` Search for words with a particular prefix or suffix · **6-22**
+- [ ] `F1279` Search for words with a particular prefix or suffix · **6-22** · verification failed: indexed prefix range returns no results; suffix is limited to 12,000 entries
 - [x] `F1280` Search by grammatical category · **6-22**
 - [x] `F1281` Search across personal vocabulary
 - [x] `F1282` Search across saved texts · **6-22**
@@ -1951,13 +1951,13 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1541` Keyboard-only navigation · **6-25**
 - [x] `F1542` Data export
 - [x] `F1543` Account deletion
-- [x] `F1544` Privacy controls · **6-25**
+- [ ] `F1544` Privacy controls · **6-25** · verification incomplete: destination copy contains unsupported retention/privacy promises
 - [x] `F1545` Synchronization status
-- [x] `F1546` Storage management · **6-25**
-- [x] `F1547` Battery-efficient audio · **6-25**
+- [ ] `F1546` Storage management · **6-25** · verification failed: media clear deletes all saved blobs; required per-kind controls incomplete
+- [ ] `F1547` Battery-efficient audio · **6-25** · verification incomplete: hidden-page handler stops TTS, not transcription
 - [x] `F1548` Local data caching
 - [x] `F1549` Clear error messages · **6-25**
-- [x] `F1550` Undo for destructive actions · **6-25**
+- [ ] `F1550` Undo for destructive actions · **6-25** · verification failed: cached-media clear has no undo and includes saved recordings/media
 
 ## 25 · Advanced and experimental features
 
@@ -2131,3 +2131,6 @@ With this many possibilities, the danger is building a sprawling collection of t
 > For example, when a learner encounters an unfamiliar word in a Russian short story, the app could let them save it, inspect its grammar, hear its pronunciation, see related words, add it to a spaced-repetition queue, use it in an AI conversation and later encounter it in another reading passage.
 
 > One word, connected to the entire learning experience. That’s the kind of integration that can make your app genuinely powerful.
+
+
+**Verification correction, Codex 2026-10-31:** 6-22, 6-24 and 6-25 are not certified complete. Concrete failures and exact browser/check coverage are in [LINGUA-6-VERIFICATION.md](LINGUA-6-VERIFICATION.md). Remaining ticks retain reachable implemented parts, not a complete screen-reader, compatibility or desktop-matrix certification. Verification stopped under the user’s existing-failure rule; no source repairs were made.
