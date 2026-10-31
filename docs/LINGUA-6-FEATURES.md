@@ -1640,7 +1640,7 @@ These are integrated activities that combine skills instead of training each one
 - [x] `F1276` Search for a word from its definition · **6-22**
 - [x] `F1277` Search for rhymes · **6-22**
 - [x] `F1278` Search for words with similar sounds · **6-22**
-- [ ] `F1279` Search for words with a particular prefix or suffix · **6-22** · verification failed: indexed prefix range returns no results; suffix is limited to 12,000 entries
+- [x] `F1279` Search for words with a particular prefix or suffix · **6-22** · S2 repaired indexed prefix bounds and full-corpus suffix scoring; prefix looked at in browser
 - [x] `F1280` Search by grammatical category · **6-22**
 - [x] `F1281` Search across personal vocabulary
 - [x] `F1282` Search across saved texts · **6-22**

@@ -7337,5 +7337,7 @@
   "Could not change stored media.": "无法更改保存的媒体。",
   "Saved content stays on this device. Online features send only the content they need.": "保存的内容保留在此设备上。在线功能仅发送所需的内容。",
   "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "AI 使用你的密钥将所选文本或音频发送给所选服务商。适用该服务商的隐私和保留政策。",
-  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "本地语音和 Whisper 在此设备上运行。在线语音使用所选服务商；浏览器语音识别可能使用浏览器厂商的服务器。"
+  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "本地语音和 Whisper 在此设备上运行。在线语音使用所选服务商；浏览器语音识别可能使用浏览器厂商的服务器。",
+  "Dictionary search failed.": "词典搜索失败。",
+  "Search failed. Try again.": "搜索失败。请重试。"
 }

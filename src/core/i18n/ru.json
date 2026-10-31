@@ -7337,5 +7337,7 @@
   "Could not change stored media.": "Не удалось изменить сохранённые медиафайлы.",
   "Saved content stays on this device. Online features send only the content they need.": "Сохранённые данные остаются на этом устройстве. Онлайн-функции отправляют только необходимые им данные.",
   "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "ИИ отправляет выбранный текст или аудио выбранному провайдеру с вашим ключом. Действуют его правила конфиденциальности и хранения.",
-  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "Локальные голоса и Whisper работают на этом устройстве. Онлайн-речь использует выбранного провайдера; распознавание браузера может использовать серверы его разработчика."
+  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "Локальные голоса и Whisper работают на этом устройстве. Онлайн-речь использует выбранного провайдера; распознавание браузера может использовать серверы его разработчика.",
+  "Dictionary search failed.": "Ошибка поиска в словаре.",
+  "Search failed. Try again.": "Ошибка поиска. Попробуйте ещё раз."
 }

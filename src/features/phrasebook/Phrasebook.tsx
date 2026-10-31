@@ -1,5 +1,5 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { phraseToCard } from '@/data/notebook';
 import { phrasebookSpecs } from '@/core/exercise/phrasebook';
 import { templateSlots } from '@/core/notebook/library';
@@ -22,8 +22,11 @@ import { toast } from '@/state/ui';
 export function Phrasebook({ lang }: { lang: string }) {
   const t = useUi(); const navigate = useNavigate(); const [practice, setPractice] = useState<SavedPhrase[] | null>(null); const [template, setTemplate] = useState<SavedPhrase | null>(null); const [makingCard, setMakingCard] = useState(false);
   const data = useLibrary('phrasebook', lang);
+  const [params] = useSearchParams();
+  const requested = params.get('phrase');
   const [query, setQuery] = useState(''); const [folder, setFolder] = useState(''); const [kind, setKind] = useState('');
   const [selected, select] = useState<string>(); const [editing, edit] = useState<SavedPhrase | null>(null);
+  useEffect(() => { if (requested) { select(requested); setQuery(''); setFolder(''); setKind(''); } }, [requested, lang]);
   const list = filterLibrary(data?.items ?? [], query, folder).filter((p) => !kind || p.kind === kind);
   const phrase = list.find((p) => p.id === selected) ?? list[0];
   const folders = [...new Set((data?.items ?? []).map((p) => p.folder).filter(Boolean))].sort();

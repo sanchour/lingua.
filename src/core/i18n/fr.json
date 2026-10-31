@@ -7337,5 +7337,7 @@
   "Could not change stored media.": "Impossible de modifier les fichiers multimédias.",
   "Saved content stays on this device. Online features send only the content they need.": "Le contenu enregistré reste sur cet appareil. Les fonctions en ligne envoient seulement le contenu nécessaire.",
   "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "L’IA envoie le texte ou l’audio choisi au fournisseur sélectionné avec votre clé. Ses règles de confidentialité et de conservation s’appliquent.",
-  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "Les voix locales et Whisper fonctionnent sur cet appareil. La parole en ligne utilise le fournisseur choisi ; la reconnaissance du navigateur peut utiliser les serveurs de son éditeur."
+  "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "Les voix locales et Whisper fonctionnent sur cet appareil. La parole en ligne utilise le fournisseur choisi ; la reconnaissance du navigateur peut utiliser les serveurs de son éditeur.",
+  "Dictionary search failed.": "La recherche dans le dictionnaire a échoué.",
+  "Search failed. Try again.": "La recherche a échoué. Réessayez."
 }

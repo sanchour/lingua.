@@ -39,6 +39,8 @@ export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { 
   const [mode, setMode] = useState<DictSearchMode>('word');
   const [pos, setPos] = useState<string>('all');
   const [showTools, setShowTools] = useState(false);
+  const [searchError, setSearchError] = useState('');
+  const [searching, setSearching] = useState(false);
   const [results, setResults] = useState<ScoredDictRow[]>([]);
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
@@ -46,15 +48,18 @@ export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { 
   const box = useRef<HTMLDivElement>(null);
   const ready = installed?.state === 'ready' || installed?.state === 'old';
 
+  useEffect(() => { if (ready) void searchFullAdvanced(lang, '', { mode: 'meaning', limit: 0 }).catch(() => undefined); }, [lang, ready]);
+
   useEffect(() => {
     let live = true;
     if (!ready || (!query.trim() && pos === 'all')) return setResults([]);
+    setSearchError(''); setSearching(true);
     void searchFullAdvanced(lang, query, { mode, pos, limit: 10 }).then((found) => {
       if (live) {
         setResults(found);
         setActive(0);
       }
-    });
+    }).catch(() => { if (live) { setSearchError('Dictionary search failed.'); setResults([]); } }).finally(() => { if (live) setSearching(false); });
     return () => {
       live = false;
     };
@@ -77,6 +82,8 @@ export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { 
 
   return (
     <div ref={box} className={cx('relative', className)}>
+      {searchError && <p role="alert"><UiText source="Dictionary search failed." /></p>}
+      {searching && <p role="status"><UiText source="Loading…" /></p>}
       <div className="flex items-center gap-2">
         <label className={cx('flex flex-1 items-center gap-2.5 rounded-xl border border-line bg-raised px-3.5 transition-colors focus-within:border-accent hover:border-line-strong', size === 'lg' ? 'h-14 rounded-2xl' : 'h-11')}>
           <Search size={size === 'lg' ? 20 : 17} aria-hidden className="shrink-0 text-ink-faint" />
@@ -88,7 +95,7 @@ export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { 
             }}
             onFocus={() => setOpen(true)}
             onKeyDown={(e) => {
-              if (e.key === 'ArrowDown') (e.preventDefault(), setActive((i) => Math.min(results.length - 1, i + 1)));
+              if (e.key === 'ArrowDown') (e.preventDefault(), setActive((i) => Math.max(0, Math.min(results.length - 1, i + 1))));
               if (e.key === 'ArrowUp') (e.preventDefault(), setActive((i) => Math.max(0, i - 1)));
               if (e.key === 'Enter') {
                 if (results[active]) go(results[active].row.word);
@@ -102,6 +109,7 @@ export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { 
             role="combobox"
             aria-expanded={open && results.length > 0}
             aria-controls={listId}
+            aria-activedescendant={open && results[active] ? `${listId}-${active}` : undefined}
             aria-label={`Look up a word in the ${name} dictionary`}
             placeholder={mode === 'meaning' ? `Describe a concept or meaning in English…` : `Look up in ${name} (${activeModeMeta.label.toLowerCase()})`}
             autoCapitalize="off"
@@ -188,11 +196,11 @@ export function DictionarySearch({ lang, autoFocus, size = 'md', className }: { 
                   </span>
                 </button>
               </li>
-            ) : results.length === 0 ? (
+            ) : searching ? <li className="px-3 py-2.5 text-sm"><UiText source="Loading…" /></li> : results.length === 0 ? (
               <li className="px-3 py-2.5 text-[14px] text-ink-soft"><UiText source={'No matching dictionary entries found.'} /></li>
             ) : (
               results.map(({ row: r, reason }, i) => (
-                <li key={r.key} role="option" aria-selected={i === active}>
+                <li key={r.key} id={`${listId}-${i}`} role="option" aria-selected={i === active}>
                   <button
                     type="button"
                     onPointerEnter={() => setActive(i)}

@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.152** · 2026-10-31 · repair full dictionary coverage and current library search
 - **0.6.0-alpha.151** · 2026-10-31 · make saved-media deletion explicit and reversible
 - **0.6.0-alpha.150** · 2026-10-31 · resume authorized repairs of 6-22, 6-24 and 6-25
 - **0.6.0-alpha.149** · 2026-10-31 · record failed verification of 6-22, 6-24 and 6-25

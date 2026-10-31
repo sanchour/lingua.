@@ -117,6 +117,21 @@ export function matchesPos(row: FullDictRow, posFilter?: string): boolean {
   return row.entries.some((e) => e.pos.toLowerCase() === target);
 }
 
+const definitions = new WeakMap<FullDictRow, { raw: string[]; folded: string[]; tokens: Set<string>; tokenList: string[] }>();
+function meaningIndex(row: FullDictRow) {
+  let index = definitions.get(row);
+  if (!index) {
+    const raw = [...row.entries.flatMap((e) => e.senses.flatMap((s) => s.g)), ...(row.mono ?? []).flatMap((m) => m.defs)];
+    const tokens = new Set(tokenizeMeaning(raw.join(' ; ')));
+    index = { raw, folded: raw.map(stripAccents), tokens, tokenList: [...tokens] };
+    definitions.set(row, index);
+  }
+  return index;
+}
+
+/** Prepare once per dictionary snapshot, in the search worker. */
+export function prepareDictionarySearch(rows: FullDictRow[]): void { for (const row of rows) meaningIndex(row); }
+
 // ── Main pure search across a dictionary slice ──────────────────────────────
 
 export function searchDictionaryRows(
@@ -142,6 +157,7 @@ export function searchDictionaryRows(
   }
 
   const queryTokens = options.mode === 'meaning' ? tokenizeMeaning(qRaw) : [];
+  const meaningPattern = options.mode === 'meaning' ? new RegExp(`(?:^|[^a-z])${qFold.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:$|[^a-z])`) : undefined;
   const targetRhyme =
     options.mode === 'rhyme'
       ? (() => {
@@ -178,22 +194,20 @@ export function searchDictionaryRows(
 
       case 'meaning': {
         // Reverse dictionary / search by concept or definition (F1247, F1275, F1276)
-        const glosses = row.entries.flatMap((e) => e.senses.flatMap((s) => s.g));
-        const monoDefs = (row.mono ?? []).flatMap((m) => m.defs);
-        const allDefs = [...glosses, ...monoDefs];
+        const index = meaningIndex(row);
+        const allDefs = index.raw;
         if (!allDefs.length) break;
-
-        const joinedLower = stripAccents(allDefs.join(' ; '));
         let bestScore = 0;
         let matchedDef = '';
 
         // Direct substring match in a gloss
-        for (const g of allDefs) {
-          const gClean = stripAccents(g);
+        for (let i = 0; i < allDefs.length; i++) {
+          const g = allDefs[i];
+          const gClean = index.folded[i];
           if (gClean === qFold) {
             bestScore = Math.max(bestScore, 100);
             matchedDef = g;
-          } else if (new RegExp(`(?:^|[^a-z])${qFold.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:$|[^a-z])`).test(gClean)) {
+          } else if (meaningPattern!.test(gClean)) {
             if (85 > bestScore) {
               bestScore = 85;
               matchedDef = g;
@@ -203,10 +217,10 @@ export function searchDictionaryRows(
 
         // Concept token overlap
         if (queryTokens.length > 0) {
-          const defTokens = new Set(tokenizeMeaning(joinedLower));
+          const defTokens = index.tokens;
           let hits = 0;
           for (const qt of queryTokens) {
-            if (defTokens.has(qt) || [...defTokens].some((dt) => dt.startsWith(qt) || qt.startsWith(dt))) {
+            if (defTokens.has(qt) || index.tokenList.some((dt) => dt.startsWith(qt) || qt.startsWith(dt))) {
               hits++;
             }
           }
@@ -215,7 +229,7 @@ export function searchDictionaryRows(
             const conceptScore = Math.round(ratio * 75) + hits * 5;
             if (conceptScore > bestScore) {
               bestScore = conceptScore;
-              matchedDef = glosses[0] ?? monoDefs[0] ?? '';
+              matchedDef = allDefs[0] ?? '';
             }
           }
         }

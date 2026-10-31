@@ -14643,5 +14643,13 @@
   ],
   "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": [
     "src/features/ordo/sections/StorageSection.tsx"
+  ],
+  "Dictionary search failed.": [
+    "src/features/search/GlobalSearchModal.tsx",
+    "src/features/thesaurus/dictionary/DictionarySearch.tsx"
+  ],
+  "Search failed. Try again.": [
+    "src/features/search/GlobalSearchModal.tsx",
+    "src/features/thesaurus/dictionary/DictionarySearch.tsx"
   ]
 }
