@@ -2404,3 +2404,6 @@ The user proposed a new section dedicated to **Slang & Dialects** across the six
   2. Slang & dialect dictionary / comparative lexicon (compare local terms and expressions across regions).
   3. "How to speak in that dialect": phonological shifts, intonation curves, cadence, rhythm, colloquial phrasing, and speech mannerisms.
   4. Dialect practice and recognition drills.
+
+
+**6-22 / 6-24 / 6-25 verification plan (Codex, 2026-10-31):** clean setup typecheck, 1,585 tests (one skipped), production build pass. Verify dictionary modes, personal entries and global search including current Notebook/Phrasebook; import/export formats, round trips and reachable controls; high contrast, reading typography, keyboard/accessible markup, storage/privacy and desktop review. Use desktop sizes 1280, 1440 and 1366×768 in both themes. Fix only these steps, add regression checks for nontrivial fixes, and publish each checked slice to Codex. External Anki/Obsidian applications, actual screen-reader use, notifications/PiP and downloads require explicit evidence; never infer success from the audit ticks. The browser extension stays outside this scope.
