@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.155** · 2026-10-31 · Claim remaining 6-25 storage and Undo verification work
 - **0.6.0-alpha.154** · 2026-10-31 · Verified dictionary/import repairs, safe media Undo and desktop review; preserve main merge and add PR checks
 - **0.6.0-alpha.153** · 2026-10-31 · Design notes: style inspector with live testing & box model; Sandesigner clickable canvas tools
 - **0.6.0-alpha.152** · 2026-10-31 · repair full dictionary coverage and current library search
