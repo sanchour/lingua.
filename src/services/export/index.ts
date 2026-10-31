@@ -1,7 +1,8 @@
 import type { SavedPhrase } from '@/core/notebook/library';
 // Exporting Lingua's records to open formats: CSV (RFC 4180), Markdown with YAML front matter
 // and [[wikilinks]], plain text, printable HTML reports, and iCalendar (.ics, RFC 5545).
-import type { Chat, DailyStat, Deck, Goal, JournalEntry, Note, Text, Word } from '@/data/types';
+import type { Chat, DailyStat, Deck, Goal, JournalEntry, Note, Text, Word, GrammarProgressRow } from '@/data/types';
+import type { TopicNotesMap } from '@/data/grammarUserData';
 import type { ReadingMark } from '@/core/reading/aids';
 
 // ── RFC 4180 CSV helpers ────────────────────────────────────────────────────
@@ -116,18 +117,18 @@ export function notesToMarkdown(deck: Pick<Deck, 'name' | 'lang' | 'description'
     cards: active.length,
   });
 
-  const sections = active.map((n) => {
-    const heading = `## ${wikilink(n.lemma || n.term, n.term)}`;
+  const sections = active.map((n, i) => {
+    const heading = `## Card ${i + 1}`;
     const meta: string[] = [];
     if (n.pos) meta.push(`*${n.pos}*`);
     if (n.gender) meta.push(`(${n.gender})`);
     if (n.ipa) meta.push(`/${n.ipa}/`);
     const tags = (n.tags ?? []).map((t) => `#${t.replace(/\s+/g, '-')}`).join(' ');
 
-    const lines = [heading];
+    const lines = [heading, '', `- **Term:** ${n.term}`];
     if (meta.length) lines.push(meta.join(' '));
     lines.push('', `- **Meaning:** ${n.meaning}`);
-    if (n.lemma && n.lemma !== n.term) lines.push(`- **Lemma:** ${wikilink(n.lemma)}`);
+    if (n.lemma && n.lemma !== n.term) lines.push(`- **Lemma:** ${n.lemma}`);
     if (n.example?.text) {
       lines.push(`- **Example:** ${n.example.text}`);
       if (n.example.translation) lines.push(`  - *${n.example.translation}*`);
@@ -140,7 +141,7 @@ export function notesToMarkdown(deck: Pick<Deck, 'name' | 'lang' | 'description'
   });
 
   const desc = deck.description ? `\n${deck.description}\n` : '';
-  return `${fm}\n\n# ${deck.name}${desc}\n\n${sections.join('\n\n')}\n`;
+  return `${fm}\n\n# ${deck.name}${desc}\n\n${active.map((n, i) => '- ' + wikilink('#Card ' + (i + 1), n.term)).join('\n')}\n\n${sections.join('\n\n')}\n`;
 }
 
 // ── 4. Journal / Diarium entries to Markdown & plain text (F0692, F1492) ────
@@ -212,6 +213,16 @@ export interface GrammarNoteExportItem {
   userNote?: string;
   examples?: Array<{ target: string; translation?: string }>;
   relatedTopics?: string[];
+}
+
+export function grammarNotesForExport(progress: GrammarProgressRow[], notes: TopicNotesMap, lang: string): GrammarNoteExportItem[] {
+  const items = new Map(progress.filter((r) => !r.deletedAt && r.lang === lang).map((r) => [r.topic, { id: r.id, lang, title: r.topic, summary: `Step ${r.step}/6 · ${r.lessons} lessons completed` } as GrammarNoteExportItem]));
+  for (const [topic, value] of Object.entries(notes)) {
+    if (!value.note.trim()) continue;
+    const item = items.get(topic) ?? { id: `${lang}:${topic}`, lang, title: topic };
+    items.set(topic, { ...item, userNote: value.note });
+  }
+  return [...items.values()];
 }
 
 export function grammarNotesToMarkdown(items: GrammarNoteExportItem[], lang: string): string {

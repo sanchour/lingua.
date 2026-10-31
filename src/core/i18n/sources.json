@@ -14651,5 +14651,34 @@
   "Search failed. Try again.": [
     "src/features/search/GlobalSearchModal.tsx",
     "src/features/thesaurus/dictionary/DictionarySearch.tsx"
+  ],
+  "Custom separators": [
+    "src/features/thesaurus/library/CsvImportDrawer.tsx"
+  ],
+  "Term separator": [
+    "src/features/thesaurus/library/CsvImportDrawer.tsx"
+  ],
+  "Row separator": [
+    "src/features/thesaurus/library/CsvImportDrawer.tsx"
+  ],
+  "Floating review": [
+    "src/features/home/DailyWordCard.tsx",
+    "src/services/transcribe/visibility.ts",
+    "src/services/speech/recognition.ts"
+  ],
+  "Could not open floating review.": [
+    "src/features/home/DailyWordCard.tsx",
+    "src/services/transcribe/visibility.ts",
+    "src/services/speech/recognition.ts"
+  ],
+  "Session complete": [
+    "src/features/home/DailyWordCard.tsx",
+    "src/services/transcribe/visibility.ts",
+    "src/services/speech/recognition.ts"
+  ],
+  "Transcription paused while Lingua is hidden. Return and try again.": [
+    "src/features/home/DailyWordCard.tsx",
+    "src/services/transcribe/visibility.ts",
+    "src/services/speech/recognition.ts"
   ]
 }

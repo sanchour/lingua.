@@ -1,3 +1,6 @@
+import { getGrammarNotesMap } from '@/data/grammarUserData';
+import { loadGrammar } from '@/core/grammar/load';
+import { topicsOf } from '@/core/grammar/types';
 import { listLibrary } from '@/data/notebook';
 import { savedPhrasesForExport } from '@/services/export';
 import { UiText } from '@/design/i18n/UiText';
@@ -17,6 +20,7 @@ import {
   entriesToText,
   goalsToIcsEvents,
   grammarNotesToMarkdown,
+  grammarNotesForExport,
   highlightsToMarkdown,
   phrasebookToCsv,
   phrasebookToMarkdown,
@@ -66,13 +70,9 @@ export function ExportDataPanel({ language }: { language: LanguageProfile }) {
 
   const exportGrammarMd = () =>
     run('grammar-md', async () => {
-      const rows = await db.grammarProgress.where('lang').equals(lang).toArray();
-      const items = rows.map((r) => ({
-        id: r.id,
-        lang: r.lang,
-        title: r.topic,
-        summary: `Step ${r.step}/6 · ${r.lessons} lessons completed`,
-      }));
+      const [rows, notes, grammar] = await Promise.all([db.grammarProgress.where('lang').equals(lang).toArray(), getGrammarNotesMap(lang), loadGrammar(lang)]);
+      const titles = new Map((grammar ? topicsOf(grammar) : []).map((t) => [t.id, t.title]));
+      const items = grammarNotesForExport(rows, notes, lang).map((item) => ({ ...item, title: titles.get(item.title) ?? item.title }));
       if (!items.length) return void toast('No grammar progress or notes yet.');
       saveFile(`lingua-grammar-notes-${lang}.md`, grammarNotesToMarkdown(items, lang), 'text/markdown;charset=utf-8');
       toast({ source: 'Exported {0} grammar topics to Markdown.', values: [String(items.length)] }, { tone: 'success' });

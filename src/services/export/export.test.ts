@@ -1,3 +1,4 @@
+import { parseMarkdownDocument } from '@/core/parsers/markdownImport';
 import { describe, expect, it } from 'vitest';
 import type { Chat, DailyStat, Deck, Goal, JournalEntry, Note, Text, Word } from '@/data/types';
 import {
@@ -10,6 +11,7 @@ import {
   frontMatter,
   goalsToIcsEvents,
   grammarNotesToMarkdown,
+  grammarNotesForExport,
   highlightsToMarkdown,
   notesToMarkdown,
   phrasebookToCsv,
@@ -94,7 +96,9 @@ describe('services/export', () => {
 
     const md = notesToMarkdown(deck, notes);
     expect(md).toContain('type: lingua-deck');
-    expect(md).toContain('## [[manzana]]');
+    expect(md).toContain('[[#Card 1|manzana]]');
+    expect(md).toContain('## Card 1');
+    expect(parseMarkdownDocument(md).notes[0]).toMatchObject({ term: 'manzana', meaning: 'apple', example: { text: 'Como una manzana.' } });
     expect(md).toContain('- **Meaning:** apple');
     expect(md).toContain('- **Example:** Como una manzana.');
     expect(md).toContain('- **Tags:** #food #fruit');
@@ -319,4 +323,10 @@ it('includes phrasebook folders, alternatives and sources in both open-format ex
   expect(phrasebookToMarkdown(items, 'es')).toContain('Folder: Trip');
   expect(phrasebookToCsv(items)).toContain('Formal: Buenos días');
   expect(phrasebookToMarkdown(items, 'es')).toContain('/codex/read/one');
+});
+
+it('includes saved grammar notes even without progress and never exports another language’s progress', () => {
+  const items = grammarNotesForExport([], { articles: { note: 'My saved note about la casa.', updatedAt: 1 } }, 'es');
+  expect(items).toEqual([{ id: 'es:articles', lang: 'es', title: 'articles', userNote: 'My saved note about la casa.' }]);
+  expect(grammarNotesToMarkdown(items, 'es')).toContain('My saved note about la casa.');
 });

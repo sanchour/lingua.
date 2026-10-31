@@ -7339,5 +7339,12 @@
   "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "L’IA envoie le texte ou l’audio choisi au fournisseur sélectionné avec votre clé. Ses règles de confidentialité et de conservation s’appliquent.",
   "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "Les voix locales et Whisper fonctionnent sur cet appareil. La parole en ligne utilise le fournisseur choisi ; la reconnaissance du navigateur peut utiliser les serveurs de son éditeur.",
   "Dictionary search failed.": "La recherche dans le dictionnaire a échoué.",
-  "Search failed. Try again.": "La recherche a échoué. Réessayez."
+  "Search failed. Try again.": "La recherche a échoué. Réessayez.",
+  "Custom separators": "Séparateurs personnalisés",
+  "Term separator": "Séparateur de terme",
+  "Row separator": "Séparateur de ligne",
+  "Floating review": "Révision flottante",
+  "Could not open floating review.": "Impossible d’ouvrir la révision flottante.",
+  "Session complete": "Session terminée",
+  "Transcription paused while Lingua is hidden. Return and try again.": "La transcription s’est arrêtée lorsque Lingua a été masqué. Revenez et réessayez."
 }

@@ -2134,3 +2134,6 @@ With this many possibilities, the danger is building a sprawling collection of t
 
 
 **Verification correction, Codex 2026-10-31:** 6-22, 6-24 and 6-25 are not certified complete. Concrete failures and exact browser/check coverage are in [LINGUA-6-VERIFICATION.md](LINGUA-6-VERIFICATION.md). Remaining ticks retain reachable implemented parts, not a complete screen-reader, compatibility or desktop-matrix certification. Verification stopped under the user’s existing-failure rule; no source repairs were made.
+
+
+**S3 export/import verification:** APKG reimport, Kindle preview→deck and arbitrary custom Quizlet separators are learner-reachable and checked in-browser. Actual grammar notes now feed the Markdown exporter, and deck wikilinks target headings in the same file (regression-tested). External applications and calendar import remain unverified.

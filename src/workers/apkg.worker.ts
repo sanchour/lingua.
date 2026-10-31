@@ -24,7 +24,7 @@ const CHUNK = 2000;
 
 async function run({ lang, file, fileName, wasmUrl }: ApkgWorkerRequest): Promise<void> {
   post({ type: 'progress', phase: 'read', pct: 0 });
-  const [SQL, zip] = await Promise.all([initSqlJs({ locateFile: () => wasmUrl }), JSZip.loadAsync(file)]);
+  const [SQL, zip] = await Promise.all([initSqlJs({ locateFile: () => wasmUrl }), file.arrayBuffer().then((bytes) => JSZip.loadAsync(bytes))]);
   const col = await readApkg(zip, SQL, decompress);
   if (!col.notes.length) throw new Error('This Anki deck has no cards.');
 

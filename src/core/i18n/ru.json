@@ -7339,5 +7339,12 @@
   "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "ИИ отправляет выбранный текст или аудио выбранному провайдеру с вашим ключом. Действуют его правила конфиденциальности и хранения.",
   "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "Локальные голоса и Whisper работают на этом устройстве. Онлайн-речь использует выбранного провайдера; распознавание браузера может использовать серверы его разработчика.",
   "Dictionary search failed.": "Ошибка поиска в словаре.",
-  "Search failed. Try again.": "Ошибка поиска. Попробуйте ещё раз."
+  "Search failed. Try again.": "Ошибка поиска. Попробуйте ещё раз.",
+  "Custom separators": "Свои разделители",
+  "Term separator": "Разделитель термина",
+  "Row separator": "Разделитель строки",
+  "Floating review": "Повторение в плавающем окне",
+  "Could not open floating review.": "Не удалось открыть плавающее окно повторения.",
+  "Session complete": "Занятие завершено",
+  "Transcription paused while Lingua is hidden. Return and try again.": "Расшифровка остановлена, пока Lingua скрыта. Вернитесь и попробуйте снова."
 }

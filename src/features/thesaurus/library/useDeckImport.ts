@@ -52,9 +52,9 @@ export function useDeckImport(lang: string) {
       const text = decodeText(new Uint8Array(await file.arrayBuffer()), lang);
       const table = readAnyDeckFileTable(text, file.name);
       if (!table.rows.length) throw new Error('That file is empty.');
-      setCsv({ name: file.name.replace(/\.(csv|tsv|txt|md|markdown)$/i, ''), table });
+      setCsv({ name: file.name.replace(/\.(csv|tsv|txt|md|markdown)$/i, ''), table, rawText: text });
     } catch (error) {
-      toast(error instanceof Error ? error.message : 'That file couldn’t be read.', { tone: 'error' });
+      toast(error instanceof Error ? error.message : 'That file couldn’t be read.', { tone: 'error', duration: 10000 });
     }
   };
 
@@ -70,7 +70,7 @@ export function useDeckImport(lang: string) {
         action: result.deckIds.length === 1 ? { label: 'Open', onClick: () => navigate(`/thesaurus/deck/${first}`) } : undefined,
       });
     } catch (error) {
-      toast(error instanceof Error ? error.message : 'The Anki deck couldn’t be imported.', { tone: 'error' });
+      toast(error instanceof Error ? error.message : 'The Anki deck couldn’t be imported.', { tone: 'error', duration: 10000 });
     } finally {
       setApkgProgress(null);
     }

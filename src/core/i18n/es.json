@@ -7339,5 +7339,12 @@
   "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "La IA envía el texto o audio elegido al proveedor seleccionado con tu clave. Se aplican sus políticas de privacidad y conservación.",
   "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "Las voces locales y Whisper funcionan en este dispositivo. El audio en línea usa el proveedor elegido; el reconocimiento del navegador puede usar servidores de su fabricante.",
   "Dictionary search failed.": "La búsqueda del diccionario falló.",
-  "Search failed. Try again.": "La búsqueda falló. Inténtalo de nuevo."
+  "Search failed. Try again.": "La búsqueda falló. Inténtalo de nuevo.",
+  "Custom separators": "Separadores personalizados",
+  "Term separator": "Separador de término",
+  "Row separator": "Separador de fila",
+  "Floating review": "Repaso flotante",
+  "Could not open floating review.": "No se pudo abrir el repaso flotante.",
+  "Session complete": "Sesión completada",
+  "Transcription paused while Lingua is hidden. Return and try again.": "La transcripción se detuvo al ocultar Lingua. Vuelve e inténtalo de nuevo."
 }

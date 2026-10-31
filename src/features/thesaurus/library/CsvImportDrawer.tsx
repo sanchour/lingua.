@@ -2,6 +2,7 @@ import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowRight } from 'lucide-react';
+import { parseQuizletToTable } from '@/core/parsers/quizlet';
 import { guessColumns, ROLE_LABELS, tableToNotes } from '@/core/parsers/deckCsv';
 import type { ColumnRole, DeckTable } from '@/core/parsers/deckCsv';
 import type { Folder } from '@/data/types';
@@ -13,6 +14,7 @@ import { folderOptions } from './dialogs';
 export interface CsvSource {
   name: string;
   table: DeckTable;
+  rawText?: string;
 }
 
 const ROLES = Object.keys(ROLE_LABELS) as ColumnRole[];
@@ -22,6 +24,8 @@ const NO_FOLDER = '__none';
 export function CsvImportDrawer({ lang, source, folders, onClose }: { lang: string; source: CsvSource | null; folders: Folder[]; onClose: () => void }) {
   const translateUi = useUi();
   const navigate = useNavigate();
+  const [termSeparator, setTermSeparator] = useState('');
+  const [rowSeparator, setRowSeparator] = useState('\\n');
   const [header, setHeader] = useState(false);
   const [roles, setRoles] = useState<ColumnRole[]>([]);
   const [name, setName] = useState('');
@@ -30,13 +34,16 @@ export function CsvImportDrawer({ lang, source, folders, onClose }: { lang: stri
 
   useEffect(() => {
     if (!source) return;
+    setTermSeparator(''); setRowSeparator('\\n');
     setHeader(source.table.header);
     setRoles(guessColumns(source.table));
     setName(source.name);
     setFolder(NO_FOLDER);
   }, [source]);
 
-  const table = useMemo(() => (source ? { ...source.table, header } : null), [source, header]);
+  const custom = useMemo(() => source?.rawText && termSeparator ? parseQuizletToTable(source.rawText, { termDelimiter: termSeparator.replace(/\\t/g, '\t'), rowDelimiter: rowSeparator.replace(/\\n/g, '\n') || '\n' }) : null, [source, termSeparator, rowSeparator]);
+  useEffect(() => { if (custom) { setRoles(['term', 'meaning']); setHeader(false); } }, [custom]);
+  const table = useMemo(() => (source ? { ...(custom ?? source.table), header } : null), [source, custom, header]);
   const notes = useMemo(() => (table ? tableToNotes(table, roles) : []), [table, roles]);
   const preview = table ? table.rows.slice(header ? 1 : 0, (header ? 1 : 0) + 6) : [];
   const width = roles.length;
@@ -82,6 +89,10 @@ export function CsvImportDrawer({ lang, source, folders, onClose }: { lang: stri
           <Select label={translateUi('Folder')} value={folder} onChange={setFolder} options={folderOptions(folders)} />
         </div>
       )}
+      {source?.rawText && <details className="mt-4 text-sm"><summary className="cursor-pointer"><UiText source="Custom separators" /></summary><div className="mt-2 grid grid-cols-2 gap-3">
+        <label><UiText source="Term separator" /><input className="mt-1 w-full rounded-lg border border-line bg-raised p-2" value={termSeparator} onChange={(e) => setTermSeparator(e.target.value)} /></label>
+        <label><UiText source="Row separator" /><input className="mt-1 w-full rounded-lg border border-line bg-raised p-2" value={rowSeparator} onChange={(e) => setRowSeparator(e.target.value)} /></label>
+      </div></details>}
       <div className="mt-2 border-b border-line">
         <ToggleRow title={translateUi('First row is a header')} checked={header} onChange={setHeader} />
       </div>

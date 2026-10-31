@@ -7339,5 +7339,12 @@
   "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "AI 使用你的密钥将所选文本或音频发送给所选服务商。适用该服务商的隐私和保留政策。",
   "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "本地语音和 Whisper 在此设备上运行。在线语音使用所选服务商；浏览器语音识别可能使用浏览器厂商的服务器。",
   "Dictionary search failed.": "词典搜索失败。",
-  "Search failed. Try again.": "搜索失败。请重试。"
+  "Search failed. Try again.": "搜索失败。请重试。",
+  "Custom separators": "自定义分隔符",
+  "Term separator": "词条分隔符",
+  "Row separator": "行分隔符",
+  "Floating review": "悬浮复习",
+  "Could not open floating review.": "无法打开悬浮复习。",
+  "Session complete": "练习完成",
+  "Transcription paused while Lingua is hidden. Return and try again.": "Lingua 隐藏时转录已暂停。请返回后重试。"
 }

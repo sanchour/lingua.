@@ -81,7 +81,7 @@ export function parseMarkdownDocument(source: string, fallbackTitle?: string): P
   const flushSection = () => {
     if (activeSectionHeading && activeNotesMap.meaning) {
       notes.push({
-        term: stripMarkdownInline(activeSectionHeading),
+        term: activeNotesMap.term ?? stripMarkdownInline(activeSectionHeading),
         meaning: activeNotesMap.meaning,
         example: activeNotesMap.example ? { text: activeNotesMap.example } : undefined,
         tags: activeNotesMap.tags ? activeNotesMap.tags.split(/\s+/).map((t) => t.replace(/^#/, '')).filter(Boolean) : [],

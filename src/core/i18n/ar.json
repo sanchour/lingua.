@@ -7339,5 +7339,12 @@
   "AI sends your chosen text or audio to the selected provider using your key. That provider’s privacy and retention policies apply.": "يرسل الذكاء الاصطناعي النص أو الصوت الذي تختاره إلى المزود المحدد باستخدام مفتاحك. تسري سياسات الخصوصية والاحتفاظ الخاصة به.",
   "Local voices and Whisper work on this device. Online speech uses your selected provider; browser speech recognition may use the browser vendor’s servers.": "تعمل الأصوات المحلية وWhisper على هذا الجهاز. تستخدم خدمات الكلام المتصلة المزود المحدد؛ وقد يستخدم تعرف المتصفح على الكلام خوادم مطوّره.",
   "Dictionary search failed.": "تعذّر البحث في القاموس.",
-  "Search failed. Try again.": "تعذّر البحث. حاول مجددًا."
+  "Search failed. Try again.": "تعذّر البحث. حاول مجددًا.",
+  "Custom separators": "فواصل مخصصة",
+  "Term separator": "فاصل المصطلح",
+  "Row separator": "فاصل الصف",
+  "Floating review": "مراجعة عائمة",
+  "Could not open floating review.": "تعذّر فتح المراجعة العائمة.",
+  "Session complete": "اكتملت الجلسة",
+  "Transcription paused while Lingua is hidden. Return and try again.": "توقّف التفريغ أثناء إخفاء Lingua. عُد وحاول مجددًا."
 }
