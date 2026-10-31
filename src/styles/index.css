@@ -342,6 +342,14 @@ html[data-motion='reduced'] .plan-max-in {
   }
 }
 
+/* The large page title settles in once, a short rise and fade (transform and opacity only). */
+@keyframes title-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
 /* The radio tile playing (5.2-2): bars that rise and fall, transforms only. */
 .radio-bar {
   animation: radio-bar 0.9s ease-in-out infinite;

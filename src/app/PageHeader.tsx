@@ -52,7 +52,7 @@ function LargeTitle({ title, englishTitle, eyebrow, englishEyebrow, actions }: P
           title={englishTitle}
           className={
             wide
-              ? 'font-display text-[42px] leading-[1.1] font-semibold tracking-tight'
+              ? 'font-display text-[42px] leading-[1.1] font-semibold tracking-tight motion-safe:animate-[title-rise_220ms_ease-out_both] transition-opacity duration-200 ease-out hover:opacity-80 focus-visible:opacity-80'
               : 'font-display text-[32px] leading-[1.15] font-semibold tracking-tight'
           }
         >
