@@ -23,6 +23,7 @@ Continuing from another account: [docs/HANDOVER.md](docs/HANDOVER.md).
 - **6-29 The word graph** (the user's idea; Opus builds it, beside Part B): [docs/WORD-GRAPH-PLAN.md](docs/WORD-GRAPH-PLAN.md),
   seven pushes, G1 to G7. Its numbers were measured on the real dictionaries; read its sections 1, 3 and 4 before drawing.
 - **Lingua for Mac** (a look, not a launch; Tauri v2; the user, 2026-10-29): [docs/MAC-PLAN.md](docs/MAC-PLAN.md), handover step 25, parallel with the rest.
+- **New idea: Slang & Dialects** (the user, 2026-10-31): a section where learners compare and learn regional slang and dialect words, colloquial differences, and how to speak in that dialect, accompanied by a visual dialect map. Only the 6 core languages first (e.g. Spanish Latin American varieties like Paisa, Caleño, Costeño, Argentinian, Chilean, Peruvian, Mexican, Dominican, Cuban, Puerto Rican; Mandarin variants; French varieties, etc.). **Do not build yet: a stronger model (e.g. Claude Opus) needs to plan it out first.**
 - **Sandesigner** (the user's own design canvas for all their apps) lives in `sandesigning/`, apart from Lingua's code
   (no React, no dependencies); format in `sandesigning/FORMAT.md`. After changing it run `npm run sandesigner` and
   commit both `public/sandesigner/` and `public/sandesigning/`.
