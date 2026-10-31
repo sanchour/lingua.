@@ -674,7 +674,7 @@ sets for tier 2 languages (tier 2 gets the word games and the generated stories 
 1280, 1440, 1366×768, light and dark; a faked model for anything Max. Tick entries in LINGUA-6-FEATURES.md as built; add the
 decisions (the shelf's place, the story state format, the daily seed) to DECISIONS.md at G1 and G6.
 
-**Verification follow-up claimed by Codex 2026-10-31 (6-22, 6-24, 6-25), stopped on pre-existing failures:** preserve the original implementation records; verify each slice against current code, tests and learner screens, fix scoped defects, and record exact coverage and remaining gaps. Publish separately checked slices to `codex/lingua` only.
+**Repair follow-up claimed by Codex 2026-10-31 (6-22, 6-24, 6-25), resumed with explicit user authorization:** preserve the original implementation records; verify each slice against current code, tests and learner screens, fix scoped defects, and record exact coverage and remaining gaps. Publish separately checked slices to `codex/lingua` only.
 
 #### 6-22 · Dictionary tools (Thesaurus › Dictionary)
 
