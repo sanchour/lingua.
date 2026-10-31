@@ -4,6 +4,7 @@
 //   SANDESIGNER.md, SANDESIGNING.md, FORMAT.md        the setup file for any project's AI, and the file format
 // Run: node sandesigning/build.ts
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { rolldown } from 'rolldown';
 
 const here = new URL('./', import.meta.url);
@@ -13,7 +14,7 @@ mkdirSync(outDesigning, { recursive: true });
 mkdirSync(outDesigner, { recursive: true });
 
 const bundle = async (entry: string) => {
-  const b = await rolldown({ input: new URL(`src/${entry}`, here).pathname.replace(/^\/([A-Z]:)/, '$1'), platform: 'browser', logLevel: 'warn' });
+  const b = await rolldown({ input: fileURLToPath(new URL(`src/${entry}`, here)), platform: 'browser', logLevel: 'warn' });
   const { output } = await b.generate({ format: 'iife', minify: true });
   await b.close();
   return output[0].code;

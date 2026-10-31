@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.153** · 2026-10-31 · Design notes: style inspector with live testing & box model; Sandesigner clickable canvas tools
 - **0.6.0-alpha.146** · 2026-10-31 · docs: record Slang & Dialects section idea for the 6 core languages with visual map (to be planned by Opus)
 - **0.6.0-alpha.145** · 2026-10-31 · docs: record Slang & Dialects section idea for the 6 core languages with visual map (to be planned by Opus)
 - **0.6.0-alpha.144** · 2026-10-30 · Publish completed 6-20 to main

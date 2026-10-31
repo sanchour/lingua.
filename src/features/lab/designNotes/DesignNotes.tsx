@@ -13,6 +13,7 @@ import { copyNotes } from './copy';
 import { climb } from './inspect';
 import { NoteCard } from './NoteCard';
 import type { Editor, Rect, Saved } from './NoteCard';
+import { BoxModelOverlay } from './BoxModelOverlay';
 import { notesOn, priorityCount, roomFor, useDesignNotes } from './notes';
 import type { DesignNote } from './notes';
 import { describe } from './selector';
@@ -140,7 +141,7 @@ export default function DesignNotes() {
   };
 
   const isExpanded = !collapsed || (expandOnHover && hovered) || picking || panel !== null;
-  const [chosen, setChosen] = useState<{ el: Element; area?: Rect } | null>(null);
+  const [chosen, setChosen] = useState<{ el: Element; area?: { x: number; y: number; w: number; h: number }; showBoxModel?: boolean } | null>(null);
   const corners = CORNERS[corner];
   const moveCorner = () => {
     const order = Object.keys(CORNERS) as Corner[];
@@ -167,7 +168,7 @@ export default function DesignNotes() {
       setPicking(true);
     }
   };
-  const onElement = useCallback((el: Element | null, area?: Rect) => setChosen(el ? { el, area } : null), []);
+  const onElement = useCallback((el: Element | null, area?: { x: number; y: number; w: number; h: number }, showBoxModel?: boolean) => setChosen(el ? { el, area, showBoxModel } : null), []);
 
   // Sandesigner (7-0e): the page captured onto a canvas, with this page's notes pinned where their pins are now.
   const openCanvas = async () => {
@@ -450,6 +451,7 @@ export default function DesignNotes() {
       <div ref={outline} className="pointer-events-none fixed top-0 left-0 z-[119] rounded-md border-2 border-accent bg-accent/5 opacity-0" aria-hidden />
       <div ref={areaBox} className="pointer-events-none fixed top-0 left-0 z-[119] rounded-sm border-2 border-dashed border-accent bg-accent/10 opacity-0" aria-hidden />
       <div ref={label} className="pointer-events-none fixed top-0 left-0 z-[121] max-w-[320px] truncate rounded-md bg-inverse px-2 py-1 text-[11.5px] font-semibold text-on-inverse opacity-0 shadow-elev-2" aria-hidden />
+      {chosen?.showBoxModel && chosen.el && <BoxModelOverlay el={chosen.el} />}
 
       {pageNotes
         .filter((note) => note.area)
