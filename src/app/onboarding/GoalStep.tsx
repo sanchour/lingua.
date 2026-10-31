@@ -42,12 +42,12 @@ export function defaultGoal(level: Level): CefrLevel {
 }
 
 /** About how long the goal takes at so many minutes a day, said plainly. */
-function howLong(from: Level, to: CefrLevel, minutes: number): string {
+function howLong(from: Level, to: CefrLevel, minutes: number, translate: (source: string, values?: readonly unknown[]) => string): string {
   const days = ((HOURS[to] - HOURS[from]) * 60) / minutes;
   const months = days / 30.4;
-  if (months < 1.5) return 'a few weeks';
-  if (months < 24) return `${Math.round(months)} months`;
-  return `${Math.round(months / 12)} years`;
+  if (months < 1.5) return translate('a few weeks');
+  if (months < 24) return translate('{0} months', [Math.round(months)]);
+  return translate('{0} years', [Math.round(months / 12)]);
 }
 
 interface GoalStepProps {
@@ -73,7 +73,7 @@ export function GoalStep({ level, goal, minutes, onGoal, onMinutes }: GoalStepPr
   };
   const reach = ahead.indexOf(goal);
   const verdict = minutes >= 45 ? 'Ambitious. We like it.' : minutes <= 5 ? 'Small sips add up.' : 'A pace that lasts.';
-  const time = howLong(level, goal, minutes);
+  const time = howLong(level, goal, minutes, translateUi);
 
   return (
     <div>
@@ -107,7 +107,7 @@ export function GoalStep({ level, goal, minutes, onGoal, onMinutes }: GoalStepPr
                 </motion.span>
               )}
               <span className={cx('font-serif text-[20px] font-semibold', on || passed ? 'text-accent-text' : 'text-ink')}>{l}</span>
-              <span className="mt-0.5 text-[12px] leading-tight text-ink-soft">{MILESTONE[l]}</span>
+              <span className="mt-0.5 text-[12px] leading-tight text-ink-soft"><UiText source={MILESTONE[l]} /></span>
             </button>
           );
         })}
@@ -126,7 +126,7 @@ export function GoalStep({ level, goal, minutes, onGoal, onMinutes }: GoalStepPr
           aria-valuemin={DAILY_MINUTES[0].minutes}
           aria-valuemax={DAILY_MINUTES[last].minutes}
           aria-valuenow={minutes}
-          aria-valuetext={`${minutes} minutes, ${DAILY_MINUTES[index].name}`}
+          aria-valuetext={translateUi('{0} minutes, {1}', [minutes, translateUi(DAILY_MINUTES[index].name)])}
           onKeyDown={onKey}
           onPointerDown={(e) => {
             const box = e.currentTarget.getBoundingClientRect();
@@ -161,7 +161,7 @@ export function GoalStep({ level, goal, minutes, onGoal, onMinutes }: GoalStepPr
               style={{ left: `${(i / last) * 100}%` }}
             >
               <span className="block text-[12.5px] font-semibold tabular-nums">{d.minutes}</span>
-              <span className="block text-[11.5px] whitespace-nowrap">{d.name}</span>
+              <span className="block text-[11.5px] whitespace-nowrap"><UiText source={d.name} /></span>
             </button>
           ))}
         </div>
@@ -177,7 +177,7 @@ export function GoalStep({ level, goal, minutes, onGoal, onMinutes }: GoalStepPr
             </AnimatePresence>]} /></p>
           <p className="mt-0.5 text-[12px] text-ink-faint"><UiText source={'A rough guide from the usual hours of study per level. Reading and listening every day count.'} /></p>
         </div>
-        <p className="shrink-0 font-serif text-[15px] text-ink-soft italic">{verdict}</p>
+        <p className="shrink-0 font-serif text-[15px] text-ink-soft italic"><UiText source={verdict} /></p>
       </div>
     </div>
   );

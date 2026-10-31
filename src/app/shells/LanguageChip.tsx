@@ -76,7 +76,7 @@ export function LanguageChip({ compact = false, placement }: { compact?: boolean
                       {info?.endonym ?? l.id}
                     </span>
                     <span className="block truncate text-[12.5px] text-ink-soft">
-                      {info?.name} · {l.level} {getLevel(l.level).name}
+                      <UiText source={info?.name ?? l.id} /> · {l.level} <UiText source={getLevel(l.level).name} />
                     </span>
                   </span>
                   {active && <Check size={16} className="shrink-0 text-accent-text" aria-hidden />}

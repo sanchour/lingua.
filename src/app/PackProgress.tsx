@@ -40,7 +40,7 @@ export function PackProgress() {
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sunken">
               <div className="h-full origin-left rounded-full bg-sage transition-transform duration-200" style={{ transform: `scaleX(${Math.max(0.02, overall)})` }} />
             </div>
-            <p className="mt-1.5 text-[12px] text-ink-faint"><UiText source={'{0} · works offline once done'} values={[PHASE[job.phase]]} /></p>
+            <p className="mt-1.5 text-[12px] text-ink-faint"><UiText source={'{0} · works offline once done'} values={[<UiText source={PHASE[job.phase]} />]} /></p>
           </motion.div>
         )}
       </AnimatePresence>

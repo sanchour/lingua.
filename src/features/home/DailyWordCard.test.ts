@@ -1,5 +1,16 @@
-import { describe, expect, it } from 'vitest';
-import { getDailyWordKey } from './DailyWordCard';
+import { afterAll, describe, expect, it } from 'vitest';
+import { getDailyWordKey, loadDailyWord } from './DailyWordCard';
+
+import { createDb } from '@/data/db';
+const database = createDb('daily-word-' + Math.random());
+afterAll(() => database.delete());
+
+it('never offers a made-up cross-language word before its pack is ready', async () => {
+  for (const lang of ['es', 'fr', 'de', 'ru', 'zh', 'ar']) expect(await loadDailyWord(lang, '2026-10-31', database)).toBeNull();
+  await database.frequency.put({ id: 'es:sobremesa', lang: 'es', norm: 'sobremesa', rank: 1, gloss: 'conversation after a meal' });
+  expect(await loadDailyWord('fr', '2026-10-31', database)).toBeNull();
+  expect(await loadDailyWord('es', '2026-10-31', database)).toMatchObject({ word: 'sobremesa', gloss: 'conversation after a meal' });
+});
 
 describe('DailyWordCard (6-25 slice 2.6)', () => {
   it('deterministically hashes the date and language to a stable index within count (F1524)', () => {

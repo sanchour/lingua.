@@ -233,7 +233,8 @@
     "src/app/onboarding/LanguageStep.tsx"
   ],
   "Core": [
-    "src/app/onboarding/LanguageStep.tsx"
+    "src/app/onboarding/LanguageStep.tsx",
+    "src/core/lang/languages.ts"
   ],
   "What language will it be?": [
     "src/app/onboarding/LanguageStep.tsx"
@@ -1274,7 +1275,8 @@
     "src/features/cantus/room/search.tsx"
   ],
   "Song · {0}": [
-    "src/features/cantus/room/search.tsx"
+    "src/features/cantus/room/search.tsx",
+    "src/features/home/HomeToday.tsx"
   ],
   "Stop the 30-second preview": [
     "src/features/cantus/room/search.tsx"
@@ -1630,7 +1632,8 @@
     "src/features/cursus/course/WriteLesson.tsx",
     "src/features/production/OwnWords.tsx",
     "src/features/thesaurus/library/AddStarterMenu.tsx",
-    "src/features/ratio/AdvancedAnalyticsPanel.tsx"
+    "src/features/ratio/AdvancedAnalyticsPanel.tsx",
+    "src/core/games/source.ts"
   ],
   "Grade {0}": [
     "src/features/codex/diarium/Entries.tsx"
@@ -2466,7 +2469,8 @@
     "src/features/codex/reader/PhraseBubble.tsx"
   ],
   "Sage": [
-    "src/features/codex/reader/PhraseBubble.tsx"
+    "src/features/codex/reader/PhraseBubble.tsx",
+    "src/design/palettes.ts"
   ],
   "Blue": [
     "src/features/codex/reader/PhraseBubble.tsx"
@@ -3147,7 +3151,8 @@
     "src/features/cursus/course/CourseTab.tsx"
   ],
   "Mandarin": [
-    "src/features/cursus/course/CourseTab.tsx"
+    "src/features/cursus/course/CourseTab.tsx",
+    "src/core/lang/languages.ts"
   ],
   "Each unit you finish adds what you can do with {0}. The first takes about half an hour.": [
     "src/features/cursus/course/CourseTab.tsx"
@@ -3741,7 +3746,8 @@
     "src/features/grammatica/GrammaticaPage.tsx"
   ],
   "{0} due": [
-    "src/features/grammatica/GrammaticaPage.tsx"
+    "src/features/grammatica/GrammaticaPage.tsx",
+    "src/features/home/HomeClassic.tsx"
   ],
   "Every sentence comes from Lingua’s {0} dictionary (Wiktionary, CC BY-SA). Rules checked against{1}{2}.": [
     "src/features/grammatica/GrammaticaPage.tsx"
@@ -3936,7 +3942,8 @@
   ],
   "English": [
     "src/features/cantus/SongPage.tsx",
-    "src/features/grammatica/TopicPage.tsx"
+    "src/features/grammatica/TopicPage.tsx",
+    "src/core/lang/languages.ts"
   ],
   "Exceptions to the rule": [
     "src/features/grammatica/TopicPage.tsx"
@@ -5300,7 +5307,8 @@
     "src/features/ordo/sections/LanguageSection.tsx"
   ],
   "Beta": [
-    "src/features/ordo/sections/LanguageSection.tsx"
+    "src/features/ordo/sections/LanguageSection.tsx",
+    "src/core/lang/languages.ts"
   ],
   "Installing dictionary…": [
     "src/features/ordo/sections/LanguageSection.tsx"
@@ -5914,7 +5922,8 @@
   ],
   "Practice": [
     "src/features/practice/PracticePage.tsx",
-    "src/features/cursus/marks/MarksTab.tsx"
+    "src/features/cursus/marks/MarksTab.tsx",
+    "src/features/home/DailyWordCard.tsx"
   ],
   "Back to Thesaurus": [
     "src/features/practice/PracticePage.tsx",
@@ -6317,7 +6326,8 @@
   "Audiobook": [
     "src/features/sonus/library/AddBookDrawer.tsx",
     "src/features/sonus/BookPage.tsx",
-    "src/features/sonus/library/BookGrid.tsx"
+    "src/features/sonus/library/BookGrid.tsx",
+    "src/features/home/HomeToday.tsx"
   ],
   "Make it an audiobook": [
     "src/features/sonus/BookPage.tsx"
@@ -8694,10 +8704,13 @@
     "src/features/visio/VisioPage.tsx"
   ],
   "Continue watching": [
-    "src/features/visio/VisioPage.tsx"
+    "src/features/visio/VisioPage.tsx",
+    "src/features/home/HomeClassic.tsx",
+    "src/features/home/HomeToday.tsx"
   ],
   "{0} left": [
-    "src/features/visio/VisioPage.tsx"
+    "src/features/visio/VisioPage.tsx",
+    "src/features/home/HomeToday.tsx"
   ],
   "Nothing on screen yet": [
     "src/features/visio/VisioPage.tsx"
@@ -9179,7 +9192,8 @@
   ],
   "Full": [
     "src/features/lab/LabTools.tsx",
-    "src/features/ordo/sections/AppearanceSection.tsx"
+    "src/features/ordo/sections/AppearanceSection.tsx",
+    "src/core/lang/languages.ts"
   ],
   "Reduced": [
     "src/features/lab/LabTools.tsx",
@@ -11519,25 +11533,31 @@
     "src/design/i18n/UiText.tsx"
   ],
   "Spanish": [
-    "src/design/i18n/UiText.tsx"
+    "src/design/i18n/UiText.tsx",
+    "src/core/lang/languages.ts"
   ],
   "French": [
-    "src/design/i18n/UiText.tsx"
+    "src/design/i18n/UiText.tsx",
+    "src/core/lang/languages.ts"
   ],
   "German": [
-    "src/design/i18n/UiText.tsx"
+    "src/design/i18n/UiText.tsx",
+    "src/core/lang/languages.ts"
   ],
   "Russian": [
-    "src/design/i18n/UiText.tsx"
+    "src/design/i18n/UiText.tsx",
+    "src/core/lang/languages.ts"
   ],
   "Chinese": [
     "src/design/i18n/UiText.tsx"
   ],
   "Arabic": [
-    "src/design/i18n/UiText.tsx"
+    "src/design/i18n/UiText.tsx",
+    "src/core/lang/languages.ts"
   ],
   "Dutch": [
-    "src/design/i18n/UiText.tsx"
+    "src/design/i18n/UiText.tsx",
+    "src/core/lang/languages.ts"
   ],
   "That EPUB couldn’t be opened.": [
     "src/features/bibliotheca/BibliothecaPage.tsx",
@@ -14044,5 +14064,551 @@
   ],
   "{0} words a minute": [
     "src/features/cursus/typing/TypingPractice.tsx"
+  ],
+  "We have a fine selection of cute colour themes to choose from. Change it any time in Settings.": [
+    "src/app/onboarding/AestheticStep.tsx"
+  ],
+  "Home suggests these first, in the order you pick them. Everything else stays a tap away.": [
+    "src/app/onboarding/EnjoyStep.tsx"
+  ],
+  "A sip": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Steady": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Regular": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Keen": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Serious": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Deep": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Immersed": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Starting out": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "First words": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Get by": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Hold a conversation": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Talk with ease": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Read anything": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Like a native": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "a few weeks": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "{0} months": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "{0} years": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Aim high, start small. Both can change any time in Settings.": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "{0} minutes, {1}": [
+    "src/app/onboarding/GoalStep.tsx"
+  ],
+  "Everything: grammar, the alphabet, a full dictionary, natural voices.": [
+    "src/app/onboarding/LanguageStep.tsx"
+  ],
+  "Every room, grammar and the alphabet. No course.": [
+    "src/app/onboarding/LanguageStep.tsx"
+  ],
+  "Reading, word packs, podcasts and music. No grammar yet.": [
+    "src/app/onboarding/LanguageStep.tsx"
+  ],
+  "Reading, your own words, radio and podcasts.": [
+    "src/app/onboarding/LanguageStep.tsx"
+  ],
+  "Machine translation where it exists.": [
+    "src/app/onboarding/LanguageStep.tsx"
+  ],
+  "Starting from the very first word.": [
+    "src/app/onboarding/LevelStep.tsx"
+  ],
+  "You know a few everyday words and phrases.": [
+    "src/app/onboarding/LevelStep.tsx"
+  ],
+  "You can follow simple everyday sentences.": [
+    "src/app/onboarding/LevelStep.tsx"
+  ],
+  "You can read easy books and follow the gist of shows.": [
+    "src/app/onboarding/LevelStep.tsx"
+  ],
+  "You read articles and talk easily about familiar things.": [
+    "src/app/onboarding/LevelStep.tsx"
+  ],
+  "You read novels; now it’s nuance and range.": [
+    "src/app/onboarding/LevelStep.tsx"
+  ],
+  "Click the last line you understand without help. Real {0}, easiest first. No peeking at a dictionary.": [
+    "src/app/onboarding/LevelStep.tsx"
+  ],
+  "Continue with {0}": [
+    "src/app/onboarding/Onboarding.tsx"
+  ],
+  "Your mother tongue and any others. Bragging is allowed.": [
+    "src/app/onboarding/SpeakStep.tsx"
+  ],
+  "Be honest, we won’t tell. Pick as many as you like.": [
+    "src/app/onboarding/WhyStep.tsx"
+  ],
+  "Every room, grammar lessons, the alphabet, a complete dictionary and natural voices. The full course and typing practice are coming.": [
+    "src/core/lang/languages.ts"
+  ],
+  "Every room, grammar lessons and the alphabet. No course.": [
+    "src/core/lang/languages.ts"
+  ],
+  "Reading with lookups, word packs and decks, podcasts, radio and music search. Built automatically; no grammar yet.": [
+    "src/core/lang/languages.ts"
+  ],
+  "Basics": [
+    "src/core/lang/languages.ts"
+  ],
+  "Reading with tap-to-translate, your own words and decks, radio and podcasts.": [
+    "src/core/lang/languages.ts"
+  ],
+  "Experimental": [
+    "src/core/lang/languages.ts"
+  ],
+  "Reading with machine translation where it exists. Some rooms may not work.": [
+    "src/core/lang/languages.ts"
+  ],
+  "Italian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Portuguese": [
+    "src/core/lang/languages.ts"
+  ],
+  "Greek": [
+    "src/core/lang/languages.ts"
+  ],
+  "Swedish": [
+    "src/core/lang/languages.ts"
+  ],
+  "Hungarian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Norwegian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Turkish": [
+    "src/core/lang/languages.ts"
+  ],
+  "Indonesian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Swahili": [
+    "src/core/lang/languages.ts"
+  ],
+  "Latin": [
+    "src/core/lang/languages.ts"
+  ],
+  "Japanese": [
+    "src/core/lang/languages.ts"
+  ],
+  "Korean": [
+    "src/core/lang/languages.ts"
+  ],
+  "Hindi": [
+    "src/core/lang/languages.ts"
+  ],
+  "Polish": [
+    "src/core/lang/languages.ts"
+  ],
+  "Vietnamese": [
+    "src/core/lang/languages.ts"
+  ],
+  "Tagalog": [
+    "src/core/lang/languages.ts"
+  ],
+  "Thai": [
+    "src/core/lang/languages.ts"
+  ],
+  "Persian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Cantonese": [
+    "src/core/lang/languages.ts"
+  ],
+  "Czech": [
+    "src/core/lang/languages.ts"
+  ],
+  "Romanian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Serbo-Croatian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Malay": [
+    "src/core/lang/languages.ts"
+  ],
+  "Tamil": [
+    "src/core/lang/languages.ts"
+  ],
+  "Georgian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Uzbek": [
+    "src/core/lang/languages.ts"
+  ],
+  "Mongolian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Icelandic": [
+    "src/core/lang/languages.ts"
+  ],
+  "Frisian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Ancient Greek": [
+    "src/core/lang/languages.ts"
+  ],
+  "Bengali": [
+    "src/core/lang/languages.ts"
+  ],
+  "Punjabi": [
+    "src/core/lang/languages.ts"
+  ],
+  "Hebrew": [
+    "src/core/lang/languages.ts"
+  ],
+  "Ukrainian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Finnish": [
+    "src/core/lang/languages.ts"
+  ],
+  "Danish": [
+    "src/core/lang/languages.ts"
+  ],
+  "Catalan": [
+    "src/core/lang/languages.ts"
+  ],
+  "Bulgarian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Kazakh": [
+    "src/core/lang/languages.ts"
+  ],
+  "Afrikaans": [
+    "src/core/lang/languages.ts"
+  ],
+  "Amharic": [
+    "src/core/lang/languages.ts"
+  ],
+  "Yoruba": [
+    "src/core/lang/languages.ts"
+  ],
+  "Armenian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Burmese": [
+    "src/core/lang/languages.ts"
+  ],
+  "Urdu": [
+    "src/core/lang/languages.ts"
+  ],
+  "Slovak": [
+    "src/core/lang/languages.ts"
+  ],
+  "Estonian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Lithuanian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Latvian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Khmer": [
+    "src/core/lang/languages.ts"
+  ],
+  "Albanian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Maltese": [
+    "src/core/lang/languages.ts"
+  ],
+  "Esperanto": [
+    "src/core/lang/languages.ts"
+  ],
+  "Old Norse": [
+    "src/core/lang/languages.ts"
+  ],
+  "Sanskrit": [
+    "src/core/lang/languages.ts"
+  ],
+  "Haitian Creole": [
+    "src/core/lang/languages.ts"
+  ],
+  "Quechua": [
+    "src/core/lang/languages.ts"
+  ],
+  "Maya (Yucatec)": [
+    "src/core/lang/languages.ts"
+  ],
+  "Hawaiian": [
+    "src/core/lang/languages.ts"
+  ],
+  "Māori": [
+    "src/core/lang/languages.ts"
+  ],
+  "Irish": [
+    "src/core/lang/languages.ts"
+  ],
+  "Basque": [
+    "src/core/lang/languages.ts"
+  ],
+  "Brand new": [
+    "src/core/lang/levels.ts"
+  ],
+  "Beginner": [
+    "src/core/lang/levels.ts"
+  ],
+  "Elementary": [
+    "src/core/lang/levels.ts"
+  ],
+  "Intermediate": [
+    "src/core/lang/levels.ts"
+  ],
+  "Upper-intermediate": [
+    "src/core/lang/levels.ts"
+  ],
+  "Advanced": [
+    "src/core/lang/levels.ts"
+  ],
+  "Rose": [
+    "src/design/palettes.ts"
+  ],
+  "Sand": [
+    "src/design/palettes.ts"
+  ],
+  "Linen": [
+    "src/design/palettes.ts"
+  ],
+  "Lavender": [
+    "src/design/palettes.ts"
+  ],
+  "Ink": [
+    "src/design/palettes.ts"
+  ],
+  "Plum": [
+    "src/design/palettes.ts"
+  ],
+  "Forest": [
+    "src/design/palettes.ts"
+  ],
+  "Slate": [
+    "src/design/palettes.ts"
+  ],
+  "Ember": [
+    "src/design/palettes.ts"
+  ],
+  "Install this language’s dictionary to see a word of the day.": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "{0} cards to review": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "{0} new": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Continue reading · {0}%{1}": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  " · {0}% known": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Continue listening{0}": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  " · {0} left": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Song for today · {0} · sing it once more": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Song for today · {0}": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Write today’s entry": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Talk for ten minutes": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "A scene in Sermo, by voice or text with an AI": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Find something to read": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Graded stories, articles, or your own books": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Find something to listen to": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Podcasts with a transcript that follows along": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Find a song to learn": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Lyrics that light up as they’re sung, every word a tap away": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Watch something": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "A film or an episode with subtitles in both languages": [
+    "src/features/home/HomeClassic.tsx"
+  ],
+  "Read books & texts": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Listen & podcasts": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Watch with subtitles": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Cards & dictionary": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Guide, talk & write": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Course & grammar": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "{0}% read{1}": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Continue listening": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Audiobook · {0}": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "{0} {1} to review": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Up next on your shelf": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "A short starter story, ready to read": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Course & Grammatica": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Structured lessons and drills for {0}": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Core vocabulary decks": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Top frequency words & everyday themes": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Today’s journal entry": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Live radio & podcasts": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Listen in from stations around the world": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Picked for your level": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Thesaurus · Deck": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "{0} essential words · {1}": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Codex · News": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Today’s articles, clean and ready to read with 1-tap lookup": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Codex · Classics": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Project Gutenberg & Wikipedia": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Free books and today’s most-read articles in your language": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Sonus · Listen": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "LibriVox Audiobooks & Radio": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Free public-domain audiobooks and live radio stations": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Thesaurus · Words": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Top 100 Frequency Deck": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "The words you meet most often, with example sentences": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Visio · Watch": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Series & Films on Streaming": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Browse shows in your language with dual-subtitle support": [
+    "src/features/home/HomeToday.tsx"
+  ],
+  "Word of the day: {0}": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Check out today’s featured word in Lingua!": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Lingua · Quick Review": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Quick Review · Floating": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "{0} cards due today": [
+    "src/features/home/DailyWordCard.tsx"
+  ],
+  "Full Review": [
+    "src/features/home/DailyWordCard.tsx"
   ]
 }

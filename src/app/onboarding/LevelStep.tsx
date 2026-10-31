@@ -49,7 +49,7 @@ export function LevelStep({ lang, level, seedKnown, onLevel, onSeedKnown }: Leve
 
   return (
     <div>
-      <StepTitle title={translateUi('So, how far along are you?')} body={`Click the last line you understand without help. Real ${name}, easiest first. No peeking at a dictionary.`} />
+      <StepTitle title={translateUi('So, how far along are you?')} body={translateUi('Click the last line you understand without help. Real {0}, easiest first. No peeking at a dictionary.', [translateUi(name)])} />
 
       <div role="radiogroup" aria-label={translateUi('Your level')} className="rounded-3xl border border-line bg-raised px-4 py-3 shadow-elev-1">
         {[null, ...lines].map((s, i) => {
@@ -107,7 +107,7 @@ export function LevelStep({ lang, level, seedKnown, onLevel, onSeedKnown }: Leve
         <div className="mt-2 flex min-h-[52px] items-center gap-5 border-t border-line/70 px-3 pt-3">
           <p className="min-w-0 flex-1 text-[15px]">
             <span className="font-semibold text-accent-text">{level}</span>
-            <span className="text-ink-soft"> · {CAN[level]}</span>
+            <span className="text-ink-soft"> · <UiText source={CAN[level]} /></span>
           </p>
           {top > 0 && (
             <div className="flex shrink-0 items-center gap-3" title={translateUi('You can unmark any word while reading.')}>

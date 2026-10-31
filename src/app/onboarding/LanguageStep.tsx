@@ -75,7 +75,7 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
       role="radio"
       aria-checked={target === l.code}
       aria-disabled={l.soon || undefined}
-      title={l.soon ? translateUi('{0} is coming. Pick another language for now.', [l.name]) : TIERS[l.tier].includes}
+      title={l.soon ? translateUi('{0} is coming. Pick another language for now.', [l.name]) : translateUi(TIERS[l.tier].includes)}
       onClick={() => !l.soon && onTarget(l.code)}
       {...hoverProps(l)}
       className={cx(
@@ -90,11 +90,11 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
           <span lang={l.code} dir={l.rtl ? 'rtl' : undefined} className="truncate font-serif text-[16.5px] font-semibold">
             {l.endonym}
           </span>
-          <span className="truncate text-[12px] text-ink-faint">{l.name}</span>
+          <span className="truncate text-[12px] text-ink-faint"><UiText source={l.name} /></span>
         </span>
         <span className="block truncate text-[11.5px] text-ink-soft">
-          {status ? `${STATUS_NAME[status]} · ` : ''}
-          {l.soon ? translateUi('Coming') : TIERS[l.tier].name}
+          {status ? `${translateUi(STATUS_NAME[status])} · ` : ''}
+          {l.soon ? translateUi('Coming') : translateUi(TIERS[l.tier].name)}
         </span>
       </span>
       {target === l.code ? (
@@ -231,8 +231,8 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
                     if (!langs.length) return null;
                     return (
                       <section key={tier} className="mb-2">
-                        <h2 className="px-2 pt-2 text-[11.5px] font-bold tracking-[0.08em] text-ink-faint uppercase">{TIERS[tier].name}</h2>
-                        <p className="px-2 pb-1 text-[11.5px] text-ink-soft">{SHORT[tier]}</p>
+                        <h2 className="px-2 pt-2 text-[11.5px] font-bold tracking-[0.08em] text-ink-faint uppercase"><UiText source={TIERS[tier].name} /></h2>
+                        <p className="px-2 pb-1 text-[11.5px] text-ink-soft"><UiText source={SHORT[tier]} /></p>
                         {langs.map((l) => row(l))}
                       </section>
                     );
@@ -246,8 +246,8 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
 
       {/* The six core languages, one click away, and the way down to every language. */}
       <div role="radiogroup" aria-label={translateUi('Core languages')} className="mt-3 flex items-center gap-2">
-        <span className="mr-1 text-[11.5px] font-bold tracking-[0.08em] text-ink-faint uppercase" title={TIERS[1].includes}>
-          {TIERS[1].name}
+        <span className="mr-1 text-[11.5px] font-bold tracking-[0.08em] text-ink-faint uppercase" title={translateUi(TIERS[1].includes)}>
+          <UiText source={TIERS[1].name} />
         </span>
         {core.map((l) => chip(l, true))}
         <button
@@ -260,10 +260,10 @@ export function LanguageStep({ target, onTarget }: LanguageStepProps) {
       {/* Every language by tier, peeking in at the bottom of the screen. */}
       <div ref={listRef} className="mt-7 scroll-mt-6 divide-y divide-line/70 border-t border-line/70 pb-6">
         {TIER_ORDER.slice(1).map((tier) => (
-          <div key={tier} role="radiogroup" aria-label={translateUi('{0} languages', [TIERS[tier].name])} className="grid grid-cols-[190px_minmax(0,1fr)] gap-5 py-4">
-            <div title={TIERS[tier].includes}>
-              <h2 className="text-[12px] font-bold tracking-[0.08em] text-ink-faint uppercase">{TIERS[tier].name}</h2>
-              <p className="mt-1 text-[12px] leading-snug text-ink-soft">{SHORT[tier]}</p>
+          <div key={tier} role="radiogroup" aria-label={translateUi('{0} languages', [translateUi(TIERS[tier].name)])} className="grid grid-cols-[190px_minmax(0,1fr)] gap-5 py-4">
+            <div title={translateUi(TIERS[tier].includes)}>
+              <h2 className="text-[12px] font-bold tracking-[0.08em] text-ink-faint uppercase"><UiText source={TIERS[tier].name} /></h2>
+              <p className="mt-1 text-[12px] leading-snug text-ink-soft"><UiText source={SHORT[tier]} /></p>
             </div>
             <div className="flex flex-wrap content-start gap-1.5">{LANGUAGES.filter((l) => l.tier === tier).map((l) => chip(l))}</div>
           </div>
