@@ -9,7 +9,6 @@ import { useStudyMinutes } from '@/data/memoryViews';
 import { catchUp, overdueCards } from '@/data/study';
 import { Button, buttonClasses, Card, Popover } from '@/design/primitives';
 import { toast } from '@/state/ui';
-import { PlusChip } from '@/features/plans/Locked';
 import { useGate } from '@/features/plans/PlanRoute';
 import { cx } from '@/lib/cx';
 import { DueCalendar } from './DueCalendar';
@@ -81,7 +80,7 @@ export function TodayCard({ lang, totals, forecast, rail = false }: TodayCardPro
             <Link to="/thesaurus/study/all?mode=recall" className={cx(buttonClasses('primary', rail ? 'lg' : 'md'), rail && 'flex-1')}><UiText source={'{0}Study'} values={[<Layers size={18} aria-hidden />]} /></Link>
           )}
           {ludusGate ? (
-            <button type="button" onClick={ludusGate} className={ludusClass}><UiText source={'{0}Ludus{1}'} values={[<Puzzle size={17} aria-hidden />, <PlusChip feature="ludus" />]} /></button>
+            <button type="button" onClick={ludusGate} className={ludusClass}><UiText source={'{0}Ludus{1}'} values={[<Puzzle size={17} aria-hidden />, <span aria-hidden>+</span>]} /></button>
           ) : (
             <Popover
               label={translateUi('Ludus')}

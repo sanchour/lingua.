@@ -38,6 +38,8 @@ export function ReaderChrome({ tools, visible, text, chapterTitle, reader, theme
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
+            onFocusCapture={() => onHoverChange(true)}
+            onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) onHoverChange(false); }}
             onPointerEnter={() => onHoverChange(true)}
             onPointerLeave={() => onHoverChange(false)}
           >

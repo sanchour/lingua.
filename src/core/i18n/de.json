@@ -7346,5 +7346,22 @@
   "Floating review": "Schwebende Wiederholung",
   "Could not open floating review.": "Schwebende Wiederholung konnte nicht geöffnet werden.",
   "Session complete": "Sitzung abgeschlossen",
-  "Transcription paused while Lingua is hidden. Return and try again.": "Die Transkription wurde angehalten, weil Lingua verborgen ist. Kehre zurück und versuche es erneut."
+  "Transcription paused while Lingua is hidden. Return and try again.": "Die Transkription wurde angehalten, weil Lingua verborgen ist. Kehre zurück und versuche es erneut.",
+  "Inspect & Test": "Prüfen und testen",
+  "Show paddings and margins": "Innen- und Außenabstände anzeigen",
+  "(Current)": "(Aktuell)",
+  "Weight": "Schriftstärke",
+  "Line Height": "Zeilenhöhe",
+  "Alignment": "Ausrichtung",
+  "Case": "Groß-/Kleinschreibung",
+  "Decoration": "Textdekoration",
+  "Color": "Farbe",
+  "Height": "Höhe",
+  "Margin (Top · Right · Bottom · Left)": "Außenabstand (oben · rechts · unten · links)",
+  "Padding (Top · Right · Bottom · Left)": "Innenabstand (oben · rechts · unten · links)",
+  "Appearance": "Aussehen",
+  "Opacity": "Deckkraft",
+  "All Corners": "Alle Ecken",
+  "Shadow": "Schatten",
+  "Custom": "Benutzerdefiniert"
 }

@@ -212,7 +212,7 @@ export default function ReaderPage() {
   );
 
   // ── Pager (page-flip mode) ──────────────────────────────────────────────
-  const layoutKey = `${model?.chapter.id ?? 'none'}|${reader.font}|${reader.sizePx}|${reader.lineHeight}|${reader.justify}|${aids.glosses}|${aids.hideGlosses}|${text?.updatedAt}|${aidLayout}`;
+  const layoutKey = `${model?.chapter.id ?? 'none'}|${reader.font}|${reader.sizePx}|${reader.lineHeight}|${reader.letterSpacing ?? 0}|${reader.wordSpacing ?? 0}|${reader.justify}|${aids.glosses}|${aids.hideGlosses}|${text?.updatedAt}|${aidLayout}`;
   const pager = usePager({
     enabled: paged && Boolean(ready),
     viewportRef,
@@ -287,6 +287,11 @@ export default function ReaderPage() {
   const scheduleHide = useCallback(() => {
     window.clearTimeout(chromeTimer.current);
     chromeTimer.current = window.setTimeout(() => !chromeHover.current && setChrome(false), CHROME_IDLE_MS);
+  }, []);
+  useEffect(() => {
+    const showForKeyboard = (event: KeyboardEvent) => { if (event.key === 'Tab') setChrome(true); };
+    window.addEventListener('keydown', showForKeyboard);
+    return () => window.removeEventListener('keydown', showForKeyboard);
   }, []);
   useEffect(() => {
     scheduleHide();
@@ -485,9 +490,11 @@ export default function ReaderPage() {
         '--reader-font': readerFontStack(font, lang),
         '--reader-size': `${reader.sizePx}px`,
         '--reader-lh': String(reader.lineHeight),
+        letterSpacing: `${reader.letterSpacing ?? 0}em`,
+        wordSpacing: `${reader.wordSpacing ?? 0}em`,
         ...wordStyleVars(reader.words),
       }) as CSSProperties,
-    [font, lang, reader.sizePx, reader.lineHeight, reader.words],
+    [font, lang, reader.sizePx, reader.lineHeight, reader.letterSpacing, reader.wordSpacing, reader.words],
   );
   useScriptFont(lang);
   const flowClass = cx(
@@ -527,6 +534,7 @@ export default function ReaderPage() {
         scheduleHide();
       }}
     >
+      <h1 className="sr-only" lang={lang}>{text.title}</h1>
       <ReaderChrome
         tools={<ReadingTools chapterIndex={chapterIndex ?? 0} text={text} aids={aids} onChange={setAids} onOpenChange={setToolsOpen} />}
         visible={chrome || toolsOpen}
@@ -543,7 +551,7 @@ export default function ReaderPage() {
         }}
       />
 
-      {aids.glosses && <style>{translateUi('.reader-flow .w[data-gloss] { display: inline-block; vertical-align: top; text-indent: 0; } .reader-flow .w[data-gloss]::after { content: attr(data-gloss); display: block; max-width: 12em; overflow: hidden; text-overflow: ellipsis; font: 11px/1.5 sans-serif; color: var(--ink-soft); white-space: nowrap; }', [])}</style>}
+      {aids.glosses && <style>{'.reader-flow .w[data-gloss] { display: inline-block; vertical-align: top; text-indent: 0; } .reader-flow .w[data-gloss]::after { content: attr(data-gloss); display: block; max-width: 12em; overflow: hidden; text-overflow: ellipsis; font: 11px/1.5 sans-serif; color: var(--ink-soft); white-space: nowrap; }'}</style>}
       {aids.ruler && <div aria-hidden className="pointer-events-none fixed inset-x-0 z-20 h-8 border-y border-accent/40 bg-accent/10" style={{ top: `${aids.rulerY}%` }} />}
       {comic ? (
         <ComicView

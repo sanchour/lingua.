@@ -7346,5 +7346,22 @@
   "Floating review": "悬浮复习",
   "Could not open floating review.": "无法打开悬浮复习。",
   "Session complete": "练习完成",
-  "Transcription paused while Lingua is hidden. Return and try again.": "Lingua 隐藏时转录已暂停。请返回后重试。"
+  "Transcription paused while Lingua is hidden. Return and try again.": "Lingua 隐藏时转录已暂停。请返回后重试。",
+  "Inspect & Test": "检查与测试",
+  "Show paddings and margins": "显示内外边距",
+  "(Current)": "（当前）",
+  "Weight": "字重",
+  "Line Height": "行高",
+  "Alignment": "对齐",
+  "Case": "大小写",
+  "Decoration": "文本装饰",
+  "Color": "颜色",
+  "Height": "高度",
+  "Margin (Top · Right · Bottom · Left)": "外边距（上 · 右 · 下 · 左）",
+  "Padding (Top · Right · Bottom · Left)": "内边距（上 · 右 · 下 · 左）",
+  "Appearance": "外观",
+  "Opacity": "不透明度",
+  "All Corners": "所有圆角",
+  "Shadow": "阴影",
+  "Custom": "自定义"
 }

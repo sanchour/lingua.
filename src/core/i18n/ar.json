@@ -7346,5 +7346,22 @@
   "Floating review": "مراجعة عائمة",
   "Could not open floating review.": "تعذّر فتح المراجعة العائمة.",
   "Session complete": "اكتملت الجلسة",
-  "Transcription paused while Lingua is hidden. Return and try again.": "توقّف التفريغ أثناء إخفاء Lingua. عُد وحاول مجددًا."
+  "Transcription paused while Lingua is hidden. Return and try again.": "توقّف التفريغ أثناء إخفاء Lingua. عُد وحاول مجددًا.",
+  "Inspect & Test": "فحص واختبار",
+  "Show paddings and margins": "إظهار الهوامش الداخلية والخارجية",
+  "(Current)": "(الحالي)",
+  "Weight": "السماكة",
+  "Line Height": "ارتفاع السطر",
+  "Alignment": "المحاذاة",
+  "Case": "حالة الأحرف",
+  "Decoration": "زخرفة النص",
+  "Color": "اللون",
+  "Height": "الارتفاع",
+  "Margin (Top · Right · Bottom · Left)": "الهامش الخارجي (أعلى · يمين · أسفل · يسار)",
+  "Padding (Top · Right · Bottom · Left)": "الهامش الداخلي (أعلى · يمين · أسفل · يسار)",
+  "Appearance": "المظهر",
+  "Opacity": "التعتيم",
+  "All Corners": "كل الزوايا",
+  "Shadow": "الظل",
+  "Custom": "مخصص"
 }

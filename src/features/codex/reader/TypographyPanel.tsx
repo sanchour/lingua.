@@ -155,6 +155,8 @@ function WordsSection({ reader }: { reader: Settings['reader'] }) {
     '--reader-font': readerFontStack(READER_FONTS.find((f) => f.id === reader.font) ?? READER_FONTS[0]),
     '--reader-size': '17px',
     '--reader-lh': '1.7',
+    letterSpacing: `${reader.letterSpacing ?? 0}em`,
+    wordSpacing: `${reader.wordSpacing ?? 0}em`,
   } as CSSProperties;
 
   return (

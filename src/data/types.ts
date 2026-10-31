@@ -128,6 +128,7 @@ export interface TextVocab {
 export type Block =
   /** `box`: a comic's speech bubble, where it sits on the page ([x, y, width, height], 0–1). */
   | { t: 'p' | 'h' | 'quote'; text: string; cue?: number; box?: [number, number, number, number] }
+    & { startMs?: number; endMs?: number }
   /** `w`, `h`: a comic page's size in pixels, so the page keeps its shape while it loads. */
   | { t: 'img'; blobId: string; alt?: string; w?: number; h?: number };
 

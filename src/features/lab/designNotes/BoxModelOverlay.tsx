@@ -79,7 +79,7 @@ export function BoxModelOverlay({ el }: BoxModelOverlayProps) {
   const badgeStyle = 'px-1 py-0.2 rounded font-mono text-[10px] font-semibold pointer-events-none select-none';
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[119] overflow-hidden" aria-hidden="true">
+    <div className="pointer-events-none fixed inset-0 z-[119] overflow-hidden" aria-hidden="true" lang="en">
       {/* 1. Margin band (Orange / Amber) */}
       {(mt > 0 || mr > 0 || mb > 0 || ml > 0) && (
         <div

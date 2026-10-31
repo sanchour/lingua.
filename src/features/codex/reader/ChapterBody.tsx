@@ -1,4 +1,5 @@
 import { UiText } from '@/design/i18n/UiText';
+import { formatClock } from '@/core/audio/cues';
 import { memo, useEffect, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/data/db';
@@ -70,6 +71,7 @@ export const ChapterBody = memo(function ChapterBody({ model, lang, images = tru
         }
         return (
           <p key={b} data-b={b} lang={lang}>
+            {block.startMs !== undefined && <time lang="en" dateTime={`PT${block.startMs / 1000}S`} className="mr-2 font-sans text-xs tabular-nums text-ink-soft">{formatClock(block.startMs)}{block.endMs !== undefined ? `–${formatClock(block.endMs)}` : ''}</time>}
             {children}
           </p>
         );

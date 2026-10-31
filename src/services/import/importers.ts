@@ -65,7 +65,7 @@ export function parseRichTextChapters(text: string, fallbackTitle: string, isMar
       return {
         title: fallbackTitle,
         kind: 'transcript',
-        chapters: [{ title: fallbackTitle, blocks: cues.map((c, idx) => ({ t: 'p' as const, text: c.text, cue: idx })) }],
+        chapters: [{ title: fallbackTitle, blocks: cues.map((c, idx) => ({ t: 'p' as const, text: c.text, cue: idx, startMs: c.startMs, endMs: c.endMs })) }],
       };
     }
   }

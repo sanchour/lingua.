@@ -7346,5 +7346,22 @@
   "Floating review": "Повторение в плавающем окне",
   "Could not open floating review.": "Не удалось открыть плавающее окно повторения.",
   "Session complete": "Занятие завершено",
-  "Transcription paused while Lingua is hidden. Return and try again.": "Расшифровка остановлена, пока Lingua скрыта. Вернитесь и попробуйте снова."
+  "Transcription paused while Lingua is hidden. Return and try again.": "Расшифровка остановлена, пока Lingua скрыта. Вернитесь и попробуйте снова.",
+  "Inspect & Test": "Просмотр и проверка",
+  "Show paddings and margins": "Показать внутренние и внешние отступы",
+  "(Current)": "(Текущий)",
+  "Weight": "Насыщенность",
+  "Line Height": "Высота строки",
+  "Alignment": "Выравнивание",
+  "Case": "Регистр",
+  "Decoration": "Оформление",
+  "Color": "Цвет",
+  "Height": "Высота",
+  "Margin (Top · Right · Bottom · Left)": "Внешний отступ (верх · право · низ · лево)",
+  "Padding (Top · Right · Bottom · Left)": "Внутренний отступ (верх · право · низ · лево)",
+  "Appearance": "Внешний вид",
+  "Opacity": "Непрозрачность",
+  "All Corners": "Все углы",
+  "Shadow": "Тень",
+  "Custom": "Свой вариант"
 }

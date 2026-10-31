@@ -209,7 +209,7 @@ export function NoteCard({
             )}
           >
             <Sliders size={13} aria-hidden />
-            <span>Inspect & Test</span>
+            <span><UiText source={"Inspect & Test"} /></span>
           </button>
           <button
             type="button"
@@ -220,7 +220,7 @@ export function NoteCard({
             )}
           >
             <FileText size={13} aria-hidden />
-            <span>Note {usefulTweaks.length ? `(${usefulTweaks.length})` : ''}</span>
+            <span><UiText source={"Note"} /> {usefulTweaks.length ? `(${usefulTweaks.length})` : ''}</span>
           </button>
         </div>
       )}

@@ -1951,10 +1951,10 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1541` Keyboard-only navigation · **6-25**
 - [x] `F1542` Data export
 - [x] `F1543` Account deletion
-- [ ] `F1544` Privacy controls · **6-25** · S1 repaired provider disclosure; online destinations are conditional, no retention guarantee
+- [x] `F1544` Privacy controls · **6-25** · S1 repaired provider disclosure; online destinations are conditional, no retention guarantee
 - [x] `F1545` Synchronization status
 - [ ] `F1546` Storage management · **6-25** · S1 replaces blanket clear with scoped saved-media deletion and page Undo; packs/voices follow-up pending
-- [ ] `F1547` Battery-efficient audio · **6-25** · verification incomplete: hidden-page handler stops TTS, not transcription
+- [x] `F1547` Battery-efficient audio · **6-25** · S4 adds hidden-page transcription cancellation/restart; fake visibility/worker tests pass, real model unverified
 - [x] `F1548` Local data caching
 - [x] `F1549` Clear error messages · **6-25**
 - [ ] `F1550` Undo for destructive actions · **6-25** · S1 media deletion now confirms and supports page Undo; comprehensive destructive-action pass still pending
@@ -2137,3 +2137,6 @@ With this many possibilities, the danger is building a sprawling collection of t
 
 
 **S3 export/import verification:** APKG reimport, Kindle preview→deck and arbitrary custom Quizlet separators are learner-reachable and checked in-browser. Actual grammar notes now feed the Markdown exporter, and deck wikilinks target headings in the same file (regression-tested). External applications and calendar import remain unverified.
+
+
+**Final repair verification (Codex, 2026-10-31):** 6-22/6-24 repairs checked and learner-reachable. 6-25 quick review now uses the real study engine, media deletion is explicit/reversible on the page, reader keyboard/typography and hidden transcription are repaired. F1546 stays incomplete for dedicated pack/voice storage management; F1550 stays incomplete for the comprehensive app-wide destructive-action audit. No blanket whole-step accessibility or external-app certification; exact evidence/limits in [LINGUA-6-VERIFICATION.md](LINGUA-6-VERIFICATION.md).

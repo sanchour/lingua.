@@ -88,3 +88,6 @@ Commit as `sanchour <255895307+sanchour@users.noreply.github.com>`
 - `scripts/.cache` (about 2 GB, git-ignored) holds the raw word data for building language packs.
   It isn't needed to run the app (the packs in `public/packs` are committed); rebuild it as
   docs/SETUP.md says, only for pack work.
+
+
+**Main protection (user, 2026-10-31):** after the explicitly authorized final repair publication, main must require a pull request and passing `verify` checks, without a second reviewer. Push subsequent work to a feature/Codex branch, then merge a checked PR; do not bypass protection or push straight to main. This supersedes older direct-main publication instructions. Version every branch push as before. Preserve published history: integrate main by merge when rebasing would replay already-published Codex commits. `.github/workflows/checks.yml` runs typecheck, tests and the production-path build on PRs and main/Codex pushes.

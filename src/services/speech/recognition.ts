@@ -86,7 +86,9 @@ export function listenOnce(lang: string, onHeard?: (text: string) => void): { re
   rec.maxAlternatives = 4;
   rec.continuous = false;
   let heard: string[] = [];
+  let rejectHidden: (error: RecognitionError) => void = () => undefined;
   const result = new Promise<string[]>((resolve, reject) => {
+    rejectHidden = reject;
     rec.onresult = (e) => {
       const last = e.results[e.results.length - 1];
       const options: string[] = [];
@@ -101,6 +103,10 @@ export function listenOnce(lang: string, onHeard?: (text: string) => void): { re
     };
     rec.onend = () => resolve(heard);
   });
-  rec.start();
+  const onHide = () => { if (document.visibilityState === 'hidden') { rejectHidden(new RecognitionError('Transcription paused while Lingua is hidden. Return and try again.', 'no-speech')); rec.abort(); } };
+  const ended = rec.onend;
+  rec.onend = () => { document.removeEventListener('visibilitychange', onHide); ended?.(); };
+  if (document.visibilityState !== 'hidden') { document.addEventListener('visibilitychange', onHide); rec.start(); }
+  else queueMicrotask(() => rec.onend?.());
   return { result, stop: () => rec.stop() };
 }

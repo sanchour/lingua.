@@ -1,15 +1,17 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link } from 'react-router';
+import { createPortal } from 'react-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Bell, Clock, ExternalLink, Sparkles, Volume2 } from 'lucide-react';
 import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
 import { addNote, useDecks } from '@/data/decks';
-import { useDueSummary } from '@/data/study';
 import { Badge, Button, Card, Dialog } from '@/design/primitives';
 import { toast } from '@/state/ui';
 import { speak } from '@/services/speech/voice';
+
+const QuickStudy = lazy(() => import('@/features/thesaurus/study/StudyPage'));
 
 export interface DailyWord {
   word: string;
@@ -77,11 +79,11 @@ export function DailyWordCard({ lang }: { lang: string }) {
   const todayStr = new Date().toISOString().slice(0, 10);
   const [quickReviewOpen, setQuickReviewOpen] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(120);
-  const [timerActive, setTimerActive] = useState(false);
+  const [deadline, setDeadline] = useState(0);
+  const [pipWindow, setPipWindow] = useState<Window | null>(null);
   const [notifGranted, setNotifGranted] = useState(typeof Notification !== 'undefined' && Notification.permission === 'granted');
 
   const decks = useDecks(lang);
-  const due = useDueSummary(lang);
 
   const dailyWord = useLiveQuery(() => loadDailyWord(lang, todayStr), [lang, todayStr]);
 
@@ -124,49 +126,32 @@ export function DailyWordCard({ lang }: { lang: string }) {
     }
   };
 
-  // Document Picture-in-Picture or pop-up review window (Slice 2.6)
+  const startReview = () => { setTimerSeconds(120); setDeadline(Date.now() + 120000); };
   const openFloatingReview = async () => {
-    if ('documentPictureInPicture' in window) {
-      try {
-        const dpip = (window as unknown as { documentPictureInPicture: { requestWindow: (opts: { width: number; height: number }) => Promise<Window> } }).documentPictureInPicture;
-        const pipWin = await dpip.requestWindow({ width: 380, height: 480 });
-        pipWin.document.title = translateUi('Lingua · Quick Review');
-        // Built from elements, not an HTML string: the word and its gloss are data and are never read as markup.
-        const doc = pipWin.document;
-        const el = (tag: string, css: string, text?: string, parent?: HTMLElement) => {
-          const e = doc.createElement(tag);
-          e.style.cssText = css;
-          if (text !== undefined) e.textContent = text;
-          parent?.append(e);
-          return e;
-        };
-        const page = el('div', 'font-family: -apple-system, system-ui, sans-serif; padding: 20px; text-align: center; background: #faf6f0; color: #262220; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;');
-        const top = el('div', '', undefined, page);
-        el('p', 'font-size: 11px; font-weight: 700; text-transform: uppercase; color: #776c63; letter-spacing: 0.1em;', translateUi('Quick Review · Floating'), top);
-        el('h2', 'font-size: 26px; margin: 12px 0 4px 0;', dailyWord?.word ?? translateUi('Practice'), top);
-        el('p', 'color: #5e554e; font-size: 14px;', dailyWord?.gloss ?? '', top);
-        const bottom = el('div', '', undefined, page);
-        el('p', 'font-size: 13px; color: #776c63; margin-bottom: 12px;', translateUi('{0} cards due today', [due?.due ?? 0]), bottom);
-        const link = el('a', 'display: block; padding: 10px; background: #c86d51; color: white; border-radius: 12px; font-weight: 600; text-decoration: none;', translateUi('Full Review'), bottom) as HTMLAnchorElement;
-        link.href = '/thesaurus/study/all?mode=recall';
-        link.target = '_blank';
-        doc.body.replaceChildren(page);
-        return;
-      } catch {
-        // Fall back to modal
-      }
-    }
-    // Fallback: open Quick Review modal
-    setTimerSeconds(120);
-    setTimerActive(true);
-    setQuickReviewOpen(true);
+    if (!('documentPictureInPicture' in window)) return;
+    try {
+      const api = (window as unknown as { documentPictureInPicture: { requestWindow: (opts: { width: number; height: number }) => Promise<Window> } }).documentPictureInPicture;
+      const pip = await api.requestWindow({ width: 520, height: 680 });
+      pip.document.title = translateUi('Lingua · Quick Review');
+      const base = pip.document.createElement('base'); base.href = document.baseURI; pip.document.head.append(base);
+      document.querySelectorAll('style, link[rel="stylesheet"]').forEach((node) => pip.document.head.append(node.cloneNode(true)));
+      for (const attr of document.documentElement.attributes) if (attr.name.startsWith('data-') || attr.name === 'style' || attr.name === 'lang') pip.document.documentElement.setAttribute(attr.name, attr.value);
+      pip.document.body.style.cssText = 'margin:0;background:var(--bg);color:var(--ink);overflow:auto';
+      pip.addEventListener('pagehide', () => { setPipWindow(null); setDeadline(0); }, { once: true });
+      startReview(); setPipWindow(pip);
+    } catch { toast('Could not open floating review.', { tone: 'error' }); }
   };
-
+  useEffect(() => () => { pipWindow?.close(); }, [pipWindow]);
   useEffect(() => {
-    if (!timerActive || timerSeconds <= 0) return;
-    const t = setInterval(() => setTimerSeconds((s) => s - 1), 1000);
-    return () => clearInterval(t);
-  }, [timerActive, timerSeconds]);
+    if (!deadline) return;
+    const tick = () => { const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)); setTimerSeconds(remaining); if (!remaining) clearInterval(timer); };
+    const timer = setInterval(tick, 1000); tick();
+    return () => clearInterval(timer);
+  }, [deadline]);
+  const review = <div className="max-h-[70dvh] space-y-4 overflow-y-auto">
+    <p role="timer" aria-label={translateUi('2-Minute Sprint')} className="font-mono text-lg font-bold text-accent-text">{Math.floor(timerSeconds / 60)}:{String(timerSeconds % 60).padStart(2, '0')}</p>
+    {timerSeconds > 0 ? <Suspense fallback={<p><UiText source="Loading…" /></p>}><QuickStudy /></Suspense> : <p role="status"><UiText source="Session complete" /></p>}
+  </div>;
 
   return (
     <>
@@ -233,45 +218,16 @@ export function DailyWordCard({ lang }: { lang: string }) {
               ><UiText source={'Dictionary {0}'} values={[<ExternalLink size={12} aria-hidden />]} /></Link>
             )}
           </div>
-          <Button variant="secondary" size="sm" icon={Clock} onClick={() => void openFloatingReview()}><UiText source={'Quick 2-min review'} /></Button>
+          <Button variant="secondary" size="sm" icon={Clock} onClick={() => { startReview(); setQuickReviewOpen(true); }}><UiText source={'Quick 2-min review'} /></Button>
+          {'documentPictureInPicture' in window && <Button variant="secondary" size="sm" icon={ExternalLink} onClick={() => void openFloatingReview()}><UiText source="Floating review" /></Button>}
         </div>
       </Card>
 
-      {/* Quick 2-Minute Review Modal (F1523) */}
-      <Dialog
-        open={quickReviewOpen}
-        onClose={() => setQuickReviewOpen(false)}
-        title={translateUi('Quick 2-Minute Review')}
-      >
-        <div className="space-y-4">
-          <div className="flex items-center justify-between rounded-2xl bg-surface p-3">
-            <div className="flex items-center gap-2 text-ink-soft">
-              <Clock size={16} aria-hidden />
-              <span className="text-[13px] font-semibold"><UiText source={'2-Minute Sprint'} /></span>
-            </div>
-            <span className="font-mono text-lg font-bold tabular-nums text-accent-text">
-              {Math.floor(timerSeconds / 60)}:{String(timerSeconds % 60).padStart(2, '0')}
-            </span>
-          </div>
-
-          <div className="rounded-2xl border border-line p-4 text-center">
-            <p className="text-[12px] font-bold text-ink-faint uppercase"><UiText source={'Word to review'} /></p>
-            <h4 lang={lang} className="mt-1 font-serif text-[32px] font-semibold">
-              {dailyWord?.word ?? 'palabra'}
-            </h4>
-            <p className="mt-2 text-[15px] text-ink-soft">{dailyWord?.gloss}</p>
-          </div>
-
-          <div className="flex justify-between gap-3">
-            <Button variant="ghost" onClick={() => setQuickReviewOpen(false)}><UiText source={'Close'} /></Button>
-            <Link
-              to="/thesaurus/study/all?mode=recall"
-              onClick={() => setQuickReviewOpen(false)}
-              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-accent px-4 text-[13px] font-semibold text-on-accent"
-            ><UiText source={'Continue in full study {0}'} values={[<ExternalLink size={14} aria-hidden />]} /></Link>
-          </div>
-        </div>
+      <Dialog open={quickReviewOpen} onClose={() => { setQuickReviewOpen(false); setDeadline(0); }} title={translateUi('Quick 2-Minute Review')} maxWidth="max-w-3xl">
+        {quickReviewOpen && review}
+        <Link to="/thesaurus/study/all?mode=recall" onClick={() => setQuickReviewOpen(false)} className="mt-4 block text-sm underline"><UiText source="Continue in full study {0}" values={[<ExternalLink size={14} aria-hidden />]} /></Link>
       </Dialog>
+      {pipWindow && createPortal(<div className="p-4">{review}</div>, pipWindow.document.body)}
     </>
   );
 }

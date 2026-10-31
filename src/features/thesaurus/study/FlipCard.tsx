@@ -21,11 +21,13 @@ import type { Face } from '@/core/srs/templates';
 /** The flip: a soft 3D turn on a spring. Only transform animates (docs/PERFORMANCE.md). */
 const FLIP = { type: 'spring', stiffness: 230, damping: 25, mass: 0.9 } as const;
 
-function Face({ back, look, children, onClick }: { back?: boolean; look: CardLook; children: ReactNode; onClick?: () => void }) {
+function Face({ back, hidden, look, children, onClick }: { back?: boolean; hidden?: boolean; look: CardLook; children: ReactNode; onClick?: () => void }) {
   const props = cardLookProps(look);
   return (
     <div
       onClick={onClick}
+      aria-hidden={hidden}
+      inert={hidden}
       data-look={props['data-look']}
       data-tint={props['data-tint']}
       className={cx(
@@ -225,7 +227,7 @@ export function FlipCard({ look, card, note: own, lang, flipped, onFlip, deckNam
   return (
     <div className="mx-auto w-full [perspective:1600px]" style={{ maxWidth: width }}>
       <motion.div className="grid [transform-style:preserve-3d]" initial={false} animate={{ rotateY: flipped ? 180 : 0 }} transition={FLIP}>
-        <Face look={look} onClick={flipped ? undefined : onFlip}>
+        <Face hidden={flipped} look={look} onClick={flipped ? undefined : onFlip}>
           {corner}
           <div className="flex flex-1 flex-col items-center justify-center py-6 text-center">
             {faces ? (
@@ -258,7 +260,7 @@ export function FlipCard({ look, card, note: own, lang, flipped, onFlip, deckNam
           <p className="hidden text-center text-[12px] font-semibold text-ink-faint pointer-coarse:block"><UiText source={'Tap to turn'} /></p>
         </Face>
 
-        <Face back look={look}>
+        <Face back hidden={!flipped} look={look}>
           {corner}
           <div className="flex flex-1 flex-col justify-center py-4 text-center">
             {faces ? (

@@ -1,3 +1,4 @@
+import { visibleTask, VisibilityPause } from './visibility';
 // Transcripts with word timings from Whisper on Groq, with the learner's own key (sent only in
 // the request header), or from Whisper on this device (./device). Files over Groq's upload limit
 // are split into parts at MP3 frame boundaries, or decoded and sent as WAV parts (videos and
@@ -31,8 +32,9 @@ export class TranscribeError extends Error {
 async function request(key: string, body: FormData): Promise<WhisperResult> {
   let res: Response;
   try {
-    res = await fetch(ENDPOINT, { method: 'POST', headers: { Authorization: `Bearer ${key}` }, body, signal: AbortSignal.timeout(300_000) });
-  } catch {
+    res = await visibleTask((signal) => fetch(ENDPOINT, { method: 'POST', headers: { Authorization: `Bearer ${key}` }, body, signal: AbortSignal.any([signal, AbortSignal.timeout(300_000)]) }));
+  } catch (error) {
+    if (error instanceof VisibilityPause) throw new TranscribeError(error.message, 'network');
     throw new TranscribeError('Couldn’t reach Groq. Check your connection.', 'network');
   }
   if (res.status === 401 || res.status === 403) throw new TranscribeError('Groq didn’t accept the API key (Settings › AI).', 'auth');

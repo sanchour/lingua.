@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { AlignLeft, AlignCenter, AlignRight, AlignJustify, RotateCcw, GripVertical } from 'lucide-react';
 import { cx } from '@/lib/cx';
@@ -284,7 +285,7 @@ export function StyleInspector({
             onChange={(e) => onToggleBoxModel(e.target.checked)}
             className="rounded border-line-strong accent-accent"
           />
-          <span>Show paddings and margins</span>
+          <span><UiText source={"Show paddings and margins"} /></span>
         </label>
         <button
           type="button"
@@ -293,17 +294,17 @@ export function StyleInspector({
           title="Reset all inspected styles on this element"
         >
           <RotateCcw size={12} aria-hidden />
-          <span>Reset</span>
+          <span><UiText source={"Reset"} /></span>
         </button>
       </div>
 
       {/* 1. TYPOGRAPHY */}
       <section className="space-y-2">
-        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase">Typography</h4>
+        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase"><UiText source={"Typography"} /></h4>
         
         {/* Font family dropdown */}
         <div className="grid grid-cols-[80px_1fr] items-center gap-2">
-          <span className="text-ink-soft">Font</span>
+          <span className="text-ink-soft"><UiText source={"Font"} /></span>
           <select
             value={FONT_FAMILIES.some((f) => state.fontFamily.includes(f.value.split(',')[0])) ? state.fontFamily : 'custom'}
             onChange={(e) => applyStyle('font-family', e.target.value, 'typeface')}
@@ -315,7 +316,7 @@ export function StyleInspector({
               </option>
             ))}
             <option value="custom" disabled>
-              {state.fontFamily.split(',')[0].replace(/['"]/g, '')} (Current)
+              {state.fontFamily.split(',')[0].replace(/['"]/g, '')} <UiText source={"(Current)"} />
             </option>
           </select>
         </div>
@@ -323,7 +324,7 @@ export function StyleInspector({
         {/* Size & Weight */}
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <span className="text-[11px] text-ink-faint">Size</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Size"} /></span>
             <DragValueInput
               value={state.fontSize}
               onChange={(val) => applyStyle('font-size', val, 'type size')}
@@ -333,7 +334,7 @@ export function StyleInspector({
             />
           </div>
           <div className="space-y-1">
-            <span className="text-[11px] text-ink-faint">Weight</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Weight"} /></span>
             <select
               value={state.fontWeight}
               onChange={(e) => applyStyle('font-weight', e.target.value, 'weight')}
@@ -351,7 +352,7 @@ export function StyleInspector({
         {/* Style (T / I), Line Height, Letter Spacing */}
         <div className="grid grid-cols-[auto_1fr_1fr] items-end gap-2">
           <div className="space-y-1">
-            <span className="text-[11px] text-ink-faint">Style</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Style"} /></span>
             <div className="flex rounded-lg border border-line-strong bg-bg p-0.5">
               <button
                 type="button"
@@ -378,7 +379,7 @@ export function StyleInspector({
             </div>
           </div>
           <div className="space-y-1">
-            <span className="text-[11px] text-ink-faint">Line Height</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Line Height"} /></span>
             <DragValueInput
               value={state.lineHeight}
               onChange={(val) => applyStyle('line-height', val, 'line height')}
@@ -389,7 +390,7 @@ export function StyleInspector({
             />
           </div>
           <div className="space-y-1">
-            <span className="text-[11px] text-ink-faint">Spacing</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Spacing"} /></span>
             <DragValueInput
               value={state.letterSpacing}
               onChange={(val) => applyStyle('letter-spacing', val, 'letter spacing')}
@@ -403,7 +404,7 @@ export function StyleInspector({
         <div className="space-y-2 pt-1 border-t border-line/60">
           {/* Alignment */}
           <div className="flex items-center justify-between">
-            <span className="text-[11px] text-ink-faint">Alignment</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Alignment"} /></span>
             <div className="flex rounded-lg border border-line-strong bg-bg p-0.5">
               {[
                 { id: 'left', icon: AlignLeft, label: 'Align Left' },
@@ -429,7 +430,7 @@ export function StyleInspector({
 
           {/* Case */}
           <div className="flex items-center justify-between">
-            <span className="text-[11px] text-ink-faint">Case</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Case"} /></span>
             <div className="flex rounded-lg border border-line-strong bg-bg p-0.5">
               {[
                 { id: 'none', label: '—', title: 'None' },
@@ -455,7 +456,7 @@ export function StyleInspector({
 
           {/* Decoration */}
           <div className="flex items-center justify-between">
-            <span className="text-[11px] text-ink-faint">Decoration</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Decoration"} /></span>
             <div className="flex rounded-lg border border-line-strong bg-bg p-0.5">
               {[
                 { id: 'none', label: '—', title: 'None', cls: '' },
@@ -486,7 +487,7 @@ export function StyleInspector({
 
       {/* 2. COLOR */}
       <section className="space-y-2 border-t border-line pt-3">
-        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase">Color</h4>
+        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase"><UiText source={"Color"} /></h4>
         <div className="flex items-center gap-2">
           {/* Swatch with color picker input overlay */}
           <label className="relative size-6 shrink-0 cursor-pointer rounded-full border border-line-strong overflow-hidden shadow-sm">
@@ -515,7 +516,7 @@ export function StyleInspector({
 
       {/* 3. BACKGROUND */}
       <section className="space-y-2 border-t border-line pt-3">
-        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase">Background</h4>
+        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase"><UiText source={"Background"} /></h4>
         <div className="flex items-center gap-2">
           {/* Checkerboard swatch for transparency */}
           <label
@@ -564,18 +565,18 @@ export function StyleInspector({
             onClick={() => applyStyle('background-color', 'transparent', 'background')}
             className="rounded px-1.5 py-0.5 text-[10.5px] font-semibold text-ink-faint border border-line hover:text-ink"
           >
-            None
+            <UiText source={"None"} />
           </button>
         </div>
       </section>
 
       {/* 4. LAYOUT */}
       <section className="space-y-2 border-t border-line pt-3">
-        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase">Layout</h4>
+        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase"><UiText source={"Layout"} /></h4>
         
         {/* Display dropdown */}
         <div className="grid grid-cols-[80px_1fr] items-center gap-2">
-          <span className="text-ink-soft">Display</span>
+          <span className="text-ink-soft"><UiText source={"Display"} /></span>
           <select
             value={DISPLAYS.includes(state.display as (typeof DISPLAYS)[number]) ? state.display : 'block'}
             onChange={(e) => applyStyle('display', e.target.value)}
@@ -592,7 +593,7 @@ export function StyleInspector({
         {/* Width & Height */}
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <span className="text-[11px] text-ink-faint">Width</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Width"} /></span>
             <DragValueInput
               value={state.width}
               onChange={(val) => applyStyle('width', val, 'width')}
@@ -601,7 +602,7 @@ export function StyleInspector({
             />
           </div>
           <div className="space-y-1">
-            <span className="text-[11px] text-ink-faint">Height</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Height"} /></span>
             <DragValueInput
               value={state.height}
               onChange={(val) => applyStyle('height', val, 'height')}
@@ -613,7 +614,7 @@ export function StyleInspector({
 
         {/* Margins 2x2 Grid */}
         <div className="space-y-1 pt-1">
-          <span className="text-[11px] text-ink-faint">Margin (Top · Right · Bottom · Left)</span>
+          <span className="text-[11px] text-ink-faint"><UiText source={"Margin (Top · Right · Bottom · Left)"} /></span>
           <div className="grid grid-cols-4 gap-1.5">
             <DragValueInput
               value={state.marginTop}
@@ -656,7 +657,7 @@ export function StyleInspector({
 
         {/* Paddings 2x2 Grid */}
         <div className="space-y-1">
-          <span className="text-[11px] text-ink-faint">Padding (Top · Right · Bottom · Left)</span>
+          <span className="text-[11px] text-ink-faint"><UiText source={"Padding (Top · Right · Bottom · Left)"} /></span>
           <div className="grid grid-cols-4 gap-1.5">
             <DragValueInput
               value={state.paddingTop}
@@ -700,7 +701,7 @@ export function StyleInspector({
 
       {/* 5. BORDER */}
       <section className="space-y-2 border-t border-line pt-3">
-        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase">Border</h4>
+        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase"><UiText source={"Border"} /></h4>
         
         {/* Border color */}
         <div className="flex items-center gap-2">
@@ -730,7 +731,7 @@ export function StyleInspector({
         {/* Style & Width */}
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-1">
-            <span className="text-[11px] text-ink-faint">Style</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Style"} /></span>
             <select
               value={BORDER_STYLES.includes(state.borderStyle as (typeof BORDER_STYLES)[number]) ? state.borderStyle : 'solid'}
               onChange={(e) => applyStyle('border-style', e.target.value)}
@@ -744,7 +745,7 @@ export function StyleInspector({
             </select>
           </div>
           <div className="space-y-1">
-            <span className="text-[11px] text-ink-faint">Width</span>
+            <span className="text-[11px] text-ink-faint"><UiText source={"Width"} /></span>
             <DragValueInput
               value={state.borderWidth}
               onChange={(val) => applyStyle('border-width', val)}
@@ -758,11 +759,11 @@ export function StyleInspector({
 
       {/* 6. APPEARANCE */}
       <section className="space-y-2 border-t border-line pt-3">
-        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase">Appearance</h4>
+        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase"><UiText source={"Appearance"} /></h4>
         
         {/* Opacity */}
         <div className="grid grid-cols-[80px_1fr] items-center gap-2">
-          <span className="text-ink-soft">Opacity</span>
+          <span className="text-ink-soft"><UiText source={"Opacity"} /></span>
           <DragValueInput
             value={state.opacity}
             onChange={(val) => {
@@ -783,7 +784,7 @@ export function StyleInspector({
         {/* All Corners (Border Radius) with 4-corner expand toggle */}
         <div className="space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-ink-soft">All Corners</span>
+            <span className="text-ink-soft"><UiText source={"All Corners"} /></span>
             <button
               type="button"
               onClick={() => setSplitCorners(!splitCorners)}
@@ -846,7 +847,7 @@ export function StyleInspector({
 
       {/* 7. SHADOW */}
       <section className="space-y-2 border-t border-line pt-3">
-        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase">Shadow</h4>
+        <h4 className="text-[10.5px] font-bold tracking-wider text-ink-faint uppercase"><UiText source={"Shadow"} /></h4>
         <select
           value={SHADOW_PRESETS.some((s) => s.value === state.boxShadow) ? state.boxShadow : 'custom'}
           onChange={(e) => {
@@ -861,7 +862,7 @@ export function StyleInspector({
               {p.label}
             </option>
           ))}
-          <option value="custom">Custom</option>
+          <option value="custom"><UiText source={"Custom"} /></option>
         </select>
         <input
           type="text"

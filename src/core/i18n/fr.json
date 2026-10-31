@@ -7346,5 +7346,22 @@
   "Floating review": "Révision flottante",
   "Could not open floating review.": "Impossible d’ouvrir la révision flottante.",
   "Session complete": "Session terminée",
-  "Transcription paused while Lingua is hidden. Return and try again.": "La transcription s’est arrêtée lorsque Lingua a été masqué. Revenez et réessayez."
+  "Transcription paused while Lingua is hidden. Return and try again.": "La transcription s’est arrêtée lorsque Lingua a été masqué. Revenez et réessayez.",
+  "Inspect & Test": "Inspecter et tester",
+  "Show paddings and margins": "Afficher espacements et marges",
+  "(Current)": "(Actuel)",
+  "Weight": "Graisse",
+  "Line Height": "Hauteur de ligne",
+  "Alignment": "Alignement",
+  "Case": "Casse",
+  "Decoration": "Décoration",
+  "Color": "Couleur",
+  "Height": "Hauteur",
+  "Margin (Top · Right · Bottom · Left)": "Marge (haut · droite · bas · gauche)",
+  "Padding (Top · Right · Bottom · Left)": "Espacement interne (haut · droite · bas · gauche)",
+  "Appearance": "Apparence",
+  "Opacity": "Opacité",
+  "All Corners": "Tous les coins",
+  "Shadow": "Ombre",
+  "Custom": "Personnalisé"
 }

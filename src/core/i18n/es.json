@@ -7346,5 +7346,22 @@
   "Floating review": "Repaso flotante",
   "Could not open floating review.": "No se pudo abrir el repaso flotante.",
   "Session complete": "Sesión completada",
-  "Transcription paused while Lingua is hidden. Return and try again.": "La transcripción se detuvo al ocultar Lingua. Vuelve e inténtalo de nuevo."
+  "Transcription paused while Lingua is hidden. Return and try again.": "La transcripción se detuvo al ocultar Lingua. Vuelve e inténtalo de nuevo.",
+  "Inspect & Test": "Inspeccionar y probar",
+  "Show paddings and margins": "Mostrar rellenos y márgenes",
+  "(Current)": "(Actual)",
+  "Weight": "Grosor",
+  "Line Height": "Altura de línea",
+  "Alignment": "Alineación",
+  "Case": "Mayúsculas y minúsculas",
+  "Decoration": "Decoración",
+  "Color": "Color",
+  "Height": "Altura",
+  "Margin (Top · Right · Bottom · Left)": "Margen (arriba · derecha · abajo · izquierda)",
+  "Padding (Top · Right · Bottom · Left)": "Relleno (arriba · derecha · abajo · izquierda)",
+  "Appearance": "Apariencia",
+  "Opacity": "Opacidad",
+  "All Corners": "Todas las esquinas",
+  "Shadow": "Sombra",
+  "Custom": "Personalizado"
 }

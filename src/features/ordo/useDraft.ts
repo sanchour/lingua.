@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 export function useDraft<T>(saved: T, commit: (value: T) => void, delay = 200): [T, (value: T) => void] {
   const [draft, setDraft] = useState(saved);
   const timer = useRef<number | undefined>(undefined);
+  const pending = useRef<{ value: T } | undefined>(undefined);
   const commitRef = useRef(commit);
   useEffect(() => {
     commitRef.current = commit;
@@ -17,15 +18,18 @@ export function useDraft<T>(saved: T, commit: (value: T) => void, delay = 200): 
     if (timer.current === undefined) setDraft(saved);
   }, [saved]);
 
-  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const flush = () => {
+    window.clearTimeout(timer.current); timer.current = undefined;
+    const next = pending.current; pending.current = undefined;
+    if (next) commitRef.current(next.value);
+  };
+  useEffect(() => () => flush(), []);
 
   const update = (value: T) => {
     setDraft(value);
+    pending.current = { value };
     window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => {
-      timer.current = undefined;
-      commitRef.current(value);
-    }, delay);
+    timer.current = window.setTimeout(flush, delay);
   };
   return [draft, update];
 }

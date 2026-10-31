@@ -34,9 +34,9 @@ export function useHotkeys(map: HotkeyMap, enabled = true): void {
   useEffect(() => {
     if (!enabled) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || event.repeat || isEditable(event.target)) return;
+      if (event.defaultPrevented || event.repeat) return;
       for (const [combo, handler] of Object.entries(mapRef.current)) {
-        if (matchesCombo(event, combo)) {
+        if ((!isEditable(event.target) || combo === 'mod+k') && matchesCombo(event, combo)) {
           event.preventDefault();
           handler(event);
           return;

@@ -77,12 +77,20 @@ export function AppShell() {
     'alt+t': () => { const s = useUI.getState(); if (s.tutorOpen) s.closeTutor(); else s.openTutor(); },
   });
 
+  const skipLink = <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[90] focus:rounded-xl focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-on-accent focus:shadow-elev-3"
+      ><UiText source={'Skip to main content'} /></a>;
+
   if (immersive) {
     return (
       <>
-        <Suspense fallback={null}>
-          <Outlet />
-        </Suspense>
+        {skipLink}
+        <main id="main-content" tabIndex={-1}>
+          <Suspense fallback={null}>
+            <Outlet />
+          </Suspense>
+        </main>
         <ReferenceHelp />
       <PhraseCapture />
         <ShortcutsDialog />
@@ -103,10 +111,7 @@ export function AppShell() {
 
   return (
     <>
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[90] focus:rounded-xl focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-on-accent focus:shadow-elev-3"
-      ><UiText source={'Skip to main content'} /></a>
+      {skipLink}
       {layout === 'wide' ? <DesktopShell>{content}</DesktopShell> : <TouchShell>{content}</TouchShell>}
       {showMini && <MiniPlayer />}
       <ReferenceHelp />

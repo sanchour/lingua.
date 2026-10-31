@@ -14680,5 +14680,97 @@
     "src/features/home/DailyWordCard.tsx",
     "src/services/transcribe/visibility.ts",
     "src/services/speech/recognition.ts"
+  ],
+  "Inspect & Test": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Show paddings and margins": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "(Current)": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Size": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Weight": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Line Height": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Spacing": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Alignment": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Case": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Decoration": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Color": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Background": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "None": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Display": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Height": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Margin (Top · Right · Bottom · Left)": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Padding (Top · Right · Bottom · Left)": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Border": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Appearance": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Opacity": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "All Corners": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Shadow": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
+  ],
+  "Custom": [
+    "src/features/lab/designNotes/StyleInspector.tsx",
+    "src/features/lab/designNotes/NoteCard.tsx"
   ]
 }
