@@ -1077,7 +1077,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 
 *In Lingua: News in Codex; Diarium; Mundus › Things to try (think aloud, labels at home, …); Sermo's scenes; the study log.*
 
-- [ ] `F0821` Change the app interface to the target language · **6-19** · partly there: Settings › Look and feel has six bundled offline catalogues and English hover help, but newly merged screens retain English. Final-merge checks, wider language/browser coverage and independent linguistic review remain incomplete.
+- [x] `F0821` Change the app interface to the target language · **6-19** · Settings › Look and feel: six bundled offline catalogues, English hover help, literal learner content and RTL isolation; completion 2026-10-31. All-six core screen browser pass and integrated checks completed; independent native-speaker review and every-screen/state coverage remain unverified.
 - [x] `F0822` Read the news in the target language
 - [x] `F0823` Follow creators who use the target language
 - [x] `F0824` Keep a diary in the target language
@@ -1640,7 +1640,7 @@ These are integrated activities that combine skills instead of training each one
 - [x] `F1276` Search for a word from its definition · **6-22**
 - [x] `F1277` Search for rhymes · **6-22**
 - [x] `F1278` Search for words with similar sounds · **6-22**
-- [x] `F1279` Search for words with a particular prefix or suffix · **6-22**
+- [x] `F1279` Search for words with a particular prefix or suffix · **6-22** · S2 repaired indexed prefix bounds and full-corpus suffix scoring; prefix looked at in browser
 - [x] `F1280` Search by grammatical category · **6-22**
 - [x] `F1281` Search across personal vocabulary
 - [x] `F1282` Search across saved texts · **6-22**
@@ -1951,13 +1951,13 @@ Different languages require different learning interfaces. This could become a m
 - [x] `F1541` Keyboard-only navigation · **6-25**
 - [x] `F1542` Data export
 - [x] `F1543` Account deletion
-- [x] `F1544` Privacy controls · **6-25**
+- [ ] `F1544` Privacy controls · **6-25** · S1 repaired provider disclosure; online destinations are conditional, no retention guarantee
 - [x] `F1545` Synchronization status
-- [x] `F1546` Storage management · **6-25**
-- [x] `F1547` Battery-efficient audio · **6-25**
+- [ ] `F1546` Storage management · **6-25** · S1 replaces blanket clear with scoped saved-media deletion and page Undo; packs/voices follow-up pending
+- [ ] `F1547` Battery-efficient audio · **6-25** · verification incomplete: hidden-page handler stops TTS, not transcription
 - [x] `F1548` Local data caching
 - [x] `F1549` Clear error messages · **6-25**
-- [x] `F1550` Undo for destructive actions · **6-25**
+- [ ] `F1550` Undo for destructive actions · **6-25** · S1 media deletion now confirms and supports page Undo; comprehensive destructive-action pass still pending
 
 ## 25 · Advanced and experimental features
 
@@ -2131,3 +2131,6 @@ With this many possibilities, the danger is building a sprawling collection of t
 > For example, when a learner encounters an unfamiliar word in a Russian short story, the app could let them save it, inspect its grammar, hear its pronunciation, see related words, add it to a spaced-repetition queue, use it in an AI conversation and later encounter it in another reading passage.
 
 > One word, connected to the entire learning experience. That’s the kind of integration that can make your app genuinely powerful.
+
+
+**Verification correction, Codex 2026-10-31:** 6-22, 6-24 and 6-25 are not certified complete. Concrete failures and exact browser/check coverage are in [LINGUA-6-VERIFICATION.md](LINGUA-6-VERIFICATION.md). Remaining ticks retain reachable implemented parts, not a complete screen-reader, compatibility or desktop-matrix certification. Verification stopped under the user’s existing-failure rule; no source repairs were made.

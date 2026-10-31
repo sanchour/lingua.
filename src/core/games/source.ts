@@ -1,3 +1,4 @@
+import { interpolate } from '@/core/i18n/messages';
 // What a game is dealt (6-21): the learner's own words first, as items carrying only what exists of them. A game says what it
 // needs, and a set that has too few is told why, never an empty board.
 import type { WordFacts } from '@/core/exercise';
@@ -37,14 +38,14 @@ export interface GameSource {
 
 export type CanPlay = { ok: true } | { ok: false; reason: string };
 
-export function canPlay(def: GameDef, src: GameSource, lang: string): CanPlay {
+export function canPlay(def: GameDef, src: GameSource, lang: string, translate: (source: string, values?: readonly unknown[]) => string = interpolate): CanPlay {
   const { needs } = def;
-  if (needs.letters && !hasLetters(lang)) return { ok: false, reason: NO_LETTERS };
-  if (needs.list && src.listWords < needs.list) return { ok: false, reason: 'Needs the language’s word list, which comes with its dictionary pack. Wait for the pack to finish installing, or install it.' };
-  if (needs.texts && src.texts < 1) return { ok: false, reason: 'Needs a text in Codex to hunt in. Add or open one first.' };
+  if (needs.letters && !hasLetters(lang)) return { ok: false, reason: translate(NO_LETTERS) };
+  if (needs.list && src.listWords < needs.list) return { ok: false, reason: translate('Needs the language’s word list, which comes with its dictionary pack. Wait for the pack to finish installing, or install it.') };
+  if (needs.texts && src.texts < 1) return { ok: false, reason: translate('Needs a text in Codex to hunt in. Add or open one first.') };
   if (!needs.count) return { ok: true };
   const have = usable(def, src.items, lang).length;
   if (have >= needs.count) return { ok: true };
-  const what = needs.letters ? `words with 3 to ${needs.maxLetters ?? 14} letters` : 'words';
-  return { ok: false, reason: `Needs ${needs.count} of your ${what}${needs.meaning ? ' that have a meaning' : ''}; you have ${have}. Add words to a deck, or look for more in Codex.` };
+  const what = needs.letters ? translate('words with 3 to {0} letters', [needs.maxLetters ?? 14]) : translate('words');
+  return { ok: false, reason: translate('Needs {0} of your {1}{2}; you have {3}. Add words to a deck, or look for more in Codex.', [needs.count, what, needs.meaning ? translate(' that have a meaning') : '', have]) };
 }

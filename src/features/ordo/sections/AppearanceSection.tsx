@@ -43,7 +43,7 @@ export function PaletteRow({ title, palettes, value, onChange }: { title: string
               >
                 <span className="size-3.5 rounded-full" style={{ backgroundColor: p.swatch[1] }} />
               </span>
-              <span className={cx('text-[12px] leading-none', selected ? 'font-semibold text-ink' : 'text-ink-soft')}>{p.name}</span>
+              <span className={cx('text-[12px] leading-none', selected ? 'font-semibold text-ink' : 'text-ink-soft')}><UiText source={p.name} /></span>
             </button>
           );
         })}

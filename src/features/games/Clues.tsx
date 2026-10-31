@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Guess from clues (6-21, F0189 and F1197): the clues come one at a time, hardest first; type the word.
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
@@ -22,6 +23,7 @@ interface Entry {
 const NAME: Record<ClueKind, string> = { example: 'In a sentence', synonyms: 'Similar to', antonyms: 'The opposite of', picture: 'A picture', length: 'Its length', first: 'Its start', meaning: 'Its meaning' };
 
 function Board({ entry, lang, settle }: BoardProps<Entry>) {
+  const translateUi = useUi();
   const rtl = isRtl(lang);
   const [s, setS] = useState(entry.state);
   const [typed, setTyped] = useState('');
@@ -36,7 +38,7 @@ function Board({ entry, lang, settle }: BoardProps<Entry>) {
   };
   return (
     <div>
-      <ol className="space-y-3" aria-label="Clues">
+      <ol className="space-y-3" aria-label={translateUi('Clues')}>
         {s.clues.slice(0, s.shown).map((c, i) => (
           <li key={i} className="rounded-2xl border border-line/70 bg-surface px-5 py-4">
             <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">{NAME[c.kind]}</p>
@@ -74,21 +76,13 @@ function Board({ entry, lang, settle }: BoardProps<Entry>) {
             placeholder="Type the word"
             className="h-12 w-64 rounded-xl border border-line bg-raised px-4 font-serif text-xl outline-none focus:border-line-strong"
           />
-          <button type="submit" disabled={!typed.trim()} className={buttonClasses('primary', 'md') + ' disabled:opacity-50'}>
-            Guess
-          </button>
-          <button type="button" onClick={() => setS(another)} disabled={s.shown >= s.clues.length} className={buttonClasses('secondary', 'md') + ' disabled:opacity-50'}>
-            <ListPlus size={16} aria-hidden /> Another clue
-          </button>
-          <button type="button" onClick={() => setS(giveUp)} className={buttonClasses('ghost', 'md')}>
-            Give up
-          </button>
+          <button type="submit" disabled={!typed.trim()} className={buttonClasses('primary', 'md') + ' disabled:opacity-50'}><UiText source={'Guess'} /></button>
+          <button type="button" onClick={() => setS(another)} disabled={s.shown >= s.clues.length} className={buttonClasses('secondary', 'md') + ' disabled:opacity-50'}><UiText source={'{0} Another clue'} values={[<ListPlus size={16} aria-hidden />]} /></button>
+          <button type="button" onClick={() => setS(giveUp)} className={buttonClasses('ghost', 'md')}><UiText source={'Give up'} /></button>
         </form>
       )}
       {s.guesses.length > 0 && (
-        <p className="mt-4 text-[14px] text-ink-soft">
-          Not: <bdi lang={lang}>{s.guesses.join(', ')}</bdi>
-        </p>
+        <p className="mt-4 text-[14px] text-ink-soft"><UiText source={'Not: {0}'} values={[<bdi lang={lang}>{s.guesses.join(', ')}</bdi>]} /></p>
       )}
     </div>
   );

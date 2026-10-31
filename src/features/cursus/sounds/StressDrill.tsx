@@ -65,7 +65,7 @@ export function StressDrill({ lang }: { lang: string }) {
           </div>
           {picked !== null && (
             <div className="mt-3 flex items-center gap-3" role="status">
-              <p className="flex-1 text-[14px] text-ink-soft"><UiText source={'{0}{1} is stressed on “{2}”.'} values={[picked === q.answer ? 'Yes. ' : 'Not quite. ', <b lang={lang}>{q.word}</b>, q.syllables[q.answer]]} /></p>
+              <p className="flex-1 text-[14px] text-ink-soft"><UiText source={'{0}{1} is stressed on “{2}”.'} values={[picked === q.answer ? <UiText source={'Yes. '} /> : <UiText source={'Not quite. '} />, <b lang={lang}>{q.word}</b>, q.syllables[q.answer]]} /></p>
               <button type="button" onClick={() => (setPicked(null), setAt(at + 1))} className="h-10 rounded-xl bg-inverse px-4 text-[14px] font-semibold text-on-inverse">
                 {at + 1 < questions.length ? translateUi('Next') : translateUi('Finish')}
               </button>

@@ -1,3 +1,4 @@
+import { useUi } from '@/design/i18n/UiText';
 // The drawing of hangman: the gallows stand from the start, and the figure comes one stroke a wrong letter.
 const PARTS = [
   <circle key="head" cx="120" cy="62" r="14" />,
@@ -9,8 +10,9 @@ const PARTS = [
 ];
 
 export function HangmanFigure({ wrong, max }: { wrong: number; max: number }) {
+  const translateUi = useUi();
   return (
-    <svg viewBox="0 0 180 170" className="h-44 w-40 shrink-0" role="img" aria-label={`${wrong} of ${max} wrong letters`} fill="none" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 180 170" className="h-44 w-40 shrink-0" role="img" aria-label={translateUi('{0} of {1} wrong letters', [wrong, max])} fill="none" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
       <g className="stroke-line-strong">
         <path d="M24 160h96M52 160V16h68v30" />
         <path d="M52 44l24-28" />

@@ -428,7 +428,7 @@ export function LanguageMap({ highlight, selected, place, onPlace, inset = 0 }: 
               <li key={l.lang} className="flex items-center gap-2 text-[13px]">
                 <LanguageFlag lang={l.lang} width={18} />
                 <span className="min-w-0 flex-1 truncate">{getLanguage(l.lang)?.name}</span>
-                <span className="shrink-0 text-[11px] text-ink-faint">{STATUS_NAME[l.status]}</span>
+                <span className="shrink-0 text-[11px] text-ink-faint"><UiText source={STATUS_NAME[l.status]} /></span>
               </li>
             ))}
           </ul>
@@ -445,7 +445,7 @@ export function LanguageMap({ highlight, selected, place, onPlace, inset = 0 }: 
           <button
             key={label}
             type="button"
-            aria-label={label}
+            aria-label={translateUi(label)}
             title={label}
             onClick={run}
             className="grid size-9 place-items-center rounded-xl border border-line bg-raised/95 text-ink-soft shadow-elev-1 backdrop-blur transition-colors hover:text-ink active:scale-95"

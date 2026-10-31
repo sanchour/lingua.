@@ -2,9 +2,10 @@
 // Searches words, decks, flashcards/notes (F1283), saved Codex texts & chapters (F1282),
 // journal entries, and grammar topics.
 import type { Chapter, Deck, JournalEntry, Note, Text, Word } from '@/data/types';
+import type { NotebookNote, SavedPhrase } from '@/core/notebook/library';
 import { editDistance, stripAccents } from '@/core/dictionary/searchTools';
 
-export type GlobalSearchKind = 'word' | 'deck' | 'card' | 'text' | 'journal' | 'grammar';
+export type GlobalSearchKind = 'word' | 'deck' | 'card' | 'text' | 'journal' | 'grammar' | 'notebook' | 'phrase';
 
 export interface GlobalSearchHit {
   id: string;
@@ -23,6 +24,8 @@ export interface GlobalSearchCorpus {
   texts?: Text[];
   chapters?: Chapter[];
   journalEntries?: JournalEntry[];
+  notebook?: NotebookNote[];
+  phrases?: SavedPhrase[];
   grammarTopics?: Array<{ id: string; title: string; level?: string; summary?: string }>;
 }
 
@@ -176,6 +179,17 @@ export function rankGlobalSearch(corpus: GlobalSearchCorpus, rawQuery: string, l
         score: best,
       });
     }
+  }
+
+  for (const n of corpus.notebook ?? []) {
+    if (n.deletedAt) continue;
+    const score = Math.max(scoreField(qFold, n.title), scoreField(qFold, n.body) * 0.8, scoreField(qFold, [n.folder, ...n.tags, ...n.links.map((l) => l.label)].join(' ')) * 0.7);
+    if (score) hits.push({ id: `notebook:${n.id}`, kind: 'notebook', title: n.title, snippet: n.body.slice(0, 120), href: `/mentis/notebook?note=${encodeURIComponent(n.id)}`, score });
+  }
+  for (const p of corpus.phrases ?? []) {
+    if (p.deletedAt) continue;
+    const score = Math.max(scoreField(qFold, p.text), scoreField(qFold, p.translation) * 0.9, scoreField(qFold, [p.folder, p.situation, p.topic, p.notes, ...p.tags].join(' ')) * 0.7);
+    if (score) hits.push({ id: `phrase:${p.id}`, kind: 'phrase', title: p.text, snippet: p.translation, href: `/thesaurus?tab=phrases&phrase=${encodeURIComponent(p.id)}`, score });
   }
 
   // 6. Grammar topics

@@ -154,14 +154,14 @@ export function SentencesRound({ deckId }: { deckId: string | null }) {
           {item && (
             <motion.div key={item.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={spring.snappy}>
               <p className="mb-6 text-center text-[12.5px] font-semibold text-ink-faint"><UiText source={'{0} of {1}{2}{3}{4}'} values={[at + 1, items!.length, ' · ', item.from === 'deck'
-                  ? 'from this deck'
+                  ? <UiText source={'from this deck'} />
                   : item.from === 'learning'
-                    ? 'a word you’re learning'
+                    ? <UiText source={'a word you’re learning'} />
                     : item.from === 'memory'
                       ? item.metIn
                         ? `met in ${item.metIn.title}`
-                        : 'one of your words'
-                      : 'around your level', item.from !== 'level' && item.metIn && item.from === 'learning' && ` · ${SIGHTING_KINDS[item.metIn.kind].label.toLowerCase()}`]} /></p>
+                        : <UiText source={'one of your words'} />
+                      : <UiText source={'around your level'} />, item.from !== 'level' && item.metIn && item.from === 'learning' && ` · ${SIGHTING_KINDS[item.metIn.kind].label.toLowerCase()}`]} /></p>
 
               <p lang={lang} className="text-center font-serif text-[clamp(1.5rem,3.6vw,2.15rem)] leading-relaxed">
                 <GlossText text={item.before} lang={lang} />

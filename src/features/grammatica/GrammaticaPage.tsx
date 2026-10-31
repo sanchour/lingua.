@@ -228,7 +228,7 @@ function SearchResults({ query, results, states }: { query: string; results: Ret
 
   return (
     <div className="space-y-4">
-      <p className="text-[14px] text-ink-faint"><UiText source={'Found {0} matching {1} for "{2}":'} values={[results.length, results.length === 1 ? 'topic' : 'topics', query]} /></p>
+      <p className="text-[14px] text-ink-faint"><UiText source={'Found {0} matching {1} for "{2}":'} values={[results.length, results.length === 1 ? <UiText source={'topic'} /> : <UiText source={'topics'} />, query]} /></p>
       <ul className="grid gap-2.5">
         {results.map(({ topic, matchReasons }) => (
           <li key={topic.id}>

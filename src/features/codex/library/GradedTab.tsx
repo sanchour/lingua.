@@ -21,14 +21,14 @@ export function GradedTab({ lang, texts }: { lang: string; texts: Text[] }) {
     {!hasWordData && <p className="text-sm text-ink-faint"><UiText source={'Install this language’s word pack in Settings to measure reading levels. Familiarity still comes from your own word memory.'} /></p>}
     <div className="grid grid-cols-[minmax(180px,2fr)_repeat(4,minmax(120px,1fr))] items-end gap-3">
       <SearchInput placeholder={translateUi('Topic, title or author')} value={filter.query} onChange={(query) => setFilter({ ...filter, query })} />
-      <Select label={translateUi('Kind')} value={filter.genre} onChange={(genre) => setFilter({ ...filter, genre })} options={[{ value: '', label: translateUi('All kinds') }, ...READING_GENRES.map((value) => ({ value, label: value }))]} />
-      <Select label={translateUi('Measured level')} value={filter.level} onChange={(level) => setFilter({ ...filter, level })} options={[{ value: '', label: translateUi('All levels') }, ...MEASURED_LEVELS.map((value) => ({ value, label: value })), { value: 'unknown', label: translateUi('Unmeasured') }]} />
+      <Select label={translateUi('Kind')} value={filter.genre} onChange={(genre) => setFilter({ ...filter, genre })} options={[{ value: '', label: translateUi('All kinds') }, ...READING_GENRES.map((value) => ({ value, label: translateUi(value) }))]} />
+      <Select label={translateUi('Measured level')} value={filter.level} onChange={(level) => setFilter({ ...filter, level })} options={[{ value: '', label: translateUi('All levels') }, ...MEASURED_LEVELS.map((value) => ({ value, label: translateUi(value) })), { value: 'unknown', label: translateUi('Unmeasured') }]} />
       <Select label={translateUi('Length')} value={String(filter.maxWords)} onChange={(max) => setFilter({ ...filter, maxWords: Number(max) })} options={[{ value: '0', label: translateUi('Any length') }, { value: '500', label: translateUi('≤ 500 words') }, { value: '2000', label: translateUi('≤ 2,000 words') }, { value: '10000', label: translateUi('≤ 10,000 words') }]} />
       <Select label={translateUi('Familiar words')} value={String(filter.minKnown)} onChange={(min) => setFilter({ ...filter, minKnown: Number(min) })} options={[{ value: '0', label: translateUi('Any share') }, { value: '0.5', label: translateUi('At least 50%') }, { value: '0.8', label: translateUi('At least 80%') }, { value: '0.95', label: translateUi('At least 95%') }]} />
     </div>
     <p className="text-sm text-ink-faint" role="status">{shown.length} {shown.length === 1 ? translateUi('text matches') : translateUi('texts match')}.</p>
     <div className="grid grid-cols-2 gap-5">{shown.map((text) => <Card key={text.id} className="p-5">
-      <p className="text-xs font-semibold text-sage-text"><UiText source={'Measured {0} · {1} words · {2}'} values={[(hasWordData ? text.stats?.level : undefined) ?? '— unmeasured', text.wordCount.toLocaleString(), text.stats ? `${Math.round(text.stats.knownShare * 100)}% familiar` : 'familiarity unmeasured']} /></p>
+      <p className="text-xs font-semibold text-sage-text"><UiText source={'Measured {0} · {1} words · {2}'} values={[(hasWordData ? text.stats?.level : undefined) ?? <UiText source={'— unmeasured'} />, text.wordCount.toLocaleString(), text.stats ? `${Math.round(text.stats.knownShare * 100)}% familiar` : <UiText source={'familiarity unmeasured'} />]} /></p>
       <Link to={`/codex/read/${text.id}`} lang={lang} className="mt-2 block font-serif text-xl font-semibold text-accent-text">{text.title}</Link>
       <p className="mt-2 text-sm text-ink-soft">{text.readingTopic || translateUi('No topic yet')} · {text.readingGenre || translateUi('kind not assigned')}</p>
       <TextLabels text={text} />
@@ -44,7 +44,7 @@ function TextLabels({ text }: { text: Text }) {
   return <details className="mt-4 border-t border-line pt-3"><summary className="cursor-pointer text-sm font-semibold"><UiText source={'Topic and kind'} /></summary>
     <form className="mt-3 space-y-3" onSubmit={(e) => { e.preventDefault(); void updateText(text.id, { readingTopic: topic.trim(), readingGenre: genre }).then(() => toast('Text labels saved.')).catch(() => toast('Could not save the text labels.', { tone: 'error' })); }}>
       <label className="block text-sm"><UiText source={'Topic{0}'} values={[<input className="mt-1 w-full rounded-xl border border-line bg-raised p-2" maxLength={80} value={topic} onChange={(e) => setTopic(e.target.value)} />]} /></label>
-      <Select label={translateUi('Text kind')} value={genre} onChange={setGenre} options={READING_GENRES.map((value) => ({ value, label: value }))} />
+      <Select label={translateUi('Text kind')} value={genre} onChange={setGenre} options={READING_GENRES.map((value) => ({ value, label: translateUi(value) }))} />
       <Button size="sm" variant="secondary" type="submit"><UiText source={'Save labels'} /></Button>
     </form>
   </details>;
@@ -86,7 +86,7 @@ function OpenSources({ lang, texts }: { lang: string; texts: Text[] }) {
     <p className="max-w-3xl text-sm text-ink-soft"><UiText source={'Search Wikisource or Project Gutenberg in the active language. Fables, poems, stories, speeches and other kinds are search starting points; check the edition and its licence at the source. Results are not graded until added and measured on this device. Nothing is searched or imported automatically.'} /></p>
     <form onSubmit={(e) => { e.preventDefault(); void search(); }}><fieldset disabled={busy || Boolean(adding)} className="grid grid-cols-[180px_180px_minmax(0,1fr)_auto] items-end gap-3">
       <Select label={translateUi('Source')} value={source} onChange={(value) => { setSource(value); setItems([]); setSearched(false); }} options={[{ value: 'wikisource', label: translateUi('Wikisource') }, { value: 'gutenberg', label: translateUi('Project Gutenberg') }]} />
-      <Select label={translateUi('Search kind')} value={genre} onChange={(value) => { setGenre(value); setQuery(SOURCE_QUERIES[lang]?.[READING_GENRES.indexOf(value as typeof READING_GENRES[number])] ?? value); }} options={READING_GENRES.map((value) => ({ value, label: value }))} />
+      <Select label={translateUi('Search kind')} value={genre} onChange={(value) => { setGenre(value); setQuery(SOURCE_QUERIES[lang]?.[READING_GENRES.indexOf(value as typeof READING_GENRES[number])] ?? value); }} options={READING_GENRES.map((value) => ({ value, label: translateUi(value) }))} />
       <label className="text-sm font-semibold"><UiText source={'Source search{0}'} values={[<input className="mt-2 h-11 w-full rounded-xl border border-line bg-raised px-3 font-normal" value={query} onChange={(e) => setQuery(e.target.value)} />]} /></label>
       <Button type="submit" loading={busy} disabled={!query.trim()}><UiText source={'Search source'} /></Button>
     </fieldset></form>

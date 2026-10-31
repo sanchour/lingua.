@@ -185,6 +185,7 @@ interface Step {
 }
 
 export function useNextSteps(lang: string, level: Parameters<typeof curatedPrompt>[1], enjoys: Enjoyment[], limit = 4): Step[] | undefined {
+  const translateUi = useUi();
   const due = useDueSummary(lang);
   const texts = useLibrary(lang);
   const progress = useAllProgress();
@@ -203,8 +204,8 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
       to: '/thesaurus/study/all?mode=recall',
       icon: Layers,
       tone: 'accent',
-      title: `${cards} ${cards === 1 ? 'card' : 'cards'} to review`,
-      detail: [due.due && `${due.due} due`, due.fresh && `${due.fresh} new`].filter(Boolean).join(' · '),
+      title: translateUi('{0} cards to review', [cards]),
+      detail: [due.due && translateUi('{0} due', [due.due]), due.fresh && translateUi('{0} new', [due.fresh])].filter(Boolean).join(' · '),
     });
   }
 
@@ -217,7 +218,7 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
       icon: BookOpen,
       tone: 'ink',
       title: book.title,
-      detail: `Continue reading · ${pct}%${book.stats ? ` · ${Math.round(book.stats.knownShare * 100)}% known` : ''}`,
+      detail: translateUi('Continue reading · {0}%{1}', [pct, book.stats ? translateUi(' · {0}% known', [Math.round(book.stats.knownShare * 100)]) : '']),
       art: (
         <span className="block w-9">
           <BookCover text={book} size="sm" />
@@ -236,7 +237,7 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
       icon: Headphones,
       tone: 'sage',
       title: episode.title,
-      detail: `Continue listening${left > 60_000 ? ` · ${formatDuration(left)} left` : ''}`,
+      detail: translateUi('Continue listening{0}', [left > 60_000 ? translateUi(' · {0} left', [formatDuration(left)]) : '']),
       art: <Artwork title={episode.title} coverBlobId={episode.coverBlobId} coverUrl={episode.coverUrl} className="w-10" rounded="rounded-lg" />,
     });
   }
@@ -249,7 +250,7 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
       icon: Clapperboard,
       tone: 'accent',
       title: video.title,
-      detail: 'Continue watching',
+      detail: translateUi("Continue watching"),
       art: (
         <span className="block w-16">
           <Poster title={video.title} coverBlobId={video.coverBlobId} coverUrl={video.coverUrl} className="rounded-lg shadow-none" />
@@ -269,7 +270,7 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
       icon: Music2,
       tone: 'accent',
       title: song.title,
-      detail: sungToday ? `Song for today · ${song.artist} · sing it once more` : `Song for today · ${song.artist}`,
+      detail: sungToday ? translateUi('Song for today · {0} · sing it once more', [song.artist]) : translateUi('Song for today · {0}', [song.artist]),
       art: <SongArt url={song.artworkUrl} title={song.title} className="w-10" rounded="rounded-lg" size={100} />,
     });
   }
@@ -277,25 +278,25 @@ export function useNextSteps(lang: string, level: Parameters<typeof curatedPromp
   const wroteToday = journal.some((e) => e.date === localDateKey() && e.words > 0);
   if (!wroteToday) {
     const prompt = curatedPrompt(lang, level);
-    steps.push({ key: 'write', to: '/mentis/diarium', icon: PenLine, tone: 'sage', title: 'Write today’s entry', detail: prompt.en || prompt.text });
+    steps.push({ key: 'write', to: '/mentis/diarium', icon: PenLine, tone: 'sage', title: translateUi("Write today’s entry"), detail: prompt.en || prompt.text });
   }
 
   // Now and then (every third day, when Sermo hasn't opened an AI this week) ten minutes of talking.
   const day = Math.floor(Date.now() / 86_400_000);
   if (day % 3 === 0 && Date.now() - lastTalked() > 7 * 86_400_000) {
-    steps.push({ key: 'talk', to: '/mentis/sermo', icon: MessagesSquare, tone: 'accent', title: 'Talk for ten minutes', detail: 'A scene in Sermo, by voice or text with an AI' });
+    steps.push({ key: 'talk', to: '/mentis/sermo', icon: MessagesSquare, tone: 'accent', title: translateUi("Talk for ten minutes"), detail: translateUi("A scene in Sermo, by voice or text with an AI") });
   }
 
-  if (!book) steps.push({ key: 'find', to: '/codex', icon: Sparkles, tone: 'ink', title: 'Find something to read', detail: 'Graded stories, articles, or your own books' });
+  if (!book) steps.push({ key: 'find', to: '/codex', icon: Sparkles, tone: 'ink', title: translateUi("Find something to read"), detail: translateUi("Graded stories, articles, or your own books") });
   // Nothing started yet in a kind you enjoy: a way in.
   if (!episode && enjoys.includes('listening')) {
-    steps.push({ key: 'find-listen', to: '/sonus?tab=podcasts', icon: Headphones, tone: 'sage', title: 'Find something to listen to', detail: 'Podcasts with a transcript that follows along' });
+    steps.push({ key: 'find-listen', to: '/sonus?tab=podcasts', icon: Headphones, tone: 'sage', title: translateUi("Find something to listen to"), detail: translateUi("Podcasts with a transcript that follows along") });
   }
   if (!songs.length && enjoys.includes('music')) {
-    steps.push({ key: 'find-song', to: '/sonus?tab=music', icon: Music2, tone: 'accent', title: 'Find a song to learn', detail: 'Lyrics that light up as they’re sung, every word a tap away' });
+    steps.push({ key: 'find-song', to: '/sonus?tab=music', icon: Music2, tone: 'accent', title: translateUi("Find a song to learn"), detail: translateUi("Lyrics that light up as they’re sung, every word a tap away") });
   }
   if (!video && enjoys.includes('watching')) {
-    steps.push({ key: 'find-watch', to: '/visio', icon: Clapperboard, tone: 'accent', title: 'Watch something', detail: 'A film or an episode with subtitles in both languages' });
+    steps.push({ key: 'find-watch', to: '/visio', icon: Clapperboard, tone: 'accent', title: translateUi("Watch something"), detail: translateUi("A film or an episode with subtitles in both languages") });
   }
   return orderSteps(steps, enjoys).slice(0, limit);
 }
@@ -427,7 +428,7 @@ export function WeekCard({ facts, goal }: { facts?: HomeFacts; goal: number }) {
       <div className="flex items-baseline justify-between gap-3">
         <p className={label}><UiText source={'This week'} /></p>
         {streak > 0 ? (
-          <p className="flex items-center gap-1 text-[13px] font-semibold text-accent-text"><UiText source={'{0} {1} {2} in a row'} values={[<Flame size={14} aria-hidden />, streak, streak === 1 ? 'day' : 'days']} /></p>
+          <p className="flex items-center gap-1 text-[13px] font-semibold text-accent-text"><UiText source={'{0} {1} {2} in a row'} values={[<Flame size={14} aria-hidden />, streak, streak === 1 ? <UiText source={'day'} /> : <UiText source={'days'} />]} /></p>
         ) : (
           <p className="text-[13px] font-semibold text-ink-faint"><UiText source={'{0} min a day'} values={[goal]} /></p>
         )}

@@ -3,8 +3,18 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.152** · 2026-10-31 · repair full dictionary coverage and current library search
+- **0.6.0-alpha.151** · 2026-10-31 · make saved-media deletion explicit and reversible
+- **0.6.0-alpha.150** · 2026-10-31 · resume authorized repairs of 6-22, 6-24 and 6-25
+- **0.6.0-alpha.149** · 2026-10-31 · record failed verification of 6-22, 6-24 and 6-25
+- **0.6.0-alpha.148** · 2026-10-31 · claim verification of dictionary, import/export and desktop accessibility
+- **0.6.0-alpha.147** · 2026-10-31 · 6-19 complete: offline interface coverage, verification and word data fix
 - **0.6.0-alpha.146** · 2026-10-31 · docs: record Slang & Dialects section idea for the 6 core languages with visual map (to be planned by Opus)
 - **0.6.0-alpha.145** · 2026-10-31 · docs: record Slang & Dialects section idea for the 6 core languages with visual map (to be planned by Opus)
+- **0.6.0-alpha.145** · 2026-10-31 · 6-19: offline coverage checkpoint before final browser pass
+
+Version note: the Slang & Dialects idea’s .145 line was carried from main; its published version is .146. The .145 tag belongs to Codex’s interface coverage checkpoint.
+
 - **0.6.0-alpha.144** · 2026-10-30 · Publish completed 6-20 to main
 - **0.6.0-alpha.143** · 2026-10-30 · 6-20 N2: notebook study tools, connections and completion
 - **0.6.0-alpha.142** · 2026-10-30 · 6-20 P2: capture, recall, cards and templates

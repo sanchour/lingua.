@@ -301,7 +301,7 @@ export default function TranslatePracticePage() {
 
                   {/* Source prompt */}
                   <div className="space-y-3">
-                    <span className="text-xs font-semibold tracking-wider text-sand-400 uppercase"><UiText source={'Translate this {0}:'} values={[currentTask.category ?? 'sentence']} /></span>
+                    <span className="text-xs font-semibold tracking-wider text-sand-400 uppercase"><UiText source={'Translate this {0}:'} values={[currentTask.category ?? <UiText source={'sentence'} />]} /></span>
 
                     {currentTask.dialogue ? (
                       <div className="space-y-2 bg-sand-50/60 p-4 rounded-xl border border-sand-200/50 dark:bg-sand-900/40 dark:border-sand-800/40 font-serif text-lg leading-relaxed">

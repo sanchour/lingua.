@@ -328,7 +328,7 @@ export default function DeckPage() {
             {selecting && (
               <div className="sticky bottom-4 z-20 mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-line bg-raised p-2.5 shadow-elev-3" role="toolbar" aria-label={translateUi('Selected cards')}>
                 <span className="px-2 text-[14px] font-semibold tabular-nums"><UiText source={'{0} selected'} values={[ids.length]} /></span>
-                <Button variant="ghost" onClick={() => setPicked(new Set(list.map((n) => n.id)))}><UiText source={'Select all{0}'} values={[query ? ' shown' : '']} /></Button>
+                <Button variant="ghost" onClick={() => setPicked(new Set(list.map((n) => n.id)))}><UiText source={'Select all{0}'} values={[query ? <UiText source={' shown'} /> : '']} /></Button>
                 <span className="flex-1" />
                 <Button variant="secondary" icon={Tag} disabled={!ids.length} onClick={() => askTags(false)}><UiText source={'Tag'} /></Button>
                 <Button variant="ghost" disabled={!ids.length} onClick={() => askTags(true)}><UiText source={'Untag'} /></Button>
@@ -378,7 +378,7 @@ export default function DeckPage() {
         }
       >
         <div className="space-y-4 pt-2">
-          <Select label={translateUi('Kind of word')} value={editing?.pos ?? ''} onChange={(pos) => setEditing((e) => (e ? { ...e, pos } : e))} options={[{ value: '', label: translateUi('Leave as it is') }, { value: '-', label: translateUi('Take it off') }, ...KINDS.map((k) => ({ value: k, label: k }))]} />
+          <Select label={translateUi('Kind of word')} value={editing?.pos ?? ''} onChange={(pos) => setEditing((e) => (e ? { ...e, pos } : e))} options={[{ value: '', label: translateUi('Leave as it is') }, { value: '-', label: translateUi('Take it off') }, ...KINDS.map((k) => ({ value: k, label: translateUi(k) }))]} />
           <Select label={translateUi('Gender')} value={editing?.gender ?? ''} onChange={(gender) => setEditing((e) => (e ? { ...e, gender } : e))} options={[{ value: '', label: translateUi('Leave as it is') }, { value: '-', label: translateUi('Take it off') }, { value: 'm', label: translateUi('masculine') }, { value: 'f', label: translateUi('feminine') }, { value: 'n', label: translateUi('neuter') }]} />
         </div>
       </Dialog>

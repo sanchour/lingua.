@@ -8,7 +8,7 @@ import ru from './ru.json';
 import zh from './zh.json';
 import ar from './ar.json';
 const catalogues: Record<string, Record<string, string>> = { es, fr, de, ru, zh, ar };
-const placeholders = (s: string) => (s.match(/\{\d+\}/g) ?? []).sort();
+const placeholders = (s: string) => (s.match(/\{\w+\}/g) ?? []).sort();
 describe('bundled interface messages', () => {
   it('keeps values literal, reorders placeholders and falls back to English', () => {
     expect(interpolate('{1}: {0} / {0}', ['<script>$&</script>', 3])).toBe('3: <script>$&</script> / <script>$&</script>');

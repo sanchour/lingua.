@@ -107,7 +107,7 @@ export function WelcomePage({ name }: { name: string }) {
   const quip = QUIPS[[...name].reduce((sum, c) => sum + c.charCodeAt(0), 0) % QUIPS.length];
   return (
     <div className="flex flex-col items-center py-6 text-center">
-      <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.1 }} className="max-w-2xl font-serif text-[44px] leading-[1.12] font-semibold tracking-tight text-balance"><UiText source={'Welcome, {0}.'} values={[name.trim() || 'friend']} /></motion.h1>
+      <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.1 }} className="max-w-2xl font-serif text-[44px] leading-[1.12] font-semibold tracking-tight text-balance"><UiText source={'Welcome, {0}.'} values={[name.trim() || <UiText source={'friend'} />]} /></motion.h1>
       <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.35 }} className="mt-3 max-w-md text-[16.5px] leading-relaxed text-ink-soft italic">
         {quip}
       </motion.p>

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { newNotebookNote, newPhrase } from '@/data/notebook';
 import { rankGlobalSearch } from './globalSearch';
 
 describe('core/search/globalSearch (6-22)', () => {
@@ -105,4 +106,13 @@ describe('core/search/globalSearch (6-22)', () => {
     expect(hits[0].kind).toBe('word');
     expect(hits[0].title).toBe('madrugada');
   });
+});
+
+it('finds unconverted phrases and Notebook content, excludes deleted items and links to each selected item', () => {
+  const phrase = { ...newPhrase('es', 'Una frase única', 'unique phrase'), id: 'p/1' };
+  const note = { ...newNotebookNote('es'), id: 'n/1', title: 'Grammar', body: 'unique body' };
+  const hits = rankGlobalSearch({ notebook: [note, { ...note, id: 'gone', deletedAt: 1 }], phrases: [phrase] }, 'unique');
+  expect(hits.find((h) => h.kind === 'notebook')?.href).toBe('/mentis/notebook?note=n%2F1');
+  expect(hits.find((h) => h.kind === 'phrase')?.href).toBe('/thesaurus?tab=phrases&phrase=p%2F1');
+  expect(hits.some((h) => h.id.includes('gone'))).toBe(false);
 });

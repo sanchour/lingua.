@@ -93,7 +93,7 @@ export function CsvImportDrawer({ lang, source, folders, onClose }: { lang: stri
               {Array.from({ length: width }, (_, i) => (
                 <th key={i} className="min-w-36 pr-2 pb-2 text-left align-bottom font-normal">
                   {header && <span className="mb-1 block truncate text-[12px] font-semibold text-ink-faint">{table?.rows[0][i]}</span>}
-                  <Select label={translateUi('Column {0}', [i + 1])} hideLabel value={roles[i] ?? 'ignore'} onChange={(r) => setRole(i, r)} options={ROLES.map((r) => ({ value: r, label: ROLE_LABELS[r] }))} />
+                  <Select label={translateUi('Column {0}', [i + 1])} hideLabel value={roles[i] ?? 'ignore'} onChange={(r) => setRole(i, r)} options={ROLES.map((r) => ({ value: r, label: translateUi(ROLE_LABELS[r]) }))} />
                 </th>
               ))}
             </tr>

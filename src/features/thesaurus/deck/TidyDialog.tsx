@@ -55,7 +55,7 @@ export function TidyDialog({ open, onClose, notes, lang }: { open: boolean; onCl
                 setBusy(false);
                 onClose();
               }}
-            ><UiText source={'Delete {0} {1}'} values={[extras.length, extras.length === 1 ? 'copy' : 'copies']} /></Button>
+            ><UiText source={'Delete {0} {1}'} values={[extras.length, extras.length === 1 ? <UiText source={'copy'} /> : <UiText source={'copies'} />]} /></Button>
           )}
         </>
       }
@@ -63,14 +63,14 @@ export function TidyDialog({ open, onClose, notes, lang }: { open: boolean; onCl
       <div className="space-y-3 pt-2 text-[14px] text-ink-soft">
         {clean && <p><UiText source={'Nothing to tidy: no doubled words, and every card has a meaning and a sentence.'} /></p>}
         {extras.length > 0 && (
-          <p><UiText source={'{0} {1} of a word with the same meaning ({2}). The first of each stays; the copies go, with their history.'} values={[<b className="text-ink">{extras.length}</b>, extras.length === 1 ? 'card is a copy' : 'cards are copies', names(extras)]} /></p>
+          <p><UiText source={'{0} {1} of a word with the same meaning ({2}). The first of each stays; the copies go, with their history.'} values={[<b className="text-ink">{extras.length}</b>, extras.length === 1 ? <UiText source={'card is a copy'} /> : <UiText source={'cards are copies'} />, names(extras)]} /></p>
         )}
-        {filledCount !== null && <p className="text-sage-text"><UiText source={'Filled in {0} {1} with a sentence or the pronunciation from the dictionary.'} values={[filledCount, filledCount === 1 ? 'card' : 'cards']} /></p>}
+        {filledCount !== null && <p className="text-sage-text"><UiText source={'Filled in {0} {1} with a sentence or the pronunciation from the dictionary.'} values={[filledCount, filledCount === 1 ? <UiText source={'card'} /> : <UiText source={'cards'} />]} /></p>}
         {report.sameMeaning.length > 0 && (
-          <p><UiText source={'{0} {1} given to more than one word ({2}). Check they are not mixed up.'} values={[<b className="text-ink">{report.sameMeaning.length}</b>, report.sameMeaning.length === 1 ? 'meaning is' : 'meanings are', report.sameMeaning.slice(0, 4).map((g) => g.map((n) => n.term).join(' = ')).join('; ')]} /></p>
+          <p><UiText source={'{0} {1} given to more than one word ({2}). Check they are not mixed up.'} values={[<b className="text-ink">{report.sameMeaning.length}</b>, report.sameMeaning.length === 1 ? <UiText source={'meaning is'} /> : <UiText source={'meanings are'} />, report.sameMeaning.slice(0, 4).map((g) => g.map((n) => n.term).join(' = ')).join('; ')]} /></p>
         )}
         {report.sameWord.length > 0 && (
-          <p><UiText source={'{0} {1} more than one meaning ({2}). These stay; look at them by hand.'} values={[<b className="text-ink">{report.sameWord.length}</b>, report.sameWord.length === 1 ? 'word has' : 'words have', names(report.sameWord.map((g) => g[0]))]} /></p>
+          <p><UiText source={'{0} {1} more than one meaning ({2}). These stay; look at them by hand.'} values={[<b className="text-ink">{report.sameWord.length}</b>, report.sameWord.length === 1 ? <UiText source={'word has'} /> : <UiText source={'words have'} />, names(report.sameWord.map((g) => g[0]))]} /></p>
         )}
         {report.noMeaning.length > 0 && (
           <p><UiText source={'{0} without a meaning: {1}.'} values={[<b className="text-ink">{report.noMeaning.length}</b>, names(report.noMeaning)]} /></p>

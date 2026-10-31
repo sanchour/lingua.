@@ -94,7 +94,7 @@ function WhichWord({ lang, onSay }: { lang: string; onSay: (words: string[], exp
         ))}
       </div>
       {picked && (
-        <p className="mt-2 flex items-center gap-3 text-[14px] text-ink-soft" role="status"><UiText source={'{0}“{1}” is what the question asks for, so it carries the stress.{2}{3}'} values={[isStressed(picked, item) ? 'Yes: ' : 'Not quite: ', item.stressed, <button type="button" onClick={() => onSay([item.answer], undefined, { [item.answer]: item.stressed })} className="h-9 rounded-xl border border-line px-3 text-[13.5px] font-semibold hover:bg-surface"><UiText source={'Say the answer'} /></button>, <button type="button" onClick={() => (setPicked(null), setI((n) => n + 1))} className="h-9 rounded-xl bg-inverse px-3 text-[13.5px] font-semibold text-on-inverse">
+        <p className="mt-2 flex items-center gap-3 text-[14px] text-ink-soft" role="status"><UiText source={'{0}“{1}” is what the question asks for, so it carries the stress.{2}{3}'} values={[isStressed(picked, item) ? <UiText source={'Yes: '} /> : <UiText source={'Not quite: '} />, item.stressed, <button type="button" onClick={() => onSay([item.answer], undefined, { [item.answer]: item.stressed })} className="h-9 rounded-xl border border-line px-3 text-[13.5px] font-semibold hover:bg-surface"><UiText source={'Say the answer'} /></button>, <button type="button" onClick={() => (setPicked(null), setI((n) => n + 1))} className="h-9 rounded-xl bg-inverse px-3 text-[13.5px] font-semibold text-on-inverse">
             <UiText source={'Next'} />
           </button>]} /></p>
       )}

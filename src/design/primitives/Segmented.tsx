@@ -74,7 +74,7 @@ export function Segmented<T extends string>({ value, onChange, options, label, b
               {Icon && <Icon size={16} aria-hidden className="shrink-0" />}
               {o.short ? (
                 <>
-                  <span className="truncate sm:hidden">{o.short}</span>
+                  <span className="truncate sm:hidden"><UiText source={o.short} /></span>
                   <span className="hidden truncate sm:inline"><UiText source={o.label} /></span>
                 </>
               ) : (

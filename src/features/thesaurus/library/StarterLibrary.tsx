@@ -119,7 +119,7 @@ export function StarterLibrary({ lang, query, sort, group, onOpen }: LibraryProp
   if (list === null) {
     return (
       <Card className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-        <p className="flex-1 text-sm text-ink-soft"><UiText source={'Ready-made {0} decks come with the {1} dictionary{2}'} values={[name, name, job ? ', which is being installed now.' : '.']} /></p>
+        <p className="flex-1 text-sm text-ink-soft"><UiText source={'Ready-made {0} decks come with the {1} dictionary{2}'} values={[name, name, job ? <UiText source={', which is being installed now.'} /> : '.']} /></p>
         {!job && (
           <Button variant="secondary" icon={Download} onClick={() => void installPack(lang)}><UiText source={'Install dictionary'} /></Button>
         )}

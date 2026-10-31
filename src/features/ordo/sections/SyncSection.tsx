@@ -251,7 +251,7 @@ function Done({ partner, onClose }: { partner?: string; onClose: () => void }) {
       <span className="mx-auto grid size-12 place-items-center rounded-full bg-sage-soft text-sage-text">
         <Check size={24} aria-hidden />
       </span>
-      <p className="mt-3 font-semibold"><UiText source={'Paired with {0}'} values={[partner ?? 'your device']} /></p>
+      <p className="mt-3 font-semibold"><UiText source={'Paired with {0}'} values={[partner ?? <UiText source={'your device'} />]} /></p>
       <p className="mt-1 text-[14px] text-ink-soft"><UiText source={'The two are synced, and sync again whenever both are open.'} /></p>
       <Button className="mt-4" onClick={onClose}><UiText source={'Done'} /></Button>
     </div>

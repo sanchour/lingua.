@@ -49,6 +49,7 @@ export function Sample({ letters }: { letters: Letter[] }) {
 
 /** One letter in full: shapes, name, sound and its words, in a side panel (a sheet on a phone). */
 export function LetterSheet({ letter, script, onClose }: { letter: Letter | null; script: Script; onClose: () => void }) {
+  const translateUi = useUi();
   const lang = script.lang;
   return (
     <Drawer open={Boolean(letter)} onClose={onClose} title={letter ? shown(letter) : ''} description={letter?.latin}>
@@ -62,7 +63,7 @@ export function LetterSheet({ letter, script, onClose }: { letter: Letter | null
               <p className="mt-2 text-[14px] text-ink-faint"><UiText source={'called {0}'} values={[<span lang={lang}>{letter.name}</span>]} /></p>
             )}
             <p className="mx-auto mt-2 max-w-sm text-[15.5px] leading-snug text-ink-soft">{letter.sound}</p>
-            <p className="mt-2 font-mono text-[12.5px] text-ink-faint" dir="ltr" title="Unicode code points">{codePoints(shown(letter))}</p>
+            <p className="mt-2 font-mono text-[12.5px] text-ink-faint" dir="ltr" title={translateUi('Unicode code points')}>{codePoints(shown(letter))}</p>
           </div>
           {lang === 'zh' && letter.character && <StrokeOrder char={[...letter.glyph][0]} />}
           {script.joins && <JoinedForms letter={letter} lang={lang} />}

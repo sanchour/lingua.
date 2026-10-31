@@ -29,6 +29,45 @@ export function getDailyWordKey(lang: string, dateStr: string, count: number): n
   return count > 0 ? hash % count : 0;
 }
 
+export async function loadDailyWord(lang: string, todayStr: string, database = db): Promise<DailyWord | null> {
+  // 1. Try starter pack words
+  const starter = await database.starterLists.get(lang);
+  if (starter?.lemmaFreq && starter.lemmaFreq.length > 0) {
+    const idx = getDailyWordKey(lang, todayStr, Math.min(starter.lemmaFreq.length, 500));
+    const word = starter.lemmaFreq[idx];
+    const [freq, dict] = await Promise.all([
+      database.frequency.get(`${lang}:${word}`),
+      database.dictEntries.get([packId(lang), word]),
+    ]);
+    const gloss = freq?.gloss ?? dict?.senses[0]?.glosses[0] ?? 'core vocabulary word';
+    const ex = await database.dictExamples.get([packId(lang), word]);
+    return {
+      word,
+      pos: freq?.pos ?? dict?.senses[0]?.pos,
+      gloss,
+      sentence: ex?.ex?.[0]?.[0],
+      translation: ex?.ex?.[0]?.[1],
+    };
+  }
+
+  // 2. Fallback to frequency table: take a bounded sample without full-table scanning
+  const prefix = `${lang}:`;
+  const sample = await database.frequency.where('id').between(prefix, `${prefix}\uffff`).limit(100).toArray();
+  if (sample.length > 0) {
+    const idx = getDailyWordKey(lang, todayStr, sample.length);
+    const found = sample[idx];
+    if (found) {
+      return {
+        word: found.norm,
+        pos: found.pos,
+        gloss: found.gloss ?? 'common word',
+      };
+    }
+  }
+
+  return null;
+}
+
 /**
  * Word of the Day widget (F1524), Quick 2-Minute Review (F1523),
  * and Document Picture-in-Picture floating review window (Slice 2.6).
@@ -44,50 +83,7 @@ export function DailyWordCard({ lang }: { lang: string }) {
   const decks = useDecks(lang);
   const due = useDueSummary(lang);
 
-  const dailyWord = useLiveQuery(async (): Promise<DailyWord | null> => {
-    // 1. Try starter pack words
-    const starter = await db.starterLists.get(lang);
-    if (starter?.lemmaFreq && starter.lemmaFreq.length > 0) {
-      const idx = getDailyWordKey(lang, todayStr, Math.min(starter.lemmaFreq.length, 500));
-      const word = starter.lemmaFreq[idx];
-      const [freq, dict] = await Promise.all([
-        db.frequency.get(`${lang}:${word}`),
-        db.dictEntries.get([packId(lang), word]),
-      ]);
-      const gloss = freq?.gloss ?? dict?.senses[0]?.glosses[0] ?? 'core vocabulary word';
-      const ex = await db.dictExamples.get([packId(lang), word]);
-      return {
-        word,
-        pos: freq?.pos ?? dict?.senses[0]?.pos,
-        gloss,
-        sentence: ex?.ex?.[0]?.[0],
-        translation: ex?.ex?.[0]?.[1],
-      };
-    }
-
-    // 2. Fallback to frequency table: take a bounded sample without full-table scanning
-    const prefix = `${lang}:`;
-    const sample = await db.frequency.where('id').between(prefix, `${prefix}\uffff`).limit(100).toArray();
-    if (sample.length > 0) {
-      const idx = getDailyWordKey(lang, todayStr, sample.length);
-      const found = sample[idx];
-      if (found) {
-        return {
-          word: found.norm,
-          pos: found.pos,
-          gloss: found.gloss ?? 'common word',
-        };
-      }
-    }
-
-    return {
-      word: lang === 'es' ? 'sobremesa' : lang === 'fr' ? 'flâner' : lang === 'de' ? 'fernweh' : 'lingua',
-      pos: 'noun',
-      gloss: 'lingering conversation at the table after a meal',
-      sentence: 'Disfrutamos de una larga sobremesa con amigos.',
-      translation: 'We enjoyed a long lingering conversation at the table with friends.',
-    };
-  }, [lang, todayStr]);
+  const dailyWord = useLiveQuery(() => loadDailyWord(lang, todayStr), [lang, todayStr]);
 
   const handleHear = () => {
     if (!dailyWord) return;
@@ -119,8 +115,8 @@ export function DailyWordCard({ lang }: { lang: string }) {
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
       setNotifGranted(true);
-      new Notification(`Word of the day: ${dailyWord?.word ?? ''}`, {
-        body: dailyWord?.gloss ?? 'Check out today’s featured word in Lingua!',
+      new Notification(translateUi('Word of the day: {0}', [dailyWord?.word ?? '']), {
+        body: dailyWord?.gloss ?? translateUi('Check out today’s featured word in Lingua!'),
       });
       toast('Daily word notifications enabled.', { tone: 'success' });
     } else {
@@ -134,7 +130,7 @@ export function DailyWordCard({ lang }: { lang: string }) {
       try {
         const dpip = (window as unknown as { documentPictureInPicture: { requestWindow: (opts: { width: number; height: number }) => Promise<Window> } }).documentPictureInPicture;
         const pipWin = await dpip.requestWindow({ width: 380, height: 480 });
-        pipWin.document.title = 'Lingua · Quick Review';
+        pipWin.document.title = translateUi('Lingua · Quick Review');
         // Built from elements, not an HTML string: the word and its gloss are data and are never read as markup.
         const doc = pipWin.document;
         const el = (tag: string, css: string, text?: string, parent?: HTMLElement) => {
@@ -146,12 +142,12 @@ export function DailyWordCard({ lang }: { lang: string }) {
         };
         const page = el('div', 'font-family: -apple-system, system-ui, sans-serif; padding: 20px; text-align: center; background: #faf6f0; color: #262220; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;');
         const top = el('div', '', undefined, page);
-        el('p', 'font-size: 11px; font-weight: 700; text-transform: uppercase; color: #776c63; letter-spacing: 0.1em;', 'Quick Review · Floating', top);
-        el('h2', 'font-size: 26px; margin: 12px 0 4px 0;', dailyWord?.word ?? 'Practice', top);
+        el('p', 'font-size: 11px; font-weight: 700; text-transform: uppercase; color: #776c63; letter-spacing: 0.1em;', translateUi('Quick Review · Floating'), top);
+        el('h2', 'font-size: 26px; margin: 12px 0 4px 0;', dailyWord?.word ?? translateUi('Practice'), top);
         el('p', 'color: #5e554e; font-size: 14px;', dailyWord?.gloss ?? '', top);
         const bottom = el('div', '', undefined, page);
-        el('p', 'font-size: 13px; color: #776c63; margin-bottom: 12px;', `${due?.due ?? 0} cards due today`, bottom);
-        const link = el('a', 'display: block; padding: 10px; background: #c86d51; color: white; border-radius: 12px; font-weight: 600; text-decoration: none;', 'Full Review', bottom) as HTMLAnchorElement;
+        el('p', 'font-size: 13px; color: #776c63; margin-bottom: 12px;', translateUi('{0} cards due today', [due?.due ?? 0]), bottom);
+        const link = el('a', 'display: block; padding: 10px; background: #c86d51; color: white; border-radius: 12px; font-weight: 600; text-decoration: none;', translateUi('Full Review'), bottom) as HTMLAnchorElement;
         link.href = '/thesaurus/study/all?mode=recall';
         link.target = '_blank';
         doc.body.replaceChildren(page);
@@ -185,6 +181,7 @@ export function DailyWordCard({ lang }: { lang: string }) {
             </div>
             <button
               type="button"
+              disabled={!dailyWord}
               onClick={() => void requestDailyNotifications()}
               title={notifGranted ? translateUi('Daily notification enabled') : translateUi('Turn on daily word notification')}
               className="grid size-8 place-items-center rounded-full text-ink-faint hover:bg-surface hover:text-ink"
@@ -194,6 +191,7 @@ export function DailyWordCard({ lang }: { lang: string }) {
             </button>
           </div>
 
+          {!dailyWord && <p className="mt-3 text-sm text-ink-soft"><UiText source="Install this language’s dictionary to see a word of the day." /></p>}
           {dailyWord && (
             <div className="mt-3">
               <div className="flex items-baseline gap-2.5">
@@ -227,7 +225,7 @@ export function DailyWordCard({ lang }: { lang: string }) {
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-line/70 pt-3">
           <div className="flex gap-1.5">
-            <Button variant="ghost" size="sm" onClick={() => void handleAddToDeck()}><UiText source={'Add to deck'} /></Button>
+            <Button variant="ghost" size="sm" disabled={!dailyWord} onClick={() => void handleAddToDeck()}><UiText source={'Add to deck'} /></Button>
             {dailyWord && (
               <Link
                 to={`/thesaurus?tab=dictionary&word=${encodeURIComponent(dailyWord.word)}`}

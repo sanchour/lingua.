@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Hangman-style spelling (6-21, F0172 and F1196): five of the learner's words, each asked by its meaning. Typed with the keyboard or
 // clicked on the letters; a hint shows a letter and costs a star.
 import { useMemo, useState } from 'react';
@@ -26,6 +27,7 @@ interface Entry {
 }
 
 function Board({ entry, lang, random, settle }: BoardProps<Entry>) {
+  const translateUi = useUi();
   const rtl = isRtl(lang);
   const [s, setS] = useState(entry.state);
   const alphabet = useMemo(() => alphabetFor(lang, entry.state.keys), [lang, entry.state.keys]);
@@ -39,7 +41,7 @@ function Board({ entry, lang, random, settle }: BoardProps<Entry>) {
   return (
     <div>
       <div className="rounded-3xl border border-line/70 bg-surface p-6">
-        <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</p>
+        <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Meaning'} /></p>
         <p className="mt-1 font-serif text-2xl leading-snug">{entry.item.meaning}</p>
         {example && (
           <p className="mt-3 text-[15px] leading-snug text-ink-soft" lang={lang} dir={rtl ? 'rtl' : undefined}>
@@ -65,16 +67,12 @@ function Board({ entry, lang, random, settle }: BoardProps<Entry>) {
           </div>
           <p className="mt-4 min-h-6 text-[14px] text-ink-soft">
             {s.wrong.length ? (
-              <>
-                Wrong: <bdi lang={lang}>{s.wrong.join('  ')}</bdi> ({s.wrong.length} of {MAX_MISTAKES})
-              </>
+              <><UiText source={'Wrong: {0} ({1} of {2})'} values={[<bdi lang={lang}>{s.wrong.join('  ')}</bdi>, s.wrong.length, MAX_MISTAKES]} /></>
             ) : (
-              'No wrong letters yet.'
+              translateUi('No wrong letters yet.')
             )}
           </p>
-          <button type="button" onClick={useHint} disabled={over || s.hints >= MAX_HINTS} className={buttonClasses('secondary', 'sm') + ' mt-3 disabled:opacity-50'}>
-            <Lightbulb size={14} aria-hidden /> Show a letter <Kbd>1</Kbd> <span className="text-ink-faint">{MAX_HINTS - s.hints} left, costs a star</span>
-          </button>
+          <button type="button" onClick={useHint} disabled={over || s.hints >= MAX_HINTS} className={buttonClasses('secondary', 'sm') + ' mt-3 disabled:opacity-50'}><UiText source={'{0} Show a letter {1} {2}'} values={[<Lightbulb size={14} aria-hidden />, <Kbd>1</Kbd>, <span className="text-ink-faint"><UiText source={'{0} left, costs a star'} values={[MAX_HINTS - s.hints]} /></span>]} /></button>
         </div>
       </div>
       <div className="mt-6">
@@ -113,10 +111,11 @@ export function Hangman({ lang, def, items, best }: { lang: string; def: GameDef
 
 /** The switch Latin-script letter games share: do accents count? */
 export function AccentsOption({ exact, onChange }: { exact: boolean; onChange: (v: boolean) => void }) {
+  const translateUi = useUi();
   return (
     <ToggleRow
-      title="Accents count"
-      description={exact ? 'é and e are different letters: pick the accented ones from the letters.' : 'A plain letter also fills the accented ones, as when typing without accents.'}
+      title={translateUi('Accents count')}
+      description={exact ? translateUi('é and e are different letters: pick the accented ones from the letters.') : translateUi('A plain letter also fills the accented ones, as when typing without accents.')}
       checked={exact}
       onChange={onChange}
     />

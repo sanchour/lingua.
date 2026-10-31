@@ -50,7 +50,7 @@ export function PronunciationDiary({ lang }: { lang: string }) {
   return (
     <section aria-labelledby="diary-h" className="rounded-3xl border border-line bg-raised p-5">
       <h2 id="diary-h" className="font-serif text-2xl font-semibold"><UiText source={'Your pronunciation diary'} /></h2>
-      <p className="mt-1 max-w-2xl text-[14px] text-ink-soft"><UiText source={'Read this passage aloud, then again in a week, and in a month. It is always the same one, so you can hear how you change. {0}'} values={[since === null ? 'No reading yet.' : since >= 7 ? `Your last reading was ${since} days ago: time for another.` : `Your last reading was ${since === 0 ? 'today' : `${since} ${since === 1 ? 'day' : 'days'} ago`}.`]} /></p>
+      <p className="mt-1 max-w-2xl text-[14px] text-ink-soft"><UiText source={'Read this passage aloud, then again in a week, and in a month. It is always the same one, so you can hear how you change. {0}'} values={[since === null ? <UiText source={'No reading yet.'} /> : since >= 7 ? `Your last reading was ${since} days ago: time for another.` : `Your last reading was ${since === 0 ? 'today' : `${since} ${since === 1 ? 'day' : 'days'} ago`}.`]} /></p>
       <p lang={lang} dir={lang === 'ar' ? 'rtl' : undefined} className="mt-4 rounded-2xl bg-surface p-4 font-serif text-[18px] leading-relaxed">
         {passage}
       </p>
@@ -83,7 +83,7 @@ export function PronunciationDiary({ lang }: { lang: string }) {
               <Reading key={e.id} id={e.id} at={e.at} bytes={e.size} onDelete={() => void deleteReading(e.id)} />
             ))}
           </ul>
-          <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'{0} {1}, {2} on this device. They are never sent anywhere.'} values={[entries.length, entries.length === 1 ? 'reading' : 'readings', size(total)]} /></p>
+          <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'{0} {1}, {2} on this device. They are never sent anywhere.'} values={[entries.length, entries.length === 1 ? <UiText source={'reading'} /> : <UiText source={'readings'} />, size(total)]} /></p>
         </>
       )}
     </section>

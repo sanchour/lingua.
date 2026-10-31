@@ -124,7 +124,7 @@ export function MinimalPairs({ lang, focus = null, onSay, onFocus }: { lang: str
           </div>
           {picked !== null && (
             <div className="mt-3 flex items-center gap-3" role="status">
-              <p className="flex-1 text-[14px] text-ink-soft"><UiText source={'{0}Listen for: {1}.'} values={[picked === round.said ? 'Yes. ' : 'Not quite. ', round.pair.contrast]} /></p>
+              <p className="flex-1 text-[14px] text-ink-soft"><UiText source={'{0}Listen for: {1}.'} values={[picked === round.said ? <UiText source={'Yes. '} /> : <UiText source={'Not quite. '} />, round.pair.contrast]} /></p>
               {onSay && (
                 <button type="button" onClick={() => onSay([round.pair.a, round.pair.b])} title={translateUi('Say both words and see their shapes')} className="h-10 rounded-xl border border-line px-4 text-[14px] font-semibold hover:bg-surface"><UiText source={'Say both'} /></button>
               )}

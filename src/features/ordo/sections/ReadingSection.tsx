@@ -127,17 +127,15 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
 
       {(READING_LANGS.has(target.code) || TRANSLIT_LANGS.has(target.code)) && (
         <div className="mt-5">
-          <p className="text-[15px] font-semibold">{target.code === 'ja' ? translateUi('Furigana over words') : READING_LANGS.has(target.code) ? translateUi('Pinyin over words') : 'Transliteration over words'}</p>
-          <p data-hint="" className="mt-0.5 mb-2 text-[13px] text-ink-soft">
-            {target.code === 'ja' ? translateUi('Kana above words written with kanji.') : READING_LANGS.has(target.code) ? translateUi('The pinyin of each word, with its tones, above the characters.') : 'The word in Latin letters above it. Arabic needs the vowel marks to be read.'} “Fading” shows it in full on new words, faintly on words you are learning, and not at all on known ones.
-          </p>
+          <p className="text-[15px] font-semibold">{target.code === 'ja' ? translateUi('Furigana over words') : READING_LANGS.has(target.code) ? translateUi('Pinyin over words') : translateUi('Transliteration over words')}</p>
+          <p data-hint="" className="mt-0.5 mb-2 text-[13px] text-ink-soft"><UiText source={'{0} “Fading” shows it in full on new words, faintly on words you are learning, and not at all on known ones.'} values={[target.code === 'ja' ? translateUi('Kana above words written with kanji.') : READING_LANGS.has(target.code) ? translateUi('The pinyin of each word, with its tones, above the characters.') : translateUi('The word in Latin letters above it. Arabic needs the vowel marks to be read.')]} /></p>
           <Segmented
-            label="Reading above words"
+            label={translateUi('Reading above words')}
             value={reader.readings}
             onChange={(readings) => void patchSetting('reader', { readings })}
             options={[
               { value: 'new', label: translateUi('New words') },
-              { value: 'fade', label: 'Fading' },
+              { value: 'fade', label: translateUi('Fading') },
               { value: 'all', label: translateUi('All words') },
               { value: 'off', label: translateUi('Off') },
             ]}
@@ -147,15 +145,15 @@ export function ReadingSection({ reader, lang }: { reader: Settings['reader']; l
 
       {target.code === 'ar' && (
         <div className="mt-5">
-          <p className="text-[15px] font-semibold">Transliteration letters</p>
-          <p data-hint="" className="mt-0.5 mb-2 text-[13px] text-ink-soft">Scholarly keeps ā, ḥ and ʿ; plain drops the marks. With “Fading”, the short vowel marks on Arabic words also fade as you learn them: full on new words, faint while learning, gone once known.</p>
+          <p className="text-[15px] font-semibold"><UiText source={'Transliteration letters'} /></p>
+          <p data-hint="" className="mt-0.5 mb-2 text-[13px] text-ink-soft"><UiText source={'Scholarly keeps ā, ḥ and ʿ; plain drops the marks. With “Fading”, the short vowel marks on Arabic words also fade as you learn them: full on new words, faint while learning, gone once known.'} /></p>
           <Segmented
-            label="Transliteration letters"
+            label={translateUi('Transliteration letters')}
             value={reader.translit ?? 'scholarly'}
             onChange={(translit) => void patchSetting('reader', { translit })}
             options={[
-              { value: 'scholarly', label: 'Scholarly' },
-              { value: 'plain', label: 'Plain' },
+              { value: 'scholarly', label: translateUi('Scholarly') },
+              { value: 'plain', label: translateUi('Plain') },
             ]}
           />
         </div>

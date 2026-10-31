@@ -1,5 +1,5 @@
-import { UiText, useUi } from '@/design/i18n/UiText';
-import { memo, useMemo, useState } from 'react';
+import { UiText, UiLocale, useUi } from '@/design/i18n/UiText';
+import { memo, useContext, useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
@@ -98,6 +98,7 @@ export function HomeToday() {
   const plan = usePlan();
   const openPlans = useUI((s) => s.openPlans);
   const target = getLanguage(language.id);
+  const locale = useContext(UiLocale);
   const facts = useHomeFacts(language.id);
   const name = settings.learner.name?.trim();
   const goal = language.dailyGoal.readMinutes;
@@ -107,7 +108,8 @@ export function HomeToday() {
     <>
       <PageHeader
         title={settings.ui.interfaceLanguage ? `${translateUi(greeting(new Date().getHours()))}${name ? `, ${name}` : ''}` : homeGreeting(new Date().getHours(), name, target?.name)}
-        eyebrow={`${DATE.format(new Date())} · ${target?.endonym ?? language.id} · ${language.level}${language.goal ? ` → ${language.goal}` : ''}`}
+        englishEyebrow={`${DATE.format(new Date())} · ${target?.endonym ?? language.id}`}
+        eyebrow={`${new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date())} · ${target?.endonym ?? language.id} · ${language.level}${language.goal ? ` → ${language.goal}` : ''}`}
         actions={
           plan === 'free' ? (
             <button
@@ -132,7 +134,7 @@ export function HomeToday() {
 
         {/* Word of the day & Quick review (6-25, F1523, F1524) */}
         <motion.div {...enter(2)}>
-          <DailyWordCard lang={language.id} />
+          <DailyWordCard key={language.id} lang={language.id} />
         </motion.div>
 
         {/* Daily motivational quote (6-17, F1164) */}
@@ -247,7 +249,7 @@ const TodayCard = memo(function TodayCard({
           ) : (
             <span><UiText source={'Read, listen, watch or write: it all counts toward your daily goal.'} /></span>
           )}
-          {today?.reviews ? <span><UiText source={'{0} {1} reviewed'} values={[today.reviews, today.reviews === 1 ? 'card' : 'cards']} /></span> : null}
+          {today?.reviews ? <span><UiText source={'{0} {1} reviewed'} values={[today.reviews, today.reviews === 1 ? <UiText source={'card'} /> : <UiText source={'cards'} />]} /></span> : null}
         </p>
       </div>
 
@@ -445,7 +447,7 @@ const ChooseModeCard = memo(function ChooseModeCard() {
           >
             <span className="transition-transform duration-200 group-hover:scale-105 [&>svg]:h-7 [&>svg]:w-9">{m.illustration}</span>
             <span className="mt-1 font-serif text-[14.5px] leading-tight font-semibold text-ink group-hover:text-accent-text">{m.name}</span>
-            <span className="mt-0.5 line-clamp-1 text-[11px] text-ink-soft">{m.role}</span>
+            <span className="mt-0.5 line-clamp-1 text-[11px] text-ink-soft"><UiText source={m.role} /></span>
           </Link>
         ))}
       </div>
@@ -494,7 +496,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         to: `/codex/read/${book.id}`,
         room: 'Codex',
         title: book.title,
-        detail: `${pct}% read${book.author ? ` · ${book.author}` : ''}`,
+        detail: translateUi("{0}% read{1}", [pct, book.author ? ` · ${book.author}` : '']),
         pct: Math.max(4, pct),
         langAttr: lang,
         art: (
@@ -521,7 +523,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         to: `/sonus/play/${ep.id}`,
         room: 'Sonus',
         title: ep.title,
-        detail: left > 60_000 ? `${formatDuration(left)} left` : ep.collection || 'Continue listening',
+        detail: left > 60_000 ? translateUi("{0} left", [formatDuration(left)]) : ep.collection || translateUi("Continue listening"),
         pct,
         langAttr: lang,
         art: <Artwork title={ep.title} coverBlobId={ep.coverBlobId} coverUrl={ep.coverUrl} className="size-full object-cover" rounded="rounded-none" />,
@@ -541,7 +543,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         to: `/visio/watch/${vid.id}`,
         room: 'Visio',
         title: vid.title,
-        detail: vid.collection || 'Continue watching',
+        detail: vid.collection || translateUi("Continue watching"),
         pct,
         langAttr: lang,
         art: <Poster title={vid.title} coverBlobId={vid.coverBlobId} coverUrl={vid.coverUrl} className="size-full rounded-none shadow-none" />,
@@ -556,7 +558,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         to: `/sonus/book/${ab.id}`,
         room: 'Sonus',
         title: ab.title,
-        detail: ab.author ? `Audiobook · ${ab.author}` : 'Audiobook',
+        detail: ab.author ? translateUi("Audiobook · {0}", [ab.author]) : translateUi("Audiobook"),
         langAttr: lang,
         art: <Artwork title={ab.title} coverBlobId={ab.coverBlobId} coverUrl={ab.coverUrl} className="size-full object-cover" rounded="rounded-none" />,
       });
@@ -569,7 +571,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         id: 'thesaurus:due',
         to: '/thesaurus/study/all?mode=recall',
         room: 'Thesaurus',
-        title: `${dueCards} ${dueCards === 1 ? 'card' : 'cards'} to review`,
+        title: translateUi("{0} {1} to review", [dueCards, dueCards === 1 ? 'card' : 'cards']),
         detail: [due?.due && `${due.due} due`, due?.fresh && `${due.fresh} new`].filter(Boolean).join(' · '),
         art: <WarmVignette hue="#6b8e78" icon={Layers} label={`${dueCards}`} />,
       });
@@ -583,7 +585,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         to: `/cantus/song/${encodeURIComponent(s.id)}`,
         room: 'Sonus+',
         title: s.title,
-        detail: `Song · ${s.artist}`,
+        detail: translateUi("Song · {0}", [s.artist]),
         langAttr: lang,
         art: <SongArt url={s.artworkUrl} title={s.title} className="size-full object-cover" rounded="rounded-none" size={240} />,
       });
@@ -598,7 +600,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
           to: `/codex/read/${nextBook.id}`,
           room: 'Codex',
           title: nextBook.title,
-          detail: nextBook.author || 'Up next on your shelf',
+          detail: nextBook.author || translateUi("Up next on your shelf"),
           langAttr: lang,
           art: (
             <div className="flex size-full items-center justify-center bg-sunken p-2.5">
@@ -618,7 +620,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         to: '/codex',
         room: 'Codex',
         title: quote(SAMPLES[lang] ? lang : 'en', sampleTitle),
-        detail: 'A short starter story, ready to read',
+        detail: translateUi("A short starter story, ready to read"),
         langAttr: lang,
         art: <WarmVignette hue="#c86d51" icon={BookOpen} label={translateUi('Read')} />,
       });
@@ -629,8 +631,8 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         id: 'cursus:path',
         to: '/cursus',
         room: 'Cursus',
-        title: `Course & Grammatica`,
-        detail: `Structured lessons and drills for ${level}`,
+        title: translateUi("Course & Grammatica", []),
+        detail: translateUi("Structured lessons and drills for {0}", [level]),
         art: <WarmVignette hue="#5f87a8" icon={GraduationCap} label={level} />,
       });
     }
@@ -640,8 +642,8 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         id: 'thesaurus:browse',
         to: '/thesaurus',
         room: 'Thesaurus',
-        title: 'Core vocabulary decks',
-        detail: 'Top frequency words & everyday themes',
+        title: translateUi("Core vocabulary decks"),
+        detail: translateUi("Top frequency words & everyday themes"),
         art: <WarmVignette hue="#6b8e78" icon={Layers} label="100+" />,
       });
     }
@@ -653,7 +655,7 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         id: 'mentis:diarium',
         to: '/mentis/diarium',
         room: 'Mentis',
-        title: 'Today’s journal entry',
+        title: translateUi("Today’s journal entry"),
         detail: prompt.en || prompt.text,
         art: <WarmVignette hue="#b56fa0" icon={PenLine} label={translateUi('Write')} />,
       });
@@ -664,14 +666,14 @@ function ContinueLearningSection({ lang, level }: { lang: string; level: Level }
         id: 'sonus:explore',
         to: '/sonus?tab=radio',
         room: 'Sonus',
-        title: 'Live radio & podcasts',
-        detail: 'Listen in from stations around the world',
+        title: translateUi("Live radio & podcasts"),
+        detail: translateUi("Listen in from stations around the world"),
         art: <WarmVignette hue="#d49b54" icon={Headphones} label={translateUi('Live')} />,
       });
     }
 
     return list.slice(0, 5);
-  }, [allTexts, progress, listening, videos, audiobooks, playback, songs, due, journal, lang, level]);
+  }, [allTexts, progress, listening, videos, audiobooks, playback, songs, due, journal, lang, level, translateUi]);
 
   return (
     <section aria-label={translateUi('Continue learning')}>
@@ -792,7 +794,7 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
         tool: PICK_TOOL[group],
         level: chosen.level,
         title: chosen.title,
-        detail: chosen.why || chosen.by || 'Picked for your level',
+        detail: chosen.why || chosen.by || translateUi("Picked for your level"),
         langAttr: lang,
         onClick: () => {
           if (group === 'series' || group === 'films') {
@@ -827,10 +829,10 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
       const count = starterList?.themes[theme.id]?.length ?? 0;
       out.push({
         id: `theme:${theme.id}`,
-        tool: 'Thesaurus · Deck',
+        tool: translateUi("Thesaurus · Deck"),
         level,
         title: theme.name,
-        detail: `${count} essential words · ${theme.blurb}`,
+        detail: translateUi("{0} essential words · {1}", [count, theme.blurb]),
         onClick: () => navigate('/thesaurus/ready/' + starterKey({ kind: 'theme', id: theme.id })),
         art: (
           <Art
@@ -847,9 +849,9 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
       const src = news[0];
       out.push({
         id: `news:${src.id}`,
-        tool: 'Codex · News',
+        tool: translateUi("Codex · News"),
         title: src.name,
-        detail: 'Today’s articles, clean and ready to read with 1-tap lookup',
+        detail: translateUi("Today’s articles, clean and ready to read with 1-tap lookup"),
         onClick: () => navigate('/explora?tab=read'),
         art: <WarmVignette hue="#4f93a0" icon={Newspaper} label={translateUi('News')} />,
       });
@@ -859,9 +861,9 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
     if (out.length < 5) {
       out.push({
         id: 'explora:gutenberg',
-        tool: 'Codex · Classics',
-        title: 'Project Gutenberg & Wikipedia',
-        detail: 'Free books and today’s most-read articles in your language',
+        tool: translateUi("Codex · Classics"),
+        title: translateUi("Project Gutenberg & Wikipedia"),
+        detail: translateUi("Free books and today’s most-read articles in your language"),
         onClick: () => navigate('/explora?tab=read'),
         art: <WarmVignette hue="#c86d51" icon={BookOpen} label={translateUi('Free')} />,
       });
@@ -869,9 +871,9 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
     if (out.length < 5) {
       out.push({
         id: 'explora:audiobooks',
-        tool: 'Sonus · Listen',
-        title: 'LibriVox Audiobooks & Radio',
-        detail: 'Free public-domain audiobooks and live radio stations',
+        tool: translateUi("Sonus · Listen"),
+        title: translateUi("LibriVox Audiobooks & Radio"),
+        detail: translateUi("Free public-domain audiobooks and live radio stations"),
         onClick: () => navigate('/sonus?tab=books'),
         art: <WarmVignette hue="#5f87a8" icon={Headphones} label={translateUi('Audio')} />,
       });
@@ -879,9 +881,9 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
     if (out.length < 5) {
       out.push({
         id: 'explora:words',
-        tool: 'Thesaurus · Words',
-        title: 'Top 100 Frequency Deck',
-        detail: 'The words you meet most often, with example sentences',
+        tool: translateUi("Thesaurus · Words"),
+        title: translateUi("Top 100 Frequency Deck"),
+        detail: translateUi("The words you meet most often, with example sentences"),
         onClick: () => navigate('/explora?tab=words'),
         art: <WarmVignette hue="#6b8e78" icon={Layers} label={translateUi('Top 100')} />,
       });
@@ -889,16 +891,16 @@ function DiscoverContentSection({ lang, level }: { lang: string; level: Level })
     if (out.length < 5) {
       out.push({
         id: 'explora:visio',
-        tool: 'Visio · Watch',
-        title: 'Series & Films on Streaming',
-        detail: 'Browse shows in your language with dual-subtitle support',
+        tool: translateUi("Visio · Watch"),
+        title: translateUi("Series & Films on Streaming"),
+        detail: translateUi("Browse shows in your language with dual-subtitle support"),
         onClick: () => navigate('/visio?tab=services'),
         art: <WarmVignette hue="#b56fa0" icon={Clapperboard} label={translateUi('Watch')} />,
       });
     }
 
     return out.slice(0, 5);
-  }, [guide?.picks, level, lookups, lang, starterList, navigate]);
+  }, [guide?.picks, level, lookups, lang, starterList, navigate, translateUi]);
 
   return (
     <section aria-label={translateUi('Discover your next content')}>

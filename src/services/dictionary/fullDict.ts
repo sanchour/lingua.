@@ -4,7 +4,8 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { create } from 'zustand';
 import { DICT_VERSION, dictFileName } from '@/core/dictionary/format';
 import type { FullDictRow } from '@/core/dictionary/format';
-import { searchDictionaryRows } from '@/core/dictionary/searchTools';
+import { indexedDictionarySearch } from '@/data/dictionarySearch';
+import DictionarySearchWorker from '@/workers/dictionarySearch.worker?worker';
 import type { DictSearchOptions, ScoredDictRow } from '@/core/dictionary/searchTools';
 import { foldKey, normalizeWord } from '@/core/text/normalize';
 import { db } from '@/data/db';
@@ -92,24 +93,41 @@ export async function searchFull(lang: string, query: string, limit = 12): Promi
     .slice(0, limit);
 }
 
-/** Advanced dictionary search across modes (meaning/reverse, fuzzy, prefix, suffix, rhyme, sound, POS filter). */
+let searchWorker: Worker | undefined;
+let searchId = 0;
+let searchLang = '';
+const searches = new Map<number, { resolve: (hits: ScoredDictRow[]) => void; reject: (error: Error) => void }>();
+
+/** Full-corpus scoring stays off the UI thread; the worker observes dictionary edits. */
 export async function searchFullAdvanced(lang: string, query: string, options: DictSearchOptions): Promise<ScoredDictRow[]> {
-  const limit = options.limit ?? 20;
-  const q = foldKey(query.trim(), lang);
-  if (options.mode === 'word' && (!options.pos || options.pos === 'all') && q) {
-    const fast = await searchFull(lang, query, limit);
-    if (fast.length >= Math.min(4, limit)) {
-      return fast.map((row, idx) => ({ row, score: 100 - idx }));
-    }
+  if (options.mode === 'prefix' || options.mode === 'word') {
+    const hits = await indexedDictionarySearch(lang, query, options);
+    if (hits.length || options.mode === 'prefix') return hits;
   }
-  if (options.mode === 'prefix' && q) {
-    const prefRows = await db.fullDict
-      .where('[lang+fold]')
-      .between([lang, q], [lang, `${q}`])
-      .limit(600)
-      .toArray();
-    return searchDictionaryRows(prefRows, query, { ...options, limit });
+  if (searchWorker && searchLang !== lang) {
+    searchWorker.terminate(); searchWorker = undefined;
+    for (const request of searches.values()) request.reject(new Error('Dictionary language changed.'));
+    searches.clear();
   }
-  const rows = await db.fullDict.where('lang').equals(lang).limit(12000).toArray();
-  return searchDictionaryRows(rows, query, { ...options, limit });
+  if (!searchWorker) {
+    searchLang = lang;
+    searchWorker = new DictionarySearchWorker();
+    searchWorker.onmessage = ({ data }) => {
+      const request = searches.get(data.id);
+      if (!request) return;
+      searches.delete(data.id);
+      if (data.error) request.reject(new Error(data.error));
+      else request.resolve(data.hits);
+    };
+    searchWorker.onerror = () => {
+      searchWorker?.terminate(); searchWorker = undefined;
+      for (const request of searches.values()) request.reject(new Error('Dictionary search failed.'));
+      searches.clear();
+    };
+  }
+  return new Promise((resolve, reject) => {
+    const id = ++searchId;
+    searches.set(id, { resolve, reject });
+    searchWorker!.postMessage({ id, lang, query, options });
+  });
 }

@@ -154,7 +154,7 @@ export function DiariumHome() {
       {entries && entries.length === 0 && (
         <div className="flex flex-col items-center py-6 text-center text-ink-soft">
           <Sparkles size={22} className="mb-3 text-sage-text" aria-hidden />
-          <p className="max-w-sm text-[15px] leading-relaxed"><UiText source={'A few sentences a day is plenty. Write, then let the AI correct and explain{0}; your mistakes become flashcards.'} values={[hasAi ? '' : block === 'max' ? ' (with Lingua+ Max)' : ' (add a free key in Settings › AI)']} /></p>
+          <p className="max-w-sm text-[15px] leading-relaxed"><UiText source={'A few sentences a day is plenty. Write, then let the AI correct and explain{0}; your mistakes become flashcards.'} values={[hasAi ? '' : block === 'max' ? <UiText source={' (with Lingua+ Max)'} /> : <UiText source={' (add a free key in Settings › AI)'} />]} /></p>
         </div>
       )}
       {entries && <Entries entries={entries} lang={lang} />}

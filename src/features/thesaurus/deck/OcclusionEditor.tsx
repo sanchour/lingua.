@@ -50,7 +50,7 @@ export function OcclusionEditor({ src, boxes, onChange }: { src: string; boxes: 
           />
         ))}
       </div>
-      <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'Drag over the parts to hide. Tap a box to take it away. {0} {1}.'} values={[boxes.length, boxes.length === 1 ? 'box' : 'boxes']} /></p>
+      <p className="mt-2 text-[12.5px] text-ink-faint"><UiText source={'Drag over the parts to hide. Tap a box to take it away. {0} {1}.'} values={[boxes.length, boxes.length === 1 ? <UiText source={'box'} /> : <UiText source={'boxes'} />]} /></p>
     </div>
   );
 }

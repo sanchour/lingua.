@@ -1,4 +1,4 @@
-import { UiText, useUi } from '@/design/i18n/UiText';
+import { UiText, UiMessageText, useUi } from '@/design/i18n/UiText';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -154,7 +154,7 @@ export default function Onboarding({ canCancel = false, replay }: { canCancel?: 
         : page === 'about'
           ? 'Choose a language'
           : page === 'language' && target
-            ? `Continue with ${getLanguage(target)?.endonym ?? target}`
+            ? { source: 'Continue with {0}', values: [getLanguage(target)?.endonym ?? target] }
             : index === pages.length - 1
               ? 'Begin'
               : 'Continue';
@@ -214,7 +214,7 @@ export default function Onboarding({ canCancel = false, replay }: { canCancel?: 
             <Button variant="secondary" size="lg" onClick={() => go(index - 1)} disabled={busy}><UiText source={'Back'} /></Button>
           )}
           <Button size="lg" className="flex-1" onClick={next} disabled={!canContinue} loading={busy} iconRight={ArrowRight}>
-            {label}
+            <UiMessageText message={label} />
           </Button>
         </div>
       </footer>
