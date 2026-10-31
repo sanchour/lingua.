@@ -2032,3 +2032,27 @@ The user proposed a new section for **Slang & Dialects**:
 
 
 **S3 repair, Codex 2026-10-31:** grammar export now joins actual saved topic notes (even without progress) and topic titles; deck Markdown uses internal heading targets plus explicit term fields that reimport correctly. The Anki worker reads File.arrayBuffer before ZIP parsing, fixing the observed browser import failure; errors stay visible longer. Import preview now exposes custom term/row separators, using the existing parser. Typecheck, 1,589 tests (one skipped), build pass. Browser: reimported the earlier exported APKG into a second deck and confirmed the same Madrid phrase/meaning; Kindle highlight plus paired note preview created a one-card deck, and custom :: / ;; Quizlet preview created two correct cards. SRT file import created a six-word transcript and reached its reader. External Anki/Obsidian/Notion/calendar clients and real media playback not tried; Grammar topic editing is Plus-gated in the Free test profile, so its source-note join is regression-tested rather than claimed browser-verified.
+
+## 2026-10-31 — Sandesigner & Design Notes: Style Inspector, Live Box Model & Clickable Canvas Navigation
+
+- **Design Notes Style Inspector & Live Testing**:
+  - Built `StyleInspector.tsx` inside `src/features/lab/designNotes/` covering all 7 sections matching the reference screenshots:
+    1. **Typography**: Font family dropdown (System, Inter, Geist, Serif, Monospace), Size with draggable `||` handle (Shift 10x, Alt 0.1x), Weight dropdown, Style toggles (`T` normal / `I` italic), Line Height, Letter Spacing, Alignment (Left, Center, Right, Justify), Case (`—`, `Aa`, `AA`, `aa`), and Decoration (`—`, `U`, `S`, `O`).
+    2. **Color**: Text color circular swatch preview + color picker trigger + hex/rgb/token input.
+    3. **Background**: Checkerboard transparency swatch preview + color picker trigger + hex/rgb/token input + quick swatches.
+    4. **Layout**: `Show paddings and margins` toggle, Display dropdown, Width & Height with draggable `||` handles, 2x2 Margin inputs, 2x2 Padding inputs.
+    5. **Border**: Border color swatch + style dropdown (solid, dashed, dotted, double, none) + width with draggable `||` handle.
+    6. **Appearance**: Opacity (percentage with draggable handle), All Corners radius with toggle to expand to individual 4 corners (top-left, top-right, bottom-right, bottom-left).
+    7. **Shadow**: Presets (`None`, `elev-1`, `elev-2`, `elev-3`, `Soft glow`, `Card shadow`) + custom CSS input.
+  - Changes apply live to the inspected DOM element immediately with `!important`, sync dynamically into NoteCard's tweaks list, and can be reverted at any time with the "Reset" button.
+  - Built `BoxModelOverlay.tsx`: when "Show paddings and margins" is toggled on, renders live concentric overlays (amber margin, green padding, blue content) over the element with exact px dimension badges on every side.
+  - Integrated into `NoteCard.tsx` with dedicated tabs `[ 🔍 Inspect & Test ]` (active by default on element pick) and `[ 📝 Note ]`.
+
+- **Sandesigner Clickable Canvas Navigation**:
+  - Addressed the issue where only keyboard shortcuts navigated to or inserted certain icons and screens on the canvas page:
+    - **Screens in Library**: Added a dedicated "Screens <kbd>F</kbd>" section in the Library panel displaying all device presets (Desktop, Laptop, Small desktop, Tablet, Phone, Android, Square); clicking any screen directly places that screen frame on the canvas or resizes the selected frame.
+    - **Click-to-Place Icons**: Clicking any icon in the Library icon grid now directly places that icon onto the canvas (or swaps the selected icon) without requiring manual dragging or hotkeys.
+    - **Toolbar**: Clicking the "Frame" tool now activates the tool and immediately opens the screen sizes menu; clicking the "Icon" tool activates the tool and immediately opens the Library panel with icon search focused.
+    - **Right Panel Device Chips**: Fixed `this.press` so clicking screen device chips and pen swatches in the right panel works reliably when nothing is selected (`!chosen.length`).
+    - **Layer Navigation**: Clicking any layer (screen or icon) in the Layers list now centers and pans the canvas viewport directly to that element.
+    - Rebuilt Sandesigner bundles into `public/sandesigner/` and `public/sandesigning/` with decoded file paths in `sandesigning/build.ts`.

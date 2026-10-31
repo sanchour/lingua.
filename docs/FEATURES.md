@@ -814,9 +814,13 @@ the next step on the path.
 - **Areas:** Shift and drag while picking marks a rectangle, kept as fractions of the smallest element around it, so it
   follows the page; drawn dashed, with the pin at its top right.
 - **New words:** "Edit the words" for an element with text; written out as “old” → “new”.
-- **Tweaks:** add type size, weight, line height, letter spacing, typeface, colour, background, padding, margin, gap,
-  corners, width, height, opacity or shadow; the value now is filled in, the wanted value typed (a bare number is px,
-  `--ink` is the token); Preview shows them on the element until it is turned off or the card closes.
+- **Tweaks & Style Inspector:**
+  - Dedicated **Inspect & Test** tab in NoteCard: interactively inspect and test live CSS properties matching the visual design inspector.
+  - *Typography*: font family, size with draggable `||` handle, weight, style toggles (T / I), line height, letter spacing, alignment (left, center, right, justify), case, decoration.
+  - *Color & Background*: text color swatch with color picker overlay + input; checkerboard background transparency swatch + quick swatches.
+  - *Layout*: `Show paddings and margins` checkbox triggering live box model overlay (margin in amber, padding in green, content in blue with real-time dimension badges), display dropdown, width/height inputs with draggable handles, 2x2 margin grid, 2x2 padding grid.
+  - *Border, Appearance & Shadow*: border swatch + style + width, opacity, all corners with 4-corner split toggle, shadow presets and custom input.
+  - Changes apply immediately with `!important`, sync with the note's tweaks, and can be reverted with the "Reset" button.
 - **What it is:** a fold-out with the tag, the React component around it (dev server only), classes, size, type,
   colours with their token names, border, padding, margin, gap and corners. All of it goes into the Markdown.
 
@@ -829,6 +833,7 @@ Its own tool in `sandesigning/` (no React, no dependencies), served beside Lingu
   any font (system, 27 Google Fonts, or one on the computer), sticky notes, numbered design notes, widget outlines
   (22 kinds, for laying out a screen), 153 icons, pictures and cut-outs. Select, Shift, marquee, Alt-drag to copy,
   resize with handles, snapping with guides, a grid, layers you can drag, hide and lock, align and space out, undo.
+- **Clickable navigation & tools:** click to open screen sizes menu on Frame tool or choose presets directly; click to open icon library; click any icon or screen chip in the Library to place it directly on the canvas; click any layer to center and pan to it.
 - **Screenshots and templates:** paste or drop any app's screenshot (phones too); in a web app, the camera captures
   the page with every element's box: a note knows which element it's on, and Alt-click lifts an element out of the
   screenshot to move it. Seven starter templates; your own templates and pictures in the library.

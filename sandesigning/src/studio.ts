@@ -348,10 +348,25 @@ export class Studio {
   }
 
   private chooseTool(tool: Tool) {
-    if (this.ed.tool === tool && (tool === 'frame' || tool === 'widget' || tool === 'icon')) {
-      if (tool === 'icon') return (this.leftTab = 'library'), this.drawLeft(), this.left.querySelector<HTMLInputElement>('.icon-search')?.focus();
-      const btn = this.el.querySelector<HTMLElement>(`[data-act="tool:${tool}"]`)!;
-      return this.openMenu(tool, btn);
+    if (tool === 'icon') {
+      this.ed.setTool('icon');
+      this.leftTab = 'library';
+      this.drawLeft();
+      setTimeout(() => {
+        this.left.querySelector('.icons')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        this.left.querySelector<HTMLInputElement>('.icon-search')?.focus();
+      }, 50);
+      return;
+    }
+    if (tool === 'frame') {
+      this.ed.setTool('frame');
+      const btn = this.el.querySelector<HTMLElement>(`[data-act="tool:frame"]`);
+      if (btn) this.openMenu('frame', btn);
+      return;
+    }
+    if (this.ed.tool === tool && tool === 'widget') {
+      const btn = this.el.querySelector<HTMLElement>(`[data-act="tool:${tool}"]`);
+      if (btn) return this.openMenu(tool, btn);
     }
     this.ed.setTool(tool);
   }
@@ -508,9 +523,11 @@ export class Studio {
 
   private libraryHtml() {
     const tpl = TEMPLATES.map((t) => `<button class="card" data-template="${t.id}" draggable="true" data-drag="template:${t.id}"><b>${esc(t.name)}</b><span>${esc(t.note)}</span></button>`).join('');
+    const screens = DEVICES.map((d) => `<button class="chip" data-device-pick="${d.id}" draggable="true" data-drag="device:${d.id}" aria-pressed="${this.ed.device === d.id}">${icon(d.w < 500 ? 'smartphone' : d.w < 1000 ? 'tablet' : d.id === 'laptop' ? 'laptop' : 'monitor', 13)} ${esc(d.name)} <span style="opacity:.6">${d.w}×${d.h}</span></button>`).join('');
     const widgets = WIDGETS.map((w) => `<button class="chip" data-widget="${w.id}" draggable="true" data-drag="widget:${w.id}" aria-pressed="false">${esc(w.name)}</button>`).join('');
     return `<div class="library">
       <div class="sec"><h3>Pictures</h3><div class="row"><button class="btn" data-act="picture">${icon('image', 14)} Add…</button>${this.opts.standalone ? '' : `<button class="btn" data-act="capture">${icon('camera', 14)} Capture</button>`}</div><p style="color:var(--faint);margin:8px 0 0">Or paste a screenshot (${kbd('mod+v')}) of any app, phone or website, or drop files here.</p></div>
+      <div class="sec"><h3>Screens <kbd>F</kbd></h3><div class="chips screens">${screens}</div></div>
       <div class="sec"><h3>Templates</h3><div class="cards">${tpl}</div></div>
       <div class="sec yours"><h3>Yours</h3><div class="thumbs"></div></div>
       <div class="sec"><h3>Widget outlines <kbd>W</kbd></h3><div class="chips widgets">${widgets}</div></div>
@@ -519,6 +536,7 @@ export class Studio {
   }
 
   private markLibrary() {
+    for (const b of this.left.querySelectorAll<HTMLElement>('[data-device-pick]')) b.setAttribute('aria-pressed', String(this.ed.device === b.dataset.devicePick));
     for (const b of this.left.querySelectorAll<HTMLElement>('[data-widget]')) b.setAttribute('aria-pressed', String(this.ed.tool === 'widget' && this.ed.widget === b.dataset.widget));
     for (const b of this.left.querySelectorAll<HTMLElement>('[data-icon]')) b.setAttribute('aria-pressed', String(this.ed.tool === 'icon' && this.ed.icon === b.dataset.icon));
   }
@@ -561,6 +579,10 @@ export class Studio {
     const set = (patch: Record<string, unknown>) => ed.update(ids(), patch as Partial<SNode>);
 
     if (!chosen.length) {
+      this.press = (d: DOMStringMap) => {
+        if (d.swatchPen) ((ed.tool === 'pen' ? ed.pen : ed.marker).color = d.swatchPen), this.drawRight();
+        if (d.device) this.insertScreen(d.device);
+      };
       const s = ed.doc.settings ?? {};
       html += sec('Canvas', `<label class="check"><input type="checkbox" ${s.grid ? 'checked' : ''} data-b="${bind('grid', () => this.setting('grid'))}"> Grid ${kbd("mod+'")}</label><label class="check"><input type="checkbox" ${s.snap !== false ? 'checked' : ''} data-b="${bind('snap', () => this.setting('snap'))}"> Snap to other things</label><label class="check"><input type="checkbox" ${s.notesText !== false ? 'checked' : ''} data-b="${bind('notesText', () => this.setting('notesText'))}"> Show the notes’ words ${kbd('shift+n')}</label>`);
       if (ed.tool === 'pen' || ed.tool === 'highlighter') {
@@ -724,7 +746,18 @@ export class Studio {
         const id = row.dataset.layer!;
         const add = (e as MouseEvent).shiftKey || (e as MouseEvent).ctrlKey || (e as MouseEvent).metaKey;
         if (add && this.ed.sel.has(id)) this.ed.sel.delete(id), this.ed.select([], true);
-        else this.ed.select([id], add);
+        else {
+          this.ed.select([id], add);
+          const n = this.ed.byId(id);
+          if (n && !add) {
+            const b = bounds(n);
+            const r = this.ed.stage.getBoundingClientRect();
+            const s = this.ed.toScreen(b.x + b.w / 2, b.y + b.h / 2);
+            this.ed.view.x += r.width / 2 - s.x;
+            this.ed.view.y += r.height / 2 - s.y;
+            this.ed.paintView();
+          }
+        }
       }
       const note = t.closest<HTMLElement>('[data-note]')?.dataset.note;
       if (note) {
@@ -823,19 +856,21 @@ export class Studio {
       const d = (k: string) => t.closest<HTMLElement>(`[data-${k}]`)?.getAttribute(`data-${k}`);
       const unsave = d('unsave');
       if (unsave) return void deleteItem(unsave).then(() => this.drawYours());
+      const dev = d('device-pick');
+      if (dev) return this.insertScreen(dev);
       const tpl = d('template');
       if (tpl) return this.insertTemplate(tpl);
       const item = d('item');
       if (item) return void this.insertItem(item);
       const w = d('widget');
-      if (w) return (this.ed.widget = w), this.ed.setTool('widget');
+      if (w) return (this.ed.widget = w), this.insertWidget(w);
       const ic = d('icon');
       if (ic) {
-        // With an icon chosen on the canvas, a click swaps it; otherwise the Icon tool takes it.
+        // With an icon chosen on the canvas, a click swaps it; otherwise places it on canvas.
         const chosen = this.ed.selected.filter((n) => n.type === 'icon');
         if (chosen.length) return this.ed.update(chosen.map((n) => n.id), { icon: ic });
         this.ed.icon = ic;
-        this.ed.setTool('icon');
+        this.insertIcon(ic);
       }
     });
   }
@@ -872,6 +907,30 @@ export class Studio {
     if (fit) this.ed.fit(union(nodes.map(bounds)));
   }
 
+  private insertScreen(deviceId: string, at?: { x: number; y: number }) {
+    const dev = DEVICES.find((d) => d.id === deviceId) ?? DEVICES[0];
+    this.ed.device = dev.id;
+    const chosenFrames = this.ed.selected.filter((n) => n.type === 'frame');
+    if (chosenFrames.length) {
+      return this.ed.update(chosenFrames.map((n) => n.id), { w: dev.w, h: dev.h, device: dev.id });
+    }
+    const n: FrameNode = {
+      id: uid(),
+      type: 'frame',
+      name: `${dev.name} screen`,
+      x: 0,
+      y: 0,
+      w: dev.w,
+      h: dev.h,
+      fill: '#ffffff',
+      clip: true,
+      device: dev.id,
+    };
+    this.place([n], at, true);
+    this.ed.select([n.id]);
+    this.ed.setTool('select');
+  }
+
   private insertTemplate(id: string, at?: { x: number; y: number }) {
     const t = TEMPLATES.find((x) => x.id === id);
     if (!t) return;
@@ -886,13 +945,19 @@ export class Studio {
     this.place(cloneNodes(item.nodes), at, !at && item.nodes.some((n) => n.type === 'frame'));
   }
 
-  private insertWidget(id: string, at: { x: number; y: number }) {
+  private insertWidget(id: string, at?: { x: number; y: number }) {
     const k = WIDGETS.find((w) => w.id === id) ?? WIDGETS[0];
-    this.place([{ id: uid(), type: 'widget', widget: k.id, label: k.name, x: 0, y: 0, w: k.w, h: k.h }], at);
+    const n: SNode = { id: uid(), type: 'widget', widget: k.id, label: k.name, x: 0, y: 0, w: k.w, h: k.h };
+    this.place([n], at);
+    this.ed.select([n.id]);
+    this.ed.setTool('select');
   }
 
-  private insertIcon(name: string, at: { x: number; y: number }) {
-    this.place([{ id: uid(), type: 'icon', icon: name, color: '#0f172a', x: 0, y: 0, w: 32, h: 32 }], at);
+  private insertIcon(name: string, at?: { x: number; y: number }) {
+    const n: SNode = { id: uid(), type: 'icon', icon: name, color: '#0f172a', x: 0, y: 0, w: 32, h: 32 };
+    this.place([n], at);
+    this.ed.select([n.id]);
+    this.ed.setTool('select');
   }
 
   private addText(text: string) {
@@ -952,6 +1017,7 @@ export class Studio {
       if (kind === 'template') return this.insertTemplate(id, at);
       if (kind === 'widget') return this.insertWidget(id, at);
       if (kind === 'icon') return this.insertIcon(id, at);
+      if (kind === 'device') return this.insertScreen(id, at);
       if (kind === 'item') return this.insertItem(id, at);
     }
     const files = [...(e.dataTransfer?.files ?? [])];
@@ -1361,8 +1427,8 @@ export class Studio {
       this.closeMenu();
       if (b.dataset.run === 'delete-doc') return void this.deleteCurrent();
       if (b.dataset.run) return this.run(b.dataset.run);
-      if (b.dataset.device) return (this.ed.device = b.dataset.device), this.ed.setTool('frame');
-      if (b.dataset.widgetPick) return (this.ed.widget = b.dataset.widgetPick), this.ed.setTool('widget');
+      if (b.dataset.device) return this.insertScreen(b.dataset.device);
+      if (b.dataset.widgetPick) return (this.ed.widget = b.dataset.widgetPick), this.insertWidget(b.dataset.widgetPick);
       if (b.dataset.lift) return this.liftAt(at!);
     });
     setTimeout(() => {
