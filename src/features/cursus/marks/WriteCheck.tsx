@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // "Write it": draw a character on a pad and have the strokes compared with the real ones, in order and direction (6-23).
 import { useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
@@ -20,6 +21,7 @@ function kanjiLines(paths: string[]): Pt[][] {
 }
 
 export function WriteCheck({ char, data, lang }: { char: string; data: StrokeData; lang: string }) {
+  const translateUi = useUi();
   const [strokes, setStrokes] = useState<Pt[][]>([]);
   const [result, setResult] = useState<StrokeCheck | null>(null);
   const [guide, setGuide] = useState(true);
@@ -34,7 +36,7 @@ export function WriteCheck({ char, data, lang }: { char: string; data: StrokeDat
   const total = isKanji(data) ? data.p.length : data.s.length;
   return (
     <div>
-      <p className="mb-1.5 text-[12.5px] font-semibold tracking-wide text-ink-faint uppercase">Write it</p>
+      <p className="mb-1.5 text-[12.5px] font-semibold tracking-wide text-ink-faint uppercase"><UiText source={'Write it'} /></p>
       <div className="flex flex-wrap items-start gap-4">
         <svg
           ref={pad}
@@ -42,7 +44,7 @@ export function WriteCheck({ char, data, lang }: { char: string; data: StrokeDat
           width={220}
           height={220}
           role="img"
-          aria-label={`A pad to write ${char}`}
+          aria-label={translateUi('A pad to write {0}', [char])}
           className="touch-none rounded-2xl border border-line bg-surface text-ink"
           onPointerDown={(e) => { drawing.current = true; e.currentTarget.setPointerCapture(e.pointerId); setResult(null); setStrokes((s) => [...s, [at(e)]]); }}
           onPointerMove={(e) => { if (drawing.current) setStrokes((s) => [...s.slice(0, -1), [...s[s.length - 1], at(e)]]); }}
@@ -54,16 +56,16 @@ export function WriteCheck({ char, data, lang }: { char: string; data: StrokeDat
           ))}
         </svg>
         <div className="max-w-xs space-y-2 text-[14px]">
-          <p className="text-ink-soft">Draw the {total} strokes in order; each is compared with the real stroke, its place and direction.</p>
+          <p className="text-ink-soft"><UiText source={'Draw the {0} strokes in order; each is compared with the real stroke, its place and direction.'} values={[total]} /></p>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={check} disabled={!strokes.length} className="rounded-xl border border-line px-3 py-1.5 enabled:hover:border-line-strong disabled:opacity-50">Check</button>
-            <button type="button" onClick={clear} className="rounded-xl border border-line px-3 py-1.5 hover:border-line-strong">Clear</button>
-            <button type="button" aria-pressed={guide} onClick={() => setGuide((g) => !g)} className="rounded-xl border border-line px-3 py-1.5 hover:border-line-strong">{guide ? 'Hide' : 'Show'} guide</button>
+            <button type="button" onClick={check} disabled={!strokes.length} className="rounded-xl border border-line px-3 py-1.5 enabled:hover:border-line-strong disabled:opacity-50"><UiText source={'Check'} /></button>
+            <button type="button" onClick={clear} className="rounded-xl border border-line px-3 py-1.5 hover:border-line-strong"><UiText source={'Clear'} /></button>
+            <button type="button" aria-pressed={guide} onClick={() => setGuide((g) => !g)} className="rounded-xl border border-line px-3 py-1.5 hover:border-line-strong"><UiText source={'{0} guide'} values={[guide ? <UiText source={'Hide'} /> : <UiText source={'Show'} />]} /></button>
           </div>
           {result && (
             <p role="status">
-              {result.drawn !== result.total ? `You drew ${result.drawn} strokes; the character has ${result.total}. ` : ''}
-              {result.ok.every(Boolean) && result.drawn === result.total ? 'Every stroke matches, in order.' : `Strokes that match: ${result.ok.filter(Boolean).length} of ${result.total}. ${result.ok.findIndex((x) => !x) >= 0 ? `Look again at stroke ${result.ok.findIndex((x) => !x) + 1} (shown in the accent colour).` : ''}`}
+              {result.drawn !== result.total ? translateUi('You drew {0} strokes; the character has {1}. ', [result.drawn, result.total]) : ''}
+              {result.ok.every(Boolean) && result.drawn === result.total ? translateUi('Every stroke matches, in order.') : translateUi('Strokes that match: {0} of {1}. {2}', [result.ok.filter(Boolean).length, result.total, result.ok.findIndex((x) => !x) >= 0 ? `Look again at stroke ${result.ok.findIndex((x) => !x) + 1} (shown in the accent colour).` : ''])}
             </p>
           )}
         </div>

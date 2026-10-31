@@ -63,7 +63,7 @@ function Details({ text, fresh }: { text: Text; fresh: boolean }) {
         <h1 lang={text.lang} className="font-serif text-[32px] leading-tight font-semibold tracking-tight sm:text-[38px]">
           {text.title}
         </h1>
-        <p className="mt-1 text-[13.5px] text-ink-soft"><UiText source={'{0} words · {1} {2} · about {3} of reading{4}{5}'} values={[text.wordCount.toLocaleString(), text.chapterCount, text.kind === 'comic' ? (text.chapterCount === 1 ? 'page' : 'pages') : text.chapterCount === 1 ? 'part' : 'parts', formatDuration(minutes * 60_000), text.stats && ` · ${Math.round(text.stats.knownShare * 100)}% of words known`, text.sourceUrl && (
+        <p className="mt-1 text-[13.5px] text-ink-soft"><UiText source={'{0} words · {1} {2} · about {3} of reading{4}{5}'} values={[text.wordCount.toLocaleString(), text.chapterCount, text.kind === 'comic' ? (text.chapterCount === 1 ? <UiText source={'page'} /> : <UiText source={'pages'} />) : text.chapterCount === 1 ? <UiText source={'part'} /> : <UiText source={'parts'} />, formatDuration(minutes * 60_000), text.stats && ` · ${Math.round(text.stats.knownShare * 100)}% of words known`, text.sourceUrl && (
             <>
               {' · '}
               <a href={text.sourceUrl} target="_blank" rel="noreferrer" className="font-semibold text-accent-text underline-offset-2 hover:underline">

@@ -279,7 +279,7 @@ export function Recall({ lang, title, session, onFinish, onClose, onActive, prac
           {flipped && (intervals || practice) ? (
             <>
             {!practice && (
-              <button type="button" aria-pressed={guessed} onClick={() => setGuessed((g) => !g)} className={cx('mx-auto mb-3 block h-8 rounded-full px-3.5 text-[13px] font-semibold transition-colors', guessed ? 'bg-ink text-bg' : 'bg-surface text-ink-soft hover:bg-sunken')}><UiText source={'I guessed{0}'} values={[guessed ? ': a right answer counts as Hard' : '']} /></button>
+              <button type="button" aria-pressed={guessed} onClick={() => setGuessed((g) => !g)} className={cx('mx-auto mb-3 block h-8 rounded-full px-3.5 text-[13px] font-semibold transition-colors', guessed ? 'bg-ink text-bg' : 'bg-surface text-ink-soft hover:bg-sunken')}><UiText source={'I guessed{0}'} values={[guessed ? <UiText source={': a right answer counts as Hard'} /> : '']} /></button>
             )}
             <motion.div className="grid grid-cols-4 gap-2" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={spring.snappy}>
               {GRADES.map((g) => (

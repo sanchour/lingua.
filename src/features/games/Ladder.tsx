@@ -1,3 +1,4 @@
+import { UiText } from '@/design/i18n/UiText';
 // Word ladder (6-21, F0169): from one word to another, one letter at a time, each step a real word of the language's own list.
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
@@ -63,9 +64,7 @@ function Board({ entry, lang, settle }: BoardProps<Entry>) {
   );
   return (
     <div className="max-w-md">
-      <p className="text-[14px] text-ink-soft">
-        {s.steps} steps at the shortest. Change one letter each time, and every word must be a real one.
-      </p>
+      <p className="text-[14px] text-ink-soft"><UiText source={'{0} steps at the shortest. Change one letter each time, and every word must be a real one.'} values={[s.steps]} /></p>
       <ol className="mt-4 space-y-2">
         {s.path.map((w, i) => (
           <li key={i} className="flex items-baseline gap-3 rounded-2xl border border-line/70 bg-surface px-5 py-3">
@@ -78,9 +77,7 @@ function Board({ entry, lang, settle }: BoardProps<Entry>) {
             <form onSubmit={submit} className="flex items-center gap-3">
               <ArrowDown size={18} className="text-ink-faint" aria-hidden />
               <input ref={input} autoFocus value={typed} onChange={(e) => setTyped(e.target.value)} lang={lang} dir={rtl ? 'rtl' : undefined} autoComplete="off" spellCheck={false} aria-label="The next word" placeholder="Next word" className="h-12 w-52 rounded-xl border border-line bg-raised px-4 font-serif text-xl outline-none focus:border-line-strong" />
-              <button type="submit" disabled={!typed.trim()} className={buttonClasses('primary', 'md') + ' disabled:opacity-50'}>
-                Add
-              </button>
+              <button type="submit" disabled={!typed.trim()} className={buttonClasses('primary', 'md') + ' disabled:opacity-50'}><UiText source={'Add'} /></button>
             </form>
           </li>
         )}
@@ -91,19 +88,13 @@ function Board({ entry, lang, settle }: BoardProps<Entry>) {
       </ol>
       <p className="mt-3 min-h-6 text-[14px] text-accent-text" role="alert">
         {s.last && s.last !== 'ok' && (
-          <>
-            <bdi lang={lang}>{tried}</bdi> {WHY[s.last]} ({s.wrong} of {MAX_TRIES} wrong tries)
-          </>
+          <><UiText source={'{0} {1} ({2} of {3} wrong tries)'} values={[<bdi lang={lang}>{tried}</bdi>, WHY[s.last], s.wrong, MAX_TRIES]} /></>
         )}
       </p>
       {!over && (
         <div className="mt-2 flex flex-wrap gap-2">
-          <button type="button" onClick={() => setS(undo)} disabled={s.path.length < 2} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}>
-            <Undo2 size={14} aria-hidden /> Take back the last word
-          </button>
-          <button type="button" onClick={() => setS((x) => hint(x, graph, dist))} disabled={s.hints >= MAX_HINTS} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}>
-            <Lightbulb size={14} aria-hidden /> Give the next word <span className="text-ink-faint">{MAX_HINTS - s.hints} left, costs a star</span>
-          </button>
+          <button type="button" onClick={() => setS(undo)} disabled={s.path.length < 2} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}><UiText source={'{0} Take back the last word'} values={[<Undo2 size={14} aria-hidden />]} /></button>
+          <button type="button" onClick={() => setS((x) => hint(x, graph, dist))} disabled={s.hints >= MAX_HINTS} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}><UiText source={'{0} Give the next word {1}'} values={[<Lightbulb size={14} aria-hidden />, <span className="text-ink-faint"><UiText source={'{0} left, costs a star'} values={[MAX_HINTS - s.hints]} /></span>]} /></button>
         </div>
       )}
     </div>

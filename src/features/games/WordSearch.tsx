@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Word search (6-21, F0171 and F1194): the learner's words hidden in a grid. Drag across a word, or click its first and last letter.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Eye, Flag } from 'lucide-react';
@@ -30,6 +31,7 @@ interface Entry {
 }
 
 function Board({ entry, lang, settle }: BoardProps<Entry>) {
+  const translateUi = useUi();
   const { ws, meanings, items } = entry;
   const [found, setFound] = useState<ReadonlySet<number>>(new Set());
   const [shown, setShown] = useState<number[]>([]);
@@ -115,7 +117,7 @@ function Board({ entry, lang, settle }: BoardProps<Entry>) {
         )}
       </div>
       <div className="min-w-56 flex-1">
-        <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">{meanings ? 'Find the words that mean' : 'Find these words'}</p>
+        <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">{meanings ? translateUi('Find the words that mean') : translateUi('Find these words')}</p>
         <ul className="mt-2 space-y-1.5">
           {ws.words.map((w, i) => (
             <li key={i} className={cx('font-serif text-lg', found.has(i) ? 'text-sage-text' : gaveUp ? 'text-accent-text' : '')}>
@@ -128,18 +130,11 @@ function Board({ entry, lang, settle }: BoardProps<Entry>) {
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-[14px] text-ink-soft">
-          Found {found.size} of {ws.words.length}
-          {miss ? ` · ${miss} that were not words` : ''}
-        </p>
+        <p className="mt-4 text-[14px] text-ink-soft"><UiText source={'Found {0} of {1}{2}'} values={[found.size, ws.words.length, miss ? ` · ${miss} that were not words` : '']} /></p>
         {!over && (
           <div className="mt-4 flex flex-wrap gap-2">
-            <button type="button" onClick={showOne} disabled={shown.length >= MAX_SHOWN} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}>
-              <Eye size={14} aria-hidden /> Show a start <span className="text-ink-faint">{MAX_SHOWN - shown.length} left, costs a star</span>
-            </button>
-            <button type="button" onClick={() => setGaveUp(true)} className={buttonClasses('ghost', 'sm')}>
-              <Flag size={14} aria-hidden /> Give up
-            </button>
+            <button type="button" onClick={showOne} disabled={shown.length >= MAX_SHOWN} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}><UiText source={'{0} Show a start {1}'} values={[<Eye size={14} aria-hidden />, <span className="text-ink-faint"><UiText source={'{0} left, costs a star'} values={[MAX_SHOWN - shown.length]} /></span>]} /></button>
+            <button type="button" onClick={() => setGaveUp(true)} className={buttonClasses('ghost', 'sm')}><UiText source={'{0} Give up'} values={[<Flag size={14} aria-hidden />]} /></button>
           </div>
         )}
       </div>

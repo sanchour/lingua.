@@ -963,7 +963,7 @@ function LyricsCredit({ song, estimated }: { song: Song; estimated: boolean }) {
   return (
     <p className="mt-10 text-center text-[12.5px] text-ink-faint"><UiText source={'Lyrics from{0}{1}{2}'} values={[' ', <a href={href} target="_blank" rel="noopener noreferrer" className="font-semibold hover:text-ink-soft hover:underline">
         {label}
-      </a>, !isTimed(song.lines) && (estimated ? ' · not timed: following an estimate' : ' · not timed to the music')]} /></p>
+      </a>, !isTimed(song.lines) && (estimated ? <UiText source={' · not timed: following an estimate'} /> : <UiText source={' · not timed to the music'} />)]} /></p>
   );
 }
 

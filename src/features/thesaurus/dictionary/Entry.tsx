@@ -60,8 +60,8 @@ export function InstallCard({ lang, update }: { lang: string; update?: boolean }
       <div className="min-w-0 flex-1">
         <p className="font-serif text-xl font-semibold">{update ? translateUi('A better {0} dictionary is ready', [name]) : translateUi('The {0} dictionary', [name])}</p>
         <p className="mt-0.5 text-[14px] leading-snug text-ink-soft"><UiText source={'{0}{1}About {2} MB, kept on this device.'} values={[update
-            ? 'Syllables, what words are made of and where they come from, on top of the language’s own definitions and example sentences.'
-            : 'Every meaning with real examples, pronunciation, forms, phrases, synonyms and where the word comes from.', ' ', DICT_SIZE_MB[lang] ?? 8]} /></p>
+            ? <UiText source={'Syllables, what words are made of and where they come from, on top of the language’s own definitions and example sentences.'} />
+            : <UiText source={'Every meaning with real examples, pronunciation, forms, phrases, synonyms and where the word comes from.'} />, ' ', DICT_SIZE_MB[lang] ?? 8]} /></p>
         {job && (
           <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-sunken" role="status" aria-label={job.phase === 'download' ? translateUi('Downloading') : translateUi('Storing')}>
             <div className="h-full origin-left rounded-full bg-sage transition-transform duration-300" style={{ transform: `scaleX(${Math.max(0.03, job.pct)})` }} />
@@ -331,7 +331,7 @@ function Entry({ lang, row }: { lang: string; row: FullDictRow }) {
           </Side>
         )}
       </div>
-      <p className="mt-10 text-[11.5px] leading-relaxed text-ink-faint"><UiText source={'From Wiktionary via kaikki.org (CC BY-SA 4.0){0}. Frequency from FrequencyWords. Recordings from Wikimedia Commons.'} values={[row.tatoeba?.length ? ', sentences from Tatoeba (CC BY 2.0 FR)' : '']} /></p>
+      <p className="mt-10 text-[11.5px] leading-relaxed text-ink-faint"><UiText source={'From Wiktionary via kaikki.org (CC BY-SA 4.0){0}. Frequency from FrequencyWords. Recordings from Wikimedia Commons.'} values={[row.tatoeba?.length ? <UiText source={', sentences from Tatoeba (CC BY 2.0 FR)'} /> : '']} /></p>
     </article>
   );
 }

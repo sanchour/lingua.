@@ -108,7 +108,7 @@ export function PlanCards({ current, feature, onFree, onBought }: PlanCardsProps
           )}
         </Column>
       </div>
-      <p className="mt-4 text-center text-[12.5px] leading-snug text-ink-faint"><UiText source={'{0} Lingua+ bought once stays yours, Max or not.'} values={[TEST_MODE ? 'Test mode: the buttons switch the plan on this device and charge nothing.' : 'Payments go through Stripe. Max renews until you cancel it in Settings › Lingua+.']} /></p>
+      <p className="mt-4 text-center text-[12.5px] leading-snug text-ink-faint"><UiText source={'{0} Lingua+ bought once stays yours, Max or not.'} values={[TEST_MODE ? <UiText source={'Test mode: the buttons switch the plan on this device and charge nothing.'} /> : <UiText source={'Payments go through Stripe. Max renews until you cancel it in Settings › Lingua+.'} />]} /></p>
     </div>
   );
 }

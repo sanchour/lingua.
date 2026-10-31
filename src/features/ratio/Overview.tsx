@@ -260,7 +260,7 @@ function Dashboard({ data, lang, evidence, conversationsCount }: { data: Overvie
             <Stat value={r.wpm ?? '—'} label={translateUi('Words / min')} />
           </dl>
           <p className="mb-5 text-[14px] text-ink-soft">
-            {lookups === null ? translateUi('Look-ups per 1,000 words show once you have read a little more.') : <><UiText source={'{0} look-ups per 1,000 words read{1}'} values={[<span className="font-semibold text-ink tabular-nums">{lookups}</span>, lookups <= 20 ? ': you are reading mostly without help.' : '.']} /></>}
+            {lookups === null ? translateUi('Look-ups per 1,000 words show once you have read a little more.') : <><UiText source={'{0} look-ups per 1,000 words read{1}'} values={[<span className="font-semibold text-ink tabular-nums">{lookups}</span>, lookups <= 20 ? <UiText source={': you are reading mostly without help.'} /> : '.']} /></>}
           </p>
           <LineChart series={[{ name: 'Words a minute', color: 'var(--sage)', points: r.wpmSeries }]} formatX={(x) => `Week of ${shortDate(x)}`} height={130} empty={translateUi('Read a few sessions to see your speed')} />
           <p className="mt-5 text-[14px] text-ink-soft"><UiText source={'{0} {1} finished{2}.'} values={[<span className="font-semibold text-ink">{r.finished}</span>, r.finished === 1 ? translateUi('book') : translateUi('books'), r.finishedThisYear ? `, ${r.finishedThisYear} this year` : '']} /></p>

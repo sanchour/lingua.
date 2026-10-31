@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Missing letters (6-21, F0175): the word with some letters left out; fill them in from its meaning.
 import { useMemo, useState } from 'react';
 import { Lightbulb } from 'lucide-react';
@@ -25,6 +26,7 @@ interface Entry {
 }
 
 function Board({ entry, lang, settle }: BoardProps<Entry>) {
+  const translateUi = useUi();
   const rtl = isRtl(lang);
   const [s, setS] = useState(entry.state);
   const over = s.status !== 'playing';
@@ -34,7 +36,7 @@ function Board({ entry, lang, settle }: BoardProps<Entry>) {
   return (
     <div>
       <div className="rounded-3xl border border-line/70 bg-surface p-6">
-        <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Meaning</p>
+        <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Meaning'} /></p>
         <p className="mt-1 font-serif text-2xl leading-snug">{entry.item.meaning}</p>
       </div>
       <div className="mt-8 flex flex-wrap gap-x-1.5 gap-y-3" lang={lang} dir={rtl ? 'rtl' : undefined} aria-live="polite" aria-label={over ? entry.item.term : 'The word with letters missing'}>
@@ -68,10 +70,8 @@ function Board({ entry, lang, settle }: BoardProps<Entry>) {
         })}
       </div>
       <div className="mt-5 flex flex-wrap items-center gap-3">
-        <button type="button" onClick={() => setS(hint)} disabled={over || s.hints >= MAX_HINTS} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}>
-          <Lightbulb size={14} aria-hidden /> Fill this one <Kbd>1</Kbd> <span className="text-ink-faint">{MAX_HINTS - s.hints} left, costs a star</span>
-        </button>
-        <p className="text-[14px] text-ink-soft">{s.slips ? `${s.slips} of ${MAX_SLIPS} wrong letters` : 'No wrong letters yet.'}</p>
+        <button type="button" onClick={() => setS(hint)} disabled={over || s.hints >= MAX_HINTS} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}><UiText source={'{0} Fill this one {1} {2}'} values={[<Lightbulb size={14} aria-hidden />, <Kbd>1</Kbd>, <span className="text-ink-faint"><UiText source={'{0} left, costs a star'} values={[MAX_HINTS - s.hints]} /></span>]} /></button>
+        <p className="text-[14px] text-ink-soft">{s.slips ? translateUi('{0} of {1} wrong letters', [s.slips, MAX_SLIPS]) : translateUi('No wrong letters yet.')}</p>
       </div>
       <div className="mt-6">
         <LetterKeyboard alphabet={alphabet} lang={lang} rtl={rtl} disabled={over} onPick={(k) => setS((x) => fill(x, k))} />

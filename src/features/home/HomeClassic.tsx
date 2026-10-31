@@ -427,7 +427,7 @@ export function WeekCard({ facts, goal }: { facts?: HomeFacts; goal: number }) {
       <div className="flex items-baseline justify-between gap-3">
         <p className={label}><UiText source={'This week'} /></p>
         {streak > 0 ? (
-          <p className="flex items-center gap-1 text-[13px] font-semibold text-accent-text"><UiText source={'{0} {1} {2} in a row'} values={[<Flame size={14} aria-hidden />, streak, streak === 1 ? 'day' : 'days']} /></p>
+          <p className="flex items-center gap-1 text-[13px] font-semibold text-accent-text"><UiText source={'{0} {1} {2} in a row'} values={[<Flame size={14} aria-hidden />, streak, streak === 1 ? <UiText source={'day'} /> : <UiText source={'days'} />]} /></p>
         ) : (
           <p className="text-[13px] font-semibold text-ink-faint"><UiText source={'{0} min a day'} values={[goal]} /></p>
         )}

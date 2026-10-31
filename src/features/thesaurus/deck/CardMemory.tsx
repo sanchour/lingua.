@@ -50,7 +50,7 @@ export function CardMemory({ card, onChanged }: { card: Card; onChanged: () => v
 
   return (
     <div className="py-2">
-      <p className="text-[13px] text-ink-soft"><UiText source={'{0} · {1}{2} · {3} reviews{4}{5}{6}{7}'} values={[<span className="font-semibold text-ink">{card.direction === 'production' ? translateUi('Meaning → word') : translateUi('Word → meaning')}</span>, maturityOf(card), studied && ` · next in ${formatInterval(Math.max(0, card.due - now))}`, card.reps, card.lapses ? `, ${card.lapses} lapses` : '', card.leech ? ' · keeps slipping' : '', remembered && ` · remembered today: ${remembered.words} (${remembered.label.toLowerCase()})`, studied && ` · lasts ${describeStability(card.stability)}`]} /></p>
+      <p className="text-[13px] text-ink-soft"><UiText source={'{0} · {1}{2} · {3} reviews{4}{5}{6}{7}'} values={[<span className="font-semibold text-ink">{card.direction === 'production' ? translateUi('Meaning → word') : translateUi('Word → meaning')}</span>, maturityOf(card), studied && ` · next in ${formatInterval(Math.max(0, card.due - now))}`, card.reps, card.lapses ? `, ${card.lapses} lapses` : '', card.leech ? <UiText source={' · keeps slipping'} /> : '', remembered && ` · remembered today: ${remembered.words} (${remembered.label.toLowerCase()})`, studied && ` · lasts ${describeStability(card.stability)}`]} /></p>
       {studied && <Curve card={card} now={now} />}
       {studied && (
         <div className="mt-2 flex flex-wrap items-center gap-2">

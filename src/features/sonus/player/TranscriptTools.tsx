@@ -85,7 +85,7 @@ export function NoTranscript({ media, bare = false }: { media: Media; bare?: boo
       {progress !== undefined ? (
         <>
           <p className="font-serif text-xl font-semibold"><UiText source={'Listening closely…'} /></p>
-          <p className="mt-1.5 max-w-sm text-[14.5px] text-ink-soft"><UiText source={'{0} You can keep listening meanwhile.'} values={[note ?? 'Whisper is writing down every word with its timing.']} /></p>
+          <p className="mt-1.5 max-w-sm text-[14.5px] text-ink-soft"><UiText source={'{0} You can keep listening meanwhile.'} values={[note ?? <UiText source={'Whisper is writing down every word with its timing.'} />]} /></p>
           <div className="mt-5 h-1.5 w-56 overflow-hidden rounded-full bg-sunken">
             <div className="h-full origin-left rounded-full bg-sage transition-transform duration-500" style={{ transform: `scaleX(${Math.max(0.06, progress)})` }} />
           </div>
@@ -110,7 +110,7 @@ export function NoTranscript({ media, bare = false }: { media: Media; bare?: boo
             <Button variant="secondary" icon={FileText} onClick={() => void addFile(media)}><UiText source={'Add a file'} /></Button>
           </div>
           {!spotify && !hasKey && (
-            <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint"><UiText source={'Transcripts use Whisper on Groq with your own free key{0}, or Whisper on this device (Settings › Listening). SRT, VTT and plain text files work without either.'} values={[block === 'max' ? ' (Lingua+ Max)' : '']} /></p>
+            <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint"><UiText source={'Transcripts use Whisper on Groq with your own free key{0}, or Whisper on this device (Settings › Listening). SRT, VTT and plain text files work without either.'} values={[block === 'max' ? <UiText source={' (Lingua+ Max)'} /> : '']} /></p>
           )}
           {!spotify && onDevice && <p className="mt-3 max-w-xs text-[12.5px] text-ink-faint"><UiText source={'Made on this device: private and free, slower than Groq.'} /></p>}
         </>

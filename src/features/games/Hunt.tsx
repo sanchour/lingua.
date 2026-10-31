@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // Word hunt (6-21, F0168): the learner's words hidden in a passage of a text they have. Click each one as you spot it.
 import { useState } from 'react';
 import { Eye, Flag } from 'lucide-react';
@@ -16,6 +17,7 @@ import type { BoardProps } from './RoundRunner';
 const MAX_SHOWN = 2;
 
 function Board({ entry, lang, settle }: BoardProps<HuntData>) {
+  const translateUi = useUi();
   const rtl = isRtl(lang);
   const [found, setFound] = useState<ReadonlySet<number>>(new Set());
   const [slips, setSlips] = useState<ReadonlySet<number>>(new Set());
@@ -56,11 +58,11 @@ function Board({ entry, lang, settle }: BoardProps<HuntData>) {
         })}
       </p>
       <div className="min-w-56 flex-1">
-        <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">Find the words that mean</p>
+        <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'Find the words that mean'} /></p>
         <ul className="mt-2 space-y-1.5">
           {entry.targets.map((t, i) => (
             <li key={i} className={cx('font-serif text-lg', found.has(i) ? 'text-sage-text' : gaveUp ? 'text-accent-text' : '')}>
-              <span className={found.has(i) ? 'line-through' : undefined}>{t.meaning ?? 'one of your words'}</span>
+              <span className={found.has(i) ? 'line-through' : undefined}>{t.meaning ?? translateUi('one of your words')}</span>
               {(found.has(i) || gaveUp) && (
                 <bdi lang={lang} className="ms-2 text-[15px] text-ink-soft">
                   {t.term}
@@ -69,18 +71,11 @@ function Board({ entry, lang, settle }: BoardProps<HuntData>) {
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-[14px] text-ink-soft">
-          Found {found.size} of {entry.targets.length}
-          {slips.size ? ` · ${slips.size} wrong` : ''}
-        </p>
+        <p className="mt-4 text-[14px] text-ink-soft"><UiText source={'Found {0} of {1}{2}'} values={[found.size, entry.targets.length, slips.size ? ` · ${slips.size} wrong` : '']} /></p>
         {!over && (
           <div className="mt-4 flex flex-wrap gap-2">
-            <button type="button" onClick={showOne} disabled={shown >= MAX_SHOWN} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}>
-              <Eye size={14} aria-hidden /> Show one <span className="text-ink-faint">{MAX_SHOWN - shown} left, costs a star</span>
-            </button>
-            <button type="button" onClick={() => setGaveUp(true)} className={buttonClasses('ghost', 'sm')}>
-              <Flag size={14} aria-hidden /> Give up
-            </button>
+            <button type="button" onClick={showOne} disabled={shown >= MAX_SHOWN} className={buttonClasses('secondary', 'sm') + ' disabled:opacity-50'}><UiText source={'{0} Show one {1}'} values={[<Eye size={14} aria-hidden />, <span className="text-ink-faint"><UiText source={'{0} left, costs a star'} values={[MAX_SHOWN - shown]} /></span>]} /></button>
+            <button type="button" onClick={() => setGaveUp(true)} className={buttonClasses('ghost', 'sm')}><UiText source={'{0} Give up'} values={[<Flag size={14} aria-hidden />]} /></button>
           </div>
         )}
       </div>

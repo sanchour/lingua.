@@ -235,7 +235,7 @@ export default function ThesaurusPage() {
                   <DeckTree decks={decks!} folders={folders} counts={counts} lastStudied={outlook?.lastStudied} actions={actions} order={order} />
                 ))}
               {archivedCount > 0 && (
-                <button type="button" onClick={() => setShowArchived((v) => !v)} className="mt-5 text-[13.5px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4"><UiText source={'{0} {1} archived {2}'} values={[showArchived ? 'Hide' : 'Show', archivedCount, archivedCount === 1 ? 'deck' : 'decks']} /></button>
+                <button type="button" onClick={() => setShowArchived((v) => !v)} className="mt-5 text-[13.5px] font-semibold text-ink-soft underline decoration-line-strong underline-offset-4"><UiText source={'{0} {1} archived {2}'} values={[showArchived ? <UiText source={'Hide'} /> : <UiText source={'Show'} />, archivedCount, archivedCount === 1 ? <UiText source={'deck'} /> : <UiText source={'decks'} />]} /></button>
               )}
               {decks && !hasDecks && <NoDecks onBrowse={browse} onNew={() => newDeck(null)} onImport={(kind) => choose(kind)} />}
               <JourneySection lang={lang} onOpen={openStarter} />

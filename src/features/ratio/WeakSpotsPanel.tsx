@@ -62,7 +62,7 @@ export function WeakSpotsPanel({ lang }: { lang: string }) {
                 )}
                 {s.category && <span className="ml-2 text-[12.5px] text-ink-faint">{s.category.replace('-', ' ')}</span>}
               </span>
-              <span className="shrink-0 text-[12.5px] text-ink-soft tabular-nums"><UiText source={'wrong {0}× on {1} {2}'} values={[s.wrong, s.days, s.days === 1 ? 'day' : 'days']} /></span>
+              <span className="shrink-0 text-[12.5px] text-ink-soft tabular-nums"><UiText source={'wrong {0}× on {1} {2}'} values={[s.wrong, s.days, s.days === 1 ? <UiText source={'day'} /> : <UiText source={'days'} />]} /></span>
             </li>
           );
         })}

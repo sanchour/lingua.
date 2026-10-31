@@ -171,7 +171,7 @@ function Rounds({ song, ready, reach }: { song: Song; ready: Ready; reach: numbe
   return (
     <>
       {round === 0 && (
-        <p className="mb-4 text-[14px] leading-relaxed text-ink-soft"><UiText source={'{0} The song itself comes last, as the bonus.'} values={[focus.length ? `${focus.length} word${focus.length === 1 ? '' : 's'} from this song worth learning at your level first, then its grammar and lines.` : 'Its words and lines first.']} /></p>
+        <p className="mb-4 text-[14px] leading-relaxed text-ink-soft"><UiText source={'{0} The song itself comes last, as the bonus.'} values={[focus.length ? `${focus.length} word${focus.length === 1 ? '' : 's'} from this song worth learning at your level first, then its grammar and lines.` : <UiText source={'Its words and lines first.'} />]} /></p>
       )}
       <div className="mb-5 flex items-center gap-3">
         <span className="shrink-0 rounded-full bg-[var(--song-soft,var(--color-sunken))] px-3 py-1 text-[12px] font-bold text-[var(--song-ink)]">{KIND_LABEL[current.kind]}</span>

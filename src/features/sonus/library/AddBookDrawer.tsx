@@ -67,7 +67,7 @@ export function AddBookDrawer({ lang, kind: initialKind = 'audiobook', open, onC
       title={translateUi('Add an audiobook or course')}
       description={translateUi('Its parts play in order (by track number, else by name), and chapters inside the files are kept.')}
       footer={
-        <Button block size="lg" onClick={() => void add()} loading={busy} disabled={!audio.length}><UiText source={'Add {0}'} values={[kind === 'course' ? 'course' : 'audiobook']} /></Button>
+        <Button block size="lg" onClick={() => void add()} loading={busy} disabled={!audio.length}><UiText source={'Add {0}'} values={[kind === 'course' ? <UiText source={'course'} /> : <UiText source={'audiobook'} />]} /></Button>
       }
     >
       <div className="space-y-5">

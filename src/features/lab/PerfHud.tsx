@@ -1,4 +1,4 @@
-import { UiText } from '@/design/i18n/UiText';
+import { UiText, useUi } from '@/design/i18n/UiText';
 import { useEffect, useRef } from 'react';
 import { startFrameMeter } from '@/services/perf/frames';
 
@@ -7,6 +7,7 @@ import { startFrameMeter } from '@/services/perf/frames';
  * so the monitor itself never causes React renders.
  */
 export default function PerfHud() {
+  const translateUi = useUi();
   const fpsRef = useRef<HTMLSpanElement>(null);
   const worstRef = useRef<HTMLSpanElement>(null);
   const dotRef = useRef<HTMLSpanElement>(null);
@@ -38,7 +39,7 @@ export default function PerfHud() {
       ref={boxRef}
       className="pointer-events-auto fixed right-3 z-[100] flex cursor-help items-center gap-2 rounded-full bg-ink/85 px-3 py-1.5 font-mono text-[11px] font-semibold text-bg shadow-elev-2 tabular-nums"
       style={{ top: 'calc(env(safe-area-inset-top) + 8px)' }}
-      aria-label="Frame rate performance monitor"
+      aria-label={translateUi('Frame rate performance monitor')}
     >
       <span ref={dotRef} className="size-2 rounded-full bg-sage" />
       <span ref={fpsRef}><UiText source={'— fps'} /></span>

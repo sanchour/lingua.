@@ -1077,7 +1077,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 
 *In Lingua: News in Codex; Diarium; Mundus › Things to try (think aloud, labels at home, …); Sermo's scenes; the study log.*
 
-- [ ] `F0821` Change the app interface to the target language · **6-19** · partly there: Settings › Look and feel has six bundled offline catalogues and English hover help, but newly merged screens retain English. Final-merge checks, wider language/browser coverage and independent linguistic review remain incomplete.
+- [ ] `F0821` Change the app interface to the target language · **6-19** · partly there: Settings › Look and feel has six bundled offline catalogues and English hover help; 322 missing messages and newer screen controls were added in the 2026-10-30 completion checkpoint. Integrated checks pass (1,584 tests, one skipped), but Home/onboarding/palette metadata still has gaps. Browser work stopped on an unrelated, pre-existing DailyWordCard cross-language fallback defect; the six-language desktop/theme pass and independent linguistic review remain incomplete.
 - [x] `F0822` Read the news in the target language
 - [x] `F0823` Follow creators who use the target language
 - [x] `F0824` Keep a diary in the target language

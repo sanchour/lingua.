@@ -247,7 +247,7 @@ export function TypingPractice({ lang, data, saved }: { lang: string; data: Typi
               ? translateUi('Your computer’s own layout types the letters; switch it on in your system’s keyboard settings.')
               : translateUi('Your keys type the {0} layout, whatever your keyboard says, so you can practise before installing it.', [layoutName(layout)])}
           </p>
-          <Select label={translateUi('Target speed')} value={String(row.target) as (typeof TARGETS)[number]} onChange={(v) => setOption({ target: Number(v) })} options={TARGETS.map((t) => ({ value: t, label: `${t} words a minute` }))} />
+          <Select label={translateUi('Target speed')} value={String(row.target) as (typeof TARGETS)[number]} onChange={(v) => setOption({ target: Number(v) })} options={TARGETS.map((t) => ({ value: t, label: translateUi('{0} words a minute', [t]) }))} />
         </Card>
         <LetterBars data={data} row={row} focus={focus} lang={lang} />
       </aside>

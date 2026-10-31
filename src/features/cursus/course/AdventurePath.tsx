@@ -136,7 +136,7 @@ function UnitBanner({ unit, number, done, of, complete, locked }: { unit: UnitOu
       style={locked ? undefined : { background: edge(hue, 12), color: ink, boxShadow: `0 6px 0 ${edge(hue, 40)}` }}
     >
       <div className="min-w-0 flex-1">
-        <p className="text-[11.5px] font-bold tracking-[0.14em] uppercase opacity-85"><UiText source={'Unit {0} · {1}{2}'} values={[number, unit.level, complete ? ' · done' : locked ? '' : ` · ${done} of ${of}`]} /></p>
+        <p className="text-[11.5px] font-bold tracking-[0.14em] uppercase opacity-85"><UiText source={'Unit {0} · {1}{2}'} values={[number, unit.level, complete ? <UiText source={' · done'} /> : locked ? '' : ` · ${done} of ${of}`]} /></p>
         <h2 className="mt-0.5 font-serif text-[21px] leading-tight font-semibold">{unit.title}</h2>
         <p className="mt-1 text-[13px] leading-snug opacity-85">{unit.canDo.join(' · ')}</p>
       </div>

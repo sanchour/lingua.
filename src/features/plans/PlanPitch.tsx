@@ -135,7 +135,7 @@ export function PlanPitch({ current, onFree, replay = false }: { current: PlanKi
             {current === 'max' ? (
               <Yours><UiText source={'Max is yours'} /></Yours>
             ) : (
-              <Button size="lg" block loading={busy === 'maxMonth' || busy === 'maxYear'} onClick={() => void get(period === 'month' ? 'maxMonth' : 'maxYear')} iconRight={ArrowRight}><UiText source={'Get Max{0}'} values={[current === 'free' ? ', with everything in Lingua+' : '']} /></Button>
+              <Button size="lg" block loading={busy === 'maxMonth' || busy === 'maxYear'} onClick={() => void get(period === 'month' ? 'maxMonth' : 'maxYear')} iconRight={ArrowRight}><UiText source={'Get Max{0}'} values={[current === 'free' ? <UiText source={', with everything in Lingua+'} /> : '']} /></Button>
             )}
           </div>
         </motion.section>

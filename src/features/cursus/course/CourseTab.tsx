@@ -84,7 +84,7 @@ function WhereYouAre({ next, progress, loaded }: { next: NextLesson | null; prog
         {doneUnits.length ? (
           <>
             <p className="mt-1 font-serif text-2xl font-semibold tabular-nums">
-              {canDo} <span className="font-sans text-sm font-semibold text-ink-faint"><UiText source={'things, in {0} {1}'} values={[doneUnits.length, doneUnits.length === 1 ? 'unit' : 'units']} /></span>
+              {canDo} <span className="font-sans text-sm font-semibold text-ink-faint"><UiText source={'things, in {0} {1}'} values={[doneUnits.length, doneUnits.length === 1 ? <UiText source={'unit'} /> : <UiText source={'units'} />]} /></span>
             </p>
             <ul className="mt-2 space-y-1 text-[13.5px] text-ink-soft">
               {doneUnits.slice(-4).map((u) => (
@@ -95,7 +95,7 @@ function WhereYouAre({ next, progress, loaded }: { next: NextLesson | null; prog
             </ul>
           </>
         ) : (
-          <p className="mt-1 text-sm text-ink-soft"><UiText source={'Each unit you finish adds what you can do with {0}. The first takes about half an hour.'} values={[loaded.course.lang === 'zh' ? 'Mandarin' : getLanguage(loaded.course.lang)?.name]} /></p>
+          <p className="mt-1 text-sm text-ink-soft"><UiText source={'Each unit you finish adds what you can do with {0}. The first takes about half an hour.'} values={[loaded.course.lang === 'zh' ? <UiText source={'Mandarin'} /> : getLanguage(loaded.course.lang)?.name]} /></p>
         )}
       </Card>
     </aside>

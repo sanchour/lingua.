@@ -76,7 +76,7 @@ export function CheckYourself({ lang, refId, words, source }: { lang: string; re
       <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="flex w-full items-center gap-3 rounded-3xl px-5 py-4 text-left transition-colors hover:bg-raised">
         <span className="min-w-0 flex-1">
           <span className="block font-semibold"><UiText source={'Check yourself'} /></span>
-          <span className="block text-[14px] text-ink-soft"><UiText source={'{0} quick questions from this text{1}, if you like. They count in Ratio.'} values={[words.length, ai ? ', and two about the story' : '']} /></span>
+          <span className="block text-[14px] text-ink-soft"><UiText source={'{0} quick questions from this text{1}, if you like. They count in Ratio.'} values={[words.length, ai ? <UiText source={', and two about the story'} /> : '']} /></span>
         </span>
         <ChevronDown size={18} className={cx('shrink-0 text-ink-faint transition-transform', open && 'rotate-180')} aria-hidden />
       </button>

@@ -183,7 +183,7 @@ export function SheetCard() {
           : translateUi('Drag the handle down to dismiss; the list inside should scroll without moving the page behind.')
       }
     >
-      <Button variant="secondary" onClick={() => setOpen(true)}><UiText source={'Open {0}'} values={[layout === 'wide' ? 'slide-over' : 'bottom sheet']} /></Button>
+      <Button variant="secondary" onClick={() => setOpen(true)}><UiText source={'Open {0}'} values={[layout === 'wide' ? <UiText source={'slide-over'} /> : <UiText source={'bottom sheet'} />]} /></Button>
       <Drawer open={open} onClose={() => setOpen(false)} title={translateUi('Word details')} description={translateUi('A sample of how the word drawer will feel.')}>
         <ul className="divide-y divide-line">
           {SHEET_ROWS.map((n) => (

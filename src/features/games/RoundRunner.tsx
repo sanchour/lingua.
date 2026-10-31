@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // A round of a game (6-21): the ready screen, the entries one after another (words, puzzles or passages), the clock, the reveal after
 // each, the end with its stars, the best kept and a line in the learner's record for every word. A game only draws its board.
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -63,6 +64,7 @@ interface RunnerProps<E> {
 }
 
 export function RoundRunner<E>({ lang, def, best, unit, intro, options, make, empty, terms, label, Board, rules, rtl }: RunnerProps<E>) {
+  const translateUi = useUi();
   const { answered, cue } = useLessonFeel();
   const [phase, setPhase] = useState<'ready' | 'making' | 'playing' | 'done' | 'empty'>('ready');
   const [entries, setEntries] = useState<E[]>([]);
@@ -152,18 +154,16 @@ export function RoundRunner<E>({ lang, def, best, unit, intro, options, make, em
 
   const side = (
     <>
-      <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase">This round</p>
+      <p className="text-[12px] font-bold tracking-[0.12em] text-ink-faint uppercase"><UiText source={'This round'} /></p>
       <div className="space-y-2">
-        <Stat label={unit}>{phase === 'ready' || phase === 'making' || phase === 'empty' ? '–' : `${shown} of ${entries.length}`}</Stat>
-        <Stat label="Stars">{stars}</Stat>
-        <Stat label="Time">{clock(elapsed)}</Stat>
-        <Stat label="Best">{bestLine}</Stat>
+        <Stat label={unit}>{phase === 'ready' || phase === 'making' || phase === 'empty' ? '–' : translateUi('{0} of {1}', [shown, entries.length])}</Stat>
+        <Stat label={translateUi('Stars')}>{stars}</Stat>
+        <Stat label={translateUi('Time')}>{clock(elapsed)}</Stat>
+        <Stat label={translateUi('Best')}>{bestLine}</Stat>
       </div>
       <div className="border-t border-line/70 pt-4 text-[13px] leading-relaxed text-ink-soft">
         {rules}
-        <p className="mt-2">
-          Playing here never changes when a card comes back. <Kbd>Enter</Kbd> goes on.
-        </p>
+        <p className="mt-2"><UiText source={'Playing here never changes when a card comes back. {0} goes on.'} values={[<Kbd><UiText source={'Enter'} /></Kbd>]} /></p>
       </div>
     </>
   );
@@ -172,7 +172,7 @@ export function RoundRunner<E>({ lang, def, best, unit, intro, options, make, em
     return (
       <GameFrame
         title={def.title}
-        eyebrow="Word game"
+        eyebrow={translateUi('Word game')}
         side={side}
         main={
           <div className="max-w-xl">
@@ -180,11 +180,11 @@ export function RoundRunner<E>({ lang, def, best, unit, intro, options, make, em
             {options && <div className="mt-5 rounded-2xl border border-line/70 bg-surface p-4">{options}</div>}
             {phase === 'empty' && (
               <p className="mt-5 text-[14px] text-accent-text" role="status">
-                {empty ?? 'This could not be made from what you have yet.'}
+                {empty ?? translateUi('This could not be made from what you have yet.')}
               </p>
             )}
             <button type="button" onClick={() => void start()} disabled={phase === 'making'} className={buttonClasses('primary', 'lg') + ' mt-6'}>
-              {phase === 'making' ? 'Getting it ready…' : 'Start'}
+              {phase === 'making' ? translateUi('Getting it ready…') : translateUi('Start')}
             </button>
           </div>
         }
@@ -195,16 +195,14 @@ export function RoundRunner<E>({ lang, def, best, unit, intro, options, make, em
     return (
       <GameFrame
         title={def.title}
-        eyebrow="Round finished"
+        eyebrow={translateUi('Round finished')}
         side={side}
         main={
           <div>
-            <p className="font-serif text-3xl font-semibold">
-              {stars} of {entries.length * MAX_STARS} stars
-            </p>
+            <p className="font-serif text-3xl font-semibold"><UiText source={'{0} of {1} stars'} values={[stars, entries.length * MAX_STARS]} /></p>
             <p className="mt-1 text-ink-soft">
               {clock(Math.round(spent.current))}
-              {outcome?.beat ? ' · A new best.' : ''}
+              {outcome?.beat ? translateUi(' · A new best.') : ''}
             </p>
             <ul className="mt-5 divide-y divide-line/70 rounded-2xl border border-line/70 bg-surface">
               {entries.map((e, i) => {
@@ -221,12 +219,8 @@ export function RoundRunner<E>({ lang, def, best, unit, intro, options, make, em
               })}
             </ul>
             <div className="mt-6 flex gap-3">
-              <button type="button" onClick={() => void start()} className={buttonClasses('primary', 'lg')}>
-                <RotateCcw size={16} aria-hidden /> Play again
-              </button>
-              <Link to="/thesaurus/games" className={buttonClasses('secondary', 'lg')}>
-                All games
-              </Link>
+              <button type="button" onClick={() => void start()} className={buttonClasses('primary', 'lg')}><UiText source={'{0} Play again'} values={[<RotateCcw size={16} aria-hidden />]} /></button>
+              <Link to="/thesaurus/games" className={buttonClasses('secondary', 'lg')}><UiText source={'All games'} /></Link>
             </div>
           </div>
         }
@@ -236,7 +230,7 @@ export function RoundRunner<E>({ lang, def, best, unit, intro, options, make, em
   return (
     <GameFrame
       title={def.title}
-      eyebrow={`${unit} ${at + 1} of ${entries.length}`}
+      eyebrow={translateUi('{0} {1} of {2}', [unit, at + 1, entries.length])}
       side={side}
       main={
         <div>
@@ -248,7 +242,7 @@ export function RoundRunner<E>({ lang, def, best, unit, intro, options, make, em
                 <Stars n={result.stars} />
               </div>
               <button ref={nextButton} type="button" onClick={next} className={buttonClasses('primary', 'md')}>
-                {at + 1 < entries.length ? `Next ${unit.toLowerCase()}` : 'See the round'} <Kbd tone="inverse">Enter</Kbd>
+                {at + 1 < entries.length ? translateUi('Next {0}', [unit.toLowerCase()]) : translateUi('See the round')} <Kbd tone="inverse"><UiText source={'Enter'} /></Kbd>
               </button>
             </div>
           )}

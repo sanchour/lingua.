@@ -1,3 +1,4 @@
+import { UiText, useUi } from '@/design/i18n/UiText';
 // A Chinese character drawn stroke by stroke (6-23): an animation, the order as a row of steps, and the parts it is built from.
 import { useEffect, useId, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw } from 'lucide-react';
@@ -42,6 +43,7 @@ function Glyph({ data, upto, partial = 1, size, current = true }: { data: Stroke
 }
 
 export function StrokeOrder({ char, set = 'zh', onOpen }: { char: string; set?: StrokeSet; onOpen?: (c: string) => void }) {
+  const translateUi = useUi();
   const [all, setAll] = useState<Record<string, StrokeData> | null | undefined>();
   const data = all?.[char];
   const [readings, setReadings] = useState<Record<string, CharReadings>>({});
@@ -89,9 +91,9 @@ export function StrokeOrder({ char, set = 'zh', onOpen }: { char: string; set?: 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, data]);
 
-  if (all === undefined) return <p className="text-[14px] text-ink-faint">Loading strokes…</p>;
-  if (all === null) return <p className="text-[14px] text-ink-faint">The stroke data could not be loaded (it needs a connection the first time).</p>;
-  if (!data) return <p className="text-[14px] text-ink-faint">No stroke data for {char}: it holds the {Object.keys(all).length} most used characters.</p>;
+  if (all === undefined) return <p className="text-[14px] text-ink-faint"><UiText source={'Loading strokes…'} /></p>;
+  if (all === null) return <p className="text-[14px] text-ink-faint"><UiText source={'The stroke data could not be loaded (it needs a connection the first time).'} /></p>;
+  if (!data) return <p className="text-[14px] text-ink-faint"><UiText source={'No stroke data for {0}: it holds the {1} most used characters.'} values={[char, Object.keys(all).length]} /></p>;
 
   const play = () => {
     if (reduced()) {
@@ -113,27 +115,25 @@ export function StrokeOrder({ char, set = 'zh', onOpen }: { char: string; set?: 
           <Glyph data={data} upto={step} partial={playing ? partial : 1} size={176} />
         </div>
         <div className="min-w-0 flex-1 space-y-1.5 text-[14.5px]">
-          <p className="text-ink-soft">Stroke {step + 1} of {total}</p>
+          <p className="text-ink-soft"><UiText source={'Stroke {0} of {1}'} values={[step + 1, total]} /></p>
           {rd?.d && (isKanji(data) || !data.e) && <p>{rd.d}</p>}
-          {rd && (rd.on?.length || rd.kun?.length) && set === 'ja' && <p className="text-ink-soft">{rd.on?.length ? `On: ${rd.on.join(', ')}` : ''}{rd.on?.length && rd.kun?.length ? ' · ' : ''}{rd.kun?.length ? `Kun: ${rd.kun.join(', ')}` : ''}</p>}
-          {rd?.ko?.length && <p className="text-ink-soft">Korean hanja reading: <span lang="ko">{rd.ko.join(', ')}</span></p>}
+          {rd && (rd.on?.length || rd.kun?.length) && set === 'ja' && <p className="text-ink-soft">{rd.on?.length ? translateUi('On: {0}', [rd.on.join(', ')]) : ''}{rd.on?.length && rd.kun?.length ? ' · ' : ''}{rd.kun?.length ? translateUi('Kun: {0}', [rd.kun.join(', ')]) : ''}</p>}
+          {rd?.ko?.length && <p className="text-ink-soft"><UiText source={'Korean hanja reading: {0}'} values={[<span lang="ko">{rd.ko.join(', ')}</span>]} /></p>}
           {!isKanji(data) && data.e && <p>{data.e}</p>}
           {!isKanji(data) && data.h && <p className="text-ink-soft">{data.h}</p>}
-          {!isKanji(data) && data.r && <p className="text-ink-soft">Radical <span lang="zh" className="font-serif text-[18px] text-ink">{data.r}</span></p>}
+          {!isKanji(data) && data.r && <p className="text-ink-soft"><UiText source={'Radical {0}'} values={[<span lang="zh" className="font-serif text-[18px] text-ink">{data.r}</span>]} /></p>}
           <div className="flex gap-2 pt-1">
             <button type="button" onClick={play} className="inline-flex items-center gap-1.5 rounded-xl border border-line px-3 py-1.5 text-[14px] hover:border-line-strong">
-              {playing ? <Pause size={15} aria-hidden /> : <Play size={15} aria-hidden />}{playing ? 'Pause' : 'Play'}
+              {playing ? <Pause size={15} aria-hidden /> : <Play size={15} aria-hidden />}{playing ? translateUi('Pause') : translateUi('Play')}
             </button>
-            <button type="button" onClick={() => { setPlaying(false); setStep(0); setPartial(1); }} className="inline-flex items-center gap-1.5 rounded-xl border border-line px-3 py-1.5 text-[14px] hover:border-line-strong">
-              <RotateCcw size={15} aria-hidden />Start
-            </button>
+            <button type="button" onClick={() => { setPlaying(false); setStep(0); setPartial(1); }} className="inline-flex items-center gap-1.5 rounded-xl border border-line px-3 py-1.5 text-[14px] hover:border-line-strong"><UiText source={'{0}Start'} values={[<RotateCcw size={15} aria-hidden />]} /></button>
           </div>
         </div>
       </div>
-      <ol className="flex flex-wrap gap-1.5" aria-label="Stroke order">
+      <ol className="flex flex-wrap gap-1.5" aria-label={translateUi('Stroke order')}>
         {Array.from({ length: total }, (_, i) => (
           <li key={i}>
-            <button type="button" aria-label={`Show stroke ${i + 1}`} aria-current={i === step} onClick={() => { setPlaying(false); setStep(i); setPartial(1); }} className={cx('grid place-items-center rounded-lg border p-0.5 text-ink', i === step ? 'border-accent-text bg-accent-soft' : 'border-line/60 bg-surface hover:border-line-strong')}>
+            <button type="button" aria-label={translateUi('Show stroke {0}', [i + 1])} aria-current={i === step} onClick={() => { setPlaying(false); setStep(i); setPartial(1); }} className={cx('grid place-items-center rounded-lg border p-0.5 text-ink', i === step ? 'border-accent-text bg-accent-soft' : 'border-line/60 bg-surface hover:border-line-strong')}>
               <Glyph data={data} upto={i} size={44} />
               <span className="text-[11px] text-ink-faint">{i + 1}</span>
             </button>
@@ -143,7 +143,7 @@ export function StrokeOrder({ char, set = 'zh', onOpen }: { char: string; set?: 
       <WriteCheck key={char} char={char} data={data} lang={set} />
       {parts.length > 0 && (
         <div>
-          <p className="mb-1.5 text-[12.5px] font-semibold tracking-wide text-ink-faint uppercase">Built from</p>
+          <p className="mb-1.5 text-[12.5px] font-semibold tracking-wide text-ink-faint uppercase"><UiText source={'Built from'} /></p>
           <ul className="flex flex-wrap gap-2">
             {parts.map((p, i) => (
               <li key={i}>

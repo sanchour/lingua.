@@ -67,7 +67,7 @@ function EndNote({ shape, want }: { shape: Shape; want: 'rise' | 'fall' }) {
   if (!got) return <p className="mt-2 text-[13.5px] text-ink-soft"><UiText source={'Not enough of your voice was heard to see which way it goes at the end. Say it a little louder.'} /></p>;
   const word = { rise: 'rose', fall: 'fell', level: 'stayed level' }[got];
   return (
-    <p className="mt-2 text-[13.5px] text-ink-soft"><UiText source={'{0}: your voice {1}{2} (Measured from your recording; a guide, not a mark.)'} values={[want === 'rise' ? 'A question rises at the end' : 'A statement falls at the end', word, got === want ? ', as it should.' : '. Try again, and let it ' + (want === 'rise' ? 'go up' : 'come down') + ' on the last word.']} /></p>
+    <p className="mt-2 text-[13.5px] text-ink-soft"><UiText source={'{0}: your voice {1}{2} (Measured from your recording; a guide, not a mark.)'} values={[want === 'rise' ? <UiText source={'A question rises at the end'} /> : <UiText source={'A statement falls at the end'} />, word, got === want ? <UiText source={', as it should.'} /> : '. Try again, and let it ' + (want === 'rise' ? 'go up' : 'come down') + ' on the last word.']} /></p>
   );
 }
 
@@ -148,7 +148,7 @@ function BeatNotes({ shape, sentence, stressed, lang }: { shape: Shape; sentence
         </p>
       )}
       {evenness !== null && (
-        <p><UiText source={'Your {0} beats were {1}. {2}'} values={[shape.beats.length, evenness < 30 ? 'very even' : evenness < 50 ? 'fairly even' : 'uneven: short and long gaps alternate', TIMED[lang] ?? '']} /></p>
+        <p><UiText source={'Your {0} beats were {1}. {2}'} values={[shape.beats.length, evenness < 30 ? <UiText source={'very even'} /> : evenness < 50 ? <UiText source={'fairly even'} /> : <UiText source={'uneven: short and long gaps alternate'} />, TIMED[lang] ?? '']} /></p>
       )}
       <p className="text-[12px] text-ink-faint"><UiText source={'Found from loudness and pitch in your recording: a guide, not a mark.'} /></p>
     </div>

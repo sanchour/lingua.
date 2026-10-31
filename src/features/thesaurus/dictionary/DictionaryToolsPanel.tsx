@@ -87,7 +87,7 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
           }}
         />
         {customEntries.length > 0 && (
-          <span className="text-[12.5px] font-semibold text-ink-faint"><UiText source={'{0} custom {1}'} values={[customEntries.length, customEntries.length === 1 ? 'entry' : 'entries']} /></span>
+          <span className="text-[12.5px] font-semibold text-ink-faint"><UiText source={'{0} custom {1}'} values={[customEntries.length, customEntries.length === 1 ? translateUi('entry') : translateUi('entries')]} /></span>
         )}
       </div>
 
@@ -100,7 +100,7 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
               lang={lang}
               value={word}
               onChange={(e) => setWord(e.target.value)}
-              placeholder="Headword or phrase"
+              placeholder={translateUi("Headword or phrase")}
               className="h-9 rounded-xl border border-line bg-surface px-3 font-serif text-[15px] text-ink outline-none focus:border-ink"
             />
             <select
@@ -109,11 +109,11 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
               onChange={(e) => setPos(e.target.value)}
               className="h-9 rounded-xl border border-line bg-surface px-2.5 text-[13px] font-semibold text-ink-soft outline-none focus:border-ink"
             >
-              <option value="noun">Noun</option>
-              <option value="verb">Verb</option>
-              <option value="adj">Adjective</option>
-              <option value="adv">Adverb</option>
-              <option value="phrase">Phrase / idiom</option>
+              <option value="noun">{translateUi("Noun")}</option>
+              <option value="verb">{translateUi("Verb")}</option>
+              <option value="adj">{translateUi("Adjective")}</option>
+              <option value="adv">{translateUi("Adverb")}</option>
+              <option value="phrase">{translateUi("Phrase / idiom")}</option>
             </select>
           </div>
           <input
@@ -129,7 +129,7 @@ export function PersonalDictionaryToolbar({ lang, onOpenWord }: { lang: string; 
               lang={lang}
               value={example}
               onChange={(e) => setExample(e.target.value)}
-              placeholder="Example sentence (optional)"
+              placeholder={translateUi("Example sentence (optional)")}
               className="h-9 rounded-xl border border-line bg-surface px-3 font-serif text-[14px] text-ink outline-none focus:border-ink"
             />
             <input
@@ -285,11 +285,11 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
               onChange={(e) => setCustomPos(e.target.value)}
               className="h-9 rounded-xl border border-line bg-surface px-2.5 text-[13px] font-semibold text-ink-soft outline-none focus:border-ink"
             >
-              <option value="noun">Noun</option>
-              <option value="verb">Verb</option>
-              <option value="adj">Adjective</option>
-              <option value="adv">Adverb</option>
-              <option value="phrase">Phrase</option>
+              <option value="noun">{translateUi("Noun")}</option>
+              <option value="verb">{translateUi("Verb")}</option>
+              <option value="adj">{translateUi("Adjective")}</option>
+              <option value="adv">{translateUi("Adverb")}</option>
+              <option value="phrase">{translateUi("Phrase")}</option>
             </select>
             <input
               type="text"
@@ -305,7 +305,7 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
               lang={lang}
               value={customEx}
               onChange={(e) => setCustomEx(e.target.value)}
-              placeholder="Custom example sentence (optional)"
+              placeholder={translateUi("Custom example sentence (optional)")}
               className="h-9 rounded-xl border border-line bg-surface px-3 font-serif text-[14px] text-ink outline-none focus:border-ink"
             />
             <input
@@ -333,11 +333,11 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
               onChange={(e) => setIssueKind(e.target.value as DictIssueKind)}
               className="h-9 rounded-xl border border-line bg-surface px-2.5 text-[13px] font-semibold text-ink-soft outline-none focus:border-ink"
             >
-              <option value="definition">Wrong definition</option>
-              <option value="example">Bad example sentence</option>
-              <option value="pronunciation">Pronunciation / IPA</option>
-              <option value="forms">Inflected forms</option>
-              <option value="other">Other issue</option>
+              <option value="definition">{translateUi("Wrong definition")}</option>
+              <option value="example">{translateUi("Bad example sentence")}</option>
+              <option value="pronunciation">{translateUi("Pronunciation / IPA")}</option>
+              <option value="forms">{translateUi("Inflected forms")}</option>
+              <option value="other">{translateUi("Other issue")}</option>
             </select>
             <input
               type="text"
@@ -360,7 +360,7 @@ export function EntryToolsSection({ lang, row, savedWord }: { lang: string; row:
               lang={lang}
               value={correctedExample}
               onChange={(e) => setCorrectedExample(e.target.value)}
-              placeholder="Better example sentence (optional)"
+              placeholder={translateUi("Better example sentence (optional)")}
               className="h-9 rounded-xl border border-line bg-surface px-3 font-serif text-[14px] text-ink outline-none focus:border-ink"
             />
           </div>

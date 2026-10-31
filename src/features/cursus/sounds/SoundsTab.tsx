@@ -143,7 +143,7 @@ function Detail({ sound, lang, all, onChoose, onPairs }: { sound: Sound; lang: s
       {partner && (
         <p className="mt-3 rounded-xl bg-surface p-3 text-[14px] text-ink-soft"><UiText source={'Same place and manner, other voicing:{0}{1}. Say one, then the other with a hand on your throat: only the {2} hums.'} values={[' ', <button type="button" onClick={() => onChoose(partner)} className="font-serif text-[17px] font-semibold text-ink underline decoration-line-strong underline-offset-4">
             {partner.ipa}
-          </button>, sound.kind === 'consonant' && sound.voiced ? 'first' : 'second']} /></p>
+          </button>, sound.kind === 'consonant' && sound.voiced ? <UiText source={'first'} /> : <UiText source={'second'} />]} /></p>
       )}
       <ul className="mt-4 divide-y divide-line/60">
         {sound.words.map(([word, meaning]) => (

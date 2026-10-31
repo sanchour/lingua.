@@ -247,7 +247,7 @@ const TodayCard = memo(function TodayCard({
           ) : (
             <span><UiText source={'Read, listen, watch or write: it all counts toward your daily goal.'} /></span>
           )}
-          {today?.reviews ? <span><UiText source={'{0} {1} reviewed'} values={[today.reviews, today.reviews === 1 ? 'card' : 'cards']} /></span> : null}
+          {today?.reviews ? <span><UiText source={'{0} {1} reviewed'} values={[today.reviews, today.reviews === 1 ? <UiText source={'card'} /> : <UiText source={'cards'} />]} /></span> : null}
         </p>
       </div>
 

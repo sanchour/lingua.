@@ -27,7 +27,7 @@ export function WritingTasks({ lang }: { lang: string }) {
   return (
     <Card className="space-y-4 p-5">
       <h2 className="font-serif text-xl font-semibold"><UiText source={'Writing tasks'} /></h2>
-      <Select label={translateUi('Choose a task')} value={id} onChange={setId} options={WRITING_TASKS.map((t) => ({ value: t.id, label: t.title }))} />
+      <Select label={translateUi('Choose a task')} value={id} onChange={setId} options={WRITING_TASKS.map((t) => ({ value: t.id, label: translateUi(t.title) }))} />
       <p className="text-sm leading-relaxed text-ink-soft">{task.brief}</p>
       <p className="text-[13px] text-ink-faint"><UiText source={'Aim for {0}–{1} words. A guide, not a limit.'} values={[task.minWords, task.maxWords]} /></p>
       <label className="block text-[13px] font-semibold text-ink-soft"><UiText source={'Your material (optional){0}'} values={[<textarea value={details} onChange={(e) => setDetails(e.target.value)} rows={3} placeholder={translateUi('Words, notes, an article or a paragraph to work from…')} className="mt-2 w-full resize-y rounded-xl border border-line bg-raised p-3 font-normal text-ink" />]} /></label>

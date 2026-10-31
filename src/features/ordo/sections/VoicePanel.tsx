@@ -116,7 +116,7 @@ export function VoicePanel({ active }: { active: LanguageProfile }) {
         <div className="min-w-0 flex-1">
           <p className="text-[14px] font-semibold"><UiText source={'Voice'} /></p>
           <p data-hint="" className="mt-0.5 text-[13px] leading-snug text-ink-soft">{status}</p>
-          {speaker?.kind === 'device' && speaker.quality === 'robotic' && <p data-hint="" className="mt-1.5 text-[13px] leading-snug text-ink-soft"><UiText source={'It sounds robotic: it’s the only voice for {0} this device has. {1}'} values={[accentName(speaker.locale), locale && piperVoicesFor(locale).length ? 'Or download a natural voice for Lingua below.' : BETTER_VOICE]} /></p>}
+          {speaker?.kind === 'device' && speaker.quality === 'robotic' && <p data-hint="" className="mt-1.5 text-[13px] leading-snug text-ink-soft"><UiText source={'It sounds robotic: it’s the only voice for {0} this device has. {1}'} values={[accentName(speaker.locale), locale && piperVoicesFor(locale).length ? <UiText source={'Or download a natural voice for Lingua below.'} /> : BETTER_VOICE]} /></p>}
         </div>
         <Switch
           label={translateUi('Read aloud')}
