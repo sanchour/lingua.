@@ -8,6 +8,7 @@ import type { Text } from '@/data/types';
 import { useLayout } from '@/design/hooks/useLayout';
 import { Drawer, IconButton, Popover } from '@/design/primitives';
 import { TypographyPanel } from './TypographyPanel';
+import { GeneratedReadingLabel } from '../GeneratedReadingLabel';
 
 interface ReaderChromeProps {
   tools?: ReactNode;
@@ -60,6 +61,7 @@ export function ReaderChrome({ tools, visible, text, chapterTitle, reader, theme
                 )}
               </div>
               {tools}
+              <GeneratedReadingLabel id={text.generatedId} />
               <IconButton icon={List} label={translateUi('Contents')} onClick={onContents} tooltipPlacement="bottom" />
               {layout === 'wide' ? (
                 <Popover

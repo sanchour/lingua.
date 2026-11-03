@@ -39,6 +39,11 @@ export function regionsOf(web: Web, seed = seedOf(web.lang)): Regions {
     if (a.kind === 'word' && b.kind === 'word') near[t.a].push(t.b), near[t.b].push(t.a);
     if (t.kind === 'member' && a.kind === 'theme') themesOf[t.b].push(t.a), themeSize.set(t.a, (themeSize.get(t.a) ?? 0) + 1);
   }
+  // Words that share a small affix, root, character or tag hold together too: without this, 700 of 3,000 Spanish words were
+  // left alone (measured in G1). A theme decides a region outright instead.
+  const hubWords = new Map<number, number[]>();
+  for (const t of threads) if (t.kind === 'member' && nodes[t.a].kind !== 'theme' && nodes[t.a].kind !== 'word') hubWords.set(t.a, [...(hubWords.get(t.a) ?? []), t.b]);
+  for (const ms of hubWords.values()) for (const a of ms) for (const b of ms) if (a !== b) near[a].push(b);
 
   const fixed = new Set<number>();
   for (const i of words) {

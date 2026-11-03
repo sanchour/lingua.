@@ -1,7 +1,8 @@
 // Where things go on the page (6-29 G2, docs/WORD-GRAPH-PLAN.md sections 2.2 and 2.4): the compass of one word and its
 // tree, worked out in one pass rather than simulated, so a word's view is the same every time. The canvas draws a Scene.
+import type { GraphLayoutRow } from '@/core/contracts/db';
 import type { WordState } from '@/data/types';
-import type { Neighbour, Quarter } from './model';
+import { FAMILIES, type Neighbour, type Quarter } from './model';
 import type { TreeNode, WordTree } from './tree';
 
 export interface SceneNode {
@@ -22,6 +23,10 @@ export interface SceneNode {
   lang?: string;
   /** Which side of its dot the label sits on. */
   anchor: 'start' | 'end' | 'middle' | 'above' | 'below';
+  /** The atlas: how common (dot size), how well remembered (0 to 1, the dot's ink), which region (an index into `regions`). */
+  rank?: number;
+  memory?: number;
+  region?: number;
 }
 
 export type EdgeStyle = 'meaning' | 'form' | 'origin' | 'use' | 'yours' | 'member' | 'elbow';
@@ -33,7 +38,11 @@ export interface SceneEdge {
 }
 
 export interface Scene {
-  kind: 'compass' | 'tree';
+  kind: 'compass' | 'tree' | 'atlas';
+  /** A new key draws the scene out afresh; the same key with new data (the worker's update) only redraws. */
+  key: string;
+  /** The atlas's regions, as discs for their washes and names. */
+  regions?: Array<{ id: string; label: string; x: number; y: number; r: number }>;
   nodes: SceneNode[];
   edges: SceneEdge[];
   /** The area the scene covers, for fitting it in the window. */
@@ -98,7 +107,7 @@ export function compassScene({ word, neighbours, members, weak, lookalikes = fal
       for (const h of hubs) if (members?.get(nodes[h].label)?.some((n) => n.key === outer[i].key)) edges.push({ a: h, b: m, style: 'member', ring: 2 });
     });
   }
-  return { kind: 'compass', nodes, edges, box: { x0: -RING_2 - 110, y0: -RING_2 - 50, x1: RING_2 + 110, y1: RING_2 + 50 } };
+  return { kind: 'compass', key: `compass:${word.key}`, nodes, edges, box: { x0: -RING_2 - 110, y0: -RING_2 - 50, x1: RING_2 + 110, y1: RING_2 + 50 } };
 }
 
 /** The tree, top down: leaves side by side, each parent over the middle of its children; the ancestor above the top word
@@ -139,5 +148,43 @@ export function treeScene(tree: WordTree, weak?: ReadonlySet<string>): Scene {
     });
   }
   const xs = nodes.map((n) => n.x), ys = nodes.map((n) => n.y);
-  return { kind: 'tree', nodes, edges, box: { x0: Math.min(...xs) - 80, y0: Math.min(...ys) - 60, x1: Math.max(...xs) + 80, y1: Math.max(...ys) + 50 } };
+  return { kind: 'tree', key: `tree:${tree.roots.map((r) => r.key).join(',')}`, nodes, edges, box: { x0: Math.min(...xs) - 80, y0: Math.min(...ys) - 60, x1: Math.max(...xs) + 80, y1: Math.max(...ys) + 50 } };
 }
+
+/** The cached scene the worker writes (`graphLayouts`), as the canvas draws it: positions as laid out, states and memory as
+ *  they are now, each region a disc around its words. */
+export interface AtlasInput {
+  row: Pick<GraphLayoutRow, 'nodes' | 'x' | 'y' | 'threads' | 'families' | 'regions'>;
+  states: ReadonlyMap<string, WordState>;
+  memory?: Readonly<Record<string, number>>;
+  weak?: ReadonlySet<string>;
+  /** A region's name in the interface's language. */
+  regionLabel?: (id: string, label: string) => string;
+}
+
+export function atlasScene({ row, states, memory, weak, regionLabel = (_, l) => l }: AtlasInput): Scene {
+  const regionIndex = new Map(row.regions.map((r, i) => [r.id, i]));
+  const nodes: SceneNode[] = row.nodes.map((n, i) => {
+    const key = n.kind === 'word' ? n.id.slice(2) : undefined;
+    return {
+      id: n.id, x: row.x[i], y: row.y[i], label: n.label, kind: n.kind === 'word' ? 'word' : 'hub', ring: 1, anchor: 'start',
+      key, state: key ? states.get(key) : undefined, rank: n.rank, memory: key ? memory?.[key] : undefined, weak: key ? weak?.has(key) : undefined,
+      region: n.region === undefined ? undefined : regionIndex.get(n.region),
+    };
+  });
+  const edges: SceneEdge[] = [];
+  for (let i = 0; i < row.families.length; i++) {
+    const a = row.threads[i * 2], b = row.threads[i * 2 + 1];
+    edges.push({ a, b, style: nodes[a].kind === 'hub' || nodes[b].kind === 'hub' ? 'member' : FAMILIES[row.families[i]] ?? 'meaning', ring: 1 });
+  }
+  const regions = row.regions.map((r, i) => {
+    const ms = nodes.filter((n) => n.region === i && n.kind === 'word');
+    const cx = ms.reduce((a, n) => a + n.x, 0) / (ms.length || 1), cy = ms.reduce((a, n) => a + n.y, 0) / (ms.length || 1);
+    const r95 = ms.map((n) => Math.hypot(n.x - cx, n.y - cy)).sort((p, q) => p - q)[Math.floor(ms.length * 0.95)] ?? 0;
+    return { id: r.id, label: regionLabel(r.id, r.label), x: cx, y: cy, r: r95 + 14 };
+  });
+  const xs = nodes.map((n) => n.x), ys = nodes.map((n) => n.y);
+  const box = nodes.length ? { x0: Math.min(...xs) - 40, y0: Math.min(...ys) - 40, x1: Math.max(...xs) + 120, y1: Math.max(...ys) + 40 } : { x0: -100, y0: -100, x1: 100, y1: 100 };
+  return { kind: 'atlas', key: 'atlas', nodes, edges, regions, box };
+}
+

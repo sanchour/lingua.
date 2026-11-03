@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { judge } from './judge';
-import { readReadingQuestions, readingSpec, selfReadingSpecs } from './reading';
+import { readReadingQuestions, readingSpec, selfReadingSpecs, READING_KINDS } from './reading';
 const source = 'Ana sale. Ana compra pan. Ana vuelve. El pan es para su padre.';
 const common = { question: 'Pregunta', answer: 'Respuesta', quote: 'Ana sale.', why: 'It follows from the passage.' };
 const raw = { questions: [
@@ -11,6 +11,16 @@ const raw = { questions: [
   { ...common, kind: 'headings', pairs: [{ left: 'Ana sale.', right: 'La salida' }, { left: 'Ana vuelve.', right: 'La vuelta' }] },
 ] };
 describe('reading exercise specs', () => {
+  it('supports each remaining interpretation kind and only hides a complete source paragraph', () => {
+    const passage = 'Ana sale.\n\nAna compra pan.\n\nAna vuelve.';
+    for (const kind of READING_KINDS.filter((k) => !['events', 'headings', 'true-false', 'odd-sentence'].includes(k))) {
+      const questions = readReadingQuestions({ questions: [{ ...common, kind, quote: 'Ana compra pan.', answer: kind === 'missing-paragraph' ? 'Ana compra pan.' : 'An interpretation' }] }, passage);
+      expect(questions, kind).toHaveLength(1);
+      expect(readingSpec('es', 'book', questions[0], 0).check.rule).toBe('self');
+    }
+    expect(readReadingQuestions({ questions: [{ ...common, kind: 'missing-paragraph', answer: 'compra pan.' }] }, passage)).toEqual([]);
+    expect(readReadingQuestions({ questions: [{ ...common, kind: 'missing-paragraph', answer: 'Ana compra pan.' }] }, passage + '\n\nAna compra pan.')).toEqual([]);
+  });
   it('builds all comprehension tasks using existing screens and source text evidence', () => {
     const questions = readReadingQuestions(raw, source);
     expect(questions).toHaveLength(8);

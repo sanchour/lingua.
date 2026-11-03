@@ -2146,3 +2146,32 @@ Finishing 6-21: a story can have strength (`health` on the story, `cost` on a ch
 
 The contract push the plan asked for before any code that stores something: Dexie **46** (17 + 29, past 6-7 to 6-25's reserved 24 to 42; nothing else has used a number since 23, so the jump is harmless: a device at 23 opens at 46, tested). `graphLayouts` is a cache of the whole drawable scene, not only positions, so the atlas can draw its first frame from one row without reading the dictionary; it is `skip` in backups, which the contract's policy type now names (`backup.ts` had it already). `graphViews` is the learner's (views and the pins of the language's own map) and merges last write wins. Both are emptied when a language is removed and when its progress is reset, since they were made of its words. The mix-ups question lives in `core/learner`, as the contract's rule 4 says (no room reads `evidence` itself): a pair counts only when the word written is another word the learner has, so a typo (*comr* for *comer*) is never a mix-up. `Word.relatedWordIds` and `grammarTopics`, in the contract since 6-0 but never built, are now fields: optional and unindexed, so they need no version of their own.
 
+## 2026-11-03 · Finish Reading 6-8 and Writing 6-12 against the audit
+
+The user asked to reconcile Reading’s row and finish or tick its 47 open entries, then named Writing’s
+five open entries and asked to stop only after both steps were done. Earlier slice completion was not
+whole-step completion. [The final inventory](LINGUA-6-8-12-AUDIT.md) accounts for Reading’s 72 assigned
+entries and Writing’s five remaining entries (55 assigned in total).
+
+Reuse existing text/journal rows, marks, dictionary/forms/search, checked generators, exercise views,
+shared phrasebook templates, diff and backup/Undo. No dependency, table or migration. Reading source
+kinds remain explicit source searches/imports (including Wikivoyage/Wikibooks); everyday formats can
+also be generated as labelled fiction. No new hosted corpus, illustration licence or factual/linguistic
+certification is implied. Generated attribution stays attached when a text is kept.
+
+For F0676, use installed target-language dictionaries/forms with conservative missing-word candidates
+and existing fuzzy suggestions, plus the platform spellchecker marked with the entry language. This
+replaces the prospective second Hunspell engine/corpus: missing names/forms are not declared errors,
+and browser support remains conditional on its dictionaries. This is an explicit implementation choice,
+not a claim to have installed Hunspell or certified all native dictionaries.
+
+Pictures stay local and in media-inclusive backups; AI checks receive only writing/prompt. Snapshots
+are explicit (ten retained); restore saves the current draft first. Chapter vocabulary rebuilds happen
+before the atomic edit/Undo transaction; the transaction rechecks the book timestamp. A favourite flag
+must survive a note flushed on navigation. Source offsets/quotes continue to prevent false painting or
+silent matching of edited text. Completion and verification boundaries are recorded in the audit.
+
+## 2026-11-03 — 6-29 G4: the atlas, laid out without a physics library
+
+The plan named d3-force as 6-29's one new dependency. Built, the two-level layout needed none: regions are discs placed by 600 rounds of pulls along shared threads and pushes that keep them apart, then each region's words fill it like a sunflower (the most common in the middle) and settle by their own threads. In the 5,000-word Spanish profile that is well under a second in the worker, and nothing in it is random, so the map is the same everywhere. Two things only the browser showed: a push from every word in a region drove its words to the rim (only near words push now), and 1,193 loose words on a single ring read as a wall around the map (they fill a band, drawn lighter). **The cache holds the whole scene and is rebuilt only when the words, the dictionary or the pack change**; memory is worked out on every open and laid over it, so a review never moves the map. The first frame needs one row, one `words` query and a 7 ms scene (about 85 ms in all for 5,000 words). Drawing a frame costs 2 to 6 ms; at fit all only region names and a few landmarks are labelled, and the label budget grows with the zoom. A view kept over empty paper opens fitted instead (it happened in testing). The tree's made-from index is built in the worker once a session from the whole dictionary rather than stored: a stored copy would have been a hidden row in `fullDict`, which counts its rows as words.
+

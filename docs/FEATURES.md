@@ -886,3 +886,9 @@ Its own tool in `sandesigning/` (no React, no dependencies), served beside Lingu
   from and the same word in other languages, set phrases, where you met it) or its family as a tree (what it is made from
   above, what grew from it below). Threads draw themselves out like ink, hover lights a word's threads, the wheel or a pinch
   zooms, the arrows walk from word to word, and the word's page sits beside it. *See its neighbours* on every word's page.
+- **Thesaurus › Atlas, the atlas (0.6.0, 6-29 G4):** the tab opens on every word you have at once, in regions named by their
+  theme (and *The little words*), washed in soft colour; dots sized by how common a word is and inked by how well you
+  remember it; threads curved inside regions and bundled between them; labels that come in as you zoom; a minimap; search
+  that flies to a word; Enter flies into its compass and Esc comes back; where you left it is kept. Loose threads (words
+  joined only to each other, or to nothing yet) are listed beside the map. The tree now shows every word made from a word.
+

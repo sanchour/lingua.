@@ -1,5 +1,9 @@
 # Lingua 6 · Features · the audit
 
+**Writing completion, 2026-11-03:** the five remaining entries F0617/F0657/F0676/F0684/F0687 are implemented; all 55 assigned entries are now ticked. [The audit](LINGUA-6-8-12-AUDIT.md) records image privacy/media-backup requirements, simplification limits, dictionary/native spelling, reusable templates and ten draft snapshots.
+
+**Reading completion, 2026-11-03:** all 72 assigned entries are reconciled with their actual implementation in [the Reading/Writing audit](LINGUA-6-8-12-AUDIT.md), including the 47 previously open. Searchable source kinds are not a newly hosted corpus; generated interpretations remain unverified, and the audit states the exact source/excerpt/storage boundaries.
+
 The Lingyu design package's feature catalogue (1,618 entries, F0001–F1618, pasted by the user on 2026-10-26)
 checked against Lingua as it is on 2026-10-26 (version 0.5.2-alpha.3). The plan that builds what is missing is
 [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md); each entry below names its step.
@@ -412,33 +416,33 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 
 *In Lingua: Codex: imports (EPUB, PDF, text, comics, photos), Discover (Gutenberg, Wikisource, Wikipedia, news), song lyrics as texts.*
 
-- [x] `F0284` ⭐ Graded readers organized by CEFR level · **6-8** · partly there
-- [ ] `F0285` Short stories · **6-8** · partly there
+- [x] `F0284` ⭐ Graded readers organized by CEFR level · **6-8**
+- [x] `F0285` Short stories · **6-8**
 - [x] `F0286` Novels
-- [ ] `F0287` Literary excerpts · **6-8** · partly there
-- [ ] `F0288` Folktales and fairy tales · **6-8** · partly there
-- [ ] `F0289` Fables · **6-8** · partly there
-- [ ] `F0290` Myths and legends · **6-8** · partly there
-- [ ] `F0291` Historical texts · **6-8** · partly there
-- [ ] `F0292` Biographies · **6-8** · partly there
+- [x] `F0287` Literary excerpts · **6-8**
+- [x] `F0288` Folktales and fairy tales · **6-8**
+- [x] `F0289` Fables · **6-8**
+- [x] `F0290` Myths and legends · **6-8**
+- [x] `F0291` Historical texts · **6-8**
+- [x] `F0292` Biographies · **6-8**
 - [x] `F0293` News articles
-- [ ] `F0294` Opinion pieces · **6-8** · partly there
-- [ ] `F0295` Essays · **6-8** · partly there
-- [ ] `F0296` Poems · **6-8** · partly there
+- [x] `F0294` Opinion pieces · **6-8**
+- [x] `F0295` Essays · **6-8**
+- [x] `F0296` Poems · **6-8**
 - [x] `F0297` Song lyrics, subject to appropriate licensing
-- [ ] `F0298` Dialogues · **6-8**
-- [ ] `F0299` Everyday messages · **6-8**
-- [ ] `F0300` Emails and letters · **6-8**
-- [ ] `F0301` Social media-style posts · **6-8**
-- [ ] `F0302` Travel guides · **6-8** · partly there
-- [ ] `F0303` Recipes · **6-8**
-- [ ] `F0304` Instructions and manuals · **6-8**
-- [ ] `F0305` Academic texts · **6-8** · partly there
-- [ ] `F0306` Philosophy excerpts · **6-8** · partly there
-- [ ] `F0307` Religious and spiritual texts · **6-8** · partly there
-- [ ] `F0308` Political speeches · **6-8** · partly there
-- [ ] `F0309` Historical documents · **6-8** · partly there
-- [ ] `F0310` Children’s literature · **6-8** · partly there
+- [x] `F0298` Dialogues · **6-8**
+- [x] `F0299` Everyday messages · **6-8**
+- [x] `F0300` Emails and letters · **6-8**
+- [x] `F0301` Social media-style posts · **6-8**
+- [x] `F0302` Travel guides · **6-8**
+- [x] `F0303` Recipes · **6-8**
+- [x] `F0304` Instructions and manuals · **6-8**
+- [x] `F0305` Academic texts · **6-8**
+- [x] `F0306` Philosophy excerpts · **6-8**
+- [x] `F0307` Religious and spiritual texts · **6-8**
+- [x] `F0308` Political speeches · **6-8**
+- [x] `F0309` Historical documents · **6-8**
+- [x] `F0310` Children’s literature · **6-8**
 - [x] `F0311` Comic strips
 - [x] `F0312` Graphic novels
 - [x] `F0313` Interactive fiction · **6-21**
@@ -447,10 +451,10 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0316` Personal document library
 - [x] `F0317` Public-domain literature collection
 - [ ] `F0318` Community-created reading materials · **6-27** · needs the user's word
-- [ ] `F0319` AI-generated stories at a chosen level · **6-8**
+- [x] `F0319` AI-generated stories at a chosen level · **6-8**
 - [x] `F0320` Parallel texts in two languages · **6-8**
-- [ ] `F0321` Original text alongside a translation · **6-8** · partly there
-- [ ] `F0322` Simplified versions of difficult texts · **6-8**
+- [x] `F0321` Original text alongside a translation · **6-8**
+- [x] `F0322` Simplified versions of difficult texts · **6-8**
 - [x] `F0323` Original and adapted versions side by side · **6-8**
 
 #### 4.2 Interactive reader
@@ -460,7 +464,7 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0324` ⭐ Tap any word to see its meaning
 - [x] `F0325` ⭐ Save a word to vocabulary
 - [x] `F0326` ⭐ Play word pronunciation
-- [ ] `F0327` ⭐ Read the whole passage aloud · **6-8** · partly there
+- [x] `F0327` ⭐ Read the whole passage aloud · **6-8**
 - [x] `F0328` Inline translations
 - [x] `F0329` Optional translations on demand
 - [x] `F0330` Phrase-level translation
@@ -471,15 +475,15 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0335` Highlight unknown vocabulary
 - [x] `F0336` Color-code parts of speech · **6-8**
 - [x] `F0337` Display lemma or dictionary form
-- [x] `F0338` Show grammatical endings · **6-8** · partly there
+- [x] `F0338` Show grammatical endings · **6-8**
 - [x] `F0339` Show conjugation or declension details
 - [x] `F0340` Display IPA transcription
 - [x] `F0341` Display synonyms
 - [x] `F0342` Display example sentences
 - [x] `F0343` Display word frequency
 - [x] `F0344` Display CEFR estimates
-- [ ] `F0345` Show literal versus natural translation · **6-8**
-- [x] `F0346` Hide translations to test comprehension · **6-8** · partly there
+- [x] `F0345` Show literal versus natural translation · **6-8**
+- [x] `F0346` Hide translations to test comprehension · **6-8**
 - [x] `F0347` Reveal translations one sentence at a time
 - [x] `F0348` Adjustable font size
 - [x] `F0349` Adjustable line spacing
@@ -488,41 +492,41 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 - [x] `F0352` Dark mode and warm-paper mode
 - [x] `F0353` Distraction-free reading
 - [x] `F0354` Reading ruler to focus on one line · **6-8**
-- [ ] `F0355` Bookmark passages · **6-8** · partly there
+- [x] `F0355` Bookmark passages · **6-8**
 - [x] `F0356` Highlight passages · **6-8**
 - [x] `F0357` Add margin notes · **6-8**
-- [ ] `F0358` Export highlights · **6-8**
+- [x] `F0358` Export highlights · **6-8**
 - [x] `F0359` Save quotes · **6-8**
-- [x] `F0360` Create flashcards from highlighted text · **6-8** · partly there
+- [x] `F0360` Create flashcards from highlighted text · **6-8**
 - [x] `F0361` Generate vocabulary lists from a text · **6-2** · partly there
 - [x] `F0362` Track reading progress
 - [x] `F0363` Track time spent reading
 - [x] `F0364` Estimate text difficulty
 - [x] `F0365` Show the proportion of known words
-- [x] `F0366` Filter texts by topic, length, difficulty and genre · **6-8** · partly there
+- [x] `F0366` Filter texts by topic, length, difficulty and genre · **6-8**
 
 #### 4.3 Reading comprehension exercises
 
 *In Lingua: Check yourself at the end of a text; In your own words.*
 
-- [x] `F0367` Main idea identification · **6-8** · partly there
-- [ ] `F0368` Detail questions · **6-8** · partly there
+- [x] `F0367` Main idea identification · **6-8**
+- [x] `F0368` Detail questions · **6-8**
 - [x] `F0369` True or false · **6-8**
 - [x] `F0370` Multiple-choice comprehension
 - [x] `F0371` Short-answer questions · **6-8**
 - [x] `F0372` Summarize the passage
 - [x] `F0373` Choose a suitable title · **6-8**
-- [x] `F0374` Put events in order · **6-8** · partly there
-- [ ] `F0375` Identify a character’s motivation · **6-8**
+- [x] `F0374` Put events in order · **6-8**
+- [x] `F0375` Identify a character’s motivation · **6-8**
 - [x] `F0376` Infer meaning from context · **6-8**
-- [ ] `F0377` Predict what happens next · **6-8**
-- [ ] `F0378` Identify the author’s tone · **6-8**
-- [ ] `F0379` Identify irony or humor · **6-8**
-- [ ] `F0380` Identify the intended audience · **6-8**
-- [ ] `F0381` Distinguish fact from opinion · **6-8**
-- [ ] `F0382` Explain a metaphor · **6-8**
-- [ ] `F0383` Identify references to history or culture · **6-8**
-- [ ] `F0384` Reconstruct a missing paragraph · **6-8**
+- [x] `F0377` Predict what happens next · **6-8**
+- [x] `F0378` Identify the author’s tone · **6-8**
+- [x] `F0379` Identify irony or humor · **6-8**
+- [x] `F0380` Identify the intended audience · **6-8**
+- [x] `F0381` Distinguish fact from opinion · **6-8**
+- [x] `F0382` Explain a metaphor · **6-8**
+- [x] `F0383` Identify references to history or culture · **6-8**
+- [x] `F0384` Reconstruct a missing paragraph · **6-8**
 - [x] `F0385` Fill in deleted words
 - [x] `F0386` Match paragraphs to headings · **6-8**
 - [x] `F0387` Identify the sentence that doesn’t belong · **6-8**
@@ -536,21 +540,21 @@ Reading is one of the richest sources of vocabulary, grammar and cultural knowle
 *In Lingua: Shelves (Reading, To read, Finished); the word memory across texts; Explain in context (Max).*
 
 - [x] `F0392` A personal reading list
-- [ ] `F0393` Book-length reading projects · **6-8** · partly there
-- [ ] `F0394` Chapter-by-chapter vocabulary collection · **6-8** · partly there
-- [ ] `F0395` Recurring character and place glossary · **6-8**
+- [x] `F0393` Book-length reading projects · **6-8**
+- [x] `F0394` Chapter-by-chapter vocabulary collection · **6-8**
+- [x] `F0395` Recurring character and place glossary · **6-8**
 - [x] `F0396` Automatically track vocabulary encountered across books
 - [x] `F0397` Track how often a word appears across all reading material
 - [ ] `F0398` Compare an author’s vocabulary across works · **6-26**
-- [ ] `F0399` Literary annotation system · **6-8**
+- [x] `F0399` Literary annotation system · **6-8**
 - [x] `F0400` Save quotations with source information · **6-8**
 - [x] `F0401` Read authentic literature with AI assistance
-- [ ] `F0402` Track unknown-word density by chapter · **6-8**
+- [x] `F0402` Track unknown-word density by chapter · **6-8**
 - [ ] `F0403` Recommend the next text based on reading performance · **6-16**
-- [ ] `F0404` Generate discussion questions about a passage · **6-8**
+- [x] `F0404` Generate discussion questions about a passage · **6-8**
 - [x] `F0405` Compare translations of the same literary passage · **6-13**
 - [x] `F0406` Explain cultural and historical references · **6-19** · partly there
-- [ ] `F0407` Build a personal library of favorite passages · **6-8**
+- [x] `F0407` Build a personal library of favorite passages · **6-8**
 - [x] `F0408` Export a bilingual reading journal · **6-24**
 
 > My favorite idea here: a reader that gradually becomes more personal. It learns which words are already familiar, remembers words the learner saves and provides just enough assistance to keep reading enjoyable.
@@ -821,17 +825,17 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 
 - [x] `F0615` ⭐ Translate a sentence
 - [x] `F0616` ⭐ Write a sentence from a prompt
-- [ ] `F0617` Describe an image · **6-12**
+- [x] `F0617` Describe an image · **6-12**
 - [x] `F0618` Write a diary entry
 - [x] `F0619` Write about the day
-- [x] `F0620` Write a short story · **6-12** · partly there
+- [x] `F0620` Write a short story · **6-12**
 - [x] `F0621` Continue an unfinished story
 - [x] `F0622` Write a dialogue · **6-12**
 - [x] `F0623` Write an email · **6-12**
 - [x] `F0624` Write a formal letter · **6-12**
 - [x] `F0625` Write an informal message · **6-12**
 - [x] `F0626` Write a review · **6-12**
-- [x] `F0627` Write an opinion paragraph · **6-12** · partly there
+- [x] `F0627` Write an opinion paragraph · **6-12**
 - [x] `F0628` Write a persuasive essay · **6-12**
 - [x] `F0629` Write a summary
 - [x] `F0630` Write a book review · **6-12**
@@ -863,15 +867,15 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 - [x] `F0651` Punctuation correction
 - [x] `F0652` Word choice suggestions
 - [x] `F0653` Naturalness improvements
-- [x] `F0654` Idiomatic expression suggestions · **6-12** · partly there
+- [x] `F0654` Idiomatic expression suggestions · **6-12**
 - [x] `F0655` Register adjustment · **6-12**
 - [x] `F0656` Formality adjustment · **6-12**
-- [ ] `F0657` Simplification to a lower level · **6-12**
+- [x] `F0657` Simplification to a lower level · **6-12**
 - [x] `F0658` Expansion to a higher level · **6-12**
 - [x] `F0659` Explain every correction
 - [x] `F0660` Highlight changes inline
 - [x] `F0661` Compare original and corrected versions
-- [x] `F0662` Preserve the learner’s original voice · **6-12** · partly there
+- [x] `F0662` Preserve the learner’s original voice · **6-12**
 - [x] `F0663` Provide several alternative phrasings · **6-12**
 - [x] `F0664` Identify recurring mistakes · **6-5** · partly there
 - [x] `F0665` Suggest more precise vocabulary · **6-12**
@@ -890,18 +894,18 @@ Writing gives learners time to think carefully, experiment with grammar and prod
 
 *In Lingua: Diarium: prompts, versions, word count, offline drafts, words and corrections to cards.*
 
-- [ ] `F0676` Target-language spellchecker · **6-12**
-- [x] `F0677` Dictionary lookup while typing · **6-12** · partly there
+- [x] `F0676` Target-language spellchecker · **6-12**
+- [x] `F0677` Dictionary lookup while typing · **6-12**
 - [x] `F0678` Conjugation helper · **6-12**
 - [x] `F0679` Declension helper · **6-12**
 - [x] `F0680` Synonym finder · **6-12**
 - [x] `F0681` Collocation suggestions · **6-12**
 - [x] `F0682` Phrase bank · **6-12**
 - [x] `F0683` Personal phrasebook · **6-20**
-- [ ] `F0684` Reusable sentence templates · **6-12**
+- [x] `F0684` Reusable sentence templates · **6-12**
 - [x] `F0685` Writing prompts
 - [x] `F0686` Draft history
-- [ ] `F0687` Version comparison · **6-12** · partly there
+- [x] `F0687` Version comparison · **6-12**
 - [x] `F0688` Word counter
 - [x] `F0689` Writing timer · **6-12**
 - [x] `F0690` Offline writing journal
@@ -1090,7 +1094,7 @@ Immersion is not just watching foreign films. It is building a life in which the
 - [x] `F0831` Simulate travel
 - [x] `F0832` Read local advertisements and signs · **6-19** · partly there
 - [x] `F0833` Practice common phone calls · **5.2-6**
-- [x] `F0834` Write real messages with feedback · **6-12** · partly there
+- [x] `F0834` Write real messages with feedback · **6-12**
 - [x] `F0835` Maintain a personal phrasebook · **6-20**
 - [x] `F0836` Set a daily target-language challenge
 - [x] `F0837` Build a list of real-life communication goals · **6-17**
@@ -1399,7 +1403,7 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1079` Word-family connections · **6-29**
 - [x] `F1080` Root connections · **6-29**
 - [x] `F1081` Collocation connections · **6-29**
-- [ ] `F1082` Semantic category connections · **6-29**
+- [x] `F1082` Semantic category connections · **6-29**
 - [ ] `F1083` Grammatical connections · **6-29**
 - [ ] `F1084` Topic connections · **6-29**
 - [x] `F1085` Idiom connections · **6-29**
@@ -1407,9 +1411,9 @@ Think of this as a personal linguistic knowledge base.
 - [x] `F1087` Connections between a word and a saved text · **6-29**
 - [ ] `F1088` Connections between a word and a personal mistake · **6-29**
 - [ ] `F1089` Connections between words across multiple languages · **6-29**
-- [ ] `F1090` Visual graph exploration · **6-29**
+- [x] `F1090` Visual graph exploration · **6-29**
 - [ ] `F1091` Filter by word type, topic or difficulty · **6-29**
-- [ ] `F1092` Identify isolated words with few connections · **6-29**
+- [x] `F1092` Identify isolated words with few connections · **6-29**
 - [x] `F1093` Discover related vocabulary · **6-29**
 - [ ] `F1094` Build a personal semantic map · **6-29**
 - [ ] `F1095` Create a word cluster from a selected concept · **6-29**
@@ -2106,7 +2110,7 @@ With this many possibilities, the danger is building a sprawling collection of t
 - [x] `F1599` Writing assistant and error correction
 - [x] `F1600` Listening exercises and dictation · **6-9** · partly there
 - [x] `F1601` Speech recording and pronunciation practice · **6-10** · partly there
-- [x] `F1602` Graded reading library · **6-8** · partly there
+- [x] `F1602` Graded reading library · **6-8**
 - [ ] `F1603` Adaptive lessons · **6-16** · partly there
 - [x] `F1604` Personalized recommendations
 

@@ -2,9 +2,9 @@
 import type { ExerciseSpec, MatchBody, TaskBody } from '@/core/contracts/exercise';
 import { shuffle } from '@/core/text/checks';
 
-export const READING_KINDS = ['main-idea', 'true-false', 'events', 'title', 'context', 'headings', 'odd-sentence', 'short-answer'] as const;
+export const READING_KINDS = ['main-idea', 'true-false', 'events', 'title', 'context', 'headings', 'odd-sentence', 'short-answer', 'detail', 'motivation', 'prediction', 'tone', 'irony', 'audience', 'fact-opinion', 'metaphor', 'culture', 'missing-paragraph', 'discussion'] as const;
 export type ReadingKind = typeof READING_KINDS[number];
-export const READING_LABELS: Record<ReadingKind, string> = { 'main-idea': 'Main idea', 'true-false': 'True or false', events: 'Order of events', title: 'A suitable title', context: 'Meaning from context', headings: 'Headings and paragraphs', 'odd-sentence': 'The sentence that does not belong', 'short-answer': 'Short answer' };
+export const READING_LABELS: Record<ReadingKind, string> = { 'main-idea': 'Main idea', 'true-false': 'True or false', events: 'Order of events', title: 'A suitable title', context: 'Meaning from context', headings: 'Headings and paragraphs', 'odd-sentence': 'The sentence that does not belong', 'short-answer': 'Short answer', detail: 'Details', motivation: 'Character motivation', prediction: 'What happens next', tone: 'Author’s tone', irony: 'Irony and humour', audience: 'Intended audience', 'fact-opinion': 'Fact or opinion', metaphor: 'Metaphor', culture: 'History and culture', 'missing-paragraph': 'Missing paragraph', discussion: 'Discussion' };
 export interface ReadingQuestion { kind: ReadingKind; question: string; answer: string; quote: string; why: string; options?: string[]; items?: string[]; pairs?: MatchBody['pairs'] }
 const str = (x: unknown, max = 2000): x is string => typeof x === 'string' && Boolean(x.trim()) && x.length <= max;
 const unique = (xs: string[]) => new Set(xs.map((x) => x.trim().toLocaleLowerCase())).size === xs.length;
@@ -13,11 +13,12 @@ const unique = (xs: string[]) => new Set(xs.map((x) => x.trim().toLocaleLowerCas
 export function readReadingQuestions(raw: unknown, source: string): ReadingQuestion[] {
   if (!raw || typeof raw !== 'object' || !Array.isArray((raw as { questions?: unknown }).questions)) return [];
   const out: ReadingQuestion[] = [];
-  for (const value of (raw as { questions: unknown[] }).questions.slice(0, 16)) {
+  for (const value of (raw as { questions: unknown[] }).questions.slice(0, 24)) {
     if (!value || typeof value !== 'object') continue;
     const q = value as Record<string, unknown>;
     if (!READING_KINDS.includes(q.kind as ReadingKind) || !str(q.question, 600) || !str(q.answer) || !str(q.quote) || !source.includes(q.quote) || !str(q.why, 600)) continue;
     const item: ReadingQuestion = { kind: q.kind as ReadingKind, question: q.question.trim(), answer: q.answer.trim(), quote: q.quote, why: q.why.trim() };
+    if (item.kind === 'missing-paragraph' && source.split(/\n\s*\n/).filter((p) => p.trim() === item.answer).length !== 1) continue;
     if (item.kind === 'true-false' || item.kind === 'odd-sentence') {
       if (!Array.isArray(q.options) || q.options.length < 2 || q.options.length > 5 || !q.options.every((o) => str(o, 600)) || !unique(q.options) || !/^[1-5]$/.test(item.answer) || Number(item.answer) > q.options.length) continue;
       if (item.kind === 'true-false' && (q.options.length !== 2 || q.options[0] !== 'True' || q.options[1] !== 'False')) continue;

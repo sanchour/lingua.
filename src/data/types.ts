@@ -70,6 +70,8 @@ export interface Text extends Synced {
   readingGenre?: string;
   readingParallel?: import('@/core/reading/parallel').ParallelPassage[];
   readingMarks?: import('@/core/reading/aids').ReadingMark[];
+  readingGlossary?: Array<{ id: string; name: string; kind: 'character' | 'place'; chapterIndex: number; quote: string; note: string }>;
+  generatedId?: string;
   id: string;
   lang: Lang;
   /** 'comic': one chapter per page, the page's picture first and its speech bubbles after it. */
@@ -726,6 +728,7 @@ export interface JournalReview {
 }
 
 export interface JournalEntry extends Synced {
+  pictureBlobId?: string;
   portfolio?: { level: string; topic: string; at: number };
   writingTaskId?: string;
   id: string;

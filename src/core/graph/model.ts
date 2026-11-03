@@ -17,6 +17,8 @@ const FOLDED_TAGS = new Set(['vulgar', 'derogatory', 'slang', 'offensive']);
 
 export type NodeKind = 'word' | 'theme' | 'affix' | 'char' | 'root' | 'tag';
 export type Family = 'meaning' | 'form' | 'origin' | 'use' | 'yours';
+/** The families in a fixed order: the cached scene stores a thread's family as its index here. */
+export const FAMILIES: readonly Family[] = ['meaning', 'form', 'origin', 'use', 'yours'];
 
 export interface WebNode {
   id: string;

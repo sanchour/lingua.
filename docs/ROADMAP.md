@@ -1,5 +1,43 @@
 # Roadmap: what's being built now
 
+## 2026-11-03 · 6-8 Reading and 6-12 Writing completion and audit reconciliation
+
+Reopen the stale complete row and account for all 72 assigned entries, including the 47 still unticked.
+Keep the existing reader, annotation storage, exercise views and checked material generator.
+
+- [x] R5: verify existing stories, parallel/simplified reading, translation comparison and highlight export;
+  expose all promised reading kinds and open-source routes from the Graded shelf.
+- [x] R6: finish comprehension kinds and explicit chapter-end practice; read a chapter aloud with
+  sentence following; make saved passages navigable bookmarks and a favourite-passages shelf.
+- [x] R7: book-project chapter vocabulary/density, learner-confirmed character/place glossary and
+  chapter discussion, preserving exact source anchors and existing backup rows.
+- [x] W5: finish F0617 image description, F0657 lower-level simplification, F0676 target-language
+  spellchecking, F0684 reusable sentence templates and F0687 saved draft comparison.
+- [x] R8: regression tests, desktop light/dark browser review, typecheck, full tests and production build;
+  reconcile the plan/audit/handover with specific evidence, then version and publish through a checked PR.
+
+Scope reaches Reading's shelf, chapter contents, selection/tools, end page, shared question parser/service,
+existing generated-material and export controls, text metadata and their focused tests. No learner-data
+migration, new dependency or unrelated Games changes. Real-provider output remains explicitly unverified.
+
+**Validation (0.6.0-alpha.187):** after merging current main, typecheck, all **259 test files**
+(**1,691 passing tests, one skipped**, one worker) and `BASE_PATH=/lingua./ npm run build` pass.
+All 72 Reading IDs map to the audit; all 55 Writing entries are ticked, with 155 valid local audit
+references and incoming translations retained. Reader, Writing and book project were reviewed at
+1280×800, 1366×768 and 1440×900 in Lux/Nox with no horizontal overflow. Arabic parallel text was
+checked at all three widths (Lux, `dir=auto` resolving to RTL); six interface catalogues pass coverage,
+without a native-language UI review. Live Wikivoyage Madrid and Wikibooks Gazpacho search/import,
+chapter save/Undo, saved-mark flush/favourites, narration start/follow/stop, local picture/Undo,
+snapshots/restore, reusable templates and spelling/no-key states were exercised in a disposable profile.
+The Wikibooks check exposed unlabelled navigation and layout tables; the parser regression now retains
+separate ingredients/instructions and the second live import confirms it. Original Device theme and
+viewport restored. Build warnings remain about existing CSS properties, externalised Piper modules,
+chunk sizes and mixed static/dynamic imports. Versioned feature branch goes through the protected
+`verify` PR workflow; CI/merge/Pages are verified in this chat's end notes. No next step is claimed.
+Real AI output, native translation/audio quality, OS spellcheck coverage, complete screen-reader
+navigation, very large books, concurrent device edits and browser download round trips are unverified.
+
+
 A working plan for the next prompts. Each prompt is planned here first, then built without
 stopping, then committed and pushed. A push redeploys GitHub Pages, and installed apps update
 themselves. Ticks show what is done.

@@ -8,6 +8,8 @@ export interface ReadingMark {
   quote: string;
   colour: MarkColour;
   note: string;
+  favourite?: boolean;
+  bookmark?: boolean;
 }
 export interface ReadingAids { pos: boolean; endings: boolean; glosses: boolean; hideGlosses: boolean; ruler: boolean; rulerY: number }
 export const READING_AIDS: ReadingAids = { pos: false, endings: false, glosses: false, hideGlosses: false, ruler: false, rulerY: 50 };

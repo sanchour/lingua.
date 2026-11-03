@@ -462,3 +462,5 @@
   user-select: none;
   cursor: pointer;
 }
+/* Follow the sentence currently being read aloud without changing its word state. */
+.reader-flow .w.is-narrated, .w.is-narrated { outline: 1px solid var(--sage-text); outline-offset: 2px; border-radius: 2px; }

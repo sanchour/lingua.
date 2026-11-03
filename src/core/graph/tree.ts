@@ -34,16 +34,19 @@ export interface WordTree {
 /** Base word → the words made from it (whose `parts` name it). Built once per dictionary: `derived` lists only some of them. */
 export function madeFromIndex(dict: ReadonlyMap<string, FullDictRow>, lang: string): Map<string, string[]> {
   const index = new Map<string, string[]>();
-  for (const row of dict.values()) {
-    for (const e of row.entries) for (const p of e.parts ?? []) {
-      if (isAffix(p)) continue;
-      const base = normalizeWord(p, lang);
-      if (base === row.key) continue;
-      if (!index.has(base)) index.set(base, []);
-      if (!index.get(base)!.includes(row.key)) index.get(base)!.push(row.key);
-    }
-  }
+  for (const row of dict.values()) addMadeFrom(index, row, lang);
   return index;
+}
+
+/** One row into a made-from index: the worker builds it a row at a time over the whole dictionary (G4). */
+export function addMadeFrom(index: Map<string, string[]>, row: Pick<FullDictRow, 'key' | 'entries'>, lang: string): void {
+  for (const e of row.entries) for (const p of e.parts ?? []) {
+    if (isAffix(p)) continue;
+    const base = normalizeWord(p, lang);
+    if (base === row.key) continue;
+    if (!index.has(base)) index.set(base, []);
+    if (!index.get(base)!.includes(row.key)) index.get(base)!.push(row.key);
+  }
 }
 
 export function wordTree(input: WebInput, web: Web, word: string, madeFrom = madeFromIndex(input.dict, input.lang)): WordTree | null {

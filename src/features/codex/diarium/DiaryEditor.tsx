@@ -15,6 +15,7 @@ import { tokenAt } from '@/core/journal/wordHelp';
 export interface DiaryEditorHandle {
   /** Replaces the text (dictation, the corrected text) and leaves the caret at the end. */
   setText: (md: string) => void;
+  insertText: (md: string) => void;
   focus: () => void;
 }
 
@@ -34,7 +35,7 @@ export function DiaryEditor({ value, lang, rtl, placeholder, onChange, onBlur, o
       attributes: {
         lang,
         dir: rtl ? 'rtl' : 'ltr',
-        spellcheck: 'false',
+        spellcheck: 'true',
         'aria-label': 'Your entry',
         'aria-multiline': 'true',
         role: 'textbox',
@@ -57,6 +58,7 @@ export function DiaryEditor({ value, lang, rtl, placeholder, onChange, onBlur, o
         editor.commands.focus('end');
       },
       focus: () => editor.commands.focus('end'),
+      insertText: (md) => { editor.chain().focus().insertContent((toDoc(md) as JSONContent).content ?? []).run(); },
     }),
     [editor],
   );

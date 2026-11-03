@@ -1,6 +1,6 @@
 import { useUi } from '@/design/i18n/UiText';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { textChapters } from '@/data/library';
+import { readingProject } from '@/data/readingProject';
 import type { Text } from '@/data/types';
 import { Drawer } from '@/design/primitives';
 import { cx } from '@/lib/cx';
@@ -19,7 +19,7 @@ export function ContentsDrawer({ open, onClose, text, current, onChoose }: Conte
   const chapters = useLiveQuery(
     async () =>
       open
-        ? (await textChapters(text.id)).map((c) => ({ index: c.index, title: c.title, part: c.part }))
+        ? (await readingProject(text)).map((r) => ({ ...r.chapter, density: r.share }))
         : [],
     [open, text.id],
   );
@@ -45,7 +45,7 @@ export function ContentsDrawer({ open, onClose, text, current, onChoose }: Conte
               >
                 <span className="w-6 shrink-0 text-right text-xs font-bold text-ink-faint tabular-nums">{i + 1}</span>
                 <span lang={text.lang} className="min-w-0 flex-1 truncate font-serif text-[16px]">
-                  {c.title || `Chapter ${i + 1}`}
+                  {c.title || `Chapter ${i + 1}`}<small className="block font-sans text-xs text-ink-faint">{c.density === null ? '—' : `${Math.round(c.density * 100)}%`} {translateUi('unseen words')}</small>
                 </span>
               </button>
             </li>

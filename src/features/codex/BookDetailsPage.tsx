@@ -19,6 +19,8 @@ import { coverOf } from './library/covers';
 import { CoverDesigner } from './library/CoverDesigner';
 import { LevelPicker } from './library/LevelPicker';
 import { forgetChapterModels } from './reader/model';
+import { BookProject } from './BookProject';
+import { GeneratedReadingLabel } from './GeneratedReadingLabel';
 
 type Shelf = NonNullable<Text['shelf']>;
 
@@ -63,6 +65,7 @@ function Details({ text, fresh }: { text: Text; fresh: boolean }) {
         <h1 lang={text.lang} className="font-serif text-[32px] leading-tight font-semibold tracking-tight sm:text-[38px]">
           {text.title}
         </h1>
+        <GeneratedReadingLabel id={text.generatedId} />
         <p className="mt-1 text-[13.5px] text-ink-soft"><UiText source={'{0} words · {1} {2} · about {3} of reading{4}{5}'} values={[text.wordCount.toLocaleString(), text.chapterCount, text.kind === 'comic' ? (text.chapterCount === 1 ? <UiText source={'page'} /> : <UiText source={'pages'} />) : text.chapterCount === 1 ? <UiText source={'part'} /> : <UiText source={'parts'} />, formatDuration(minutes * 60_000), text.stats && ` · ${Math.round(text.stats.knownShare * 100)}% of words known`, text.sourceUrl && (
             <>
               {' · '}
@@ -108,6 +111,7 @@ function Details({ text, fresh }: { text: Text; fresh: boolean }) {
           </div>
 
           <Chapters text={text} />
+          {text.kind !== 'shelfItem' && <BookProject text={text} />}
         </div>
 
         <Card className="self-start">

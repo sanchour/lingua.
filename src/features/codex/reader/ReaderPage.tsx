@@ -1,7 +1,7 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useApp } from '@/app/context';
@@ -15,7 +15,8 @@ import { getReaderFont, readerFontStack, useScriptFont } from '@/design/fonts';
 import { useHotkeys } from '@/design/hooks/useHotkeys';
 import { useLayout } from '@/design/hooks/useLayout';
 import { useMediaQuery } from '@/design/hooks/useMediaQuery';
-import { Button, buttonClasses } from '@/design/primitives';
+import { Button, buttonClasses, Dialog } from '@/design/primitives';
+import { ReadAloud } from './ReadAloud';
 import { installPaperStyles } from '@/design/papers';
 import { cx } from '@/lib/cx';
 import { recordSighting } from '@/data/memory';
@@ -54,6 +55,7 @@ type Entry = 'first' | 'last' | number;
 export default function ReaderPage() {
   const translateUi = useUi();
   const { textId } = useParams();
+  const [params] = useSearchParams();
   const navigate = useNavigate();
   const { settings, language } = useApp();
   const text = useText(textId);
@@ -63,6 +65,7 @@ export default function ReaderPage() {
   const reader = settings.reader;
   const [aids, setAids] = useState(READING_AIDS);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [narrating, setNarrating] = useState(false);
   const [aidLayout, setAidLayout] = useState(0);
   const onAidLayout = useCallback(() => setAidLayout((v) => v + 1), []);
   // A comic has a view of its own: the page, and its bubbles' words beside it.
@@ -91,8 +94,10 @@ export default function ReaderPage() {
     if (!text || chapterIndex !== null) return;
     void markOpened(text.id);
     void db.readingProgress.get(text.id).then((p) => {
-      setEntry(p ? p.blockIndex : 'first');
-      setChapterIndex(Math.min(p?.chapterIndex ?? 0, Math.max(0, text.chapterCount - 1)));
+      const requested = Number(params.get('chapter'));
+      const jumping = params.has('chapter') && Number.isInteger(requested) && requested >= 0;
+      setEntry(jumping ? Math.max(0, Number(params.get('block')) || 0) : p ? p.blockIndex : 'first');
+      setChapterIndex(Math.min(jumping ? requested : p?.chapterIndex ?? 0, Math.max(0, text.chapterCount - 1)));
     });
   }, [text, chapterIndex]);
 
@@ -178,6 +183,7 @@ export default function ReaderPage() {
 
   const [ended, setEnded] = useState(false);
   const [endStats, setEndStats] = useState<SessionStats | null>(null);
+  const [chapterEnd, setChapterEnd] = useState<{ index: number; landing: Entry } | null>(null);
   // "Check yourself" on the end page, from the last chapter's paragraphs. Made once as the end page
   // opens (keyed on the chapter, not the model), so the questions stay put while you answer them.
   const checksChapter = ended && !comic ? model?.chapter.id : undefined;
@@ -212,6 +218,10 @@ export default function ReaderPage() {
   );
 
   // ── Pager (page-flip mode) ──────────────────────────────────────────────
+  const advanceChapter = (index: number, landing: Entry) => {
+    if (reader.endCheck && index === (chapterIndex ?? 0) + 1 && text && index < text.chapterCount) setChapterEnd({ index, landing });
+    else goChapter(index, landing);
+  };
   const layoutKey = `${model?.chapter.id ?? 'none'}|${reader.font}|${reader.sizePx}|${reader.lineHeight}|${reader.letterSpacing ?? 0}|${reader.wordSpacing ?? 0}|${reader.justify}|${aids.glosses}|${aids.hideGlosses}|${text?.updatedAt}|${aidLayout}`;
   const pager = usePager({
     enabled: paged && Boolean(ready),
@@ -219,7 +229,7 @@ export default function ReaderPage() {
     flowRef,
     layoutKey,
     initialPage: entry,
-    onBoundary: (direction) => goChapter((chapterIndex ?? 0) + (direction === 'next' ? 1 : -1), direction === 'next' ? 'first' : 'last'),
+    onBoundary: (direction) => advanceChapter((chapterIndex ?? 0) + (direction === 'next' ? 1 : -1), direction === 'next' ? 'first' : 'last'),
     onPageChange: (page, previous) => {
       session.touch();
       flowRef.current?.dispatchEvent(new Event('reader:hide-tip', { bubbles: true }));
@@ -536,8 +546,16 @@ export default function ReaderPage() {
     >
       <h1 className="sr-only" lang={lang}>{text.title}</h1>
       <ReaderChrome
-        tools={<ReadingTools chapterIndex={chapterIndex ?? 0} text={text} aids={aids} onChange={setAids} onOpenChange={setToolsOpen} />}
-        visible={chrome || toolsOpen}
+        tools={<>{ready && <ReadAloud key={model.chapter.id} chapter={model.chapter} lang={lang} onPlaying={setNarrating} follow={(block, start, end) => {
+          flowRef.current?.querySelectorAll('.is-narrated').forEach((el) => el.classList.remove('is-narrated'));
+          const words = [...(flowRef.current?.querySelectorAll<HTMLElement>(`[data-b="${block}"] .w`) ?? [])].filter((el) => Number(el.dataset.o) >= start && Number(el.dataset.o) < end);
+          words.forEach((el) => el.classList.add('is-narrated'));
+          if (words[0]) { if (paged) pager.goTo(pager.pageOf(words[0])); else words[0].scrollIntoView({ block: 'center' }); }
+        }} />}<ReadingTools chapterIndex={chapterIndex ?? 0} text={text} aids={aids} onChange={setAids} onOpenChange={setToolsOpen} onJump={(chapter, block) => {
+          if (chapter !== chapterIndex) goChapter(chapter, block);
+          else { const el = flowRef.current?.querySelector(`[data-b="${block}"]`); if (el) { if (paged) pager.goTo(pager.pageOf(el)); else el.scrollIntoView({ block: 'center' }); } }
+        }} /></>}
+        visible={chrome || toolsOpen || narrating}
         text={text}
         chapterTitle={chapterTitle}
         reader={reader}
@@ -638,7 +656,7 @@ export default function ReaderPage() {
           {ready && (
             <div className="mx-auto mt-14 flex max-w-md justify-between gap-3">
               <Button variant="ghost" icon={ChevronLeft} disabled={chapterIndex === 0} onClick={() => goChapter((chapterIndex ?? 0) - 1, 'first')}><UiText source={'Previous'} /></Button>
-              <Button variant="secondary" iconRight={ChevronRight} onClick={() => goChapter((chapterIndex ?? 0) + 1, 'first')}>
+              <Button variant="secondary" iconRight={ChevronRight} onClick={() => advanceChapter((chapterIndex ?? 0) + 1, 'first')}>
                 {(chapterIndex ?? 0) + 1 < text.chapterCount ? translateUi('Next chapter') : translateUi('Finish')}
               </Button>
             </div>
@@ -676,6 +694,7 @@ export default function ReaderPage() {
           <EndPage
             lang={lang}
             refId={text.id}
+            chapterIndex={chapterIndex ?? 0}
             title={text.title}
             author={text.author}
             stats={endStats}
@@ -692,6 +711,11 @@ export default function ReaderPage() {
           />
         )}
       </AnimatePresence>
+      <Dialog open={Boolean(chapterEnd)} onClose={() => setChapterEnd(null)} title={translateUi('Chapter complete')}>
+        <div className="space-y-4"><Link className="block font-semibold text-accent-text underline" to={`/codex/comprehension/${text.id}/${chapterIndex ?? 0}`}><UiText source="Check understanding of this chapter" /></Link>
+          <Button onClick={() => { if (chapterEnd) goChapter(chapterEnd.index, chapterEnd.landing); setChapterEnd(null); }}><UiText source="Continue reading" /></Button>
+        </div>
+      </Dialog>
     </motion.div>
   );
 }

@@ -16071,6 +16071,347 @@
     "src/features/cursus/sounds/SoundRecording.tsx"
   ],
   "The sound on its own: a language’s own version can differ a little.": [
-    "src/features/cursus/sounds/SoundRecording.tsx"
+    "src/features/cursus/sounds/SoundRecording.tsx",
+"Book project": [
+    "src/features/codex/reader/ReadingTools.tsx"
+  ],
+  "Unseen = neither Known nor Learning. Counts include repeated words and names.": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "{0} / {1} unseen words · {2}%": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Discussion questions": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Collected vocabulary · {0}": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Characters and places": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Confirm a name from a chapter; keep its exact quote and your note.": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Place": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Appears in chapters: {0}": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Chapter": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Confirm name": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Simpler wording": [
+    "src/features/codex/diarium/SimplifyWriting.tsx"
+  ],
+  "Max receives the first 4,000 characters shown here. Choose an easier level; your draft stays unchanged. Meaning and level may be wrong.": [
+    "src/features/codex/diarium/SimplifyWriting.tsx"
+  ],
+  "Earlier draft": [
+    "src/features/codex/diarium/WritingDrafts.tsx"
+  ],
+  "Compared draft": [
+    "src/features/codex/diarium/WritingDrafts.tsx"
+  ],
+  "Compare drafts": [
+    "src/features/codex/diarium/WritingDrafts.tsx"
+  ],
+  "Ten snapshots kept. Restore saves your current draft first.": [
+    "src/features/codex/diarium/WritingDrafts.tsx"
+  ],
+  "Save draft snapshot": [
+    "src/features/codex/diarium/WritingDrafts.tsx"
+  ],
+  "Current draft": [
+    "src/features/codex/diarium/WritingDrafts.tsx"
+  ],
+  "Restore earlier draft": [
+    "src/features/codex/diarium/WritingDrafts.tsx"
+  ],
+  "Browser spelling needs a dictionary for this language. Right-click an underlined word for suggestions.": [
+    "src/features/codex/diarium/WritingHelp.tsx"
+  ],
+  "Picture to describe": [
+    "src/features/codex/diarium/WritingImage.tsx"
+  ],
+  "Your picture stays on this device and in media backups. AI receives only your writing and prompt.": [
+    "src/features/codex/diarium/WritingImage.tsx"
+  ],
+  "Choose picture": [
+    "src/features/codex/diarium/WritingImage.tsx"
+  ],
+  "Remove picture": [
+    "src/features/codex/diarium/WritingImage.tsx"
+  ],
+  "Check spelling": [
+    "src/features/codex/diarium/WritingSpelling.tsx"
+  ],
+  "First 500 forms checked in your installed dictionary. Names and missing forms may be valid; inspect suggestions.": [
+    "src/features/codex/diarium/WritingSpelling.tsx"
+  ],
+  "Check on this device": [
+    "src/features/codex/diarium/WritingSpelling.tsx"
+  ],
+  "Checked {0} / {1} forms · {2} not found": [
+    "src/features/codex/diarium/WritingSpelling.tsx"
+  ],
+  "Suggestions": [
+    "src/features/codex/diarium/WritingSpelling.tsx"
+  ],
+  "Sentence templates": [
+    "src/features/codex/diarium/WritingTemplates.tsx"
+  ],
+  "Insert into entry": [
+    "src/features/codex/diarium/WritingTemplates.tsx"
+  ],
+  "New template · use {slot} for a blank": [
+    "src/features/codex/diarium/WritingTemplates.tsx"
+  ],
+  "Save template": [
+    "src/features/codex/diarium/WritingTemplates.tsx"
+  ],
+  "Favourite passages": [
+    "src/features/codex/library/FavouritePassages.tsx"
+  ],
+  "Mark a highlight as a favourite in Study tools to keep its quote and source here.": [
+    "src/features/codex/library/FavouritePassages.tsx"
+  ],
+  "Wikivoyage: travel. Wikibooks: recipes. Illustrated books: check the source licence and import a permitted file.": [
+    "src/features/codex/library/GradedTab.tsx"
+  ],
+  "Max writes fiction in your chosen kind and level. Only your request is sent. Generated content is not an authentic source.": [
+    "src/features/codex/library/ReadingMaker.tsx"
+  ],
+  "Topic": [
+    "src/features/codex/library/ReadingMaker.tsx"
+  ],
+  "Make reading text": [
+    "src/features/codex/library/ReadingMaker.tsx"
+  ],
+  "Translation": [
+    "src/features/codex/library/ReadingMaker.tsx"
+  ],
+  "unseen words": [
+    "src/features/codex/reader/ContentsDrawer.tsx"
+  ],
+  "Literal and natural translation": [
+    "src/features/codex/reader/ParallelReading.tsx"
+  ],
+  "Compare translations": [
+    "src/features/codex/reader/ParallelReading.tsx"
+  ],
+  "Bookmark passage": [
+    "src/features/codex/reader/PhraseBubble.tsx"
+  ],
+  "Stop reading aloud": [
+    "src/features/codex/reader/ReadAloud.tsx"
+  ],
+  "Read chapter aloud": [
+    "src/features/codex/reader/ReadAloud.tsx"
+  ],
+  "Chapter complete": [
+    "src/features/codex/reader/ReaderPage.tsx"
+  ],
+  "Question focus": [
+    "src/features/codex/reader/ReadingPractice.tsx"
+  ],
+  "Mixed questions": [
+    "src/features/codex/reader/ReadingPractice.tsx"
+  ],
+  "Go to passage": [
+    "src/features/codex/reader/ReadingTools.tsx"
+  ],
+  "Favourite passage": [
+    "src/features/codex/reader/ReadingTools.tsx"
+  ],
+  "Short story": [
+    "src/core/reading/graded.ts"
+  ],
+  "Fable": [
+    "src/core/reading/graded.ts"
+  ],
+  "Poem": [
+    "src/core/reading/graded.ts"
+  ],
+  "Essay": [
+    "src/core/reading/graded.ts"
+  ],
+  "Speech": [
+    "src/core/reading/graded.ts"
+  ],
+  "Travel guide": [
+    "src/core/reading/graded.ts"
+  ],
+  "Recipe": [
+    "src/core/reading/graded.ts"
+  ],
+  "Dialogue": [
+    "src/core/reading/graded.ts"
+  ],
+  "Other": [
+    "src/core/reading/graded.ts"
+  ],
+  "Literary excerpt": [
+    "src/core/reading/graded.ts"
+  ],
+  "Fairy tale": [
+    "src/core/reading/graded.ts"
+  ],
+  "Myth or legend": [
+    "src/core/reading/graded.ts"
+  ],
+  "Biography": [
+    "src/core/reading/graded.ts"
+  ],
+  "Opinion piece": [
+    "src/core/reading/graded.ts"
+  ],
+  "Everyday message": [
+    "src/core/reading/graded.ts"
+  ],
+  "Email or letter": [
+    "src/core/reading/graded.ts"
+  ],
+  "Social post": [
+    "src/core/reading/graded.ts"
+  ],
+  "Instructions": [
+    "src/core/reading/graded.ts"
+  ],
+  "Academic text": [
+    "src/core/reading/graded.ts"
+  ],
+  "Philosophy": [
+    "src/core/reading/graded.ts"
+  ],
+  "Religious or spiritual text": [
+    "src/core/reading/graded.ts"
+  ],
+  "Historical document": [
+    "src/core/reading/graded.ts"
+  ],
+  "Children’s literature": [
+    "src/core/reading/graded.ts"
+  ],
+  "Main idea": [
+    "src/core/exercise/reading.ts"
+  ],
+  "True or false": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Order of events": [
+    "src/core/exercise/reading.ts"
+  ],
+  "A suitable title": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Meaning from context": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Headings and paragraphs": [
+    "src/core/exercise/reading.ts"
+  ],
+  "The sentence that does not belong": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Short answer": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Character motivation": [
+    "src/core/exercise/reading.ts"
+  ],
+  "What happens next": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Author’s tone": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Irony and humour": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Intended audience": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Fact or opinion": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Metaphor": [
+    "src/core/exercise/reading.ts"
+  ],
+  "History and culture": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Missing paragraph": [
+    "src/core/exercise/reading.ts"
+  ],
+  "Discussion": [
+    "src/core/exercise/reading.ts"
+  ],
+  "literal": [
+    "src/features/codex/reader/ParallelReading.tsx"
+  ],
+  "natural": [
+    "src/features/codex/reader/ParallelReading.tsx"
+  ],
+  "literary": [
+    "src/features/codex/reader/ParallelReading.tsx"
+  ],
+  "Book character": [
+    "src/features/codex/BookProject.tsx"
+  ],
+  "Only this excerpt is sent when you ask. Translation choices are generated and may be wrong.": [
+    "src/features/codex/reader/ParallelReading.tsx"
+  ],
+  "Use a draft under 100,000 characters.": [
+    "src/data/writingTools.ts"
+  ],
+  "This entry is no longer available.": [
+    "src/data/writingTools.ts"
+  ],
+  "Choose a PNG, JPEG, WebP or GIF under 10 MB.": [
+    "src/data/writingTools.ts"
+  ],
+  "Install this language’s dictionary before checking spelling.": [
+    "src/data/writingSpelling.ts"
+  ],
+  "Use a name and an exact quote from this chapter.": [
+    "src/data/readingProject.ts"
+  ],
+  "This book changed while its chapters were being prepared. Open it again before saving.": [
+    "src/data/library.ts"
+  ],
+  "This picture is missing on this device. Restore a backup that includes images.": [
+    "src/features/codex/diarium/WritingImage.tsx"
+  ],
+  "Around {0}": [
+    "src/features/thesaurus/atlas/AtlasTab.tsx"
+  ],
+  "Laying out your words…": [
+    "src/features/thesaurus/atlas/AtlasTab.tsx"
+  ],
+  "Loose threads": [
+    "src/features/thesaurus/atlas/AtlasTab.tsx"
+  ],
+  "Mark words as Known or Learning while you read, and they appear here, joined to each other.": [
+    "src/features/thesaurus/atlas/AtlasTab.tsx"
+  ],
+  "Small groups of words joined only to each other, and words joined to nothing yet. Link one, or learn a word that would join it.": [
+    "src/features/thesaurus/atlas/AtlasTab.tsx"
+  ],
+  "The little words": [
+    "src/features/thesaurus/atlas/AtlasTab.tsx"
+  ],
+  "Your words: {0} in {1} regions": [
+    "src/features/thesaurus/atlas/AtlasTab.tsx"
+  ],
+  "{0} known · {1} learning · {2} regions": [
+    "src/features/thesaurus/atlas/AtlasTab.tsx"
+  ],
+  "{0} words joined to nothing yet": [
+    "src/features/thesaurus/atlas/AtlasTab.tsx"
   ]
 }

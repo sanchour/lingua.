@@ -6,7 +6,7 @@ import { useApp } from '@/app/context';
 import { BackLink } from '@/app/BackLink';
 import { PageHeader } from '@/app/PageHeader';
 import type { GeneratedRow } from '@/core/contracts/db';
-import type { StoryBody } from '@/core/generate/generate';
+import type { StoryBody, TranslationsBody } from '@/core/generate/generate';
 import { CEFR_LEVELS } from '@/core/lang/levels';
 import type { Cefr } from '@/core/lang/levels';
 import { parallelSource, simplificationRequest } from '@/core/reading/parallel';
@@ -20,8 +20,8 @@ import { generateMaterial } from '@/services/llm/generate';
 export function ParallelColumns({ source, lang, other, otherLang, title }: { source: string; lang: string; other: string; otherLang: string; title: string }) {
   const translateUi = useUi();
   return <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-8">
-    <section aria-label={translateUi('Original passage')} className="rounded-2xl border border-line bg-raised p-6"><h2 className="mb-4 font-semibold"><UiText source={'Original passage'} /></h2><p lang={lang} className="whitespace-pre-wrap break-words font-serif text-xl leading-relaxed">{source}</p></section>
-    <section aria-label={title} className="rounded-2xl border border-line bg-raised p-6"><h2 className="mb-4 font-semibold">{title}</h2><p lang={otherLang} className="whitespace-pre-wrap break-words font-serif text-xl leading-relaxed">{other || 'No version yet. Use the controls below to add one.'}</p></section>
+    <section aria-label={translateUi('Original passage')} className="rounded-2xl border border-line bg-raised p-6"><h2 className="mb-4 font-semibold"><UiText source={'Original passage'} /></h2><p lang={lang} dir="auto" className="whitespace-pre-wrap break-words font-serif text-xl leading-relaxed">{source}</p></section>
+    <section aria-label={title} className="rounded-2xl border border-line bg-raised p-6"><h2 className="mb-4 font-semibold">{title}</h2><p lang={otherLang} dir="auto" className="whitespace-pre-wrap break-words font-serif text-xl leading-relaxed">{other || 'No version yet. Use the controls below to add one.'}</p></section>
   </div>;
 }
 
@@ -32,7 +32,7 @@ export default function ParallelReading() {
   const index = Number(chapterIndex) || 0;
   const chapter = useLiveQuery(async () => textId ? (await getChapter(textId, index)) ?? null : null, [textId, index]);
   const { settings } = useApp();
-  const [mode, setMode] = useState<'parallel' | 'simplified'>('parallel');
+  const [mode, setMode] = useState<'parallel' | 'simplified' | 'translations'>('parallel');
   const [draft, setDraft] = useState('');
   const [native, setNative] = useState('en');
   const [level, setLevel] = useState<Cefr>('A1');
@@ -45,7 +45,7 @@ export default function ParallelReading() {
   const source = chapter ? parallelSource(chapter) : '';
   const saved = text?.readingParallel?.find((p) => p.chapterIndex === index && p.source === source);
   useEffect(() => { setDraft(saved?.text ?? ''); setNative(saved?.lang ?? 'en'); }, [saved?.text, saved?.lang, textId, index]);
-  useEffect(() => { requestId.current++; setRow(null); setBusy(false); setMessage(''); }, [source, textId, level, native]);
+  useEffect(() => { requestId.current++; setRow(null); setBusy(false); setMessage(''); }, [source, textId, level, native, mode]);
   useEffect(() => () => { requestId.current++; }, []);
   const block = aiBlock(settings, settings.llm.provider);
   if (text === null || chapter === null) return <p><UiText source={'This chapter is no longer in your library.'} /></p>;
@@ -54,7 +54,7 @@ export default function ParallelReading() {
     const id = ++requestId.current;
     setBusy(true); setMessage('');
     try {
-      const result = await generateMaterial(simplificationRequest(text.lang, source, level, native));
+      const result = await generateMaterial(mode === 'translations' ? { lang: text.lang, source, level, native, kind: 'translations' } : simplificationRequest(text.lang, source, level, native));
       if (requestId.current === id) { setRow(result.row); setTranslated(false); }
     } catch (e) { if (requestId.current === id) setMessage(e instanceof Error ? e.message : 'Could not simplify this passage.'); }
     finally { if (requestId.current === id) setBusy(false); }
@@ -74,24 +74,25 @@ export default function ParallelReading() {
     <div className="mb-5 flex gap-2" role="group" aria-label={translateUi('Side-by-side reading mode')}>
       <Button variant={mode === 'parallel' ? 'primary' : 'secondary'} onClick={() => setMode('parallel')} aria-pressed={mode === 'parallel'}><UiText source={'My parallel text'} /></Button>
       <Button variant={mode === 'simplified' ? 'primary' : 'secondary'} onClick={() => setMode('simplified')} aria-pressed={mode === 'simplified'}><UiText source={'Simplified by Max'} /></Button>
+      <Button variant={mode === 'translations' ? 'primary' : 'secondary'} onClick={() => setMode('translations')} aria-pressed={mode === 'translations'}><UiText source="Literal and natural translation" /></Button>
     </div>
     {mode === 'simplified' && row && <div className="mb-4 flex flex-wrap items-center gap-4"><GeneratedLabel row={row} onReported={() => setRow(null)} /><span className="text-sm text-ink-soft"><UiText source={'Requested {0} · facts and translation not verified'} values={[row.level]} /></span><label className="flex gap-2 text-sm"><UiText source={'{0}Show its translation instead'} values={[<input type="checkbox" checked={translated} onChange={(e) => setTranslated(e.target.checked)} />]} /></label></div>}
-    <ParallelColumns source={source} lang={text.lang} other={other} otherLang={mode === 'parallel' ? saved?.lang ?? native : translated ? native : text.lang} title={mode === 'parallel' ? 'Your parallel text' : translated ? 'Translation of the simplified version · Max' : 'Simplified version · Max'} />
+    {mode === 'translations' ? <div className="space-y-4"><section className="rounded-2xl border border-line bg-raised p-6"><h2 className="mb-3 font-semibold"><UiText source="Original passage" /></h2><p lang={text.lang} dir="auto" className="whitespace-pre-wrap font-serif text-xl">{source}</p></section>{row && <><GeneratedLabel row={row} onReported={() => setRow(null)} /><div className="grid grid-cols-3 gap-5">{(row.content as TranslationsBody).versions.map((v) => <section key={v.style} className="rounded-2xl border border-line bg-raised p-5"><h3 className="mb-3 font-semibold"><UiText source={v.style} /></h3><p lang={native} dir="auto" className="whitespace-pre-wrap font-serif text-lg">{v.text}</p><p className="mt-3 text-sm text-ink-soft">{v.note}</p></section>)}</div><p className="text-sm text-ink-faint"><UiText source="Only this excerpt is sent when you ask. Translation choices are generated and may be wrong." /></p></>}</div> : <ParallelColumns source={source} lang={text.lang} other={other} otherLang={mode === 'parallel' ? saved?.lang ?? native : translated ? native : text.lang} title={mode === 'parallel' ? 'Your parallel text' : translated ? 'Translation of the simplified version · Max' : 'Simplified version · Max'} />}
     <div className="mt-6 max-w-3xl space-y-4 pb-10">
       {mode === 'parallel' ? <>
         <h2 className="font-semibold"><UiText source={'Add your own translation or another version'} /></h2>
         <p className="text-sm text-ink-soft"><UiText source={'Paste text you have permission to use. It stays on this device with the source excerpt and is not sent to AI. Saving replaces the parallel text for this chapter; a changed source is never silently matched to an old translation.'} /></p>
         <fieldset disabled={saving} className="space-y-4">
         <label className="block text-sm"><UiText source={'Language code for the parallel text{0}'} values={[<input maxLength={35} value={native} onChange={(e) => setNative(e.target.value)} placeholder={translateUi('en')} className="ml-3 w-24 rounded-lg border border-line bg-raised p-2" />]} /></label>
-        <label className="block text-sm"><UiText source={'Parallel text{0}'} values={[<textarea maxLength={4000} rows={5} value={draft} onChange={(e) => setDraft(e.target.value)} className="mt-2 w-full rounded-xl border border-line bg-raised p-3 text-base" />]} /></label>
+        <label className="block text-sm"><UiText source={'Parallel text{0}'} values={[<textarea dir="auto" lang={native} maxLength={4000} rows={5} value={draft} onChange={(e) => setDraft(e.target.value)} className="mt-2 w-full rounded-xl border border-line bg-raised p-3 text-base" />]} /></label>
         </fieldset>
         <Button disabled={!draft.trim()} loading={saving} onClick={() => void save()}><UiText source={'Save parallel text'} /></Button>
         {text.readingParallel?.some((p) => p.chapterIndex === index && p.source !== source) && <p className="text-sm text-ink-soft"><UiText source={'An older parallel text belongs to a different source excerpt and is not displayed.'} /></p>}
       </> : <>
-        <h2 className="font-semibold"><UiText source={'An easier version beside the original'} /></h2>
+        <h2 className="font-semibold"><UiText source={mode === 'translations' ? 'Literal and natural translation' : 'An easier version beside the original'} /></h2>
         <p className="text-sm text-ink-soft"><UiText source={'Needs Max and a key in Settings › AI. Only the displayed excerpt is sent to your provider when you ask. Results are cached on this device; use Report if Max changes a fact. Vocabulary and level checks depend on installed word data.'} /></p>
         <fieldset disabled={busy} className="flex items-end gap-4"><Select label={translateUi('Target level')} value={level} onChange={(v) => setLevel(v as Cefr)} options={CEFR_LEVELS.map((v) => ({ value: v, label: v }))} /><label className="block text-sm"><UiText source={'Translation language code{0}'} values={[<input maxLength={35} value={native} onChange={(e) => setNative(e.target.value)} className="mt-2 block w-24 rounded-lg border border-line bg-raised p-2" />]} /></label></fieldset>
-        <Button disabled={Boolean(block) || source.length < 40 || !/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/i.test(native)} loading={busy} onClick={() => void make()}><UiText source={'Simplify this passage'} /></Button>
+        <Button disabled={Boolean(block) || source.length < 40 || !/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/i.test(native)} loading={busy} onClick={() => void make()}><UiText source={mode === 'translations' ? 'Compare translations' : 'Simplify this passage'} /></Button>
       </>}
       {message && <p role="status" className="text-sm">{message}</p>}
     </div>

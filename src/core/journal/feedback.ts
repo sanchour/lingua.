@@ -1,4 +1,4 @@
-export const FEEDBACK_KINDS = ['register', 'formality', 'higher-level', 'idiom', 'precision', 'unnatural', 'literal-translation', 'alternative'] as const;
+export const FEEDBACK_KINDS = ['register', 'formality', 'higher-level', 'lower-level', 'idiom', 'precision', 'unnatural', 'literal-translation', 'alternative'] as const;
 export const WRITING_RUBRIC = ['Task completion', 'Organisation', 'Register and tone', 'Language choices'] as const;
 export interface WritingFeedback {
   suggestions: Array<{ kind: typeof FEEDBACK_KINDS[number]; original: string; suggestion: string; why: string }>;

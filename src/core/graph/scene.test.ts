@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { bendOf, cutQuad, nibOutline } from './curves';
 import type { Neighbour } from './model';
-import { compassScene, QUARTER_MAX, RING_1, treeScene } from './scene';
+import { atlasScene, compassScene, QUARTER_MAX, RING_1, treeScene } from './scene';
 
 const word = (label: string, quarter: Neighbour['quarter'] = 'form', extra: Partial<Neighbour> = {}): Neighbour => ({ quarter, kind: 'family', label, key: label, state: 1, ...extra });
 
@@ -58,5 +58,24 @@ describe('curves', () => {
     expect(cutQuad(a, c, b, 1)[1]).toEqual([100, 0]);
     expect(cutQuad(a, c, b, 0)[1]).toEqual([0, 0]);
     expect(nibOutline(a, c, b, 3, 8)).toHaveLength(18);
+  });
+});
+
+describe('the atlas scene', () => {
+  const row = {
+    nodes: [{ id: 'w:mar', kind: 'word', label: 'mar', rank: 850, region: 'theme:sea' }, { id: 'w:playa', kind: 'word', label: 'playa', rank: 900, region: 'theme:sea' }, { id: 'w:se', kind: 'word', label: 'se', rank: 20, region: 'little' }, { id: 'affix:des-', kind: 'affix', label: 'des-' }],
+    x: new Float32Array([0, 10, 200, 5]),
+    y: new Float32Array([0, 0, 0, 5]),
+    threads: new Uint32Array([0, 1, 0, 2, 3, 0]),
+    families: new Uint8Array([1, 0, 1]),
+    regions: [{ id: 'theme:sea', label: 'The sea' }, { id: 'little', label: 'The little words' }],
+  };
+  it('lays states over the cached positions, gives each region a disc, and marks threads to hubs', () => {
+    const s = atlasScene({ row, states: new Map([['mar', 1], ['playa', 2]]), memory: { mar: 0.5 }, regionLabel: (id, l) => (id === 'little' ? 'Las palabras pequeñas' : l) });
+    expect(s.nodes.map((n) => [n.label, n.state, n.region])).toEqual([['mar', 1, 0], ['playa', 2, 0], ['se', undefined, 1], ['des-', undefined, undefined]]);
+    expect(s.nodes[0].memory).toBe(0.5);
+    expect(s.edges.map((e) => e.style)).toEqual(['form', 'meaning', 'member']);
+    expect(s.regions?.map((r) => [r.label, r.x])).toEqual([['The sea', 5], ['Las palabras pequeñas', 200]]);
+    expect(s.key).toBe('atlas');
   });
 });

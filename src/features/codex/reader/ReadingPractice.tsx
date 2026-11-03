@@ -1,18 +1,19 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 import { useApp } from '@/app/context';
 import { BackLink } from '@/app/BackLink';
 import { PageHeader } from '@/app/PageHeader';
 import type { DragBody, ExerciseSpec, MatchBody } from '@/core/contracts/exercise';
 import type { Outcome } from '@/core/contracts/learner';
 import { judge, solutionOf } from '@/core/exercise';
-import { readingSpec, selfReadingSpecs, READING_LABELS } from '@/core/exercise/reading';
+import { readingSpec, selfReadingSpecs, READING_KINDS, READING_LABELS } from '@/core/exercise/reading';
+import type { ReadingKind } from '@/core/exercise/reading';
 import { getChapter, useText } from '@/data/library';
 import { recordEvidence } from '@/data/learner';
 import { aiBlock } from '@/data/plan';
-import { Button } from '@/design/primitives';
+import { Button, Select } from '@/design/primitives';
 import { DragView } from '@/features/exercise/DragView';
 import { MatchView } from '@/features/exercise/MatchView';
 import { TypedView } from '@/features/exercise/TypedView';
@@ -22,6 +23,7 @@ import { judgeReading, readingQuestions } from '@/services/llm/readingQuestions'
 export default function ReadingPractice() {
   const translateUi = useUi();
   const { textId, chapterIndex } = useParams();
+  const [params] = useSearchParams();
   const text = useText(textId);
   const chapter = useLiveQuery(async () => textId ? (await getChapter(textId, Number(chapterIndex) || 0)) ?? null : null, [textId, chapterIndex]);
   const { settings } = useApp();
@@ -31,6 +33,8 @@ export default function ReadingPractice() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [coverage, setCoverage] = useState('');
+  const [focus, setFocus] = useState(() => READING_KINDS.includes(params.get('focus') as ReadingKind) ? params.get('focus')! : '');
+  const [omitted, setOmitted] = useState<string[]>([]);
   const [run, setRun] = useState(0);
   const source = (chapter?.blocks ?? []).flatMap((b) => 'text' in b ? [b.text] : []).join('\n\n').slice(0, 6000);
   const block = aiBlock(settings, settings.llm.provider);
@@ -39,7 +43,8 @@ export default function ReadingPractice() {
   const make = async () => {
     setBusy(true); setError('');
     try {
-      const questions = await readingQuestions(text.lang, source);
+      const questions = await readingQuestions(text.lang, source, undefined, focus ? focus as ReadingKind : undefined);
+      setOmitted(questions.filter((q) => q.kind === 'missing-paragraph').map((q) => q.answer));
       setCoverage([...new Set(questions.map((q) => READING_LABELS[q.kind]))].join(' · '));
       setSpecs(questions.map((q, i) => readingSpec(text.lang, text.id, q, i, judgeWithMax ? 'ai' : 'self')));
       setGenerated(true); setRun((n) => n + 1);
@@ -53,7 +58,7 @@ export default function ReadingPractice() {
     <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-8">
       <section aria-label={translateUi('Source passage')} className="sticky top-6 max-h-[78dvh] overflow-y-auto rounded-2xl border border-line bg-raised p-6">
         <h2 className="mb-3 font-semibold"><UiText source={'Source passage'} /></h2>
-        <p className="whitespace-pre-wrap font-serif text-lg leading-relaxed" lang={text.lang}>{source}</p>
+        <p className="whitespace-pre-wrap font-serif text-lg leading-relaxed" lang={text.lang} dir="auto">{specs && generated ? omitted.reduce((passage, paragraph) => passage.replace(paragraph, '[…]'), source) : source}</p>
         <p className="mt-4 text-xs text-ink-faint"><UiText source={'{0} characters. Long chapters use only the first 6,000 here; the rest is not assessed.'} values={[source.length.toLocaleString()]} /></p>
       </section>
       <section aria-label={translateUi('Reading exercises')} className="space-y-5 pb-10">
@@ -63,6 +68,7 @@ export default function ReadingPractice() {
           <Button disabled={source.length < 40} onClick={() => { setGenerated(false); setSpecs(selfReadingSpecs(text.lang, text.id)); setRun((n) => n + 1); }}><UiText source={'Start self-check'} /></Button>
           <div className="space-y-3 border-t border-line pt-5">
             <h3 className="font-semibold"><UiText source={'Questions from Max'} /></h3>
+            <Select label={translateUi('Question focus')} value={focus} onChange={setFocus} options={[{ value: '', label: translateUi('Mixed questions') }, ...READING_KINDS.map((kind) => ({ value: kind, label: translateUi(READING_LABELS[kind]) }))]} />
             <p className="text-sm text-ink-soft"><UiText source={'Main idea, true or false, events in order, a title, meaning in context, headings to paragraphs, an unrelated sentence and a short answer. Max can omit a kind that the passage does not support.'} /></p>
             <p className="text-xs text-ink-faint"><UiText source={'Generated interpretations can be wrong. Only format and exact source quotes are checked. The passage above is sent to your AI provider when you ask.'} /></p>
             <label className="flex gap-2 text-sm"><UiText source={'{0}Ask Max to judge free answers; otherwise rate them yourself'} values={[<input type="checkbox" disabled={Boolean(block)} checked={judgeWithMax} onChange={(e) => setJudgeWithMax(e.target.checked)} />]} /></label>

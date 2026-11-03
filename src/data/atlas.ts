@@ -30,7 +30,9 @@ const BRANCHES_READ = 24;
 const referenced = (row: FullDictRow | undefined) =>
   (row?.entries ?? []).flatMap((e) => [...(e.syn ?? []), ...(e.ant ?? []), ...(e.derived ?? []), ...(e.related ?? []), ...(e.parts ?? []).filter((p) => !isAffix(p)), ...(e.hom ?? []), ...(e.pair ?? []).map((p) => p[1]), ...e.senses.flatMap((s) => [...(s.syn ?? []), ...(s.ant ?? [])])]).concat(row?.confused ?? []);
 
-export async function loadAtlasWord(lang: string, word: string, database: LinguaDB = db): Promise<AtlasWord | null> {
+/** `made` gives the words made from each key (the worker's made-from index, G4); without it the tree branches through each
+ *  word's `derived` list only. */
+export async function loadAtlasWord(lang: string, word: string, database: LinguaDB = db, made?: (keys: readonly string[]) => Promise<Record<string, string[]>>): Promise<AtlasWord | null> {
   const key = normalizeWord(word, lang);
   const [rows, list, weakSpots] = await Promise.all([
     database.words.where('[lang+state]').anyOf([[lang, 1], [lang, 2]]).toArray(),
@@ -55,8 +57,16 @@ export async function loadAtlasWord(lang: string, word: string, database: Lingua
     path.unshift(normalizeWord(base, lang));
   }
   await read(path.flatMap((k) => referenced(dict.get(k))));
-  const branches = path.flatMap((k) => dict.get(k)?.entries.flatMap((e) => e.derived ?? []) ?? []).slice(0, BRANCHES_READ);
-  await read(branches.flatMap((b) => dict.get(normalizeWord(b, lang))?.entries.flatMap((e) => e.derived ?? []) ?? []));
+  const madeFrom = new Map<string, string[]>();
+  const ask = async (keys: readonly string[]) => {
+    const found: Record<string, string[]> = made ? await made(keys).catch(() => ({})) : {};
+    for (const [k, v] of Object.entries(found)) madeFrom.set(k, v);
+  };
+  await ask(path);
+  const branches = [...new Set([...path.flatMap((k) => dict.get(k)?.entries.flatMap((e) => e.derived ?? []).map((d) => normalizeWord(d, lang)) ?? []), ...path.flatMap((k) => madeFrom.get(k) ?? [])])].slice(0, BRANCHES_READ);
+  await read(branches);
+  await ask(branches);
+  await read(branches.flatMap((b) => [...(dict.get(b)?.entries.flatMap((e) => e.derived ?? []) ?? []), ...(madeFrom.get(b) ?? [])]));
 
   const input: WebInput = { lang, dict, themes: list?.themes, words: own.map((r) => ({ key: normalizeWord(r.lemma ?? r.norm, lang), state: r.state, tags: r.tags })) };
   const web = buildWeb(input);
@@ -83,5 +93,5 @@ export async function loadAtlasWord(lang: string, word: string, database: Lingua
   for (const d of decks) if (d && !d.deletedAt) neighbours.push({ quarter: 'use', kind: 'deck', label: d.name });
 
   const weak = new Set(weakSpots.filter((w) => w.persistent).map((w) => wordIdOfKey(itemKeyOf(w.item))).filter((id): id is string => Boolean(id?.startsWith(`${lang}:`))).map((id) => id.slice(lang.length + 1)));
-  return { key, label, web, neighbours, members, tree: wordTree(input, web, key, new Map()), weak };
+  return { key, label, web, neighbours, members, tree: wordTree(input, web, key, madeFrom), weak };
 }

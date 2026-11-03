@@ -1,5 +1,6 @@
 import { UiText, useUi } from '@/design/i18n/UiText';
 import { motion } from 'motion/react';
+import { Link } from 'react-router';
 import { useApp } from '@/app/context';
 import { Button } from '@/design/primitives';
 import { spring } from '@/design/motion';
@@ -10,6 +11,7 @@ import { GoalRing } from './readingGoal';
 import type { SessionStats } from './useReadingSession';
 
 interface EndPageProps {
+  chapterIndex: number;
   lang: string;
   /** The text's id, for Ratio. */
   refId: string;
@@ -35,7 +37,7 @@ const duration = (ms: number) => {
 };
 
 /** After the last page of a book or a text: a quiet page with what this sitting came to. */
-export function EndPage({ lang, refId, title, author, stats, todayMs, goal, finished, checks: offered, source, onFinish, onKeepReading }: EndPageProps) {
+export function EndPage({ chapterIndex, lang, refId, title, author, stats, todayMs, goal, finished, checks: offered, source, onFinish, onKeepReading }: EndPageProps) {
   const translateUi = useUi();
   // Settings › Reading › At the end of a text.
   const { endCheck, endOwnWords } = useApp().settings.reader;
@@ -96,6 +98,7 @@ export function EndPage({ lang, refId, title, author, stats, todayMs, goal, fini
           </p>
         </motion.div>
 
+        {endCheck && <Link className="mt-6 font-semibold text-accent-text underline" to={`/codex/comprehension/${refId}/${chapterIndex}`}><UiText source="Check understanding" /></Link>}
         {checks.length > 0 && (
           <motion.div className="w-full max-w-xl" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring.soft, delay: 0.8 }}>
             <CheckYourself lang={lang} refId={refId} words={checks} source={source} />

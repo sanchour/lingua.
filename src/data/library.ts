@@ -16,6 +16,9 @@ import { wordId } from './words';
 const yieldToBrowser = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 export interface NewText {
+  generatedId?: string;
+  readingGenre?: string;
+  readingTopic?: string;
   lang: string;
   title: string;
   author?: string;
@@ -89,6 +92,9 @@ export async function addText(input: NewText, database: LinguaDB = db): Promise<
 
   const vocab = await buildVocab(id, input.lang, chapters);
   const text: Text = {
+    generatedId: input.generatedId,
+    readingGenre: input.readingGenre,
+    readingTopic: input.readingTopic,
     id,
     lang: input.lang,
     kind: input.kind,
@@ -222,7 +228,7 @@ export async function markOpened(textId: string, database: LinguaDB = db): Promi
   await database.texts.update(textId, { lastOpenedAt: Date.now(), updatedAt: Date.now(), shelf: 'reading' });
 }
 
-export async function updateText(textId: string, patch: Partial<Pick<Text, 'title' | 'author' | 'shelf' | 'finishedAt' | 'cover' | 'level' | 'readingTopic' | 'readingGenre'>>, database: LinguaDB = db): Promise<void> {
+export async function updateText(textId: string, patch: Partial<Pick<Text, 'title' | 'author' | 'shelf' | 'finishedAt' | 'cover' | 'level' | 'readingTopic' | 'readingGenre' | 'readingGlossary'>>, database: LinguaDB = db): Promise<void> {
   await database.texts.update(textId, { ...patch, updatedAt: Date.now() });
 }
 
@@ -264,7 +270,6 @@ const imagesOf = (blocks: Block[]) => blocks.flatMap((b) => (b.t === 'img' ? [b.
  * reading position past the end moves to the last chapter.
  */
 export async function rewriteChapters(textId: string, list: ChapterEdit[], images: NonNullable<NewText['images']> = [], database: LinguaDB = db): Promise<void> {
-  if (!removalInProgress(database)) return undoableRemoval(database, ['texts', 'chapters', 'blobs', 'textVocab', 'readingProgress', 'words', 'frequency'], () => rewriteChapters(textId, list, images, database));
   const text = await database.texts.get(textId);
   if (!text) throw new Error('This text isn’t in your library.');
   const current = await textChapters(textId, database);
@@ -302,19 +307,25 @@ export async function rewriteChapters(textId: string, list: ChapterEdit[], image
   const removed = current.filter((c) => !keptIds.has(c.id));
   const stillUsed = new Set([...next.flatMap((c) => imagesOf(c.blocks)), ...images.map((i) => i.id)]);
   const unusedImages = [...new Set(current.flatMap((c) => imagesOf(c.blocks)))].filter((id) => !stillUsed.has(id));
+  // Tokenisation yields between chapters; finish it before opening the atomic Undo transaction.
+  const vocab = await buildVocab(textId, text.lang, next);
 
-  await database.transaction('rw', [database.texts, database.chapters, database.blobs, database.textVocab, database.readingProgress], async () => {
-    await database.chapters.bulkPut([...writes, ...removed.map((c) => ({ ...c, blocks: [], wordCount: 0, deletedAt: now, updatedAt: now }))]);
-    if (images.length) await database.blobs.bulkPut(images.map((img) => ({ id: img.id, kind: 'image' as const, mime: img.mime, size: img.blob.size, blob: img.blob, createdAt: now })));
-    if (unusedImages.length) await database.blobs.bulkDelete(unusedImages);
-    await database.texts.update(textId, { chapterCount: next.length, wordCount: next.reduce((n, c) => n + c.wordCount, 0), stats: undefined, updatedAt: now });
-    await database.textVocab.delete(textId);
-    const progress = await database.readingProgress.get(textId);
-    if (progress && progress.chapterIndex >= next.length) {
-      await database.readingProgress.put({ ...progress, chapterIndex: Math.max(0, next.length - 1), blockIndex: 0, updatedAt: now });
-    }
+  await undoableRemoval(database, ['texts', 'chapters', 'blobs', 'textVocab', 'readingProgress', 'words', 'frequency'], async () => {
+    await database.transaction('rw', [database.texts, database.chapters, database.blobs, database.textVocab, database.readingProgress], async () => {
+      const latest = await database.texts.get(textId);
+      if (!latest || latest.deletedAt || latest.updatedAt !== text.updatedAt) throw new Error('This book changed while its chapters were being prepared. Open it again before saving.');
+      await database.chapters.bulkPut([...writes, ...removed.map((c) => ({ ...c, blocks: [], wordCount: 0, deletedAt: now, updatedAt: now }))]);
+      if (images.length) await database.blobs.bulkPut(images.map((img) => ({ id: img.id, kind: 'image' as const, mime: img.mime, size: img.blob.size, blob: img.blob, createdAt: now })));
+      if (unusedImages.length) await database.blobs.bulkDelete(unusedImages);
+      await database.texts.update(textId, { chapterCount: next.length, wordCount: next.reduce((n, c) => n + c.wordCount, 0), stats: undefined, updatedAt: now });
+      await database.textVocab.put(vocab);
+      const progress = await database.readingProgress.get(textId);
+      if (progress && progress.chapterIndex >= next.length) {
+        await database.readingProgress.put({ ...progress, chapterIndex: Math.max(0, next.length - 1), blockIndex: 0, updatedAt: now });
+      }
+    });
+    await refreshTextStats(textId, database);
   });
-  await refreshTextStats(textId, database);
 }
 
 /** Adds chapters (from a pasted text or a file) after the last one. */

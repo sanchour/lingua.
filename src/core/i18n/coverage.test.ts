@@ -9,6 +9,8 @@ import { PHRASE_KINDS, NOTE_KINDS } from '@/core/notebook/library';
 import { MARK_LABEL } from '@/core/script/marks';
 import { QUIZ_LABEL } from '@/core/script/hanzi';
 import { CONVERSIONS } from '@/core/script/convert';
+import { READING_GENRE_LABELS } from '@/core/reading/graded';
+import { READING_LABELS } from '@/core/exercise/reading';
 
 const registered = new Set(Object.keys(sources));
 const files = (dir: string): string[] => readdirSync(dir, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? files(join(dir, e.name)) : /\.tsx$/.test(e.name) && !e.name.includes('.test.') ? [join(dir, e.name)] : []);
@@ -36,7 +38,7 @@ it('registers literal interface messages actually used by screens and useUi call
   expect(missing).toEqual([]);
 });
 it('registers app-owned labels passed dynamically without treating learner data as messages', () => {
-  const labels = [...PHRASE_KINDS, ...NOTE_KINDS, ...Object.values(MARK_LABEL), ...Object.values(QUIZ_LABEL), ...CONVERSIONS.map((c) => c.label), ...GAMES.flatMap((g) => [g.title, g.detail]), ...Object.values(GAME_GROUPS).flatMap((g) => [g.title, g.detail])];
+  const labels = [...Object.values(READING_GENRE_LABELS), ...Object.values(READING_LABELS), ...PHRASE_KINDS, ...NOTE_KINDS, ...Object.values(MARK_LABEL), ...Object.values(QUIZ_LABEL), ...CONVERSIONS.map((c) => c.label), ...GAMES.flatMap((g) => [g.title, g.detail]), ...Object.values(GAME_GROUPS).flatMap((g) => [g.title, g.detail])];
   expect(labels.filter((label) => !registered.has(label))).toEqual([]);
 });
 it('keeps new literal screen copy behind an explicit interface message site', () => {

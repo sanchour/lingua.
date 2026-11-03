@@ -1,8 +1,31 @@
 // @vitest-environment happy-dom
-import { describe, expect, it } from 'vitest';
-import { sourceHtmlToBlocks, wikiHost } from './discover';
+import { describe, expect, it, vi } from 'vitest';
+import { sourceHtmlToBlocks, wikiHost, wikisourceSearch, importWikiReading } from './discover';
+import { addText } from '@/data/library';
+vi.mock('@/data/library', () => ({ addText: vi.fn(async () => 'imported') }));
 
 describe('Discover', () => {
+  it('keeps recipe ingredients, instruction lists and table rows once, without page navigation', () => {
+    expect(sourceHtmlToBlocks('<div id="toc"><ul><li>Contents</li></ul></div><h2>Pan</h2><ul><li><p>Harina</p></li><li>Agua</li></ul><ol><li>Mezclar.</li></ol><table><tr><td>Harina</td><td>200 g</td></tr></table>', true)).toEqual([{ t: 'h', text: 'Pan' }, { t: 'p', text: 'Harina' }, { t: 'p', text: 'Agua' }, { t: 'p', text: 'Mezclar.' }, { t: 'p', text: 'Harina · 200 g' }]);
+  });
+  it('unwraps recipe layout rows and drops unlabelled link-index navigation', () => {
+    const navigation = '<table><tr><th>Glosario</th></tr><tr><td><p>' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((c) => `<a href="/wiki/${c}">${c}</a>`).join(' - ') + '</p></td></tr></table>';
+    expect(sourceHtmlToBlocks(`<table><tr><td><p>4 personas</p>${navigation}</td></tr></table><table><tr><td><p>Ingredientes</p><ul><li>1/2 cebolla</li><li>Pan</li></ul></td><td><p>Procedimiento</p><p>Mezclar.</p></td></tr></table>`, true)).toEqual([{ t: 'p', text: '4 personas' }, { t: 'p', text: 'Ingredientes' }, { t: 'p', text: '1/2 cebolla' }, { t: 'p', text: 'Pan' }, { t: 'p', text: 'Procedimiento' }, { t: 'p', text: 'Mezclar.' }]);
+  });
+  it('searches and imports Wikibooks subpages and Wikivoyage with their own source URLs', async () => {
+    vi.stubGlobal('navigator', { onLine: true });
+    const fetcher = vi.fn().mockResolvedValueOnce({ ok: true, json: async () => ({ query: { search: [{ title: 'Cocina/Pan', snippet: 'Un <b>pan</b>' }] } }) }).mockResolvedValue({ ok: true, json: async () => ({ parse: { title: 'Cocina/Pan', text: '<div class="mw-parser-output"><p>Mezcla agua y harina.</p></div>' } }) });
+    vi.stubGlobal('fetch', fetcher);
+    try {
+      const hits = await wikisourceSearch('es', 'pan', 'wikibooks');
+      expect(hits[0]).toMatchObject({ title: 'Cocina/Pan', snippet: 'Un pan', url: 'https://es.wikibooks.org/wiki/Cocina%2FPan' });
+      expect(await importWikiReading('es', hits[0], 'wikibooks')).toBe('imported');
+      expect(addText).toHaveBeenLastCalledWith(expect.objectContaining({ sourceUrl: hits[0].url, author: 'wikibooks', chapters: [{ blocks: [{ t: 'p', text: 'Mezcla agua y harina.' }] }] }));
+      await importWikiReading('es', { title: 'Madrid', url: 'ignored', snippet: '' }, 'wikivoyage');
+      expect(fetcher.mock.calls.at(-1)?.[0]).toContain('https://es.wikivoyage.org/w/api.php');
+      expect(addText).toHaveBeenLastCalledWith(expect.objectContaining({ sourceUrl: 'https://es.wikivoyage.org/wiki/Madrid' }));
+    } finally { vi.unstubAllGlobals(); vi.clearAllMocks(); }
+  });
   it('reads a Wikisource page without its furniture', () => {
     const html = `<div class="mw-parser-output">
       <div id="headertemplate"><p>← Capítulo I · Don Quijote · Capítulo III →</p></div>

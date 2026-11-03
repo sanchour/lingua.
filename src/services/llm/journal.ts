@@ -40,7 +40,7 @@ export async function checkEntry(lang: string, level: Level, text: string, promp
     '"scores": {"grammar": number, "vocabulary": number, "coherence": number, "overall": number}, "cefr": string, ' +
     '"strengths": string[], "tip": string, "writingFeedback": {"suggestions": [{"kind": string, "original": string, "suggestion": string, "why": string}], "rubric": [{"criterion": string, "score": number, "reason": string}]}}. ' +
     `Suggestions are optional alternatives, preserving the writer's voice; never rewrite automatically. Kinds: ${FEEDBACK_KINDS.join(', ')}. ` +
-    'Discuss register and formality for the task, an option one level higher, idioms, precise words, unnatural expressions and possible literal translations (label uncertainty). Quote original words exactly. Offer several alternatives when useful. ' +
+    'Discuss register and formality for the task, an option one level higher and an easier lower-level phrasing (kind lower-level), idioms, precise words, unnatural expressions and possible literal translations (label uncertainty). Quote original words exactly. Offer several alternatives when useful. ' +
     `Assess these criteria against the task brief and length, with reasons and scores 0 (not shown) to 4 (fully met): ${WRITING_RUBRIC.join('; ')}. Without a task assess the journal as free writing. ` +
     '"corrected" is the entry with only the necessary fixes, keeping the learner\'s words, sentences and line breaks wherever they are correct. ' +
     `"natural" is how a native speaker would write the same content (natural, not fancy). ` +

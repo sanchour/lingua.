@@ -1,6 +1,6 @@
 # The word graph · the plan (Lingua 6, step 6-29)
 
-**Status: planned 2026-10-29; G1 (the model, with the tree's) built 2026-11-03; G2 (the compass and the tree on screen) and G3 (the contract) built 2026-11-03.** The user added a third view on
+**Status: planned 2026-10-29; G1 (the model, with the tree's) built 2026-11-03; G2 (the compass and the tree on screen), G3 (the contract) and G4 (the atlas) built 2026-11-03.** The user added a third view on
 2026-11-03, "a tree view, like a word tree view": section 2.4. Planned by Claude Opus from the real dictionary and pack files; to be built
 by Opus (the user's word) in seven pushes, **G1 to G7**, each versioned on its own. Claim the step in
 [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md)'s table (row 6-29) before the first push, as every step is claimed.
@@ -66,7 +66,7 @@ fade. And each view ends in something to do, so the map is a way into practice, 
 | **G1** The model *(done 2026-11-03)* | Nothing on screen: the web, a word's neighbourhood, the regions and the tree, built and tested on real rows | M |
 | **G2** The compass and the tree *(done 2026-11-03)* | The new tab; one word and its neighbours, or its family as a tree; the smooth lines, hover and zoom, the word's page beside it; "See its neighbours" on every word's page | L |
 | **G3** The contract *(done 2026-11-03)* | Nothing on screen: Dexie 46 for the cached layout and saved views; the fields and question the later pushes need | S |
-| **G4** The atlas | All your words at once: regions, landmarks, semantic zoom, bundled lines, the minimap, search that flies | L |
+| **G4** The atlas *(done 2026-11-03)* | All your words at once: regions, landmarks, semantic zoom, bundled lines, the minimap, search that flies | L |
 | **G5** Tools | Lenses and filters, saved views, your own links and pins, clusters, the lists that lead to practice | L |
 | **G6** Time and bridges | How your web grew (a slider and a replay); your other languages joined by cognates | M |
 | **G7** The finish and the check | The bookish finish, dark and the palettes, reduced motion, the screen reader, the performance check, the handbook's page | M |
@@ -468,24 +468,30 @@ export const HUB_MIN = 2, HUB_MAX = 60;
 ### 10.4 Laying it out
 
 - **The compass** is worked out, not simulated (section 2.2), on the main thread.
-- **The atlas** is laid out in the worker in two levels. Regions (section 2.1) are placed with d3-force: `forceManyBody`,
-  `forceCollide` on each region's radius, and `forceLink` weighted by the threads between regions. Then each region's words
-  start on a sunflower spiral (the most common in the middle) and settle with `forceLink` (strength by family: form 1,
-  meaning 0.7, use 0.4, hub members 0.3), `forceManyBody`, and `forceX` and `forceY` toward the region's middle. The
-  simulation is ticked by hand (`stop()`, then `tick()` until it cools), so no timer runs in the worker.
-- **Seeded:** d3-force's `randomSource` from `hashString(lang)` (`core/hash.ts`): the same words give the same map on every
-  device and every visit.
+- **The atlas** is laid out in the worker in two levels (`core/graph/layout.ts`, as built in G4). Regions (section 2.1) are
+  discs, 15 × √words + 10 across, started on a spiral (the biggest in the middle), pulled toward the regions they share
+  threads with and pushed apart so none touch, for 600 rounds. Then each region's words start on a sunflower spiral (the most
+  common in the middle) and settle for up to 50 rounds: springs along their threads, a pull to the region's middle, and a
+  push only between near words (a push from every word drove them to the rim, seen in the browser). Loose threads fill a
+  band around the map the same way, drawn lighter. Hubs sit at the middle of their words.
+- **No physics library.** The plan named d3-force; the sketch (docs/graph/atlas-es.svg) and then the 5,000-word profile showed
+  the two-level layout needs none: the 600 rounds over about 40 discs and the per-region settling take well under a second in
+  the worker. So the plan's one new dependency was never added, and hover uses a scan of the visible nodes, not a quadtree.
+- **Deterministic:** nothing in it is random; the order is by size, rank and index, so the same words give the same map on
+  every device and every visit.
 - **Cached as a whole scene:** `graphLayouts` keeps everything a frame needs: node ids, labels, kinds, ranks and regions;
   positions as a `Float32Array`; thread ends as a `Uint32Array` and families as a `Uint8Array`; and a stamp of what it was
-  built from. Opening reads that one row and draws at once; the words' current states come from one `words` query and are
-  drawn over it, and memory fading follows a moment later.
-- **The stamp is cheap:** the counts and latest `updatedAt` of `words`, `notes`, `cards` and `sightings` (each indexed on
-  `updatedAt`), with `DICT_VERSION` and `PACK_VERSION`. Only a changed stamp wakes the worker, and only then are the
-  dictionary's rows read.
-- **Incremental:** a new word starts at the middle of its neighbours and only its region relaxes (60 ticks). A full layout
-  runs only when a fifth of the words are new, or from *Lay it out again* in the rail. Pinned words never move.
-- **d3-force** (ISC licence, about 10 KB gzipped with its quadtree, dispatch and timer) is the one new dependency, pinned to
-  an exact version, and loaded only with the tab and the worker, never in Thesaurus's own chunk.
+  built from. Opening reads that one row and draws at once (measured: 4 ms to read it, 71 ms for the words' states, 7 ms to
+  make the scene, for 5,000 words); how well each word is remembered follows from the worker a moment later.
+- **The stamp is cheap:** the number of words and their latest `updatedAt`, the dictionary's and the pack's versions. A
+  review changes only the memory, which the worker works out on every open (the best card's retrievability per word) without
+  touching the layout; only a changed stamp lays anything out (measured: 65 ms when nothing changed).
+- **Incremental:** while four words in five are still there, every one keeps its place; a new word goes to the middle of its
+  neighbours that are there (else its region's middle) and is nudged off anything it lands on. Otherwise the whole map is laid
+  out again. *Lay it out again* and pins come with G5's rail.
+- **The tree's made-from index** is built in the worker once a session (it reads every row of the language's dictionary, a few
+  seconds the first time) and asked for by key; until it is ready the tree branches through `derived` only, then fills in
+  (*rehacer* under *hacer*, seen in the browser).
 
 ### 10.5 Drawing
 
@@ -606,7 +612,25 @@ sightings; a few wrong answers in Practice, so the record has mistakes. G7 adds 
 - **Done when:** typecheck and tests pass, including backup policies, the removal of a language, and a database at 23
   opening at 46 (fake-indexeddb).
 
-### G4 · The atlas (L)
+### G4 · The atlas (L) · done 2026-11-03
+
+- **Built (0.6.0-alpha.190):** Thesaurus › Atlas now opens on the atlas of every word you have: `core/graph/layout.ts` (the two-level
+  layout, incremental), `workers/graph.worker.ts` with `services/graph/graph.ts` (it reads the tables, builds the web,
+  regions and layout, writes `graphLayouts`, works out memory, and keeps the made-from index), `atlasScene` in
+  `core/graph/scene.ts`, and the atlas in the canvas: region washes, threads curved inside regions and bundled between them
+  (long ones dropped, softer zoomed out), dots sized by how common and inked by memory, region names first, word labels by
+  rank in a budget that grows as you zoom in and fade in as they come into room, the bookmark, the minimap (click or drag),
+  the counts, a camera flight (search, the arrows, Enter into a word's compass), Esc back to the atlas, the camera kept per
+  language (a kept view over empty paper opens fitted instead), loose threads and words joined to nothing listed beside
+  the map. Regions now let words that share a small affix, root, character or tag vote. Nine new strings in six languages.
+- **Looked at** with the 5,000 most common Spanish words, half known (5,117 nodes, 6,783 threads, 40 regions) at 1366 × 768
+  in Paper and 1440 × 900 in Nocturne: fit all, zooming, the flight to *mar*, Enter to its compass and Esc back, the tree of
+  *hacer* with *rehacer*. **Measured** in the app's browser: drawing a frame takes 2 to 6 ms (p95; 10 ms at most while
+  pinching at fit all), 150 frames of panning had none over 40 ms and no long task.
+- **Not looked at, or thinner than planned:** Safari; 1280 for the atlas (the compass was looked at there in G2); a word
+  saved in Codex appearing in place (written and tested in `layout.test.ts`, not watched in the browser); the trackpad
+  heuristics on a real trackpad (synthetic events only). 1,193 of the 5,000 words are still loose threads, so the band
+  around the map is wide; G5's lists (link one, words that would join it) are the answer the plan gives.
 
 - **Builds:** the worker, d3-force, the regions, the two-level layout, the cache and incremental placement, semantic zoom,
   the bundles, the washes, the counts, the minimap, search that flies, the tab opening on the atlas, the flight between
@@ -704,7 +728,7 @@ the keyboard alone walks the web and opens any word; all twenty audit entries ar
 | Canvas and the screen reader | The neighbour list and the *List* view are the web in words |
 | WebKit in the Mac app | Safari in every check from G2 |
 | An 8 GB laptop | The worker, the cache, and no layout at rest |
-| A heavy dependency | d3-force only, about 10 KB, loaded with the tab |
+| A heavy dependency | None added: the layout is hand-written (G4) |
 
 ## 15. Found while planning
 

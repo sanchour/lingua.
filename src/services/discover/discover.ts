@@ -22,7 +22,7 @@ const READER = 'https://r.jina.ai/';
 
 /** Wikimedia's name for a language where it differs from Lingua's. */
 const WIKI: Record<string, string> = { nb: 'no', yue: 'zh-yue', sh: 'sh' };
-export const wikiHost = (lang: string, project: 'wikipedia' | 'wikisource') => `https://${WIKI[lang] ?? lang}.${project}.org`;
+export const wikiHost = (lang: string, project: 'wikipedia' | 'wikisource' | 'wikivoyage' | 'wikibooks') => `https://${WIKI[lang] ?? lang}.${project}.org`;
 
 async function getJson<T>(url: string, timeout = 20_000): Promise<T> {
   if (!navigator.onLine) throw new DiscoverError('You’re offline.');
@@ -217,34 +217,49 @@ export interface SourceWork {
 }
 
 /** Works on the language's Wikisource matching `search` (whole works, not their chapters). */
-export function wikisourceSearch(lang: string, search: string): Promise<SourceWork[]> {
+export function wikisourceSearch(lang: string, search: string, project: 'wikisource' | 'wikivoyage' | 'wikibooks' = 'wikisource'): Promise<SourceWork[]> {
   const q = search.trim();
-  return remember(`ws:${lang}:${q.toLocaleLowerCase()}`, async () => {
+  return remember(`${project}:${lang}:${q.toLocaleLowerCase()}`, async () => {
     if (!q) return [];
-    const host = wikiHost(lang, 'wikisource');
+    const host = wikiHost(lang, project);
     const data = await getJson<{ query?: { search?: Array<{ title: string; snippet: string }> } }>(
       `${host}/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&srnamespace=0&srlimit=20&format=json&formatversion=2&origin=*`,
     );
     return (data.query?.search ?? [])
-      .filter((r) => !r.title.includes('/'))
+      .filter((r) => project !== 'wikisource' || !r.title.includes('/'))
       .slice(0, 8)
       .map((r) => ({ title: r.title, snippet: r.snippet.replace(/<[^>]+>/g, ''), url: `${host}/wiki/${encodeURIComponent(r.title.replace(/ /g, '_'))}` }));
   });
+}
+
+export async function importWikiReading(lang: string, work: SourceWork, project: 'wikivoyage' | 'wikibooks'): Promise<string> {
+  const host = wikiHost(lang, project);
+  const data = await getJson<{ parse?: { title: string; text: string } }>(`${host}/w/api.php?action=parse&page=${encodeURIComponent(work.title)}&prop=text&redirects=1&disableeditsection=1&format=json&formatversion=2&origin=*`, 30_000);
+  const blocks = sourceHtmlToBlocks(data.parse?.text ?? '', true);
+  if (!blocks.some((b) => b.t !== 'h')) throw new DiscoverError('No text was found in that work.');
+  return addText({ lang, title: data.parse?.title ?? work.title, author: project, source: 'wiki', kind: 'article', sourceUrl: `${host}/wiki/${encodeURIComponent(work.title.replace(/ /g, '_'))}`, chapters: [{ blocks }] });
 }
 
 /** Wikisource's page furniture: headers, notes, page numbers, navigation. */
 const NOT_TEXT = '.mw-editsection, sup, .reference, .references, .mw-references-wrap, table, style, script, .noprint, .ws-noexport, #headertemplate, .headertemplate, .ws-header, .header_template, .navbox, .pagenum, .ws-pagenum, .mw-empty-elt, .catlinks, figure, .thumb';
 
 /** A Wikisource page's text as blocks, in order. */
-export function sourceHtmlToBlocks(html: string): Block[] {
+export function sourceHtmlToBlocks(html: string, includeLists = false): Block[] {
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  doc.querySelectorAll(NOT_TEXT).forEach((el) => el.remove());
+  doc.querySelectorAll(includeLists ? NOT_TEXT.replace(', table', '') + ', #toc, .toc, .sidebar, .metadata, nav, [role="navigation"]' : NOT_TEXT).forEach((el) => el.remove());
+  if (includeLists) for (const table of [...doc.querySelectorAll('table')].reverse()) {
+    const links = [...table.querySelectorAll('a')];
+    const letters = (text: string) => text.replace(/[^\p{L}\p{N}]/gu, '').length;
+    // shortcut: unlabelled index tables use link density; extend exclusions if a source template escapes it.
+    if (table.querySelector('th') && links.length >= 8 && letters(links.map((a) => a.textContent ?? '').join('')) > letters(table.textContent ?? '') * 0.7) table.remove();
+  }
   const blocks: Block[] = [];
-  for (const el of doc.body.querySelectorAll('h2, h3, h4, p, blockquote, dd, .poem')) {
+  for (const el of doc.body.querySelectorAll('h2, h3, h4, p, blockquote, dd, .poem' + (includeLists ? ', li, tr' : ''))) {
     // Each piece of text once: a paragraph inside a quote or a poem is taken with it.
-    if (el.parentElement?.closest('blockquote, dd, .poem')) continue;
+    if (el.parentElement?.closest('blockquote, dd, .poem' + (includeLists ? ', li' : ''))) continue;
+    if (el.tagName === 'TR' && el.querySelector('h2, h3, h4, p, blockquote, dd, .poem, li, tr')) continue;
     el.querySelectorAll('br').forEach((br) => br.replaceWith(' '));
-    const text = (el.textContent ?? '').replace(/\s+/g, ' ').trim();
+    const text = (el.tagName === 'TR' ? [...el.children].map((cell) => cell.textContent ?? '').join(' · ') : el.textContent ?? '').replace(/\s+/g, ' ').trim();
     if (!text) continue;
     blocks.push(/^H\d$/.test(el.tagName) ? { t: 'h', text } : el.tagName === 'BLOCKQUOTE' ? { t: 'quote', text } : { t: 'p', text });
   }

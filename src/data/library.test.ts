@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createDb } from './db';
 import type { LinguaDB } from './db';
 import { addShelfItems, addText, appendChapters, getChapter, rewriteChapters, textChapters } from './library';
+import { useUI } from '@/state/ui';
 
 const open: LinguaDB[] = [];
 function freshDb(): LinguaDB {
@@ -33,6 +34,18 @@ async function book(db: LinguaDB) {
 }
 
 describe('editing a text', () => {
+  it('finishes a yielded chapter rebuild before the atomic write and restores counts and vocabulary with Undo', async () => {
+    const db = freshDb();
+    const id = await book(db);
+    const original = await db.textVocab.get(id);
+    await appendChapters(id, [{ title: 'Cuatro', blocks: [para('Un final nuevo.')] }], [], db);
+    expect((await db.textVocab.get(id))?.norms).toContain('final');
+    const recovery = useUI.getState().toasts.find((t) => t.duration === 0 && t.action?.label === 'Undo');
+    expect(recovery?.action).toBeTruthy();
+    await recovery?.action?.onClick();
+    expect(await db.textVocab.get(id)).toEqual(original);
+    expect((await db.texts.get(id))?.chapterCount).toBe(3);
+  });
   it('edits one chapter in place and keeps the others untouched', async () => {
     const db = freshDb();
     const id = await book(db);

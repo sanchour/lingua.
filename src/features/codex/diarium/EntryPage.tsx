@@ -32,6 +32,10 @@ import { WritingSession } from './WritingSession';
 import { WritingMeasures } from './WritingMeasures';
 import { WritingHelp } from './WritingHelp';
 import { WritingFeedback } from './WritingFeedback';
+import { WritingImage } from './WritingImage';
+import { WritingDrafts } from './WritingDrafts';
+import { SimplifyWriting } from './SimplifyWriting';
+import { WritingSpelling } from './WritingSpelling';
 import { CorrectionList, ReviewSummary, ReviewText } from './Review';
 
 const SAVE_DELAY = 500;
@@ -262,6 +266,10 @@ function Entry({ entry }: { entry: JournalEntry }) {
         </Popover>
       </header>
       {mode === 'write' && <WritingSession taskId={entry.writingTaskId} words={words} />}
+      <WritingImage entry={entry} />
+      <WritingDrafts entry={entry} text={text} restore={(next) => { onChange(next); editorRef.current?.setText(next); setMode('write'); }} />
+      <SimplifyWriting lang={lang} text={plain} />
+      <WritingSpelling lang={lang} text={plain} />
       {!hasAi && <p className="mb-4 text-sm text-ink-faint"><UiText source={'Writing feedback needs Lingua+ Max and an AI key in Settings. Local writing tools work without them.'} /></p>}
       <WritingMeasures text={text} lang={lang} />
       <details className="mb-6 rounded-xl border border-line p-4 text-sm">
@@ -292,7 +300,7 @@ function Entry({ entry }: { entry: JournalEntry }) {
           <motion.div key="write" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={spring.soft}>
             <div className="grid grid-cols-[minmax(0,1fr)_320px] items-start gap-6">
               <DiaryEditor ref={editorRef} value={text} lang={lang} rtl={rtl} placeholder={emptyPage(lang)} onChange={onChange} onWord={setSelectedWord} onBlur={() => pending.current !== undefined && flush()} />
-              <WritingHelp lang={lang} selected={selectedWord} />
+              <WritingHelp lang={lang} selected={selectedWord} insert={(value) => editorRef.current?.insertText(value)} />
             </div>
           </motion.div>
         ) : (

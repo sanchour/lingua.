@@ -7,8 +7,9 @@ import { packId } from '@/core/packs/format';
 import { db } from '@/data/db';
 import { useFullEntry } from '@/services/dictionary/fullDict';
 import { WordForms } from '../reader/WordForms';
+import { WritingTemplates } from './WritingTemplates';
 
-export function WritingHelp({ lang, selected }: { lang: string; selected: string }) {
+export function WritingHelp({ lang, selected, insert }: { lang: string; selected: string; insert: (text: string) => void }) {
   const translateUi = useUi();
   const [query, setQuery] = useState('');
   const word = normalizeWord(query.trim() || selected, lang);
@@ -33,7 +34,8 @@ export function WritingHelp({ lang, selected }: { lang: string; selected: string
       <details><summary className="cursor-pointer font-semibold"><UiText source={'Phrase bank'} /></summary>
         {WRITING_PHRASES[lang] ? <dl className="mt-3 space-y-3">{WRITING_PHRASES[lang].map((phrase, i) => <div key={phrase}><dt className="text-xs text-ink-faint">{PHRASE_FUNCTIONS[i]}</dt><dd lang={lang} dir={lang === 'ar' ? 'rtl' : undefined} className="mt-1 font-serif text-base">{phrase}</dd></div>)}</dl> : <p className="mt-3 text-ink-faint"><UiText source={'The phrase bank covers Spanish, French, German, Russian, Arabic and Mandarin.'} /></p>}
       </details>
-      <p className="text-xs text-ink-faint"><UiText source={'A dedicated spellchecker has not been added.'} /></p>
+      <WritingTemplates lang={lang} insert={insert} />
+      <p className="text-xs text-ink-faint"><UiText source="Browser spelling needs a dictionary for this language. Right-click an underlined word for suggestions." /></p>
     </aside>
   );
 }

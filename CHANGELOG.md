@@ -3,6 +3,8 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.190** · 2026-11-03 · 6-29 G4: the atlas of all your words
+- **0.6.0-alpha.187** · 2026-11-03 · Finish 6-8 Reading and 6-12 Writing; reconcile 47 plus 5 audit entries
 - **0.6.0-alpha.189** · 2026-11-03 · F0704: a recording of each sound, from Wikimedia Commons
 - **0.6.0-alpha.188** · 2026-11-03 · F0704: a recording of each sound, from Wikimedia Commons
 - **0.6.0-alpha.187** · 2026-11-03 · F0704: a recording of each sound, from Wikimedia Commons
@@ -20,6 +22,7 @@ Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIO
 - **0.6.0-alpha.175** · 2026-11-03 · 6-21 G4: pick, match and parts games; merge main
 - **0.6.0-alpha.174** · 2026-11-03 · 6-29 G2: Thesaurus › Atlas, the compass and the tree on screen
 - **0.6.0-alpha.173** · 2026-11-03 · 5.2 conversation scenes audit (F0514-F0547, F0833, F1236)
+- **0.6.0-alpha.172** · 2026-11-03 · Reading and Writing audit completion claim
 - **0.6.0-alpha.172** · 2026-11-03 · Merge main (6-29 G1) into 6-21 G3
 - **0.6.0-alpha.171** · 2026-11-03 · 6-21 G3: crossword, word-link races, sorting, odd one out
 - **0.6.0-alpha.170** · 2026-11-03 · 6-29 G1: the word graph's model, with the tree view

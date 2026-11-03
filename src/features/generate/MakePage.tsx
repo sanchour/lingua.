@@ -97,7 +97,7 @@ export default function MakePage() {
   };
 
   const keepStory = async (body: StoryBody) => {
-    const id = await addText({ lang, title: body.title, kind: 'article', source: 'paste', chapters: textToChapters(body.text, body.title), level });
+    const id = await addText({ lang, title: body.title, kind: 'article', source: 'paste', chapters: textToChapters(body.text, body.title), level, generatedId: row?.id });
     toast('Added to your library in Codex', { tone: 'success' });
     return id;
   };
