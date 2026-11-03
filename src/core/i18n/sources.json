@@ -16064,6 +16064,15 @@
   "Listen to a podcast, write what you heard, turn its words into a deck and review it.": [
     "src/core/games/projects.ts"
   ],
+  "Hear the sound": [
+    "src/features/cursus/sounds/SoundRecording.tsx"
+  ],
+  "Recording by {0}, {1}, from ": [
+    "src/features/cursus/sounds/SoundRecording.tsx"
+  ],
+  "The sound on its own: a language’s own version can differ a little.": [
+    "src/features/cursus/sounds/SoundRecording.tsx"
+  ],
   "Book project": [
     "src/features/codex/reader/ReadingTools.tsx"
   ],
