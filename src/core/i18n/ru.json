@@ -7768,5 +7768,8 @@
   "Its sound": "Его звучание",
   "The word, read aloud": "Слово, прочитанное вслух",
   "A podcast into a deck": "Подкаст как колода",
-  "Listen to a podcast, write what you heard, turn its words into a deck and review it.": "Послушайте подкаст, запишите услышанное, превратите его слова в колоду и повторите её."
+  "Listen to a podcast, write what you heard, turn its words into a deck and review it.": "Послушайте подкаст, запишите услышанное, превратите его слова в колоду и повторите её.",
+  "Hear the sound": "Послушать звук",
+  "Recording by {0}, {1}, from ": "Запись: {0}, {1}, с ",
+  "The sound on its own: a language’s own version can differ a little.": "Звук сам по себе: в конкретном языке он может немного отличаться."
 }

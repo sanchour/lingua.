@@ -7768,5 +7768,8 @@
   "Its sound": "Son son",
   "The word, read aloud": "Le mot, lu à voix haute",
   "A podcast into a deck": "Un podcast transformé en paquet",
-  "Listen to a podcast, write what you heard, turn its words into a deck and review it.": "Écoutez un podcast, écrivez ce que vous avez entendu, transformez ses mots en paquet et révisez-le."
+  "Listen to a podcast, write what you heard, turn its words into a deck and review it.": "Écoutez un podcast, écrivez ce que vous avez entendu, transformez ses mots en paquet et révisez-le.",
+  "Hear the sound": "Écouter le son",
+  "Recording by {0}, {1}, from ": "Enregistrement de {0}, {1}, depuis ",
+  "The sound on its own: a language’s own version can differ a little.": "Le son isolé : la version propre à chaque langue peut différer un peu."
 }

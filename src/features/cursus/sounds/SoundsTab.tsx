@@ -13,6 +13,7 @@ import { Drills } from './Drills';
 import { Intonation } from './Intonation';
 import { MinimalPairs, pairsWith } from './MinimalPairs';
 import { MouthDiagram } from './MouthDiagram';
+import { SoundRecording } from './SoundRecording';
 import { PronunciationDiary } from './PronunciationDiary';
 import { RecordCompare } from './RecordCompare';
 import type { EndExpect, StressExpect } from './RecordCompare';
@@ -132,6 +133,7 @@ function Detail({ sound, lang, all, onChoose, onPairs }: { sound: Sound; lang: s
         {sound.ipa}
       </p>
       <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">{sound.note}</p>
+      <SoundRecording sound={sound} />
       <div className="mt-4 flex items-start gap-3">
         <MouthDiagram sound={sound} />
       </div>

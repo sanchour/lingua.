@@ -7768,5 +7768,8 @@
   "Its sound": "它的读音",
   "The word, read aloud": "朗读的单词",
   "A podcast into a deck": "把播客做成牌组",
-  "Listen to a podcast, write what you heard, turn its words into a deck and review it.": "听一期播客，写下听到的内容，把其中的词做成牌组并复习。"
+  "Listen to a podcast, write what you heard, turn its words into a deck and review it.": "听一期播客，写下听到的内容，把其中的词做成牌组并复习。",
+  "Hear the sound": "听这个音",
+  "Recording by {0}, {1}, from ": "录音：{0}，{1}，来自 ",
+  "The sound on its own: a language’s own version can differ a little.": "这是单独的音：各语言中的实际发音可能略有不同。"
 }

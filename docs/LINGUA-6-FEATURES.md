@@ -927,7 +927,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0701` Vowel chart · **6-10**
 - [x] `F0702` Consonant chart · **6-10**
 - [x] `F0703` IPA reference · **6-10**
-- [ ] `F0704` Audio for every phoneme · **6-10**
+- [x] `F0704` Audio for every phoneme · **6-10**
 - [x] `F0705` Mouth-position illustrations · **6-10**
 - [x] `F0706` Tongue-position illustrations · **6-10**
 - [x] `F0707` Voicing demonstrations · **6-10**
