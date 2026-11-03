@@ -3,6 +3,8 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.186** · 2026-11-03 · 6-24 done: Send selection to Lingua from the browser extension (F1486)
+- **0.6.0-alpha.185** · 2026-11-03 · 6-24 done: Send selection to Lingua from the browser extension (F1486)
 - **0.6.0-alpha.184** · 2026-11-03 · 6-29 G3: the word graph's contract, Dexie 46
 - **0.6.0-alpha.183** · 2026-11-03 · 6-21 deepened: all the plan's games and projects, A2 and B1 stories, topics, sound, record
 - **0.6.0-alpha.182** · 2026-11-03 · 6-21 finished: Finish it, story editor, Max story from words, more stories
