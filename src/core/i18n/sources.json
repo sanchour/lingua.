@@ -16071,8 +16071,9 @@
     "src/features/cursus/sounds/SoundRecording.tsx"
   ],
   "The sound on its own: a language’s own version can differ a little.": [
-    "src/features/cursus/sounds/SoundRecording.tsx",
-"Book project": [
+    "src/features/cursus/sounds/SoundRecording.tsx"
+  ],
+  "Book project": [
     "src/features/codex/reader/ReadingTools.tsx"
   ],
   "Unseen = neither Known nor Learning. Counts include repeated words and names.": [
