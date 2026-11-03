@@ -5,6 +5,7 @@ checked against Lingua as it is on 2026-10-26 (version 0.5.2-alpha.3). The plan 
 [LINGUA-6-PLAN.md](LINGUA-6-PLAN.md); each entry below names its step.
 
 **How to read it**
+- `- [-]` removed from Lingua 6 by the user's word: not built, not counted as open.
 - `- [x]` Lingua has it. Where it lives is said under each section's heading.
 - `- [ ]` … **7-N**: built in Lingua 6 step 7-N. "partly there" means part of it exists and the step finishes it.
 - **5.2-N** · planned in Lingua 5.2: an open step of Lingua 5 already covers it.
@@ -580,7 +581,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0423` Documentary narration · **6-9** · partly there
 - [x] `F0424` Radio programs
 - [x] `F0425` Public-domain recordings
-- [ ] `F0426` Regional accent samples · **6-9**
+- [-] `F0426` Regional accent samples · **6-9** · **removed from Lingua 6 (the user, 2026-11-03)**
 - [x] `F0427` Casual conversations · **6-9** · partly there
 - [x] `F0428` Formal speeches · **6-9** · partly there
 - [x] `F0429` Telephone conversations · **6-9**
@@ -654,7 +655,7 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0487` Listen to a phrase and repeat it · **6-11** · partly there
 - [x] `F0488` Transcribe a short audio clip · **6-9**
 - [x] `F0489` Identify formal versus informal speech · **6-9**
-- [ ] `F0490` Identify the speaker’s accent · **6-9**
+- [-] `F0490` Identify the speaker’s accent · **6-9** · **removed from Lingua 6 (the user, 2026-11-03)**
 - [ ] `F0491` Distinguish native speech from synthetic speech · **6-26**
 
 #### 5.4 Advanced listening training
@@ -665,15 +666,15 @@ Listening comprehension deserves its own system because recognizing a written wo
 - [x] `F0495` Connected-speech training · **6-9**
 - [x] `F0496` Reduced vowels and weak forms · **6-10**
 - [x] `F0497` Stress and intonation recognition · **6-10**
-- [ ] `F0498` Pitch-accent training where relevant · **6-10**
+- [-] `F0498` Pitch-accent training where relevant · **6-10** · **removed from Lingua 6 (the user, 2026-11-03)**
 - [x] `F0499` Tone recognition for tonal languages · **6-10** · partly there
 - [x] `F0500` Fast-speech comprehension · **6-9**
-- [ ] `F0501` Accent adaptation · **6-9**
+- [-] `F0501` Accent adaptation · **6-9** · **removed from Lingua 6 (the user, 2026-11-03)**
 - [x] `F0502` Speech-in-noise exercises · **6-9**
-- [ ] `F0503` Overlapping-speaker comprehension · **6-9**
+- [-] `F0503` Overlapping-speaker comprehension · **6-9** · **removed from Lingua 6 (the user, 2026-11-03)**
 - [ ] `F0504` Automatic difficulty adjustment · **6-16**
 - [x] `F0505` Listening-speed progression · **6-9**
-- [ ] `F0506` Compare the same sentence across speakers · **6-9**
+- [-] `F0506` Compare the same sentence across speakers · **6-9** · **removed from Lingua 6 (the user, 2026-11-03)**
 - [x] `F0507` Compare slow, careful speech with natural speech · **6-9**
 - [x] `F0508` Track listening comprehension by accent · **6-17**
 - [x] `F0509` Track comprehension as playback speed increases · **6-17**
@@ -947,7 +948,7 @@ This deserves a dedicated section because pronunciation involves both hearing di
 - [x] `F0721` Aspiration · **6-10**
 - [x] `F0722` Nasal vowels · **6-10**
 - [x] `F0723` Tonal contours · **6-10** · partly there
-- [ ] `F0724` Pitch accent · **6-10**
+- [-] `F0724` Pitch accent · **6-10** · **removed from Lingua 6 (the user, 2026-11-03)**
 - [x] `F0725` Orthography-to-sound rules · **6-10**
 - [x] `F0726` Sound-to-spelling exercises · **6-10** · partly there
 
@@ -1169,7 +1170,7 @@ This is the structured side of the app. Learners need a route through the materi
 - [ ] `F0891` ⭐ Beginner-to-advanced curriculum · **6-14** · partly there
 - [x] `F0892` CEFR-aligned course paths
 - [x] `F0893` Alphabet and script courses
-- [ ] `F0894` Pronunciation foundations · **6-10**
+- [x] `F0894` Pronunciation foundations · **6-10**
 - [x] `F0895` Core vocabulary courses
 - [x] `F0896` Grammar progression
 - [x] `F0897` Topic-based modules
@@ -1734,7 +1735,7 @@ feature checkbox changes in this audit. Tracks A–G remain open.
 - [ ] `F1348` Kanji readings · **6-23** · partly there (light version, 6-23 reopened)
 - [ ] `F1349` Hanzi recognition · **6-23** · partly there (6-23 reopened)
 - [ ] `F1350` Hanja reference where relevant · **6-23** · partly there (light version, 6-23 reopened)
-- [ ] `F1351` Pitch-accent training · **6-10**
+- [-] `F1351` Pitch-accent training · **6-10** · **removed from Lingua 6 (the user, 2026-11-03)**
 - [ ] `F1352` Honorifics · **6-23** · partly there (light version, 6-23 reopened)
 - [ ] `F1353` Politeness levels · **6-23** · partly there (light version, 6-23 reopened)
 - [ ] `F1354` Measure words · **6-23** · partly there (6-23 reopened)
