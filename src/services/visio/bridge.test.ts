@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { db } from '@/data/db';
 import { handleRequest, parseRequest } from './bridge';
 
 describe('the extension bridge', () => {
@@ -10,6 +11,19 @@ describe('the extension bridge', () => {
     expect(parseRequest({ type: 'delete-everything' })).toBeNull();
     expect(parseRequest('hello')).toBeNull();
     expect(parseRequest(null)).toBeNull();
+  });
+
+  it('takes a selection sent from a page as a text, and refuses one that is too short or too long', async () => {
+    const text = 'Esta es una frase que alguien eligió en una página web para leerla en Lingua.';
+    expect(parseRequest({ type: 'text', title: '  Una página  ', text })).toEqual({ type: 'text', title: 'Una página', text });
+    expect(parseRequest({ type: 'text', text })).toMatchObject({ title: 'From the web' });
+    expect(parseRequest({ type: 'text', text: 'corto' })).toBeNull();
+    expect(parseRequest({ type: 'text', text: 'x'.repeat(100_001) })).toBeNull();
+
+    expect(await handleRequest({ type: 'text', title: 'Una página', text }, 'es')).toEqual({ ok: true });
+    const saved = await db.texts.filter((t) => t.title === 'Una página').first();
+    expect(saved).toMatchObject({ lang: 'es', source: 'paste' });
+    expect(await handleRequest({ type: 'text', title: 'x', text }, '')).toEqual({ ok: false, error: 'no-language' });
   });
 
   it('keeps only usable caption lines', () => {

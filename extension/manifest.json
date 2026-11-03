@@ -1,8 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Lingua subtitles",
-  "version": "0.5.2",
+  "name": "Lingua",
+  "version": "0.6.0",
   "description": "Two interactive subtitle lines over YouTube and other video sites, for learning a language with Lingua. Reads the subtitle files the player loads, never the video.",
+  "permissions": ["contextMenus"],
+  "action": { "default_title": "Lingua" },
   "host_permissions": [
     "https://sanchour.github.io/lingua./*",
     "http://localhost/*",

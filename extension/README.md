@@ -15,6 +15,8 @@ never the video. Looking words up and saving them happen in Lingua, in a tab you
 - Hovering the lines pauses; a word opens a card from Lingua; Save to deck puts it in "From my reading". ← and → step by line.
 - On YouTube it also hands the captions to Lingua: a video added in Visio gets them as its subtitles.
 
+- **Send selection to Lingua:** select text on any page, right-click, and the selection is kept as a text in Codex, in the language being learned (it needs a Lingua tab open; a ✓ or ! shows on the icon).
+
 ## Not checked yet
 
 Only the reader (`parse.js`) and Lingua's side (`src/services/visio/bridge.ts`) have tests. The overlay on the real sites, above all the

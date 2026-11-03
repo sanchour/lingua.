@@ -1892,7 +1892,7 @@ feature checkbox changes in this audit. Tracks A–G remain open.
 - [x] `F1483` Import grammar notes · **6-24**
 - [x] `F1484` Import from a clipboard
 - [x] `F1485` Import a web article
-- [ ] `F1486` Import text through a browser extension · **6-24** · partly there
+- [x] `F1486` Import text through a browser extension · **6-24** · partly there
 - [x] `F1487` Import a document and extract vocabulary · **6-2** · partly there
 - [x] `F1488` Import audio files
 - [ ] `F1489` Import video transcripts · **5.2-4** · planned in Lingua 5.2

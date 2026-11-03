@@ -2,7 +2,9 @@
 // Looking words up and saving them stay here, in Lingua, so the extension needs no data of its own.
 import { GLOSS_LANG } from '@/core/lang/languages';
 import { normalizeWord } from '@/core/text/normalize';
+import { textToChapters } from '@/core/parsers/text';
 import { db } from '@/data/db';
+import { addText } from '@/data/library';
 import { saveTrack } from '@/data/video';
 import { setWordState } from '@/data/words';
 import { lookupGlosses } from '@/services/translate/gloss';
@@ -11,6 +13,7 @@ export type BridgeRequest =
   | { type: 'hello' }
   | { type: 'lookup'; lang: string; word: string }
   | { type: 'save'; lang: string; word: string; sentence?: string; gloss?: string }
+  | { type: 'text'; title: string; text: string }
   | { type: 'captions'; youtubeId: string; lang: string; cues: Array<{ startMs: number; endMs: number; text: string }> };
 
 export interface BridgeReply {
@@ -19,6 +22,9 @@ export interface BridgeReply {
   gloss?: string;
   error?: string;
 }
+
+/** The longest selection taken in one go. */
+const MAX_TEXT = 100_000;
 
 const str = (v: unknown, max = 400) => (typeof v === 'string' && v.length <= max ? v : null);
 
@@ -37,6 +43,11 @@ export function parseRequest(raw: unknown): BridgeRequest | null {
     case 'save': {
       const word = str(r.word, 80);
       return lang && word ? { type: 'save', lang, word, sentence: str(r.sentence, 600) ?? undefined, gloss: str(r.gloss, 300) ?? undefined } : null;
+    }
+    case 'text': {
+      // A selection sent from any page ("Send to Lingua"): kept in Codex in the language being learned, to read there.
+      const text = str(r.text, MAX_TEXT)?.trim();
+      return text && text.length >= 20 ? { type: 'text', title: str(r.title, 120)?.trim() || 'From the web', text } : null;
     }
     case 'captions': {
       const youtubeId = str(r.youtubeId, 16);
@@ -62,6 +73,11 @@ export async function handleRequest(request: BridgeRequest, currentLang: string)
     case 'save': {
       const norm = normalizeWord(request.word, request.lang);
       await setWordState(request.lang, norm, 2, { surface: request.word, sentence: request.sentence, gloss: request.gloss });
+      return { ok: true };
+    }
+    case 'text': {
+      if (!currentLang) return { ok: false, error: 'no-language' };
+      await addText({ lang: currentLang, title: request.title, kind: 'article', source: 'paste', chapters: textToChapters(request.text, request.title) });
       return { ok: true };
     }
     case 'captions': {
