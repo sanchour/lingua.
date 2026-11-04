@@ -1,5 +1,7 @@
 # Lingua with Antigravity (Gemini): two sessions in parallel
 
+**Queue update · 2026-11-04:** all unfinished Lingua 6 and 7 work is consolidated in [Lingua 6.1](LINGUA-6.1-PLAN.md), **WAITING / unclaimed**. Do not execute older continuation prompts or claims without an explicit user restart. The details below preserve history and full requirements; no feature is completed by moving it. Relevant shared work is planned in Lemora 1.1 and may return through [selective reintegration](LEMORA-INTEGRATION.md).
+
 Written 2026-10-29 (the user: "make another one for gemini, antigravity, two different sessions running parallel, you will finish part A"; and later: "gemini and antigravity are the same").
 Two sessions run at the same time, each with its own steps of [Lingua 6](LINGUA-6-PLAN.md) **Part B** (the skills), beside Codex ([CODEX-PLAN.md](CODEX-PLAN.md): 6-24, 6-25, 6-22)
 and Claude (finishes Part A). Antigravity and Gemini are one tool (Google's Antigravity, running Gemini models), so there are **two sessions of it**, called **Antigravity-1** and **Antigravity-2**; use whichever Gemini model it offers. Their steps share no room, so they can run side by side.

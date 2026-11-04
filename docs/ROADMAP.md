@@ -1,5 +1,7 @@
 # Roadmap: what's being built now
 
+**Queue update · 2026-11-04:** all unfinished Lingua 6 and 7 work is consolidated in [Lingua 6.1](LINGUA-6.1-PLAN.md), **WAITING / unclaimed**. Do not execute older continuation prompts or claims without an explicit user restart. The details below preserve history and full requirements; no feature is completed by moving it. Relevant shared work is planned in Lemora 1.1 and may return through [selective reintegration](LEMORA-INTEGRATION.md).
+
 ## 2026-11-03 · 6-8 Reading and 6-12 Writing completion and audit reconciliation
 
 Reopen the stale complete row and account for all 72 assigned entries, including the 47 still unticked.

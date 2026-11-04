@@ -1,5 +1,7 @@
 # Lingua 5.2 · the plan
 
+**Carry-forward · 2026-11-04:** implemented Lingua 5 history is retained. Outstanding verification/setup limits are carried by [Lingua 6.1](LINGUA-6.1-PLAN.md), which is **waiting**. Reading/words/writing improvements can be developed in Lemora and selectively returned through [the integration plan](LEMORA-INTEGRATION.md).
+
 **Status: being built since 2026-10-21, in the order of HANDOVER.md** (planned 2026-10-20; 5.2-1 done 2026-10-21). This is the second half
 of the Lingua 5 list; the first half is [LINGUA-5.1-PLAN.md](LINGUA-5.1-PLAN.md), whose section 0
 holds the user's decisions (Stripe; Max is AI with your own key; €24.99 once, €5.99 a month or €49.99

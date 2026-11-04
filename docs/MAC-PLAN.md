@@ -1,5 +1,7 @@
 # Lingua for Mac · the plan
 
+**Queue update · 2026-11-04:** all unfinished Lingua 6 and 7 work is consolidated in [Lingua 6.1](LINGUA-6.1-PLAN.md), **WAITING / unclaimed**. Do not execute older continuation prompts or claims without an explicit user restart. The details below preserve history and full requirements; no feature is completed by moving it. Relevant shared work is planned in Lemora 1.1 and may return through [selective reintegration](LEMORA-INTEGRATION.md).
+
 **Status: planned 2026-10-29, not started.** The user asked: "i dont want it launch ready yet, i just want to build a lingua
 mac version now to see, check, get motivated and excited, i think i will like tauri a lot … can you create a mac plan?"
 

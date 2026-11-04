@@ -3,6 +3,7 @@
 Every push to `main` has a version (the scheme is [docs/VERSIONS.md](docs/VERSIONS.md)): newest first.
 
 <!-- new versions go here -->
+- **0.6.0-alpha.191** · 2026-11-04 · Plan Lemora 1.1 and consolidate unfinished Lingua 6/7 as waiting 6.1
 - **0.6.0-alpha.190** · 2026-11-03 · 6-29 G4: the atlas of all your words
 - **0.6.0-alpha.187** · 2026-11-03 · Finish 6-8 Reading and 6-12 Writing; reconcile 47 plus 5 audit entries
 - **0.6.0-alpha.185** · 2026-11-03 · 6-23 A2: Greek named choices and resolved main integration

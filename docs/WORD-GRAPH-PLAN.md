@@ -1,5 +1,7 @@
 # The word graph · the plan (Lingua 6, step 6-29)
 
+**Queue update · 2026-11-04:** all unfinished Lingua 6 and 7 work is consolidated in [Lingua 6.1](LINGUA-6.1-PLAN.md), **WAITING / unclaimed**. Do not execute older continuation prompts or claims without an explicit user restart. The details below preserve history and full requirements; no feature is completed by moving it. Relevant shared work is planned in Lemora 1.1 and may return through [selective reintegration](LEMORA-INTEGRATION.md).
+
 **Status: planned 2026-10-29; G1 (the model, with the tree's) built 2026-11-03; G2 (the compass and the tree on screen), G3 (the contract) and G4 (the atlas) built 2026-11-03.** The user added a third view on
 2026-11-03, "a tree view, like a word tree view": section 2.4. Planned by Claude Opus from the real dictionary and pack files; to be built
 by Opus (the user's word) in seven pushes, **G1 to G7**, each versioned on its own. Claim the step in

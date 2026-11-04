@@ -1,5 +1,7 @@
 # Lingua with Codex: what it builds, the rules, and the prompt
 
+**Queue update · 2026-11-04:** all unfinished Lingua 6 and 7 work is consolidated in [Lingua 6.1](LINGUA-6.1-PLAN.md), **WAITING / unclaimed**. Do not execute older continuation prompts or claims without an explicit user restart. The details below preserve history and full requirements; no feature is completed by moving it. Relevant shared work is planned in Lemora 1.1 and may return through [selective reintegration](LEMORA-INTEGRATION.md).
+
 Written 2026-10-29 for ChatGPT's Codex (any model it offers), working beside the Claude sessions. It takes three steps of
 [Lingua 6](LINGUA-6-PLAN.md) that touch their own folders and need only what Part A already built: **6-24 Import and export**,
 **6-25 Accessibility and the desktop**, **6-22 Dictionary tools**, in that order. Everything else is somebody else's: see section 6.
