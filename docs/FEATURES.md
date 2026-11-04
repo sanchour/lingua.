@@ -1,5 +1,7 @@
 # Feature specifications
 
+**Planned, not implemented · 2026-11-04:** [Lingua 6.1](LINGUA-6.1-PLAN.md) is the waiting queue for unfinished Lingua 6/7 work. [Lemora](LEMORA-INTEGRATION.md) is a separate reading-centred fork; its 1.1 plan includes Atlas, deep language tools, Slang & Dialects, adaptation and relevant experiments. No new learner capability or integration is claimed by this documentation change.
+
 Specs for features added after Phase 1 (Statistics, Tabula, Iter and Diarium are built, and Visio is described in ARCHITECTURE.md › Phases, step 7). Each lists where it lives, what it records, and the phase
 that builds it. Visual language for all of them: minimal, bookish, calm; details tucked into
 popovers and drawers; every motion a transform/opacity spring (see `PERFORMANCE.md`).

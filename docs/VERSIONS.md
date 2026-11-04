@@ -1,5 +1,7 @@
 # Lingua's versions
 
+**Scheduling/version update · 2026-11-04:** remaining Lingua 6 and 7 work is now [Lingua 6.1](LINGUA-6.1-PLAN.md), **waiting**. Its future implementation line is `0.6.1-alpha.N`, release `0.6.1` only after acceptance. Historical 0.6.0/0.7.0 targets below describe the earlier schedule; this planning push keeps the current app line and does not announce a completed release. Lemora uses its own version line (1.1 → `0.1.1-alpha.N`).
+
 Lingua is still in alpha, so its version starts with **0** (the user, 2026-10-25). Every push to
 `main` gets its own version, checkpoints and claims included, so the app, the commit and the tag
 always say which build is live.

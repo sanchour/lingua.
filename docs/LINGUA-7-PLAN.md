@@ -1,5 +1,7 @@
 # Lingua 7 · Design · the plan
 
+**Queue update · 2026-11-04:** all unfinished Lingua 6 and 7 work is consolidated in [Lingua 6.1](LINGUA-6.1-PLAN.md), **WAITING / unclaimed**. Do not execute older continuation prompts or claims without an explicit user restart. The details below preserve history and full requirements; no feature is completed by moving it. Relevant shared work is planned in Lemora 1.1 and may return through [selective reintegration](LEMORA-INTEGRATION.md).
+
 **Renamed 2026-10-27** (the user: "Put Lingua 7 as Lingua 6 - Design, so Lingua Design becomes 0.7"): what was planned as
 Lingua 7 · Features is **Lingua 6 · Features** (`0.6.x`), built first; what was Lingua 6 · Design is **Lingua 7 · Design** (`0.7.x`),
 built after it. Step numbers moved with the names (Features 6-1 … 6-28, Design 7-0 … 7-11).

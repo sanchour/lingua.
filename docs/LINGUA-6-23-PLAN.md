@@ -1,5 +1,7 @@
 # 6-23 · Tools for each language: the deep plan
 
+**Queue update · 2026-11-04:** all unfinished Lingua 6 and 7 work is consolidated in [Lingua 6.1](LINGUA-6.1-PLAN.md), **WAITING / unclaimed**. Do not execute older continuation prompts or claims without an explicit user restart. The details below preserve history and full requirements; no feature is completed by moving it. Relevant shared work is planned in Lemora 1.1 and may return through [selective reintegration](LEMORA-INTEGRATION.md).
+
 **Written 2026-10-30 (Claude Sonnet 5.5), after the user reopened the step: "I want all done deeply."** Step 6-23 was first built in
 seven light pushes (0.6.0-alpha.120 to .129). They are real and they stay, but most of them are short hand-written item sets and
 small tools. This plan is what "done deeply" means, entry by entry. All 51 entries of 6-23 are open again in

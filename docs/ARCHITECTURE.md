@@ -1,5 +1,7 @@
 # Lingua — Architecture
 
+**Product relationship · 2026-11-04:** Lemora is a separate reading-centred fork with shared git history and paths, its own database/cache/storage namespace and product/navigation/responsive layer. Reusable changes may be imported selectively later; no shared-package extraction, monorepo, app merge or migration is implemented. See [LEMORA-INTEGRATION.md](LEMORA-INTEGRATION.md) and the [waiting Lingua 6.1 queue](LINGUA-6.1-PLAN.md).
+
 Lingua is a local-first language-learning studio for polyglots: a deep reader (LingQ / Apple Books),
 a hybrid spaced-repetition vocabulary system (Anki / Duolingo), audio/video immersion
 (LanguageTransfer / Spotify), a corrected writing journal, and a personal overview of every language

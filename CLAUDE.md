@@ -1,5 +1,7 @@
 # Working on Lingua
 
+**Current scheduling · 2026-11-04:** [Lingua 6.1](docs/LINGUA-6.1-PLAN.md) consolidates all unfinished Lingua 6/7 features and design work and is **WAITING, not started**. Older “continue/claim next” instructions below are historical until the user explicitly resumes. The user is focusing on [Lemora 1.1](https://github.com/sanchour/lemora/blob/main/docs/LEMORA-1.1-PLAN.md); reusable improvements may later [return to Lingua](docs/LEMORA-INTEGRATION.md). No implementation or reintegration is authorised by this planning checkpoint.
+
 Lingua is a local-first language-learning PWA (Vite 8, React 19, TypeScript, Tailwind 4, Dexie,
 Zustand, motion/react). It is live at https://sanchour.github.io/lingua./ and GitHub Pages
 deploys it from `main` (repo `sanchour/lingua.`). Setting up a new computer: [docs/SETUP.md](docs/SETUP.md).

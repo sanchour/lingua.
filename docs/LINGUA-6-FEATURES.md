@@ -1,5 +1,7 @@
 # Lingua 6 · Features · the audit
 
+**Queue update · 2026-11-04:** all unfinished Lingua 6 and 7 work is consolidated in [Lingua 6.1](LINGUA-6.1-PLAN.md), **WAITING / unclaimed**. Do not execute older continuation prompts or claims without an explicit user restart. The details below preserve history and full requirements; no feature is completed by moving it. Relevant shared work is planned in Lemora 1.1 and may return through [selective reintegration](LEMORA-INTEGRATION.md).
+
 **Writing completion, 2026-11-03:** the five remaining entries F0617/F0657/F0676/F0684/F0687 are implemented; all 55 assigned entries are now ticked. [The audit](LINGUA-6-8-12-AUDIT.md) records image privacy/media-backup requirements, simplification limits, dictionary/native spelling, reusable templates and ten draft snapshots.
 
 **Reading completion, 2026-11-03:** all 72 assigned entries are reconciled with their actual implementation in [the Reading/Writing audit](LINGUA-6-8-12-AUDIT.md), including the 47 previously open. Searchable source kinds are not a newly hosted corpus; generated interpretations remain unverified, and the audit states the exact source/excerpt/storage boundaries.

@@ -1,5 +1,7 @@
 # Lingua
 
+**Current scheduling · 2026-11-04:** [Lingua 6.1](docs/LINGUA-6.1-PLAN.md) consolidates all unfinished Lingua 6/7 features and design work and is **WAITING, not started**. Older “continue/claim next” instructions below are historical until the user explicitly resumes. The user is focusing on [Lemora 1.1](https://github.com/sanchour/lemora/blob/main/docs/LEMORA-1.1-PLAN.md); reusable improvements may later [return to Lingua](docs/LEMORA-INTEGRATION.md). No implementation or reintegration is authorised by this planning checkpoint.
+
 A calm, local-first language-learning studio: an interactive reader (Codex), flashcards and
 exercises (Thesaurus), audio with transcripts (Sonus), dual-subtitle video (Visio), stats (Ratio)
 and settings (Ordo). Installs as an app on Windows and iPhone from one URL. Russian and Greek have
